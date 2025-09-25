@@ -43,7 +43,7 @@ services:
     environment:
       <<: *environment
     command: >
-      /bin/sh -c "wait-for-it.sh postgres 5432 -- node src/server.js"
+      /bin/sh -c "./scripts/wait-for-it.sh postgres 5432 -- node src/server.js"
     networks:
       - towersfy_network
     volumes:
@@ -61,6 +61,10 @@ services:
         - "traefik.http.routers.backend.entrypoints=websecure"
         - "traefik.http.routers.backend.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.backend.loadbalancer.server.port=5000"
+        - "traefik.http.routers.backend-uploads.rule=Host(`apiloyalfood.towersfy.com`) && PathPrefix(`/uploads`)"
+        - "traefik.http.routers.backend-uploads.entrypoints=websecure"
+        - "traefik.http.routers.backend-uploads.tls.certresolver=letsencryptresolver"
+        - "traefik.http.routers.backend-uploads.priority=100"
 
   frontend:
     image: loyalfood-frontend:latest

@@ -28,6 +28,11 @@ const roletaRoutes = require('./roletaRoutes');
 const whatsappWebhookRoutes = require('./whatsappWebhookRoutes');
 
 module.exports = (router) => {
+  // Rota para Health Check do Docker
+  router.get('/health', (_req, res) => {
+    res.status(200).send('OK');
+  });
+
   router.use('/auth', authRoutes);
   router.use('/users', userRoutes);
   router.use('/tenants', tenantRoutes);
@@ -40,7 +45,7 @@ module.exports = (router) => {
   router.use('/atendentes', atendenteRoutes);
   router.use('/recompensas', recompensaRoutes);
   router.use('/cupons', cupomRoutes);
-  router.use('/clients', clientRoutes);
+  router.use('/clients', clientRoutes); // Importar clientRoutes
   router.use('/atendenteMetas', atendenteMetaRoutes);
   router.use('/dashboard', dashboardRoutes);
   router.use('/whatsapp-config', whatsappConfigRoutes);

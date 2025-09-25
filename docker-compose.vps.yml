@@ -3,6 +3,7 @@ version: '3.8'
 # Âncora para reusar variáveis de ambiente
 x-environment: &environment
   NODE_ENV: production
+  PORT: 5000
   # IMPORTANTE: Substitua 'postgres' pelo nome do serviço do seu container Postgres
   DB_HOST: postgres
   DB_PORT: 5432

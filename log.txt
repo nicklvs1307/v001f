@@ -1,0 +1,27 @@
+root@Server:~/loyalfood/v001f# docker build -f Dockerfile.frontend -t loyalfood-frontend:latest . --no-cache
+[+] Building 1.1s (9/14)                                                                                                              docker:default
+ => [internal] load build definition from Dockerfile.frontend                                                                                   0.0s
+ => => transferring dockerfile: 901B                                                                                                            0.0s
+ => [internal] load metadata for docker.io/library/nginx:stable-alpine                                                                          1.0s
+ => [internal] load metadata for docker.io/library/node:18-alpine                                                                               0.9s
+ => [internal] load .dockerignore                                                                                                               0.0s
+ => => transferring context: 2B                                                                                                                 0.0s
+ => [builder 1/6] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e                 0.0s
+ => [internal] load build context                                                                                                               0.0s
+ => => transferring context: 60B                                                                                                                0.0s
+ => CACHED [stage-1 1/3] FROM docker.io/library/nginx:stable-alpine@sha256:8f2bcf97c473dfe311e79a510ee540ee02e28ce1e6a64e1ef89bfad32574ef10     0.0s
+ => CACHED [builder 2/6] WORKDIR /app/frontend                                                                                                  0.0s
+ => ERROR [builder 3/6] COPY frontend/package.json frontend/package-lock.json ./                                                                0.0s
+------
+ > [builder 3/6] COPY frontend/package.json frontend/package-lock.json ./:
+------
+Dockerfile.frontend:7
+--------------------
+   5 |
+   6 |     # Copia os arquivos de dependência primeiro para otimizar o cache
+   7 | >>> COPY frontend/package.json frontend/package-lock.json ./
+   8 |
+   9 |     # Instala as dependências
+--------------------
+ERROR: failed to build: failed to solve: failed to compute cache key: failed to calculate checksum of ref e6e4e117-63d0-47bf-84db-891228577604::kp1urkkk9audgu1oha8unswo6: "/frontend/package.json": not found
+root@Server:~/loyalfood/v001f#

@@ -1,12 +1,22 @@
 # Estágio 1: Build da aplicação React
 FROM node:18-alpine AS builder
 
-# Copia a pasta frontend inteira para /app/frontend
-COPY frontend /app/frontend
-
 WORKDIR /app/frontend
 
+# Copia os arquivos de dependência primeiro para otimizar o cache
+COPY frontend/package.json frontend/package-lock.json ./
+
+# Instala as dependências
 RUN npm install
+
+# Copia o restante do código-fonte
+COPY frontend/ .
+
+# Define o argumento que será passado pelo docker-compose
+ARG REACT_APP_API_URL
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+
+# Builda a aplicação
 RUN npm run build
 
 # Estágio 2: Servir a aplicação com Nginx

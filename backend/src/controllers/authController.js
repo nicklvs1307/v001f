@@ -3,26 +3,7 @@ const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const authRepository = require("../repositories/authRepository");
 const ApiError = require("../errors/ApiError");
-const fs = require('fs').promises; // Importar o módulo fs.promises
-
-// Função auxiliar para obter o segredo JWT
-const getJwtSecret = async () => {
-  if (process.env.JWT_SECRET) {
-    return process.env.JWT_SECRET;
-  }
-
-  if (process.env.JWT_SECRET_FILE) {
-    try {
-      const secret = await fs.readFile(process.env.JWT_SECRET_FILE, 'utf8');
-      return secret.trim(); // Remover espaços em branco/quebras de linha
-    } catch (error) {
-      console.error('Erro ao ler o arquivo JWT_SECRET_FILE:', error);
-      throw new ApiError(500, 'Erro ao carregar o segredo JWT do arquivo.');
-    }
-  }
-
-  throw new ApiError(500, 'Segredo JWT não configurado. Defina JWT_SECRET ou JWT_SECRET_FILE.');
-};
+const config = require("../config"); // Importar o objeto de configuração
 
 // Função para registrar um Super Admin (exemplo inicial)
 // Em um cenário real, isso seria feito de forma mais controlada.
@@ -96,13 +77,20 @@ exports.login = asyncHandler(async (req, res) => {
     tenantName: user.tenant ? user.tenant.name : null, // Adicionar o nome do tenant
   };
 
-  const jwtSecret = await getJwtSecret(); // Obter o segredo JWT
-  const token = jwt.sign(payload, jwtSecret, { expiresIn: "1h" });
+  const token = jwt.sign(payload, config.jwtSecret, { expiresIn: "1h" });
 
   res.json({
     message: "Login bem-sucedido!",
     token,
   });
+});
+
+// Função para verificar o token
+exports.verifyToken = asyncHandler(async (req, res) => {
+  // O middleware de autenticação já validou o token e anexou os dados do usuário a req.user
+  // Se chegamos aqui, o token é válido.
+  // Apenas retornamos os dados do usuário para o frontend.
+  res.json(req.user);
 });
 
 // Função para verificar o token

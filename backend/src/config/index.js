@@ -1,36 +1,44 @@
-require("dotenv").config();
-
 const fs = require('fs');
 
-// Função auxiliar para ler secrets do Docker
 const readSecret = (secretName) => {
+  // Tenta ler da variável de ambiente diretamente
+  if (process.env[secretName]) {
+    return process.env[secretName];
+  }
+
+  // Se não, tenta ler do arquivo de segredo
   const secretPath = process.env[`${secretName}_FILE`];
   if (secretPath) {
     try {
-      return fs.readFileSync(secretPath, 'utf8').trim();
-    } catch (err) {
-      console.error(`Error reading secret ${secretName}:`, err);
-      return null;
+      const secret = fs.readFileSync(secretPath, 'utf8');
+      return secret.trim();
+    } catch (error) {
+      console.error(`Erro ao ler o arquivo de segredo ${secretName}_FILE:`, error);
+      throw new Error(`Erro ao carregar o segredo ${secretName} do arquivo.`);
     }
   }
-  return process.env[secretName];
+
+  // Se nenhum dos dois estiver configurado, retorna null ou lança um erro, dependendo da necessidade
+  // Por enquanto, vamos retornar null e deixar a validação para onde for usado.
+  return null;
 };
 
-module.exports = {
-  // ... (outras configurações podem estar aqui)
-  database: {
+const config = {
+  db: {
     host: process.env.DB_HOST,
-    user: readSecret('DB_USER') || process.env.DB_USER,
-    password: readSecret('DB_PASSWORD') || process.env.DB_PASSWORD,
-    database: readSecret('DB_DATABASE') || process.env.DB_DATABASE,
+    user: readSecret('DB_USER'),
+    password: readSecret('DB_PASSWORD'),
+    database: readSecret('DB_DATABASE'),
     port: process.env.DB_PORT,
   },
-  jwtSecret: readSecret('JWT_SECRET') || process.env.JWT_SECRET,
+  jwtSecret: readSecret('JWT_SECRET'),
   port: process.env.PORT || 3001,
-  google: {
+  googleAuth: {
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     redirectUri: process.env.GOOGLE_REDIRECT_URI,
   },
 };
+
+module.exports = config;
 

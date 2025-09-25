@@ -1,20 +1,22 @@
-fetch("https://apiloyalfood.towersfy.com/auth/login", {
-  "headers": {
-    "accept": "application/json, text/plain, */*",
-    "accept-language": "pt-PT,pt;q=0.9,en-US;q=0.8,en;q=0.7",
-    "content-type": "application/json",
-    "priority": "u=1, i",
-    "sec-ch-ua": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"",
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": "\"Windows\"",
-    "sec-fetch-dest": "empty",
-    "sec-fetch-mode": "cors",
-    "sec-fetch-site": "same-site"
-  },
-  "referrer": "https://loyalfood.towersfy.com/login",
-  "body": "{\"email\":\"admin@empresaexemplo.com\",\"password\":\"admin123\"}",
-  "method": "POST",
-  "mode": "cors",
-  "credentials": "omit"
-});
-{"status":"error","code":"HTTP_500","message":"secretOrPrivateKey must have a value","details":"Error: secretOrPrivateKey must have a value\n    at module.exports [as sign] (/usr/src/app/node_modules/jsonwebtoken/sign.js:111:20)\n    at /usr/src/app/src/controllers/authController.js:79:21\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"}
+URL da solicitação
+https://loyalfood.towersfy.com/api/auth/verify-token
+Método da solicitação
+POST
+Código de status
+405 Method Not Allowed
+Endereço remoto
+95.217.16.187:443
+
+<html>
+<head><title>405 Not Allowed</title></head>
+<body>
+<center><h1>405 Not Allowed</h1></center>
+<hr><center>nginx/1.25.5</center>
+</body>
+</html>
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->

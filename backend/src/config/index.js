@@ -18,18 +18,17 @@ const readSecret = (secretName) => {
     }
   }
 
-  // Se nenhum dos dois estiver configurado, retorna null ou lança um erro, dependendo da necessidade
-  // Por enquanto, vamos retornar null e deixar a validação para onde for usado.
-  return null;
+  // Se nenhum dos dois estiver configurado, lança um erro
+  throw new Error(`Segredo obrigatório não configurado: ${secretName}. Defina ${secretName} ou ${secretName}_FILE.`);
 };
 
 const config = {
   db: {
-    host: process.env.DB_HOST,
+    host: readSecret('DB_HOST'), // DB_HOST também é obrigatório
     user: readSecret('DB_USER'),
     password: readSecret('DB_PASSWORD'),
     database: readSecret('DB_DATABASE'),
-    port: process.env.DB_PORT,
+    port: process.env.DB_PORT || 5432, // Porta pode ter um valor padrão
   },
   jwtSecret: readSecret('JWT_SECRET'),
   port: process.env.PORT || 3001,

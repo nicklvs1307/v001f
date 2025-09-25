@@ -1,120 +1,53 @@
-version: '3.8'
+migrations>>
+Database is up, running migrations...
+/bin/sh: 2: ./scripts/wait-for-it.sh: Permission denied
+Sequelize CLI [Node: 18.20.8, CLI: 6.6.3, ORM: 6.37.7]
+Loaded configuration file "src/config/sequelize-config.js".
+Using environment "production".
+ERROR: The server does not support SSL connections
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.6.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.1
+npm notice To update run: npm install -g npm@11.6.1
+npm notice
 
-services:
-  migrations:
-    image: loyalfood-backend:latest
-    depends_on:
-      - postgres
-    environment:
-      # For production, these will be read from secrets
-      DB_PASSWORD_FILE: /run/secrets/db_password # For production secrets
-      PORT: 5000
-      NODE_ENV: production
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_NAME: loyalfood
-      DB_USER: postgres
-      JWT_EXPIRES_IN: 7d
-      FRONTEND_URL: https://loyalfood.towersfy.com
-      BACKEND_URL: https://apiloyalfood.towersfy.com
-      REACT_APP_API_URL: https://apiloyalfood.towersfy.com/api
-    command: >
-      /bin/sh -c "
-        scripts/wait-for-it.sh postgres 5432 -- \ 
-        echo 'Database is up, running migrations...' && \ 
-        npx sequelize-cli db:migrate --config src/config/config.js --migrations-path migrations && \ 
-        echo 'Running seeders...' && \ 
-        npx sequelize-cli db:seed:all --config src/config/config.js --seeders-path seeders
-      "
-    networks:
-      - towersfy_network
-    secrets:
-      - db_password # For production secrets
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
 
-  backend:
-    image: loyalfood-backend:latest
-    depends_on:
-      - migrations # Ensure migrations run first
-      - redis # Ensure redis is up before backend
-    environment:
-      # For production, these will be read from secrets
-      DB_PASSWORD_FILE: /run/secrets/db_password # For production secrets
-      JWT_SECRET_FILE: /run/secrets/jwt_secret # For production secrets
-      REDIS_URL: redis://redis:6379 # Added for Redis connection
-      PORT: 5000
-      NODE_ENV: production
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_NAME: loyalfood
-      DB_USER: postgres
-      JWT_EXPIRES_IN: 7d
-      FRONTEND_URL: https://loyalfood.towersfy.com
-      BACKEND_URL: https://apiloyalfood.towersfy.com
-      REACT_APP_API_URL: https://apiloyalfood.towersfy.com/api
-    networks:
-      - towersfy_network
-    volumes:
-      - uploads_data:/app/backend/public/uploads
-      # For local development, you might want to mount the backend code for live reloading
-      # - ./backend:/app/backend
-    secrets:
-      - db_password # For production secrets
-      - jwt_secret # For production secrets
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.backend.rule=Host(`apiloyalfood.towersfy.com`)"
-        - "traefik.http.routers.backend.entrypoints=websecure"
-        - "traefik.http.routers.backend.tls.certresolver=letsencryptresolver"
-        - "traefik.http.services.backend.loadbalancer.server.port=5000"
-        - "traefik.http.routers.backend-uploads.rule=Host(`apiloyalfood.towersfy.com`) && PathPrefix(`/uploads`)"
-        - "traefik.http.routers.backend-uploads.entrypoints=websecure"
-        - "traefik.http.routers.backend-uploads.tls.certresolver=letsencryptresolver"
-        - "traefik.http.routers.backend-uploads.priority=100"
+frontend>>
+/docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
+/docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
+10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf
+10-listen-on-ipv6-by-default.sh: info: /etc/nginx/conf.d/default.conf differs from the packaged version
+/docker-entrypoint.sh: Sourcing /docker-entrypoint.d/15-local-resolvers.envsh
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+/docker-entrypoint.sh: Configuration complete; ready for start up
+2025/09/25 20:18:56 [notice] 1#1: using the "epoll" event method
+2025/09/25 20:18:56 [notice] 1#1: nginx/1.25.5
+2025/09/25 20:18:56 [notice] 1#1: built by gcc 13.2.1 20231014 (Alpine 13.2.1_git20231014) 
+2025/09/25 20:18:56 [notice] 1#1: OS: Linux 5.15.0-151-generic
+2025/09/25 20:18:56 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/09/25 20:18:56 [notice] 1#1: start worker processes
+2025/09/25 20:18:56 [notice] 1#1: start worker process 29
+2025/09/25 20:18:56 [notice] 1#1: start worker process 30
+2025/09/25 20:20:04 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/09/25 20:20:04 [notice] 29#29: gracefully shutting down
+2025/09/25 20:20:04 [notice] 30#30: gracefully shutting down
+2025/09/25 20:20:04 [notice] 29#29: exiting
+2025/09/25 20:20:04 [notice] 30#30: exiting
+2025/09/25 20:20:04 [notice] 29#29: exit
+2025/09/25 20:20:04 [notice] 30#30: exit
+2025/09/25 20:20:04 [notice] 1#1: signal 17 (SIGCHLD) received from 30
+2025/09/25 20:20:04 [notice] 1#1: worker process 30 exited with code 0
+2025/09/25 20:20:04 [notice] 1#1: signal 29 (SIGIO) received
+2025/09/25 20:20:04 [notice] 1#1: signal 17 (SIGCHLD) received from 29
+2025/09/25 20:20:04 [notice] 1#1: worker process 29 exited with code 0
+2025/09/25 20:20:04 [notice] 1#1: exit
 
-  frontend:
-    image: loyalfood-frontend:latest
-    environment:
-      PORT: 5000
-      NODE_ENV: production
-      FRONTEND_URL: https://loyalfood.towersfy.com
-      BACKEND_URL: https://apiloyalfood.towersfy.com
-      REACT_APP_API_URL: https://apiloyalfood.towersfy.com/api
-    networks:
-      - towersfy_network
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.frontend.rule=Host(`loyalfood.towersfy.com`)"
-        - "traefik.http.routers.frontend.entrypoints=websecure"
-        - "traefik.http.routers.frontend.tls.certresolver=letsencryptresolver"
-        - "traefik.http.services.frontend.loadbalancer.server.port=80"
 
-  
+bakcend>>
+Server.js is being executed!
+Erro Crítico: A configuração do banco de dados não foi carregada corretamente.
+Verifique seu arquivo .env e as configurações em src/config/index.js
 
-  
 
-networks:
-  towersfy_network:
-    external: true # Usando a rede existente do Traefik
-
-volumes:
-  uploads_data:
-  redis_data: # Add redis_data volume
-
-# Declaração dos secrets que serão usados. O Docker espera que eles já existam no Swarm.
-secrets:
-  db_password:
-    external: true
-  jwt_secret:
-    external: true

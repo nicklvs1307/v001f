@@ -5,6 +5,9 @@ COPY package*.json ./
 RUN npm install --omit=dev
 COPY . .
 
+# Dá permissão de execução para o script de wait-for-it
+RUN chmod +x /usr/src/app/scripts/wait-for-it.sh
+
 # Estágio 2: Production - Copia os artefatos do builder e configura para produção
 FROM node:18-slim
 WORKDIR /usr/src/app

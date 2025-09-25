@@ -25,10 +25,7 @@ module.exports = {
     "port": process.env.DB_PORT,
     "dialect": "postgres",
     "dialectOptions": {
-      "ssl": {
-        "require": process.env.DB_SSL === 'true',
-        "rejectUnauthorized": false
-      }
+      "ssl": false
     }
   }
 };

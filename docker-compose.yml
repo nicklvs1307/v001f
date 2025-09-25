@@ -26,8 +26,8 @@ services:
 
   migrations:
     build:
-      context: .
-      dockerfile: Dockerfile.backend
+      context: ./backend
+      dockerfile: Dockerfile
     image: loyalfood-backend:latest # Keep image for pushing to registry
     depends_on:
       - db # Changed from postgres to db
@@ -62,8 +62,8 @@ services:
 
   backend:
     build:
-      context: .
-      dockerfile: Dockerfile.backend
+      context: ./backend
+      dockerfile: Dockerfile
     image: loyalfood-backend:latest # Keep image for pushing to registry
     depends_on:
       - migrations # Ensure migrations run first
@@ -111,8 +111,8 @@ services:
 
   frontend:
     build:
-      context: .
-      dockerfile: Dockerfile.frontend
+      context: ./frontend
+      dockerfile: Dockerfile
       args:
         REACT_APP_API_URL: ${REACT_APP_API_URL:-https://apiloyalfood.towersfy.com/api}
     image: loyalfood-frontend:latest

@@ -3,11 +3,12 @@ FROM node:18-alpine AS builder
 
 WORKDIR /usr/src/app
 
-COPY backend/package*.json ./
+# O contexto de build agora é a pasta 'backend', então não precisamos mais do prefixo 'backend/'.
+COPY package*.json ./
 RUN npm install --production
 
-COPY backend/ . .
-COPY backend/scripts/wait-for-it.sh ./scripts/wait-for-it.sh
+COPY . .
+COPY scripts/wait-for-it.sh ./scripts/wait-for-it.sh
 RUN chmod +x ./scripts/wait-for-it.sh
 
 # Se houver um passo de build para o backend (ex: TypeScript), adicione aqui.
@@ -21,9 +22,9 @@ WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app .
 
 # Copia o entrypoint.sh
-COPY backend/entrypoint.sh .
+COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
 EXPOSE 5000
 
-CMD ["./entrypoint.sh"]
+CMD ["node", "src/server.js"]

@@ -1,0 +1,120 @@
+version: '3.8'
+
+services:
+  migrations:
+    image: feedeliza-backend:latest
+    depends_on:
+      - postgres
+    environment:
+      # For production, these will be read from secrets
+      DB_PASSWORD_FILE: /run/secrets/db_password # For production secrets
+      PORT: 5000
+      NODE_ENV: production
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: feedeliza
+      DB_USER: postgres
+      JWT_EXPIRES_IN: 7d
+      FRONTEND_URL: https://feedelizapro.towersfy.com
+      BACKEND_URL: https://feedelizaapi.towersfy.com
+      REACT_APP_API_URL: https://feedelizaapi.towersfy.com/api
+    command: >
+      /bin/sh -c "
+        scripts/wait-for-it.sh postgres 5432 -- \ 
+        echo 'Database is up, running migrations...' && \ 
+        npx sequelize-cli db:migrate --config src/config/config.js --migrations-path migrations && \ 
+        echo 'Running seeders...' && \ 
+        npx sequelize-cli db:seed:all --config src/config/config.js --seeders-path seeders
+      "
+    networks:
+      - towersfy_network
+    secrets:
+      - db_password # For production secrets
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  backend:
+    image: feedeliza-backend:latest
+    depends_on:
+      - migrations # Ensure migrations run first
+      - redis # Ensure redis is up before backend
+    environment:
+      # For production, these will be read from secrets
+      DB_PASSWORD_FILE: /run/secrets/db_password # For production secrets
+      JWT_SECRET_FILE: /run/secrets/jwt_secret # For production secrets
+      REDIS_URL: redis://redis:6379 # Added for Redis connection
+      PORT: 5000
+      NODE_ENV: production
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: feedeliza
+      DB_USER: postgres
+      JWT_EXPIRES_IN: 7d
+      FRONTEND_URL: https://feedelizapro.towersfy.com
+      BACKEND_URL: https://feedelizaapi.towersfy.com
+      REACT_APP_API_URL: https://feedelizaapi.towersfy.com/api
+    networks:
+      - towersfy_network
+    volumes:
+      - uploads_data:/app/backend/public/uploads
+      # For local development, you might want to mount the backend code for live reloading
+      # - ./backend:/app/backend
+    secrets:
+      - db_password # For production secrets
+      - jwt_secret # For production secrets
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.backend.rule=Host(`feedelizaapi.towersfy.com`)"
+        - "traefik.http.routers.backend.entrypoints=websecure"
+        - "traefik.http.routers.backend.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.backend.loadbalancer.server.port=5000"
+        - "traefik.http.routers.backend-uploads.rule=Host(`feedelizaapi.towersfy.com`) && PathPrefix(`/uploads`)"
+        - "traefik.http.routers.backend-uploads.entrypoints=websecure"
+        - "traefik.http.routers.backend-uploads.tls.certresolver=letsencryptresolver"
+        - "traefik.http.routers.backend-uploads.priority=100"
+
+  frontend:
+    image: feedeliza-frontend:latest
+    environment:
+      PORT: 5000
+      NODE_ENV: production
+      FRONTEND_URL: https://feedelizapro.towersfy.com
+      BACKEND_URL: https://feedelizaapi.towersfy.com
+      REACT_APP_API_URL: https://feedelizaapi.towersfy.com/api
+    networks:
+      - towersfy_network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.frontend.rule=Host(`feedelizapro.towersfy.com`)"
+        - "traefik.http.routers.frontend.entrypoints=websecure"
+        - "traefik.http.routers.frontend.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.frontend.loadbalancer.server.port=80"
+
+  
+
+  
+
+networks:
+  towersfy_network:
+    external: true # Usando a rede existente do Traefik
+
+volumes:
+  uploads_data:
+  redis_data: # Add redis_data volume
+
+# Declaração dos secrets que serão usados. O Docker espera que eles já existam no Swarm.
+secrets:
+  db_password:
+    external: true
+  jwt_secret:
+    external: true

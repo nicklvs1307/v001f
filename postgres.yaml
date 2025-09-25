@@ -1,0 +1,47 @@
+version: "3.7"
+services:
+
+## --------------------------- ORION --------------------------- ##
+
+  postgres:
+    image: postgres:14 ## Versão do postgres
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - towersfy_network ## Nome da rede interna
+
+    ## Descomente as linhas abaixo para uso externo
+    ports:
+      - 5432:5432
+
+    environment:
+          ## Senha do postgres
+          - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_db_password
+          - PG_MAX_CONNECTIONS=500
+    secrets:
+    - postgres_db_password
+
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+
+## --------------------------- ORION --------------------------- ##
+
+volumes:
+  postgres_data:
+    external: true
+    name: postgres_data
+
+networks:
+  towersfy_network: ## Nome da rede interna
+    external: true
+    name: towersfy_network ## Nome da rede interna

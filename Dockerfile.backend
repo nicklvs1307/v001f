@@ -1,0 +1,28 @@
+# Estágio 1: Build da aplicação Node.js
+FROM node:18-alpine AS builder
+
+WORKDIR /usr/src/app
+
+COPY backend/package*.json ./
+RUN npm install --production
+
+COPY backend/ . .
+COPY backend/scripts/ ./scripts/
+
+# Se houver um passo de build para o backend (ex: TypeScript), adicione aqui.
+# Exemplo: RUN npm run build
+
+# Estágio 2: Imagem final
+FROM node:18-alpine
+
+WORKDIR /usr/src/app
+
+COPY --from=builder /usr/src/app .
+
+# Copia o entrypoint.sh
+COPY backend/entrypoint.sh .
+RUN chmod +x entrypoint.sh
+
+EXPOSE 5000
+
+CMD ["./entrypoint.sh"]

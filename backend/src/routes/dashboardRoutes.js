@@ -1,0 +1,104 @@
+const express = require('express');
+const router = express.Router();
+const { check } = require("express-validator");
+const dashboardController = require('../controllers/dashboardController');
+const { protect, authorize } = require('../middlewares/authMiddleware');
+const validate = require("../middlewares/validationMiddleware");
+
+// Todas as rotas do dashboard exigem autenticação
+router.use(protect);
+
+router.get(
+  '/summary',
+  [
+    check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
+    check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+  ],
+  validate,
+  authorize('dashboard:read'),
+  dashboardController.getSummary
+);
+router.get(
+  '/response-chart',
+  [
+    check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
+    check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+  ],
+  validate,
+  authorize('dashboard:read'),
+  dashboardController.getResponseChart
+);
+router.get(
+  '/ranking-attendants',
+  [
+    check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
+    check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+  ],
+  validate,
+  authorize('dashboard:read'),
+  dashboardController.getRanking
+);
+router.get(
+  '/nps-criteria',
+  [
+    check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
+    check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+  ],
+  validate,
+  authorize('dashboard:read'),
+  dashboardController.getNPSCritera
+);
+router.get(
+  '/recent-feedbacks',
+  [
+    check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
+    check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+  ],
+  validate,
+  authorize('dashboard:read'),
+  dashboardController.getFeedbacks
+);
+router.get(
+  '/conversion-chart',
+  [
+    check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
+    check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+  ],
+  validate,
+  authorize('dashboard:read'),
+  dashboardController.getConversionChart
+);
+router.get(
+  '/overall-results',
+  [
+    check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
+    check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+  ],
+  validate,
+  authorize('dashboard:read'),
+  dashboardController.getOverallResults
+); // Nova rota para resultados gerais
+
+router.get(
+  '/nps-trend',
+  [
+    check("period", "Período inválido. Use 'day', 'week' ou 'month'.").optional().isIn(['day', 'week', 'month']),
+  ],
+  validate,
+  authorize('dashboard:read'),
+  dashboardController.getNpsTrend
+);
+
+router.get(
+    '/wordcloud',
+    authorize('dashboard:read'),
+    dashboardController.getWordCloud
+);
+
+router.get(
+  '/attendants-performance',
+  authorize('dashboard:read'),
+  dashboardController.getAttendantsPerformance
+);
+
+module.exports = router;

@@ -7,7 +7,8 @@ COPY backend/package*.json ./
 RUN npm install --production
 
 COPY backend/ . .
-COPY backend/scripts/ ./scripts/
+COPY backend/scripts/wait-for-it.sh ./scripts/wait-for-it.sh
+RUN chmod +x ./scripts/wait-for-it.sh
 
 # Se houver um passo de build para o backend (ex: TypeScript), adicione aqui.
 # Exemplo: RUN npm run build

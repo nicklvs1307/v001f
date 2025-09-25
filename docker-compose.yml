@@ -45,7 +45,7 @@ services:
       REACT_APP_API_URL: https://apiloyalfood.towersfy.com/api
     command: >
       /bin/sh -c "
-        scripts/wait-for-it.sh db 5432 -- \ 
+        /usr/src/app/scripts/wait-for-it.sh db 5432 -- \ 
         echo 'Database is up, running migrations...' && \ 
         npx sequelize-cli db:migrate --config src/config/config.js --migrations-path migrations && \ 
         echo 'Running seeders...' && \ 

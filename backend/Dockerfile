@@ -30,7 +30,7 @@ EXPOSE 5000
 
 # Adiciona um Healthcheck para o Docker Swarm monitorar a saúde do container
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-  CMD [ "node", "-e", "require('http').get('http://localhost:5000/api/health', (res) => process.exit(res.statusCode === 200 ? 0 : 1))" ]
+  CMD [ "node", "-e", "require('http').get('http://localhost:5000/health', (res) => process.exit(res.statusCode === 200 ? 0 : 1))" ]
 
 # Comando para iniciar a aplicação (será sobrescrito no stack.yml para incluir o wait-for-it.sh)
 CMD ["node", "src/server.js"]

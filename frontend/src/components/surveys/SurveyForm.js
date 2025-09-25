@@ -1,0 +1,208 @@
+import React from 'react';
+import useSurveyForm from '../../hooks/useSurveyForm';
+import useCriterios from '../../hooks/useCriterios';
+import useAtendentes from '../../hooks/useAtendentes';
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Paper,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+  FormHelperText,
+  CircularProgress,
+  FormControlLabel,
+  Switch,
+  Grid,
+  Stack,
+} from '@mui/material';
+import { Alert } from '@mui/material';
+import { SURVEY_STATUS } from '../../constants/surveyStatus';
+import AddIcon from '@mui/icons-material/Add';
+import QuestionForm from './QuestionForm';
+import { formatDateForInput } from '../../utils/dateUtils';
+
+const SurveyForm = ({ initialData = {}, onSubmit, loading = false, error = null }) => {
+  const formActions = useSurveyForm(initialData);
+  const { survey, errors, handleChange, handleAddQuestion } = formActions;
+
+  const { criterios, loading: criteriosLoading, error: criteriosError } = useCriterios();
+  const { atendentes, loading: atendentesLoading, error: atendentesError } = useAtendentes();
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Previne o comportamento padrão do formulário
+    onSubmit(survey); // Passa os dados do estado 'survey' para a função pai
+  };
+
+  return (
+    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+      <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h6" gutterBottom>Informações Básicas da Pesquisa</Typography>
+        <TextField
+          label="Título da Pesquisa"
+          name="title"
+          value={survey.title || ''}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          required
+        />
+        <TextField
+          label="Descrição da Pesquisa"
+          name="description"
+          value={survey.description || ''}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          multiline
+          rows={3}
+        />
+      </Paper>
+
+      <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h6" gutterBottom>Configurações Adicionais</Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <FormControlLabel
+              control={<Switch checked={survey.isOpen} onChange={handleChange} name="isOpen" color="primary" />}
+              label="Pesquisa Aberta"
+            />
+            <Typography variant="caption" display="block" sx={{ ml: 4 }}>
+              Pode ser respondida por qualquer pessoa sem login.
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControlLabel
+              control={<Switch checked={survey.askForAttendant} onChange={handleChange} name="askForAttendant" color="primary" />}
+              label="Pedir Atendente"
+            />
+            <Typography variant="caption" display="block" sx={{ ml: 4 }}>
+              Permite que o respondente selecione um atendente.
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Número de Respondentes Esperados (Opcional)"
+              name="expectedRespondents"
+              type="number"
+              value={survey.expectedRespondents || ''}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              inputProps={{ min: 0 }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Data de Início (Opcional)"
+              name="startDate"
+              type="date"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={formatDateForInput(survey.startDate)}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Data de Término"
+              name="endDate"
+              type="date"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={formatDateForInput(survey.endDate)}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
+              error={!!errors.endDate}
+              helperText={errors.endDate}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Data de Vencimento (Opcional)"
+              name="dueDate"
+              type="date"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={formatDateForInput(survey.dueDate)}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="status-label">Status da Pesquisa</InputLabel>
+              <Select
+                labelId="status-label"
+                id="status"
+                name="status"
+                value={survey.status || SURVEY_STATUS.DRAFT}
+                label="Status da Pesquisa"
+                onChange={handleChange}
+              >
+                <MenuItem value={SURVEY_STATUS.DRAFT}>Rascunho</MenuItem>
+                <MenuItem value={SURVEY_STATUS.PENDING}>Pendente</MenuItem>
+                <MenuItem value={SURVEY_STATUS.ACTIVE}>Ativa</MenuItem>
+                <MenuItem value={SURVEY_STATUS.INACTIVE}>Inativa</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
+      </Paper>
+
+      <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
+        Perguntas
+      </Typography>
+
+      {criteriosError && <Alert severity="error">{criteriosError}</Alert>}
+      {atendentesError && <Alert severity="error">{atendentesError}</Alert>}
+
+      <Stack spacing={2}>
+        {survey.questions && survey.questions.map((question, qIndex) => (
+          <QuestionForm
+            key={qIndex}
+            question={question}
+            qIndex={qIndex}
+            criterios={criterios}
+            criteriosLoading={criteriosLoading}
+            formActions={formActions}
+          />
+        ))}
+      </Stack>
+
+      <Button
+        startIcon={<AddIcon />}
+        onClick={handleAddQuestion}
+        variant="outlined"
+        sx={{ mt: 2, mb: 4 }}
+      >
+        Adicionar Pergunta
+      </Button>
+
+      {error && <FormHelperText error>{error}</FormHelperText>}
+
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        fullWidth
+        disabled={loading || Object.keys(errors).length > 0}
+      >
+        {loading ? <CircularProgress size={24} /> : 'Salvar Pesquisa'}
+      </Button>
+    </Box>
+  );
+};
+
+export default SurveyForm;

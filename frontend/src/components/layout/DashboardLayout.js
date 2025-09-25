@@ -1,0 +1,318 @@
+import React, { useState, useContext, useEffect, useMemo } from 'react';
+import {
+    AppBar,
+    Toolbar,
+    IconButton,
+    Typography,
+    Drawer,
+    List,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Box,
+    CssBaseline,
+    Divider,
+    Button,
+    Collapse,
+    Menu,
+    MenuItem,
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import PeopleIcon from '@mui/icons-material/People';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import SettingsIcon from '@mui/icons-material/Settings';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import AuthContext from '../../context/AuthContext';
+import { ROLES } from '../../constants/roles';
+
+const drawerWidth = 250;
+
+const DashboardLayout = () => {
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const [openSubMenu, setOpenSubMenu] = useState({});
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { user, logout } = useContext(AuthContext);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [pageTitle, setPageTitle] = useState('Dashboard');
+
+    const handleDrawerToggle = () => {
+        setMobileOpen(!mobileOpen);
+    };
+
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
+
+    const handleSettings = () => {
+        navigate('/profile');
+        handleClose();
+    };
+
+    const handleSubMenuClick = (text) => {
+        setOpenSubMenu(prev => ({ ...prev, [text]: !prev[text] }));
+    };
+
+    const menuItems = useMemo(() => [
+        { text: 'Dashboard', icon: <DashboardIcon />, path: '/', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+        {
+            text: 'Super Admin', icon: <SettingsIcon />, roles: [ROLES.SUPER_ADMIN],
+            children: [
+                { text: 'Tenants', path: '/locatarios', roles: [ROLES.SUPER_ADMIN] },
+                { text: 'WhatsApp', path: '/config-whatsapp', roles: [ROLES.SUPER_ADMIN] },
+            ],
+        },
+        {
+            text: 'Atendentes', icon: <PeopleIcon />, roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
+            children: [
+                { text: 'Listar Atendentes', path: '/atendentes', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Painel', path: '/atendentes-dashboard', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Metas', path: '/metas-atendentes', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+            ],
+        },
+        {
+            text: 'Clientes', icon: <PeopleIcon />, roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
+            children: [
+                { text: 'Painel', path: '/clientes/dashboard', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Gestão de Clientes', path: '/clientes', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Aniversariantes', path: '/clientes/birthdays', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+            ],
+        },
+        {
+            text: 'Pesquisas', icon: <AssignmentIcon />, roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
+            children: [
+                { text: 'Listar Pesquisas', path: '/pesquisas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Criar Nova Pesquisa', path: '/pesquisas/create', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Critérios', path: '/criterios', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+            ],
+        },
+        { text: 'Resultados', icon: <BarChartIcon />, path: '/resultados', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+        { text: 'Recompensas', icon: <SettingsIcon />, path: '/recompensas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+        { text: 'Reputação', icon: <PeopleIcon />, path: '/reputacao', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+        {
+            text: 'Cupons', icon: <AssignmentIcon />, roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
+            children: [
+                { text: 'Painel', path: '/cupons/dashboard', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Gestão de Cupons', path: '/cupons', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Campanhas', path: '/cupons/campanhas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Validação', path: '/validar-cupom', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+            ],
+        },
+        {
+            text: 'Configurações', icon: <SettingsIcon />, roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
+            children: [
+                { text: 'Usuários do Sistema', path: '/usuarios', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Perfil', path: '/profile', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.GERENTE, ROLES.GARCOM] },
+                { text: 'Empresa', path: '/config', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Conectar WhatsApp', path: '/whatsapp-connect', roles: [ROLES.ADMIN] }, // NOVO ITEM DE MENU
+                { text: 'Prêmios da Roleta', path: '/premios-roleta', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+            ],
+        },
+    ], [user?.role]);
+
+    const filteredMenuItems = useMemo(() => {
+        if (!user?.role) return [];
+        return menuItems.filter(item =>
+            item.roles.includes(user.role) ||
+            (item.children && item.children.some(child => child.roles.includes(user.role)))
+        );
+    }, [menuItems, user?.role]);
+
+    useEffect(() => {
+        const currentPath = location.pathname;
+        const findTitle = (items, path) => {
+            for (const item of items) {
+                if (item.path === path) {
+                    return item.text;
+                }
+                if (item.children) {
+                    const childTitle = findTitle(item.children, path);
+                    if (childTitle) {
+                        return childTitle;
+                    }
+                }
+            }
+            return 'Dashboard';
+        };
+
+        const title = findTitle(menuItems, currentPath);
+        setPageTitle(title);
+    }, [location.pathname, menuItems]);
+
+    const drawer = (
+        <div>
+            <Box sx={{ p: 2, textAlign: 'center' }}>
+                <img src="/logo.png" alt="Logo" style={{ maxHeight: '50px', width: 'auto' }} />
+            </Box>
+            <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
+            <List>
+                {filteredMenuItems.map((item) => (
+                    <React.Fragment key={item.text}>
+                        <ListItemButton 
+                            onClick={() => item.children ? handleSubMenuClick(item.text) : navigate(item.path)}
+                            selected={!item.children && location.pathname === item.path}
+                        >
+                            <ListItemIcon>
+                                {item.icon}
+                            </ListItemIcon>
+                            <ListItemText primary={item.text} />
+                            {item.children && (openSubMenu[item.text] ? <ExpandLess /> : <ExpandMore />)}
+                        </ListItemButton>
+                        {item.children && (
+                            <Collapse in={openSubMenu[item.text]} timeout="auto" unmountOnExit>
+                                <List component="div" disablePadding>
+                                    {item.children.filter(child => child.roles.includes(user?.role)).map((child) => (
+                                        <ListItemButton 
+                                            key={child.text} 
+                                            sx={{ pl: 4 }} 
+                                            onClick={() => navigate(child.path)}
+                                            selected={location.pathname === child.path}
+                                        >
+                                            <ListItemText primary={child.text} />
+                                        </ListItemButton>
+                                    ))}
+                                </List>
+                            </Collapse>
+                        )}
+                    </React.Fragment>
+                ))}
+            </List>
+        </div>
+    );
+
+    return (
+        <Box sx={{ display: 'flex' }}>
+            <CssBaseline />
+            <AppBar
+                position="fixed"
+                sx={{
+                    width: { sm: `calc(100% - ${drawerWidth}px)` },
+                    ml: { sm: `${drawerWidth}px` },
+                    borderBottom: '1px solid #e3e6f0',
+                    boxShadow: 'none',
+                }}
+            >
+                <Toolbar sx={{ justifyContent: 'space-between' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <IconButton
+                            color="inherit"
+                            aria-label="open drawer"
+                            edge="start"
+                            onClick={handleDrawerToggle}
+                            sx={{ mr: 2, display: { sm: 'none' } }}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                        <Typography variant="h6" noWrap component="div">
+                            {pageTitle}
+                        </Typography>
+                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <IconButton color="inherit">
+                            <NotificationsIcon />
+                        </IconButton>
+                        <Button
+                            color="inherit"
+                            onClick={handleMenu}
+                            sx={{ ml: 2, textTransform: 'none' }}
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                        >
+                            {user?.profilePictureUrl ? (
+                                <img
+                                    src={user.profilePictureUrl}
+                                    alt="Profile"
+                                    style={{ width: 30, height: 30, borderRadius: '50%', marginRight: 8 }}
+                                />
+                            ) : (
+                                <AccountCircle sx={{ mr: 1 }} />
+                            )}
+                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                <Typography variant="body2" component="span">
+                                    {user?.name || 'Usuário'}
+                                </Typography>
+                                {user?.tenantName && (
+                                    <Typography variant="caption" component="span" sx={{ fontSize: '0.75rem' }}>
+                                        {user.tenantName}
+                                    </Typography>
+                                )}
+                            </Box>
+                        </Button>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={anchorEl}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                        >
+                            <MenuItem onClick={handleSettings}>Configurações</MenuItem>
+                            <MenuItem onClick={handleLogout}>Sair</MenuItem>
+                        </Menu>
+                    </Box>
+                </Toolbar>
+            </AppBar>
+            <Box
+                component="nav"
+                sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+                aria-label="mailbox folders"
+            >
+                <Drawer
+                    variant="temporary"
+                    open={mobileOpen}
+                    onClose={handleDrawerToggle}
+                    ModalProps={{
+                        keepMounted: true,
+                    }}
+                    sx={{
+                        display: { xs: 'block', sm: 'none' },
+                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                    }}
+                >
+                    {drawer}
+                </Drawer>
+                <Drawer
+                    variant="permanent"
+                    sx={{
+                        display: { xs: 'none', sm: 'block' },
+                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                    }}
+                    open
+                >
+                    {drawer}
+                </Drawer>
+            </Box>
+            <Box
+                component="main"
+                sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` }, backgroundColor: 'background.default' }}
+            >
+                <Toolbar /> 
+                <Outlet /> 
+            </Box>
+        </Box>
+    );
+};
+
+export default DashboardLayout;

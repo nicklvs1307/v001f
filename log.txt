@@ -1,20 +1,17 @@
 URL da solicitação
-https://loyalfood.towersfy.com/api/auth/login
+https://apiloyalfood.towersfy.com/auth/login
 Método da solicitação
 POST
 Código de status
-405 Method Not Allowe
+404 Not Found
 
-<html>
-<head><title>405 Not Allowed</title></head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
 <body>
-<center><h1>405 Not Allowed</h1></center>
-<hr><center>nginx/1.25.5</center>
+<pre>Cannot POST /auth/login</pre>
 </body>
 </html>
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->

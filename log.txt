@@ -1,73 +1,20 @@
-log das migrações
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
-nc: missing port number
-Postgres is unavailable - sleeping
+URL da solicitação
+https://loyalfood.towersfy.com/api/auth/login
+Método da solicitação
+POST
+Código de status
+405 Method Not Allowe
 
-
-
-log do backend
-Server.js is being executed!
-Conexão com o banco de dados estabelecida com sucesso (Sequelize).
-Server is running on port 5000
-Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
+<html>
+<head><title>405 Not Allowed</title></head>
+<body>
+<center><h1>405 Not Allowed</h1></center>
+<hr><center>nginx/1.25.5</center>
+</body>
+</html>
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->

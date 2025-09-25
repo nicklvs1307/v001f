@@ -24,11 +24,11 @@ const readSecret = (secretName) => {
 
 const config = {
   db: {
-    host: readSecret('DB_HOST'), // DB_HOST também é obrigatório
-    user: readSecret('DB_USER'),
-    password: readSecret('DB_PASSWORD'),
-    database: readSecret('DB_DATABASE'),
-    port: process.env.DB_PORT || 5432, // Porta pode ter um valor padrão
+    host: process.env.DB_HOST, // Acessar diretamente a variável de ambiente
+    user: process.env.DB_USER, // Acessar diretamente a variável de ambiente
+    password: readSecret('DB_PASSWORD'), // Usar readSecret para o segredo do arquivo
+    database: process.env.DB_DATABASE, // Acessar diretamente a variável de ambiente
+    port: process.env.DB_PORT || 5432, // Acessar diretamente a variável de ambiente com fallback
   },
   jwtSecret: readSecret('JWT_SECRET'),
   port: process.env.PORT || 3001,

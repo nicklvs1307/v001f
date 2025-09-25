@@ -22,6 +22,9 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Copia os arquivos buildados do estágio anterior
 COPY --from=build /app/build /usr/share/nginx/html
 
+# Instala o wget, necessário para o Healthcheck
+RUN apk --no-cache add wget
+
 # Expõe a porta 80
 EXPOSE 80
 

@@ -15,6 +15,12 @@ WORKDIR /usr/src/app
 # Cria um usuário não-root para segurança
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 feedeliza
+
+# Instala o netcat, necessário para o script wait-for-it.sh
+# A imagem slim não vem com netcat, então precisamos instalar manualmente.
+# Trocamos para o usuário root para instalar o pacote e depois voltamos para o usuário não-root.
+USER root
+RUN apt-get update && apt-get install -y netcat && rm -rf /var/lib/apt/lists/*
 USER feedeliza
 
 COPY --from=builder /usr/src/app .

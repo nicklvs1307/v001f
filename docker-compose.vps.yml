@@ -3,26 +3,26 @@ version: '3.8'
 # Âncora para reusar variáveis de ambiente
 x-environment: &environment
   NODE_ENV: production
-  # IMPORTANTE: Substitua 'NOME_DO_HOST_DO_SEU_POSTGRES' pelo nome do serviço do seu container Postgres
-  DB_HOST: NOME_DO_HOST_DO_SEU_POSTGRES
+  # IMPORTANTE: Substitua 'postgres' pelo nome do serviço do seu container Postgres
+  DB_HOST: postgres
   DB_PORT: 5432
-  DB_NAME: feedeliza
+  DB_NAME: loyalfood
   DB_USER: postgres
   DB_PASSWORD_FILE: /run/secrets/db_password
   JWT_SECRET_FILE: /run/secrets/jwt_secret
   JWT_EXPIRES_IN: 7d
-  FRONTEND_URL: https://feedelizapro.towersfy.com
-  BACKEND_URL: https://feedelizaapi.towersfy.com
-  REACT_APP_API_URL: https://feedelizaapi.towersfy.com/api
+  FRONTEND_URL: https://loyalfood.towersfy.com
+  BACKEND_URL: https://apiloyalfood.towersfy.com
+  REACT_APP_API_URL: https://apiloyalfood.towersfy.com/api
 
 services:
   migrations:
-    image: feedeliza-backend:latest
+    image: loyalfood-backend:latest
     environment:
       <<: *environment
     command: >
       /bin/sh -c "
-        ./scripts/wait-for-it.sh NOME_DO_HOST_DO_SEU_POSTGRES:5432 --timeout=30 -- \
+        ./scripts/wait-for-it.sh postgres:5432 --timeout=30 -- \
         echo 'Database is up, running migrations...' && \
         npx sequelize-cli db:migrate && \
         echo 'Running seeders...' && \
@@ -38,7 +38,7 @@ services:
         condition: on-failure
 
   backend:
-    image: feedeliza-backend:latest
+    image: loyalfood-backend:latest
     depends_on:
       - migrations
     environment:
@@ -56,13 +56,13 @@ services:
         condition: on-failure
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.backend.rule=Host(`feedelizaapi.towersfy.com`)"
+        - "traefik.http.routers.backend.rule=Host(`apiloyalfood.towersfy.com`)"
         - "traefik.http.routers.backend.entrypoints=websecure"
         - "traefik.http.routers.backend.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.backend.loadbalancer.server.port=5000"
 
   frontend:
-    image: feedeliza-frontend:latest
+    image: loyalfood-frontend:latest
     networks:
       - towersfy_network
     deploy:
@@ -71,7 +71,7 @@ services:
         condition: on-failure
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.frontend.rule=Host(`feedelizapro.towersfy.com`)"
+        - "traefik.http.routers.frontend.rule=Host(`loyalfood.towersfy.com`)"
         - "traefik.http.routers.frontend.entrypoints=websecure"
         - "traefik.http.routers.frontend.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.frontend.loadbalancer.server.port=80"

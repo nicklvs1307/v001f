@@ -7,6 +7,8 @@ const { Role, Permissao, RolePermissao } = require("../../models"); // Importa o
 const protect = async (req, res, next) => {
   let token;
 
+  console.log(`[Auth Middleware] Request: ${req.method} ${req.originalUrl}`); // Adicionado para depuração
+
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")

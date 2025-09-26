@@ -1,84 +1,34 @@
-PrivateRoute.js:9 [PrivateRoute] Loading: true User: null
-PrivateRoute.js:12 [PrivateRoute] Showing loading spinner...
-PrivateRoute.js:9 [PrivateRoute] Loading: false User: {userId: 'e1f5f972-de28-49fc-8672-be62c780cb3e', tenantId: null, role: 'Super Admin', name: 'Super Admin', profilePictureUrl: null, …}
-PrivateRoute.js:25 [PrivateRoute] User is authenticated, rendering Outlet.
-PrivateRoute.js:9 [PrivateRoute] Loading: false User: {userId: 'e1f5f972-de28-49fc-8672-be62c780cb3e', tenantId: null, role: 'Super Admin', name: 'Super Admin', profilePictureUrl: null, …}
-PrivateRoute.js:25 [PrivateRoute] User is authenticated, rendering Outlet.
-useUserForm.js:25  GET https://apiloyalfood.towersfy.com/roles 401 (Unauthorized)
-(anônimo) @ xhr.js:198
-xhr @ xhr.js:15
-ht @ dispatchRequest.js:51
-_request @ Axios.js:185
-request @ Axios.js:40
-xt.<computed> @ Axios.js:211
-(anônimo) @ bind.js:5
-(anônimo) @ useUserForm.js:25
-(anônimo) @ useUserForm.js:38
-rl @ react-dom.production.min.js:243
-wc @ react-dom.production.min.js:285
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-lc @ react-dom.production.min.js:272
-Vo @ react-dom.production.min.js:127
-(anônimo) @ react-dom.production.min.js:266
-useUserForm.js:26  GET https://apiloyalfood.towersfy.com/tenants 401 (Unauthorized)
-(anônimo) @ xhr.js:198
-xhr @ xhr.js:15
-ht @ dispatchRequest.js:51
-_request @ Axios.js:185
-request @ Axios.js:40
-xt.<computed> @ Axios.js:211
-(anônimo) @ bind.js:5
-(anônimo) @ useUserForm.js:26
-(anônimo) @ useUserForm.js:38
-rl @ react-dom.production.min.js:243
-wc @ react-dom.production.min.js:285
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-lc @ react-dom.production.min.js:272
-Vo @ react-dom.production.min.js:127
-(anônimo) @ react-dom.production.min.js:266
-
-fetch("https://apiloyalfood.towersfy.com/roles", {
-  "headers": {
-    "accept": "application/json, text/plain, */*",
-    "accept-language": "pt-PT,pt;q=0.9,en-US;q=0.8,en;q=0.7",
-    "priority": "u=1, i",
-    "sec-ch-ua": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"",
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": "\"Windows\"",
-    "sec-fetch-dest": "empty",
-    "sec-fetch-mode": "cors",
-    "sec-fetch-site": "same-site"
-  },
-  "referrer": "https://loyalfood.towersfy.com/usuarios",
-  "body": null,
-  "method": "GET",
-  "mode": "cors",
-  "credentials": "omit"
-});
-
-{"status":"error","code":"HTTP_401","message":"Nenhum token fornecido. Acesso não autorizado.","details":"Error: Nenhum token fornecido. Acesso não autorizado.\n    at protect (/usr/src/app/src/middlewares/authMiddleware.js:32:11)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/usr/src/app/node_modules/express/lib/router/index.js:328:13)\n    at /usr/src/app/node_modules/express/lib/router/index.js:286:9\n    at Function.process_params (/usr/src/app/node_modules/express/lib/router/index.js:346:12)\n    at next (/usr/src/app/node_modules/express/lib/router/index.js:280:10)\n    at Function.handle (/usr/src/app/node_modules/express/lib/router/index.js:175:3)\n    at router (/usr/src/app/node_modules/express/lib/router/index.js:47:12)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/usr/src/app/node_modules/express/lib/router/index.js:328:13)"}
-
-fetch("https://apiloyalfood.towersfy.com/tenants", {
-  "headers": {
-    "accept": "application/json, text/plain, */*",
-    "accept-language": "pt-PT,pt;q=0.9,en-US;q=0.8,en;q=0.7",
-    "priority": "u=1, i",
-    "sec-ch-ua": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"",
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": "\"Windows\"",
-    "sec-fetch-dest": "empty",
-    "sec-fetch-mode": "cors",
-    "sec-fetch-site": "same-site"
-  },
-  "referrer": "https://loyalfood.towersfy.com/usuarios",
-  "body": null,
-  "method": "GET",
-  "mode": "cors",
-  "credentials": "omit"
-});
-{"status":"error","code":"HTTP_401","message":"Nenhum token fornecido. Acesso não autorizado.","details":"Error: Nenhum token fornecido. Acesso não autorizado.\n    at protect (/usr/src/app/src/middlewares/authMiddleware.js:32:11)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/usr/src/app/node_modules/express/lib/router/index.js:328:13)\n    at /usr/src/app/node_modules/express/lib/router/index.js:286:9\n    at Function.process_params (/usr/src/app/node_modules/express/lib/router/index.js:346:12)\n    at next (/usr/src/app/node_modules/express/lib/router/index.js:280:10)\n    at Function.handle (/usr/src/app/node_modules/express/lib/router/index.js:175:3)\n    at router (/usr/src/app/node_modules/express/lib/router/index.js:47:12)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/usr/src/app/node_modules/express/lib/router/index.js:328:13)"}
-
-
-
+Postgres is up - executing command
+Server.js is being executed!
+Conexão com o banco de dados estabelecida com sucesso (Sequelize).
+Server is running on port 5000
+Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
+[Auth Middleware] Request: POST /auth/verify-token
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '27dda527-dffd-4e5b-9b81-dd63b68dc54a';
+[Auth Middleware] Request: GET /users
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '27dda527-dffd-4e5b-9b81-dd63b68dc54a';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+[Authorize Debug] User Role: Admin, Required: users:read
+[Authorize Debug] Role ID: 503382dd-45c3-47e7-8c92-6ce6ab007a5e, Module: users, Action: read
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'users' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = '503382dd-45c3-47e7-8c92-6ce6ab007a5e';
+[Authorize Debug] Has Permission Result: true
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."name", "Usuario"."email", "Usuario"."roleId", "Usuario"."profilePictureUrl", "role"."id" AS "role.id", "role"."name" AS "role.name" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" WHERE "Usuario"."tenantId" = '27dda527-dffd-4e5b-9b81-dd63b68dc54a' ORDER BY "Usuario"."name" ASC;
+[Auth Middleware] Request: GET /roles
+/usr/src/app/src/middlewares/authMiddleware.js:44
+    throw new ApiError(401, "Nenhum token fornecido. Acesso não autorizado.");
+          ^
+ApiError: Nenhum token fornecido. Acesso não autorizado.
+    at protect (/usr/src/app/src/middlewares/authMiddleware.js:44:11)
+    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/usr/src/app/node_modules/express/lib/router/index.js:328:13)
+    at /usr/src/app/node_modules/express/lib/router/index.js:286:9
+    at Function.process_params (/usr/src/app/node_modules/express/lib/router/index.js:346:12)
+    at next (/usr/src/app/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/usr/src/app/node_modules/express/lib/router/index.js:175:3)
+    at router (/usr/src/app/node_modules/express/lib/router/index.js:47:12)
+    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/usr/src/app/node_modules/express/lib/router/index.js:328:13) {
+  statusCode: 401,
+  errorCode: null
+}
+Node.js v18.20.8

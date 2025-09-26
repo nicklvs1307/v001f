@@ -5,8 +5,6 @@ const { Role, Permissao, RolePermissao } = require("../../models"); // Importa o
 
 // Middleware para verificar o token e autenticar o usuário
 const protect = async (req, res, next) => {
-  let token;
-
   console.log(`[Auth Middleware] Request: ${req.method} ${req.originalUrl}`); // Adicionado para depuração
 
   if (
@@ -15,7 +13,7 @@ const protect = async (req, res, next) => {
   ) {
     try {
       // Extrai o token do cabeçalho
-      token = req.headers.authorization.split(" ")[1];
+      const token = req.headers.authorization.split(" ")[1];
 
       // Verifica o token
       const decoded = jwt.verify(token, config.jwtSecret);
@@ -38,9 +36,8 @@ const protect = async (req, res, next) => {
       console.error(error);
       throw new ApiError(401, "Token inválido ou expirado. Acesso não autorizado.");
     }
-  }
-
-  if (!token) {
+  } else {
+    // Se não houver token no cabeçalho, lança o erro
     throw new ApiError(401, "Nenhum token fornecido. Acesso não autorizado.");
   }
 };

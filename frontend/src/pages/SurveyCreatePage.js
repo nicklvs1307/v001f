@@ -22,7 +22,15 @@ const SurveyCreatePage = () => {
       setLoading(true);
       surveyService.getSurveyById(id)
         .then(survey => {
-          setInitialData(survey);
+          // Garante que questions[...].options seja sempre um array para evitar erros de validação no backend
+          const cleanedSurvey = {
+            ...survey,
+            questions: survey.questions.map(q => ({
+              ...q,
+              options: Array.isArray(q.options) ? q.options : []
+            }))
+          };
+          setInitialData(cleanedSurvey);
           setFormStep('fillForm');
         })
         .catch(err => setError(err.message || 'Erro ao carregar pesquisa para edição.'))

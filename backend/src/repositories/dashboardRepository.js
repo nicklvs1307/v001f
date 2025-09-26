@@ -61,9 +61,10 @@ const dashboardRepository = {
 
         const totalResponses = await Resposta.count({ where: whereClause });
         const totalUsers = await Client.count({ where: whereClause });
-        const totalTenants = tenantId ? 1 : await Tenant.count();
         const couponsGenerated = await Cupom.count({ where: { ...whereClause, createdAt: dateFilter } });
+        console.log('Cupons Gerados:', couponsGenerated);
         const couponsUsed = await Cupom.count({ where: { ...whereClause, status: 'used', updatedAt: dateFilter } });
+        console.log('Cupons Utilizados:', couponsUsed);
 
         return {
             npsScore: parseFloat(npsScore.toFixed(1)),
@@ -695,6 +696,31 @@ const dashboardRepository = {
         }
 
         return attendantsWithPerformance;
+    },
+    getBirthdaysOfMonth: async (tenantId = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
+
+        const birthdays = await Client.findAll({
+            where: {
+                ...whereClause,
+                birthDate: {
+                    [Op.ne]: null,
+                },
+                [Op.and]: [
+                    Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('birthDate')), currentMonth),
+                ],
+            },
+            attributes: ['id', 'name', 'birthDate'],
+            order: [[Sequelize.fn('DAY', Sequelize.col('birthDate')), 'ASC']],
+        });
+
+        return birthdays.map(client => ({
+            id: client.id,
+            name: client.name,
+            birthDate: client.birthDate,
+            day: new Date(client.birthDate).getDate(),
+        }));
     },
 };
 

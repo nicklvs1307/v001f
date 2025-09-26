@@ -83,7 +83,6 @@ const dashboardRepository = {
             couponsUsedConversion: couponsGenerated > 0 ? parseFloat(((couponsUsed / couponsGenerated) * 100).toFixed(2)) : 0,
             totalResponses,
             totalUsers,
-            totalTenants,
         };
     },
 

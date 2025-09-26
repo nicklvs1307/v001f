@@ -1,26 +1,28 @@
-require('dotenv').config({ path: require('path').resolve(__dirname, '../../.env') });
+const config = require('./index'); // Importar o objeto de configuração centralizado
 
 module.exports = {
-    "password": process.env.DB_PASSWORD,
-    "database": process.env.DB_DATABASE,
-    "host": process.env.DB_HOST,
-    "port": process.env.DB_PORT,
+  "development": {
+    "username": config.db.user,
+    "password": config.db.password,
+    "database": config.db.database,
+    "host": config.db.host,
+    "port": config.db.port,
     "dialect": "postgres"
   },
   "test": {
-    "username": process.env.DB_USER,
-    "password": process.env.DB_PASSWORD || (process.env.DB_PASSWORD_FILE ? require('fs').readFileSync(process.env.DB_PASSWORD_FILE, 'utf8').trim() : null),
-    "database": process.env.DB_DATABASE,
-    "host": process.env.DB_HOST,
-    "port": process.env.DB_PORT,
+    "username": config.db.user,
+    "password": config.db.password,
+    "database": config.db.database,
+    "host": config.db.host,
+    "port": config.db.port,
     "dialect": "postgres"
   },
   "production": {
-    "username": process.env.DB_USER,
-    "password": process.env.DB_PASSWORD || (process.env.DB_PASSWORD_FILE ? require('fs').readFileSync(process.env.DB_PASSWORD_FILE, 'utf8').trim() : null),
-    "database": process.env.DB_DATABASE,
-    "host": process.env.DB_HOST,
-    "port": process.env.DB_PORT,
+    "username": config.db.user,
+    "password": config.db.password,
+    "database": config.db.database,
+    "host": config.db.host,
+    "port": config.db.port,
     "dialect": "postgres",
     "dialectOptions": {
       "ssl": false

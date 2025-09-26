@@ -323,7 +323,7 @@ const PublicSurveyPage = () => {
                             boxShadow: '0 5px 15px rgba(0, 0, 0, 0.2)', border: '5px solid rgba(255, 255, 255, 0.3)'
                         }}>
                             {logoUrl ? (
-                                <img src={logoUrl} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                                <img src={`${process.env.REACT_APP_API_URL}${logoUrl}`} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
                             ) : (
                                 <Typography sx={{ fontSize: 24, fontWeight: 'bold', color: theme.palette.primary.main }}>
                                     LOGO

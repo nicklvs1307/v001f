@@ -1,12 +1,12 @@
 import { createTheme } from '@mui/material/styles';
 
-const theme = createTheme({
+const getDynamicTheme = (primaryColor = '#4e73df', secondaryColor = '#6f42c1') => createTheme({
   palette: {
     primary: {
-      main: '#4e73df', // --primary
+      main: primaryColor,
     },
     secondary: {
-      main: '#6f42c1', // --secondary
+      main: secondaryColor,
     },
     success: {
       main: '#1cc88a', // --success
@@ -139,4 +139,4 @@ const theme = createTheme({
   },
 });
 
-export default theme;
+export default getDynamicTheme;

@@ -21,6 +21,16 @@ const protect = (req, res, next) => {
       // Anexa os dados do usuário decodificados à requisição para uso posterior
       req.user = decoded;
 
+      // Se o usuário tiver um tenantId, busca as cores do tenant e anexa ao req.user
+      if (req.user.tenantId) {
+        const { Tenant } = require("../../models"); // Importa o modelo Tenant
+        const tenant = await Tenant.findByPk(req.user.tenantId);
+        if (tenant) {
+          req.user.primaryColor = tenant.primaryColor;
+          req.user.secondaryColor = tenant.secondaryColor;
+        }
+      }
+
       next();
     } catch (error) {
       console.error(error);

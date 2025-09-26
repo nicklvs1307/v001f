@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 import { Star, StarBorder } from '@mui/icons-material';
 import publicSurveyService from '../services/publicSurveyService';
+import { useTheme } from '@mui/material/styles'; // Importar useTheme
 
 // Função utilitária para validar o formato UUID
 const isValidUUID = (uuid) => {
@@ -30,9 +31,9 @@ const isValidUUID = (uuid) => {
 const PublicSurveyPage = () => {
     const { tenantId, pesquisaId } = useParams();
     const navigate = useNavigate();
+    const theme = useTheme(); // Usar o hook useTheme
 
     const [survey, setSurvey] = useState(null);
-    const [tenant, setTenant] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -41,6 +42,7 @@ const PublicSurveyPage = () => {
     const [atendentes, setAtendentes] = useState([]);
     const [selectedAtendente, setSelectedAtendente] = useState('');
     const [localTenantId, setLocalTenantId] = useState(null);
+    const [logoUrl, setLogoUrl] = useState(null); // Adicionar estado para logoUrl
 
     useEffect(() => {
         const fetchSurveyAndAtendentes = async () => {
@@ -60,11 +62,7 @@ const PublicSurveyPage = () => {
                 const data = await publicSurveyService.getPublicSurveyById(pesquisaId);
                 setSurvey(data);
                 setLocalTenantId(data.tenantId); // Armazenar o tenantId aqui
-                setTenant({
-                    logoUrl: data.restaurantLogoUrl,
-                    primaryColor: data.primaryColor,
-                    secondaryColor: data.secondaryColor
-                });
+                setLogoUrl(data.restaurantLogoUrl); // Armazenar a logoUrl aqui
 
                 if (data.askForAttendant) {
                     const atendentesList = await publicSurveyService.getPublicAtendentes(data.tenantId);
@@ -286,7 +284,7 @@ const PublicSurveyPage = () => {
     }
 
     const headerStyle = {
-        background: `linear-gradient(135deg, ${tenant?.secondaryColor || '#2575fc'} 0%, ${tenant?.primaryColor || '#6a11cb'} 100%)`,
+        background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
         padding: '30px',
         textAlign: 'center',
         position: 'relative',
@@ -294,7 +292,7 @@ const PublicSurveyPage = () => {
     };
 
     const buttonNextStyle = {
-        background: `linear-gradient(135deg, ${tenant?.secondaryColor || '#2575fc'} 0%, ${tenant?.primaryColor || '#6a11cb'} 100%)`,
+        background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
         color: 'white',
         borderRadius: '50px',
         padding: '12px 25px',
@@ -307,7 +305,7 @@ const PublicSurveyPage = () => {
 
     return (
         <Box sx={{
-            background: `linear-gradient(135deg, ${tenant?.primaryColor || '#6a11cb'} 0%, ${tenant?.secondaryColor || '#2575fc'} 100%)`,
+            background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
             minHeight: '100vh',
             display: 'flex',
             justifyContent: 'center',
@@ -324,10 +322,10 @@ const PublicSurveyPage = () => {
                             margin: '0 auto 15px', display: 'flex', justifyContent: 'center', alignItems: 'center',
                             boxShadow: '0 5px 15px rgba(0, 0, 0, 0.2)', border: '5px solid rgba(255, 255, 255, 0.3)'
                         }}>
-                            {tenant?.logoUrl ? (
-                                <img src={tenant.logoUrl} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                            {logoUrl ? (
+                                <img src={logoUrl} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
                             ) : (
-                                <Typography sx={{ fontSize: 24, fontWeight: 'bold', color: tenant?.primaryColor || '#2575fc' }}>
+                                <Typography sx={{ fontSize: 24, fontWeight: 'bold', color: theme.palette.primary.main }}>
                                     LOGO
                                 </Typography>
                             )}
@@ -343,7 +341,7 @@ const PublicSurveyPage = () => {
                                     <Box sx={{
                                         height: '100%',
                                         width: `${progress}%`,
-                                        background: `linear-gradient(135deg, ${tenant?.secondaryColor || '#2575fc'} 0%, ${tenant?.primaryColor || '#6a11cb'} 100%)`,
+                                        background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
                                         transition: 'width 0.5s ease'
                                     }} />
                                 </Box>

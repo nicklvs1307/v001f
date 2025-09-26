@@ -38,7 +38,7 @@ router
 router.post(
   '/validate',
   [
-    check("code", "Código do cupom é obrigatório").not().isEmpty(),
+    check("codigo", "Código do cupom é obrigatório").not().isEmpty(),
   ],
   validate,
   authorize('cupons:validate'),

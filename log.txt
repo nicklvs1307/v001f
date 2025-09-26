@@ -1,4 +1,4 @@
-fetch("https://loyalfood.towersfy.com/api/roleta/spin", {
+fetch("https://loyalfood.towersfy.com/api/cupons/validate", {
   "headers": {
     "accept": "application/json, text/plain, */*",
     "accept-language": "pt-PT,pt;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -12,11 +12,26 @@ fetch("https://loyalfood.towersfy.com/api/roleta/spin", {
     "sec-fetch-mode": "cors",
     "sec-fetch-site": "same-origin"
   },
-  "referrer": "https://loyalfood.towersfy.com/roleta/27dda527-dffd-4e5b-9b81-dd63b68dc54a/7010ad9a-7d19-4533-b8d4-b79d27bda867/0d4589bc-87e7-420b-ac60-b90119734c58",
-  "body": "{\"clientId\":\"0d4589bc-87e7-420b-ac60-b90119734c58\"}",
+  "referrer": "https://loyalfood.towersfy.com/validar-cupom",
+  "body": "{\"codigo\":\"ENDEREÇO2168\"}",
   "method": "POST",
   "mode": "cors",
   "credentials": "include"
 });
 
-{"status":"error","code":"HTTP_500","message":"cupomRepository.create is not a function","details":"TypeError: cupomRepository.create is not a function\n    at /usr/src/app/src/controllers/roletaController.js:92:43\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"}
+{"status":"error","code":[{"type":"field","msg":"Código do cupom é obrigatório","path":"code","location":"body"}],"message":"Erros de validação","details":"Error: Erros de validação\n    at validate (/usr/src/app/src/middlewares/validationMiddleware.js:7:11)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at middleware (/usr/src/app/node_modules/express-validator/lib/middlewares/check.js:16:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"}
+
+
+{
+    "status": "error",
+    "code": [
+        {
+            "type": "field",
+            "msg": "Código do cupom é obrigatório",
+            "path": "code",
+            "location": "body"
+        }
+    ],
+    "message": "Erros de validação",
+    "details": "Error: Erros de validação\n    at validate (/usr/src/app/src/middlewares/validationMiddleware.js:7:11)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at middleware (/usr/src/app/node_modules/express-validator/lib/middlewares/check.js:16:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
+}

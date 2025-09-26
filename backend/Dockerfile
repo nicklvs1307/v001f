@@ -25,6 +25,10 @@ USER feedeliza
 
 COPY --from=builder /usr/src/app .
 
+# Cria o diretório de uploads e define as permissões
+RUN mkdir -p uploads/logos
+RUN chown -R feedeliza:nodejs uploads
+
 # Expõe a porta que a aplicação vai usar
 EXPOSE 5000
 

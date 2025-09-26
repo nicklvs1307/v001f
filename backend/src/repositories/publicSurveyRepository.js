@@ -26,7 +26,7 @@ const getPublicSurveyById = async (id) => {
     }, {
       model: Tenant, // Incluir o modelo Tenant
       as: 'tenant', // Usar 'as' se houver uma associação definida no modelo Pesquisa
-      attributes: ['name', 'logoUrl', 'description'], // Selecionar os atributos desejados do Tenant
+      attributes: ['name', 'logoUrl', 'description', 'primaryColor', 'secondaryColor'], // Selecionar os atributos desejados do Tenant
       required: false, // Adicionar para fazer um LEFT JOIN
     }],
   });
@@ -50,6 +50,8 @@ const getPublicSurveyById = async (id) => {
     restaurantName: survey.tenant ? survey.tenant.name : null,
     restaurantLogoUrl: survey.tenant ? survey.tenant.logoUrl : null,
     restaurantDescription: survey.tenant ? survey.tenant.description : null,
+    primaryColor: survey.tenant ? survey.tenant.primaryColor : null,
+    secondaryColor: survey.tenant ? survey.tenant.secondaryColor : null,
     questions: survey.perguntas.map(question => {
       let parsedOptions = question.options;
       if (typeof question.options === 'string') {

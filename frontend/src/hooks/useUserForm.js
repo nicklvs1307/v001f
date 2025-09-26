@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useContext } from 'react';
 import AuthContext from '../context/AuthContext';
-import api from '../services/api';
+import api from '../services/apiAuthenticated';
 
 const useUserForm = (initialData) => {
     const { user: currentUser } = useContext(AuthContext);

@@ -2,19 +2,19 @@ const { Sequelize } = require("sequelize");
 const config = require("./config"); // Importa a configuração consolidada
 
 // Validação para garantir que a configuração do banco de dados foi carregada
-if (!config.database || !config.database.database) {
+if (!config.db || !config.db.database) {
   console.error("Erro Crítico: A configuração do banco de dados não foi carregada corretamente.");
   console.error("Verifique seu arquivo .env e as configurações em src/config/index.js");
   process.exit(1);
 }
 
 const sequelize = new Sequelize(
-  config.database.database,
-  config.database.user, // Corrigido de 'username' para 'user'
-  config.database.password,
+  config.db.database,
+  config.db.user, // Corrigido de 'username' para 'user'
+  config.db.password,
   {
-    host: config.database.host,
-    port: config.database.port,
+    host: config.db.host,
+    port: config.db.port,
     dialect: 'postgres', // Definido explicitamente
     logging: false, // Desabilitar logging por padrão para não poluir o console
   }

@@ -31,6 +31,7 @@ const config = {
     port: process.env.DB_PORT || 5432, // Acessar diretamente a variável de ambiente com fallback
   },
   jwtSecret: readSecret('JWT_SECRET'),
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   port: process.env.PORT || 3001,
   googleAuth: {
     clientId: process.env.GOOGLE_CLIENT_ID,

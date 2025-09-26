@@ -77,7 +77,7 @@ exports.login = asyncHandler(async (req, res) => {
     tenantName: user.tenant ? user.tenant.name : null, // Adicionar o nome do tenant
   };
 
-  const token = jwt.sign(payload, config.jwtSecret, { expiresIn: "1h" });
+  const token = jwt.sign(payload, config.jwtSecret, { expiresIn: config.jwtExpiresIn });
 
   res.json({
     message: "Login bem-sucedido!",

@@ -1,21 +1,28 @@
-fetch("https://loyalfood.towersfy.com/api/dashboard/nps-trend?tenantId=27dda527-dffd-4e5b-9b81-dd63b68dc54a&period=day", {
-  "headers": {
-    "accept": "application/json, text/plain, */*",
-    "accept-language": "pt-PT,pt;q=0.9,en-US;q=0.8,en;q=0.7",
-    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMGFhMDI4MC1mNWQ2LTQ4MTgtYTNjNS1iYTczMzhiYTM2YzYiLCJ0ZW5hbnRJZCI6IjI3ZGRhNTI3LWRmZmQtNGU1Yi05YjgxLWRkNjNiNjhkYzU0YSIsInJvbGUiOiJBZG1pbiIsIm5hbWUiOiJBZG1pbiBkYSBFbXByZXNhIiwicHJvZmlsZVBpY3R1cmVVcmwiOm51bGwsInRlbmFudE5hbWUiOiJFbXByZXNhIGRlIEV4ZW1wbG8iLCJpYXQiOjE3NTg4OTk5MjAsImV4cCI6MTc1OTUwNDcyMH0.kM7bUrzv4PaDYE9xESCfC9JSasVkJtktNjI4s-nx2nA",
-    "priority": "u=1, i",
-    "sec-ch-ua": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"",
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": "\"Windows\"",
-    "sec-fetch-dest": "empty",
-    "sec-fetch-mode": "cors",
-    "sec-fetch-site": "same-origin"
-  },
-  "referrer": "https://loyalfood.towersfy.com/resultados",
-  "body": null,
-  "method": "GET",
-  "mode": "cors",
-  "credentials": "include"
-});
-
-{"status":"error","code":"HTTP_500","message":"column reference \"createdAt\" is ambiguous","details":"Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)\n    at async Resposta.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)\n    at async Object.getNpsTrendData (/usr/src/app/src/repositories/dashboardRepository.js:558:27)\n    at async /usr/src/app/src/controllers/dashboardController.js:57:27"}
+ => ERROR [build 6/6] RUN npm run build                                                                                                       146.1s
+------
+ > [build 6/6] RUN npm run build:
+0.853
+0.853 > frontend@0.1.0 build
+0.853 > react-scripts build
+0.853
+4.459 Creating an optimized production build...
+145.7 Failed to compile.
+145.7
+145.7 [eslint]
+145.7 src/pages/SurveysPage.js
+145.7   Line 409:26:  'qrCodeError' is not defined  no-undef
+145.7   Line 409:66:  'qrCodeError' is not defined  no-undef
+145.7
+145.7 Search for the keywords to learn more about each error.
+145.7
+145.7
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

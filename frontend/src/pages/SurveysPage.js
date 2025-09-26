@@ -406,7 +406,6 @@ const SurveyListPage = () => {
                     <DialogTitle>QR Code da Pesquisa</DialogTitle>
                     <DialogContent sx={{ textAlign: 'center', p: 3 }}>
                         {qrCodeLoading && <CircularProgress />}
-                        {qrCodeError && <Alert severity="error">{qrCodeError}</Alert>}
                         {qrCodeDataUrl && (
                             <Box>
                                 <img src={qrCodeDataUrl} alt="QR Code da Pesquisa" style={{ maxWidth: '250px', height: 'auto' }} />

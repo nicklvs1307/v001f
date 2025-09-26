@@ -89,7 +89,7 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
     status: 'active',
   };
 
-  const novoCupom = await cupomRepository.create(cupomData);
+  const novoCupom = await cupomRepository.createCupom(cupomData);
 
   res.status(200).json({
     message: 'Parabéns! Você ganhou um prêmio!',

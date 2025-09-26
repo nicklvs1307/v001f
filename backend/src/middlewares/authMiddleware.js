@@ -4,7 +4,7 @@ const ApiError = require("../errors/ApiError"); // Importar ApiError
 const { Role, Permissao, RolePermissao } = require("../../models"); // Importa os modelos do Sequelize
 
 // Middleware para verificar o token e autenticar o usuário
-const protect = (req, res, next) => {
+const protect = async (req, res, next) => {
   let token;
 
   if (

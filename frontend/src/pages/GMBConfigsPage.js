@@ -160,7 +160,7 @@ const ConfigPage = () => {
                   <Typography variant="h6" gutterBottom>Logo do Restaurante</Typography>
                   <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
                     <Avatar
-                      src={config.logoUrl ? `http://localhost:3001${config.logoUrl}` : '/placeholder-logo.png'} // Ajuste a URL base conforme seu backend
+                      src={config.logoUrl ? `${process.env.REACT_APP_API_URL}${config.logoUrl}` : '/placeholder-logo.png'}
                       alt="Logo do Restaurante"
                       sx={{ width: 120, height: 120, mb: 2, border: '1px solid #ccc' }}
                       variant="rounded"

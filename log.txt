@@ -1,40 +1,160 @@
- => ERROR [build 6/6] RUN npm run build                                                                                                       146.2s
-------
- > [build 6/6] RUN npm run build:
-0.846
-0.846 > frontend@0.1.0 build
-0.846 > react-scripts build
-0.846
-4.266 Creating an optimized production build...
-145.8 Failed to compile.
-145.8
-145.8 [eslint]
-145.8 src/pages/RoulettePage.js
-145.8   Line 16:7:   'loading' is not defined                  no-undef
-145.8   Line 29:67:  'navigate' is not defined                 no-undef
-145.8   Line 34:7:   'isLoadingItems' is not defined           no-undef
-145.8   Line 43:7:   'items' is not defined                    no-undef
-145.8   Line 76:12:  'config' is not defined                   no-undef
-145.8   Line 79:12:  'config' is not defined                   no-undef
-145.8   Line 84:18:  'items' is not defined                    no-undef
-145.8   Line 85:24:  'winningItem' is not defined              no-undef
-145.8   Line 86:25:  'winningIndex' is not defined             no-undef
-145.8   Line 87:32:  'handleAnimationComplete' is not defined  no-undef
-145.8   Line 94:20:  'handleSpin' is not defined               no-undef
-145.8   Line 95:21:  'spinning' is not defined                 no-undef
-145.8   Line 95:33:  'winningIndex' is not defined             no-undef
-145.8   Line 98:12:  'spinning' is not defined                 no-undef
-145.8
-145.8 Search for the keywords to learn more about each error.
-145.8
-145.8
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+URL da solicitação
+http://localhost:3001/uploads/logos/3e1caff4-dadf-4ad1-ab91-e7ed12ccf699-1758888688064.png
+Política do referenciador
+no-referrer-when-downgrade
+
+PrivateRoute.js:9 [PrivateRoute] Loading: true User: null
+PrivateRoute.js:12 [PrivateRoute] Showing loading spinner...
+PrivateRoute.js:9 [PrivateRoute] Loading: false User: {userId: '7f84114b-78ad-47c8-bdae-bb92487a5e75', tenantId: '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699', role: 'Admin', name: 'Rafael', profilePictureUrl: null, …}
+PrivateRoute.js:25 [PrivateRoute] User is authenticated, rendering Outlet.
+PrivateRoute.js:9 [PrivateRoute] Loading: false User: {userId: '7f84114b-78ad-47c8-bdae-bb92487a5e75', tenantId: '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699', role: 'Admin', name: 'Rafael', profilePictureUrl: null, …}
+PrivateRoute.js:25 [PrivateRoute] User is authenticated, rendering Outlet.
+config:1 Mixed Content: The page at 'https://loyalfood.towersfy.com/config' was loaded over HTTPS, but requested an insecure element 'http://localhost:3001/uploads/logos/3e1caff4-dadf-4ad1-ab91-e7ed12ccf699-1758888688064.png'. This request was automatically upgraded to HTTPS, For more information see https://blog.chromium.org/2019/10/no-more-mixed-messages-about-https.html
+Avatar.js:134 Mixed Content: The page at 'https://loyalfood.towersfy.com/config' was loaded over HTTPS, but requested an insecure element 'http://localhost:3001/uploads/logos/3e1caff4-dadf-4ad1-ab91-e7ed12ccf699-1758888688064.png'. This request was automatically upgraded to HTTPS, For more information see https://blog.chromium.org/2019/10/no-more-mixed-messages-about-https.html
+(anônimo) @ Avatar.js:134
+rl @ react-dom.production.min.js:243
+wc @ react-dom.production.min.js:285
+(anônimo) @ react-dom.production.min.js:281
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+localhost:3001/uploads/logos/3e1caff4-dadf-4ad1-ab91-e7ed12ccf699-1758888688064.png:1  GET http://localhost:3001/uploads/logos/3e1caff4-dadf-4ad1-ab91-e7ed12ccf699-1758888688064.png net::ERR_CONNECTION_REFUSED
+Image
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+
+
+
+URL da solicitação
+https://loyalfood.towersfy.com/uploads/logos/27dda527-dffd-4e5b-9b81-dd63b68dc54a-1758886840913.png
+Método da solicitação
+GET
+Código de status
+404 Not Found
+Endereço remoto
+95.217.16.187:443
+
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx/1.25.5</center>
+</body>
+</html>
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+
+27dda527-dffd-4e5b-9b81-dd63b68dc54a-1758886840913.png:1  GET https://loyalfood.towersfy.com/uploads/logos/27dda527-dffd-4e5b-9b81-dd63b68dc54a-1758886840913.png 404 (Not Found)
+Image
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+
+
+Postgres is up - executing command
+Server.js is being executed!
+Conexão com o banco de dados estabelecida com sucesso (Sequelize).
+Server is running on port 5000
+Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
+[Auth Middleware] Request: POST /auth/verify-token
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699';
+Login request body: { email: 'rafael@towersfy.com', password: 'Rafael@r0ma' }
+Executing (default): SELECT "Usuario"."id", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."tenantId", "Usuario"."roleId", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."email" = 'rafael@towersfy.com';
+Executing (default): SELECT "name" FROM "roles" AS "Role" WHERE "Role"."id" = '503382dd-45c3-47e7-8c92-6ce6ab007a5e';
+[Auth Middleware] Request: GET /dashboard/summary
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699';
+[Auth Middleware] Request: POST /auth/verify-token
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+[Auth Middleware] Request: GET /dashboard/overall-results
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699';
+[Authorize Debug] User Role: Admin, Required: dashboard:read
+[Authorize Debug] Role ID: 503382dd-45c3-47e7-8c92-6ce6ab007a5e, Module: dashboard, Action: read
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = '503382dd-45c3-47e7-8c92-6ce6ab007a5e';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+[Authorize Debug] Has Permission Result: true
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699' AND "Resposta"."ratingValue" IS NOT NULL;
+[Authorize Debug] User Role: Admin, Required: dashboard:read
+[Authorize Debug] Role ID: 503382dd-45c3-47e7-8c92-6ce6ab007a5e, Module: dashboard, Action: read
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = '503382dd-45c3-47e7-8c92-6ce6ab007a5e';
+Executing (default): SELECT count(*) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699';
+[Authorize Debug] Has Permission Result: true
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId", "pergunta->criterio"."id" AS "pergunta.criterio.id", "pergunta->criterio"."name" AS "pergunta.criterio.name", "client"."id" AS "client.id", "client"."birthDate" AS "client.birthDate", "atendente"."id" AS "atendente.id", "atendente"."name" AS "atendente.name" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" LEFT OUTER JOIN "criterios" AS "pergunta->criterio" ON "pergunta"."criterioId" = "pergunta->criterio"."id" LEFT OUTER JOIN "clients" AS "client" ON "Resposta"."respondentSessionId" = "client"."respondentSessionId" LEFT OUTER JOIN "atendentes" AS "atendente" ON "Resposta"."atendenteId" = "atendente"."id" WHERE "Resposta"."tenantId" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699';
+Executing (default): SELECT date_trunc('day', "createdAt") AS "date", COUNT("id") AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699' GROUP BY date_trunc('day', "createdAt") ORDER BY date_trunc('day', "createdAt") ASC;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699' AND "Cupom"."createdAt" = '2025-09-26 12:09:53.882 +00:00';
+Executing (default): SELECT "Resposta"."id", "Resposta"."createdAt", "Resposta"."textValue", "Resposta"."ratingValue", "Resposta"."respondentSessionId", "client"."id" AS "client.id", "client"."name" AS "client.name" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "clients" AS "client" ON "Resposta"."respondentSessionId" = "client"."respondentSessionId" WHERE "Resposta"."tenantId" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699' AND "Resposta"."textValue" != '' ORDER BY "Resposta"."createdAt" DESC LIMIT 7;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699' AND "Cupom"."status" = 'used' AND "Cupom"."updatedAt" = '2025-09-26 12:09:53.897 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699' AND "Cupom"."createdAt" = '2025-09-26 12:09:53.914 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699' AND "Cupom"."status" = 'used' AND "Cupom"."updatedAt" = '2025-09-26 12:09:53.918 +00:00';
+[Auth Middleware] Request: POST /auth/verify-token
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699';
+[Auth Middleware] Request: GET /config/tenant
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699';
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699';
+[Auth Middleware] Request: POST /tenants/3e1caff4-dadf-4ad1-ab91-e7ed12ccf699/upload-logo
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+[Authorize Debug] User Role: Admin, Required: tenants:update
+[Authorize Debug] Role ID: 503382dd-45c3-47e7-8c92-6ce6ab007a5e, Module: tenants, Action: update
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'tenants' AND "permissao"."action" = 'update' WHERE "RolePermissao"."roleId" = '503382dd-45c3-47e7-8c92-6ce6ab007a5e';
+[Authorize Debug] Has Permission Result: true
+Executing (default): SELECT "logoUrl" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699';
+Executing (default): UPDATE "tenants" SET "logoUrl"=$1,"updatedAt"=$2 WHERE "id" = $3 RETURNING "id","name","address","phone","email","cnpj","description","createdAt","updatedAt"
+[Auth Middleware] Request: POST /auth/verify-token
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699';
+[Auth Middleware] Request: GET /config/tenant
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699';
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3e1caff4-dadf-4ad1-ab91-e7ed12ccf699';
+Login request body: { email: 'superadmin@loyalfood.com', password: 'superadmin123' }
+Executing (default): SELECT "Usuario"."id", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."tenantId", "Usuario"."roleId", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."email" = 'superadmin@loyalfood.com';
+Executing (default): SELECT "name" FROM "roles" AS "Role" WHERE "Role"."id" = '302e422f-649e-4c31-a44c-c3ecd2cabb16';
+[Auth Middleware] Request: POST /auth/verify-token
+[Auth Middleware] Request: GET /dashboard/summary
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."ratingValue" IS NOT NULL;
+[Auth Middleware] Request: GET /dashboard/overall-results
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId", "pergunta->criterio"."id" AS "pergunta.criterio.id", "pergunta->criterio"."name" AS "pergunta.criterio.name", "client"."id" AS "client.id", "client"."birthDate" AS "client.birthDate", "atendente"."id" AS "atendente.id", "atendente"."name" AS "atendente.name" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" LEFT OUTER JOIN "criterios" AS "pergunta->criterio" ON "pergunta"."criterioId" = "pergunta->criterio"."id" LEFT OUTER JOIN "clients" AS "client" ON "Resposta"."respondentSessionId" = "client"."respondentSessionId" LEFT OUTER JOIN "atendentes" AS "atendente" ON "Resposta"."atendenteId" = "atendente"."id" WHERE "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "respostas" AS "Resposta";
+Executing (default): SELECT date_trunc('day', "createdAt") AS "date", COUNT("id") AS "count" FROM "respostas" AS "Resposta" GROUP BY date_trunc('day', "createdAt") ORDER BY date_trunc('day', "createdAt") ASC;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client";
+Executing (default): SELECT "Resposta"."id", "Resposta"."createdAt", "Resposta"."textValue", "Resposta"."ratingValue", "Resposta"."respondentSessionId", "client"."id" AS "client.id", "client"."name" AS "client.name" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "clients" AS "client" ON "Resposta"."respondentSessionId" = "client"."respondentSessionId" WHERE "Resposta"."textValue" != '' ORDER BY "Resposta"."createdAt" DESC LIMIT 7;
+Executing (default): SELECT count(*) AS "count" FROM "tenants" AS "Tenant";
+Executing (default): SELECT count(*) AS "count" FROM "respostas" AS "Resposta";
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."createdAt" = '2025-09-26 12:12:47.861 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client";
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."updatedAt" = '2025-09-26 12:12:47.866 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."createdAt" = '2025-09-26 12:12:47.870 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."updatedAt" = '2025-09-26 12:12:47.873 +00:00';
+[Auth Middleware] Request: POST /auth/verify-token
+[Auth Middleware] Request: GET /surveys/stats
+Executing (default): SELECT count(*) AS "count" FROM "pesquisas" AS "Pesquisa" WHERE "Pesquisa"."status" = 'active';
+Executing (default): SELECT count(*) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."createdAt" >= '2025-09-01 00:00:00.000 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "pesquisas" AS "Pesquisa";
+Executing (default): SELECT count(*) AS "count" FROM "pesquisas" AS "Pesquisa" WHERE "Pesquisa"."status" = 'pending';
+[Auth Middleware] Request: GET /surveys/list?status=all
+Executing (default): SELECT "Pesquisa"."id", "Pesquisa"."title", "Pesquisa"."description", "Pesquisa"."createdAt", "Pesquisa"."dueDate", "Pesquisa"."status", "Pesquisa"."isOpen", "Pesquisa"."expectedRespondents", "Pesquisa"."askForAttendant", "perguntas"."id" AS "perguntas.id", "perguntas"."text" AS "perguntas.text", "perguntas"."type" AS "perguntas.type", "perguntas"."options" AS "perguntas.options", "perguntas"."order" AS "perguntas.order" FROM "pesquisas" AS "Pesquisa" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Pesquisa"."id" = "perguntas"."pesquisaId" ORDER BY "Pesquisa"."createdAt" DESC;
+Executing (default): SELECT "pesquisaId", COUNT("id") AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."pesquisaId" IN ('7010ad9a-7d19-4533-b8d4-b79d27bda867', '07bdcc1d-49a4-4cac-b751-17bc0bd6fa0b') GROUP BY "pesquisaId";
+[Auth Middleware] Request: POST /auth/verify-token
+Executing (default): SELECT "Pesquisa"."id", "Pesquisa"."title", "Pesquisa"."description", "Pesquisa"."createdAt", "Pesquisa"."updatedAt", "Pesquisa"."isOpen", "Pesquisa"."tenantId", "Pesquisa"."askForAttendant", "Pesquisa"."status", "perguntas"."id" AS "perguntas.id", "perguntas"."type" AS "perguntas.type", "perguntas"."text" AS "perguntas.text", "perguntas"."options" AS "perguntas.options", "perguntas"."order" AS "perguntas.order", "perguntas"."required" AS "perguntas.required", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."description" AS "tenant.description" FROM "pesquisas" AS "Pesquisa" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Pesquisa"."id" = "perguntas"."pesquisaId" LEFT OUTER JOIN "tenants" AS "tenant" ON "Pesquisa"."tenantId" = "tenant"."id" WHERE "Pesquisa"."id" = '7010ad9a-7d19-4533-b8d4-b79d27bda867';
+Executing (default): SELECT "id", "name" FROM "atendentes" AS "Atendente" WHERE "Atendente"."tenantId" = '27dda527-dffd-4e5b-9b81-dd63b68dc54a' AND "Atendente"."status" = 'active' ORDER BY "Atendente"."name" ASC;
+[Auth Middleware] Request: POST /auth/verify-token
+Executing (default): SELECT "Pesquisa"."id", "Pesquisa"."title", "Pesquisa"."description", "Pesquisa"."createdAt", "Pesquisa"."updatedAt", "Pesquisa"."isOpen", "Pesquisa"."tenantId", "Pesquisa"."askForAttendant", "Pesquisa"."status", "perguntas"."id" AS "perguntas.id", "perguntas"."type" AS "perguntas.type", "perguntas"."text" AS "perguntas.text", "perguntas"."options" AS "perguntas.options", "perguntas"."order" AS "perguntas.order", "perguntas"."required" AS "perguntas.required", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."description" AS "tenant.description" FROM "pesquisas" AS "Pesquisa" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Pesquisa"."id" = "perguntas"."pesquisaId" LEFT OUTER JOIN "tenants" AS "tenant" ON "Pesquisa"."tenantId" = "tenant"."id" WHERE "Pesquisa"."id" = '7010ad9a-7d19-4533-b8d4-b79d27bda867';
+Executing (default): SELECT "id", "name" FROM "atendentes" AS "Atendente" WHERE "Atendente"."tenantId" = '27dda527-dffd-4e5b-9b81-dd63b68dc54a' AND "Atendente"."status" = 'active' ORDER BY "Atendente"."name" ASC;

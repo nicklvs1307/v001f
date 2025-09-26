@@ -66,6 +66,8 @@ services:
     image: loyalfood-frontend:latest
     networks:
       - towersfy_network
+    volumes:
+      - uploads_data:/usr/share/nginx/html/uploads
     deploy:
       replicas: 1
       restart_policy:

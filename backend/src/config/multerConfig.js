@@ -7,14 +7,12 @@ const createMulterConfig = (destinationFolder, fieldName) => {
     destination: (req, file, cb) => {
       // Usar path.join para construir um caminho absoluto e robusto
       const absolutePath = path.join(__dirname, '..', '..', 'uploads', destinationFolder);
-      console.log('Multer Destination Path:', absolutePath); // Adicionado para depuração
       cb(null, absolutePath);
     },
     filename: (req, file, cb) => {
       // req.params.id pode não estar disponível em todas as rotas, usar um fallback ou garantir que esteja presente
       const id = req.params.id || 'unknown';
       const generatedFilename = `${id}-${Date.now()}${path.extname(file.originalname)}`;
-      console.log('Multer Generated Filename:', generatedFilename); // Adicionado para depuração
       cb(null, generatedFilename);
     },
   });

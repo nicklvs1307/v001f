@@ -1,40 +1,32 @@
-{
-    "message": "Request failed with status code 404",
-    "name": "AxiosError",
-    "stack": "AxiosError: Request failed with status code 404\n    at Oe (https://loyalfood.towersfy.com/static/js/main.308c4b23.js:2:248545)\n    at XMLHttpRequest.g (https://loyalfood.towersfy.com/static/js/main.308c4b23.js:2:253135)\n    at xt.request (https://loyalfood.towersfy.com/static/js/main.308c4b23.js:2:264663)\n    at async Object.verifyToken (https://loyalfood.towersfy.com/static/js/main.308c4b23.js:2:437843)\n    at async https://loyalfood.towersfy.com/static/js/main.308c4b23.js:2:438274",
-    "config": {
-        "transitional": {
-            "silentJSONParsing": true,
-            "forcedJSONParsing": true,
-            "clarifyTimeoutError": false
-        },
-        "adapter": [
-            "xhr",
-            "http",
-            "fetch"
-        ],
-        "transformRequest": [
-            null
-        ],
-        "transformResponse": [
-            null
-        ],
-        "timeout": 0,
-        "xsrfCookieName": "XSRF-TOKEN",
-        "xsrfHeaderName": "X-XSRF-TOKEN",
-        "maxContentLength": -1,
-        "maxBodyLength": -1,
-        "env": {},
-        "headers": {
-            "Accept": "application/json, text/plain, */*",
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMGFhMDI4MC1mNWQ2LTQ4MTgtYTNjNS1iYTczMzhiYTM2YzYiLCJ0ZW5hbnRJZCI6IjI3ZGRhNTI3LWRmZmQtNGU1Yi05YjgxLWRkNjNiNjhkYzU0YSIsInJvbGUiOiJBZG1pbiIsIm5hbWUiOiJBZG1pbiBkYSBFbXByZXNhIiwicHJvZmlsZVBpY3R1cmVVcmwiOm51bGwsInRlbmFudE5hbWUiOiJFbXByZXNhIGRlIEV4ZW1wbG8iLCJpYXQiOjE3NTg4NDc0NTgsImV4cCI6MTc1OTQ1MjI1OH0.Ivdhq4ojZ3b6Ammve7RR-XCqrHB6Z9EkDRt-oNcZBVc"
-        },
-        "baseURL": "/api",
-        "method": "post",
-        "url": "/auth/verify-token",
-        "allowAbsoluteUrls": true
-    },
-    "code": "ERR_BAD_REQUEST",
-    "status": 404
-}
+fetch("https://loyalfood.towersfy.com/auth/verify-token", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "pt-PT,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMGFhMDI4MC1mNWQ2LTQ4MTgtYTNjNS1iYTczMzhiYTM2YzYiLCJ0ZW5hbnRJZCI6IjI3ZGRhNTI3LWRmZmQtNGU1Yi05YjgxLWRkNjNiNjhkYzU0YSIsInJvbGUiOiJBZG1pbiIsIm5hbWUiOiJBZG1pbiBkYSBFbXByZXNhIiwicHJvZmlsZVBpY3R1cmVVcmwiOm51bGwsInRlbmFudE5hbWUiOiJFbXByZXNhIGRlIEV4ZW1wbG8iLCJpYXQiOjE3NTg4NDgzODMsImV4cCI6MTc1OTQ1MzE4M30.sIab0vFW1xU1t7320VAEeYfNdNpSM1Jl-lHzEJWkWYc",
+    "priority": "u=1, i",
+    "sec-ch-ua": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin"
+  },
+  "referrer": "https://loyalfood.towersfy.com/",
+  "body": null,
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+});
+<html>
+<head><title>405 Not Allowed</title></head>
+<body>
+<center><h1>405 Not Allowed</h1></center>
+<hr><center>nginx/1.25.5</center>
+</body>
+</html>
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->

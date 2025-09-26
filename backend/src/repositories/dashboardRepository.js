@@ -23,6 +23,9 @@ const dashboardRepository = {
                 model: Pergunta,
                 as: 'pergunta',
                 attributes: ['type'],
+                where: {
+                    type: 'rating_0_10' // Only fetch answers for NPS-style questions
+                },
                 required: true
             }]
         });
@@ -33,24 +36,13 @@ const dashboardRepository = {
 
         ratingResponses.forEach(response => {
             const rating = response.ratingValue;
-            const questionType = response.pergunta.type;
-
-            if (questionType === 'rating_1_5' || questionType === 'rating') {
-                if (rating === 5) {
-                    promoters++;
-                } else if (rating === 4) {
-                    neutrals++;
-                } else {
-                    detractors++;
-                }
-            } else if (questionType === 'rating_0_10') {
-                if (rating >= 9) {
-                    promoters++;
-                } else if (rating >= 7 && rating <= 8) {
-                    neutrals++;
-                } else {
-                    detractors++;
-                }
+            
+            if (rating >= 9) {
+                promoters++;
+            } else if (rating >= 7 && rating <= 8) {
+                neutrals++;
+            } else {
+                detractors++;
             }
         });
 
@@ -316,22 +308,21 @@ const dashboardRepository = {
         let overallPromoters = 0;
         let overallNeutrals = 0;
         let overallDetractors = 0;
-        let overallTotalRatingResponses = 0;
+        
+        // Filter for NPS questions (rating_0_10) before calculating the overall score
+        const npsResponses = allResponses.filter(response => response.pergunta && response.pergunta.type === 'rating_0_10');
+        const overallTotalRatingResponses = npsResponses.length;
 
-        allResponses.forEach(response => {
+        npsResponses.forEach(response => {
             const rating = response.ratingValue;
-            const questionType = response.pergunta ? response.pergunta.type : null;
 
-            if (rating !== null && questionType) {
-                overallTotalRatingResponses++;
-                if (questionType === 'rating_1_5') {
-                    if (rating === 5) overallPromoters++;
-                    else if (rating === 4) overallNeutrals++;
-                    else overallDetractors++;
-                } else if (questionType === 'rating_0_10') {
-                    if (rating >= 9) overallPromoters++;
-                    else if (rating >= 7 && rating <= 8) overallNeutrals++;
-                    else overallDetractors++;
+            if (rating !== null) {
+                if (rating >= 9) {
+                    overallPromoters++;
+                } else if (rating >= 7 && rating <= 8) {
+                    overallNeutrals++;
+                } else {
+                    overallDetractors++;
                 }
             }
         });
@@ -566,11 +557,20 @@ const dashboardRepository = {
 
         const trendData = await Resposta.findAll({
             where: whereClause,
+            include: [{
+                model: Pergunta,
+                as: 'pergunta',
+                attributes: [],
+                where: {
+                    type: 'rating_0_10'
+                },
+                required: true
+            }],
             attributes: [
                 [fn('date_trunc', period, col('createdAt')), 'period'],
                 [fn('SUM', literal(`CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END`)), 'promoters'],
                 [fn('SUM', literal(`CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END`)), 'detractors'],
-                [fn('COUNT', col('id')), 'total']
+                [fn('COUNT', col('Resposta.id')), 'total'] // Use Resposta.id for clarity
             ],
             group: [fn('date_trunc', period, col('createdAt'))],
             order: [[fn('date_trunc', period, col('createdAt')), 'ASC']]

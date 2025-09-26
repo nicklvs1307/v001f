@@ -1,52 +1,40 @@
-login:1 [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) <input aria-invalid=​"false" id=​"password" name=​"password" placeholder=​"Sua senha" required type=​"password" class=​"MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedStart css-1ixds2g" value>​
-react-dom.production.min.js:188 Error: Minified MUI error #12; visit https://mui.com/production-error/?code=12&args[]=%20(primary)&args[]=null for the full message.
-    at j (createPalette.js:220:13)
-    at S (createPalette.js:258:14)
-    at I (createTheme.js:30:19)
-    at We (theme.js:3:83)
-    at App.js:22:12
-    at Object.Vi [as useMemo] (react-dom.production.min.js:172:119)
-    at t.useMemo (react.production.min.js:26:48)
-    at No (App.js:19:24)
-    at gi (react-dom.production.min.js:160:137)
-    at Es (react-dom.production.min.js:196:258)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-createPalette.js:220 Uncaught Error: Minified MUI error #12; visit https://mui.com/production-error/?code=12&args[]=%20(primary)&args[]=null for the full message.
-    at j (createPalette.js:220:13)
-    at S (createPalette.js:258:14)
-    at I (createTheme.js:30:19)
-    at We (theme.js:3:83)
-    at App.js:22:12
-    at Object.Vi [as useMemo] (react-dom.production.min.js:172:119)
-    at t.useMemo (react.production.min.js:26:48)
-    at No (App.js:19:24)
-    at gi (react-dom.production.min.js:160:137)
-    at Es (react-dom.production.min.js:196:258)
-j @ createPalette.js:220
-S @ createPalette.js:258
-I @ createTheme.js:30
-We @ theme.js:3
-(anônimo) @ App.js:22
-Vi @ react-dom.production.min.js:172
-t.useMemo @ react.production.min.js:26
-No @ App.js:19
-gi @ react-dom.production.min.js:160
-Es @ react-dom.production.min.js:196
-Sl @ react-dom.production.min.js:291
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-ac @ react-dom.production.min.js:270
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
+ => ERROR [build 6/6] RUN npm run build                                                                                                       146.2s
+------
+ > [build 6/6] RUN npm run build:
+0.846
+0.846 > frontend@0.1.0 build
+0.846 > react-scripts build
+0.846
+4.266 Creating an optimized production build...
+145.8 Failed to compile.
+145.8
+145.8 [eslint]
+145.8 src/pages/RoulettePage.js
+145.8   Line 16:7:   'loading' is not defined                  no-undef
+145.8   Line 29:67:  'navigate' is not defined                 no-undef
+145.8   Line 34:7:   'isLoadingItems' is not defined           no-undef
+145.8   Line 43:7:   'items' is not defined                    no-undef
+145.8   Line 76:12:  'config' is not defined                   no-undef
+145.8   Line 79:12:  'config' is not defined                   no-undef
+145.8   Line 84:18:  'items' is not defined                    no-undef
+145.8   Line 85:24:  'winningItem' is not defined              no-undef
+145.8   Line 86:25:  'winningIndex' is not defined             no-undef
+145.8   Line 87:32:  'handleAnimationComplete' is not defined  no-undef
+145.8   Line 94:20:  'handleSpin' is not defined               no-undef
+145.8   Line 95:21:  'spinning' is not defined                 no-undef
+145.8   Line 95:33:  'winningIndex' is not defined             no-undef
+145.8   Line 98:12:  'spinning' is not defined                 no-undef
+145.8
+145.8 Search for the keywords to learn more about each error.
+145.8
+145.8
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

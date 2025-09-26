@@ -11,8 +11,82 @@ import PublicPageLayout from '../components/layout/PublicPageLayout';
 const RoulettePage = () => {
   const { clientId } = useParams();
   const { t } = useTranslation();
-const theme = useTheme();
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const [config, setConfig] = useState(null);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [spinning, setSpinning] = useState(false);
+  const [winningItem, setWinningItem] = useState(null);
+  const [winningIndex, setWinningIndex] = useState(-1);
+  const [generatedCupom, setGeneratedCupom] = useState(null);
+  const [isLoadingItems, setIsLoadingItems] = useState(true);
 
+
+  const { showNotification } = useNotification();
+
+  useEffect(() => {
+    const fetchRoletaConfig = async () => {
+      if (!clientId) {
+      showNotification(t('roulette.error_client_id_missing'), 'warning');
+        return;
+      }
+      try {
+        setIsLoadingItems(true);
+        const configData = await roletaService.getRoletaConfig(clientId);
+        setConfig(configData);
+        setItems(configData.items || []);
+      } catch (err) {
+        showNotification(err.response?.data?.message || err.message || t('roulette.error_fetching_config'), 'error');
+      } finally {
+        setIsLoadingItems(false);
+        setLoading(false);
+      }
+    };
+
+    fetchRoletaConfig();
+  }, [clientId, t, showNotification]);
+
+  const handleSpin = async () => {
+    if (!clientId) {
+      showNotification(t('roulette.error_client_id_missing'), 'warning');
+      return;
+    }
+
+    setSpinning(true);
+    try {
+      const result = await roletaService.spin(clientId);
+      const wonItem = result.premio;
+      const generatedCupomData = result.cupom;
+
+      const foundIndex = items.findIndex(item => item.recompensa.name === wonItem.recompensa.name);
+
+      if (foundIndex === -1) {
+        showNotification(t('roulette.error_winning_item_not_found'), 'error');
+        setSpinning(false);
+        return;
+      }
+
+      setWinningItem(wonItem);
+      setWinningIndex(foundIndex);
+      setGeneratedCupom(generatedCupomData);
+
+    } catch (err) {
+      showNotification(err.response?.data?.message || err.message || t('roulette.error_spinning_wheel'), 'error');
+      setSpinning(false);
+    }
+  };
+
+  const handleAnimationComplete = () => {
+    setSpinning(false);
+    if (winningItem) {
+      showNotification(t('roulette.win_message'), 'success');
+      navigate(`/parabens`, { state: { premio: winningItem, cupom: generatedCupom } });
+    } else {
+      console.error("Winning item is null after spin animation completes.");
+      showNotification(t('roulette.error_no_winning_item'), 'error');
+    }
+  };
   if (loading) {
     return (
       <PublicPageLayout maxWidth="md" textAlign="center">

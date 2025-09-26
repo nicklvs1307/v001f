@@ -1,12 +1,31 @@
-URL da solicitação
-https://loyalfood.towersfy.com/api/tenants/27dda527-dffd-4e5b-9b81-dd63b68dc54a/upload-logo
-Método da solicitação
-POST
-Código de status
-500 Internal Server Error
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "ENOENT: no such file or directory, open '/usr/src/app/uploads/logos/27dda527-dffd-4e5b-9b81-dd63b68dc54a-1758850554603.png'",
-    "details": "Error: ENOENT: no such file or directory, open '/usr/src/app/uploads/logos/27dda527-dffd-4e5b-9b81-dd63b68dc54a-1758850554603.png'"
-}
+fetch("https://loyalfood.towersfy.com/uploads/logos/27dda527-dffd-4e5b-9b81-dd63b68dc54a-1758851123377.png", {
+  "headers": {
+    "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+    "accept-language": "pt-PT,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+    "priority": "i",
+    "sec-ch-ua": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "image",
+    "sec-fetch-mode": "no-cors",
+    "sec-fetch-site": "same-origin"
+  },
+  "referrer": "https://loyalfood.towersfy.com/pesquisa/27dda527-dffd-4e5b-9b81-dd63b68dc54a/07bdcc1d-49a4-4cac-b751-17bc0bd6fa0b",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "omit"
+});
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx/1.25.5</center>
+</body>
+</html>
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->
+<!-- a padding to disable MSIE and Chrome friendly error page -->

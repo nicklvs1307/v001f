@@ -20,7 +20,7 @@ class ClientRepository {
     return Client.findAll({
       where: {
         [Op.and]: [
-          sequelize.where(sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "birthDate"')), month),
+          where(fn('EXTRACT', literal('MONTH FROM "birthDate"')), month),
           { tenantId },
         ],
       },

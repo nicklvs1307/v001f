@@ -17,8 +17,8 @@ function App() {
 function ThemeWrapper({ children }) {
   const { user } = useContext(AuthContext);
   const dynamicTheme = useMemo(() => {
-    const primaryColor = user?.primaryColor;
-    const secondaryColor = user?.secondaryColor;
+    const primaryColor = user?.primaryColor || '#4e73df';
+    const secondaryColor = user?.secondaryColor || '#6f42c1';
     return getDynamicTheme(primaryColor, secondaryColor);
   }, [user?.primaryColor, user?.secondaryColor]);
 

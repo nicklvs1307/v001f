@@ -116,7 +116,7 @@ const CongratulationsPage = () => {
         zIndex: 2,
       }}>
         <Box sx={{
-          background: `linear-gradient(45deg, ${theme.palette.warning.main}, ${theme.palette.danger.main})`,
+          background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
           padding: '40px 20px',
           color: 'white',
           position: 'relative',

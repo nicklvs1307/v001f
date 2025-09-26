@@ -53,8 +53,18 @@ export const AuthProvider = ({ children }) => {
     }
 };
 
+    const refreshUser = useCallback(async () => {
+        try {
+            const userData = await authService.verifyToken();
+            setUser(userData);
+        } catch (error) {
+            console.error("Falha ao atualizar os dados do usuário", error);
+            logout(); // Desloga se a atualização falhar
+        }
+    }, [logout]);
+
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, logout, loading, refreshUser }}>
             {children}
         </AuthContext.Provider>
     );

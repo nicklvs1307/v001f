@@ -26,7 +26,7 @@ import configService from '../services/configService';
 import AuthContext from '../context/AuthContext';
 
 const ConfigPage = () => {
-  const { user } = useContext(AuthContext);
+  const { user, refreshUser } = useContext(AuthContext);
 
       const [config, setConfig] = useState({
         id: null, // Adicionar id ao estado inicial
@@ -107,6 +107,7 @@ const ConfigPage = () => {
       setConfig((prevConfig) => ({ ...prevConfig, logoUrl: response.logoUrl }));
       setLogoUploadSuccess(true);
       setLogoFile(null); // Limpar o arquivo selecionado após o upload
+      if (refreshUser) await refreshUser(); // Atualiza o contexto global do usuário
     } catch (err) {
         showNotification(err.message || 'Erro ao fazer upload da logo.', 'error');
         console.error('Erro ao fazer upload da logo:', err);
@@ -123,6 +124,7 @@ const ConfigPage = () => {
     try {
       await configService.updateTenantConfig(config);
       setSuccess(true);
+      if (refreshUser) await refreshUser(); // Atualiza o contexto global do usuário
     } catch (err) {
                 showNotification(err.message || 'Erro ao salvar configurações.', 'error');
                 console.error('Erro ao salvar configurações:', err);    } finally {

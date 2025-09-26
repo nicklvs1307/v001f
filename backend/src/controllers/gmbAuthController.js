@@ -5,9 +5,9 @@ const gmbConfigRepository = require('../repositories/gmbConfigRepository');
 const ApiError = require('../errors/ApiError');
 
 const oauth2Client = new google.auth.OAuth2(
-  config.google.clientId,
-  config.google.clientSecret,
-  config.google.redirectUri
+  config.googleAuth.clientId,
+  config.googleAuth.clientSecret,
+  config.googleAuth.redirectUri
 );
 
 const scopes = [

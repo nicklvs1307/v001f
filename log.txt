@@ -1,129 +1,32 @@
-{
-    "message": "Request failed with status code 502",
-    "name": "AxiosError",
-    "stack": "AxiosError: Request failed with status code 502\n    at Oe (https://loyalfood.towersfy.com/static/js/main.c73659fd.js:2:250822)\n    at XMLHttpRequest.g (https://loyalfood.towersfy.com/static/js/main.c73659fd.js:2:255412)\n    at xt.request (https://loyalfood.towersfy.com/static/js/main.c73659fd.js:2:266940)\n    at async Object.verifyToken (https://loyalfood.towersfy.com/static/js/main.c73659fd.js:2:106495)\n    at async https://loyalfood.towersfy.com/static/js/main.c73659fd.js:2:106926",
-    "config": {
-        "transitional": {
-            "silentJSONParsing": true,
-            "forcedJSONParsing": true,
-            "clarifyTimeoutError": false
-        },
-        "adapter": [
-            "xhr",
-            "http",
-            "fetch"
-        ],
-        "transformRequest": [
-            null
-        ],
-        "transformResponse": [
-            null
-        ],
-        "timeout": 0,
-        "xsrfCookieName": "XSRF-TOKEN",
-        "xsrfHeaderName": "X-XSRF-TOKEN",
-        "maxContentLength": -1,
-        "maxBodyLength": -1,
-        "env": {},
-        "headers": {
-            "Accept": "application/json, text/plain, */*",
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMGFhMDI4MC1mNWQ2LTQ4MTgtYTNjNS1iYTczMzhiYTM2YzYiLCJ0ZW5hbnRJZCI6IjI3ZGRhNTI3LWRmZmQtNGU1Yi05YjgxLWRkNjNiNjhkYzU0YSIsInJvbGUiOiJBZG1pbiIsIm5hbWUiOiJBZG1pbiBkYSBFbXByZXNhIiwicHJvZmlsZVBpY3R1cmVVcmwiOm51bGwsInRlbmFudE5hbWUiOiJFbXByZXNhIGRlIEV4ZW1wbG8iLCJpYXQiOjE3NTg5MDQ0NjMsImV4cCI6MTc1OTUwOTI2M30.xVNcRCoLoT3TXtEDN1jsluCS91F-TyR-0UwexBzwUCw"
-        },
-        "baseURL": "/api",
-        "method": "post",
-        "url": "/auth/verify-token",
-        "allowAbsoluteUrls": true
-    },
-    "code": "ERR_BAD_RESPONSE",
-    "status": 502
-}
-
-URL da solicitação
-https://loyalfood.towersfy.com/api/dashboard/overall-results
-Método da solicitação
-GET
-Código de status
-502 Bad Gateway
-Endereço remoto
-95.217.16.187:443
-
-<html>
-<head><title>502 Bad Gateway</title></head>
-<body>
-<center><h1>502 Bad Gateway</h1></center>
-<hr><center>nginx/1.25.5</center>
-</body>
-</html>
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-
-
-URL da solicitação
-https://loyalfood.towersfy.com/api/auth/verify-token
-Método da solicitação
-POST
-Código de status
-502 Bad Gateway
-Endereço remoto
-95.217.16.187:443
-
-<html>
-<head><title>502 Bad Gateway</title></head>
-<body>
-<center><h1>502 Bad Gateway</h1></center>
-<hr><center>nginx/1.25.5</center>
-</body>
-</html>
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-
-
-URL da solicitação
-https://loyalfood.towersfy.com/api/dashboard/summary
-Método da solicitação
-GET
-Código de status
-502 Bad Gateway
-Endereço remoto
-95.217.16.187:443
-
-<html>
-<head><title>502 Bad Gateway</title></head>
-<body>
-<center><h1>502 Bad Gateway</h1></center>
-<hr><center>nginx/1.25.5</center>
-</body>
-</html>
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-
+Database is up, running migrations...
 Postgres is up - executing command
-Server.js is being executed!
-Conexão com o banco de dados estabelecida com sucesso (Sequelize).
-Server is running on port 5000
-Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
-Login request body: { email: 'admin@empresaexemplo.com', password: 'admin123' }
-Executing (default): SELECT "Usuario"."id", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."tenantId", "Usuario"."roleId", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."email" = 'admin@empresaexemplo.com';
-Executing (default): SELECT "name" FROM "roles" AS "Role" WHERE "Role"."id" = '503382dd-45c3-47e7-8c92-6ce6ab007a5e';
-Login request body: { email: 'admin@empresaexemplo.com', password: 'admin123' }
-Executing (default): SELECT "Usuario"."id", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."tenantId", "Usuario"."roleId", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."email" = 'admin@empresaexemplo.com';
-Executing (default): SELECT "name" FROM "roles" AS "Role" WHERE "Role"."id" = '503382dd-45c3-47e7-8c92-6ce6ab007a5e';
-Login request body: { email: 'admin@empresaexemplo.com', password: 'admin123' }
-Executing (default): SELECT "Usuario"."id", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."tenantId", "Usuario"."roleId", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."email" = 'admin@empresaexemplo.com';
-Executing (default): SELECT "name" FROM "roles" AS "Role" WHERE "Role"."id" = '503382dd-45c3-47e7-8c92-6ce6ab007a5e';
-Login request body: { email: 'admin@empresaexemplo.com', password: 'admin123' }
-Executing (default): SELECT "Usuario"."id", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."tenantId", "Usuario"."roleId", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."email" = 'admin@empresaexemplo.com';
-Executing (default): SELECT "name" FROM "roles" AS "Role" WHERE "Role"."id" = '503382dd-45c3-47e7-8c92-6ce6ab007a5e';
+Sequelize CLI [Node: 18.20.8, CLI: 6.6.3, ORM: 6.37.7]
+Erro ao ler o arquivo de segredo JWT_SECRET_FILE: Error: ENOENT: no such file or directory, open '/run/secrets/jwt_secret'
+    at Object.openSync (node:fs:596:3)
+    at Object.readFileSync (node:fs:464:35)
+    at readSecret (/usr/src/app/src/config/index.js:13:25)
+    at Object.<anonymous> (/usr/src/app/src/config/index.js:33:14)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at Object.<anonymous> (/usr/src/app/src/config/sequelize-config.js:1:16)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:203:29) {
+
+  errno: -2,
+  syscall: 'open',
+  code: 'ENOENT',
+  path: '/run/secrets/jwt_secret'
+}
+ERROR: Error reading "src/config/sequelize-config.js". Error: Error: Erro ao carregar o segredo JWT_SECRET do arquivo.
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.6.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.1
+npm notice To update run: npm install -g npm@11.6.1
+npm notice

@@ -27,6 +27,7 @@ services:
       - towersfy_network
     secrets:
       - db_password
+      - jwt_secret
     deploy:
       replicas: 1
       restart_policy:

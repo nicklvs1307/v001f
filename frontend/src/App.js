@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from 'react';
-import { AuthProvider, AuthContext } from './context/AuthContext';
+import AuthContext, { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from '@mui/material/styles';
 import getDynamicTheme from './theme'; // Importar a função getDynamicTheme
 import AppRoutes from './routes/AppRoutes'; // Importar o novo componente de rotas

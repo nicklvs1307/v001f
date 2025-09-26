@@ -1,78 +1,24 @@
-Postgres is up - executing command
-Server.js is being executed!
-Conexão com o banco de dados estabelecida com sucesso (Sequelize).
-Server is running on port 5000
-Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
-Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
-[Authorize Debug] User Role: Admin, Required: surveys:read
-[Authorize Debug] Role ID: 503382dd-45c3-47e7-8c92-6ce6ab007a5e, Module: surveys, Action: read
-Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'surveys' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = '503382dd-45c3-47e7-8c92-6ce6ab007a5e';
-[Authorize Debug] Has Permission Result: true
-Executing (default): SELECT count(*) AS "count" FROM "pesquisas" AS "Pesquisa" WHERE "Pesquisa"."tenantId" = '27dda527-dffd-4e5b-9b81-dd63b68dc54a' AND "Pesquisa"."status" = 'active';
-Executing (default): SELECT count(*) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = '27dda527-dffd-4e5b-9b81-dd63b68dc54a' AND "Resposta"."createdAt" >= '2025-09-01 00:00:00.000 +00:00';
-Executing (default): SELECT count(*) AS "count" FROM "pesquisas" AS "Pesquisa" WHERE "Pesquisa"."tenantId" = '27dda527-dffd-4e5b-9b81-dd63b68dc54a';
-Executing (default): SELECT count(*) AS "count" FROM "pesquisas" AS "Pesquisa" WHERE "Pesquisa"."tenantId" = '27dda527-dffd-4e5b-9b81-dd63b68dc54a' AND "Pesquisa"."status" = 'pending';
-Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
-[Authorize Debug] User Role: Admin, Required: surveys:read
-[Authorize Debug] Role ID: 503382dd-45c3-47e7-8c92-6ce6ab007a5e, Module: surveys, Action: read
-Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'surveys' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = '503382dd-45c3-47e7-8c92-6ce6ab007a5e';
-[Authorize Debug] Has Permission Result: true
-Executing (default): SELECT "Pesquisa"."id", "Pesquisa"."title", "Pesquisa"."description", "Pesquisa"."createdAt", "Pesquisa"."dueDate", "Pesquisa"."status", "Pesquisa"."isOpen", "Pesquisa"."expectedRespondents", "Pesquisa"."askForAttendant", "perguntas"."id" AS "perguntas.id", "perguntas"."text" AS "perguntas.text", "perguntas"."type" AS "perguntas.type", "perguntas"."options" AS "perguntas.options", "perguntas"."order" AS "perguntas.order" FROM "pesquisas" AS "Pesquisa" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Pesquisa"."id" = "perguntas"."pesquisaId" WHERE "Pesquisa"."tenantId" = '27dda527-dffd-4e5b-9b81-dd63b68dc54a' ORDER BY "Pesquisa"."createdAt" DESC;
-Executing (default): SELECT "pesquisaId", COUNT("id") AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."pesquisaId" IN ('7010ad9a-7d19-4533-b8d4-b79d27bda867', '07bdcc1d-49a4-4cac-b751-17bc0bd6fa0b') GROUP BY "pesquisaId";
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '27dda527-dffd-4e5b-9b81-dd63b68dc54a';
-Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
-[Authorize Debug] User Role: Admin, Required: tenants:update
-[Authorize Debug] Role ID: 503382dd-45c3-47e7-8c92-6ce6ab007a5e, Module: tenants, Action: update
-Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'tenants' AND "permissao"."action" = 'update' WHERE "RolePermissao"."roleId" = '503382dd-45c3-47e7-8c92-6ce6ab007a5e';
-[Authorize Debug] Has Permission Result: true
-Multer Destination Path: /usr/src/app/uploads/logos
-Multer Generated Filename: 27dda527-dffd-4e5b-9b81-dd63b68dc54a-1758858295432.png
-Executing (default): SELECT "logoUrl" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '27dda527-dffd-4e5b-9b81-dd63b68dc54a';
-Executing (default): UPDATE "tenants" SET "logoUrl"=$1,"updatedAt"=$2 WHERE "id" = $3 RETURNING "id","name","address","phone","email","cnpj","description","createdAt","updatedAt"
-Executing (default): SELECT "Pesquisa"."id", "Pesquisa"."title", "Pesquisa"."description", "Pesquisa"."createdAt", "Pesquisa"."updatedAt", "Pesquisa"."isOpen", "Pesquisa"."tenantId", "Pesquisa"."askForAttendant", "Pesquisa"."status", "perguntas"."id" AS "perguntas.id", "perguntas"."type" AS "perguntas.type", "perguntas"."text" AS "perguntas.text", "perguntas"."options" AS "perguntas.options", "perguntas"."order" AS "perguntas.order", "perguntas"."required" AS "perguntas.required", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."description" AS "tenant.description" FROM "pesquisas" AS "Pesquisa" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Pesquisa"."id" = "perguntas"."pesquisaId" LEFT OUTER JOIN "tenants" AS "tenant" ON "Pesquisa"."tenantId" = "tenant"."id" WHERE "Pesquisa"."id" = '7010ad9a-7d19-4533-b8d4-b79d27bda867';
-Executing (default): SELECT "id", "name" FROM "atendentes" AS "Atendente" WHERE "Atendente"."tenantId" = '27dda527-dffd-4e5b-9b81-dd63b68dc54a' AND "Atendente"."status" = 'active' ORDER BY "Atendente"."name" ASC;
-
-fetch("https://loyalfood.towersfy.com/uploads/logos/27dda527-dffd-4e5b-9b81-dd63b68dc54a-1758858295432.png", {
-  "headers": {
-    "accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-    "accept-language": "pt-PT,pt;q=0.9,en-US;q=0.8,en;q=0.7",
-    "priority": "i",
-    "sec-ch-ua": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"",
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": "\"Windows\"",
-    "sec-fetch-dest": "image",
-    "sec-fetch-mode": "no-cors",
-    "sec-fetch-site": "same-origin"
-  },
-  "referrer": "https://loyalfood.towersfy.com/pesquisa/27dda527-dffd-4e5b-9b81-dd63b68dc54a/7010ad9a-7d19-4533-b8d4-b79d27bda867",
-  "body": null,
-  "method": "GET",
-  "mode": "cors",
-  "credentials": "omit"
-});
-
-<html>
-<head><title>404 Not Found</title></head>
-<body>
-<center><h1>404 Not Found</h1></center>
-<hr><center>nginx/1.25.5</center>
-</body>
-</html>
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-<!-- a padding to disable MSIE and Chrome friendly error page -->
-27dda527-dffd-4e5b-9b81-dd63b68dc54a-1758858295432.png:1  GET https://loyalfood.towersfy.com/uploads/logos/27dda527-dffd-4e5b-9b81-dd63b68dc54a-1758858295432.png 404 (Not Found)
-Image
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-
+ => ERROR [build 6/6] RUN npm run build                                                                                                       146.4s
+------
+ > [build 6/6] RUN npm run build:
+0.868
+0.868 > frontend@0.1.0 build
+0.868 > react-scripts build
+0.868
+4.368 Creating an optimized production build...
+146.1 Failed to compile.
+146.1
+146.1 Attempted import error: 'AuthContext' is not exported from './context/AuthContext' (imported as 'AuthContext').
+146.1
+146.1
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+root@Server:~/loyalfood/v001f#

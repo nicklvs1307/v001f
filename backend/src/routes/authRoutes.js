@@ -32,6 +32,6 @@ router.post(
 );
 
 // Rota para verificar o token
-router.post("/verify-token", authController.verifyToken);
+router.post("/verify-token", protect, authController.verifyToken);
 
 module.exports = router;

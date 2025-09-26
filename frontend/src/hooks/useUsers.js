@@ -1,11 +1,13 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import userService from '../services/userService';
+import { useNotification } from '../context/NotificationContext'; // Import useNotification
 
 const useUsers = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState(null); // Keep local error for now, UserList uses it
+    const { showNotification } = useNotification(); // Get showNotification
 
     const fetchUsers = useCallback(async () => {
         try {
@@ -14,11 +16,12 @@ const useUsers = () => {
             setUsers(data);
             setError(null);
         } catch (err) {
-            setError(err.message || 'Falha ao buscar usuários.');
+            showNotification(err.message || 'Falha ao buscar usuários.', 'error'); // Show error notification
+            setError(err.message || 'Falha ao buscar usuários.'); // Keep local error for now
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [showNotification]); // Add showNotification to dependencies
 
     useEffect(() => {
         fetchUsers();

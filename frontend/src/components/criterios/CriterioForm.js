@@ -12,7 +12,7 @@ import {
   MenuItem,
 } from '@mui/material';
 
-const CriterioForm = ({ formData, setFormData, onSubmit, loading = false, error = null }) => {
+const CriterioForm = ({ formData, setFormData, onSubmit, loading = false }) => { // Removed error prop
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -65,7 +65,7 @@ const CriterioForm = ({ formData, setFormData, onSubmit, loading = false, error 
         rows={3}
       />
 
-      {error && <FormHelperText error>{error}</FormHelperText>}
+      {/* error and FormHelperText were removed */}
 
       <Button
         type="submit"

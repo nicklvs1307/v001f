@@ -6,8 +6,9 @@ import {
     Typography 
 } from '@mui/material';
 import tenantService from '../../services/tenantService';
+import { useNotification } from '../../context/NotificationContext'; // Import useNotification
 
-const TenantForm = ({ initialData, onTenantCreated, onTenantUpdated, onError, onClose }) => {
+const TenantForm = ({ initialData, onTenantCreated, onTenantUpdated, onClose }) => { // Removed onError prop
     const [name, setName] = useState(initialData ? initialData.name : '');
     const [address, setAddress] = useState(initialData ? initialData.address : '');
     const [phone, setPhone] = useState(initialData ? initialData.phone : '');
@@ -15,6 +16,7 @@ const TenantForm = ({ initialData, onTenantCreated, onTenantUpdated, onError, on
     const [cnpj, setCnpj] = useState(initialData ? initialData.cnpj : '');
     const [description, setDescription] = useState(initialData ? initialData.description : '');
     const [loading, setLoading] = useState(false);
+    const { showNotification } = useNotification(); // Get showNotification
 
     useEffect(() => {
         if (initialData) {
@@ -36,14 +38,16 @@ const TenantForm = ({ initialData, onTenantCreated, onTenantUpdated, onError, on
                 // Modo de Edição
                 const updatedTenant = await tenantService.updateTenant(initialData.id, tenantData);
                 onTenantUpdated(updatedTenant); 
+                showNotification('Restaurante atualizado com sucesso!', 'success'); // Success notification
             } else {
                 // Modo de Criação
                 const newTenant = await tenantService.createTenant(tenantData);
                 onTenantCreated(newTenant.tenant); 
+                showNotification('Restaurante criado com sucesso!', 'success'); // Success notification
             }
             onClose(); // Fecha o modal após sucesso
         } catch (err) {
-            onError(err.message || 'Falha na operação.');
+            showNotification(err.message || 'Falha na operação.', 'error'); // Use global notification
         } finally {
             setLoading(false);
         }

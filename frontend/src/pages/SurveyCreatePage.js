@@ -4,13 +4,15 @@ import SurveyForm from '../components/surveys/SurveyForm';
 import TemplateSelection from '../components/surveys/TemplateSelection';
 import surveyService from '../services/surveyService';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useNotification } from '../context/NotificationContext'; // Import useNotification
 
 const SurveyCreatePage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { showNotification } = useNotification(); // Get showNotification
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null); // Keep local error for now, might be used by SurveyForm
   const [success, setSuccess] = useState(false);
   const [initialData, setInitialData] = useState({});
   
@@ -33,7 +35,7 @@ const SurveyCreatePage = () => {
           setInitialData(cleanedSurvey);
           setFormStep('fillForm');
         })
-        .catch(err => setError(err.message || 'Erro ao carregar pesquisa para edição.'))
+        .catch(err => showNotification(err.message || 'Erro ao carregar pesquisa para edição.', 'error')) // Use showNotification
         .finally(() => setLoading(false));
     }
   }, [id]);
@@ -55,7 +57,7 @@ const SurveyCreatePage = () => {
 
   const handleSubmit = async (surveyData) => {
     setLoading(true);
-    setError(null);
+    setError(null); // Keep setError for now, in case SurveyForm uses it
     setSuccess(false);
 
     try {
@@ -65,9 +67,10 @@ const SurveyCreatePage = () => {
         await surveyService.createSurvey(surveyData);
       }
       setSuccess(true);
+      showNotification(`Pesquisa ${id ? 'atualizada' : 'criada'} com sucesso!`, 'success'); // Add success notification
       setTimeout(() => navigate('/pesquisas'), 2000);
     } catch (err) {
-      setError(err.message || `Erro ao ${id ? 'atualizar' : 'criar'} pesquisa.`);
+      showNotification(err.message || `Erro ao ${id ? 'atualizar' : 'criar'} pesquisa.`, 'error'); // Use showNotification
     } finally {
       setLoading(false);
     }
@@ -81,7 +84,7 @@ const SurveyCreatePage = () => {
         {pageTitle}
       </Typography>
 
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+      {/* {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>} */} {/* Remove local error display */}
       {success && (
         <Alert severity="success" sx={{ mb: 2 }}>
           Pesquisa {id ? 'atualizada' : 'criada'} com sucesso! Redirecionando...

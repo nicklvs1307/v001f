@@ -21,7 +21,7 @@ const modalStyle = {
     p: 4,
 };
 
-const UserModal = ({ open, onClose, onUserCreated, onUserUpdated, initialData, formError, onError }) => {
+const UserModal = ({ open, onClose, onUserCreated, onUserUpdated, initialData }) => {
     return (
         <Modal
             aria-labelledby="user-modal-title"
@@ -38,12 +38,12 @@ const UserModal = ({ open, onClose, onUserCreated, onUserUpdated, initialData, f
         >
             <Fade in={open}>
                 <Box sx={modalStyle}>
-                    {formError && <Alert severity="error" sx={{ mb: 2 }}>{formError}</Alert>}
+                    {/* formError was removed, global notification will handle it */}
                     <UserForm
                         initialData={initialData}
                         onUserCreated={onUserCreated}
                         onUserUpdated={onUserUpdated}
-                        onError={onError}
+                        // onError was removed
                         onClose={onClose}
                     />
                 </Box>

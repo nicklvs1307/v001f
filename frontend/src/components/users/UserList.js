@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useNotification } from '../../context/NotificationContext'; // Import useNotification
 
 const UserList = () => {
     const { user: currentUser } = useContext(AuthContext);
@@ -23,18 +24,19 @@ const UserList = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
-    const [formError, setFormError] = useState('');
+    // const [formError, setFormError] = useState(''); // Removed
+    const { showNotification } = useNotification(); // Get showNotification
 
     const handleOpenModal = (user = null) => {
         setSelectedUser(user);
         setIsModalOpen(true);
-        setFormError('');
+        // setFormError(''); // Removed
     };
 
     const handleCloseModal = () => {
         setSelectedUser(null);
         setIsModalOpen(false);
-        setFormError('');
+        // setFormError(''); // Removed
     };
 
     const handleOpenConfirm = (user) => {
@@ -51,8 +53,9 @@ const UserList = () => {
         try {
             await createUser(userData);
             handleCloseModal();
+            showNotification('Usuário criado com sucesso!', 'success');
         } catch (err) {
-            setFormError(err.message);
+            showNotification(err.message || 'Erro ao criar usuário.', 'error');
         }
     };
 
@@ -60,8 +63,9 @@ const UserList = () => {
         try {
             await updateUser(selectedUser.id, userData);
             handleCloseModal();
+            showNotification('Usuário atualizado com sucesso!', 'success');
         } catch (err) {
-            setFormError(err.message);
+            showNotification(err.message || 'Erro ao atualizar usuário.', 'error');
         }
     };
 
@@ -69,8 +73,9 @@ const UserList = () => {
         try {
             await deleteUser(selectedUser.id);
             handleCloseConfirm();
+            showNotification('Usuário deletado com sucesso!', 'success');
         } catch (err) {
-            console.error(err);
+            showNotification(err.message || 'Erro ao deletar usuário.', 'error');
         }
     };
 
@@ -127,8 +132,8 @@ const UserList = () => {
                 onUserCreated={handleUserCreate}
                 onUserUpdated={handleUserUpdate}
                 initialData={selectedUser}
-                formError={formError}
-                onError={setFormError}
+                // formError={formError} // Removed
+                // onError={setFormError} // Removed
             />
 
             <ConfirmationDialog

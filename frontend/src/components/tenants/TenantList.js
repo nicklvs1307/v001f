@@ -26,6 +26,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit'; 
 import DeleteIcon from '@mui/icons-material/Delete'; 
+import { useNotification } from '../../context/NotificationContext'; // Import useNotification
 
 const modalStyle = {
     position: 'absolute',
@@ -42,17 +43,18 @@ const modalStyle = {
 const TenantList = () => {
     const [tenants, setTenants] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
+    // const [error, setError] = useState(''); // Removed
     const [openCreateModal, setOpenCreateModal] = useState(false); 
     const [openEditModal, setOpenEditModal] = useState(false); 
     const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false); 
     const [selectedTenant, setSelectedTenant] = useState(null); 
-    const [formError, setFormError] = useState(''); 
+    // const [formError, setFormError] = useState(''); // Removed
+    const { showNotification } = useNotification(); // Get showNotification
 
     const handleOpenCreateModal = () => setOpenCreateModal(true);
     const handleCloseCreateModal = () => {
         setOpenCreateModal(false);
-        setFormError(''); 
+        // setFormError(''); // Removed
     };
 
     const handleOpenEditModal = (tenant) => {
@@ -62,7 +64,7 @@ const TenantList = () => {
     const handleCloseEditModal = () => {
         setSelectedTenant(null);
         setOpenEditModal(false);
-        setFormError('');
+        // setFormError(''); // Removed
     };
 
     const handleOpenDeleteConfirm = (tenant) => {
@@ -78,11 +80,12 @@ const TenantList = () => {
         try {
             setLoading(true);
             const data = await tenantService.getAllTenants();
-            console.log("Dados retornados por getAllTenants:", data); // Adicionar este log
+            console.log("Dados retornados por getAllTenants:", data);
             setTenants(data);
-            setError('');
+            // setError(''); // Removed
         } catch (err) {
-            setError(err.message || 'Falha ao buscar tenants.');
+            showNotification(err.message || 'Falha ao buscar tenants.', 'error'); // Show error notification
+            // setError(err.message || 'Falha ao buscar tenants.'); // Removed
         } finally {
             setLoading(false);
         }
@@ -90,11 +93,12 @@ const TenantList = () => {
 
     useEffect(() => {
         fetchTenants();
-    }, []);
+    }, [showNotification]); // Add showNotification to dependencies
 
     const handleTenantCreated = (newTenant) => {
         setTenants((prevTenants) => [...prevTenants, newTenant]);
         handleCloseCreateModal();
+        showNotification('Restaurante criado com sucesso!', 'success'); // Show success notification
     };
 
     const handleTenantUpdated = (updatedTenant) => {
@@ -109,6 +113,7 @@ const TenantList = () => {
             })
         );
         handleCloseEditModal();
+        showNotification('Restaurante atualizado com sucesso!', 'success'); // Show success notification
     };
 
     const handleTenantDeleted = async () => {
@@ -118,14 +123,16 @@ const TenantList = () => {
                 prevTenants.filter((tenant) => tenant.id !== selectedTenant.id)
             );
             handleCloseDeleteConfirm();
+            showNotification('Restaurante deletado com sucesso!', 'success'); // Show success notification
         } catch (err) {
-            setError(err.message || 'Falha ao deletar tenant.');
+            showNotification(err.message || 'Falha ao deletar restaurante.', 'error'); // Show error notification
+            // setError(err.message || 'Falha ao deletar tenant.'); // Removed
         }
     };
 
-    const handleFormError = (msg) => {
-        setFormError(msg);
-    };
+    // const handleFormError = (msg) => { // Removed
+    //     setFormError(msg);
+    // };
 
     if (loading) {
         return <CircularProgress />;
@@ -135,7 +142,7 @@ const TenantList = () => {
         <Box sx={{ mt: 4 }}>
             <Typography variant="h5" gutterBottom>Gerenciamento de Restaurantes</Typography>
             <Button variant="contained" sx={{ mb: 2 }} onClick={handleOpenCreateModal}>Adicionar Novo Restaurante</Button>
-            {error && <Alert severity="error">{error}</Alert>}
+            {/* error && <Alert severity="error">{error}</Alert> */}
             
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -207,10 +214,10 @@ const TenantList = () => {
             >
                 <Fade in={openCreateModal}>
                     <Box sx={modalStyle}>
-                        {formError && <Alert severity="error" sx={{ mb: 2 }}>{formError}</Alert>}
+                        {/* formError was removed, global notification will handle it */}
                         <TenantForm 
                             onTenantCreated={handleTenantCreated} 
-                            onError={handleFormError} 
+                            // onError={handleFormError} // Removed
                             onClose={handleCloseCreateModal}
                         />
                     </Box>
@@ -233,12 +240,12 @@ const TenantList = () => {
             >
                 <Fade in={openEditModal}>
                     <Box sx={modalStyle}>
-                        {formError && <Alert severity="error" sx={{ mb: 2 }}>{formError}</Alert>}
+                        {/* formError was removed, global notification will handle it */}
                         {selectedTenant && (
                             <TenantForm 
                                 initialData={selectedTenant} 
                                 onTenantUpdated={handleTenantUpdated} 
-                                onError={handleFormError}
+                                // onError={handleFormError}
                                 onClose={handleCloseEditModal}
                             />
                         )}

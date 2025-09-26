@@ -12,7 +12,7 @@ import {
     useTheme,
     CircularProgress,
     Alert,
-    Snackbar
+    // Snackbar // Removed
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -32,12 +32,14 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Link } from '@mui/ma
 import surveyService from '../services/surveyService';
 import AuthContext from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useNotification } from '../context/NotificationContext'; // Import useNotification
 
 const SurveyListPage = () => {
     const theme = useTheme();
     const { user } = useContext(AuthContext);
     const tenantId = user?.role === 'Super Admin' ? null : user?.tenantId;
     const navigate = useNavigate();
+    const { showNotification } = useNotification(); // Get showNotification
 
     const [anchorEl, setAnchorEl] = useState(null);
     const openFilterMenu = Boolean(anchorEl);
@@ -45,57 +47,53 @@ const SurveyListPage = () => {
     const [surveyStats, setSurveyStats] = useState(null);
     const [surveys, setSurveys] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
+    const [error, setError] = useState(''); // Keep local error for now, might be used for Alert component
 
     const [openQrCodeModal, setOpenQrCodeModal] = useState(false);
     const [qrCodeDataUrl, setQrCodeDataUrl] = useState('');
     const [publicSurveyUrl, setPublicSurveyUrl] = useState('');
     const [qrCodeLoading, setQrCodeLoading] = useState(false);
-    const [qrCodeError, setQrCodeError] = useState('');
+    // const [qrCodeError, setQrCodeError] = useState(''); // Removed
     
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+    // const [snackbarOpen, setSnackbarOpen] = useState(false); // Removed
+    // const [snackbarMessage, setSnackbarMessage] = useState(''); // Removed
+    // const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // Removed
 
-    const handleCloseSnackbar = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setSnackbarOpen(false);
-    };
+    // const handleCloseSnackbar = (event, reason) => { // Removed
+    //     if (reason === 'clickaway') {
+    //         return;
+    //     }
+    //     setSnackbarOpen(false);
+    // };
 
     const handleCloseQrCodeModal = () => {
         setOpenQrCodeModal(false);
         setQrCodeDataUrl('');
         setPublicSurveyUrl('');
-        setQrCodeError('');
+        // setQrCodeError(''); // Removed
     };
 
     const handleCopyLink = (link) => {
         navigator.clipboard.writeText(link)
             .then(() => {
-                setSnackbarMessage('Link copiado para a área de transferência!');
-                setSnackbarSeverity('success');
-                setSnackbarOpen(true);
+                showNotification('Link copiado para a área de transferência!', 'success'); // Use global notification
             })
             .catch(err => {
                 console.error('Erro ao copiar o link:', err);
-                setSnackbarMessage('Falha ao copiar o link.');
-                setSnackbarSeverity('error');
-                setSnackbarOpen(true);
+                showNotification('Falha ao copiar o link.', 'error'); // Use global notification
             });
     };
 
     const handleGenerateQrCode = async (publicUrl) => {
         setQrCodeLoading(true);
-        setQrCodeError('');
+        // setQrCodeError(''); // Removed
         setOpenQrCodeModal(true);
         try {
             setPublicSurveyUrl(publicUrl);
             const qrCodeResponse = await surveyService.generateQrCode(publicUrl);
             setQrCodeDataUrl(qrCodeResponse.qrCode);
         } catch (err) {
-            setQrCodeError('Falha ao gerar o QR Code.');
+            showNotification('Falha ao gerar o QR Code.', 'error'); // Use global notification
             console.error('Erro ao gerar QR Code:', err);
         } finally {
             setQrCodeLoading(false);
@@ -129,11 +127,12 @@ const SurveyListPage = () => {
             setSurveyStats(stats);
             setSurveys(surveysList);
         } catch (err) {
-            setError(err.message || 'Falha ao carregar os dados das pesquisas.');
+            showNotification(err.message || 'Falha ao carregar os dados das pesquisas.', 'error'); // Use global notification
+            setError(err.message || 'Falha ao carregar os dados das pesquisas.'); // Keep local error for now
         } finally {
             setLoading(false);
         }
-    }, [filterStatus]);
+    }, [filterStatus, showNotification]); // Add showNotification to dependencies
 
     useEffect(() => {
         fetchSurveyData();
@@ -144,8 +143,10 @@ const SurveyListPage = () => {
             try {
                 await surveyService.deleteSurvey(id);
                 fetchSurveyData();
+                showNotification('Pesquisa deletada com sucesso!', 'success'); // Show success notification
             } catch (err) {
-                setError(err.message || 'Falha ao excluir a pesquisa.');
+                showNotification(err.message || 'Falha ao excluir a pesquisa.', 'error'); // Use global notification
+                setError(err.message || 'Falha ao excluir a pesquisa.'); // Keep local error for now
             }
         }
     };
@@ -430,16 +431,7 @@ const SurveyListPage = () => {
                     </DialogActions>
                 </Dialog>
             </Container>
-            <Snackbar
-              open={snackbarOpen}
-              autoHideDuration={6000}
-              onClose={handleCloseSnackbar}
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-            >
-              <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
-                {snackbarMessage}
-              </Alert>
-            </Snackbar>
+
         </>
     );
 };

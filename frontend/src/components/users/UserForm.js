@@ -12,11 +12,13 @@ import {
 } from '@mui/material';
 import useUserForm from '../../hooks/useUserForm';
 import AuthContext from '../../context/AuthContext';
+import { useNotification } from '../../context/NotificationContext'; // Import useNotification
 
-const UserForm = ({ initialData, onUserCreated, onUserUpdated, onError, onClose }) => {
+const UserForm = ({ initialData, onUserCreated, onUserUpdated, onClose }) => { // Removed onError prop
     const { user: currentUser } = useContext(AuthContext);
-    const { formData, roles, tenants, loading: formLoading, error: formError, handleChange } = useUserForm(initialData);
+    const { formData, roles, tenants, loading: formLoading, error: formError, handleChange } = useUserForm(initialData); // Keep formError for now, useUserForm returns it
     const [loading, setLoading] = useState(false);
+    const { showNotification } = useNotification(); // Get showNotification
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -29,12 +31,14 @@ const UserForm = ({ initialData, onUserCreated, onUserUpdated, onError, onClose 
 
             if (initialData) {
                 await onUserUpdated(userData);
+                showNotification('Usuário atualizado com sucesso!', 'success'); // Success notification
             } else {
                 await onUserCreated(userData);
+                showNotification('Usuário criado com sucesso!', 'success'); // Success notification
             }
             onClose();
         } catch (err) {
-            onError(err.message || 'Falha na operação.');
+            showNotification(err.message || 'Falha na operação.', 'error'); // Use global notification
         } finally {
             setLoading(false);
         }

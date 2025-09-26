@@ -567,13 +567,13 @@ const dashboardRepository = {
                 required: true
             }],
             attributes: [
-                [fn('date_trunc', period, col('createdAt')), 'period'],
+                [fn('date_trunc', period, col('Resposta.createdAt')), 'period'],
                 [fn('SUM', literal(`CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END`)), 'promoters'],
                 [fn('SUM', literal(`CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END`)), 'detractors'],
-                [fn('COUNT', col('Resposta.id')), 'total'] // Use Resposta.id for clarity
+                [fn('COUNT', col('Resposta.id')), 'total']
             ],
-            group: [fn('date_trunc', period, col('createdAt'))],
-            order: [[fn('date_trunc', period, col('createdAt')), 'ASC']]
+            group: [fn('date_trunc', period, col('Resposta.createdAt'))],
+            order: [[fn('date_trunc', period, col('Resposta.createdAt')), 'ASC']]
         });
 
         return trendData.map(item => {

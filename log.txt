@@ -1,108 +1,21 @@
-URL da solicitação
-https://loyalfood.towersfy.com/api/surveys/7010ad9a-7d19-4533-b8d4-b79d27bda867
-Método da solicitação
-PUT
-Código de status
-400 Bad Request
-Endereço remoto
-95.217.16.187:443
+fetch("https://loyalfood.towersfy.com/api/dashboard/nps-trend?tenantId=27dda527-dffd-4e5b-9b81-dd63b68dc54a&period=day", {
+  "headers": {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "pt-PT,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+    "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMGFhMDI4MC1mNWQ2LTQ4MTgtYTNjNS1iYTczMzhiYTM2YzYiLCJ0ZW5hbnRJZCI6IjI3ZGRhNTI3LWRmZmQtNGU1Yi05YjgxLWRkNjNiNjhkYzU0YSIsInJvbGUiOiJBZG1pbiIsIm5hbWUiOiJBZG1pbiBkYSBFbXByZXNhIiwicHJvZmlsZVBpY3R1cmVVcmwiOm51bGwsInRlbmFudE5hbWUiOiJFbXByZXNhIGRlIEV4ZW1wbG8iLCJpYXQiOjE3NTg4OTk5MjAsImV4cCI6MTc1OTUwNDcyMH0.kM7bUrzv4PaDYE9xESCfC9JSasVkJtktNjI4s-nx2nA",
+    "priority": "u=1, i",
+    "sec-ch-ua": "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin"
+  },
+  "referrer": "https://loyalfood.towersfy.com/resultados",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+});
 
-{
-    "status": "error",
-    "code": [
-        {
-            "type": "field",
-            "value": null,
-            "msg": "Opções da pergunta devem ser um array.",
-            "path": "questions[0].options",
-            "location": "body"
-        },
-        {
-            "type": "field",
-            "value": null,
-            "msg": "Opções da pergunta devem ser um array.",
-            "path": "questions[1].options",
-            "location": "body"
-        },
-        {
-            "type": "field",
-            "value": null,
-            "msg": "Opções da pergunta devem ser um array.",
-            "path": "questions[3].options",
-            "location": "body"
-        },
-        {
-            "type": "field",
-            "value": null,
-            "msg": "Opções da pergunta devem ser um array.",
-            "path": "questions[4].options",
-            "location": "body"
-        }
-    ],
-    "message": "Erros de validação",
-    "details": "Error: Erros de validação\n    at validate (/usr/src/app/src/middlewares/validationMiddleware.js:7:11)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at middleware (/usr/src/app/node_modules/express-validator/lib/middlewares/check.js:16:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
-}
-PrivateRoute.js:9 [PrivateRoute] Loading: true User: null
-PrivateRoute.js:12 [PrivateRoute] Showing loading spinner...
-PrivateRoute.js:9 [PrivateRoute] Loading: false User: {userId: '20aa0280-f5d6-4818-a3c5-ba7338ba36c6', tenantId: '27dda527-dffd-4e5b-9b81-dd63b68dc54a', role: 'Admin', name: 'Admin da Empresa', profilePictureUrl: null, …}
-PrivateRoute.js:25 [PrivateRoute] User is authenticated, rendering Outlet.
-PrivateRoute.js:9 [PrivateRoute] Loading: false User: {userId: '20aa0280-f5d6-4818-a3c5-ba7338ba36c6', tenantId: '27dda527-dffd-4e5b-9b81-dd63b68dc54a', role: 'Admin', name: 'Admin da Empresa', profilePictureUrl: null, …}
-PrivateRoute.js:25 [PrivateRoute] User is authenticated, rendering Outlet.
-PrivateRoute.js:9 [PrivateRoute] Loading: false User: {userId: '20aa0280-f5d6-4818-a3c5-ba7338ba36c6', tenantId: '27dda527-dffd-4e5b-9b81-dd63b68dc54a', role: 'Admin', name: 'Admin da Empresa', profilePictureUrl: null, …}
-PrivateRoute.js:25 [PrivateRoute] User is authenticated, rendering Outlet.
-PrivateRoute.js:9 [PrivateRoute] Loading: false User: {userId: '20aa0280-f5d6-4818-a3c5-ba7338ba36c6', tenantId: '27dda527-dffd-4e5b-9b81-dd63b68dc54a', role: 'Admin', name: 'Admin da Empresa', profilePictureUrl: null, …}
-PrivateRoute.js:25 [PrivateRoute] User is authenticated, rendering Outlet.
-PrivateRoute.js:9 [PrivateRoute] Loading: false User: {userId: '20aa0280-f5d6-4818-a3c5-ba7338ba36c6', tenantId: '27dda527-dffd-4e5b-9b81-dd63b68dc54a', role: 'Admin', name: 'Admin da Empresa', profilePictureUrl: null, …}
-PrivateRoute.js:25 [PrivateRoute] User is authenticated, rendering Outlet.
-PrivateRoute.js:9 [PrivateRoute] Loading: false User: {userId: '20aa0280-f5d6-4818-a3c5-ba7338ba36c6', tenantId: '27dda527-dffd-4e5b-9b81-dd63b68dc54a', role: 'Admin', name: 'Admin da Empresa', profilePictureUrl: null, …}
-PrivateRoute.js:25 [PrivateRoute] User is authenticated, rendering Outlet.
-PrivateRoute.js:9 [PrivateRoute] Loading: false User: {userId: '20aa0280-f5d6-4818-a3c5-ba7338ba36c6', tenantId: '27dda527-dffd-4e5b-9b81-dd63b68dc54a', role: 'Admin', name: 'Admin da Empresa', profilePictureUrl: null, …}
-PrivateRoute.js:25 [PrivateRoute] User is authenticated, rendering Outlet.
-PrivateRoute.js:9 [PrivateRoute] Loading: false User: {userId: '20aa0280-f5d6-4818-a3c5-ba7338ba36c6', tenantId: '27dda527-dffd-4e5b-9b81-dd63b68dc54a', role: 'Admin', name: 'Admin da Empresa', profilePictureUrl: null, …}
-PrivateRoute.js:25 [PrivateRoute] User is authenticated, rendering Outlet.
-surveyService.js:47  PUT https://loyalfood.towersfy.com/api/surveys/7010ad9a-7d19-4533-b8d4-b79d27bda867 400 (Bad Request)
-(anônimo) @ xhr.js:198
-xhr @ xhr.js:15
-ht @ dispatchRequest.js:51
-Promise.then
-_request @ Axios.js:163
-request @ Axios.js:40
-(anônimo) @ Axios.js:224
-(anônimo) @ bind.js:5
-updateSurvey @ surveyService.js:47
-onSubmit @ SurveyCreatePage.js:55
-onSubmit @ SurveyForm.js:37
-Le @ react-dom.production.min.js:54
-We @ react-dom.production.min.js:54
-(anônimo) @ react-dom.production.min.js:55
-_r @ react-dom.production.min.js:105
-Fr @ react-dom.production.min.js:106
-(anônimo) @ react-dom.production.min.js:117
-cc @ react-dom.production.min.js:273
-Ne @ react-dom.production.min.js:52
-Hr @ react-dom.production.min.js:109
-Kt @ react-dom.production.min.js:74
-qt @ react-dom.production.min.js:73
-surveyService.js:47  PUT https://loyalfood.towersfy.com/api/surveys/7010ad9a-7d19-4533-b8d4-b79d27bda867 400 (Bad Request)
-(anônimo) @ xhr.js:198
-xhr @ xhr.js:15
-ht @ dispatchRequest.js:51
-Promise.then
-_request @ Axios.js:163
-request @ Axios.js:40
-(anônimo) @ Axios.js:224
-(anônimo) @ bind.js:5
-updateSurvey @ surveyService.js:47
-onSubmit @ SurveyCreatePage.js:55
-onSubmit @ SurveyForm.js:37
-Le @ react-dom.production.min.js:54
-We @ react-dom.production.min.js:54
-(anônimo) @ react-dom.production.min.js:55
-_r @ react-dom.production.min.js:105
-Fr @ react-dom.production.min.js:106
-(anônimo) @ react-dom.production.min.js:117
-cc @ react-dom.production.min.js:273
-Ne @ react-dom.production.min.js:52
-Hr @ react-dom.production.min.js:109
-Kt @ react-dom.production.min.js:74
-qt @ react-dom.production.min.js:73
+{"status":"error","code":"HTTP_500","message":"column reference \"createdAt\" is ambiguous","details":"Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)\n    at async Resposta.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)\n    at async Object.getNpsTrendData (/usr/src/app/src/repositories/dashboardRepository.js:558:27)\n    at async /usr/src/app/src/controllers/dashboardController.js:57:27"}

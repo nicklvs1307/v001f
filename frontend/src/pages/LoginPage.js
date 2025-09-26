@@ -6,12 +6,14 @@ import LoginLayout from '../components/layout/LoginLayout'; // Importar o novo c
 import { Box, Typography, TextField, Button, FormControlLabel, Checkbox, Link as MuiLink } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
+import { useNotification } from '../context/NotificationContext'; // Import useNotification
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const { login } = useContext(AuthContext);
+    const { showNotification } = useNotification(); // Get showNotification
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,7 +23,7 @@ const LoginPage = () => {
             // A navegação agora é controlada pelo AuthContext
         } catch (err) {
             console.error("Falha no login:", err);
-            // Aqui você pode adicionar um estado para exibir o erro na tela
+            showNotification(err.message || 'Erro desconhecido ao fazer login.', 'error'); // Show error notification
         } finally {
             setLoading(false);
         }

@@ -44,7 +44,7 @@ const RoletaPremioForm = ({ open, handleClose, premio, handleSubmit }) => {
     fetchRecompensas();
   }, []);
 
-  useEffect(() => {
+    useEffect(() => {
     if (premio) {
       setFormData({
         nome: premio.nome || '',
@@ -54,9 +54,9 @@ const RoletaPremioForm = ({ open, handleClose, premio, handleSubmit }) => {
       });
     } else {
       setFormData({
-        name: '',
-        description: '',
-        chance: '',
+        nome: '',
+        descricao: '',
+        probabilidade: '',
         recompensaId: '',
       });
     }
@@ -69,7 +69,6 @@ const RoletaPremioForm = ({ open, handleClose, premio, handleSubmit }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log('RoletaPremioForm - formData antes de enviar:', formData);
     handleSubmit(formData);
   };
 
@@ -90,7 +89,7 @@ const RoletaPremioForm = ({ open, handleClose, premio, handleSubmit }) => {
                 type="text"
                 fullWidth
                 variant="outlined"
-                value={formData.name}
+                value={formData.nome}
                 onChange={handleChange}
                 required
               />
@@ -119,7 +118,7 @@ const RoletaPremioForm = ({ open, handleClose, premio, handleSubmit }) => {
                 type="number"
                 fullWidth
                 variant="outlined"
-                value={formData.chance}
+                value={formData.probabilidade}
                 onChange={handleChange}
                 required
                 inputProps={{ min: 1 }}

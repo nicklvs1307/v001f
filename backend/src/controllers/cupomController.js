@@ -65,11 +65,11 @@ const cupomController = {
   }),
 
   validateCupom: asyncHandler(async (req, res) => {
-    const { code } = req.body;
+    const { codigo } = req.body;
     const requestingUser = req.user;
     const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
 
-    const cupom = await cupomRepository.getCupomByCodigo(code, tenantId);
+    const cupom = await cupomRepository.getCupomByCodigo(codigo, tenantId);
 
     if (!cupom) {
       throw new ApiError(404, 'Cupom não encontrado.');

@@ -11,33 +11,38 @@ import getDynamicTheme from '../theme';
 
 // Wrapper Component: Fetches data and provides theme
 const RoulettePage = () => {
-    const { tenantId, pesquisaId, clientId } = useParams(); // Inclui todos os params
+    const { tenantId, pesquisaId, clientId } = useParams();
     const [tenant, setTenant] = useState(null);
+    const [survey, setSurvey] = useState(null); // Adicionar estado para a pesquisa
     const [dynamicTheme, setDynamicTheme] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchTenant = async () => {
-            if (tenantId) {
-                try {
-                    const tenantData = await publicSurveyService.getPublicTenantById(tenantId);
-                    setTenant(tenantData);
-                    const theme = getDynamicTheme(tenantData.primaryColor, tenantData.secondaryColor);
-                    setDynamicTheme(theme);
-                } catch (error) {
-                    console.error("Erro ao buscar tenant:", error);
-                    setError("Não foi possível carregar as informações do restaurante.");
-                } finally {
-                    setLoading(false);
-                }
-            } else {
+        const fetchInitialData = async () => {
+            if (!tenantId || !pesquisaId) {
                 setLoading(false);
-                setError("ID do restaurante não encontrado na URL.");
+                setError("ID do restaurante ou da pesquisa não encontrado na URL.");
+                return;
+            }
+            try {
+                const [tenantData, surveyData] = await Promise.all([
+                    publicSurveyService.getPublicTenantById(tenantId),
+                    publicSurveyService.getPublicSurveyById(pesquisaId), // Buscar dados da pesquisa
+                ]);
+                setTenant(tenantData);
+                setSurvey(surveyData);
+                const theme = getDynamicTheme(tenantData.primaryColor, tenantData.secondaryColor);
+                setDynamicTheme(theme);
+            } catch (error) {
+                console.error("Erro ao buscar dados iniciais:", error);
+                setError("Não foi possível carregar as informações necessárias.");
+            } finally {
+                setLoading(false);
             }
         };
-        fetchTenant();
-    }, [tenantId]);
+        fetchInitialData();
+    }, [tenantId, pesquisaId]);
 
     if (loading || !dynamicTheme) {
         return (
@@ -55,16 +60,24 @@ const RoulettePage = () => {
         );
     }
 
+    if (!survey || !survey.roletaId) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                <Alert severity="warning">{tenant?.name || 'O restaurante'} não configurou uma roleta para esta pesquisa.</Alert>
+            </Box>
+        );
+    }
+
     return (
         <ThemeProvider theme={dynamicTheme}>
-            <RouletteComponent tenant={tenant} />
+            <RouletteComponent tenant={tenant} survey={survey} />
         </ThemeProvider>
     );
 };
 
 // UI Component
-const RouletteComponent = ({ tenant }) => {
-    const { clientId } = useParams();
+const RouletteComponent = ({ tenant, survey }) => {
+    const { clientId, pesquisaId } = useParams(); // Obter pesquisaId aqui
     const { t } = useTranslation();
     const theme = useTheme();
     const navigate = useNavigate();
@@ -79,13 +92,13 @@ const RouletteComponent = ({ tenant }) => {
 
     useEffect(() => {
         const fetchRoletaConfig = async () => {
-            if (!clientId) {
-                showNotification(t('roulette.error_client_id_missing'), 'warning');
+            if (!pesquisaId || !clientId) {
+                showNotification(t('roulette.error_ids_missing'), 'warning');
                 setLoading(false);
                 return;
             }
             try {
-                const configData = await roletaService.getRoletaConfig(clientId);
+                const configData = await roletaService.getRoletaConfig(pesquisaId, clientId); // Passar pesquisaId
                 setConfig(configData);
                 setItems(configData.items || []);
             } catch (err) {
@@ -95,16 +108,16 @@ const RouletteComponent = ({ tenant }) => {
             }
         };
         fetchRoletaConfig();
-    }, [clientId, t, showNotification]);
+    }, [pesquisaId, clientId, t, showNotification]);
 
     const handleSpin = async () => {
-        if (!clientId) {
-            showNotification(t('roulette.error_client_id_missing'), 'warning');
+        if (!pesquisaId || !clientId) {
+            showNotification(t('roulette.error_ids_missing'), 'warning');
             return;
         }
         setSpinning(true);
         try {
-            const result = await roletaService.spin(clientId);
+            const result = await roletaService.spin(pesquisaId, clientId); // Passar pesquisaId
             const wonItem = result.premio;
             const generatedCupomData = result.cupom;
             const foundIndex = items.findIndex(item => item.recompensa.name === wonItem.recompensa.name);

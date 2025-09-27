@@ -12,14 +12,15 @@ const validate = require("../middlewares/validationMiddleware");
 // É crucial implementar a lógica de controle no `roletaController.spinRoleta` para garantir que um cliente 
 // possa girar a roleta apenas uma vez, por exemplo, verificando um campo 'hasSpunRoleta' na tabela de clientes.)
 router.post(
-  '/spin',
+  '/spin/:pesquisaId/:clientId',
   [
+    check("pesquisaId", "ID da pesquisa é obrigatório").isUUID().not().isEmpty(),
     check("clientId", "ID do cliente é obrigatório").isUUID().not().isEmpty(),
   ],
   validate,
   roletaController.spinRoleta
 );
 
-router.get('/config/:clientId', roletaController.getRoletaConfig);
+router.get('/config/:pesquisaId/:clientId', roletaController.getRoletaConfig);
 
 module.exports = router;

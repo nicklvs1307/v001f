@@ -76,7 +76,7 @@ const getSurveyById = async (id, tenantId = null) => {
         order: [['order', 'ASC']],
       },
     ],
-    attributes: ['id', 'title', 'description', 'createdAt', 'tenantId', 'isOpen', 'askForAttendant', 'expectedRespondents', 'startDate', 'endDate', 'dueDate', 'status', 'creatorId'],
+    attributes: ['id', 'title', 'description', 'createdAt', 'tenantId', 'isOpen', 'askForAttendant', 'expectedRespondents', 'startDate', 'endDate', 'dueDate', 'status', 'creatorId', 'recompensaId', 'roletaId'],
   });
 
   if (!survey) return null;
@@ -96,6 +96,8 @@ const getSurveyById = async (id, tenantId = null) => {
     dueDate: survey.dueDate,
     status: survey.status,
     creatorId: survey.creatorId,
+    recompensaId: survey.recompensaId,
+    roletaId: survey.roletaId,
     questions: survey.perguntas.map(q => ({
       ...q.toJSON(),
     })),

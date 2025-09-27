@@ -5,13 +5,13 @@ const API_URL = '/roleta';
 const ADMIN_API_URL = '/roletas'; // Rota para admin
 
 const roletaService = {
-  spin: async (clientId) => {
-    const response = await apiAuthenticated.post(`${API_URL}/spin`, { clientId });
+  spin: async (pesquisaId, clientId) => {
+    const response = await apiAuthenticated.post(`${API_URL}/spin/${pesquisaId}/${clientId}`);
     return response.data;
   },
 
-  getRoletaConfig: async (clientId) => {
-    const response = await apiAuthenticated.get(`${API_URL}/config/${clientId}`);
+  getRoletaConfig: async (pesquisaId, clientId) => {
+    const response = await apiAuthenticated.get(`${API_URL}/config/${pesquisaId}/${clientId}`);
     return response.data;
   },
 

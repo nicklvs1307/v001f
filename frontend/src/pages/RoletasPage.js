@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import {
   Container,
   Typography,
@@ -24,83 +23,76 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
-import roletaPremioService from '../services/roletaPremioService';
+import { Link as RouterLink } from 'react-router-dom';
 import roletaService from '../services/roletaService';
-import RoletaPremioForm from '../components/roleta/RoletaPremioForm';
+import RoletaForm from '../components/roleta/RoletaForm';
 
-const RoletaPremiosPage = () => {
-  const { roletaId } = useParams();
-  const [roleta, setRoleta] = useState(null);
-  const [premios, setPremios] = useState([]);
+const RoletasPage = () => {
+  const [roletas, setRoletas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [openForm, setOpenForm] = useState(false);
-  const [editingPremio, setEditingPremio] = useState(null);
+  const [editingRoleta, setEditingRoleta] = useState(null);
   const [openConfirm, setOpenConfirm] = useState(false);
-  const [premioToDelete, setPremioToDelete] = useState(null);
+  const [roletaToDelete, setRoletaToDelete] = useState(null);
 
   useEffect(() => {
-    fetchData();
-  }, [roletaId]);
+    fetchRoletas();
+  }, []);
 
-  const fetchData = async () => {
+  const fetchRoletas = async () => {
     try {
       setLoading(true);
-      const [roletaData, premiosData] = await Promise.all([
-        roletaService.getRoletaById(roletaId),
-        roletaPremioService.getAllPremios(roletaId),
-      ]);
-      setRoleta(roletaData);
-      setPremios(premiosData.premios && Array.isArray(premiosData.premios) ? premiosData.premios : []);
+      const data = await roletaService.getAllRoletas();
+      setRoletas(data.roletas && Array.isArray(data.roletas) ? data.roletas : []);
     } catch (err) {
-      setError(err.message || 'Erro ao buscar dados da roleta.');
+      setError(err.message || 'Erro ao buscar roletas.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleOpenForm = (premio = null) => {
-    setEditingPremio(premio);
+  const handleOpenForm = (roleta = null) => {
+    setEditingRoleta(roleta);
     setOpenForm(true);
   };
 
   const handleCloseForm = () => {
     setOpenForm(false);
-    setEditingPremio(null);
+    setEditingRoleta(null);
   };
 
   const handleSubmitForm = async (formData) => {
     try {
-      const dataWithRoletaId = { ...formData, roletaId };
-      if (editingPremio) {
-        await roletaPremioService.updatePremio(editingPremio.id, dataWithRoletaId);
+      if (editingRoleta) {
+        await roletaService.updateRoleta(editingRoleta.id, formData);
       } else {
-        await roletaPremioService.createPremio(dataWithRoletaId);
+        await roletaService.createRoleta(formData);
       }
-      fetchData();
+      fetchRoletas();
       handleCloseForm();
     } catch (err) {
-      setError(err.message || 'Erro ao salvar prêmio.');
+      setError(err.message || 'Erro ao salvar roleta.');
     }
   };
 
-  const handleOpenConfirm = (premio) => {
-    setPremioToDelete(premio);
+  const handleOpenConfirm = (roleta) => {
+    setRoletaToDelete(roleta);
     setOpenConfirm(true);
   };
 
   const handleCloseConfirm = () => {
     setOpenConfirm(false);
-    setPremioToDelete(null);
+    setRoletaToDelete(null);
   };
 
   const handleDelete = async () => {
     try {
-      await roletaPremioService.deletePremio(premioToDelete.id);
-      fetchData();
+      await roletaService.deleteRoleta(roletaToDelete.id);
+      fetchRoletas();
       handleCloseConfirm();
     } catch (err) {
-      setError(err.message || 'Erro ao deletar prêmio.');
+      setError(err.message || 'Erro ao deletar roleta.');
     }
   };
 
@@ -108,7 +100,7 @@ const RoletaPremiosPage = () => {
     return (
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
         <CircularProgress />
-        <Typography>Carregando prêmios...</Typography>
+        <Typography>Carregando roletas...</Typography>
       </Container>
     );
   }
@@ -124,14 +116,14 @@ const RoletaPremiosPage = () => {
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" component="h1">Prêmios da Roleta: {roleta?.nome}</Typography>
+        <Typography variant="h4" component="h1">Roletas</Typography>
         <Button
           variant="contained"
           color="primary"
           startIcon={<AddIcon />}
           onClick={() => handleOpenForm()}
         >
-          Novo Prêmio
+          Nova Roleta
         </Button>
       </Box>
 
@@ -140,23 +132,26 @@ const RoletaPremiosPage = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Nome do Prêmio</TableCell>
-                <TableCell>Recompensa Associada</TableCell>
-                <TableCell>Probabilidade (Peso)</TableCell>
+                <TableCell>Nome</TableCell>
+                <TableCell>Descrição</TableCell>
+                <TableCell>Status</TableCell>
                 <TableCell align="right">Ações</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {premios.map((premio) => (
-                <TableRow key={premio.id}>
-                  <TableCell>{premio.nome}</TableCell>
-                  <TableCell>{premio.recompensa?.name || 'N/A'}</TableCell>
-                  <TableCell>{premio.probabilidade}</TableCell>
+              {roletas.map((roleta) => (
+                <TableRow key={roleta.id}>
+                  <TableCell>{roleta.nome}</TableCell>
+                  <TableCell>{roleta.descricao}</TableCell>
+                  <TableCell>{roleta.active ? 'Ativa' : 'Inativa'}</TableCell>
                   <TableCell align="right">
-                    <IconButton color="primary" onClick={() => handleOpenForm(premio)}>
+                    <Button component={RouterLink} to={`/roletas/${roleta.id}/premios`}>
+                      Prêmios
+                    </Button>
+                    <IconButton color="primary" onClick={() => handleOpenForm(roleta)}>
                       <EditIcon />
                     </IconButton>
-                    <IconButton color="secondary" onClick={() => handleOpenConfirm(premio)}>
+                    <IconButton color="secondary" onClick={() => handleOpenConfirm(roleta)}>
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
@@ -167,24 +162,21 @@ const RoletaPremiosPage = () => {
         </TableContainer>
       </Paper>
 
-      <RoletaPremioForm
+      <RoletaForm
         open={openForm}
         handleClose={handleCloseForm}
-        premio={editingPremio}
+        roleta={editingRoleta}
         handleSubmit={handleSubmitForm}
-        roletaId={roletaId} // Passar roletaId para o formulário
       />
 
       <Dialog
         open={openConfirm}
         onClose={handleCloseConfirm}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Confirmar Exclusão"}</DialogTitle>
+        <DialogTitle>Confirmar Exclusão</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Tem certeza que deseja deletar o prêmio "{premioToDelete?.nome}"?
+          <DialogContentText>
+            Tem certeza que deseja deletar a roleta "{roletaToDelete?.nome}"?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -196,4 +188,4 @@ const RoletaPremiosPage = () => {
   );
 };
 
-export default RoletaPremiosPage;
+export default RoletasPage;

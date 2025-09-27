@@ -4,8 +4,12 @@ import apiAuthenticated from './apiAuthenticated';
 const API_URL = '/roleta-premios';
 
 const roletaPremioService = {
-  getAllPremios: async () => {
-    const response = await apiAuthenticated.get(API_URL);
+  getAllPremios: async (roletaId = null) => {
+    let url = API_URL;
+    if (roletaId) {
+      url += `?roletaId=${roletaId}`;
+    }
+    const response = await apiAuthenticated.get(url);
     return response.data;
   },
 

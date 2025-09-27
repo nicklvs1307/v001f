@@ -23,7 +23,8 @@ exports.createPremio = asyncHandler(async (req, res) => {
 // @access  Private (Admin)
 exports.getAllPremios = asyncHandler(async (req, res) => {
   const tenantId = req.user.tenantId;
-  const premios = await roletaPremioRepository.findAllByTenant(tenantId);
+  const { roletaId } = req.query;
+  const premios = await roletaPremioRepository.findAll({ tenantId, roletaId });
   res.status(200).json({ premios });
 });
 

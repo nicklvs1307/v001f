@@ -5,9 +5,13 @@ const createPremio = async (premioData) => {
   return RoletaPremio.create(premioData);
 };
 
-const findAllByTenant = async (tenantId) => {
+const findAll = async ({ tenantId, roletaId }) => {
+  const whereClause = { tenantId };
+  if (roletaId) {
+    whereClause.roletaId = roletaId;
+  }
   return RoletaPremio.findAll({
-    where: { tenantId },
+    where: whereClause,
     include: [{ model: Recompensa, as: 'recompensa' }],
     order: [['nome', 'ASC']],
   });
@@ -33,7 +37,7 @@ const deletePremio = async (id, tenantId) => {
 
 module.exports = {
   createPremio,
-  findAllByTenant,
+  findAll,
   findById,
   updatePremio,
   deletePremio,

@@ -120,7 +120,7 @@ const DashboardLayout = () => {
                 { text: 'Perfil', path: '/profile', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.GERENTE, ROLES.GARCOM] },
                 { text: 'Empresa', path: '/config', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
                 { text: 'Conectar WhatsApp', path: '/whatsapp-connect', roles: [ROLES.ADMIN] }, // NOVO ITEM DE MENU
-                { text: 'Prêmios da Roleta', path: '/premios-roleta', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Roletas', path: '/roletas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
             ],
         },
     ], [user?.role]);

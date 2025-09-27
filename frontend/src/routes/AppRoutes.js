@@ -33,6 +33,7 @@ const AttendantGoalsPage = React.lazy(() => import('../pages/AttendantGoalsPage'
 const GMBConfigsPage = React.lazy(() => import('../pages/GMBConfigsPage'));
 const GMBReviewsPage = React.lazy(() => import('../pages/GMBReviewsPage'));
 const RoulettePrizesPage = React.lazy(() => import('../pages/RoulettePrizesPage'));
+const RoletasPage = React.lazy(() => import('../pages/RoletasPage')); // Adicionar a nova página
 const WhatsappConfigPage = React.lazy(() => import('../pages/WhatsappConfigPage'));
 const WhatsappConnectPage = React.lazy(() => import('../pages/WhatsappConnectPage')); // Importar a nova página
 const AtendenteDashboardPage = React.lazy(() => import('../pages/AtendenteDashboardPage'));
@@ -95,7 +96,8 @@ const AppRoutes = () => {
             <Route path="reputacao" element={<GMBReviewsPage />} />
             <Route path="config-gmb" element={<GMBConfigsPage />} />
             <Route path="reviews-gmb" element={<GMBReviewsPage />} />
-            <Route path="premios-roleta" element={<RoulettePrizesPage />} />
+            <Route path="roletas" element={<RoletasPage />} />
+            <Route path="roletas/:roletaId/premios" element={<RoulettePrizesPage />} />
             <Route path="config-whatsapp" element={<WhatsappConfigPage />} />
             <Route path="whatsapp-connect" element={<WhatsappConnectPage />} /> {/* Adicionar a nova rota */}
             <Route path="profile" element={<ProfilePage />} />

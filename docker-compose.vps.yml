@@ -14,7 +14,7 @@ x-environment: &environment
   JWT_EXPIRES_IN: 7d
   FRONTEND_URL: https://loyalfood.towersfy.com
   BACKEND_URL: https://apiloyalfood.towersfy.com
-  REACT_APP_API_URL: https://apiloyalfood.towersfy.com
+
 
 services:
   migrations:

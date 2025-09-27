@@ -504,8 +504,6 @@ const dashboardRepository = {
         }
 
         // 6. Respostas ao longo do tempo (reutilizando getResponseChart logic)
-        const responseChartData = await dashboardRepository.getResponseChart(tenantId);
-
         return {
             overallNPS: parseFloat(overallNpsScore.toFixed(1)),
             npsPromoters: overallPromoters,
@@ -516,9 +514,6 @@ const dashboardRepository = {
             radarChartData,
             demographics,
             topAttendants: topAttendantsWithGoals,
-            responseChartData,
-            feedbacks: await dashboardRepository.getFeedbacks(tenantId),
-            conversionChart: await dashboardRepository.getConversionChart(tenantId),
         };
     },
 

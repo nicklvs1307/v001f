@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'WhatsappConfig',
-    tableName: 'whatsapp_configs',
+    tableName: 'whatsappConfigs',
     timestamps: true,
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'

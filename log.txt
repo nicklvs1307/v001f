@@ -1,33 +1,137 @@
+{
+    "message": "Request failed with status code 502",
+    "name": "AxiosError",
+    "stack": "AxiosError: Request failed with status code 502\n    at Oe (https://loyalfood.towersfy.com/static/js/main.c73659fd.js:2:250822)\n    at XMLHttpRequest.g (https://loyalfood.towersfy.com/static/js/main.c73659fd.js:2:255412)\n    at xt.request (https://loyalfood.towersfy.com/static/js/main.c73659fd.js:2:266940)\n    at async Object.verifyToken (https://loyalfood.towersfy.com/static/js/main.c73659fd.js:2:106495)\n    at async https://loyalfood.towersfy.com/static/js/main.c73659fd.js:2:106926",
+    "config": {
+        "transitional": {
+            "silentJSONParsing": true,
+            "forcedJSONParsing": true,
+            "clarifyTimeoutError": false
+        },
+        "adapter": [
+            "xhr",
+            "http",
+            "fetch"
+        ],
+        "transformRequest": [
+            null
+        ],
+        "transformResponse": [
+            null
+        ],
+        "timeout": 0,
+        "xsrfCookieName": "XSRF-TOKEN",
+        "xsrfHeaderName": "X-XSRF-TOKEN",
+        "maxContentLength": -1,
+        "maxBodyLength": -1,
+        "env": {},
+        "headers": {
+            "Accept": "application/json, text/plain, */*",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwZTZmMTlmOS01ZGJjLTRjM2UtYWE5NS1lNDBjZTFhN2ZhYTIiLCJ0ZW5hbnRJZCI6bnVsbCwicm9sZSI6IlN1cGVyIEFkbWluIiwibmFtZSI6IlN1cGVyIEFkbWluIiwicHJvZmlsZVBpY3R1cmVVcmwiOm51bGwsInRlbmFudE5hbWUiOm51bGwsImlhdCI6MTc1ODk3OTE2OCwiZXhwIjoxNzU5NTgzOTY4fQ.BNgVCk68bfiOUKQhwGPECFhEObqvGKyGPyYdQrRmfco"
+        },
+        "baseURL": "/api",
+        "method": "post",
+        "url": "/auth/verify-token",
+        "allowAbsoluteUrls": true
+    },
+    "code": "ERR_BAD_RESPONSE",
+    "status": 502
+}
+
+
+login:1 [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) <input aria-invalid=​"false" id=​"password" name=​"password" placeholder=​"Sua senha" required type=​"password" class=​"MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedStart css-1ixds2g" value=​"admin123">​
+PrivateRoute.js:9 [PrivateRoute] Loading: false User: {userId: '0e6f19f9-5dbc-4c3e-aa95-e40ce1a7faa2', tenantId: null, role: 'Super Admin', name: 'Super Admin', profilePictureUrl: null, …}
+PrivateRoute.js:25 [PrivateRoute] User is authenticated, rendering Outlet.
+PrivateRoute.js:9 [PrivateRoute] Loading: false User: {userId: '0e6f19f9-5dbc-4c3e-aa95-e40ce1a7faa2', tenantId: null, role: 'Super Admin', name: 'Super Admin', profilePictureUrl: null, …}
+PrivateRoute.js:25 [PrivateRoute] User is authenticated, rendering Outlet.
+dashboardService.js:5  GET https://loyalfood.towersfy.com/api/dashboard/summary 502 (Bad Gateway)
+(anônimo) @ xhr.js:198
+xhr @ xhr.js:15
+ht @ dispatchRequest.js:51
+Promise.then
+_request @ Axios.js:163
+request @ Axios.js:40
+xt.<computed> @ Axios.js:211
+(anônimo) @ bind.js:5
+getDashboardSummary @ dashboardService.js:5
+(anônimo) @ DashboardPage.js:58
+(anônimo) @ DashboardPage.js:77
+rl @ react-dom.production.min.js:243
+wc @ react-dom.production.min.js:285
+lc @ react-dom.production.min.js:272
+Vo @ react-dom.production.min.js:127
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+authService.js:18  POST https://loyalfood.towersfy.com/api/auth/verify-token 502 (Bad Gateway)
+(anônimo) @ xhr.js:198
+xhr @ xhr.js:15
+ht @ dispatchRequest.js:51
+Promise.then
+_request @ Axios.js:163
+request @ Axios.js:40
+(anônimo) @ Axios.js:224
+(anônimo) @ bind.js:5
+verifyToken @ authService.js:18
+(anônimo) @ AuthContext.js:29
+(anônimo) @ AuthContext.js:38
+rl @ react-dom.production.min.js:243
+wc @ react-dom.production.min.js:285
+lc @ react-dom.production.min.js:272
+Vo @ react-dom.production.min.js:127
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+AuthContext.js:32 Falha na verificação do token q {message: 'Request failed with status code 502', name: 'AxiosError', code: 'ERR_BAD_RESPONSE', config: {…}, request: XMLHttpRequest, …}
+(anônimo) @ AuthContext.js:32
+await in (anônimo)
+(anônimo) @ AuthContext.js:38
+rl @ react-dom.production.min.js:243
+wc @ react-dom.production.min.js:285
+lc @ react-dom.production.min.js:272
+Vo @ react-dom.production.min.js:127
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+dashboardService.js:34  GET https://loyalfood.towersfy.com/api/dashboard/overall-results 502 (Bad Gateway)
+(anônimo) @ xhr.js:198
+xhr @ xhr.js:15
+ht @ dispatchRequest.js:51
+Promise.then
+_request @ Axios.js:163
+request @ Axios.js:40
+xt.<computed> @ Axios.js:211
+(anônimo) @ bind.js:5
+getOverallDashboardResults @ dashboardService.js:34
+(anônimo) @ DashboardPage.js:59
+(anônimo) @ DashboardPage.js:77
+rl @ react-dom.production.min.js:243
+wc @ react-dom.production.min.js:285
+lc @ react-dom.production.min.js:272
+Vo @ react-dom.production.min.js:127
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+login:1 [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) <input aria-invalid=​"false" id=​"password" name=​"password" placeholder=​"Sua senha" required type=​"password" class=​"MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedStart css-1ixds2g" value=​"superadmin123">​
+
+
 Postgres is up - executing command
-Database is up, running migrations...
-Sequelize CLI [Node: 18.20.8, CLI: 6.6.3, ORM: 6.37.7]
-Loaded configuration file "src/config/sequelize-config.js".
-Using environment "production".
-No migrations were executed, database schema was already up to date.
-npm notice
-npm notice New major version of npm available! 10.8.2 -> 11.6.1
-npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.1
-npm notice To update run: npm install -g npm@11.6.1
-npm notice
-Running seeders...
-Sequelize CLI [Node: 18.20.8, CLI: 6.6.3, ORM: 6.37.7]
-Loaded configuration file "src/config/sequelize-config.js".
-Using environment "production".
-== 20250922-create-super-admin-and-admin: migrating =======
-Seeder de Super Admin e Admin executado com sucesso!
-== 20250922-create-super-admin-and-admin: migrated (0.385s)
-== 20250922-populate-admin-data: migrating =======
-Seeder de dados de exemplo aprimorado executado com sucesso!
-== 20250922-populate-admin-data: migrated (0.036s)
-== 20250924200000-add-recompensas-permissions-to-admin: migrating =======
-== 20250924200000-add-recompensas-permissions-to-admin: migrated (0.016s)
-== 20250925100000-populate-survey-templates: migrating =======
-== 20250925100000-populate-survey-templates: migrated (0.002s)
-== 20250926150000-add-atendente-permissions-to-admin: migrating =======
-ERROR: null value in column "roleId" of relation "role_permissoes" violates not-null constraint
-ERROR DETAIL: Failing row contains (null, 1cc6f1c0-2869-4eab-a882-3e70354a7c95, 2025-09-27 12:55:25.863+00, 2025-09-27 12:55:25.863+00).
-npm notice
-npm notice New major version of npm available! 10.8.2 -> 11.6.1
-npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.1
-npm notice To update run: npm install -g npm@11.6.1
-npm notice
+Server.js is being executed!
+Conexão com o banco de dados estabelecida com sucesso (Sequelize).
+Server is running on port 5000
+Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
+Login request body: { email: 'admin@empresaexemplo.com', password: 'admin123' }
+Executing (default): SELECT "Usuario"."id", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."tenantId", "Usuario"."roleId", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."email" = 'admin@empresaexemplo.com';
+Executing (default): SELECT "name" FROM "roles" AS "Role" WHERE "Role"."id" = 'ffd2acff-4130-4302-ae53-1f3502766a87';
+Login request body: { email: 'superadmin@loyalfood.com', password: 'superadmin123' }
+Executing (default): SELECT "Usuario"."id", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."tenantId", "Usuario"."roleId", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."email" = 'superadmin@loyalfood.com';
+Executing (default): SELECT "name" FROM "roles" AS "Role" WHERE "Role"."id" = '99a3f323-b5af-4e95-9d40-a703bec54721';

@@ -30,10 +30,7 @@ exports.updateSurvey = asyncHandler(async (req, res) => {
     const { title, description, questions, startDate, endDate, isOpen, askForAttendant, status, expectedRespondents, dueDate, recompensaId, roletaId } = req.body;
     const tenantId = req.user.tenantId;
 
-    console.log(`[surveyController] Updating survey with ID: ${id}, Tenant ID: ${tenantId}`);
-    console.log(`[surveyController] Request Body: ${JSON.stringify(req.body)}`);
-
-    const updatedSurvey = await surveyRepository.updateSurvey(id, tenantId, {
+    const updatedSurvey = await surveyRepository.updateSurvey(id, {
       title,
       description,
       questions,
@@ -46,7 +43,7 @@ exports.updateSurvey = asyncHandler(async (req, res) => {
       dueDate,
       recompensaId,
       roletaId,
-    });
+    }, tenantId);
 
     if (!updatedSurvey) {
       throw new ApiError(404, 'Pesquisa não encontrada para atualização.');

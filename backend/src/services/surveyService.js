@@ -2,6 +2,12 @@ const surveyRepository = require('../repositories/surveyRepository');
 const ApiError = require('../errors/ApiError');
 
 const createSurvey = async (surveyData, requestingUser) => {
+  const { recompensaId, roletaId } = surveyData;
+
+  if (recompensaId && roletaId) {
+    throw new ApiError(400, 'Uma pesquisa não pode ter uma recompensa e uma roleta ao mesmo tempo.');
+  }
+
   const targetTenantId =
     requestingUser.role === "Super Admin" && surveyData.tenantId
       ? surveyData.tenantId
@@ -21,6 +27,12 @@ const createSurvey = async (surveyData, requestingUser) => {
 };
 
 const updateSurvey = async (surveyId, surveyData, requestingUser) => {
+  const { recompensaId, roletaId } = surveyData;
+
+  if (recompensaId && roletaId) {
+    throw new ApiError(400, 'Uma pesquisa não pode ter uma recompensa e uma roleta ao mesmo tempo.');
+  }
+
   const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
 
   const existingSurvey = await surveyRepository.getSurveyTenantIdAndCreatorId(surveyId, tenantId);

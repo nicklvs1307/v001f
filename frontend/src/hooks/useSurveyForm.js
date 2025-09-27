@@ -3,10 +3,16 @@ import { useState, useCallback, useEffect } from 'react';
 const useSurveyForm = (initialData = {}) => {
     const [survey, setSurvey] = useState(initialData);
     const [errors, setErrors] = useState({});
+    const [rewardType, setRewardType] = useState('');
 
     useEffect(() => {
         if (initialData && Object.keys(initialData).length > 0) {
             setSurvey(initialData);
+            if (initialData.recompensaId) {
+                setRewardType('recompensa');
+            } else if (initialData.roletaId) {
+                setRewardType('roleta');
+            }
         }
     }, [initialData]);
 
@@ -32,6 +38,23 @@ const useSurveyForm = (initialData = {}) => {
             }
             return updatedSurvey;
         });
+    }, []);
+
+    const handleRewardChange = useCallback((e) => {
+        const { name, value } = e.target;
+
+        if (name === 'rewardType') {
+            setRewardType(value);
+            if (value === 'recompensa') {
+                setSurvey(prev => ({ ...prev, roletaId: null }));
+            } else if (value === 'roleta') {
+                setSurvey(prev => ({ ...prev, recompensaId: null }));
+            } else {
+                setSurvey(prev => ({ ...prev, roletaId: null, recompensaId: null }));
+            }
+        } else {
+            setSurvey(prev => ({ ...prev, [name]: value }));
+        }
     }, []);
 
     const handleAddQuestion = useCallback(() => {
@@ -112,6 +135,8 @@ const useSurveyForm = (initialData = {}) => {
         handleAddOption,
         handleRemoveOption,
         handleRemoveQuestion,
+        rewardType,
+        handleRewardChange,
     };
 };
 

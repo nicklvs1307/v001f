@@ -9,6 +9,8 @@ module.exports = (sequelize, DataTypes) => {
       Pesquisa.belongsTo(models.Usuario, { foreignKey: 'creatorId', as: 'creator' });
       Pesquisa.hasMany(models.Pergunta, { foreignKey: 'pesquisaId', as: 'perguntas' });
       Pesquisa.hasMany(models.Resposta, { foreignKey: 'pesquisaId', as: 'respostas' });
+      Pesquisa.belongsTo(models.Recompensa, { foreignKey: 'recompensaId', as: 'recompensa' });
+      Pesquisa.belongsTo(models.Roleta, { foreignKey: 'roletaId', as: 'roleta' });
     }
   }
   Pesquisa.init({
@@ -62,6 +64,14 @@ module.exports = (sequelize, DataTypes) => {
     },
     dueDate: {
       type: DataTypes.DATE,
+      allowNull: true,
+    },
+    recompensaId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+    roletaId: {
+      type: DataTypes.UUID,
       allowNull: true,
     }
   }, {

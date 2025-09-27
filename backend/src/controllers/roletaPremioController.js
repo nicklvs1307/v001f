@@ -7,14 +7,14 @@ const ApiError = require('../errors/ApiError');
 // @route   POST /api/roleta-premios
 // @access  Private (Admin)
 exports.createPremio = asyncHandler(async (req, res) => {
-  const { nome, descricao, probabilidade, recompensaId } = req.body;
+  const { roletaId, nome, descricao, probabilidade, recompensaId } = req.body;
   const tenantId = req.user.tenantId;
 
-  if (!nome || !probabilidade || !recompensaId) {
-    throw new ApiError(400, 'Nome, probabilidade e ID da recompensa são obrigatórios.');
+  if (!roletaId || !nome || !probabilidade || !recompensaId) {
+    throw new ApiError(400, 'ID da roleta, nome, probabilidade e ID da recompensa são obrigatórios.');
   }
 
-  const premio = await roletaPremioRepository.createPremio({ tenantId, nome, descricao, probabilidade, recompensaId });
+  const premio = await roletaPremioRepository.createPremio({ tenantId, roletaId, nome, descricao, probabilidade, recompensaId });
   res.status(201).json(premio);
 });
 
@@ -47,9 +47,9 @@ exports.getPremioById = asyncHandler(async (req, res) => {
 exports.updatePremio = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const tenantId = req.user.tenantId;
-  const { nome, descricao, probabilidade, recompensaId } = req.body;
+  const { roletaId, nome, descricao, probabilidade, recompensaId } = req.body;
 
-  const updatedRows = await roletaPremioRepository.updatePremio(id, tenantId, { nome, descricao, probabilidade, recompensaId });
+  const updatedRows = await roletaPremioRepository.updatePremio(id, tenantId, { roletaId, nome, descricao, probabilidade, recompensaId });
 
   if (updatedRows === 0) {
     throw new ApiError(404, 'Prêmio da roleta não encontrado para atualização.');

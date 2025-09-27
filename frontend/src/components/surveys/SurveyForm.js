@@ -2,6 +2,8 @@ import React from 'react';
 import useSurveyForm from '../../hooks/useSurveyForm';
 import useCriterios from '../../hooks/useCriterios';
 import useAtendentes from '../../hooks/useAtendentes';
+import useRoletas from '../../hooks/useRoletas';
+import useRecompensas from '../../hooks/useRecompensas';
 import {
   Box,
   TextField,
@@ -18,6 +20,9 @@ import {
   Switch,
   Grid,
   Stack,
+  RadioGroup,
+  Radio,
+  FormLabel,
 } from '@mui/material';
 import { Alert } from '@mui/material';
 import { SURVEY_STATUS } from '../../constants/surveyStatus';
@@ -27,10 +32,12 @@ import { formatDateForInput } from '../../utils/dateUtils';
 
 const SurveyForm = ({ initialData = {}, onSubmit, loading = false, error = null }) => {
   const formActions = useSurveyForm(initialData);
-  const { survey, errors, handleChange, handleAddQuestion } = formActions;
+  const { survey, errors, handleChange, handleAddQuestion, rewardType, handleRewardChange } = formActions;
 
   const { criterios, loading: criteriosLoading, error: criteriosError } = useCriterios();
   const { atendentes, loading: atendentesLoading, error: atendentesError } = useAtendentes();
+  const { roletas, loading: roletasLoading, error: roletasError } = useRoletas();
+  const { recompensas, loading: recompensasLoading, error: recompensasError } = useRecompensas();
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Previne o comportamento padrão do formulário
@@ -60,6 +67,54 @@ const SurveyForm = ({ initialData = {}, onSubmit, loading = false, error = null 
           multiline
           rows={3}
         />
+      </Paper>
+
+      <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h6" gutterBottom>Recompensa da Pesquisa</Typography>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Tipo de Recompensa</FormLabel>
+          <RadioGroup row name="rewardType" value={rewardType} onChange={handleRewardChange}>
+            <FormControlLabel value="" control={<Radio />} label="Nenhuma" />
+            <FormControlLabel value="recompensa" control={<Radio />} label="Recompensa Direta" />
+            <FormControlLabel value="roleta" control={<Radio />} label="Roleta" />
+          </RadioGroup>
+        </FormControl>
+
+        {rewardType === 'recompensa' && (
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="recompensa-label">Selecione a Recompensa</InputLabel>
+            <Select
+              labelId="recompensa-label"
+              name="recompensaId"
+              value={survey.recompensaId || ''}
+              onChange={handleRewardChange}
+              label="Selecione a Recompensa"
+            >
+              {recompensasLoading ? <MenuItem>Carregando...</MenuItem> : recompensas.map(r => (
+                <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
+              ))}
+            </Select>
+            {recompensasError && <FormHelperText error>{recompensasError}</FormHelperText>}
+          </FormControl>
+        )}
+
+        {rewardType === 'roleta' && (
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="roleta-label">Selecione a Roleta</InputLabel>
+            <Select
+              labelId="roleta-label"
+              name="roletaId"
+              value={survey.roletaId || ''}
+              onChange={handleRewardChange}
+              label="Selecione a Roleta"
+            >
+              {roletasLoading ? <MenuItem>Carregando...</MenuItem> : roletas.map(r => (
+                <MenuItem key={r.id} value={r.id}>{r.nome}</MenuItem>
+              ))}
+            </Select>
+            {roletasError && <FormHelperText error>{roletasError}</FormHelperText>}
+          </FormControl>
+        )}
       </Paper>
 
       <Paper elevation={2} sx={{ p: 3, mb: 3 }}>

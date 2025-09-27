@@ -26,6 +26,7 @@ const atendenteMetaRoutes = require('./atendenteMetaRoutes');
 const whatsappConfigRoutes = require('./whatsappConfigRoutes');
 const roletaRoutes = require('./roletaRoutes');
 const whatsappWebhookRoutes = require('./whatsappWebhookRoutes');
+const roletaAdminRoutes = require('./roletaAdminRoutes');
 
 module.exports = (router) => {
   // Rota para Health Check do Docker
@@ -57,4 +58,5 @@ module.exports = (router) => {
   router.use('/gmb-review', gmbReviewRoutes);
   router.use('/roleta-premios', roletaPremioRoutes);
   router.use('/campanhas', campanhaRoutes);
+  router.use('/roletas', roletaAdminRoutes);
 };

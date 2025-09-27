@@ -13,6 +13,11 @@ const roletaService = {
     const response = await apiAuthenticated.get(`${API_URL}/config/${clientId}`);
     return response.data;
   },
+
+  getAllRoletas: async () => {
+    const response = await apiAuthenticated.get('/roletas');
+    return response.data;
+  },
 };
 
 export default roletaService;

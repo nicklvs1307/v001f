@@ -35,6 +35,8 @@ const createSurvey = async (surveyData) => {
       dueDate,
       startDate,
       endDate,
+      recompensaId,
+      roletaId,
     }, { transaction });
 
     if (questions && questions.length > 0) {

@@ -345,7 +345,7 @@ const SurveyListPage = () => {
                                     variant="outlined" 
                                     size="small" 
                                     sx={{ mr: 1 }} 
-                                    onClick={() => window.open(`/pesquisa/${survey.tenantId}/${survey.id}`, '_blank')}
+                                    onClick={() => window.open(survey.publicUrl, '_blank')}
                                 >
                                     <VisibilityIcon fontSize="small" sx={{ mr: 0.5 }} /> Visualizar
                                 </Button>

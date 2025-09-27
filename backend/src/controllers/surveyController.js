@@ -25,14 +25,25 @@ exports.getSurveyById = asyncHandler(async (req, res) => {
   res.status(200).json(survey);
 });
 
-exports.updateSurvey = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  const updatedSurvey = await surveyService.updateSurvey(id, req.body, req.user);
-  res.status(200).json({
-    message: "Pesquisa atualizada com sucesso!",
-    survey: updatedSurvey,
-  });
-});
+  updateSurvey: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { title, description, questions, startDate, endDate, isOpen, askForAttendant, status, expectedRespondents, dueDate, recompensaId, roletaId } = req.body;
+    const tenantId = req.user.tenantId;
+
+    const updatedSurvey = await surveyRepository.updateSurvey(id, tenantId, {
+      title,
+      description,
+      questions,
+      startDate,
+      endDate,
+      isOpen,
+      askForAttendant,
+      status,
+      expectedRespondents,
+      dueDate,
+      recompensaId,
+      roletaId,
+    });
 
 exports.deleteSurvey = asyncHandler(async (req, res) => {
   const { id } = req.params;

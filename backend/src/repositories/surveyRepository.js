@@ -115,6 +115,8 @@ const updateSurvey = async (id, surveyData, tenantId = null) => {
     dueDate,
     startDate,
     endDate,
+    recompensaId,
+    roletaId,
   } = surveyData;
 
   const transaction = await sequelize.transaction();
@@ -123,7 +125,7 @@ const updateSurvey = async (id, surveyData, tenantId = null) => {
 
     // 1. Atualiza os dados da pesquisa principal
     const [updatedRows] = await Pesquisa.update({
-      title, description, isOpen, askForAttendant, expectedRespondents, atendenteId, status, dueDate, startDate, endDate
+      title, description, isOpen, askForAttendant, expectedRespondents, atendenteId, status, dueDate, startDate, endDate, recompensaId, roletaId
     }, { where: whereClause, transaction });
 
     if (updatedRows === 0) {

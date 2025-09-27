@@ -1,6 +1,6 @@
 {
     "status": "error",
-    "code": "HTTP_400",
-    "message": "ID da roleta, nome, probabilidade e ID da recompensa são obrigatórios.",
-    "details": "Error: ID da roleta, nome, probabilidade e ID da recompensa são obrigatórios.\n    at /usr/src/app/src/controllers/roletaPremioController.js:14:11\n    at asyncUtilWrap (/usr/src/app/node_modules/express-async-handler/index.js:3:20)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at validate (/usr/src/app/src/middlewares/validationMiddleware.js:9:3)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at middleware (/usr/src/app/node_modules/express-validator/lib/middlewares/check.js:16:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
+    "code": "HTTP_500",
+    "message": "roletaPremioRepository.findAllByTenant is not a function",
+    "details": "TypeError: roletaPremioRepository.findAllByTenant is not a function\n    at /usr/src/app/src/controllers/roletaController.js:128:48\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
 }

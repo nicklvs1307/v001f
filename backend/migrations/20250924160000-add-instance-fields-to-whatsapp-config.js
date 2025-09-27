@@ -31,6 +31,7 @@ module.exports = {
       }
     }
   }
+  ,
   async down (queryInterface, Sequelize) {
     const tables = await queryInterface.showAllTables();
     if (tables.includes('whatsapp_configs')) {

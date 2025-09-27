@@ -62,6 +62,7 @@ const UserForm = ({ initialData, onUserCreated, onUserUpdated, onClose }) => { /
                 id="name"
                 label="Nome"
                 name="name"
+                autoComplete="name"
                 autoFocus
                 value={formData.name}
                 onChange={handleChange}
@@ -74,6 +75,7 @@ const UserForm = ({ initialData, onUserCreated, onUserUpdated, onClose }) => { /
                 label="Email"
                 name="email"
                 type="email"
+                autoComplete="email"
                 value={formData.email}
                 onChange={handleChange}
                 disabled={initialData ? true : false}
@@ -85,6 +87,7 @@ const UserForm = ({ initialData, onUserCreated, onUserUpdated, onClose }) => { /
                 label="Senha"
                 name="password"
                 type="password"
+                autoComplete="new-password"
                 value={formData.password}
                 onChange={handleChange}
                 placeholder={initialData ? 'Deixe em branco para não alterar' : ''}

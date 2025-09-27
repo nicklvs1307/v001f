@@ -3,8 +3,8 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const tables = await queryInterface.showAllTables();
-    if (!tables.includes('roletaPremios')) {
-      await queryInterface.createTable('roletaPremios', {
+    if (!tables.includes('roleta_premios')) {
+      await queryInterface.createTable('roleta_premios', {
         id: {
           type: Sequelize.UUID,
           defaultValue: Sequelize.UUIDV4,
@@ -65,8 +65,8 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     const tables = await queryInterface.showAllTables();
-    if (tables.includes('roletaPremios')) {
-      await queryInterface.dropTable('roletaPremios');
+    if (tables.includes('roleta_premios')) {
+      await queryInterface.dropTable('roleta_premios');
     }
   },
 };

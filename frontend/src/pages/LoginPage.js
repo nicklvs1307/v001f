@@ -47,6 +47,7 @@ const LoginPage = () => {
                         fullWidth
                         id="email"
                         name="email"
+                        autoComplete="email"
                         placeholder="seu@email.com"
                         required
                         value={email}
@@ -77,6 +78,7 @@ const LoginPage = () => {
                         type="password"
                         id="password"
                         name="password"
+                        autoComplete="current-password"
                         placeholder="Sua senha"
                         required
                         value={password}

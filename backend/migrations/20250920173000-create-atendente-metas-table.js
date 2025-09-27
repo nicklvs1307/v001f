@@ -3,8 +3,8 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const tables = await queryInterface.showAllTables();
-    if (!tables.includes('atendenteMetas')) {
-      await queryInterface.createTable('atendenteMetas', {
+    if (!tables.includes('atendente_metas')) {
+      await queryInterface.createTable('atendente_metas', {
         id: {
           type: Sequelize.UUID,
           defaultValue: Sequelize.UUIDV4,
@@ -63,8 +63,8 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     const tables = await queryInterface.showAllTables();
-    if (tables.includes('atendenteMetas')) {
-      await queryInterface.dropTable('atendenteMetas');
+    if (tables.includes('atendente_metas')) {
+      await queryInterface.dropTable('atendente_metas');
     }
   },
 };

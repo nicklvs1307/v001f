@@ -1,4 +1,4 @@
-const { Pesquisa, Pergunta, Resposta, Tenant, Atendente } = require("../../models"); // Adicionar Atendente
+const { Pesquisa, Pergunta, Resposta, Tenant, Atendente, Roleta } = require("../../models"); // Adicionar Atendente e Roleta
 const { sequelize } = require("../database"); // Importa a instância do Sequelize para transações
 const ApiError = require("../errors/ApiError"); // Importar ApiError para validações
 const { v4: uuidv4 } = require('uuid'); // Adicionar import do uuid
@@ -28,6 +28,11 @@ const getPublicSurveyById = async (id) => {
       as: 'tenant', // Usar 'as' se houver uma associação definida no modelo Pesquisa
       attributes: ['name', 'logoUrl', 'description', 'primaryColor', 'secondaryColor'], // Selecionar os atributos desejados do Tenant
       required: false, // Adicionar para fazer um LEFT JOIN
+    }, {
+      model: Roleta, // Incluir o modelo Roleta
+      as: 'roleta', // Usar 'as' se houver uma associação definida no modelo Pesquisa
+      attributes: ['id', 'nome', 'descricao', 'active'], // Selecionar os atributos desejados da Roleta
+      required: false, // Adicionar para fazer um LEFT JOIN
     }],
   });
 
@@ -52,6 +57,13 @@ const getPublicSurveyById = async (id) => {
     restaurantDescription: survey.tenant ? survey.tenant.description : null,
     primaryColor: survey.tenant ? survey.tenant.primaryColor : null,
     secondaryColor: survey.tenant ? survey.tenant.secondaryColor : null,
+    // Adicionar informações da Roleta
+    roleta: survey.roleta ? {
+      id: survey.roleta.id,
+      nome: survey.roleta.nome,
+      descricao: survey.roleta.descricao,
+      active: survey.roleta.active,
+    } : null,
     questions: survey.perguntas.map(question => {
       let parsedOptions = question.options;
       if (typeof question.options === 'string') {

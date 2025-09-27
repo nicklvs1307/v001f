@@ -9,20 +9,21 @@ module.exports = {
     if (adminRole) {
       let permissionId;
       const permission = await queryInterface.rawSelect('permissoes', {
-        where: { name: 'cupons:validate' },
+        where: { module: 'cupons', action: 'validate' },
       }, ['id']);
 
       if (!permission) {
         // Cria a permissão se ela não existir
         await queryInterface.bulkInsert('permissoes', [{
           id: Sequelize.literal('uuid_generate_v4()'),
-          name: 'cupons:validate',
+          module: 'cupons',
+          action: 'validate',
           description: 'Permite a validação de cupons',
           createdAt: new Date(),
           updatedAt: new Date()
         }]);
         permissionId = await queryInterface.rawSelect('permissoes', {
-          where: { name: 'cupons:validate' },
+          where: { module: 'cupons', action: 'validate' },
         }, ['id']);
       } else {
         permissionId = permission;
@@ -53,7 +54,7 @@ module.exports = {
     }, ['id']);
 
     const permission = await queryInterface.rawSelect('permissoes', {
-      where: { name: 'cupons:validate' },
+      where: { module: 'cupons', action: 'validate' },
     }, ['id']);
 
     if (adminRole && permission) {

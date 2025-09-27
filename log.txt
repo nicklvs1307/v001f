@@ -1,20 +1,29 @@
-URL da solicitação
-https://loyalfood.towersfy.com/api/cupons/validate
-Método da solicitação
-POST
-Código de status
-403 Forbidden
-{"message":"Você não tem permissão para executar esta ação."}
+== 20250925103953-add-gender-to-clients: migrating =======
+== 20250925103953-add-gender-to-clients: migrated (0.028s)
 
-URL da solicitação
-https://loyalfood.towersfy.com/api/roleta-premios
-Método da solicitação
-GET
-Código de status
-500 Internal Server Error
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "column RoletaPremio.roletaId does not exist",
-    "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)\n    at async RoletaPremio.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)\n    at async /usr/src/app/src/controllers/roletaPremioController.js:26:19"
-}
+== 20250927100000-add-update-delete-permissions-to-atendentes: migrating =======
+== 20250927100000-add-update-delete-permissions-to-atendentes: migrated (0.020s)
+
+== 20250927110000-update-cupom-recompensa-fk-on-delete: migrating =======
+== 20250927110000-update-cupom-recompensa-fk-on-delete: migrated (0.010s)
+
+== 20250927120000-add-roletaId-to-roleta-premios: migrating =======
+
+ERROR: relation "roletas" does not exist
+
+
+
+== 20250926150000-add-atendente-permissions-to-admin: migrating =======
+Adicionadas 2 novas permissões de atendentes para o cargo Admin.
+== 20250926150000-add-atendente-permissions-to-admin: migrated (0.007s)
+
+== 20250927130000-add-cupom-validate-permission-to-admin: migrating =======
+
+ERROR: column permissoes.name does not exist
+
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.6.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.1
+npm notice To update run: npm install -g npm@11.6.1
+npm notice
+$

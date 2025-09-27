@@ -6,40 +6,32 @@ const { Role, Permissao, RolePermissao } = require("../../models"); // Importa o
 // Middleware para verificar o token e autenticar o usuário
 const protect = async (req, res, next) => {
   try {
-    console.log(`[Auth Middleware] Request: ${req.method} ${req.originalUrl}`); // Adicionado para depuração
+    console.log(`[Auth Middleware] Request: ${req.method} ${req.originalUrl}`);
 
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-        // Extrai o token do cabeçalho
-        const token = req.headers.authorization.split(" ")[1];
-
-        // Verifica o token
-        const decoded = jwt.verify(token, config.jwtSecret);
-
-        // Anexa os dados do usuário decodificados à requisição para uso posterior
-        req.user = decoded;
-
-        // Se o usuário tiver um tenantId, busca as cores do tenant e anexa ao req.user
-        if (req.user.tenantId) {
-          const { Tenant } = require("../../models"); // Importa o modelo Tenant
-          const tenant = await Tenant.findByPk(req.user.tenantId);
-          if (tenant) {
-            req.user.primaryColor = tenant.primaryColor;
-            req.user.secondaryColor = tenant.secondaryColor;
-          }
-        }
-
-        next();
-    } else {
-      // Se não houver token no cabeçalho, lança o erro
+    if (!req.headers.authorization || !req.headers.authorization.startsWith("Bearer")) {
       throw new ApiError(401, "Nenhum token fornecido. Acesso não autorizado.");
     }
+
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, config.jwtSecret);
+
+    req.user = decoded;
+
+    if (req.user.tenantId) {
+      const { Tenant } = require("../../models");
+      const tenant = await Tenant.findByPk(req.user.tenantId);
+      if (tenant) {
+        req.user.primaryColor = tenant.primaryColor;
+        req.user.secondaryColor = tenant.secondaryColor;
+      }
+    }
+
+    next();
   } catch (error) {
     console.error('Erro no middleware de proteção:', error.message);
-    // Garante que o erro seja passado para o próximo middleware de erro
-    next(new ApiError(401, "Token inválido ou expirado. Acesso não autorizado."));
+    // Cria um novo ApiError para padronizar a resposta de erro de autenticação
+    const authError = new ApiError(401, "Token inválido ou expirado. Acesso não autorizado.");
+    next(authError); // Passa o erro padronizado para o Express
   }
 };
 

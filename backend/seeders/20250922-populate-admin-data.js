@@ -87,8 +87,9 @@ module.exports = {
       const allRecompensas = await queryInterface.sequelize.query(`SELECT id, name FROM recompensas WHERE "tenantId" = :tenantId`, { replacements: { tenantId }, type: Sequelize.QueryTypes.SELECT, transaction });
 
       // 1.5. Criar Cupons de Exemplo
+      const existingCouponsCount = (await queryInterface.sequelize.query(`SELECT COUNT(id) as count FROM cupons WHERE "tenantId" = :tenantId`, { replacements: { tenantId }, type: Sequelize.QueryTypes.SELECT, transaction }))[0].count;
       const cuponsToInsert = [];
-      if (clients.length > 0 && allRecompensas.length > 0) {
+      if (clients.length > 0 && allRecompensas.length > 0 && existingCouponsCount < 1) {
         for (let i = 0; i < clients.length * 2; i++) { // Gerar 2 cupons por cliente, por exemplo
           const client = clients[i % clients.length];
           const recompensa = allRecompensas[i % allRecompensas.length];

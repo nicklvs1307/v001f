@@ -60,8 +60,9 @@ module.exports = {
 
       await queryInterface.bulkInsert('permissoes', permissions, { transaction, ignoreDuplicates: true });
 
-      const allPermissions = await queryInterface.sequelize.query(
-        `SELECT id, module, action FROM permissoes`,
+      const permissionIdentifiers = permissions.map(p => `('${p.module}', '${p.action}')`).join(',');
+      const createdPermissions = await queryInterface.sequelize.query(
+        `SELECT id FROM permissoes WHERE (module, action) IN (${permissionIdentifiers})`,
         { type: Sequelize.QueryTypes.SELECT, transaction }
       );
 
@@ -69,7 +70,7 @@ module.exports = {
       const rolePermissions = [];
 
       // Super Admin tem todas as permissões
-      allPermissions.forEach(perm => {
+      createdPermissions.forEach(perm => {
         rolePermissions.push({
           roleId: superAdminRoleId,
           permissaoId: perm.id,
@@ -79,7 +80,7 @@ module.exports = {
       });
 
       // Admin tem todas as permissões (conforme solicitação)
-      allPermissions.forEach(perm => {
+      createdPermissions.forEach(perm => {
         rolePermissions.push({
           roleId: adminRoleId,
           permissaoId: perm.id,
@@ -178,8 +179,22 @@ module.exports = {
       }
 
       // Remover permissões (apenas as criadas neste seeder)
+      const permissionsToDelete = [
+        { module: 'users', action: 'read' }, { module: 'users', action: 'update' },
+        { module: 'tenants', action: 'read' }, { module: 'tenants', action: 'update' },
+        { module: 'roles', action: 'read' }, { module: 'roles', action: 'create' },
+        { module: 'surveys', action: 'read' }, { module: 'surveys', action: 'create' },
+        { module: 'dashboard', action: 'read' }, { module: 'dashboard', action: 'create' },
+        { module: 'atendentes', action: 'read' }, { module: 'atendentes', action: 'create' },
+        { module: 'criterios', action: 'read' }, { module: 'criterios', action: 'create' },
+        { module: 'recompensas', action: 'read' }, { module: 'recompensas', action: 'create' },
+        { module: 'cupons', action: 'read' }, { module: 'cupons', action: 'create' },
+      ];
+      
+      const orConditions = permissionsToDelete.map(p => ({ module: p.module, action: p.action }));
+
       await queryInterface.bulkDelete('permissoes', {
-        module: ['users', 'tenants', 'roles', 'surveys', 'dashboard']
+        [Sequelize.Op.or]: orConditions
       }, { transaction });
 
       // Remover roles

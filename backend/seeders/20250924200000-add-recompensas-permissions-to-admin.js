@@ -59,6 +59,36 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    // Lógica para remover as permissões, se necessário
+    const adminRole = await queryInterface.rawSelect('roles', {
+      where: { name: 'Admin' },
+    }, ['id']);
+
+    if (!adminRole) {
+      console.log("O cargo 'Admin' não foi encontrado. Pulando a remoção de permissões de recompensas.");
+      return;
+    }
+
+    const permissions = [
+      { module: 'recompensas', action: 'read' },
+      { module: 'recompensas', action: 'create' },
+      { module: 'recompensas', action: 'update' },
+      { module: 'recompensas', action: 'delete' },
+    ];
+
+    for (const p of permissions) {
+      const permission = await queryInterface.sequelize.query(
+        `SELECT id FROM permissoes WHERE module = :module AND action = :action`,
+        { replacements: { module: p.module, action: p.action }, type: Sequelize.QueryTypes.SELECT }
+      );
+
+      if (permission && permission.length > 0) {
+        const permissionId = permission[0].id;
+        await queryInterface.bulkDelete('role_permissoes', {
+          roleId: adminRole,
+          permissaoId: permissionId,
+        });
+        console.log(`Associação da permissão '${p.module}:${p.action}' removida do cargo Admin.`);
+      }
+    }
   }
 };

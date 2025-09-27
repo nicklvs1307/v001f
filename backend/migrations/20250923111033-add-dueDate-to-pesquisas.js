@@ -3,13 +3,19 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.addColumn('pesquisas', 'dueDate', {
-      type: Sequelize.DATE,
-      allowNull: true,
-    });
+    const tableDescription = await queryInterface.describeTable('pesquisas');
+    if (!tableDescription.dueDate) {
+      await queryInterface.addColumn('pesquisas', 'dueDate', {
+        type: Sequelize.DATE,
+        allowNull: true,
+      });
+    }
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.removeColumn('pesquisas', 'dueDate');
+    const tableDescription = await queryInterface.describeTable('pesquisas');
+    if (tableDescription.dueDate) {
+      await queryInterface.removeColumn('pesquisas', 'dueDate');
+    }
   }
 };

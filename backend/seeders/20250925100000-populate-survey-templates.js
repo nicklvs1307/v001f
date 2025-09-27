@@ -119,7 +119,18 @@ module.exports = {
       }
     ];
 
-    await queryInterface.bulkInsert('survey_templates', templates, {});
+    const templateIds = templates.map(t => t.id);
+    const existingTemplates = await queryInterface.sequelize.query(
+      `SELECT id FROM survey_templates WHERE id IN (:templateIds)`,
+      { replacements: { templateIds }, type: Sequelize.QueryTypes.SELECT }
+    );
+    const existingTemplateIds = new Set(existingTemplates.map(t => t.id));
+
+    const templatesToInsert = templates.filter(t => !existingTemplateIds.has(t.id));
+
+    if (templatesToInsert.length > 0) {
+      await queryInterface.bulkInsert('survey_templates', templatesToInsert, {});
+    }
   },
 
   down: async (queryInterface, Sequelize) => {

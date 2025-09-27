@@ -2,12 +2,18 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.addColumn('tenants', 'reportPhoneNumber', {
-      type: Sequelize.STRING,
-      allowNull: true,
-    });
+    const tableDescription = await queryInterface.describeTable('tenants');
+    if (!tableDescription.reportPhoneNumber) {
+      await queryInterface.addColumn('tenants', 'reportPhoneNumber', {
+        type: Sequelize.STRING,
+        allowNull: true,
+      });
+    }
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeColumn('tenants', 'reportPhoneNumber');
+    const tableDescription = await queryInterface.describeTable('tenants');
+    if (tableDescription.reportPhoneNumber) {
+      await queryInterface.removeColumn('tenants', 'reportPhoneNumber');
+    }
   }
 };

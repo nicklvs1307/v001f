@@ -16,12 +16,21 @@ module.exports = {
     }, ['id']);
 
     if (adminRole && surveyUpdatePermission) {
-      await queryInterface.bulkInsert('role_permissoes', [{
-        roleId: adminRole,
-        permissaoId: surveyUpdatePermission,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }]);
+      const existingAssociation = await queryInterface.rawSelect('role_permissoes', {
+        where: {
+          roleId: adminRole,
+          permissaoId: surveyUpdatePermission,
+        },
+      }, ['roleId']);
+
+      if (!existingAssociation) {
+        await queryInterface.bulkInsert('role_permissoes', [{
+          roleId: adminRole,
+          permissaoId: surveyUpdatePermission,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }]);
+      }
     } else {
       if (!adminRole) {
         console.log("Função 'Admin' não encontrada.");

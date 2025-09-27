@@ -2,13 +2,19 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn('clients', 'gender', {
-      type: Sequelize.STRING,
-      allowNull: true,
-    });
+    const tableDescription = await queryInterface.describeTable('clients');
+    if (!tableDescription.gender) {
+      await queryInterface.addColumn('clients', 'gender', {
+        type: Sequelize.STRING,
+        allowNull: true,
+      });
+    }
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeColumn('clients', 'gender');
+    const tableDescription = await queryInterface.describeTable('clients');
+    if (tableDescription.gender) {
+      await queryInterface.removeColumn('clients', 'gender');
+    }
   }
 };

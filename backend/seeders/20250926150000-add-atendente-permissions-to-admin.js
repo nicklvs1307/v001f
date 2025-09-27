@@ -16,25 +16,40 @@ module.exports = {
       { type: Sequelize.QueryTypes.SELECT }
     );
 
+    const permissionIds = permissions.map(p => p.id);
+
+    const existingRolePermissions = await queryInterface.sequelize.query(
+        `SELECT "permissaoId" FROM role_permissoes WHERE "roleId" = :roleId AND "permissaoId" IN (:permissionIds)`,
+        {
+            replacements: { roleId: adminRole, permissionIds: permissionIds },
+            type: Sequelize.QueryTypes.SELECT
+        }
+    );
+
+    const existingPermissionIds = new Set(existingRolePermissions.map(rp => rp.permissaoId));
+
     const permissionsToInsert = [];
     const requiredActions = new Set(['update', 'delete']);
 
     for (const action of requiredActions) {
         const permission = permissions.find(p => p.action === action);
-        if (permission) {
+        if (permission && !existingPermissionIds.has(permission.id)) {
             permissionsToInsert.push({
                 roleId: adminRole,
                 permissaoId: permission.id,
                 createdAt: new Date(),
                 updatedAt: new Date(),
             });
-        } else {
+        } else if (!permission) {
             console.log(`A permissão 'atendentes:${action}' não foi encontrada. Verifique se ela existe na tabela 'permissoes'.`);
         }
     }
     
     if (permissionsToInsert.length > 0) {
       await queryInterface.bulkInsert('role_permissoes', permissionsToInsert, {});
+      console.log(`Adicionadas ${permissionsToInsert.length} novas permissões de atendentes para o cargo Admin.`);
+    } else {
+      console.log("Nenhuma nova permissão de atendente para adicionar ao cargo Admin.");
     }
   },
 

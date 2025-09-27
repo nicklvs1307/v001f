@@ -1,4 +1,4 @@
-const { Cupom, Recompensa } = require('../../models');
+const { Cupom, Recompensa, Client } = require('../../models');
 const { Op, fn, col } = require('sequelize');
 
 class CupomRepository {
@@ -83,6 +83,39 @@ class CupomRepository {
       expiringSoonCupons,
       cuponsByType: formattedCuponsByType,
     };
+  }
+
+  async getCupomByCodigo(codigo, tenantId) {
+    const whereClause = { codigo };
+    if (tenantId) {
+      whereClause.tenantId = tenantId;
+    }
+    return Cupom.findOne({
+      where: whereClause,
+      include: [{ model: Recompensa, as: 'recompensa' }, { model: Client, as: 'cliente' }],
+    });
+  }
+
+  async getCupomById(id, tenantId) {
+    const whereClause = { id };
+    if (tenantId) {
+      whereClause.tenantId = tenantId;
+    }
+    return Cupom.findOne({
+      where: whereClause,
+      include: [{ model: Recompensa, as: 'recompensa' }, { model: Client, as: 'cliente' }],
+    });
+  }
+
+  async updateCupom(id, tenantId, cupomData) {
+    const [updatedRows] = await Cupom.update(cupomData, {
+      where: { id, tenantId },
+      returning: true,
+    });
+    if (updatedRows > 0) {
+      return this.getCupomById(id, tenantId);
+    }
+    return null;
   }
 }
 

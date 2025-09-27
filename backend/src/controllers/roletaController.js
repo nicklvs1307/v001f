@@ -109,7 +109,7 @@ exports.getRoletaConfig = asyncHandler(async (req, res) => {
     return res.status(200).json({ items: [] });
   }
 
-  const premios = await roletaPremioRepository.findAll({ roletaId: pesquisa.roletaId });
+  const premios = await roletaPremioRepository.findAll({ tenantId: pesquisa.tenantId, roletaId: pesquisa.roletaId });
 
   if (!premios || premios.length === 0) {
     return res.status(200).json({ items: [] });

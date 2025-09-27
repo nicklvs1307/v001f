@@ -17,7 +17,7 @@ const getAtendentesByTenantId = async (tenantId) => {
 
 const getPublicSurveyById = async (id) => {
   const survey = await Pesquisa.findByPk(id, {
-    attributes: ['id', 'title', 'description', 'createdAt', 'updatedAt', 'isOpen', 'tenantId', 'askForAttendant', 'status'], // Adicionar 'status'
+    attributes: ['id', 'title', 'description', 'createdAt', 'updatedAt', 'isOpen', 'tenantId', 'askForAttendant', 'status', 'recompensaId', 'roletaId'], // Adicionar 'status', 'recompensaId', 'roletaId'
     include: [{
       model: Pergunta,
       as: 'perguntas', // Certifique-se de que 'as' corresponde à associação definida no modelo Pesquisa

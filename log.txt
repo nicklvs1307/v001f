@@ -1,7 +1,158 @@
+root@Server-Dify:~/loyalfood/v001f# docker exec -it 68cf030d1939 /bin/sh
+$ npx sequelize-cli db:drop
+npx sequelize-cli db:create
+npx sequelize-cli db:migrate
+npx sequelize-cli db:seed:all
+
+Sequelize CLI [Node: 18.20.8, CLI: 6.6.3, ORM: 6.37.7]
+
+Loaded configuration file "src/config/sequelize-config.js".
+Using environment "production".
+Database loyalfood dropped.
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.6.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.1
+npm notice To update run: npm install -g npm@11.6.1
+npm notice
+
+Sequelize CLI [Node: 18.20.8, CLI: 6.6.3, ORM: 6.37.7]
+
+Loaded configuration file "src/config/sequelize-config.js".
+Using environment "production".
+Database loyalfood created.
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.6.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.1
+npm notice To update run: npm install -g npm@11.6.1
+npm notice
+
+Sequelize CLI [Node: 18.20.8, CLI: 6.6.3, ORM: 6.37.7]
+
+Loaded configuration file "src/config/sequelize-config.js".
+Using environment "production".
+== 20250919162824-initial-schema: migrating =======
+== 20250919162824-initial-schema: migrated (0.093s)
+
+== 20250919183347-add-fields-to-roles-table: migrating =======
+== 20250919183347-add-fields-to-roles-table: migrated (0.055s)
+
+== 20250919183750-add-fields-to-respostas-table: migrating =======
+== 20250919183750-add-fields-to-respostas-table: migrated (0.044s)
+
+== 20250919200000-add-restaurant-appearance-fields-to-tenants: migrating =======
+== 20250919200000-add-restaurant-appearance-fields-to-tenants: migrated (0.050s)
+
+== 20250919210000-add-pesquisaId-to-respostas: migrating =======
+== 20250919210000-add-pesquisaId-to-respostas: migrated (0.039s)
+
+== 20250919220000-add-pesquisaId-to-respostas-correct: migrating =======
+== 20250919220000-add-pesquisaId-to-respostas-correct: migrated (0.032s)
+
+== 20250919230000-add-dueDate-status-to-pesquisas: migrating =======
+== 20250919230000-add-dueDate-status-to-pesquisas: migrated (0.041s)
+
+== 20250919233000-create-criterio-and-add-to-pergunta: migrating =======
+== 20250919233000-create-criterio-and-add-to-pergunta: migrated (0.040s)
+
+== 20250920100000-create_clients_table: migrating =======
+== 20250920100000-create_clients_table: migrated (0.028s)
+
+== 20250920103000-add-profile-picture-to-usuarios: migrating =======
+== 20250920103000-add-profile-picture-to-usuarios: migrated (0.039s)
+
+== 20250920104000-create-atendentes-table: migrating =======
+== 20250920104000-create-atendentes-table: migrated (0.053s)
+
+== 20250920105000-add-atendenteId-to-respostas: migrating =======
+== 20250920105000-add-atendenteId-to-respostas: migrated (0.024s)
+
+== 20250920110000-create-recompensas-table: migrating =======
+== 20250920110000-create-recompensas-table: migrated (0.020s)
+
+== 20250920111000-create-cupons-table: migrating =======
+== 20250920111000-create-cupons-table: migrated (0.036s)
+
+== 20250920160000-add-tenantId-to-respostas: migrating =======
+== 20250920160000-add-tenantId-to-respostas: migrated (0.028s)
+
+== 20250920170000-create-survey-templates-table: migrating =======
+== 20250920170000-create-survey-templates-table: migrated (0.023s)
+
+== 20250920173000-create-atendente-metas-table: migrating =======
+== 20250920173000-create-atendente-metas-table: migrated (0.025s)
+
+== 20250920180000-create-gmb-tables: migrating =======
+== 20250920180000-create-gmb-tables: migrated (0.043s)
+
+== 20250920190000-create-roleta-premios: migrating =======
+== 20250920190000-create-roleta-premios: migrated (0.030s)
+
+== 20250921200000-add-required-to-perguntas: migrating =======
+== 20250921200000-add-required-to-perguntas: migrated (0.034s)
+
+== 20250922002119-alter-cupom-clienteId-to-client: migrating =======
+== 20250922002119-alter-cupom-clienteId-to-client: migrated (0.020s)
+
+== 20250922013934-add-unique-constraint-to-client-phone: migrating =======
+== 20250922013934-add-unique-constraint-to-client-phone: migrated (0.014s)
+
+== 20250923094629-create-whatsapp-config: migrating =======
+== 20250923094629-create-whatsapp-config: migrated (0.021s)
+
+== 20250923102817-fix-admin-criterios-permission: migrating =======
+Role "Admin" não encontrada. Pulando associação.
+== 20250923102817-fix-admin-criterios-permission: migrated (0.018s)
+
+== 20250923111033-add-dueDate-to-pesquisas: migrating =======
+== 20250923111033-add-dueDate-to-pesquisas: migrated (0.028s)
+
+== 20250924150000-add-type-and-value-to-recompensas: migrating =======
+== 20250924150000-add-type-and-value-to-recompensas: migrated (0.029s)
+
+== 20250924150157-add-surveys-update-permission-to-admin-role: migrating =======
+== 20250924150157-add-surveys-update-permission-to-admin-role: migrated (0.008s)
+
+== 20250924150325-add-surveys-update-permission-to-admin-role: migrating =======
+Função 'Admin' não encontrada.
+Permissão 'surveys:update' não encontrada.
+== 20250924150325-add-surveys-update-permission-to-admin-role: migrated (0.012s)
+
+== 20250924150416-add-surveys-update-permission: migrating =======
+== 20250924150416-add-surveys-update-permission: migrated (0.019s)
+
+== 20250924160000-add-instance-fields-to-whatsapp-config: migrating =======
+
+ERROR: Unexpected token 'async'
+
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.6.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.1
+npm notice To update run: npm install -g npm@11.6.1
+npm notice
+
+Sequelize CLI [Node: 18.20.8, CLI: 6.6.3, ORM: 6.37.7]
+
+Loaded configuration file "src/config/sequelize-config.js".
+Using environment "production".
+== 20250922-create-super-admin-and-admin: migrating =======
+Seeder de Super Admin e Admin executado com sucesso!
+== 20250922-create-super-admin-and-admin: migrated (0.336s)
+
+== 20250922-populate-admin-data: migrating =======
+Seeder de dados de exemplo aprimorado executado com sucesso!
+== 20250922-populate-admin-data: migrated (0.070s)
+
+== 20250924200000-add-recompensas-permissions-to-admin: migrating =======
+Permissão 'recompensas:update' associada ao cargo Admin.
+Permissão 'recompensas:delete' associada ao cargo Admin.
+== 20250924200000-add-recompensas-permissions-to-admin: migrated (0.023s)
+
+== 20250925100000-populate-survey-templates: migrating =======
+== 20250925100000-populate-survey-templates: migrated (0.007s)
+
 == 20250926150000-add-atendente-permissions-to-admin: migrating =======
 
-ERROR: Validation error
-ERROR DETAIL: Key ("roleId", "permissaoId")=(4999f579-e924-4452-abc7-82bf190bc6cd, 5ddad45a-7797-487f-8560-486191f416e4) already exists.
+ERROR: syntax error at or near ")"
 
 npm notice
 npm notice New major version of npm available! 10.8.2 -> 11.6.1

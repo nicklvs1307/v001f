@@ -3,28 +3,28 @@
 module.exports = {
   async up (queryInterface, Sequelize) {
     const tables = await queryInterface.showAllTables();
-    if (tables.includes('whatsappConfigs')) {
-      const tableDescription = await queryInterface.describeTable('whatsappConfigs');
+    if (tables.includes('whatsapp_configs')) {
+      const tableDescription = await queryInterface.describeTable('whatsapp_configs');
       if (!tableDescription.instanceName) {
-        await queryInterface.addColumn('whatsappConfigs', 'instanceName', {
+        await queryInterface.addColumn('whatsapp_configs', 'instanceName', {
           type: Sequelize.STRING,
           allowNull: true,
         });
       }
       if (!tableDescription.instanceStatus) {
-        await queryInterface.addColumn('whatsappConfigs', 'instanceStatus', {
+        await queryInterface.addColumn('whatsapp_configs', 'instanceStatus', {
           type: Sequelize.STRING,
           allowNull: true,
         });
       }
       if (!tableDescription.instanceQrCode) {
-        await queryInterface.addColumn('whatsappConfigs', 'instanceQrCode', {
+        await queryInterface.addColumn('whatsapp_configs', 'instanceQrCode', {
           type: Sequelize.TEXT,
           allowNull: true,
         });
       }
       if (!tableDescription.instanceWebhookUrl) {
-        await queryInterface.addColumn('whatsappConfigs', 'instanceWebhookUrl', {
+        await queryInterface.addColumn('whatsapp_configs', 'instanceWebhookUrl', {
           type: Sequelize.STRING,
           allowNull: true,
         });
@@ -33,19 +33,19 @@ module.exports = {
   }
   async down (queryInterface, Sequelize) {
     const tables = await queryInterface.showAllTables();
-    if (tables.includes('whatsappConfigs')) {
-      const tableDescription = await queryInterface.describeTable('whatsappConfigs');
+    if (tables.includes('whatsapp_configs')) {
+      const tableDescription = await queryInterface.describeTable('whatsapp_configs');
       if (tableDescription.instanceName) {
-        await queryInterface.removeColumn('whatsappConfigs', 'instanceName');
+        await queryInterface.removeColumn('whatsapp_configs', 'instanceName');
       }
       if (tableDescription.instanceStatus) {
-        await queryInterface.removeColumn('whatsappConfigs', 'instanceStatus');
+        await queryInterface.removeColumn('whatsapp_configs', 'instanceStatus');
       }
       if (tableDescription.instanceQrCode) {
-        await queryInterface.removeColumn('whatsappConfigs', 'instanceQrCode');
+        await queryInterface.removeColumn('whatsapp_configs', 'instanceQrCode');
       }
       if (tableDescription.instanceWebhookUrl) {
-        await queryInterface.removeColumn('whatsappConfigs', 'instanceWebhookUrl');
+        await queryInterface.removeColumn('whatsapp_configs', 'instanceWebhookUrl');
       }
     }
   }

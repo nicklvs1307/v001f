@@ -18,13 +18,16 @@ module.exports = {
 
     const permissionIds = permissions.map(p => p.id);
 
-    const existingRolePermissions = await queryInterface.sequelize.query(
-        `SELECT "permissaoId" FROM role_permissoes WHERE "roleId" = :roleId AND "permissaoId" IN (:permissionIds)`,
-        {
-            replacements: { roleId: adminRole, permissionIds: permissionIds },
-            type: Sequelize.QueryTypes.SELECT
-        }
-    );
+    let existingRolePermissions = [];
+    if (permissionIds.length > 0) {
+      existingRolePermissions = await queryInterface.sequelize.query(
+          `SELECT "permissaoId" FROM role_permissoes WHERE "roleId" = :roleId AND "permissaoId" IN (:permissionIds)`,
+          {
+              replacements: { roleId: adminRole.id, permissionIds: permissionIds },
+              type: Sequelize.QueryTypes.SELECT
+          }
+      );
+    }
 
     const existingPermissionIds = new Set(existingRolePermissions.map(rp => rp.permissaoId));
 
@@ -35,7 +38,7 @@ module.exports = {
         const permission = permissions.find(p => p.action === action);
         if (permission && !existingPermissionIds.has(permission.id)) {
             permissionsToInsert.push({
-                roleId: adminRole,
+                roleId: adminRole.id,
                 permissaoId: permission.id,
                 createdAt: new Date(),
                 updatedAt: new Date(),
@@ -71,7 +74,7 @@ module.exports = {
 
     if (permissionIds.length > 0) {
       await queryInterface.bulkDelete('role_permissoes', {
-        roleId: adminRole,
+        roleId: adminRole.id,
         permissaoId: { [Sequelize.Op.in]: permissionIds },
       }, {});
     }

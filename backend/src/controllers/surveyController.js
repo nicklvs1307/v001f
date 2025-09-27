@@ -45,6 +45,13 @@ exports.getSurveyById = asyncHandler(async (req, res) => {
       roletaId,
     });
 
+    if (!updatedSurvey) {
+      throw new ApiError(404, 'Pesquisa não encontrada para atualização.');
+    }
+
+    res.status(200).json(updatedSurvey);
+  }),
+
 exports.deleteSurvey = asyncHandler(async (req, res) => {
   const { id } = req.params;
   await surveyService.deleteSurvey(id, req.user);

@@ -22,10 +22,11 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
   }
 
   const cliente = await clientRepository.getClientById(clientId);
-  if (!cliente || !cliente.tenantId) {
-    throw new ApiError(404, 'Cliente não encontrado ou sem tenant associado.');
+  if (!cliente) {
+    throw new ApiError(404, 'Cliente não encontrado.');
   }
-  const tenantId = cliente.tenantId;
+
+  const tenantId = pesquisa.tenantId;
 
   const premios = await roletaPremioRepository.findAll({ tenantId, roletaId: pesquisa.roletaId });
 

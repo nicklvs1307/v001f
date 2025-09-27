@@ -2,13 +2,12 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const adminRoleResult = await queryInterface.sequelize.query(
-      `SELECT id FROM roles WHERE name = 'Admin'`,
-      { type: Sequelize.QueryTypes.SELECT }
-    );
-    const adminRole = adminRoleResult.length > 0 ? adminRoleResult[0].id : null;
+    const adminRoleId = await queryInterface.rawSelect('roles', {
+      where: { name: 'Admin' },
+      plain: true,
+    }, ['id']);
 
-    if (!adminRole) {
+    if (!adminRoleId) {
       console.log("O cargo 'Admin' não foi encontrado. Nenhuma permissão foi adicionada.");
       return;
     }
@@ -25,7 +24,7 @@ module.exports = {
       existingRolePermissions = await queryInterface.sequelize.query(
           `SELECT "permissaoId" FROM role_permissoes WHERE "roleId" = :roleId AND "permissaoId" IN (:permissionIds)`,
           {
-              replacements: { roleId: adminRole, permissionIds: permissionIds },
+              replacements: { roleId: adminRoleId, permissionIds: permissionIds },
               type: Sequelize.QueryTypes.SELECT
           }
       );
@@ -40,7 +39,7 @@ module.exports = {
         const permission = permissions.find(p => p.action === action);
         if (permission && !existingPermissionIds.has(permission.id)) {
             permissionsToInsert.push({
-                roleId: adminRole.id,
+                roleId: adminRoleId,
                 permissaoId: permission.id,
                 createdAt: new Date(),
                 updatedAt: new Date(),
@@ -59,13 +58,12 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    const adminRoleResult = await queryInterface.sequelize.query(
-      `SELECT id FROM roles WHERE name = 'Admin'`,
-      { type: Sequelize.QueryTypes.SELECT }
-    );
-    const adminRole = adminRoleResult.length > 0 ? adminRoleResult[0].id : null;
+    const adminRoleId = await queryInterface.rawSelect('roles', {
+      where: { name: 'Admin' },
+      plain: true,
+    }, ['id']);
 
-    if (!adminRole) {
+    if (!adminRoleId) {
       return;
     }
 
@@ -78,7 +76,7 @@ module.exports = {
 
     if (permissionIds.length > 0) {
       await queryInterface.bulkDelete('role_permissoes', {
-        roleId: adminRole,
+        roleId: adminRoleId,
         permissaoId: { [Sequelize.Op.in]: permissionIds },
       }, {});
     }

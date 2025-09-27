@@ -61,10 +61,23 @@ const dashboardRepository = {
 
         const totalResponses = await Resposta.count({ where: whereClause });
         const totalUsers = await Client.count({ where: whereClause });
-        const couponsGenerated = await Cupom.count({ where: { ...whereClause, createdAt: dateFilter } });
-        console.log('Cupons Gerados:', couponsGenerated);
-        const couponsUsed = await Cupom.count({ where: { ...whereClause, status: 'used', updatedAt: dateFilter } });
-        console.log('Cupons Utilizados:', couponsUsed);
+
+        // Crie um where clause específico para cupons gerados, aplicando o filtro de data a createdAt
+        const couponsGeneratedWhere = tenantId ? { tenantId } : {};
+        if (Object.keys(dateFilter).length > 0) {
+            couponsGeneratedWhere.createdAt = dateFilter;
+        }
+        const couponsGenerated = await Cupom.count({ where: couponsGeneratedWhere });
+
+        // Crie um where clause específico para cupons usados, aplicando o filtro de data a updatedAt
+        const couponsUsedWhere = { status: 'used' };
+        if (tenantId) {
+            couponsUsedWhere.tenantId = tenantId;
+        }
+        if (Object.keys(dateFilter).length > 0) {
+            couponsUsedWhere.updatedAt = dateFilter;
+        }
+        const couponsUsed = await Cupom.count({ where: couponsUsedWhere });
 
         return {
             npsScore: parseFloat(npsScore.toFixed(1)),

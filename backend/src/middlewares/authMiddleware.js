@@ -5,40 +5,41 @@ const { Role, Permissao, RolePermissao } = require("../../models"); // Importa o
 
 // Middleware para verificar o token e autenticar o usuário
 const protect = async (req, res, next) => {
-  console.log(`[Auth Middleware] Request: ${req.method} ${req.originalUrl}`); // Adicionado para depuração
+  try {
+    console.log(`[Auth Middleware] Request: ${req.method} ${req.originalUrl}`); // Adicionado para depuração
 
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    try {
-      // Extrai o token do cabeçalho
-      const token = req.headers.authorization.split(" ")[1];
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+        // Extrai o token do cabeçalho
+        const token = req.headers.authorization.split(" ")[1];
 
-      // Verifica o token
-      const decoded = jwt.verify(token, config.jwtSecret);
+        // Verifica o token
+        const decoded = jwt.verify(token, config.jwtSecret);
 
-      // Anexa os dados do usuário decodificados à requisição para uso posterior
-      req.user = decoded;
+        // Anexa os dados do usuário decodificados à requisição para uso posterior
+        req.user = decoded;
 
-      // Se o usuário tiver um tenantId, busca as cores do tenant e anexa ao req.user
-      if (req.user.tenantId) {
-        const { Tenant } = require("../../models"); // Importa o modelo Tenant
-        const tenant = await Tenant.findByPk(req.user.tenantId);
-        if (tenant) {
-          req.user.primaryColor = tenant.primaryColor;
-          req.user.secondaryColor = tenant.secondaryColor;
+        // Se o usuário tiver um tenantId, busca as cores do tenant e anexa ao req.user
+        if (req.user.tenantId) {
+          const { Tenant } = require("../../models"); // Importa o modelo Tenant
+          const tenant = await Tenant.findByPk(req.user.tenantId);
+          if (tenant) {
+            req.user.primaryColor = tenant.primaryColor;
+            req.user.secondaryColor = tenant.secondaryColor;
+          }
         }
-      }
 
-      next();
-    } catch (error) {
-      console.error(error);
-      throw new ApiError(401, "Token inválido ou expirado. Acesso não autorizado.");
+        next();
+    } else {
+      // Se não houver token no cabeçalho, lança o erro
+      throw new ApiError(401, "Nenhum token fornecido. Acesso não autorizado.");
     }
-  } else {
-    // Se não houver token no cabeçalho, lança o erro
-    throw new ApiError(401, "Nenhum token fornecido. Acesso não autorizado.");
+  } catch (error) {
+    console.error('Erro no middleware de proteção:', error.message);
+    // Garante que o erro seja passado para o próximo middleware de erro
+    next(new ApiError(401, "Token inválido ou expirado. Acesso não autorizado."));
   }
 };
 

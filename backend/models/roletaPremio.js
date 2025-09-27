@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'recompensaId',
         as: 'recompensa',
       });
+      RoletaPremio.belongsTo(models.Roleta, {
+        foreignKey: 'roletaId',
+        as: 'roleta',
+      });
     }
   }
 
@@ -39,6 +43,10 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 10,
     },
     recompensaId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    roletaId: {
       type: DataTypes.UUID,
       allowNull: false,
     },

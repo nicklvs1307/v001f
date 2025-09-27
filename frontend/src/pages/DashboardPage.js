@@ -131,9 +131,7 @@ const DashboardPage = () => {
             </Container>
         );
     }
-    console.log('dashboardData before destructuring:', dashboardData); // Debugging dashboardData
     const { summary, responseChart = [], ranking = [], npsCriteria = [], feedbacks = [], conversionChart = [] } = dashboardData || {};
-    console.log('ranking after destructuring:', ranking); // Debugging ranking after destructuring
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>

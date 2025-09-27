@@ -1,43 +1,10 @@
 URL da solicitação
-https://loyalfood.towersfy.com/api/dashboard/attendants-performance
+https://loyalfood.towersfy.com/api/cupons/validate
 Método da solicitação
-GET
+POST
 Código de status
-500 Internal Server Error
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "relation \"atendente_metas\" does not exist",
-    "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)\n    at async AtendenteMeta.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)\n    at async AtendenteMeta.findOne (/usr/src/app/node_modules/sequelize/lib/model.js:1240:12)\n    at async Object.getAttendantsPerformanceWithGoals (/usr/src/app/src/repositories/dashboardRepository.js:664:26)\n    at async /usr/src/app/src/controllers/dashboardController.js:68:39"
-}
-URL da solicitação
-https://loyalfood.towersfy.com/api/atendenteMetas/metas
-Método da solicitação
-GET
-Código de status
-500 Internal Server Error
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "relation \"atendente_metas\" does not exist",
-    "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)\n    at async AtendenteMeta.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)\n    at async /usr/src/app/src/controllers/atendenteMetaController.js:69:19"
-}
-
-URL da solicitação
-https://loyalfood.towersfy.com/api/recompensas/aafefd5d-de7a-4e78-9706-18fe530aed4a
-Método da solicitação
-DELETE
-Código de status
-500 Internal Server Error
-Endereço remoto
-95.217.16.187:443
-
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "update or delete on table \"recompensas\" violates foreign key constraint \"cupons_recompensaId_fkey\" on table \"cupons\"",
-    "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.bulkDelete (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:403:12)\n    at async Recompensa.destroy (/usr/src/app/node_modules/sequelize/lib/model.js:1838:16)\n    at async /usr/src/app/src/controllers/recompensaController.js:110:25"
-}
+403 Forbidden
+{"message":"Você não tem permissão para executar esta ação."}
 
 URL da solicitação
 https://loyalfood.towersfy.com/api/roleta-premios
@@ -48,32 +15,6 @@ Código de status
 {
     "status": "error",
     "code": "HTTP_500",
-    "message": "relation \"roleta_premios\" does not exist",
+    "message": "column RoletaPremio.roletaId does not exist",
     "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)\n    at async RoletaPremio.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)\n    at async /usr/src/app/src/controllers/roletaPremioController.js:26:19"
-}
-
-URL da solicitação
-https://loyalfood.towersfy.com/api/whatsapp-config/instance
-Método da solicitação
-GET
-Código de status
-500 Internal Server Error
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "column \"instanceName\" does not exist",
-    "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)\n    at async WhatsappConfig.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)\n    at async WhatsappConfig.findOne (/usr/src/app/node_modules/sequelize/lib/model.js:1240:12)\n    at async WhatsappConfigRepository.findByTenant (/usr/src/app/src/repositories/whatsappConfigRepository.js:5:12)\n    at async /usr/src/app/src/controllers/whatsappConfigController.js:13:20"
-}
-
-URL da solicitação
-https://loyalfood.towersfy.com/api/recompensas/aafefd5d-de7a-4e78-9706-18fe530aed4a
-Método da solicitação
-DELETE
-Código de status
-500 Internal Server Error
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "update or delete on table \"recompensas\" violates foreign key constraint \"cupons_recompensaId_fkey\" on table \"cupons\"",
-    "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.bulkDelete (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:403:12)\n    at async Recompensa.destroy (/usr/src/app/node_modules/sequelize/lib/model.js:1838:16)\n    at async /usr/src/app/src/controllers/recompensaController.js:110:25"
 }

@@ -2,9 +2,11 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const adminRole = await queryInterface.rawSelect('roles', {
-      where: { name: 'Admin' },
-    }, ['id']);
+    const adminRoleResult = await queryInterface.sequelize.query(
+      `SELECT id FROM roles WHERE name = 'Admin'`,
+      { type: Sequelize.QueryTypes.SELECT }
+    );
+    const adminRole = adminRoleResult.length > 0 ? adminRoleResult[0].id : null;
 
     if (!adminRole) {
       console.log("O cargo 'Admin' não foi encontrado. Nenhuma permissão foi adicionada.");
@@ -57,9 +59,11 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    const adminRole = await queryInterface.rawSelect('roles', {
-      where: { name: 'Admin' },
-    }, ['id']);
+    const adminRoleResult = await queryInterface.sequelize.query(
+      `SELECT id FROM roles WHERE name = 'Admin'`,
+      { type: Sequelize.QueryTypes.SELECT }
+    );
+    const adminRole = adminRoleResult.length > 0 ? adminRoleResult[0].id : null;
 
     if (!adminRole) {
       return;

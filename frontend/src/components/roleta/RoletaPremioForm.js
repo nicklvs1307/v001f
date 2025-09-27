@@ -13,12 +13,14 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Box, // Adicionar Box
+  Box,
 } from '@mui/material';
 import recompensaService from '../../services/recompensaService';
+import roletaService from '../../services/roletaService'; // Importar o serviço da roleta
 
 const RoletaPremioForm = ({ open, handleClose, premio, handleSubmit }) => {
   const [formData, setFormData] = useState({
+    roletaId: '', // Adicionar roletaId
     nome: '',
     descricao: '',
     probabilidade: '',
@@ -26,27 +28,38 @@ const RoletaPremioForm = ({ open, handleClose, premio, handleSubmit }) => {
   });
   const [loadingRecompensas, setLoadingRecompensas] = useState(true);
   const [recompensas, setRecompensas] = useState([]);
+  const [loadingRoletas, setLoadingRoletas] = useState(true); // Estado de loading para roletas
+  const [roletas, setRoletas] = useState([]); // Estado para armazenar roletas
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchRecompensas = async () => {
+    const fetchInitialData = async () => {
       try {
         setLoadingRecompensas(true);
-        const data = await recompensaService.getAllRecompensas();
-        setRecompensas(Array.isArray(data) ? data : []);
+        setLoadingRoletas(true);
+        const recompensasData = await recompensaService.getAllRecompensas();
+        setRecompensas(Array.isArray(recompensasData) ? recompensasData : []);
+        
+        const roletasData = await roletaService.getAllRoletas();
+        setRoletas(roletasData.roletas && Array.isArray(roletasData.roletas) ? roletasData.roletas : []);
+
       } catch (err) {
-        setError(err.message || 'Erro ao carregar recompensas.');
+        setError(err.message || 'Erro ao carregar dados.');
       } finally {
         setLoadingRecompensas(false);
+        setLoadingRoletas(false);
       }
     };
 
-    fetchRecompensas();
-  }, []);
+    if (open) {
+      fetchInitialData();
+    }
+  }, [open]);
 
-    useEffect(() => {
+  useEffect(() => {
     if (premio) {
       setFormData({
+        roletaId: premio.roletaId || '',
         nome: premio.nome || '',
         descricao: premio.descricao || '',
         probabilidade: premio.probabilidade || '',
@@ -54,13 +67,14 @@ const RoletaPremioForm = ({ open, handleClose, premio, handleSubmit }) => {
       });
     } else {
       setFormData({
+        roletaId: '',
         nome: '',
         descricao: '',
         probabilidade: '',
         recompensaId: '',
       });
     }
-  }, [premio]);
+  }, [premio, open]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -79,6 +93,32 @@ const RoletaPremioForm = ({ open, handleClose, premio, handleSubmit }) => {
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
         <Box component="form" onSubmit={onSubmit} sx={{ mt: 2 }}>
           <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <FormControl fullWidth margin="dense" required>
+                <InputLabel id="roleta-label">Roleta</InputLabel>
+                <Select
+                  labelId="roleta-label"
+                  id="roletaId"
+                  name="roletaId"
+                  value={formData.roletaId}
+                  label="Roleta"
+                  onChange={handleChange}
+                  disabled={!!premio} // Desabilitar se estiver editando
+                >
+                  {loadingRoletas ? (
+                    <MenuItem disabled>
+                      <CircularProgress size={20} /> Carregando roletas...
+                    </MenuItem>
+                  ) : (
+                    roletas.map((roleta) => (
+                      <MenuItem key={roleta.id} value={roleta.id}>
+                        {roleta.name}
+                      </MenuItem>
+                    ))
+                  )}
+                </Select>
+              </FormControl>
+            </Grid>
             <Grid item xs={12}>
               <TextField
                 autoFocus

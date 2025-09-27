@@ -23,7 +23,7 @@ module.exports = {
       existingRolePermissions = await queryInterface.sequelize.query(
           `SELECT "permissaoId" FROM role_permissoes WHERE "roleId" = :roleId AND "permissaoId" IN (:permissionIds)`,
           {
-              replacements: { roleId: adminRole.id, permissionIds: permissionIds },
+              replacements: { roleId: adminRole, permissionIds: permissionIds },
               type: Sequelize.QueryTypes.SELECT
           }
       );
@@ -74,7 +74,7 @@ module.exports = {
 
     if (permissionIds.length > 0) {
       await queryInterface.bulkDelete('role_permissoes', {
-        roleId: adminRole.id,
+        roleId: adminRole,
         permissaoId: { [Sequelize.Op.in]: permissionIds },
       }, {});
     }

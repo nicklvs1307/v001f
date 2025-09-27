@@ -51,6 +51,7 @@ const getPublicSurveyById = async (id) => {
     tenantId: survey.tenantId, // Adicionar tenantId aqui
     askForAttendant: survey.askForAttendant, // ADDED THIS LINE
     status: survey.status, // Adicionar status aqui
+    roletaId: survey.roletaId, // Adicionar roletaId aqui
     // Adicionar informações do Tenant
     restaurantName: survey.tenant ? survey.tenant.name : null,
     restaurantLogoUrl: survey.tenant ? survey.tenant.logoUrl : null,

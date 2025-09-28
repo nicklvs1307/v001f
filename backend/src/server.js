@@ -1,5 +1,9 @@
 console.log('Server.js is being executed!');
 
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
 const express = require("express");
 const cors = require("cors");
 const config = require("./config");

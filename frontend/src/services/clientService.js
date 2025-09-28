@@ -80,6 +80,15 @@ const sendMessage = async (clientId, message) => {
     }
 };
 
+const getClientDetails = async (id) => {
+    try {
+        const response = await apiAuthenticated.get(`/clients/${id}/details`);
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
 const clientService = {
     getClientDashboardData,
     getAllClients,

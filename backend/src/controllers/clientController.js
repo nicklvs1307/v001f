@@ -154,6 +154,21 @@ exports.getClientById = asyncHandler(async (req, res) => {
   res.status(200).json(client);
 });
 
+// @desc    Obter detalhes de um cliente por ID
+// @access  Private (Admin)
+exports.getClientDetails = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const tenantId = req.user.tenantId;
+
+  const clientDetails = await clientRepository.getClientDetails(id, tenantId);
+
+  if (!clientDetails) {
+    throw new ApiError(404, "Cliente não encontrado.");
+  }
+
+  res.status(200).json(clientDetails);
+});
+
 // @desc    Atualizar um cliente
 // @access  Private (Admin)
 exports.updateClient = asyncHandler(async (req, res) => {

@@ -80,9 +80,87 @@ class ClientRepository {
       limit,
       offset,
       order: [[orderBy, order.toUpperCase()]],
+      attributes: {
+        include: [
+          [
+            literal(`(
+              SELECT MAX("createdAt")
+              FROM "respostas" AS "r"
+              WHERE "r"."respondentSessionId" = "Client"."respondentSessionId"
+            )`),
+            'lastVisit'
+          ]
+        ]
+      },
+      group: ['Client.id'], // Agrupar para garantir que a contagem seja correta
     });
 
-    return { clients: rows, total: count };
+    // A contagem pode ser um array de objetos por causa do group. Precisamos somar.
+    const total = count.reduce((acc, item) => acc + parseInt(item.count, 10), 0);
+
+    return { clients: rows, total };
+  }
+
+  async getClientDetails(clientId, tenantId) {
+    const client = await Client.findOne({
+      where: { id: clientId, tenantId },
+      include: [
+        {
+          model: require('../../models').Cupom,
+          as: 'cupons',
+          include: [{
+            model: require('../../models').Recompensa,
+            as: 'recompensa'
+          }]
+        },
+        {
+          model: require('../../models').Resposta,
+          as: 'respostas',
+          attributes: ['createdAt'],
+        }
+      ]
+    });
+
+    if (!client) {
+      return null;
+    }
+
+    const clientJSON = client.toJSON();
+
+    // Processar cupons
+    const cupons = clientJSON.cupons || [];
+    const activeCoupons = cupons.filter(c => c.status === 'active');
+    const usedCoupons = cupons.filter(c => c.status === 'used');
+
+    // Processar visitas
+    const visits = clientJSON.respostas || [];
+    const totalVisits = new Set(visits.map(v => new Date(v.createdAt).toDateString())).size;
+    const lastVisit = visits.length > 0 ? new Date(Math.max(...visits.map(v => new Date(v.createdAt)))) : null;
+
+    // Gráfico de comparecimento (visitas por mês)
+    const attendance = visits.reduce((acc, visit) => {
+      const month = new Date(visit.createdAt).toLocaleString('default', { month: 'long', year: 'numeric' });
+      acc[month] = (acc[month] || 0) + 1;
+      return acc;
+    }, {});
+
+    const attendanceData = Object.keys(attendance).map(month => ({
+      month,
+      visits: attendance[month]
+    }));
+
+    return {
+      ...clientJSON,
+      cupons: undefined, // remover para não duplicar
+      respostas: undefined, // remover para não duplicar
+      stats: {
+        totalVisits,
+        lastVisit,
+        activeCoupons,
+        usedCoupons,
+        attendanceData,
+      }
+    };
   }
 
   async getClientDashboardData(tenantId) {

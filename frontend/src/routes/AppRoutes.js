@@ -44,6 +44,7 @@ const BirthdayClientsPage = React.lazy(() => import('../pages/BirthdayClientsPag
 const ResultsOverviewPage = React.lazy(() => import('../pages/ResultsOverviewPage'));
 const SurveyResultsPage = React.lazy(() => import('../pages/SurveyResultsPage'));
 const ClientDashboardPage = React.lazy(() => import('../pages/ClientDashboardPage'));
+const ClientDetailsPage = React.lazy(() => import('../pages/ClientDetailsPage'));
 
 
 const AppRoutes = () => {
@@ -87,6 +88,7 @@ const AppRoutes = () => {
             <Route path="cupons/dashboard" element={<CupomDashboardPage />} />
             <Route path="validar-cupom" element={<CupomValidationPage />} />
             <Route path="clientes" element={<ClientsPage />} />
+            <Route path="clientes/:id" element={<ClientDetailsPage />} />
             <Route path="clientes/birthdays" element={<BirthdayClientsPage />} />
             <Route path="clientes/dashboard" element={<ClientDashboardPage />} />
             <Route path="atendentes" element={<AttendantsPage />} />

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { check } = require("express-validator");
-const clientController = require('../controllers/clientController');
+const { getClientDetails, ...clientController } = require('../controllers/clientController');
 const { protect, authorize } = require('../middlewares/authMiddleware');
 const validate = require("../middlewares/validationMiddleware");
 
@@ -52,6 +52,19 @@ router.route('/:id')
     validate,
     clientController.getClientById
   )
+
+router.route('/:id/details')
+  .get(
+    protect,
+    authorize(['Admin']),
+    [
+      check("id", "ID do cliente inválido").isUUID().not().isEmpty(),
+    ],
+    validate,
+    getClientDetails
+  )
+
+router.route('/:id')
   .put(
     protect,
     authorize(['Admin']),

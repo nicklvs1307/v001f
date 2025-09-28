@@ -1,28 +1,31 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useClients from '../../hooks/useClients';
 import ClientModal from './ClientModal';
-import SendMessageModal from './SendMessageModal'; // Importar o novo modal
+import SendMessageModal from './SendMessageModal';
 import ConfirmationDialog from '../layout/ConfirmationDialog';
 import { 
     Box, Typography, CircularProgress, Alert, Button, IconButton, 
-    Table, TableBody, TableCell, TableContainer, TableHead, 
-    TableRow, Paper, TablePagination, TableSortLabel, TextField, Tooltip
+    Grid, Card, CardActionArea, CardContent, CardActions, Avatar, 
+    TextField, Tooltip, TablePagination
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit'; 
 import DeleteIcon from '@mui/icons-material/Delete'; 
-import WhatsAppIcon from '@mui/icons-material/WhatsApp'; // Importar ícone do WhatsApp
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import EventIcon from '@mui/icons-material/Event';
 import { formatDateForDisplay } from '../../utils/dateUtils';
 
 const ClientList = () => {
-    const { 
+    const {
         clients, totalClients, loading, error, page, rowsPerPage, 
-        orderBy, order, filterText, createClient, updateClient, deleteClient,
-        handleRequestSort, handleChangePage, handleChangeRowsPerPage, handleFilterChange
+        filterText, createClient, updateClient, deleteClient,
+        handleChangePage, handleChangeRowsPerPage, handleFilterChange
     } = useClients();
 
+    const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-    const [isMessageModalOpen, setIsMessageModalOpen] = useState(false); // Estado para o novo modal
+    const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
     const [selectedClient, setSelectedClient] = useState(null);
     const [formError, setFormError] = useState('');
 
@@ -56,6 +59,10 @@ const ClientList = () => {
     const handleCloseMessageModal = () => {
         setSelectedClient(null);
         setIsMessageModalOpen(false);
+    };
+
+    const handleCardClick = (id) => {
+        navigate(`/clientes/${id}`);
     };
 
     const handleClientCreate = async (clientData) => {
@@ -99,76 +106,58 @@ const ClientList = () => {
                     size="small"
                     value={filterText}
                     onChange={handleFilterChange}
+                    sx={{ width: '40%' }}
                 />
                 <Button variant="contained" onClick={() => handleOpenModal()}>Adicionar Novo Cliente</Button>
             </Box>
             {error && <Alert severity="error">{error}</Alert>}
-            
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }}>
-                    <TableHead>
-                        <TableRow>
-                            {[ 
-                                { id: 'name', label: 'Nome' }, 
-                                { id: 'phone', label: 'Telefone' }, 
-                                { id: 'birthDate', label: 'Data de Nascimento' }, 
-                                { id: 'createdAt', label: 'Criado em' }, 
-                                { id: 'actions', label: 'Ações', disableSorting: true } 
-                            ].map((headCell) => (
-                                <TableCell 
-                                    key={headCell.id} 
-                                    align={headCell.id === 'actions' ? 'right' : 'left'}
-                                    sortDirection={orderBy === headCell.id ? order : false}
-                                >
-                                    {headCell.disableSorting ? headCell.label : (
-                                        <TableSortLabel
-                                            active={orderBy === headCell.id}
-                                            direction={orderBy === headCell.id ? order : 'asc'}
-                                            onClick={() => handleRequestSort(headCell.id)}
-                                        >
-                                            {headCell.label}
-                                        </TableSortLabel>
-                                    )}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {(clients || []).map((client) => (
-                            <TableRow key={client.id}>
-                                <TableCell component="th" scope="row">{client.name}</TableCell>
-                                <TableCell>{client.phone || 'N/A'}</TableCell>
-                                <TableCell>{formatDateForDisplay(client.birthDate)}</TableCell>
-                                <TableCell>{formatDateForDisplay(client.createdAt)}</TableCell>
-                                <TableCell align="right">
-                                    <Tooltip title="Enviar WhatsApp">
-                                        <span>
-                                            <IconButton 
-                                                edge="end" 
-                                                aria-label="whatsapp" 
-                                                onClick={() => handleOpenMessageModal(client)}
-                                                disabled={!client.phone} // Desabilita se não tiver telefone
-                                            >
-                                                <WhatsAppIcon />
-                                            </IconButton>
-                                        </span>
-                                    </Tooltip>
-                                    <Tooltip title="Editar">
-                                        <IconButton edge="end" aria-label="edit" onClick={() => handleOpenModal(client)}>
-                                            <EditIcon />
+
+            <Grid container spacing={3}>
+                {(clients || []).map((client) => (
+                    <Grid item key={client.id} xs={12} sm={6} md={4}>
+                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                            <CardActionArea onClick={() => handleCardClick(client.id)} sx={{ flexGrow: 1 }}>
+                                <CardContent>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                                        <Avatar sx={{ width: 56, height: 56, mr: 2, bgcolor: 'primary.main' }}>
+                                            {client.name.charAt(0).toUpperCase()}
+                                        </Avatar>
+                                        <Box>
+                                            <Typography variant="h6">{client.name}</Typography>
+                                            <Typography variant="body2" color="text.secondary">{client.phone || 'Telefone não cadastrado'}</Typography>
+                                        </Box>
+                                    </Box>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, color: 'text.secondary' }}>
+                                        <EventIcon sx={{ mr: 1, fontSize: '1rem' }} />
+                                        <Typography variant="caption">
+                                            Última visita: {client.lastVisit ? formatDateForDisplay(client.lastVisit) : 'Nenhuma visita registrada'}
+                                        </Typography>
+                                    </Box>
+                                </CardContent>
+                            </CardActionArea>
+                            <CardActions sx={{ justifyContent: 'flex-end' }}>
+                                <Tooltip title="Enviar WhatsApp">
+                                    <span>
+                                        <IconButton onClick={(e) => { e.stopPropagation(); handleOpenMessageModal(client); }} disabled={!client.phone}>
+                                            <WhatsAppIcon />
                                         </IconButton>
-                                    </Tooltip>
-                                    <Tooltip title="Deletar">
-                                        <IconButton edge="end" aria-label="delete" onClick={() => handleOpenConfirm(client)}>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </Tooltip>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                                    </span>
+                                </Tooltip>
+                                <Tooltip title="Editar">
+                                    <IconButton onClick={(e) => { e.stopPropagation(); handleOpenModal(client); }}>
+                                        <EditIcon />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Deletar">
+                                    <IconButton onClick={(e) => { e.stopPropagation(); handleOpenConfirm(client); }}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+                ))}
+            </Grid>
 
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
@@ -178,6 +167,7 @@ const ClientList = () => {
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
+                sx={{ mt: 3 }}
             />
 
             <ClientModal

@@ -1,14 +1,36 @@
-URL da solicitação
-https://loyalfood.towersfy.com/api/cupons/validate
-Método da solicitação
-POST
-Código de status
-500 Internal Server Error
-Endereço remoto
-95.217.16.187:443
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "WHERE parameter \"codigo\" has invalid \"undefined\" value",
-    "details": "Error: WHERE parameter \"codigo\" has invalid \"undefined\" value\n    at PostgresQueryGenerator.whereItemQuery (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-generator.js:1746:13)\n    at /usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-generator.js:1737:25\n    at Array.forEach (<anonymous>)\n    at PostgresQueryGenerator.whereItemsQuery (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-generator.js:1735:35)\n    at PostgresQueryGenerator.getWhereConditions (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-generator.js:2078:19)\n    at PostgresQueryGenerator.selectQuery (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-generator.js:991:28)\n    at PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:59)\n    at Cupom.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:47)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Cupom.findOne (/usr/src/app/node_modules/sequelize/lib/model.js:1240:12)"
-}
+Postgres is up - executing command
+Server.js is being executed!
+Conexão com o banco de dados estabelecida com sucesso (Sequelize).
+Server is running on port 5000
+Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
+[Auth Middleware] Request: POST /auth/verify-token
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+[Auth Middleware] Request: GET /clients?page=1&limit=10&orderBy=name&order=asc&filter=
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "Client"."id", count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' GROUP BY "Client"."id";
+Executing (default): SELECT "id", "tenantId", "name", "email", "phone", "birthDate", "respondentSessionId", "gender", "createdAt", "updatedAt", (
+              SELECT MAX("createdAt")
+              FROM "respostas" AS "r"
+              WHERE "r"."respondentSessionId" = "Client"."respondentSessionId"
+            ) AS "lastVisit" FROM "clients" AS "Client" WHERE "Client"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' GROUP BY "Client"."id" ORDER BY "Client"."name" ASC LIMIT 10 OFFSET 0;
+[Auth Middleware] Request: POST /auth/verify-token
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+[Auth Middleware] Request: POST /auth/verify-token
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+[Auth Middleware] Request: GET /clients?page=1&limit=10&orderBy=name&order=asc&filter=
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "Client"."id", count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' GROUP BY "Client"."id";
+Executing (default): SELECT "id", "tenantId", "name", "email", "phone", "birthDate", "respondentSessionId", "gender", "createdAt", "updatedAt", (
+              SELECT MAX("createdAt")
+              FROM "respostas" AS "r"
+              WHERE "r"."respondentSessionId" = "Client"."respondentSessionId"
+            ) AS "lastVisit" FROM "clients" AS "Client" WHERE "Client"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' GROUP BY "Client"."id" ORDER BY "Client"."name" ASC LIMIT 10 OFFSET 0;
+[Auth Middleware] Request: POST /auth/verify-token
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+[Auth Middleware] Request: POST /auth/verify-token
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+
+
+
+
+a.A.getClientDetails is not a function

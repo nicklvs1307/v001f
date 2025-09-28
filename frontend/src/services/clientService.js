@@ -98,6 +98,7 @@ const clientService = {
     getBirthdayClients,
     registerClient, // Exportar a nova função
     sendMessage,
+    getClientDetails, // Adicionar a função que faltava
 };
 
 export default clientService;

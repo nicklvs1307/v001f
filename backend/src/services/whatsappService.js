@@ -1,6 +1,6 @@
 const axios = require('axios');
 const dotenv = require('dotenv');
-const { WhatsappConfig } = require('../models'); // Import the model
+const { WhatsappConfig } = require('../../models'); // Import the model
 
 dotenv.config();
 

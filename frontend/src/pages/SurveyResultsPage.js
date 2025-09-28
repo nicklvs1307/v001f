@@ -94,22 +94,14 @@ const SurveyResultsPage = () => {
     }
 
     const renderQuestionResult = (qr, index) => {
-        switch (qr.type) {
+        switch (qr.questionType) {
             case 'free_text':
                 return (
                     <List dense>
-                        {qr.results.responses && qr.results.responses.length > 0 ? (
-                            qr.results.responses.map((response, idx) => (
+                        {qr.answers && qr.answers.length > 0 ? (
+                            qr.answers.map((answer, idx) => (
                                 <ListItem key={idx} divider>
-                                    <ListItemText 
-                                        primary={response.text}
-                                        secondary={
-                                            <Typography component="span" variant="body2" color="text.secondary">
-                                                {response.clientName} {response.clientEmail && `(${response.clientEmail})`} {response.clientPhone && `(${response.clientPhone})`}
-                                                {response.clientBirthDate && ` - Nasc: ${new Date(response.clientBirthDate).toLocaleDateString()}`}
-                                            </Typography>
-                                        }
-                                    />
+                                    <ListItemText primary={answer} />
                                 </ListItem>
                             ))
                         ) : <Typography variant="body2">Nenhuma resposta de texto.</Typography>}
@@ -117,20 +109,40 @@ const SurveyResultsPage = () => {
                 );
             case 'rating_0_10':
             case 'rating_1_5':
-                const ratingChartData = qr.results.ratings 
-                    ? Object.entries(qr.results.ratings.reduce((acc, rating) => {
+                const ratingChartData = qr.allRatings
+                    ? Object.entries(qr.allRatings.reduce((acc, rating) => {
                         acc[rating] = (acc[rating] || 0) + 1;
                         return acc;
                       }, {})).map(([value, count]) => ({ value: parseInt(value), count }))
                     : [];
+                
+                let promoters = 0;
+                let neutrals = 0;
+                let detractors = 0;
+
+                if(qr.questionType === 'rating_0_10'){
+                    qr.allRatings.forEach(rating => {
+                        if (rating >= 9) promoters++;
+                        else if (rating >= 7) neutrals++;
+                        else detractors++;
+                    });
+                } else if (qr.questionType === 'rating_1_5') {
+                    qr.allRatings.forEach(rating => {
+                        if (rating === 5) promoters++;
+                        else if (rating === 4) neutrals++;
+                        else detractors++;
+                    });
+                }
+
+
                 return (
                     <Box>
-                        <Typography variant="h6">Avaliação Média: {qr.results.average}</Typography>
-                        <Typography variant="h6" sx={{ mt: 1 }}>NPS: {qr.results.nps}</Typography>
+                        <Typography variant="h6">Avaliação Média: {qr.averageRating}</Typography>
+                        {qr.questionType === 'rating_0_10' && <Typography variant="h6" sx={{ mt: 1 }}>NPS: {qr.nps}</Typography>}
                         <Grid container spacing={1} sx={{ mt: 2, mb: 2 }}>
-                            <Grid item xs={4}><Typography variant="body2" color="success.main">Promotores: {qr.results.promoters}</Typography></Grid>
-                            <Grid item xs={4}><Typography variant="body2" color="warning.main">Neutros: {qr.results.neutrals}</Typography></Grid>
-                            <Grid item xs={4}><Typography variant="body2" color="error.main">Detratores: {qr.results.detractors}</Typography></Grid>
+                            <Grid item xs={4}><Typography variant="body2" color="success.main">Promotores: {promoters}</Typography></Grid>
+                            <Grid item xs={4}><Typography variant="body2" color="warning.main">Neutros: {neutrals}</Typography></Grid>
+                            <Grid item xs={4}><Typography variant="body2" color="error.main">Detratores: {detractors}</Typography></Grid>
                         </Grid>
                         <ResponsiveContainer width="100%" height={300}>
                             <BarChart data={ratingChartData}>
@@ -145,7 +157,7 @@ const SurveyResultsPage = () => {
                 );
             case 'multiple_choice':
             case 'checkbox':
-                const pieData = Object.entries(qr.results).map(([name, value], idx) => ({ name, value, fill: chartColors[idx % chartColors.length] }));
+                const pieData = Object.entries(qr.optionsCount).map(([name, value], idx) => ({ name, value, fill: chartColors[idx % chartColors.length] }));
                 return (
                     <ResponsiveContainer width="100%" height={300}>
                         <PieChart>
@@ -274,11 +286,10 @@ const SurveyResultsPage = () => {
             </Typography>
             <Grid container spacing={4}>
                 {results.questionsResults && results.questionsResults.map((qr, index) => (
-                    <Grid item xs={12} md={6} key={qr.id}>
+                    <Grid item xs={12} md={6} key={qr.questionId}>
                         <Card elevation={2} sx={{ height: '100%' }}>
                             <CardContent>
-                                <Typography variant="h6" gutterBottom>{index + 1}. {qr.text}</Typography>
-                                {qr.criterio && <Typography variant="body2" color="text.secondary">Critério: {qr.criterio}</Typography>}
+                                <Typography variant="h6" gutterBottom>{index + 1}. {qr.questionText}</Typography>
                                 {renderQuestionResult(qr, index)}
                             </CardContent>
                         </Card>

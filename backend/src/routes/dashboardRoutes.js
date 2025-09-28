@@ -101,4 +101,15 @@ router.get(
   dashboardController.getAttendantsPerformance
 );
 
+router.get(
+  '/main',
+  [
+    check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
+    check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+  ],
+  validate,
+  authorize('dashboard:read'),
+  dashboardController.getMainDashboard
+);
+
 module.exports = router;

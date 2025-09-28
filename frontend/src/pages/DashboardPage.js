@@ -52,21 +52,8 @@ const DashboardPage = () => {
             try {
                 setLoading(true);
                 setError('');
-
-                // Fetch all data in parallel
-                const [summaryData, overallDashboardResults] = await Promise.all([
-                    dashboardService.getDashboardSummary(),
-                    dashboardService.getOverallDashboardResults()
-                ]);
-
-                setDashboardData({
-                    summary: summaryData, // Use the dedicated summary endpoint response
-                    responseChart: overallDashboardResults.responseChartData || [],
-                    ranking: overallDashboardResults.topAttendants || [],
-                    npsCriteria: overallDashboardResults.npsByCriterio || [],
-                    feedbacks: overallDashboardResults.feedbacks || [],
-                    conversionChart: overallDashboardResults.conversionChart || [],
-                });
+                const data = await dashboardService.getMainDashboard();
+                setDashboardData(data);
             } catch (err) {
                 setError(err.message || 'Falha ao carregar os dados do dashboard.');
             } finally {

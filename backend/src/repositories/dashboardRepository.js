@@ -729,6 +729,23 @@ const dashboardRepository = {
             day: new Date(client.birthDate).getDate(),
         }));
     },
+    getMainDashboard: async function (tenantId = null, startDate = null, endDate = null) {
+        const summary = await this.getSummary(tenantId, startDate, endDate);
+        const responseChart = await this.getResponseChart(tenantId, startDate, endDate);
+        const ranking = await this.getRanking(tenantId, startDate, endDate);
+        const npsCriteria = await this.getNPSCritera(tenantId, startDate, endDate);
+        const feedbacks = await this.getFeedbacks(tenantId, startDate, endDate);
+        const conversionChart = await this.getConversionChart(tenantId, startDate, endDate);
+
+        return {
+            summary,
+            responseChart,
+            ranking,
+            npsCriteria,
+            feedbacks,
+            conversionChart,
+        };
+    },
 };
 
 module.exports = dashboardRepository;

@@ -68,6 +68,13 @@ const dashboardController = {
         const attendantsPerformance = await dashboardRepository.getAttendantsPerformanceWithGoals(tenantId);
         res.status(200).json(attendantsPerformance);
     }),
+
+    getMainDashboard: asyncHandler(async (req, res) => {
+        const tenantId = req.user.role === 'Super Admin' ? null : req.user.tenantId;
+        const { startDate, endDate } = req.query;
+        const dashboardData = await dashboardRepository.getMainDashboard(tenantId, startDate, endDate);
+        res.status(200).json(dashboardData);
+    }),
 };
 
 module.exports = dashboardController;

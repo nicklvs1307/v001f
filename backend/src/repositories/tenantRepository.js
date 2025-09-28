@@ -61,21 +61,15 @@ const getTenantLogoUrlById = async (id) => {
   return tenant ? tenant.logoUrl : null;
 };
 
-const findAllWithActiveWhatsapp = async () => {
+const findAllWithReportPhoneNumber = async () => {
   return Tenant.findAll({
     where: {
       reportPhoneNumber: {
-        [Op.ne]: null // Garante que o número de telefone para relatórios não seja nulo
+        [Op.ne]: null,
+        [Op.not]: ''
       }
     },
-    include: [{
-      model: WhatsappConfig,
-      as: 'whatsappConfig',
-      where: {
-        instanceStatus: 'connected' // Garante que a instância do WhatsApp esteja conectada
-      },
-      required: true // Faz um INNER JOIN para garantir que apenas tenants com config ativa sejam retornados
-    }]
+    attributes: ['id', 'name', 'reportPhoneNumber']
   });
 };
 
@@ -90,5 +84,5 @@ module.exports = {
   updateTenant,
   deleteTenant,
   getTenantLogoUrlById,
-  findAllWithActiveWhatsapp,
+  findAllWithReportPhoneNumber,
 };

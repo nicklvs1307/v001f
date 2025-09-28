@@ -1,4 +1,5 @@
 const { Pesquisa, Pergunta, Resposta, Tenant, Atendente, Roleta } = require("../../models"); // Adicionar Atendente e Roleta
+const whatsappService = require('../services/whatsappService');
 const { sequelize } = require("../database"); // Importa a instância do Sequelize para transações
 const ApiError = require("../errors/ApiError"); // Importar ApiError para validações
 const { v4: uuidv4 } = require('uuid'); // Adicionar import do uuid
@@ -97,7 +98,7 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
   const transaction = await sequelize.transaction();
   try {
     const survey = await Pesquisa.findByPk(surveyId, {
-      attributes: ['isOpen', 'tenantId', 'askForAttendant'],
+      attributes: ['isOpen', 'tenantId', 'askForAttendant', 'title'],
       include: [{
         model: Pergunta,
         as: 'perguntas',
@@ -164,6 +165,40 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
     await Resposta.bulkCreate(responsesToCreate, { transaction });
 
     await transaction.commit();
+
+    // Lógica para notificação de detratores
+    (async () => {
+      try {
+        const tenant = await Tenant.findByPk(survey.tenantId);
+        if (!tenant || !tenant.reportPhoneNumber) {
+          return; // Não há número para reportar
+        }
+
+        for (const res of responsesToCreate) {
+          const question = questionsMap.get(res.perguntaId);
+          let isDetractor = false;
+
+          if (question.type === 'rating_0_10' && res.ratingValue >= 0 && res.ratingValue <= 6) {
+            isDetractor = true;
+          } else if (question.type === 'rating_1_5' && res.ratingValue >= 1 && res.ratingValue <= 3) {
+            isDetractor = true;
+          }
+
+          if (isDetractor) {
+            const detractorResponse = {
+              ...res,
+              pesquisa: { title: survey.title },
+            };
+            await whatsappService.sendInstanteDetractorMessage(tenant, detractorResponse);
+            // Considerar notificar apenas uma vez por submissão para evitar spam
+            break; // Para o loop após encontrar o primeiro detrator
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao enviar notificação de detrator:', error);
+      }
+    })();
+
     return { respondentSessionId: respondentSessionId };
   } catch (error) {
     await transaction.rollback();

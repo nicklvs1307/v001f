@@ -10,9 +10,7 @@ const dailyReportTask = cron.schedule(schedule, async () => {
 
   try {
     // 1. Buscar todos os tenants que têm um número de telefone para receber relatórios.
-    // A função `findAllWithActiveWhatsapp` ainda é útil, mas agora ela apenas filtra
-    // os tenants que devem *receber* o relatório, não os que vão *enviar*.
-    const tenantsToReport = await tenantRepository.findAllWithActiveWhatsapp();
+    const tenantsToReport = await tenantRepository.findAllWithReportPhoneNumber();
 
     if (!tenantsToReport || tenantsToReport.length === 0) {
       console.log('Nenhum tenant com número de telefone para relatório encontrado.');

@@ -1,4 +1,5 @@
 'use strict';
+const crypto = require('crypto');
 const asyncHandler = require('express-async-handler');
 const { Pesquisa } = require('../../models');
 const roletaPremioRepository = require('../repositories/roletaPremioRepository');
@@ -34,21 +35,36 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
     throw new ApiError(404, 'Nenhum prêmio configurado para a roleta desta pesquisa.');
   }
 
+  // Validar probabilidades individuais
+  for (const premio of premios) {
+    if (typeof premio.probabilidade !== 'number' || premio.probabilidade < 0) {
+      throw new ApiError(500, `Prêmio com ID ${premio.id} tem uma probabilidade inválida.`);
+    }
+  }
+
   const totalProbabilidade = premios.reduce((sum, premio) => sum + premio.probabilidade, 0);
   if (totalProbabilidade <= 0) {
     throw new ApiError(400, 'A soma das probabilidades dos prêmios deve ser maior que zero.');
   }
 
-  let randomNumber = Math.random() * totalProbabilidade;
+  // Usar crypto para um número aleatório mais seguro
+  const randomBytes = crypto.randomBytes(4); // 4 bytes para um inteiro de 32 bits
+  const randomNumber = randomBytes.readUInt32BE(0) / 0xFFFFFFFF; // Gera um float entre 0 e 1
+
+  const target = randomNumber * totalProbabilidade;
+
+  let cumulativeProbability = 0;
   let premioGanhador = null;
+
   for (const premio of premios) {
-    if (randomNumber < premio.probabilidade) {
+    cumulativeProbability += premio.probabilidade;
+    if (target < cumulativeProbability) {
       premioGanhador = premio;
       break;
     }
-    randomNumber -= premio.probabilidade;
   }
 
+  // Fallback de segurança (teoricamente não deve ser alcançado)
   if (!premioGanhador) {
     premioGanhador = premios[premios.length - 1];
   }

@@ -31,6 +31,8 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 import { ROLES } from '../../constants/roles';
 
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+
 const drawerWidth = 250;
 
 const DashboardLayout = () => {
@@ -102,6 +104,16 @@ const DashboardLayout = () => {
             ],
         },
         { text: 'Resultados', icon: <BarChartIcon />, path: '/resultados', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+        {
+            text: 'WhatsApp', 
+            icon: <WhatsAppIcon />, 
+            roles: [ROLES.ADMIN], // Only for tenant admins
+            children: [
+                { text: 'Conexão', path: '/whatsapp-connect', roles: [ROLES.ADMIN] },
+                { text: 'Campanhas', path: '/whatsapp/campanhas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Automações', path: '/whatsapp/automations', roles: [ROLES.ADMIN] },
+            ],
+        },
         { text: 'Recompensas', icon: <SettingsIcon />, path: '/recompensas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
         { text: 'Reputação', icon: <PeopleIcon />, path: '/reputacao', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
         {
@@ -109,7 +121,6 @@ const DashboardLayout = () => {
             children: [
                 { text: 'Painel', path: '/cupons/dashboard', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
                 { text: 'Gestão de Cupons', path: '/cupons', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Campanhas', path: '/cupons/campanhas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
                 { text: 'Validação', path: '/validar-cupom', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
             ],
         },
@@ -119,7 +130,6 @@ const DashboardLayout = () => {
                 { text: 'Usuários do Sistema', path: '/usuarios', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
                 { text: 'Perfil', path: '/profile', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.GERENTE, ROLES.GARCOM] },
                 { text: 'Empresa', path: '/config', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Conectar WhatsApp', path: '/whatsapp-connect', roles: [ROLES.ADMIN] }, // NOVO ITEM DE MENU
                 { text: 'Roletas', path: '/roletas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
             ],
         },

@@ -5,6 +5,7 @@ import {
     Button, 
     Typography
 } from '@mui/material';
+import InputMask from 'react-input-mask';
 import useClientForm from '../../hooks/useClientForm';
 
 const ClientForm = ({ initialData, onClientCreated, onClientUpdated, onError, onClose }) => {
@@ -14,11 +15,21 @@ const ClientForm = ({ initialData, onClientCreated, onClientUpdated, onError, on
     const handleSubmit = async (event) => {
         event.preventDefault();
         setLoading(true);
+
+        // Convert date from dd/mm/yyyy to yyyy-mm-dd for the backend
+        const dataToSend = { ...formData };
+        if (dataToSend.birthDate) {
+            const [day, month, year] = dataToSend.birthDate.split('/');
+            if (day && month && year && year.length === 4) {
+                dataToSend.birthDate = `${year}-${month}-${day}`;
+            }
+        }
+
         try {
             if (initialData) {
-                await onClientUpdated(formData);
+                await onClientUpdated(dataToSend);
             } else {
-                await onClientCreated(formData);
+                await onClientCreated(dataToSend);
             }
             onClose();
         } catch (err) {
@@ -61,19 +72,29 @@ const ClientForm = ({ initialData, onClientCreated, onClientUpdated, onError, on
                 value={formData.phone}
                 onChange={handleChange}
             />
-            <TextField
-                margin="normal"
-                fullWidth
-                id="birthDate"
-                label="Data de Nascimento"
-                name="birthDate"
-                type="date"
-                InputLabelProps={{
-                    shrink: true,
-                }}
-                value={formData.birthDate}
+            <InputMask
+                mask="99/99/9999"
+                value={formData.birthDate || ''}
                 onChange={handleChange}
-            />
+            >
+                {(inputProps) => (
+                    <TextField
+                        {...inputProps}
+                        margin="normal"
+                        fullWidth
+                        id="birthDate"
+                        name="birthDate" // Moved name prop here
+                        label="Data de Nascimento"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        inputProps={{
+                            inputMode: 'numeric',
+                            pattern: '[0-9]*'
+                        }}
+                    />
+                )}
+            </InputMask>
             <Button
                 type="submit"
                 fullWidth

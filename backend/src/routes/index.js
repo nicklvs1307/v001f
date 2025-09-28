@@ -24,6 +24,7 @@ const roletaPremioRoutes = require('./roletaPremioRoutes');
 const campanhaRoutes = require('./campanhaRoutes');
 const atendenteMetaRoutes = require('./atendenteMetaRoutes');
 const whatsappConfigRoutes = require('./whatsappConfigRoutes');
+const whatsappTemplateRoutes = require('./whatsappTemplateRoutes'); // Rota para templates
 const roletaRoutes = require('./roletaRoutes');
 const whatsappWebhookRoutes = require('./whatsappWebhookRoutes');
 const roletaAdminRoutes = require('./roletaAdminRoutes');
@@ -50,6 +51,7 @@ module.exports = (router) => {
   router.use('/atendenteMetas', atendenteMetaRoutes);
   router.use('/dashboard', dashboardRoutes);
   router.use('/whatsapp-config', whatsappConfigRoutes);
+  router.use('/whatsapp-templates', whatsappTemplateRoutes); // Rota para templates
   router.use('/whatsapp-webhook', whatsappWebhookRoutes);
   router.use('/roleta', roletaRoutes);
   router.use('/survey-templates', surveyTemplateRoutes);

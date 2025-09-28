@@ -2,6 +2,7 @@ const campanhaRepository = require('../repositories/campanhaRepository');
 const clientRepository = require('../repositories/clientRepository');
 const cupomRepository = require('../repositories/cupomRepository');
 const CampanhaService = require('../services/campanhaService');
+const roletaSpinRepository = require('../repositories/roletaSpinRepository');
 const whatsappService = require('../services/whatsappService');
 
 // Instanciando apenas o Service, que é uma classe que recebe as dependências
@@ -9,6 +10,7 @@ const campanhaService = new CampanhaService(
   campanhaRepository,
   clientRepository,
   cupomRepository,
+  roletaSpinRepository,
   whatsappService
 );
 

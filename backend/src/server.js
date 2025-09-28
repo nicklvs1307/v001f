@@ -41,7 +41,9 @@ const startServer = async () => {
     
     // Inicia os jobs agendados
     const dailyReportJob = require('./jobs/dailyReportJob');
+    const couponReminderJob = require('./jobs/couponReminderJob');
     dailyReportJob.start();
+    couponReminderJob.start();
   });
 };
 

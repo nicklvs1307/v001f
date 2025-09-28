@@ -1,8 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Typography, Box, Alert, Paper, CircularProgress } from '@mui/material';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { keyframes } from '@mui/system';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
+import ReactConfetti from 'react-confetti';
+import useWindowSize from '../hooks/useWindowSize'; // Assuming a hook for window size exists
 import getDynamicTheme from '../theme';
 import publicSurveyService from '../services/publicSurveyService';
 
@@ -12,10 +14,15 @@ const floatAnimation = keyframes`
   100% { transform: translateY(0px); }
 `;
 
-const fallAnimation = keyframes`
-  0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
-`;
+// Helper to format date from ISO string to DD/MM/YYYY
+const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+};
 
 // Wrapper Component
 const CongratulationsPage = () => {
@@ -59,33 +66,8 @@ const CongratulationsPage = () => {
 
 // UI Component
 const CongratulationsComponent = ({ premio, cupom, tenant }) => {
-    const confettiRef = useRef(null);
     const theme = useTheme();
-
-    useEffect(() => {
-        const currentConfettiContainer = confettiRef.current;
-        const createConfetti = () => {
-            if (!currentConfettiContainer) return;
-            const colors = [theme.palette.warning.main, theme.palette.danger.main, theme.palette.primary.main, theme.palette.secondary.main, '#00c9ff'];
-            for (let i = 0; i < 100; i++) {
-                const confetti = document.createElement('div');
-                confetti.style.position = 'absolute';
-                confetti.style.width = Math.random() * 10 + 5 + 'px';
-                confetti.style.height = Math.random() * 10 + 5 + 'px';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.top = Math.random() * -20 + '%';
-                confetti.style.left = Math.random() * 100 + '%';
-                confetti.style.opacity = Math.random() * 0.5 + 0.5;
-                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-                confetti.style.animation = `${fallAnimation} ${Math.random() * 3 + 2}s linear infinite`;
-                confetti.style.zIndex = 1;
-                currentConfettiContainer.appendChild(confetti);
-            }
-        };
-        createConfetti();
-        return () => { if (currentConfettiContainer) currentConfettiContainer.innerHTML = ''; };
-    }, [theme]);
+    const { width, height } = useWindowSize();
 
     if (!premio || !cupom) {
         return (
@@ -96,10 +78,12 @@ const CongratulationsComponent = ({ premio, cupom, tenant }) => {
             </Box>
         );
     }
+    
+    const formattedValidity = formatDate(cupom.dataValidade);
 
     return (
         <Box sx={{ background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', p: { xs: 1, sm: 2 }, position: 'relative' }}>
-            <Box ref={confettiRef} sx={{ position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: 9999, pointerEvents: 'none' }} />
+            <ReactConfetti width={width} height={height} />
             <Box sx={{ maxWidth: '800px', width: '100%', backgroundColor: 'white', borderRadius: '20px', boxShadow: '0 15px 30px rgba(0, 0, 0, 0.2)', overflow: 'hidden', textAlign: 'center', position: 'relative', zIndex: 2, margin: { xs: '0 16px', sm: 0 } }}>
                 <Box sx={{ background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, padding: { xs: '30px 20px', sm: '40px 20px' }, color: 'white', position: 'relative', zIndex: 2 }}>
                     {tenant?.logoUrl && (
@@ -122,7 +106,7 @@ const CongratulationsComponent = ({ premio, cupom, tenant }) => {
                         <Typography>Use este código durante o checkout para resgatar sua recompensa.</Typography>
                     </Paper>
                     <Box sx={{ backgroundColor: theme.palette.augmentColor({ color: { main: theme.palette.warning.main } }).light, padding: '15px', borderRadius: '10px', margin: '20px 0', border: `1px solid ${theme.palette.warning.main}` }}>
-                        <Typography><strong>Validade:</strong> Este cupom é válido por <strong>30 dias</strong> a partir de hoje.</Typography>
+                        <Typography><strong>Validade:</strong> Este cupom é válido até <strong>{formattedValidity}</strong>.</Typography>
                     </Box>
                 </Box>
                 <Box sx={{ padding: '20px', backgroundColor: theme.palette.light.main, color: theme.palette.dark.main, fontSize: { xs: '0.8rem', sm: '0.9rem' } }}>

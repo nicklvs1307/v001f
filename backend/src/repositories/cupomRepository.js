@@ -117,6 +117,16 @@ class CupomRepository {
     }
     return null;
   }
+
+  async findByClientAndSurvey(clienteId, pesquisaId) {
+    return Cupom.findOne({
+      where: {
+        clienteId: clienteId,
+        pesquisaId: pesquisaId,
+      },
+      order: [['dataGeracao', 'DESC']],
+    });
+  }
 }
 
 module.exports = new CupomRepository();

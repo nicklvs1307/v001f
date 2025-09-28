@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       Cupom.belongsTo(models.Recompensa, { foreignKey: 'recompensaId', as: 'recompensa' });
       Cupom.belongsTo(models.Client, { foreignKey: 'clienteId', as: 'cliente' });
       Cupom.belongsTo(models.Campanha, { foreignKey: 'campanhaId', as: 'campanha' });
+      Cupom.belongsTo(models.Pesquisa, { foreignKey: 'pesquisaId', as: 'pesquisa' });
     }
   }
   Cupom.init({
@@ -16,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
+    },
+    pesquisaId: {
+      type: DataTypes.UUID,
+      allowNull: true,
     },
     tenantId: {
       type: DataTypes.UUID,

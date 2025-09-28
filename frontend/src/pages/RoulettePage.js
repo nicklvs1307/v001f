@@ -88,6 +88,7 @@ const RouletteComponent = ({ tenant, survey }) => {
     const [winningItem, setWinningItem] = useState(null);
     const [winningIndex, setWinningIndex] = useState(-1);
     const [generatedCupom, setGeneratedCupom] = useState(null);
+    const [hasSpun, setHasSpun] = useState(false);
     const { showNotification } = useNotification();
 
     useEffect(() => {
@@ -98,9 +99,10 @@ const RouletteComponent = ({ tenant, survey }) => {
                 return;
             }
             try {
-                const configData = await roletaService.getRoletaConfig(pesquisaId, clientId); // Passar pesquisaId
+                const configData = await roletaService.getRoletaConfig(pesquisaId, clientId);
                 setConfig(configData);
                 setItems(configData.items || []);
+                setHasSpun(configData.hasSpun);
             } catch (err) {
                 showNotification(err.response?.data?.message || err.message || t('roulette.error_fetching_config'), 'error');
             } finally {
@@ -111,6 +113,10 @@ const RouletteComponent = ({ tenant, survey }) => {
     }, [pesquisaId, clientId, t, showNotification]);
 
     const handleSpin = async () => {
+        if (hasSpun) {
+            showNotification(t('roulette.already_spun'), 'warning');
+            return;
+        }
         if (!pesquisaId || !clientId) {
             showNotification(t('roulette.error_ids_missing'), 'warning');
             return;
@@ -129,8 +135,12 @@ const RouletteComponent = ({ tenant, survey }) => {
             setWinningItem(wonItem);
             setWinningIndex(foundIndex);
             setGeneratedCupom(generatedCupomData);
+            setHasSpun(true); // Marcar que o usuário já girou
         } catch (err) {
             showNotification(err.response?.data?.message || err.message || t('roulette.error_spinning_wheel'), 'error');
+            if (err.response?.status === 409) {
+                setHasSpun(true);
+            }
             setSpinning(false);
         }
     };
@@ -180,6 +190,12 @@ const RouletteComponent = ({ tenant, survey }) => {
                 </Typography>
             </Box>
 
+            {hasSpun && (
+                <Alert severity="info" sx={{ mb: 2 }}>
+                    {t('roulette.already_spun_message')}
+                </Alert>
+            )}
+
             <SpinTheWheel items={items} winningItem={winningItem} winningIndex={winningIndex} onAnimationComplete={handleAnimationComplete} />
 
             <Button
@@ -187,7 +203,7 @@ const RouletteComponent = ({ tenant, survey }) => {
                 color="primary"
                 size="large"
                 onClick={handleSpin}
-                disabled={spinning || winningIndex !== -1}
+                disabled={spinning || winningIndex !== -1 || hasSpun}
                 sx={{
                     mt: 3,
                     px: 6,
@@ -203,7 +219,7 @@ const RouletteComponent = ({ tenant, survey }) => {
                     }
                 }}
             >
-                {spinning ? <CircularProgress size={28} color="inherit" /> : t('roulette.spin_button')}
+                {spinning ? <CircularProgress size={28} color="inherit" /> : (hasSpun ? t('roulette.spun_button') : t('roulette.spin_button'))}
             </Button>
         </Box>
     );

@@ -223,10 +223,12 @@ const SpinTheWheel = ({ items, winningItem, winningIndex, onAnimationComplete })
       className="roleta-container"
       sx={{
         position: 'relative',
-        margin: '20px auto',
         width: wheelSize,
         height: wheelSize,
         filter: 'drop-shadow(0 0 20px rgba(255, 215, 0, 0.3))',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
       }}
     >
       <canvas

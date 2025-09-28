@@ -27,6 +27,19 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
     throw new ApiError(404, 'Cliente não encontrado.');
   }
 
+  // Verificar se o cliente já girou a roleta para esta pesquisa recentemente
+  const latestCupom = await cupomRepository.findByClientAndSurvey(clientId, pesquisaId);
+  if (latestCupom) {
+    const now = new Date();
+    const lastSpinTime = new Date(latestCupom.dataGeracao);
+    const timeDiff = now.getTime() - lastSpinTime.getTime();
+    const hoursDiff = timeDiff / (1000 * 3600);
+
+    if (hoursDiff < 24) {
+      throw new ApiError(429, 'Você só pode girar a roleta uma vez por dia.');
+    }
+  }
+
   const tenantId = pesquisa.tenantId;
 
   const premios = await roletaPremioRepository.findAll({ tenantId, roletaId: pesquisa.roletaId });
@@ -86,6 +99,7 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
     recompensaId: recompensa.id,
     codigo: codigoCupom,
     clienteId: clientId,
+    pesquisaId: pesquisaId, // Adicionar o ID da pesquisa
     dataValidade: dataValidade,
     dataGeracao: new Date(),
     status: 'active',
@@ -115,21 +129,33 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
 // @route   GET /api/roleta/config
 // @access  Public (ou protegido, dependendo da necessidade)
 exports.getRoletaConfig = asyncHandler(async (req, res) => {
-  const { pesquisaId } = req.params;
+  const { pesquisaId, clientId } = req.params;
 
-  if (!pesquisaId) {
-    throw new ApiError(400, 'ID da pesquisa é obrigatório.');
+  if (!pesquisaId || !clientId) {
+    throw new ApiError(400, 'ID da pesquisa e do cliente são obrigatórios.');
   }
 
   const pesquisa = await Pesquisa.findByPk(pesquisaId);
   if (!pesquisa || !pesquisa.roletaId) {
-    return res.status(200).json({ items: [] });
+    return res.status(200).json({ items: [], hasSpun: false });
+  }
+
+  const latestCupom = await cupomRepository.findByClientAndSurvey(clientId, pesquisaId);
+  let hasSpunRecently = false;
+  if (latestCupom) {
+    const now = new Date();
+    const lastSpinTime = new Date(latestCupom.dataGeracao);
+    const timeDiff = now.getTime() - lastSpinTime.getTime();
+    const hoursDiff = timeDiff / (1000 * 3600);
+    if (hoursDiff < 24) {
+      hasSpunRecently = true;
+    }
   }
 
   const premios = await roletaPremioRepository.findAll({ tenantId: pesquisa.tenantId, roletaId: pesquisa.roletaId });
 
   if (!premios || premios.length === 0) {
-    return res.status(200).json({ items: [] });
+    return res.status(200).json({ items: [], hasSpun: hasSpunRecently });
   }
 
   const items = premios
@@ -147,5 +173,5 @@ exports.getRoletaConfig = asyncHandler(async (req, res) => {
       }
     }));
 
-  res.status(200).json({ items });
+  res.status(200).json({ items, hasSpun: hasSpunRecently });
 });

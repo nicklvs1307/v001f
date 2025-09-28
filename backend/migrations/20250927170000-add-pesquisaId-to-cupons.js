@@ -5,7 +5,7 @@ module.exports = {
     await queryInterface.addColumn('cupons', 'pesquisaId', {
       type: Sequelize.UUID,
       references: {
-        model: 'Pesquisas',
+        model: 'pesquisas',
         key: 'id',
       },
       onUpdate: 'CASCADE',

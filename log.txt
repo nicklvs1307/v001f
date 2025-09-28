@@ -1,15 +1,9 @@
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "column \"pesquisaId\" does not exist",
-    "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)\n    at async Cupom.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)\n    at async Cupom.findOne (/usr/src/app/node_modules/sequelize/lib/model.js:1240:12)\n    at async /usr/src/app/src/controllers/roletaController.js:143:23"
-}
+$ npx sequelize-cli db:migrate
 
-URL da solicitação
-https://loyalfood.towersfy.com/api/roleta/config/11b589b2-8c7b-45cf-b278-b0fb6efa966b/c808fcb4-66ef-45b8-b5f2-d17477709f5a
-Método da solicitação
-GET
-Código de status
-500 Internal Server Error
+Sequelize CLI [Node: 18.20.8, CLI: 6.6.3, ORM: 6.37.7]
 
-https://loyalfood.towersfy.com/roleta/3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd/11b589b2-8c7b-45cf-b278-b0fb6efa966b/c808fcb4-66ef-45b8-b5f2-d17477709f5a
+Loaded configuration file "src/config/sequelize-config.js".
+Using environment "production".
+== 20250927170000-add-pesquisaId-to-cupons: migrating =======
+
+ERROR: relation "Pesquisas" does not exist

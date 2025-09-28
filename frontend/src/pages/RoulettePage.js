@@ -155,24 +155,56 @@ const RouletteComponent = ({ tenant, survey }) => {
     }
 
     return (
-        <Box sx={{ background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`, minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', p: { xs: 1, sm: 2 } }}>
-            <Box sx={{ maxWidth: '800px', width: '100%', backgroundColor: 'white', borderRadius: '20px', boxShadow: '0 15px 30px rgba(0, 0, 0, 0.2)', overflow: 'hidden', textAlign: 'center', p: { xs: 2, sm: 4 }, margin: '0 16px' }}>
+        <Box sx={{
+            background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.secondary.dark} 100%)`,
+            minHeight: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            textAlign: 'center',
+            p: { xs: 2, sm: 3 },
+            color: 'white'
+        }}>
+            <Box>
                 {tenant?.logoUrl && (
                     <Box sx={{ mb: 2 }}>
-                        <img src={`${process.env.REACT_APP_API_URL}${tenant.logoUrl}`} alt="Logo" style={{ maxHeight: '60px', maxWidth: '180px', objectFit: 'contain' }} />
+                        <img src={`${process.env.REACT_APP_API_URL}${tenant.logoUrl}`} alt="Logo" style={{ maxHeight: '50px', maxWidth: '150px', objectFit: 'contain' }} />
                     </Box>
                 )}
-                <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main', fontSize: { xs: '1.8rem', sm: '2.5rem', md: '3rem' } }}>
+                <Typography variant="h2" component="h1" gutterBottom sx={{ fontWeight: 'bold', textShadow: '0 2px 4px rgba(0,0,0,0.3)', fontSize: { xs: '2.5rem', sm: '3.5rem' } }}>
                     {config?.title || t('roulette.title')}
                 </Typography>
-                <Typography variant="subtitle1" sx={{ mb: 4, color: 'text.secondary', fontSize: { xs: '0.9rem', sm: '1rem' } }}>
+                <Typography variant="h6" sx={{ mb: 3, opacity: 0.9, fontSize: { xs: '1rem', sm: '1.2rem' } }}>
                     {config?.description || t('roulette.description')}
                 </Typography>
-                <SpinTheWheel items={items} winningItem={winningItem} winningIndex={winningIndex} onAnimationComplete={handleAnimationComplete} />
-                <Button variant="contained" color="primary" size="large" onClick={handleSpin} disabled={spinning || winningIndex !== -1} sx={{ mt: 4, px: 5, py: 1.5, borderRadius: '50px', fontWeight: 'bold' }}>
-                    {spinning ? <CircularProgress size={24} color="inherit" /> : t('roulette.spin_button')}
-                </Button>
             </Box>
+
+            <SpinTheWheel items={items} winningItem={winningItem} winningIndex={winningIndex} onAnimationComplete={handleAnimationComplete} />
+
+            <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={handleSpin}
+                disabled={spinning || winningIndex !== -1}
+                sx={{
+                    mt: 3,
+                    px: 6,
+                    py: 2,
+                    borderRadius: '50px',
+                    fontWeight: 'bold',
+                    fontSize: { xs: '1rem', sm: '1.2rem' },
+                    boxShadow: `0 0 20px ${theme.palette.primary.light}`,
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                        transform: 'scale(1.05)',
+                        boxShadow: `0 0 30px ${theme.palette.primary.light}`,
+                    }
+                }}
+            >
+                {spinning ? <CircularProgress size={28} color="inherit" /> : t('roulette.spin_button')}
+            </Button>
         </Box>
     );
 };

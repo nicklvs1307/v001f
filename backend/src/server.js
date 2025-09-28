@@ -25,7 +25,7 @@ const apiRoutes = require("./routes");
 const apiRouter = express.Router(); // Crie um novo Router
 
 apiRoutes(apiRouter); // Chame a função de rotas com o router
-app.use("/", apiRouter); // Use o router como middleware
+app.use("/api", apiRouter); // Use o router como middleware
 
 // Error Handler
 const { errorHandler } = require("./middlewares/errorMiddleware");

@@ -27,26 +27,31 @@ const dashboardRepository = {
                     type: 'rating_0_10' // Only fetch answers for NPS-style questions
                 },
                 required: true
-            }]
+            }],
+            order: [['createdAt', 'ASC']] // Important to get the first response
         });
 
+        const processedSessions = new Set();
         let promoters = 0;
         let neutrals = 0;
         let detractors = 0;
 
         ratingResponses.forEach(response => {
-            const rating = response.ratingValue;
-            
-            if (rating >= 9) {
-                promoters++;
-            } else if (rating >= 7 && rating <= 8) {
-                neutrals++;
-            } else {
-                detractors++;
+            if (!processedSessions.has(response.respondentSessionId)) {
+                const rating = response.ratingValue;
+                
+                if (rating >= 9) {
+                    promoters++;
+                } else if (rating >= 7 && rating <= 8) {
+                    neutrals++;
+                } else {
+                    detractors++;
+                }
+                processedSessions.add(response.respondentSessionId);
             }
         });
 
-        const totalRatingResponses = ratingResponses.length;
+        const totalRatingResponses = processedSessions.size;
         let npsScore = 0;
         let promotersPercentage = 0;
         let neutralsPercentage = 0;

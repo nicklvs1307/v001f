@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
   class Client extends Model {
     static associate(models) {
       Client.belongsTo(models.Tenant, { foreignKey: 'tenantId', as: 'tenant' });
+      Client.hasMany(models.Cupom, { foreignKey: 'clienteId', as: 'cupons' }); // Adicionar associação com Cupom
       Client.hasMany(models.Resposta, { foreignKey: 'respondentSessionId', sourceKey: 'respondentSessionId', as: 'respostas' }); // Adicionar associação com Resposta
 
     }

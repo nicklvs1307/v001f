@@ -1,7 +1,7 @@
 {
-    "message": "Request failed with status code 404",
+    "message": "Network Error",
     "name": "AxiosError",
-    "stack": "AxiosError: Request failed with status code 404\n    at Oe (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:303002)\n    at XMLHttpRequest.g (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:307592)\n    at xt.request (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:319120)\n    at async Object.verifyToken (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:141660)\n    at async https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:142091",
+    "stack": "AxiosError: Network Error\n    at m.onerror (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:308152)\n    at xt.request (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:319120)\n    at async Object.login (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:141553)\n    at async login (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:142435)\n    at async onSubmit (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:587480)",
     "config": {
         "transitional": {
             "silentJSONParsing": true,
@@ -27,61 +27,13 @@
         "env": {},
         "headers": {
             "Accept": "application/json, text/plain, */*",
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJkMzYxMjQ5OS00M2Q4LTRhZjQtOTE0Zi1jNmViZWI0ZTM5OTYiLCJ0ZW5hbnRJZCI6IjNiZDViNDlhLTU2ZTYtNDViNy05NzEwLThkNTFiOGY2ZThkZCIsInJvbGUiOiJBZG1pbiIsIm5hbWUiOiJSYWZhZWwiLCJwcm9maWxlUGljdHVyZVVybCI6bnVsbCwidGVuYW50TmFtZSI6IlJvbWEgUGl6emFyaWEgJiBDaG9wcGVyaWEiLCJpYXQiOjE3NTkwOTI3NzMsImV4cCI6MTc1OTY5NzU3M30.lRZXdzF3ZdPWDB_l1Zefz4b21OEYyHuVn6lDl0MJNoQ"
+            "Content-Type": "application/json"
         },
-        "baseURL": "/api",
+        "baseURL": "https://apiloyalfood.towersfy.com",
         "method": "post",
-        "url": "/auth/verify-token",
+        "url": "/auth/login",
+        "data": "{\"email\":\"rafael@towersfy.com\",\"password\":\"Rafael@r0ma\"}",
         "allowAbsoluteUrls": true
     },
-    "code": "ERR_BAD_REQUEST",
-    "status": 404
+    "code": "ERR_NETWORK"
 }
-Postgres is up - executing command
-Server.js is being executed!
-Conexão com o banco de dados estabelecida com sucesso (Sequelize).
-Server is running on port 5000
-Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
-Agendador de lembrete de cupons iniciado. A tarefa será executada todos os dias às 9:00.
-Login request body: { email: 'rafael@towersfy.com', password: 'Rafael@r0ma' }
-Executing (default): SELECT "Usuario"."id", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."tenantId", "Usuario"."roleId", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."email" = 'rafael@towersfy.com';
-Executing (default): SELECT "name" FROM "roles" AS "Role" WHERE "Role"."id" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
-
-URL da solicitação
-https://loyalfood.towersfy.com/api/dashboard/main
-Método da solicitação
-GET
-Código de status
-404 Not Found
-Endereço remoto
-95.217.16.187:443
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Error</title>
-</head>
-<body>
-<pre>Cannot GET /api/dashboard/main</pre>
-</body>
-</html>
-
-URL da solicitação
-https://loyalfood.towersfy.com/api/auth/verify-token
-Método da solicitação
-POST
-Código de status
-404 Not Found
-Endereço remoto
-95.217.16.187:443
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Error</title>
-</head>
-<body>
-<pre>Cannot POST /api/auth/verify-token</pre>
-</body>
-</html>

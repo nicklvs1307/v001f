@@ -1,15 +1,15 @@
+{
+    "status": "error",
+    "code": "HTTP_500",
+    "message": "column \"pesquisaId\" does not exist",
+    "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)\n    at async Cupom.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)\n    at async Cupom.findOne (/usr/src/app/node_modules/sequelize/lib/model.js:1240:12)\n    at async /usr/src/app/src/controllers/roletaController.js:143:23"
+}
+
 URL da solicitação
-https://loyalfood.towersfy.com/api/clients/c808fcb4-66ef-45b8-b5f2-d17477709f5a/details
+https://loyalfood.towersfy.com/api/roleta/config/11b589b2-8c7b-45cf-b278-b0fb6efa966b/c808fcb4-66ef-45b8-b5f2-d17477709f5a
 Método da solicitação
 GET
 Código de status
 500 Internal Server Error
-Endereço remoto
-95.217.16.187:443
 
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "Cupom is not associated to Client!",
-    "details": "SequelizeEagerLoadingError: Cupom is not associated to Client!\n    at Client._getIncludedAssociation (/usr/src/app/node_modules/sequelize/lib/model.js:565:13)\n    at Client._validateIncludedElement (/usr/src/app/node_modules/sequelize/lib/model.js:502:53)\n    at /usr/src/app/node_modules/sequelize/lib/model.js:421:37\n    at Array.map (<anonymous>)\n    at Client._validateIncludedElements (/usr/src/app/node_modules/sequelize/lib/model.js:417:39)\n    at Client.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1124:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Client.findOne (/usr/src/app/node_modules/sequelize/lib/model.js:1240:12)\n    at async ClientRepository.getClientDetails (/usr/src/app/src/repositories/clientRepository.js:105:20)\n    at async /usr/src/app/src/controllers/clientController.js:163:25"
-}
+https://loyalfood.towersfy.com/roleta/3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd/11b589b2-8c7b-45cf-b278-b0fb6efa966b/c808fcb4-66ef-45b8-b5f2-d17477709f5a

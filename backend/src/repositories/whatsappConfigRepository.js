@@ -9,6 +9,13 @@ class WhatsappConfigRepository {
     const { tenantId } = data;
     let config = await this.findByTenant(tenantId);
 
+    const updateData = {};
+    Object.keys(data).forEach(key => {
+      if (data[key] !== undefined) {
+        updateData[key] = data[key];
+      }
+    });
+
     if (config) {
       // Se a configuração já existe, mas não tem um nome de instância ou parece inválido, gere um novo.
       if (!config.instanceName || config.instanceName.includes(' ')) {
@@ -18,12 +25,12 @@ class WhatsappConfigRepository {
             .toLowerCase()
             .replace(/\s+/g, '-')
             .replace(/[^a-z0-9-]/g, '');
-          data.instanceName = sanitizedName;
+          updateData.instanceName = sanitizedName;
         }
       }
-      return await config.update(data);
+      return await config.update(updateData);
     } else {
-      const newData = { ...data };
+      const newData = { ...updateData };
       if (!newData.instanceName) {
         const tenant = await Tenant.findByPk(tenantId);
         if (tenant && tenant.name) {

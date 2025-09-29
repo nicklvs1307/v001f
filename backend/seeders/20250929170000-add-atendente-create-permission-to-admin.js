@@ -10,7 +10,7 @@ module.exports = {
 
     if (adminRole) {
       const permission = await queryInterface.sequelize.query(
-        `SELECT id FROM permissoes WHERE name = 'atendentes:create'`,
+        `SELECT id FROM permissoes WHERE module = 'atendentes' AND action = 'create'`,
         { type: queryInterface.sequelize.QueryTypes.SELECT }
       );
 
@@ -36,7 +36,7 @@ module.exports = {
 
     if (adminRole) {
       const permission = await queryInterface.sequelize.query(
-        `SELECT id FROM permissoes WHERE name = 'atendentes:create'`,
+        `SELECT id FROM permissoes WHERE module = 'atendentes' AND action = 'create'`,
         { type: queryInterface.sequelize.QueryTypes.SELECT }
       );
 

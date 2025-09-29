@@ -2,102 +2,102 @@ const { Client } = require('../../models');
 const { Op } = require('sequelize');
 const ApiError = require("../errors/ApiError");
 
-const findCuriosos = async (tenantId) => {
-  return Client.findAll({
-    where: { tenantId },
-    include: [{
-      model: Resposta,
-      as: 'respostas',
-      attributes: [],
-    }],
-    attributes: {
-      include: [[sequelize.fn('COUNT', sequelize.col('respostas.id')), 'visitCount']],
-    },
-    group: ['Client.id'],
-    having: sequelize.literal('COUNT(respostas.id) = 0'),
-  });
-};
-
-const findInativos = async (tenantId) => {
-  const threeMonthsAgo = new Date();
-  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-
-  return Client.findAll({
-    where: { tenantId },
-    include: [{
-      model: Resposta,
-      as: 'respostas',
-      attributes: [],
-    }],
-    attributes: {
-      include: [[sequelize.fn('MAX', sequelize.col('respostas.createdAt')), 'lastVisit']],
-    },
-    group: ['Client.id'],
-    having: sequelize.literal(`MAX("respostas"."createdAt") < '${threeMonthsAgo.toISOString()}' AND COUNT("respostas"."id") > 0`),
-  });
-};
-
-const findNovatos = async (tenantId) => {
-  const threeMonthsAgo = new Date();
-  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-
-  return Client.findAll({
-    where: { tenantId },
-    include: [{
-      model: Resposta,
-      as: 'respostas',
-      where: { createdAt: { [Op.gte]: threeMonthsAgo } },
-      attributes: [],
-    }],
-    attributes: {
-      include: [[sequelize.fn('COUNT', sequelize.col('respostas.id')), 'visitCount']],
-    },
-    group: ['Client.id'],
-    having: sequelize.literal('COUNT(respostas.id) = 1'),
-  });
-};
-
-const findFieis = async (tenantId) => {
-  const threeMonthsAgo = new Date();
-  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-
-  return Client.findAll({
-    where: { tenantId },
-    include: [{
-      model: Resposta,
-      as: 'respostas',
-      where: { createdAt: { [Op.gte]: threeMonthsAgo } },
-      attributes: [],
-    }],
-    attributes: {
-      include: [[sequelize.fn('COUNT', sequelize.col('respostas.id')), 'visitCount']],
-    },
-    group: ['Client.id'],
-    having: sequelize.literal('COUNT(respostas.id) BETWEEN 2 AND 4'),
-  });
-};
-
-const findSuperClientes = async (tenantId) => {
-  const threeMonthsAgo = new Date();
-  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-
-  return Client.findAll({
-    where: { tenantId },
-    include: [{
-      model: Resposta,
-      as: 'respostas',
-      where: { createdAt: { [Op.gte]: threeMonthsAgo } },
-      attributes: [],
-    }],
-    attributes: {
-      include: [[sequelize.fn('COUNT', sequelize.col('respostas.id')), 'visitCount']],
-    },
-    group: ['Client.id'],
-    having: sequelize.literal('COUNT(respostas.id) >= 5'),
-  });
-};
-
 class ClientRepository {
+  async findCuriosos(tenantId) {
+    return Client.findAll({
+      where: { tenantId },
+      include: [{
+        model: Resposta,
+        as: 'respostas',
+        attributes: [],
+      }],
+      attributes: {
+        include: [[sequelize.fn('COUNT', sequelize.col('respostas.id')), 'visitCount']],
+      },
+      group: ['Client.id'],
+      having: sequelize.literal('COUNT(respostas.id) = 0'),
+    });
+  }
+
+  async findInativos(tenantId) {
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+    return Client.findAll({
+      where: { tenantId },
+      include: [{
+        model: Resposta,
+        as: 'respostas',
+        attributes: [],
+      }],
+      attributes: {
+        include: [[sequelize.fn('MAX', sequelize.col('respostas.createdAt')), 'lastVisit']],
+      },
+      group: ['Client.id'],
+      having: sequelize.literal(`MAX("respostas"."createdAt") < '${threeMonthsAgo.toISOString()}' AND COUNT("respostas"."id") > 0`),
+    });
+  }
+
+  async findNovatos(tenantId) {
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+    return Client.findAll({
+      where: { tenantId },
+      include: [{
+        model: Resposta,
+        as: 'respostas',
+        where: { createdAt: { [Op.gte]: threeMonthsAgo } },
+        attributes: [],
+      }],
+      attributes: {
+        include: [[sequelize.fn('COUNT', sequelize.col('respostas.id')), 'visitCount']],
+      },
+      group: ['Client.id'],
+      having: sequelize.literal('COUNT(respostas.id) = 1'),
+    });
+  }
+
+  async findFieis(tenantId) {
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+    return Client.findAll({
+      where: { tenantId },
+      include: [{
+        model: Resposta,
+        as: 'respostas',
+        where: { createdAt: { [Op.gte]: threeMonthsAgo } },
+        attributes: [],
+      }],
+      attributes: {
+        include: [[sequelize.fn('COUNT', sequelize.col('respostas.id')), 'visitCount']],
+      },
+      group: ['Client.id'],
+      having: sequelize.literal('COUNT(respostas.id) BETWEEN 2 AND 4'),
+    });
+  }
+
+  async findSuperClientes(tenantId) {
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+    return Client.findAll({
+      where: { tenantId },
+      include: [{
+        model: Resposta,
+        as: 'respostas',
+        where: { createdAt: { [Op.gte]: threeMonthsAgo } },
+        attributes: [],
+      }],
+      attributes: {
+        include: [[sequelize.fn('COUNT', sequelize.col('respostas.id')), 'visitCount']],
+      },
+      group: ['Client.id'],
+      having: sequelize.literal('COUNT(respostas.id) >= 5'),
+    });
+  }
+
   async findByTenant(tenantId) {
     return Client.findAll({ where: { tenantId } });
   }
@@ -326,21 +326,4 @@ class ClientRepository {
   }
 }
 
-module.exports = {
-  createClient,
-  getClientById,
-  updateClient,
-  deleteClient,
-  findAndCountAllByTenant,
-  getClientDashboardData,
-  findByBirthMonth,
-  findClientByEmail,
-  findClientByPhone,
-  getClientByRespondentSessionId,
-  getClientDetails,
-  findCuriosos,
-  findInativos,
-  findNovatos,
-  findFieis,
-  findSuperClientes,
-};
+module.exports = new ClientRepository();

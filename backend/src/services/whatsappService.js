@@ -135,6 +135,59 @@ const getInstanceStatus = async (tenantId) => {
   }
 };
 
+const getConnectionInfo = async (tenantId) => {
+  const config = await WhatsappConfig.findOne({ where: { tenantId } });
+  if (!config || !config.instanceName) return { error: 'unconfigured' };
+
+  try {
+    const response = await axios.get(`${config.url}/instance/fetchInstance/${config.instanceName}`, getAxiosConfig(config));
+    return response.data;
+  } catch (error) {
+    return handleAxiosError(error, tenantId, config.instanceName);
+  }
+};
+
+const createInstance = async (tenantId) => {
+  const config = await WhatsappConfig.findOne({ where: { tenantId } });
+  if (!config || !config.instanceName) {
+    throw new Error('Configuração do WhatsApp ou nome da instância não encontrado.');
+  }
+
+  try {
+    const response = await axios.post(`${config.url}/instance/create`, 
+      { instanceName: config.instanceName }, 
+      getAxiosConfig(config)
+    );
+    return response.data;
+  } catch (error) {
+    return handleAxiosError(error, tenantId, config.instanceName);
+  }
+};
+
+const getInstanceQrCode = async (tenantId) => {
+  const config = await WhatsappConfig.findOne({ where: { tenantId } });
+  if (!config || !config.instanceName) return { error: 'unconfigured' };
+
+  try {
+    const response = await axios.get(`${config.url}/instance/connect/${config.instanceName}`, getAxiosConfig(config));
+    return response.data;
+  } catch (error) {
+    return handleAxiosError(error, tenantId, config.instanceName);
+  }
+};
+
+const logoutInstance = async (tenantId) => {
+  const config = await WhatsappConfig.findOne({ where: { tenantId } });
+  if (!config || !config.instanceName) return { message: "Instância já desconectada ou não configurada." };
+
+  try {
+    const response = await axios.delete(`${config.url}/instance/logout/${config.instanceName}`, getAxiosConfig(config));
+    return response.data;
+  } catch (error) {
+    return handleAxiosError(error, tenantId, config.instanceName);
+  }
+};
+
 const deleteInstance = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
   if (!config || !config.instanceName) {

@@ -3,6 +3,7 @@ const whatsappConfigRepository = require('../repositories/whatsappConfigReposito
 const whatsappService = require('../services/whatsappService');
 const ApiError = require('../errors/ApiError');
 const whatsappWebhookRepository = require('../repositories/whatsappWebhookRepository');
+const { Tenant, WhatsappConfig } = require('../../models');
 
 const whatsappConfigController = {
   // --- Rotas para o Tenant Admin ---
@@ -38,10 +39,26 @@ const whatsappConfigController = {
   // POST /api/whatsapp/instance -> Cria uma nova instância
   createInstance: asyncHandler(async (req, res) => {
     const { tenantId } = req.user;
-    // Garante que a configuração do WhatsApp exista e tenha um instanceName
-    await whatsappConfigRepository.upsert({ tenantId }); 
+
+    // Passo 1: Garante que a configuração exista
+    let config = await whatsappConfigRepository.findByTenant(tenantId);
+    if (!config) {
+      config = await WhatsappConfig.create({ tenantId });
+    }
+
+    // Passo 2: Garante que o instanceName seja válido
+    if (!config.instanceName || config.instanceName.includes(' ')) {
+      const tenant = await Tenant.findByPk(tenantId);
+      const newInstanceName = (tenant && tenant.name)
+        ? tenant.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+        : tenantId;
+      await config.update({ instanceName: newInstanceName });
+    }
+
+    // Passo 3: Tenta criar a instância na API do WhatsApp
     const result = await whatsappService.createInstance(tenantId);
 
+    // Passo 4: Retorna o resultado ou o erro estruturado
     if (result && result.status === 'error') {
       const statusCode = result.code && (result.code.startsWith('HTTP_4') || result.code === 'not_found') ? 400 : 500;
       return res.status(statusCode).json(result);

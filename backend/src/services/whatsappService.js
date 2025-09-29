@@ -155,7 +155,10 @@ const logoutInstance = async (tenantId) => {
 const deleteInstance = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
   if (!config) throw new Error('Configuração não encontrada');
-  const response = await axios.delete(`${config.url}/instance/delete/${config.instanceName}`, { headers: { 'apikey': config.apiKey } });
+  const response = await axios.delete(`${config.url}/instance/delete`, {
+    headers: { 'apikey': config.apiKey },
+    params: { instanceName: config.instanceName }
+  });
   return response.data;
 };
 

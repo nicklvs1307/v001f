@@ -88,7 +88,7 @@ const SurveyComponent = ({ survey }) => {
 
     useEffect(() => {
         const initialAnswers = {};
-        survey.questions.forEach(p => {
+        (survey.questions || []).forEach(p => {
             initialAnswers[p.id] = { perguntaId: p.id, tipo: p.type, valor: null, comentario: '' };
         });
         setAnswers(initialAnswers);

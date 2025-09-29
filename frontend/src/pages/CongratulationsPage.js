@@ -83,7 +83,7 @@ const CongratulationsComponent = ({ premio, cupom, tenant }) => {
 
     return (
         <Box sx={{ background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', p: { xs: 1, sm: 2 }, position: 'relative' }}>
-            <ReactConfetti width={width} height={height} />
+            <ReactConfetti width={width} height={height} style={{ zIndex: 9999 }} />
             <Box sx={{ maxWidth: '800px', width: '100%', backgroundColor: 'white', borderRadius: '20px', boxShadow: '0 15px 30px rgba(0, 0, 0, 0.2)', overflow: 'hidden', textAlign: 'center', position: 'relative', zIndex: 2, margin: { xs: '0 16px', sm: 0 } }}>
                 <Box sx={{ background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, padding: { xs: '30px 20px', sm: '40px 20px' }, color: 'white', position: 'relative', zIndex: 2 }}>
                     {tenant?.logoUrl && (
@@ -95,7 +95,7 @@ const CongratulationsComponent = ({ premio, cupom, tenant }) => {
                     <Typography variant="h5" component="h2" sx={{ fontSize: { xs: '1.1rem', sm: '1.5rem' }, opacity: 0.9 }}>Você acaba de ganhar um prêmio especial!</Typography>
                 </Box>
                 <Box sx={{ padding: { xs: '20px', sm: '30px', md: '40px' }, position: 'relative', zIndex: 2 }}>
-                    <Typography sx={{ mb: 2 }}>Estamos muito felizes em anunciar que <strong>você foi selecionado(a)</strong> para receber um presente especial como agradecimento pela sua fidelidade!</Typography>
+                    
                     <Paper elevation={3} sx={{ background: `linear-gradient(45deg, ${theme.palette.background.default}, ${theme.palette.grey[100]})`, borderRadius: '15px', padding: { xs: '20px', sm: '30px' }, margin: '30px 0', border: `2px dashed ${theme.palette.warning.main}`, position: 'relative', animation: `${floatAnimation} 3s ease-in-out infinite` }}>
                         <Typography variant="h6" sx={{ fontSize: { xs: '1.2rem', sm: '1.8rem' }, color: theme.palette.danger.main, marginBottom: '15px' }}>Sua Recompensa:</Typography>
                         <Typography><strong>Nome:</strong> {premio.nome}</Typography>
@@ -103,14 +103,14 @@ const CongratulationsComponent = ({ premio, cupom, tenant }) => {
                         <Box sx={{ fontSize: { xs: '1.5rem', sm: '2.5rem' }, fontWeight: 'bold', background: 'white', padding: { xs: '10px', sm: '15px' }, borderRadius: '10px', margin: '20px auto', letterSpacing: '2px', color: theme.palette.primary.main, border: `2px solid ${theme.palette.primary.main}`, display: 'inline-block', wordBreak: 'break-all' }}>
                             {cupom.codigo}
                         </Box>
-                        <Typography>Use este código durante o checkout para resgatar sua recompensa.</Typography>
+                        <Typography>Use este código em sua próxima visita para resgatar sua recompensa.</Typography>
                     </Paper>
                     <Box sx={{ backgroundColor: theme.palette.augmentColor({ color: { main: theme.palette.warning.main } }).light, padding: '15px', borderRadius: '10px', margin: '20px 0', border: `1px solid ${theme.palette.warning.main}` }}>
                         <Typography><strong>Validade:</strong> Este cupom é válido até <strong>{formattedValidity}</strong>.</Typography>
                     </Box>
                 </Box>
                 <Box sx={{ padding: '20px', backgroundColor: theme.palette.light.main, color: theme.palette.dark.main, fontSize: { xs: '0.8rem', sm: '0.9rem' } }}>
-                    <Typography variant="inherit">Em caso de dúvidas, entre em contato com nosso suporte: suporte@empresa.com</Typography>
+                    
                     <Typography variant="inherit">Oferta válida apenas para o destinatário deste e-mail. Não acumulativo com outras promoções.</Typography>
                 </Box>
             </Box>

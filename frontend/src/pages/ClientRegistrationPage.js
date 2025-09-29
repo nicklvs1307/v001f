@@ -73,6 +73,21 @@ const RegistrationFormComponent = ({ tenant }) => {
         setClientData({ ...clientData, [e.target.name]: e.target.value });
     };
 
+    const handleDateChange = (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 8) {
+            value = value.slice(0, 8);
+        }
+    
+        if (value.length > 4) {
+            value = `${value.slice(0, 2)}/${value.slice(2, 4)}/${value.slice(4)}`;
+        } else if (value.length > 2) {
+            value = `${value.slice(0, 2)}/${value.slice(2)}`;
+        }
+    
+        setClientData({ ...clientData, birthDate: value });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -152,7 +167,7 @@ const RegistrationFormComponent = ({ tenant }) => {
                     <TextField margin="normal" required fullWidth id="name" label="Nome Completo" name="name" autoComplete="name" autoFocus value={clientData.name} onChange={handleChange} />
                     <TextField margin="normal" fullWidth id="email" label="Endereço de Email (Opcional)" name="email" autoComplete="email" value={clientData.email} onChange={handleChange} />
                     <TextField margin="normal" required fullWidth id="phone" label="Telefone (com DDD)" name="phone" autoComplete="tel" value={clientData.phone} onChange={handleChange} />
-                    <TextField margin="normal" fullWidth id="birthDate" label="Data de Nascimento (Opcional)" name="birthDate" type="date" InputLabelProps={{ shrink: true }} value={clientData.birthDate} onChange={handleChange} />
+                    <TextField margin="normal" fullWidth id="birthDate" label="Data de Nascimento (Opcional)" name="birthDate" type="text" placeholder="DD/MM/AAAA" value={clientData.birthDate} onChange={handleDateChange} inputMode="numeric" />
                     <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, ...buttonStyle }} disabled={loading}>
                         {loading ? <CircularProgress size={24} color="inherit" /> : 'Cadastrar e Girar a Roleta'}
                     </Button>

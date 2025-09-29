@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Axios instance para endpoints públicos (sem token de autenticação)
 const publicApi = axios.create({
-  baseURL: `https://apiloyalfood.towersfy.com/public`,
+  baseURL: `${process.env.REACT_APP_API_URL || ''}/api/public`,
 });
 
 const getPublicSurveyById = async (id) => {

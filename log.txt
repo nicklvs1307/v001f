@@ -1,14 +1,18 @@
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "column \"instanceName\" does not exist",
-    "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)\n    at async WhatsappConfig.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)\n    at async WhatsappConfig.findOne (/usr/src/app/node_modules/sequelize/lib/model.js:1240:12)\n    at async WhatsappConfigRepository.findByTenant (/usr/src/app/src/repositories/whatsappConfigRepository.js:5:12)\n    at async /usr/src/app/src/controllers/whatsappConfigController.js:13:20"
-}
 URL da solicitação
-https://apiloyalfood.towersfy.com/api/whatsapp-config/instance
+https://apiloyalfood.towersfy.com/public/surveys/4922502d-1cd4-4dd7-af25-03eb4ceeaaa8
 Método da solicitação
 GET
 Código de status
-500 Internal Server Error
+404 Not Found
 Endereço remoto
 95.217.16.187:443
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /public/surveys/4922502d-1cd4-4dd7-af25-03eb4ceeaaa8</pre>
+</body>
+</html>

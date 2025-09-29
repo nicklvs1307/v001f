@@ -4,7 +4,7 @@ const ApiError = require('../errors/ApiError');
 
 const atendenteController = {
   createAtendente: asyncHandler(async (req, res) => {
-    const { name, email, status } = req.body;
+    const { name, status } = req.body;
     const requestingUser = req.user;
 
     const targetTenantId =
@@ -22,7 +22,6 @@ const atendenteController = {
     const atendente = await atendenteRepository.createAtendente(
       targetTenantId,
       name,
-      email,
       status,
       code
     );
@@ -61,7 +60,7 @@ const atendenteController = {
 
   updateAtendente: asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { name, email, status } = req.body;
+    const { name, status } = req.body;
     const requestingUser = req.user;
     const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
 
@@ -81,7 +80,6 @@ const atendenteController = {
       id,
       existingAtendente.tenantId,
       name,
-      email,
       status,
     );
 

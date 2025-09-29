@@ -15,7 +15,7 @@ const AtendenteForm = ({ initialData, onAtendenteCreated, onAtendenteUpdated, on
   const { formData, handleChange, setFormData } = useAtendenteForm(initialData);
 
   React.useEffect(() => {
-    setFormData(initialData || { name: '', email: '', status: 'active' });
+    setFormData(initialData || { name: '', status: 'active' });
   }, [initialData, setFormData]);
 
   const handleSubmit = async (e) => {
@@ -50,17 +50,7 @@ const AtendenteForm = ({ initialData, onAtendenteCreated, onAtendenteUpdated, on
         onChange={handleChange}
         sx={{ mb: 2 }}
       />
-      <TextField
-        margin="dense"
-        name="email"
-        label="Email"
-        type="email"
-        fullWidth
-        variant="outlined"
-        value={formData.email}
-        onChange={handleChange}
-        sx={{ mb: 2 }}
-      />
+
       <FormControl fullWidth variant="outlined" margin="dense">
         <InputLabel>Status</InputLabel>
         <Select

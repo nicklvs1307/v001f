@@ -1,8 +1,8 @@
 const { Atendente, Tenant } = require("../../models");
 const { Op } = require('sequelize');
 
-const createAtendente = async (tenantId, name, email, status, code) => {
-  return Atendente.create({ tenantId, name, email, status, code });
+const createAtendente = async (tenantId, name, status, code) => {
+  return Atendente.create({ tenantId, name, status, code });
 };
 
 const getAllAtendentes = async (tenantId) => {
@@ -18,9 +18,9 @@ const getAtendenteById = async (id, tenantId = null) => {
   return Atendente.findOne({ where: whereClause });
 };
 
-const updateAtendente = async (id, tenantId, name, email, status) => {
+const updateAtendente = async (id, tenantId, name, status) => {
   const [updatedRows, [updatedAtendente]] = await Atendente.update(
-    { name, email, status },
+    { name, status },
     { where: { id, tenantId }, returning: true }
   );
   return updatedAtendente;

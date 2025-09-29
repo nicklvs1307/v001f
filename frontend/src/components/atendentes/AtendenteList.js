@@ -3,6 +3,7 @@ import useAtendentes from '../../hooks/useAtendentes';
 import AuthContext from '../../context/AuthContext';
 import AtendenteModal from './AtendenteModal';
 import ConfirmationDialog from '../layout/ConfirmationDialog';
+import { useNotification } from '../../context/NotificationContext';
 import { 
     Box, 
     Typography, 
@@ -25,21 +26,19 @@ import AddIcon from '@mui/icons-material/Add';
 const AtendenteList = () => {
     const { user } = useContext(AuthContext);
     const { atendentes, loading, error, createAtendente, updateAtendente, deleteAtendente } = useAtendentes();
+    const { showNotification } = useNotification();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [selectedAtendente, setSelectedAtendente] = useState(null);
-    const [formError, setFormError] = useState('');
 
     const handleOpenModal = (atendente = null) => {
         setSelectedAtendente(atendente);
         setIsModalOpen(true);
-        setFormError('');
     };
 
     const handleCloseModal = () => {
         setSelectedAtendente(null);
         setIsModalOpen(false);
-        setFormError('');
     };
 
     const handleOpenConfirm = (atendente) => {
@@ -55,26 +54,30 @@ const AtendenteList = () => {
     const handleAtendenteCreate = async (atendenteData) => {
         try {
             await createAtendente(atendenteData);
+            showNotification('Atendente criado com sucesso!', 'success');
             handleCloseModal();
         } catch (err) {
-            setFormError(err.message);
+            showNotification(err.message, 'error');
         }
     };
 
     const handleAtendenteUpdate = async (atendenteData) => {
         try {
             await updateAtendente(selectedAtendente.id, atendenteData);
+            showNotification('Atendente atualizado com sucesso!', 'success');
             handleCloseModal();
         } catch (err) {
-            setFormError(err.message);
+            showNotification(err.message, 'error');
         }
     };
 
     const handleAtendenteDelete = async () => {
         try {
             await deleteAtendente(selectedAtendente.id);
+            showNotification('Atendente deletado com sucesso!', 'success');
             handleCloseConfirm();
         } catch (err) {
+            showNotification(err.message, 'error');
             console.error(err);
         }
     };
@@ -107,7 +110,6 @@ const AtendenteList = () => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Nome</TableCell>
-                                <TableCell>Email</TableCell>
                                 <TableCell>Status</TableCell>
                                 <TableCell align="right">Ações</TableCell>
                             </TableRow>
@@ -116,7 +118,6 @@ const AtendenteList = () => {
                             {atendentes.map((atendente) => (
                                 <TableRow key={atendente.id}>
                                     <TableCell>{atendente.name}</TableCell>
-                                    <TableCell>{atendente.email}</TableCell>
                                     <TableCell>{atendente.status === 'active' ? 'Ativo' : 'Inativo'}</TableCell>
                                     <TableCell align="right">
                                         <IconButton color="primary" onClick={() => handleOpenModal(atendente)}>
@@ -139,8 +140,6 @@ const AtendenteList = () => {
                 onAtendenteCreated={handleAtendenteCreate}
                 onAtendenteUpdated={handleAtendenteUpdate}
                 initialData={selectedAtendente}
-                formError={formError}
-                onError={setFormError}
             />
 
             <ConfirmationDialog

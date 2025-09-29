@@ -23,7 +23,6 @@ const AtendenteForm = ({ initialData, onAtendenteCreated, onAtendenteUpdated, on
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('handleSubmit called');
-    console.log('typeof onError:', typeof onError);
     console.log('Initial data:', initialData);
     onError(''); // Clear general error
     setNameError(''); // Clear name specific error

@@ -31,18 +31,34 @@ const SuperAdminView = () => {
     }, []);
 
     useEffect(() => {
+        let isMounted = true;
         if (selectedTenant) {
             setLoadingConfig(true);
+            setConfig({ url: '', apiKey: '' }); // Limpa a configuração anterior ao carregar uma nova
             whatsappConfigService.getTenantConfig(selectedTenant)
-                .then(response => setConfig(response.data || { url: '', apiKey: '' }))
-                .catch(() => {
-                    setSnackbarMessage('Falha ao buscar a configuração do WhatsApp.');
-                    setSnackbarSeverity('error');
-                    setSnackbarOpen(true);
-                    setConfig({ url: '', apiKey: '' });
+                .then(response => {
+                    if (isMounted) {
+                        setConfig(response.data || { url: '', apiKey: '' });
+                    }
                 })
-                .finally(() => setLoadingConfig(false));
+                .catch(() => {
+                    if (isMounted) {
+                        setSnackbarMessage('Falha ao buscar a configuração do WhatsApp. Pode não existir uma para este tenant.');
+                        setSnackbarSeverity('info');
+                        setSnackbarOpen(true);
+                        setConfig({ url: '', apiKey: '' });
+                    }
+                })
+                .finally(() => {
+                    if (isMounted) {
+                        setLoadingConfig(false);
+                    }
+                });
         }
+
+        return () => {
+            isMounted = false;
+        };
     }, [selectedTenant]);
 
     const handleSubmit = (e) => {

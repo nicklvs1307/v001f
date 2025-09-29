@@ -1,40 +1,54 @@
+URL da solicitação
+https://apiloyalfood.towersfy.com/api/whatsapp-config/instance
+Método da solicitação
+GET
+Código de status
+500 Internal Server Error
+Endereço remoto
+95.217.16.187:443
+
 {
-    "message": "Request failed with status code 404",
-    "name": "AxiosError",
-    "stack": "AxiosError: Request failed with status code 404\n    at Oe (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:303002)\n    at XMLHttpRequest.g (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:307592)\n    at xt.request (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:319120)\n    at async Object.login (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:141553)\n    at async login (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:142435)\n    at async onSubmit (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:587480)",
-    "config": {
-        "transitional": {
-            "silentJSONParsing": true,
-            "forcedJSONParsing": true,
-            "clarifyTimeoutError": false
-        },
-        "adapter": [
-            "xhr",
-            "http",
-            "fetch"
-        ],
-        "transformRequest": [
-            null
-        ],
-        "transformResponse": [
-            null
-        ],
-        "timeout": 0,
-        "xsrfCookieName": "XSRF-TOKEN",
-        "xsrfHeaderName": "X-XSRF-TOKEN",
-        "maxContentLength": -1,
-        "maxBodyLength": -1,
-        "env": {},
-        "headers": {
-            "Accept": "application/json, text/plain, */*",
-            "Content-Type": "application/json"
-        },
-        "baseURL": "https://apiloyalfood.towersfy.com",
-        "method": "post",
-        "url": "/auth/login",
-        "data": "{\"email\":\"rafael@towersfy.com\",\"password\":\"Rafael@r0ma\"}",
-        "allowAbsoluteUrls": true
-    },
-    "code": "ERR_BAD_REQUEST",
-    "status": 404
+    "status": "error",
+    "code": "HTTP_500",
+    "message": "relation \"whatsapp_configs\" does not exist",
+    "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)\n    at async WhatsappConfig.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)\n    at async WhatsappConfig.findOne (/usr/src/app/node_modules/sequelize/lib/model.js:1240:12)\n    at async WhatsappConfigRepository.findByTenant (/usr/src/app/src/repositories/whatsappConfigRepository.js:5:12)\n    at async /usr/src/app/src/controllers/whatsappConfigController.js:13:20"
 }
+
+P.A.getAttendantsPerformance is not a function
+
+react-dom.production.min.js:188 TypeError: r.questions is not iterable
+    at PublicSurveyPage.js:105:38
+    at Object.useMemo (react-dom.production.min.js:177:189)
+    at t.useMemo (react.production.min.js:26:48)
+    at or (PublicSurveyPage.js:103:32)
+    at gi (react-dom.production.min.js:160:137)
+    at Sl (react-dom.production.min.js:289:337)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+ds @ react-dom.production.min.js:188
+PublicSurveyPage.js:105 Uncaught TypeError: r.questions is not iterable
+    at PublicSurveyPage.js:105:38
+    at Object.useMemo (react-dom.production.min.js:177:189)
+    at t.useMemo (react.production.min.js:26:48)
+    at or (PublicSurveyPage.js:103:32)
+    at gi (react-dom.production.min.js:160:137)
+    at Sl (react-dom.production.min.js:289:337)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+(anônimo) @ PublicSurveyPage.js:105
+useMemo @ react-dom.production.min.js:177
+t.useMemo @ react.production.min.js:26
+or @ PublicSurveyPage.js:103
+gi @ react-dom.production.min.js:160
+Sl @ react-dom.production.min.js:289
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+ac @ react-dom.production.min.js:270
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14

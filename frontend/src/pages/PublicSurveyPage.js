@@ -102,7 +102,7 @@ const SurveyComponent = ({ survey }) => {
 
     const displayedQuestions = useMemo(() => {
         if (!survey) return [];
-        const questions = [...survey.questions];
+        const questions = [...(survey.questions || [])];
         if (survey.askForAttendant) {
             questions.push({
                 id: 'attendant-question',

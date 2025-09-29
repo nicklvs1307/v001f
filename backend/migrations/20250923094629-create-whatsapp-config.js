@@ -4,7 +4,7 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     const tables = await queryInterface.showAllTables();
     if (!tables.includes('whatsappConfigs')) {
-      await queryInterface.createTable('whatsapp_configs', {
+      await queryInterface.createTable('whatsappConfigs', {
         id: {
           type: Sequelize.UUID,
           defaultValue: Sequelize.UUIDV4,
@@ -41,7 +41,7 @@ module.exports = {
   async down(queryInterface, Sequelize) {
     const tables = await queryInterface.showAllTables();
     if (tables.includes('whatsappConfigs')) {
-      await queryInterface.dropTable('whatsapp_configs');
+      await queryInterface.dropTable('whatsappConfigs');
     }
   }
 };

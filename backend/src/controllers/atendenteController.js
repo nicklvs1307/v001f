@@ -16,15 +16,29 @@ const atendenteController = {
       throw new ApiError(400, 'Tenant ID é obrigatório para criar um atendente.');
     }
 
-    // Gera um código numérico aleatório de 4 dígitos
-    const code = Math.floor(1000 + Math.random() * 9000).toString();
-
-    const atendente = await atendenteRepository.createAtendente(
-      targetTenantId,
-      name,
-      status,
-      code
-    );
+    let atendente;
+    let retries = 5;
+    while (retries > 0) {
+      const code = Math.floor(1000 + Math.random() * 9000).toString();
+      try {
+        atendente = await atendenteRepository.createAtendente(
+          targetTenantId,
+          name,
+          status,
+          code
+        );
+        break; // Success
+      } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+          retries--;
+          if (retries === 0) {
+            throw new ApiError(500, 'Não foi possível gerar um código único para o atendente.');
+          }
+        } else {
+          throw error; // Re-throw other errors
+        }
+      }
+    }
 
     res.status(201).json({ message: 'Atendente criado com sucesso!', atendente });
   }),

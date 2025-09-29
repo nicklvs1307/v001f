@@ -1,5 +1,5 @@
-const { Client } = require('../../models');
-const { Op } = require('sequelize');
+const { Client, Resposta } = require('../../models');
+const { Op, where, fn, literal } = require('sequelize');
 const ApiError = require("../errors/ApiError");
 
 class ClientRepository {

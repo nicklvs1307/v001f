@@ -41,6 +41,12 @@ const whatsappConfigController = {
     // Garante que a configuração do WhatsApp exista e tenha um instanceName
     await whatsappConfigRepository.upsert({ tenantId }); 
     const result = await whatsappService.createInstance(tenantId);
+
+    if (result && result.status === 'error') {
+      const statusCode = result.code && (result.code.startsWith('HTTP_4') || result.code === 'not_found') ? 400 : 500;
+      return res.status(statusCode).json(result);
+    }
+
     res.status(201).json(result);
   }),
 

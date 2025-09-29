@@ -18,6 +18,8 @@ const createSurvey = async (surveyData) => {
     dueDate,
     startDate,
     endDate,
+    recompensaId,
+    roletaId,
   } = surveyData;
 
   const transaction = await sequelize.transaction();

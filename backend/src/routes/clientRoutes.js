@@ -5,6 +5,22 @@ const { getClientDetails, ...clientController } = require('../controllers/client
 const { protect, authorize } = require('../middlewares/authMiddleware');
 const validate = require("../middlewares/validationMiddleware");
 
+// Validador reutilizável para data de nascimento
+const birthDateValidator = check("birthDate", "Data de nascimento inválida")
+  .optional({ checkFalsy: true })
+  .customSanitizer(value => {
+    if (!value) return null;
+    // Verifica se o formato é DD/MM/YYYY e converte para YYYY-MM-DD
+    const parts = value.split('/');
+    if (parts.length === 3 && parts[2].length === 4) {
+      return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    }
+    return value; // Retorna o valor original se não estiver no formato esperado
+  })
+  .isISO8601()
+  .withMessage('A data de nascimento deve estar no formato DD/MM/AAAA.')
+  .toDate();
+
 // Rota pública para auto-cadastro de cliente após pesquisa
 router.post(
   '/register',
@@ -12,7 +28,7 @@ router.post(
     check("name", "Nome do cliente é obrigatório").not().isEmpty(),
     check("email", "Email do cliente inválido").optional().isEmail(),
     check("phone", "Telefone do cliente é obrigatório").not().isEmpty(),
-    check("birthDate", "Data de nascimento inválida").optional().isISO8601().toDate(),
+    birthDateValidator, // Usa o validador reutilizável
     check("respondentSessionId", "ID da sessão do respondente inválido").optional().isUUID(),
   ],
   validate,
@@ -34,7 +50,7 @@ router.route('/')
       check("name", "Nome do cliente é obrigatório").not().isEmpty(),
       check("email", "Email do cliente inválido").optional().isEmail(),
       check("phone", "Telefone do cliente é obrigatório").not().isEmpty(),
-      check("birthDate", "Data de nascimento inválida").optional().isISO8601().toDate(),
+      birthDateValidator, // Usa o validador reutilizável
       check("respondentSessionId", "ID da sessão do respondente inválido").optional().isUUID(),
     ],
     validate,
@@ -73,7 +89,7 @@ router.route('/:id')
       check("name", "Nome do cliente deve ser uma string não vazia").optional().not().isEmpty(),
       check("email", "Email do cliente inválido").optional().isEmail(),
       check("phone", "Telefone do cliente deve ser uma string não vazia").optional().not().isEmpty(),
-      check("birthDate", "Data de nascimento inválida").optional().isISO8601().toDate(),
+      birthDateValidator, // Usa o validador reutilizável
       check("respondentSessionId", "ID da sessão do respondente inválido").optional().isUUID(),
     ],
     validate,

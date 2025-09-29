@@ -4,3 +4,11 @@
     "message": "recompensaId is not defined",
     "details": "ReferenceError: recompensaId is not defined\n    at Object.createSurvey (/usr/src/app/src/repositories/surveyRepository.js:38:7)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Object.createSurvey (/usr/src/app/src/services/surveyService.js:20:18)\n    at async /usr/src/app/src/controllers/surveyController.js:8:18"
 }
+URL da solicitação
+https://apiloyalfood.towersfy.com/api/surveys
+Método da solicitação
+POST
+Código de status
+500 Internal Server Error
+Endereço remoto
+95.217.16.187:443

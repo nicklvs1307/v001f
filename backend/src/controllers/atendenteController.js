@@ -3,7 +3,8 @@ const atendenteRepository = require('../repositories/atendenteRepository');
 const ApiError = require('../errors/ApiError');
 
 const atendenteController = {
-  createAtendente: asyncHandler(async (req, res) => {
+    createAtendente: asyncHandler(async (req, res) => {
+    console.log('createAtendente called with body:', req.body);
     const { name, status } = req.body;
     const requestingUser = req.user;
 
@@ -13,6 +14,7 @@ const atendenteController = {
         : requestingUser.tenantId;
 
     if (!targetTenantId) {
+      console.error('Error: Tenant ID is missing.');
       throw new ApiError(400, 'Tenant ID é obrigatório para criar um atendente.');
     }
 
@@ -21,17 +23,21 @@ const atendenteController = {
     while (retries > 0) {
       const code = Math.floor(1000 + Math.random() * 9000).toString();
       try {
+        console.log('Attempting to create atendente with:', { targetTenantId, name, status, code });
         atendente = await atendenteRepository.createAtendente(
           targetTenantId,
           name,
           status,
           code
         );
+        console.log('Atendente created successfully:', atendente);
         break; // Success
       } catch (error) {
+        console.error('Error creating atendente:', error);
         if (error.name === 'SequelizeUniqueConstraintError') {
           retries--;
           if (retries === 0) {
+            console.error('Error: Could not generate a unique code.');
             throw new ApiError(500, 'Não foi possível gerar um código único para o atendente.');
           }
         } else {

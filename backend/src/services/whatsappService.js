@@ -157,7 +157,7 @@ const deleteInstance = async (tenantId) => {
   if (!config) throw new Error('Configuração não encontrada');
   const response = await axios.delete(`${config.url}/instance/delete`, {
     headers: { 'apikey': config.apiKey },
-    params: { instanceName: config.instanceName }
+    data: { instanceName: config.instanceName }
   });
   return response.data;
 };

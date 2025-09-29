@@ -13,6 +13,10 @@ class WhatsappConfigRepository {
     }
     return await WhatsappConfig.create(data);
   }
+
+  async deleteByTenantId(tenantId) {
+    return await WhatsappConfig.destroy({ where: { tenantId } });
+  }
 }
 
 module.exports = new WhatsappConfigRepository();

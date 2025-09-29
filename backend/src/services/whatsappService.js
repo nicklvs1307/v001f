@@ -1,6 +1,7 @@
 const axios = require('axios');
 const dotenv = require('dotenv');
 const { WhatsappConfig } = require('../../models'); // Import the model
+const whatsappConfigRepository = require('../repositories/whatsappConfigRepository');
 
 dotenv.config();
 
@@ -122,59 +123,12 @@ const getInstanceStatus = async (tenantId) => {
 
   try {
     const response = await axios.get(`${config.url}/instance/connectionState/${config.instanceName}`, getAxiosConfig(config));
-    return response.data;
-  } catch (error) {
-    return handleAxiosError(error, tenantId, config.instanceName);
-  }
-};
+    const newStatus = response.data.state === 'CONNECTED' ? 'connected' : 'disconnected';
 
-const getConnectionInfo = async (tenantId) => {
-  const config = await WhatsappConfig.findOne({ where: { tenantId } });
-  if (!config || !config.instanceName) return { error: 'unconfigured' };
+    if (config.instanceStatus !== newStatus) {
+      await config.update({ instanceStatus: newStatus });
+    }
 
-  try {
-    const response = await axios.get(`${config.url}/instance/fetch/${config.instanceName}`, getAxiosConfig(config));
-    return response.data;
-  } catch (error) {
-    return handleAxiosError(error, tenantId, config.instanceName);
-  }
-};
-
-const createInstance = async (tenantId) => {
-  const config = await WhatsappConfig.findOne({ where: { tenantId } });
-  if (!config || !config.instanceName) {
-    throw new Error('Configuração do WhatsApp ou nome da instância não encontrado.');
-  }
-
-  try {
-    const response = await axios.post(`${config.url}/instance/create`, 
-      { instanceName: config.instanceName }, 
-      getAxiosConfig(config)
-    );
-    return response.data;
-  } catch (error) {
-    return handleAxiosError(error, tenantId, config.instanceName);
-  }
-};
-
-const getInstanceQrCode = async (tenantId) => {
-  const config = await WhatsappConfig.findOne({ where: { tenantId } });
-  if (!config || !config.instanceName) return { error: 'unconfigured' };
-
-  try {
-    const response = await axios.get(`${config.url}/instance/qrCode?instanceName=${config.instanceName}`, getAxiosConfig(config));
-    return response.data;
-  } catch (error) {
-    return handleAxiosError(error, tenantId, config.instanceName);
-  }
-};
-
-const logoutInstance = async (tenantId) => {
-  const config = await WhatsappConfig.findOne({ where: { tenantId } });
-  if (!config || !config.instanceName) return { message: "Instância já desconectada ou não configurada." };
-
-  try {
-    const response = await axios.delete(`${config.url}/instance/logout/${config.instanceName}`, getAxiosConfig(config));
     return response.data;
   } catch (error) {
     return handleAxiosError(error, tenantId, config.instanceName);
@@ -188,12 +142,14 @@ const deleteInstance = async (tenantId) => {
   }
 
   try {
-    const response = await axios.delete(`${config.url}/instance/delete`, { ...getAxiosConfig(config), params: { instanceName: config.instanceName } });
-    return response.data;
+    await axios.delete(`${config.url}/instance/delete/${config.instanceName}`, getAxiosConfig(config));
+    await whatsappConfigRepository.deleteByTenantId(tenantId);
+    return { message: "Instância deletada com sucesso." };
   } catch (error) {
     if (error.response && error.response.status === 404) {
-      console.log(`Instância ${config.instanceName} não encontrada na Evolution API. Considerada como já deletada.`);
-      return { message: "Instância não encontrada na API do WhatsApp, considerada como já deletada." };
+      console.log(`Instância ${config.instanceName} não encontrada na Evolution API. Deletando do banco de dados local.`);
+      await whatsappConfigRepository.deleteByTenantId(tenantId);
+      return { message: "Instância não encontrada na API do WhatsApp, removida do sistema." };
     }
     throw error;
   }

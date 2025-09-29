@@ -45,9 +45,6 @@ const AtendenteList = () => {
         setFormError(''); // Also clear errors on close
     };
     
-    const handleError = (errorMessage) => {
-        setFormError(errorMessage);
-    };
 
 
     const handleOpenConfirm = (atendente) => {
@@ -66,6 +63,7 @@ const AtendenteList = () => {
             showNotification('Atendente criado com sucesso!', 'success');
             handleCloseModal();
         } catch (err) {
+            setFormError(err.message);
             showNotification(err.message, 'error');
         }
     };
@@ -76,6 +74,7 @@ const AtendenteList = () => {
             showNotification('Atendente atualizado com sucesso!', 'success');
             handleCloseModal();
         } catch (err) {
+            setFormError(err.message);
             showNotification(err.message, 'error');
         }
     };

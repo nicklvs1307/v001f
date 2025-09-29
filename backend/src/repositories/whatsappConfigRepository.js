@@ -1,4 +1,4 @@
-const { WhatsappConfig } = require('../../models');
+const { WhatsappConfig, Tenant } = require('../../models');
 
 class WhatsappConfigRepository {
   async findByTenant(tenantId) {
@@ -14,7 +14,8 @@ class WhatsappConfigRepository {
     } else {
       const newData = { ...data };
       if (!newData.instanceName) {
-        newData.instanceName = tenantId; 
+        const tenant = await Tenant.findByPk(tenantId);
+        newData.instanceName = tenant ? tenant.name : tenantId; 
       }
       return await WhatsappConfig.create(newData);
     }

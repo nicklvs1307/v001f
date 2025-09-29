@@ -20,6 +20,11 @@ Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStat
 Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
 [Auth Middleware] Request: POST /api/whatsapp-config/instance
 Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Error: Configuração do WhatsApp ou nome da instância não encontrado.
+    at Object.createInstance (/usr/src/app/src/services/whatsappService.js:153:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /usr/src/app/src/controllers/whatsappConfigController.js:41:20
 [Auth Middleware] Request: GET /api/whatsapp-config/instance
 Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
 Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
@@ -31,14 +36,7 @@ Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStat
 
 {
     "status": "error",
-    "code": "HTTP_400",
-    "message": "O nome da instância é obrigatório.",
-    "details": "Error: O nome da instância é obrigatório.\n    at /usr/src/app/src/controllers/whatsappConfigController.js:44:13\n    at asyncUtilWrap (/usr/src/app/node_modules/express-async-handler/index.js:3:20)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at /usr/src/app/src/middlewares/authMiddleware.js:62:18\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at protect (/usr/src/app/src/middlewares/authMiddleware.js:29:5)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
+    "code": "HTTP_500",
+    "message": "Configuração do WhatsApp ou nome da instância não encontrado.",
+    "details": "Error: Configuração do WhatsApp ou nome da instância não encontrado.\n    at Object.createInstance (/usr/src/app/src/services/whatsappService.js:153:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async /usr/src/app/src/controllers/whatsappConfigController.js:41:20"
 }
-
-URL da solicitação
-https://apiloyalfood.towersfy.com/api/whatsapp-config/instance
-Método da solicitação
-POST
-Código de status
-400 Bad Request

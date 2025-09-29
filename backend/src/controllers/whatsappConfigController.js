@@ -38,6 +38,8 @@ const whatsappConfigController = {
   // POST /api/whatsapp/instance -> Cria uma nova instância
   createInstance: asyncHandler(async (req, res) => {
     const { tenantId } = req.user;
+    // Garante que a configuração do WhatsApp exista e tenha um instanceName
+    await whatsappConfigRepository.upsert({ tenantId }); 
     const result = await whatsappService.createInstance(tenantId);
     res.status(201).json(result);
   }),

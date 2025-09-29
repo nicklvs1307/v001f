@@ -12,9 +12,7 @@ router.use(protect);
 router.post(
   '/',
   [
-    check("name", "Nome do atendente é obrigatório").not().isEmpty(),
-    check("email", "Email do atendente inválido").optional().isEmail(),
-    check("phone", "Telefone do atendente deve ser uma string não vazia").optional().not().isEmpty(),
+    check("name", "Nome do atendente é obrigatório").not().isEmpty()
   ],
   validate,
   authorize('atendentes:create'),
@@ -35,9 +33,7 @@ router
   .put(
     [
       check("id", "ID do atendente inválido").isUUID().not().isEmpty(),
-      check("name", "Nome do atendente deve ser uma string não vazia").optional().not().isEmpty(),
-      check("email", "Email do atendente inválido").optional().isEmail(),
-      check("phone", "Telefone do atendente deve ser uma string não vazia").optional().not().isEmpty(),
+      check("name", "Nome do atendente deve ser uma string não vazia").optional().not().isEmpty()
     ],
     validate,
     authorize('atendentes:update'),

@@ -51,11 +51,7 @@ const whatsappConfigController = {
           // Passo 1: Garante que a configuração exista
           let config = await whatsappConfigRepository.findByTenant(tenantId);
           if (!config) {
-            config = await WhatsappConfig.create({
-              tenantId,
-              url, // Usar url do req.body
-              apiKey, // Usar apiKey do req.body
-            });
+            config = await whatsappConfigRepository.upsert({ tenantId, url, apiKey });
           }    // Passo 2: Garante que o instanceName seja válido
     if (!config.instanceName || config.instanceName.includes(' ')) {
       const tenant = await Tenant.findByPk(tenantId);

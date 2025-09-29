@@ -107,10 +107,10 @@ const DashboardLayout = () => {
         {
             text: 'WhatsApp', 
             icon: <WhatsAppIcon />, 
-            roles: [ROLES.ADMIN], // Only for tenant admins
+            roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], // Only for tenant admins
             children: [
                 { text: 'Conexão', path: '/whatsapp-connect', roles: [ROLES.ADMIN] },
-                { text: 'Campanhas', path: '/whatsapp/campanhas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Campanhas', path: '/cupons/campanhas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
                 { text: 'Automações', path: '/whatsapp/automations', roles: [ROLES.ADMIN] },
             ],
         },

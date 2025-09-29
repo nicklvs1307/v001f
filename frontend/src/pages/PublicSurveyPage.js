@@ -30,7 +30,7 @@ const isValidUUID = (uuid) => {
 
 // Componente Wrapper para carregar dados e tema
 const PublicSurveyPage = () => {
-    const { pesquisaId } = useParams();
+    const { tenantId, pesquisaId } = useParams();
     const [surveyData, setSurveyData] = useState(null);
     const [dynamicTheme, setDynamicTheme] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -67,13 +67,13 @@ const PublicSurveyPage = () => {
 
     return (
         <ThemeProvider theme={dynamicTheme}>
-            <SurveyComponent survey={surveyData} />
+            <SurveyComponent survey={surveyData} tenantId={tenantId} />
         </ThemeProvider>
     );
 };
 
 // Componente de UI que usa o tema fornecido
-const SurveyComponent = ({ survey }) => {
+const SurveyComponent = ({ survey, tenantId }) => {
     const { pesquisaId } = useParams();
     const navigate = useNavigate();
     const theme = useTheme(); // Agora usa o tema do ThemeProvider acima
@@ -94,11 +94,11 @@ const SurveyComponent = ({ survey }) => {
         setAnswers(initialAnswers);
 
         if (survey.askForAttendant) {
-            publicSurveyService.getPublicAtendentes(survey.tenantId)
+            publicSurveyService.getPublicAtendentes(tenantId)
                 .then(setAtendentes)
                 .catch(() => setSubmitError('Erro ao carregar atendentes.'));
         }
-    }, [survey]);
+    }, [survey, tenantId]);
 
     const displayedQuestions = useMemo(() => {
         if (!survey) return [];
@@ -145,13 +145,13 @@ const SurveyComponent = ({ survey }) => {
             const response = await publicSurveyService.submitSurveyResponses(pesquisaId, submissionData.respostas, submissionData.atendenteId);
             
             const storedPhone = localStorage.getItem('clientPhone');
-            const surveyState = { respondentSessionId: response.respondentSessionId, answers: finalAnswers, tenantId: survey.tenantId, atendenteId: selectedAtendente };
+            const surveyState = { respondentSessionId: response.respondentSessionId, answers: finalAnswers, tenantId: tenantId, atendenteId: selectedAtendente };
             sessionStorage.setItem('surveyState', JSON.stringify(surveyState));
 
             if (storedPhone) {
                 navigate(`/confirmar-cliente/${pesquisaId}`);
             } else {
-                navigate(`/identificacao-pesquisa/${survey.tenantId}/${pesquisaId}`);
+                navigate(`/identificacao-pesquisa/${tenantId}/${pesquisaId}`);
             }
         } catch (err) {
             setSubmitError(err.message || 'Ocorreu um erro ao enviar suas respostas.');

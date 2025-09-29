@@ -45,6 +45,7 @@ const ResultsOverviewPage = React.lazy(() => import('../pages/ResultsOverviewPag
 const SurveyResultsPage = React.lazy(() => import('../pages/SurveyResultsPage'));
 const ClientDashboardPage = React.lazy(() => import('../pages/ClientDashboardPage'));
 const ClientDetailsPage = React.lazy(() => import('../pages/ClientDetailsPage'));
+const AutomationsPage = React.lazy(() => import('../pages/AutomationsPage'));
 
 
 const AppRoutes = () => {
@@ -102,6 +103,7 @@ const AppRoutes = () => {
             <Route path="roletas/:roletaId/premios" element={<RoulettePrizesPage />} />
             <Route path="config-whatsapp" element={<WhatsappConfigPage />} />
             <Route path="whatsapp-connect" element={<WhatsappConnectPage />} /> {/* Adicionar a nova rota */}
+            <Route path="whatsapp/automations" element={<AutomationsPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="config" element={<GMBConfigsPage />} />
           </Route>

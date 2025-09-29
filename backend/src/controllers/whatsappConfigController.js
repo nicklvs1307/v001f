@@ -41,9 +41,15 @@ const whatsappConfigController = {
     const { tenantId } = req.user;
 
     // Passo 1: Garante que a configuração exista
+    const { SYSTEM_WHATSAPP_URL, SYSTEM_WHATSAPP_API_KEY } = process.env;
+
     let config = await whatsappConfigRepository.findByTenant(tenantId);
     if (!config) {
-      config = await WhatsappConfig.create({ tenantId });
+      config = await WhatsappConfig.create({ 
+        tenantId,
+        url: SYSTEM_WHATSAPP_URL,
+        apiKey: SYSTEM_WHATSAPP_API_KEY,
+      });
     }
 
     // Passo 2: Garante que o instanceName seja válido

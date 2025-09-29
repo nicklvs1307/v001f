@@ -1,120 +1,112 @@
-AtendenteForm.js:25 handleSubmit called
-AtendenteForm.js:26 Uncaught (in promise) TypeError: l is not a function
-    at onSubmit (AtendenteForm.js:26:5)
-    at Object.Le (react-dom.production.min.js:54:317)
-    at We (react-dom.production.min.js:54:471)
-    at react-dom.production.min.js:55:35
-    at _r (react-dom.production.min.js:105:68)
-    at Fr (react-dom.production.min.js:106:380)
-    at react-dom.production.min.js:117:104
-    at cc (react-dom.production.min.js:273:42)
-    at Me (react-dom.production.min.js:52:375)
-    at Hr (react-dom.production.min.js:109:469)
-onSubmit @ AtendenteForm.js:26
-Le @ react-dom.production.min.js:54
-We @ react-dom.production.min.js:54
-(anônimo) @ react-dom.production.min.js:55
-_r @ react-dom.production.min.js:105
-Fr @ react-dom.production.min.js:106
-(anônimo) @ react-dom.production.min.js:117
-cc @ react-dom.production.min.js:273
-Me @ react-dom.production.min.js:52
-Hr @ react-dom.production.min.js:109
-Kt @ react-dom.production.min.js:74
-qt @ react-dom.production.min.js:73
-AtendenteForm.js:25 handleSubmit called
-AtendenteForm.js:26 Uncaught (in promise) TypeError: l is not a function
-    at onSubmit (AtendenteForm.js:26:5)
-    at Object.Le (react-dom.production.min.js:54:317)
-    at We (react-dom.production.min.js:54:471)
-    at react-dom.production.min.js:55:35
-    at _r (react-dom.production.min.js:105:68)
-    at Fr (react-dom.production.min.js:106:380)
-    at react-dom.production.min.js:117:104
-    at cc (react-dom.production.min.js:273:42)
-    at Me (react-dom.production.min.js:52:375)
-    at Hr (react-dom.production.min.js:109:469)
-onSubmit @ AtendenteForm.js:26
-Le @ react-dom.production.min.js:54
-We @ react-dom.production.min.js:54
-(anônimo) @ react-dom.production.min.js:55
-_r @ react-dom.production.min.js:105
-Fr @ react-dom.production.min.js:106
-(anônimo) @ react-dom.production.min.js:117
-cc @ react-dom.production.min.js:273
-Me @ react-dom.production.min.js:52
-Hr @ react-dom.production.min.js:109
-Kt @ react-dom.production.min.js:74
-qt @ react-dom.production.min.js:73
-AtendenteForm.js:25 handleSubmit called
-AtendenteForm.js:26 Uncaught (in promise) TypeError: l is not a function
-    at onSubmit (AtendenteForm.js:26:5)
-    at Object.Le (react-dom.production.min.js:54:317)
-    at We (react-dom.production.min.js:54:471)
-    at react-dom.production.min.js:55:35
-    at _r (react-dom.production.min.js:105:68)
-    at Fr (react-dom.production.min.js:106:380)
-    at react-dom.production.min.js:117:104
-    at cc (react-dom.production.min.js:273:42)
-    at Me (react-dom.production.min.js:52:375)
-    at Hr (react-dom.production.min.js:109:469)
-onSubmit @ AtendenteForm.js:26
-Le @ react-dom.production.min.js:54
-We @ react-dom.production.min.js:54
-(anônimo) @ react-dom.production.min.js:55
-_r @ react-dom.production.min.js:105
-Fr @ react-dom.production.min.js:106
-(anônimo) @ react-dom.production.min.js:117
-cc @ react-dom.production.min.js:273
-Me @ react-dom.production.min.js:52
-Hr @ react-dom.production.min.js:109
-Kt @ react-dom.production.min.js:74
-qt @ react-dom.production.min.js:73
-AtendenteForm.js:25 handleSubmit called
-AtendenteForm.js:26 Uncaught (in promise) TypeError: l is not a function
-    at onSubmit (AtendenteForm.js:26:5)
-    at Object.Le (react-dom.production.min.js:54:317)
-    at We (react-dom.production.min.js:54:471)
-    at react-dom.production.min.js:55:35
-    at _r (react-dom.production.min.js:105:68)
-    at Fr (react-dom.production.min.js:106:380)
-    at react-dom.production.min.js:117:104
-    at cc (react-dom.production.min.js:273:42)
-    at Me (react-dom.production.min.js:52:375)
-    at Hr (react-dom.production.min.js:109:469)
-onSubmit @ AtendenteForm.js:26
-Le @ react-dom.production.min.js:54
-We @ react-dom.production.min.js:54
-(anônimo) @ react-dom.production.min.js:55
-_r @ react-dom.production.min.js:105
-Fr @ react-dom.production.min.js:106
-(anônimo) @ react-dom.production.min.js:117
-cc @ react-dom.production.min.js:273
-Me @ react-dom.production.min.js:52
-Hr @ react-dom.production.min.js:109
-Kt @ react-dom.production.min.js:74
-qt @ react-dom.production.min.js:73
-AtendenteForm.js:25 handleSubmit called
-AtendenteForm.js:26 Uncaught (in promise) TypeError: l is not a function
-    at onSubmit (AtendenteForm.js:26:5)
-    at Object.Le (react-dom.production.min.js:54:317)
-    at We (react-dom.production.min.js:54:471)
-    at react-dom.production.min.js:55:35
-    at _r (react-dom.production.min.js:105:68)
-    at Fr (react-dom.production.min.js:106:380)
-    at react-dom.production.min.js:117:104
-    at cc (react-dom.production.min.js:273:42)
-    at Me (react-dom.production.min.js:52:375)
-    at Hr (react-dom.production.min.js:109:469)
-onSubmit @ AtendenteForm.js:26
-Le @ react-dom.production.min.js:54
-We @ react-dom.production.min.js:54
-(anônimo) @ react-dom.production.min.js:55
-_r @ react-dom.production.min.js:105
-Fr @ react-dom.production.min.js:106
-(anônimo) @ react-dom.production.min.js:117
-cc @ react-dom.production.min.js:273
-Me @ react-dom.production.min.js:52
-Hr @ react-dom.production.min.js:109
-Kt @ react-dom.production.min.js:74
-qt @ react-dom.production.min.js:73
+URL da solicitação
+https://apiloyalfood.towersfy.com/api/whatsapp-config/instance
+Método da solicitação
+POST
+Código de status
+500 Internal Server Error
+
+{
+    "status": "error",
+    "code": "SETUP_FAILED",
+    "message": "Erro ao preparar a requisição para a API do WhatsApp: Invalid URL"
+}
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
+[WhatsappService] Axios setup error: Invalid URL
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
+[WhatsappService] Axios setup error: Invalid URL
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
+[WhatsappService] Axios setup error: Invalid URL
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
+[WhatsappService] Axios setup error: Invalid URL
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
+[WhatsappService] Axios setup error: Invalid URL
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
+[WhatsappService] Axios setup error: Invalid URL
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
+[WhatsappService] Axios setup error: Invalid URL
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
+[WhatsappService] Axios setup error: Invalid URL
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
+[WhatsappService] Axios setup error: Invalid URL
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
+[WhatsappService] Axios setup error: Invalid URL
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
+[WhatsappService] Axios setup error: Invalid URL
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
+[WhatsappService] Axios setup error: Invalid URL
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
+[WhatsappService] Axios setup error: Invalid URL
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
+[WhatsappService] Axios setup error: Invalid URL
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
+[WhatsappService] Axios setup error: Invalid URL
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
+[WhatsappService] Axios setup error: Invalid URL
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
+[WhatsappService] Axios setup error: Invalid URL

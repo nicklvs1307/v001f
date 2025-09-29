@@ -22,22 +22,29 @@ const AtendenteForm = ({ initialData, onAtendenteCreated, onAtendenteUpdated, on
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('handleSubmit called');
     onError(''); // Clear general error
     setNameError(''); // Clear name specific error
 
     if (!formData.name.trim()) {
       setNameError('Nome do atendente é obrigatório.');
+      console.log('Validation failed: name is empty');
       return;
     }
 
     try {
+      console.log('Validation passed, attempting to submit form data:', formData);
       if (initialData) {
         await onAtendenteUpdated(formData);
+        console.log('onAtendenteUpdated completed');
       } else {
         await onAtendenteCreated(formData);
+        console.log('onAtendenteCreated completed');
       }
       onClose();
+      console.log('Form submission successful, modal closed');
     } catch (err) {
+      console.error('Form submission error:', err);
       onError(err.message);
     }
   };

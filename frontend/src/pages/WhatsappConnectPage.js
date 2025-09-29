@@ -14,6 +14,7 @@ import { CheckCircle, HourglassEmpty, LinkOff, QrCodeScanner, AddCircleOutline, 
 const StatusChip = ({ status }) => {
   const statusInfo = {
     no_instance: { label: 'Não Criada', color: 'default', icon: <HourglassEmpty /> },
+    unconfigured: { label: 'Não Configurada', color: 'default', icon: <HourglassEmpty /> },
     disconnected: { label: 'Desconectado', color: 'error', icon: <LinkOff /> },
     connecting: { label: 'Conectando...', color: 'warning', icon: <CircularProgress size={16} color="inherit" /> },
     connected: { label: 'Conectado', color: 'success', icon: <CheckCircle /> },
@@ -132,7 +133,7 @@ const WhatsappConnectPage = () => {
       return <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>;
     }
 
-    if (!config || config.status === 'no_instance') {
+    if (!config || config.status === 'no_instance' || config.status === 'unconfigured') {
       return (
         <CardContent sx={{ textAlign: 'center', p: 4 }}>
           <AddCircleOutline sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />

@@ -261,7 +261,7 @@ const findAllForList = async (tenantId = null, status = 'all') => {
       },
     ],
     attributes: [
-      'id', 'title', 'description', 'createdAt', 'dueDate', 'status', 'isOpen', 'expectedRespondents', 'askForAttendant',
+      'id', 'title', 'description', 'createdAt', 'dueDate', 'status', 'isOpen', 'expectedRespondents', 'askForAttendant', 'tenantId'
     ],
     order: [['createdAt', 'DESC']],
   });

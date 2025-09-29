@@ -37,28 +37,19 @@ const whatsappConfigController = {
   }),
 
   // POST /api/whatsapp/instance -> Cria uma nova instância
-  createInstance: asyncHandler(async (req, res) => {
-    const { tenantId } = req.user;
-
-    // Passo 1: Garante que a configuração exista
-    const { SYSTEM_WHATSAPP_URL, SYSTEM_WHATSAPP_API_KEY } = process.env;
-
-    if (!SYSTEM_WHATSAPP_URL || SYSTEM_WHATSAPP_URL.trim() === '') {
-      throw new ApiError(500, "Variável de ambiente SYSTEM_WHATSAPP_URL não configurada.");
-    }
-    if (!SYSTEM_WHATSAPP_API_KEY || SYSTEM_WHATSAPP_API_KEY.trim() === '') {
-      throw new ApiError(500, "Variável de ambiente SYSTEM_WHATSAPP_API_KEY não configurada.");
-    }
-
-    let config = await whatsappConfigRepository.findByTenant(tenantId);
-    if (!config) {
-      config = await WhatsappConfig.create({ 
-        tenantId,
-        url: SYSTEM_WHATSAPP_URL,
-        apiKey: SYSTEM_WHATSAPP_API_KEY,
-      });
-    }
-
+    createInstance: asyncHandler(async (req, res) => {
+      const { tenantId } = req.user;
+      const { url, apiKey } = req.body; // Extrair url e apiKey do req.body
+  
+      // Passo 1: Garante que a configuração exista
+      let config = await whatsappConfigRepository.findByTenant(tenantId);
+      if (!config) {
+        config = await WhatsappConfig.create({
+          tenantId,
+          url, // Usar url do req.body
+          apiKey, // Usar apiKey do req.body
+        });
+      }
     // Passo 2: Garante que o instanceName seja válido
     if (!config.instanceName || config.instanceName.includes(' ')) {
       const tenant = await Tenant.findByPk(tenantId);

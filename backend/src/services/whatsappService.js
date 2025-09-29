@@ -103,8 +103,70 @@ _Recomendamos entrar em contato com o cliente o mais rápido possível._
 };
 
 
+const getInstanceStatus = async (tenantId) => {
+  const config = await WhatsappConfig.findOne({ where: { tenantId } });
+
+  if (!config || !config.url || !config.apiKey || !config.instanceName) {
+    throw new Error('Configuração do WhatsApp não encontrada ou incompleta.');
+  }
+
+  try {
+    const response = await axios.get(`${config.url}/instance/connectionState/${config.instanceName}`, {
+      headers: {
+        'apikey': config.apiKey,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Falha ao obter status da instância para o tenant ${tenantId}:`, error.response ? error.response.data : error.message);
+    // Retornar um status padrão em caso de erro para não quebrar o frontend
+    return { status: 'disconnected' }; 
+  }
+};
+
+const getConnectionInfo = async (tenantId) => {
+  const config = await WhatsappConfig.findOne({ where: { tenantId } });
+  if (!config) throw new Error('Configuração não encontrada');
+  const response = await axios.get(`${config.url}/instance/fetch/${config.instanceName}`, { headers: { 'apikey': config.apiKey } });
+  return response.data;
+};
+
+const createInstance = async (tenantId) => {
+  const config = await WhatsappConfig.findOne({ where: { tenantId } });
+  if (!config) throw new Error('Configuração não encontrada');
+  const response = await axios.post(`${config.url}/instance/create`, {}, { headers: { 'apikey': config.apiKey } });
+  return response.data;
+};
+
+const getInstanceQrCode = async (tenantId) => {
+  const config = await WhatsappConfig.findOne({ where: { tenantId } });
+  if (!config) throw new Error('Configuração não encontrada');
+  const response = await axios.get(`${config.url}/instance/qrCode/${config.instanceName}`, { headers: { 'apikey': config.apiKey } });
+  return response.data;
+};
+
+const logoutInstance = async (tenantId) => {
+  const config = await WhatsappConfig.findOne({ where: { tenantId } });
+  if (!config) throw new Error('Configuração não encontrada');
+  const response = await axios.delete(`${config.url}/instance/logout/${config.instanceName}`, { headers: { 'apikey': config.apiKey } });
+  return response.data;
+};
+
+const deleteInstance = async (tenantId) => {
+  const config = await WhatsappConfig.findOne({ where: { tenantId } });
+  if (!config) throw new Error('Configuração não encontrada');
+  const response = await axios.delete(`${config.url}/instance/delete/${config.instanceName}`, { headers: { 'apikey': config.apiKey } });
+  return response.data;
+};
+
 module.exports = {
   sendSystemMessage,
   sendTenantMessage, // Exporta a nova função
   sendInstanteDetractorMessage,
+  getInstanceStatus, // Exporta a nova função
+  getConnectionInfo,
+  createInstance,
+  getInstanceQrCode,
+  logoutInstance,
+  deleteInstance,
 };

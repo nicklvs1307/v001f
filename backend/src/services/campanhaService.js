@@ -74,7 +74,7 @@ class CampanhaService {
   async _selectClients(criterio, tenantId) {
     switch (criterio) {
       case 'todos':
-        return this.clientRepository.findAllByTenant(tenantId);
+        return this.clientRepository.findByTenant(tenantId);
       case 'aniversariantes':
         const currentMonth = new Date().getMonth() + 1;
         return this.clientRepository.findByBirthMonth(currentMonth, tenantId);

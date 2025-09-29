@@ -14,8 +14,14 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
-    url: DataTypes.STRING,
-    apiKey: DataTypes.STRING,
+    url: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    apiKey: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     instanceName: DataTypes.STRING,
     instanceStatus: {
       type: DataTypes.STRING,

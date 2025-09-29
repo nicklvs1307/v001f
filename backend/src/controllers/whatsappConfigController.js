@@ -43,6 +43,13 @@ const whatsappConfigController = {
     // Passo 1: Garante que a configuração exista
     const { SYSTEM_WHATSAPP_URL, SYSTEM_WHATSAPP_API_KEY } = process.env;
 
+    if (!SYSTEM_WHATSAPP_URL || SYSTEM_WHATSAPP_URL.trim() === '') {
+      throw new ApiError(500, "Variável de ambiente SYSTEM_WHATSAPP_URL não configurada.");
+    }
+    if (!SYSTEM_WHATSAPP_API_KEY || SYSTEM_WHATSAPP_API_KEY.trim() === '') {
+      throw new ApiError(500, "Variável de ambiente SYSTEM_WHATSAPP_API_KEY não configurada.");
+    }
+
     let config = await whatsappConfigRepository.findByTenant(tenantId);
     if (!config) {
       config = await WhatsappConfig.create({ 
@@ -108,6 +115,15 @@ const whatsappConfigController = {
 
   saveTenantConfig: asyncHandler(async (req, res) => {
     const { tenantId } = req.params;
+    const { url, apiKey } = req.body;
+
+    if (!url || url.trim() === '') {
+      throw new ApiError(400, "A URL da API do WhatsApp é obrigatória.");
+    }
+    if (!apiKey || apiKey.trim() === '') {
+      throw new ApiError(400, "A chave da API do WhatsApp é obrigatória.");
+    }
+
     const data = { ...req.body, tenantId };
     const config = await whatsappConfigRepository.upsert(data);
     res.json(config);

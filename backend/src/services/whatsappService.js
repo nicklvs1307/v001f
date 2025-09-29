@@ -109,12 +109,32 @@ const getAxiosConfig = (config) => ({
 });
 
 const handleAxiosError = (error, tenantId, instanceName) => {
-  if (error.response && error.response.status === 404) {
-    console.log(`Instância ${instanceName} não encontrada na Evolution API para o tenant ${tenantId}.`);
-    return { error: 'not_found', message: 'Instância não encontrada na API do WhatsApp.' };
+  console.error(`[WhatsappService] Error for tenant ${tenantId} (instance: ${instanceName}):`, error.message);
+
+  if (error.response) {
+    const { status, data } = error.response;
+    console.error(`[WhatsappService] Response data:`, data);
+
+    if (status === 401) {
+      return { status: 'error', code: `HTTP_${status}`, message: 'Falha na autenticação com a API do WhatsApp. Verifique a API Key.' };
+    }
+    if (status === 404) {
+      return { status: 'error', code: `HTTP_${status}`, message: `A URL da API do WhatsApp não foi encontrada. Verifique a Base URL.` };
+    }
+    const errorMessage = (data && data.message) ? data.message : 'Erro desconhecido da API do WhatsApp.';
+    return { status: 'error', code: `HTTP_${status}`, message: `A API do WhatsApp retornou um erro: ${errorMessage}` };
+
+  } else if (error.request) {
+    console.error(`[WhatsappService] No response received for request.`);
+    return { status: 'error', code: 'NO_RESPONSE', message: 'Não foi possível conectar à API do WhatsApp. Verifique a Base URL e a conectividade da rede.' };
+
+  } else {
+    console.error(`[WhatsappService] Axios setup error:`, error.message);
+    if (error.code === 'ENOTFOUND') {
+        return { status: 'error', code: 'ENOTFOUND', message: `O endereço da API do WhatsApp não foi encontrado. Verifique se a Base URL está correta.` };
+    }
+    return { status: 'error', code: 'SETUP_FAILED', message: `Erro ao preparar a requisição para a API do WhatsApp: ${error.message}` };
   }
-  console.error(`Falha na comunicação com a Evolution API para o tenant ${tenantId}:`, error.response ? error.response.data : error.message);
-  throw new Error('Falha na comunicação com a API do WhatsApp.');
 };
 
 const getInstanceStatus = async (tenantId) => {

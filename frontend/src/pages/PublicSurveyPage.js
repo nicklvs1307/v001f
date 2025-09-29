@@ -46,8 +46,8 @@ const PublicSurveyPage = () => {
         publicSurveyService.getPublicSurveyById(pesquisaId)
             .then(data => {
                 setSurveyData(data);
-                const theme = getDynamicTheme(data.primaryColor, data.secondaryColor);
-                setDynamicTheme(theme);
+                // const theme = getDynamicTheme(data.primaryColor, data.secondaryColor);
+                // setDynamicTheme(theme);
             })
             .catch(err => setError(err.message || 'Ocorreu um erro ao carregar a pesquisa.'))
             .finally(() => setLoading(false));
@@ -61,15 +61,7 @@ const PublicSurveyPage = () => {
         return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}><Alert severity="error">{error}</Alert></Box>;
     }
 
-    if (!surveyData || !dynamicTheme) {
-        return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}><Typography>Carregando tema...</Typography></Box>;
-    }
-
-    return (
-        <ThemeProvider theme={dynamicTheme}>
-            <SurveyComponent survey={surveyData} tenantId={tenantId} />
-        </ThemeProvider>
-    );
+    return <pre>{JSON.stringify(surveyData, null, 2)}</pre>;
 };
 
 // Componente de UI que usa o tema fornecido

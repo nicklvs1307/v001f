@@ -28,6 +28,7 @@ const steps = ['Criar Instância', 'Escanear QR Code', 'Conectado'];
 // --- Componente Principal ---
 
 const WhatsappConnectPage = () => {
+  const [instanceNameInput, setInstanceNameInput] = useState('');
   const [config, setConfig] = useState(null);
   const [connectionInfo, setConnectionInfo] = useState(null);
   const [loading, setLoading] = useState(true);

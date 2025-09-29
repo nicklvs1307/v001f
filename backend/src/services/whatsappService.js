@@ -103,63 +103,100 @@ _Recomendamos entrar em contato com o cliente o mais rápido possível._
 };
 
 
+const getAxiosConfig = (config) => ({
+  headers: { 'apikey': config.apiKey },
+});
+
+const handleAxiosError = (error, tenantId, instanceName) => {
+  if (error.response && error.response.status === 404) {
+    console.log(`Instância ${instanceName} não encontrada na Evolution API para o tenant ${tenantId}.`);
+    return { error: 'not_found', message: 'Instância não encontrada na API do WhatsApp.' };
+  }
+  console.error(`Falha na comunicação com a Evolution API para o tenant ${tenantId}:`, error.response ? error.response.data : error.message);
+  throw new Error('Falha na comunicação com a API do WhatsApp.');
+};
+
 const getInstanceStatus = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
-
-  if (!config || !config.url || !config.apiKey || !config.instanceName) {
-    return { status: 'unconfigured' };
-  }
+  if (!config || !config.instanceName) return { status: 'unconfigured' };
 
   try {
-    const response = await axios.get(`${config.url}/instance/connectionState/${config.instanceName}`, {
-      headers: {
-        'apikey': config.apiKey,
-      },
-    });
+    const response = await axios.get(`${config.url}/instance/connectionState/${config.instanceName}`, getAxiosConfig(config));
     return response.data;
   } catch (error) {
-    console.error(`Falha ao obter status da instância para o tenant ${tenantId}:`, error.response ? error.response.data : error.message);
-    // Retornar um status padrão em caso de erro para não quebrar o frontend
-    return { status: 'disconnected' }; 
+    return handleAxiosError(error, tenantId, config.instanceName);
   }
 };
 
 const getConnectionInfo = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
-  if (!config) throw new Error('Configuração não encontrada');
-  const response = await axios.get(`${config.url}/instance/fetch/${config.instanceName}`, { headers: { 'apikey': config.apiKey } });
-  return response.data;
+  if (!config || !config.instanceName) return { error: 'unconfigured' };
+
+  try {
+    const response = await axios.get(`${config.url}/instance/fetch/${config.instanceName}`, getAxiosConfig(config));
+    return response.data;
+  } catch (error) {
+    return handleAxiosError(error, tenantId, config.instanceName);
+  }
 };
 
 const createInstance = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
-  if (!config) throw new Error('Configuração não encontrada');
-  const response = await axios.post(`${config.url}/instance/create`, {}, { headers: { 'apikey': config.apiKey } });
-  return response.data;
+  if (!config || !config.instanceName) {
+    throw new Error('Configuração do WhatsApp ou nome da instância não encontrado.');
+  }
+
+  try {
+    const response = await axios.post(`${config.url}/instance/create`, 
+      { instanceName: config.instanceName }, 
+      getAxiosConfig(config)
+    );
+    return response.data;
+  } catch (error) {
+    return handleAxiosError(error, tenantId, config.instanceName);
+  }
 };
 
 const getInstanceQrCode = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
-  if (!config) throw new Error('Configuração não encontrada');
-  const response = await axios.get(`${config.url}/instance/qrCode/${config.instanceName}`, { headers: { 'apikey': config.apiKey } });
-  return response.data;
+  if (!config || !config.instanceName) return { error: 'unconfigured' };
+
+  try {
+    const response = await axios.get(`${config.url}/instance/qrCode?instanceName=${config.instanceName}`, getAxiosConfig(config));
+    return response.data;
+  } catch (error) {
+    return handleAxiosError(error, tenantId, config.instanceName);
+  }
 };
 
 const logoutInstance = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
-  if (!config) throw new Error('Configuração não encontrada');
-  const response = await axios.delete(`${config.url}/instance/logout/${config.instanceName}`, { headers: { 'apikey': config.apiKey } });
-  return response.data;
+  if (!config || !config.instanceName) return { message: "Instância já desconectada ou não configurada." };
+
+  try {
+    const response = await axios.delete(`${config.url}/instance/logout/${config.instanceName}`, getAxiosConfig(config));
+    return response.data;
+  } catch (error) {
+    return handleAxiosError(error, tenantId, config.instanceName);
+  }
 };
 
 const deleteInstance = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
-  if (!config) throw new Error('Configuração não encontrada');
-  const response = await axios.delete(`${config.url}/instance/delete`, {
-    headers: { 'apikey': config.apiKey },
-    data: { instanceName: config.instanceName }
-  });
-  return response.data;
+  if (!config || !config.instanceName) {
+    return { message: "Instância já removida ou não configurada." };
+  }
+
+  try {
+    const response = await axios.delete(`${config.url}/instance/delete`, { ...getAxiosConfig(config), params: { instanceName: config.instanceName } });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      console.log(`Instância ${config.instanceName} não encontrada na Evolution API. Considerada como já deletada.`);
+      return { message: "Instância não encontrada na API do WhatsApp, considerada como já deletada." };
+    }
+    throw error;
+  }
 };
 
 module.exports = {

@@ -30,16 +30,25 @@ const AtendenteList = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [selectedAtendente, setSelectedAtendente] = useState(null);
+    const [formError, setFormError] = useState('');
+
 
     const handleOpenModal = (atendente = null) => {
         setSelectedAtendente(atendente);
+        setFormError(''); // Clear previous errors
         setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
         setSelectedAtendente(null);
         setIsModalOpen(false);
+        setFormError(''); // Also clear errors on close
     };
+    
+    const handleError = (errorMessage) => {
+        setFormError(errorMessage);
+    };
+
 
     const handleOpenConfirm = (atendente) => {
         setSelectedAtendente(atendente);
@@ -140,6 +149,8 @@ const AtendenteList = () => {
                 onAtendenteCreated={handleAtendenteCreate}
                 onAtendenteUpdated={handleAtendenteUpdate}
                 initialData={selectedAtendente}
+                formError={formError}
+                onError={handleError}
             />
 
             <ConfirmationDialog

@@ -1,12 +1,12 @@
-import api from './api';
+import apiAuthenticated from './apiAuthenticated';
 
 const whatsappTemplateService = {
   get: (type) => {
-    return api.get(`/whatsapp-templates?type=${type}`);
+    return apiAuthenticated.get(`/whatsapp-templates?type=${type}`);
   },
 
   upsert: (templateData) => {
-    return api.post('/whatsapp-templates', templateData);
+    return apiAuthenticated.post('/whatsapp-templates', templateData);
   },
 };
 

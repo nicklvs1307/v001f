@@ -16,7 +16,8 @@ const useClients = () => {
     const fetchClients = useCallback(async () => {
         try {
             setLoading(true);
-            const { clients: fetchedClients, total: fetchedTotal } = await clientService.getAllClients(page, rowsPerPage, orderBy, order, filterText);
+            const pageNumber = isNaN(page) ? 0 : page;
+            const { clients: fetchedClients, total: fetchedTotal } = await clientService.getAllClients(pageNumber, rowsPerPage, orderBy, order, filterText);
             setClients(fetchedClients);
             setTotalClients(fetchedTotal);
             setError(null);

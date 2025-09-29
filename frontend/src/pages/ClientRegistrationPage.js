@@ -88,6 +88,25 @@ const RegistrationFormComponent = ({ tenant }) => {
         setClientData({ ...clientData, birthDate: value });
     };
 
+    const handlePhoneChange = (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 11) {
+            value = value.slice(0, 11);
+        }
+    
+        if (value.length > 10) {
+            value = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
+        } else if (value.length > 6) {
+            value = `(${value.slice(0, 2)}) ${value.slice(2, 6)}-${value.slice(6)}`;
+        } else if (value.length > 2) {
+            value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+        } else if (value.length > 0) {
+            value = `(${value}`;
+        }
+    
+        setClientData({ ...clientData, phone: value });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -166,8 +185,8 @@ const RegistrationFormComponent = ({ tenant }) => {
                     {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
                     <TextField margin="normal" required fullWidth id="name" label="Nome Completo" name="name" autoComplete="name" autoFocus value={clientData.name} onChange={handleChange} />
                     <TextField margin="normal" fullWidth id="email" label="Endereço de Email (Opcional)" name="email" autoComplete="email" value={clientData.email} onChange={handleChange} />
-                    <TextField margin="normal" required fullWidth id="phone" label="Telefone (com DDD)" name="phone" autoComplete="tel" value={clientData.phone} onChange={handleChange} />
-                    <TextField margin="normal" fullWidth id="birthDate" label="Data de Nascimento (Opcional)" name="birthDate" type="text" placeholder="DD/MM/AAAA" value={clientData.birthDate} onChange={handleDateChange} inputMode="numeric" />
+                    <TextField margin="normal" required fullWidth id="phone" label="Telefone (com DDD)" name="phone" autoComplete="tel" value={clientData.phone} onChange={handlePhoneChange} inputMode="numeric" />
+                    <TextField margin="normal" required fullWidth id="birthDate" label="Data de Nascimento" name="birthDate" type="text" placeholder="DD/MM/AAAA" value={clientData.birthDate} onChange={handleDateChange} inputMode="numeric" />
                     <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, ...buttonStyle }} disabled={loading}>
                         {loading ? <CircularProgress size={24} color="inherit" /> : 'Cadastrar e Girar a Roleta'}
                     </Button>

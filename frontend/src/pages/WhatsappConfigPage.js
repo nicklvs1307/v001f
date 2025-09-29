@@ -33,7 +33,7 @@ const SuperAdminView = () => {
     useEffect(() => {
         if (selectedTenant) {
             setLoadingConfig(true);
-            whatsappConfigService.getConfig(selectedTenant)
+            whatsappConfigService.getTenantConfig(selectedTenant)
                 .then(response => setConfig(response.data || { url: '', apiKey: '' }))
                 .catch(() => {
                     setSnackbarMessage('Falha ao buscar a configuração do WhatsApp.');
@@ -48,7 +48,7 @@ const SuperAdminView = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         setSaving(true);
-        whatsappConfigService.saveConfig(selectedTenant, config)
+        whatsappConfigService.saveTenantConfig(selectedTenant, config)
             .then(() => {
                 setSnackbarMessage('Configuração salva com sucesso!');
                 setSnackbarSeverity('success');

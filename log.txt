@@ -1,17 +1,40 @@
-URL da solicitação
-https://apiloyalfood.towersfy.com/api/clients?page=NaN
-Método da solicitação
-GET
-Código de status
-500 Internal Server Error
-Endereço remoto
-95.217.16.187:443
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "column \"nan\" does not exist",
-    "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)\n    at async Client.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)\n    at async Promise.all (index 1)\n    at async Client.findAndCountAll (/usr/src/app/node_modules/sequelize/lib/model.js:1322:27)\n    at async ClientRepository.findAndCountAllByTenant (/usr/src/app/src/repositories/clientRepository.js:78:29)\n    at async /usr/src/app/src/controllers/clientController.js:130:30"
-}
+react-dom.production.min.js:188 TypeError: v.A.getConfig is not a function
+    at WhatsappConfigPage.js:36:35
+    at rl (react-dom.production.min.js:243:332)
+    at wc (react-dom.production.min.js:285:111)
+    at react-dom.production.min.js:282:409
+    at Ac (react-dom.production.min.js:280:398)
+    at lc (react-dom.production.min.js:272:439)
+    at Vo (react-dom.production.min.js:127:105)
+    at react-dom.production.min.js:266:273
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+lc @ react-dom.production.min.js:272
+Vo @ react-dom.production.min.js:127
+(anônimo) @ react-dom.production.min.js:266
+react-dom.production.min.js:127 Uncaught TypeError: v.A.getConfig is not a function
+    at WhatsappConfigPage.js:36:35
+    at rl (react-dom.production.min.js:243:332)
+    at wc (react-dom.production.min.js:285:111)
+    at react-dom.production.min.js:282:409
+    at Ac (react-dom.production.min.js:280:398)
+    at lc (react-dom.production.min.js:272:439)
+    at Vo (react-dom.production.min.js:127:105)
+    at react-dom.production.min.js:266:273
+(anônimo) @ WhatsappConfigPage.js:36
+rl @ react-dom.production.min.js:243
+wc @ react-dom.production.min.js:285
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+lc @ react-dom.production.min.js:272
+Vo @ react-dom.production.min.js:127
+(anônimo) @ react-dom.production.min.js:266
 
 
 URL da solicitação
@@ -22,26 +45,10 @@ Código de status
 500 Internal Server Error
 Endereço remoto
 95.217.16.187:443
+
 {
     "status": "error",
     "code": "HTTP_500",
     "message": "column \"nan\" does not exist",
     "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)\n    at async Client.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)\n    at async Promise.all (index 1)\n    at async Client.findAndCountAll (/usr/src/app/node_modules/sequelize/lib/model.js:1322:27)\n    at async ClientRepository.findAndCountAllByTenant (/usr/src/app/src/repositories/clientRepository.js:78:29)\n    at async /usr/src/app/src/controllers/clientController.js:130:30"
-}
-
-
-URL da solicitação
-https://apiloyalfood.towersfy.com/api/whatsapp-templates?type=COUPON_REMINDER
-Método da solicitação
-GET
-Código de status
-401 Unauthorized
-Endereço remoto
-95.217.16.187:443
-
-{
-    "status": "error",
-    "code": "HTTP_401",
-    "message": "Token inválido ou expirado. Acesso não autorizado.",
-    "details": "Error: Token inválido ou expirado. Acesso não autorizado.\n    at protect (/usr/src/app/src/middlewares/authMiddleware.js:33:23)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/usr/src/app/node_modules/express/lib/router/index.js:328:13)\n    at /usr/src/app/node_modules/express/lib/router/index.js:286:9\n    at Function.process_params (/usr/src/app/node_modules/express/lib/router/index.js:346:12)\n    at next (/usr/src/app/node_modules/express/lib/router/index.js:280:10)\n    at Function.handle (/usr/src/app/node_modules/express/lib/router/index.js:175:3)\n    at router (/usr/src/app/node_modules/express/lib/router/index.js:47:12)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/usr/src/app/node_modules/express/lib/router/index.js:328:13)"
 }

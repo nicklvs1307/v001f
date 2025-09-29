@@ -116,6 +116,17 @@ exports.getAllClients = asyncHandler(async (req, res) => {
   const tenantId = req.user.tenantId;
   let { page = 1, limit = 10, orderBy = 'name', order = 'asc', filter = '' } = req.query;
 
+  page = parseInt(page, 10);
+  limit = parseInt(limit, 10);
+
+  if (isNaN(page) || page < 1) {
+    page = 1;
+  }
+  if (isNaN(limit) || limit < 1) {
+    limit = 10;
+  }
+
+
   // Lista de colunas permitidas para ordenação
   const allowedOrderBy = ['name', 'email', 'phone', 'birthDate', 'createdAt'];
   if (!allowedOrderBy.includes(orderBy)) {

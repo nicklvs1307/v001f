@@ -72,7 +72,25 @@ class CampanhaService {
   }
 
   async _selectClients(criterio, tenantId) {
-    // ... (lógica existente)
+    switch (criterio) {
+      case 'todos':
+        return this.clientRepository.findAllByTenant(tenantId);
+      case 'aniversariantes':
+        const currentMonth = new Date().getMonth() + 1;
+        return this.clientRepository.findByBirthMonth(currentMonth, tenantId);
+      case 'novatos':
+        return this.clientRepository.findNovatos(tenantId);
+      case 'fieis':
+        return this.clientRepository.findFieis(tenantId);
+      case 'super_cliente':
+        return this.clientRepository.findSuperClientes(tenantId);
+      case 'inativos':
+        return this.clientRepository.findInativos(tenantId);
+      case 'curiosos':
+        return this.clientRepository.findCuriosos(tenantId);
+      default:
+        return [];
+    }
   }
 
   async _generateRewards(campanha, clients) {

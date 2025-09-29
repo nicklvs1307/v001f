@@ -44,10 +44,10 @@ const startServer = async () => {
     console.log(`Server is running on port ${PORT}`);
     
     // Inicia os jobs agendados
-    // const dailyReportJob = require('./jobs/dailyReportJob');
-    // const couponReminderJob = require('./jobs/couponReminderJob');
-    // dailyReportJob.start();
-    // couponReminderJob.start();
+    const dailyReportJob = require('./jobs/dailyReportJob');
+    const couponReminderJob = require('./jobs/couponReminderJob');
+    dailyReportJob.start();
+    couponReminderJob.start();
   });
 };
 

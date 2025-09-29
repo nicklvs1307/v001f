@@ -41,10 +41,10 @@ module.exports = {
 
       // --- Dados de Exemplo ---
       const atendentesData = [
-        { name: 'Atendente João', email: 'joao@empresaexemplo.com', code: 'ATD001' },
-        { name: 'Atendente Maria', email: 'maria@empresaexemplo.com', code: 'ATD002' },
-        { name: 'Atendente Carlos', email: 'carlos@empresaexemplo.com', code: 'ATD003' },
-        { name: 'Atendente Ana', email: 'ana@empresaexemplo.com', code: 'ATD004' },
+        { name: 'Atendente João', code: 'ATD001' },
+        { name: 'Atendente Maria', code: 'ATD002' },
+        { name: 'Atendente Carlos', code: 'ATD003' },
+        { name: 'Atendente Ana', code: 'ATD004' },
       ];
       const criteriosData = [
         { name: 'NPS Geral', type: 'NPS' },
@@ -77,7 +77,7 @@ module.exports = {
         return allRecords;
       };
 
-      const atendentes = await upsert('atendentes', atendentesData, 'email');
+      const atendentes = await upsert('atendentes', atendentesData, 'code');
       const criterios = await upsert('criterios', criteriosData, 'name');
       await upsert('recompensas', recompensasData, 'name');
       const clients = await upsert('clients', clientsData, 'email');

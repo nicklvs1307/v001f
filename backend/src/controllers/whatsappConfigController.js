@@ -38,19 +38,25 @@ const whatsappConfigController = {
 
   // POST /api/whatsapp/instance -> Cria uma nova instância
     createInstance: asyncHandler(async (req, res) => {
-      const { tenantId } = req.user;
-      const { url, apiKey } = req.body; // Extrair url e apiKey do req.body
-  
-      // Passo 1: Garante que a configuração exista
-      let config = await whatsappConfigRepository.findByTenant(tenantId);
-      if (!config) {
-        config = await WhatsappConfig.create({
-          tenantId,
-          url, // Usar url do req.body
-          apiKey, // Usar apiKey do req.body
-        });
-      }
-    // Passo 2: Garante que o instanceName seja válido
+          const { tenantId } = req.user;
+          const { url, apiKey } = req.body; // Extrair url e apiKey do req.body
+      
+          if (!url || url.trim() === '') {
+            throw new ApiError(400, "A URL da API do WhatsApp é obrigatória.");
+          }
+          if (!apiKey || apiKey.trim() === '') {
+            throw new ApiError(400, "A chave da API do WhatsApp é obrigatória.");
+          }
+      
+          // Passo 1: Garante que a configuração exista
+          let config = await whatsappConfigRepository.findByTenant(tenantId);
+          if (!config) {
+            config = await WhatsappConfig.create({
+              tenantId,
+              url, // Usar url do req.body
+              apiKey, // Usar apiKey do req.body
+            });
+          }    // Passo 2: Garante que o instanceName seja válido
     if (!config.instanceName || config.instanceName.includes(' ')) {
       const tenant = await Tenant.findByPk(tenantId);
       const newInstanceName = (tenant && tenant.name)

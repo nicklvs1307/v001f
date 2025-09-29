@@ -1,112 +1,13 @@
+{
+    "status": "error",
+    "code": "HTTP_500",
+    "message": "notNull Violation: WhatsappConfig.url cannot be null,\nnotNull Violation: WhatsappConfig.apiKey cannot be null",
+    "details": "SequelizeValidationError: notNull Violation: WhatsappConfig.url cannot be null,\nnotNull Violation: WhatsappConfig.apiKey cannot be null\n    at InstanceValidator._validate (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:50:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async InstanceValidator._validateAndRunHooks (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:60:7)\n    at async InstanceValidator.validate (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:54:12)\n    at async WhatsappConfig.save (/usr/src/app/node_modules/sequelize/lib/model.js:2426:7)\n    at async WhatsappConfig.create (/usr/src/app/node_modules/sequelize/lib/model.js:1362:12)\n    at async /usr/src/app/src/controllers/whatsappConfigController.js:47:18"
+}
 URL da solicitação
 https://apiloyalfood.towersfy.com/api/whatsapp-config/instance
 Método da solicitação
 POST
 Código de status
 500 Internal Server Error
-
-{
-    "status": "error",
-    "code": "SETUP_FAILED",
-    "message": "Erro ao preparar a requisição para a API do WhatsApp: Invalid URL"
-}
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
-[WhatsappService] Axios setup error: Invalid URL
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
-[WhatsappService] Axios setup error: Invalid URL
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
-[WhatsappService] Axios setup error: Invalid URL
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
-[WhatsappService] Axios setup error: Invalid URL
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
-[WhatsappService] Axios setup error: Invalid URL
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
-[WhatsappService] Axios setup error: Invalid URL
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
-[WhatsappService] Axios setup error: Invalid URL
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
-[WhatsappService] Axios setup error: Invalid URL
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
-[WhatsappService] Axios setup error: Invalid URL
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
-[WhatsappService] Axios setup error: Invalid URL
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
-[WhatsappService] Axios setup error: Invalid URL
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
-[WhatsappService] Axios setup error: Invalid URL
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
-[WhatsappService] Axios setup error: Invalid URL
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
-[WhatsappService] Axios setup error: Invalid URL
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
-[WhatsappService] Axios setup error: Invalid URL
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
-[WhatsappService] Axios setup error: Invalid URL
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Error for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd (instance: roma-pizzaria--chopperiaaa): Invalid URL
-[WhatsappService] Axios setup error: Invalid URL
+Endereço remoto

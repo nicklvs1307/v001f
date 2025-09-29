@@ -150,7 +150,7 @@ const AtendenteList = () => {
                 onAtendenteUpdated={handleAtendenteUpdate}
                 initialData={selectedAtendente}
                 formError={formError}
-                onError={handleError}
+                onError={setFormError}
             />
 
             <ConfirmationDialog

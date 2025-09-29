@@ -1,39 +1,6 @@
-{
-    "message": "Network Error",
-    "name": "AxiosError",
-    "stack": "AxiosError: Network Error\n    at m.onerror (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:308152)\n    at xt.request (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:319120)\n    at async Object.login (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:141553)\n    at async login (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:142435)\n    at async onSubmit (https://loyalfood.towersfy.com/static/js/main.315bab57.js:2:587480)",
-    "config": {
-        "transitional": {
-            "silentJSONParsing": true,
-            "forcedJSONParsing": true,
-            "clarifyTimeoutError": false
-        },
-        "adapter": [
-            "xhr",
-            "http",
-            "fetch"
-        ],
-        "transformRequest": [
-            null
-        ],
-        "transformResponse": [
-            null
-        ],
-        "timeout": 0,
-        "xsrfCookieName": "XSRF-TOKEN",
-        "xsrfHeaderName": "X-XSRF-TOKEN",
-        "maxContentLength": -1,
-        "maxBodyLength": -1,
-        "env": {},
-        "headers": {
-            "Accept": "application/json, text/plain, */*",
-            "Content-Type": "application/json"
-        },
-        "baseURL": "https://apiloyalfood.towersfy.com",
-        "method": "post",
-        "url": "/auth/login",
-        "data": "{\"email\":\"rafael@towersfy.com\",\"password\":\"Rafael@r0ma\"}",
-        "allowAbsoluteUrls": true
-    },
-    "code": "ERR_NETWORK"
-}
+Postgres is up - executing command
+Server.js is being executed!
+Conexão com o banco de dados estabelecida com sucesso (Sequelize).
+Server is running on port 5000
+Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
+Agendador de lembrete de cupons iniciado. A tarefa será executada todos os dias às 9:00.

@@ -1,4 +1,5 @@
 const cron = require('node-cron');
+const { format } = require('date-fns');
 const whatsappService = require('../services/whatsappService');
 const tenantRepository = require('../repositories/tenantRepository');
 const resultRepository = require('../repositories/resultRepository');
@@ -25,9 +26,13 @@ const dailyReportTask = cron.schedule(schedule, async () => {
       
       const stats = await resultRepository.getDailyStats(tenant.id);
       
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const formattedDate = format(yesterday, 'dd/MM/yyyy');
+
       const message = `
 *Resumo Diário - ${tenant.name}*
-_${new Date(new Date().setDate(new Date().getDate() - 1)).toLocaleDateString('pt-BR')}_
+_${formattedDate}_
 
 Olá! Aqui está o resumo de ontem:
 

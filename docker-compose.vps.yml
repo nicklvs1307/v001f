@@ -40,7 +40,7 @@ services:
     environment:
       <<: *environment
     command: >
-      /bin/sh -c "./scripts/wait-for-it.sh postgres:5432 -- node src/server.js"
+      /bin/sh -c "./scripts/wait-for-it.sh postgres 5432 && exec node src/server.js"
     networks:
       - towersfy_network
     volumes:

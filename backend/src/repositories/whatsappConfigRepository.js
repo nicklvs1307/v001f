@@ -7,11 +7,17 @@ class WhatsappConfigRepository {
 
   async upsert(data) {
     const { tenantId } = data;
-    const config = await this.findByTenant(tenantId);
+    let config = await this.findByTenant(tenantId);
+
     if (config) {
       return await config.update(data);
+    } else {
+      const newData = { ...data };
+      if (!newData.instanceName) {
+        newData.instanceName = tenantId; 
+      }
+      return await WhatsappConfig.create(newData);
     }
-    return await WhatsappConfig.create(data);
   }
 
   async deleteByTenantId(tenantId) {

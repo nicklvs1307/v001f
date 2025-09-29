@@ -107,7 +107,7 @@ const getInstanceStatus = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
 
   if (!config || !config.url || !config.apiKey || !config.instanceName) {
-    throw new Error('Configuração do WhatsApp não encontrada ou incompleta.');
+    return { status: 'unconfigured' };
   }
 
   try {

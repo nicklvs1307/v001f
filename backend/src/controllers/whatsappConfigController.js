@@ -11,9 +11,15 @@ const whatsappConfigController = {
   getInstanceConfig: asyncHandler(async (req, res) => {
     const { tenantId } = req.user;
     const config = await whatsappConfigRepository.findByTenant(tenantId);
+    
     if (!config) {
-      throw new ApiError(404, "Configuração base do WhatsApp não encontrada. Contate o suporte.");
+      // Se não há configuração, retorna um status que o frontend possa interpretar
+      return res.json({
+        instanceName: null,
+        status: 'unconfigured',
+      });
     }
+
     // Adiciona o status atual da conexão à resposta
     const statusData = await whatsappService.getInstanceStatus(tenantId);
     res.json({

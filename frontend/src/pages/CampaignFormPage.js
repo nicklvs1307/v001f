@@ -1,5 +1,9 @@
-// src/pages/CampaignFormPage.js
-import { TextField, Button, Container, Typography, Box, Paper, CircularProgress, Alert } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { TextField, Button, Container, Typography, Box, Paper, MenuItem, CircularProgress, Alert } from '@mui/material';
+import campanhaService from '../services/campanhaService';
+import recompensaService from '../services/recompensaService';
+import roletaService from '../services/roletaService';
 import ClientSegmentSelector from '../components/campaigns/ClientSegmentSelector';
 
 const CampaignFormPage = () => {

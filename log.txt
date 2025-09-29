@@ -1,54 +1,43 @@
-react-dom.production.min.js:188 TypeError: v.A.getConfig is not a function
-    at WhatsappConfigPage.js:36:35
-    at rl (react-dom.production.min.js:243:332)
-    at wc (react-dom.production.min.js:285:111)
-    at react-dom.production.min.js:282:409
-    at Ac (react-dom.production.min.js:280:398)
-    at lc (react-dom.production.min.js:272:439)
-    at Vo (react-dom.production.min.js:127:105)
-    at react-dom.production.min.js:266:273
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-lc @ react-dom.production.min.js:272
-Vo @ react-dom.production.min.js:127
-(anônimo) @ react-dom.production.min.js:266
-react-dom.production.min.js:127 Uncaught TypeError: v.A.getConfig is not a function
-    at WhatsappConfigPage.js:36:35
-    at rl (react-dom.production.min.js:243:332)
-    at wc (react-dom.production.min.js:285:111)
-    at react-dom.production.min.js:282:409
-    at Ac (react-dom.production.min.js:280:398)
-    at lc (react-dom.production.min.js:272:439)
-    at Vo (react-dom.production.min.js:127:105)
-    at react-dom.production.min.js:266:273
-(anônimo) @ WhatsappConfigPage.js:36
-rl @ react-dom.production.min.js:243
-wc @ react-dom.production.min.js:285
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-lc @ react-dom.production.min.js:272
-Vo @ react-dom.production.min.js:127
-(anônimo) @ react-dom.production.min.js:266
-
-
-URL da solicitação
-https://apiloyalfood.towersfy.com/api/clients?page=NaN
-Método da solicitação
-GET
-Código de status
-500 Internal Server Error
-Endereço remoto
-95.217.16.187:443
-
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "column \"nan\" does not exist",
-    "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)\n    at async Client.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)\n    at async Promise.all (index 1)\n    at async Client.findAndCountAll (/usr/src/app/node_modules/sequelize/lib/model.js:1322:27)\n    at async ClientRepository.findAndCountAllByTenant (/usr/src/app/src/repositories/clientRepository.js:78:29)\n    at async /usr/src/app/src/controllers/clientController.js:130:30"
-}
+ => ERROR [build 6/6] RUN npm run build                                                      159.1s
+------
+ > [build 6/6] RUN npm run build:
+0.675
+0.675 > frontend@0.1.0 build
+0.675 > react-scripts build
+0.675
+4.188 Creating an optimized production build...
+158.8 Failed to compile.
+158.8
+158.8 [eslint]
+158.8 src/pages/CampaignFormPage.js
+158.8   Line 6:20:    'useParams' is not defined          no-undef
+158.8   Line 7:22:    'useNavigate' is not defined        no-undef
+158.8   Line 8:37:    'useState' is not defined           no-undef
+158.8   Line 9:43:    'useState' is not defined           no-undef
+158.8   Line 10:35:   'useState' is not defined           no-undef
+158.8   Line 11:35:   'useState' is not defined           no-undef
+158.8   Line 12:31:   'useState' is not defined           no-undef
+158.8   Line 14:5:    'useEffect' is not defined          no-undef
+158.8   Line 18:21:   'recompensaService' is not defined  no-undef
+158.8   Line 19:21:   'roletaService' is not defined      no-undef
+158.8   Line 25:48:   'campanhaService' is not defined    no-undef
+158.8   Line 42:23:   'campanhaService' is not defined    no-undef
+158.8   Line 44:23:   'campanhaService' is not defined    no-undef
+158.8   Line 94:26:   'MenuItem' is not defined           react/jsx-no-undef
+158.8   Line 95:48:   'MenuItem' is not defined           react/jsx-no-undef
+158.8   Line 106:26:  'MenuItem' is not defined           react/jsx-no-undef
+158.8   Line 107:44:  'MenuItem' is not defined           react/jsx-no-undef
+158.8
+158.8 Search for the keywords to learn more about each error.
+158.8
+158.8
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   TextField,
@@ -13,14 +13,23 @@ import useAtendenteForm from '../../hooks/useAtendenteForm';
 
 const AtendenteForm = ({ initialData, onAtendenteCreated, onAtendenteUpdated, onError, onClose }) => {
   const { formData, handleChange, setFormData } = useAtendenteForm(initialData);
+  const [nameError, setNameError] = useState('');
 
   React.useEffect(() => {
     setFormData(initialData || { name: '', status: 'active' });
+    setNameError(''); // Clear error when initialData changes
   }, [initialData, setFormData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    onError('');
+    onError(''); // Clear general error
+    setNameError(''); // Clear name specific error
+
+    if (!formData.name.trim()) {
+      setNameError('Nome do atendente é obrigatório.');
+      return;
+    }
+
     try {
       if (initialData) {
         await onAtendenteUpdated(formData);
@@ -49,6 +58,9 @@ const AtendenteForm = ({ initialData, onAtendenteCreated, onAtendenteUpdated, on
         value={formData.name}
         onChange={handleChange}
         sx={{ mb: 2 }}
+        required
+        error={!!nameError}
+        helperText={nameError}
       />
 
       <FormControl fullWidth variant="outlined" margin="dense">

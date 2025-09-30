@@ -147,10 +147,15 @@ const getInstanceStatus = async (tenantId) => {
 
   try {
     const response = await axios.get(`${config.url}/instance/connectionState/${config.instanceName}`, getAxiosConfig(config));
+    console.log(`[DEBUG] Evolution API connectionState response for ${config.instanceName}:`, response.data);
     const newStatus = response.data.state === 'CONNECTED' ? 'connected' : 'disconnected';
+    console.log(`[DEBUG] Interpreted newStatus for ${config.instanceName}:`, newStatus);
 
     if (config.instanceStatus !== newStatus) {
+      console.log(`[DEBUG] Updating instanceStatus for ${config.instanceName} from ${config.instanceStatus} to ${newStatus}`);
       await config.update({ instanceStatus: newStatus });
+    } else {
+      console.log(`[DEBUG] instanceStatus for ${config.instanceName} is already ${newStatus}. No update needed.`);
     }
 
     // Retorna apenas a string de status

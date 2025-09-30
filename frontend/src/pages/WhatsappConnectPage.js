@@ -157,8 +157,8 @@ const WhatsappConnectPage = () => {
         setQrCode('');
         setIsPolling(false);
       }
-      // Se o status for qualquer coisa menos 'desconectado', paramos de pollar pelo QR
-      if(response.data.status !== 'disconnected') {
+      // Se o status for 'conectado' ou 'not_created', paramos de pollar
+      if (response.data.status === 'connected' || response.data.status === 'not_created') {
         setIsPolling(false);
       }
     } catch (err) {

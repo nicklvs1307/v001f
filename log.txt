@@ -1,34 +1,3 @@
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] Forced reflow while executing JavaScript took 47ms
-main.92903c7c.js:2 [Violation] 'click' handler took 184ms
-[Violation] Forced reflow while executing JavaScript took 37ms
-clientService.js:76  POST https://apiloyalfood.towersfy.com/api/clients/aa3fb8bd-6204-428d-a02b-b3b9c50e88d4/send-message 500 (Internal Server Error)
-(anônimo) @ xhr.js:198
-xhr @ xhr.js:15
-ht @ dispatchRequest.js:51
-Promise.then
-_request @ Axios.js:163
-request @ Axios.js:40
-(anônimo) @ Axios.js:224
-(anônimo) @ bind.js:5
-sendMessage @ clientService.js:76
-onClick @ SendMessageModal.js:23
-Le @ react-dom.production.min.js:54
-We @ react-dom.production.min.js:54
-(anônimo) @ react-dom.production.min.js:55
-_r @ react-dom.production.min.js:105
-Fr @ react-dom.production.min.js:106
-(anônimo) @ react-dom.production.min.js:117
-cc @ react-dom.production.min.js:273
-Me @ react-dom.production.min.js:52
-Hr @ react-dom.production.min.js:109
-Kt @ react-dom.production.min.js:74
-qt @ react-dom.production.min.js:73
 react-dom.production.min.js:188 Error: Minified React error #306; visit https://reactjs.org/docs/error-decoder.html?invariant=306&args[]=undefined&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
     at Sl (react-dom.production.min.js:290:512)
     at bc (react-dom.production.min.js:279:389)

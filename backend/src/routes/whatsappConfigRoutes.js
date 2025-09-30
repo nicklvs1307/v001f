@@ -22,17 +22,17 @@ router.get(
   whatsappConfigController.getConnectionInfo
 );
 
+// Cria a instância na API da Evolution
+router.post(
+  '/instance/create',
+  protect,
+  authorize(['Admin']),
+  whatsappConfigController.createInstance
+);
+
 // Inicia a conexão e obtém o QR code
 router.post(
   '/instance/connect',
-  protect,
-  authorize(['Admin']),
-  whatsappConfigController.connectInstance
-);
-
-// Obtém o QR code para conectar (usado para polling)
-router.get(
-  '/instance/qr',
   protect,
   authorize(['Admin']),
   whatsappConfigController.getQrCode

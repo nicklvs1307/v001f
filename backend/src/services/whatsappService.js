@@ -108,12 +108,21 @@ const getAxiosConfig = (config) => ({
   headers: { 'apikey': config.apiKey },
 });
 
-const handleAxiosError = (error, tenantId, instanceName) => {
+    return handleAxiosError(error, tenantId, config.instanceName, true);
+  }
+};
+
+const handleAxiosError = (error, tenantId, instanceName, isStatusCheck = false) => {
   console.error(`[WhatsappService] Error for tenant ${tenantId} (instance: ${instanceName}):`, error.message);
 
   if (error.response) {
     const { status, data } = error.response;
     console.error(`[WhatsappService] Response data:`, data);
+
+    // Se for uma verificação de status e a instância não for encontrada, retorne um status especial
+    if (isStatusCheck && status === 404) {
+      return { status: 'not_created', message: 'A instância existe localmente, mas não foi criada na API do WhatsApp.' };
+    }
 
     if (status === 401) {
       return { status: 'error', code: `HTTP_${status}`, message: 'Falha na autenticação com a API do WhatsApp. Verifique a API Key.' };
@@ -167,7 +176,7 @@ const getConnectionInfo = async (tenantId) => {
   }
 };
 
-const _createInstance = async (tenantId) => {
+const createRemoteInstance = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
   if (!config || !config.url || !config.apiKey) {
     throw new Error('URL ou API Key do WhatsApp não configuradas para este tenant.');
@@ -195,8 +204,8 @@ const _createInstance = async (tenantId) => {
   }
 };
 
-const connectInstance = async (tenantId) => {
-  const createResult = await _createInstance(tenantId);
+const getQrCodeForConnect = async (tenantId) => {
+  const createResult = await createRemoteInstance(tenantId);
 
   if (createResult && createResult.status === 'error' && createResult.code !== 'INSTANCE_EXISTS') {
     return createResult;
@@ -251,12 +260,12 @@ const deleteInstance = async (tenantId) => {
 
 module.exports = {
   sendSystemMessage,
-  sendTenantMessage, // Exporta a nova função
+  sendTenantMessage,
   sendInstanteDetractorMessage,
-  getInstanceStatus, // Exporta a nova função
+  getInstanceStatus,
   getConnectionInfo,
-  connectInstance,
-  getInstanceQrCode,
+  createRemoteInstance, // <-- Adicionada
+  getQrCodeForConnect,  // <-- Renomeada
   logoutInstance,
   deleteInstance,
 };

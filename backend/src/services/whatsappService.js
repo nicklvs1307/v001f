@@ -153,12 +153,13 @@ const getInstanceStatus = async (tenantId) => {
       await config.update({ instanceStatus: newStatus });
     }
 
-    // Retorna um objeto de status consistente
-    return { status: newStatus };
+    // Retorna apenas a string de status
+    return newStatus;
 
   } catch (error) {
-    // Passa o flag isStatusCheck como true
-    return handleAxiosError(error, tenantId, config.instanceName, true);
+    // Passa o flag isStatusCheck como true e retorna o status do erro
+    const errorStatus = handleAxiosError(error, tenantId, config.instanceName, true);
+    return errorStatus.status; // ex: 'not_created'
   }
 };
 

@@ -9,8 +9,21 @@ const whatsappConfigController = {
 
   getInstanceConfig: asyncHandler(async (req, res) => {
     const { tenantId } = req.user;
-    const result = await whatsappService.getInstanceStatus(tenantId);
-    res.json(result);
+    const config = await whatsappConfigRepository.findByTenant(tenantId);
+
+    if (!config) {
+      return res.json({ status: 'unconfigured' });
+    }
+
+    const currentStatus = await whatsappService.getInstanceStatus(tenantId);
+    
+    // Retorna o objeto de configuração completo do banco de dados, com o status atualizado
+    const response = {
+      ...config.get({ plain: true }),
+      status: currentStatus,
+    };
+
+    res.json(response);
   }),
 
   getConnectionInfo: asyncHandler(async (req, res) => {

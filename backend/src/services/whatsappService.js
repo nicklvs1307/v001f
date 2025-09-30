@@ -191,7 +191,10 @@ const createRemoteInstance = async (tenantId) => {
   try {
     const response = await axios.post(
       `${config.url}/instance/create`,
-      { instanceName: config.instanceName },
+      { 
+        instanceName: config.instanceName,
+        integration: 'WHATSAPP-BAILEYS' // Adiciona o tipo de integração
+      },
       getAxiosConfig(config)
     );
     return response.data;

@@ -1,53 +1,37 @@
-Postgres is up - executing command
-Server.js is being executed!
-API_KEY_ENCRYPTION_KEY is not defined in .env. Please set it for security.
-Conexão com o banco de dados estabelecida com sucesso (Sequelize).
-Server is running on port 5000
-Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
-Agendador de lembrete de cupons iniciado. A tarefa será executada todos os dias às 9:00.
-[Auth Middleware] Request: POST /api/auth/verify-token
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[DEBUG] Evolution API connectionState response for roma-pizzaria--chopperiaaa: {
-  instance: { instanceName: 'roma-pizzaria--chopperiaaa', state: 'open' }
-}
-[DEBUG] Interpreted newStatus for roma-pizzaria--chopperiaaa: disconnected
-[DEBUG] instanceStatus for roma-pizzaria--chopperiaaa is already disconnected. No update needed.
-[Auth Middleware] Request: POST /api/whatsapp-config/instance/connect
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Instância 'roma-pizzaria--chopperiaaa' já existe. Continuando...
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[DEBUG] QR Code Response from Service: {
-  instance: { instanceName: 'roma-pizzaria--chopperiaaa', state: 'open' }
-}
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[DEBUG] Evolution API connectionState response for roma-pizzaria--chopperiaaa: {
-  instance: { instanceName: 'roma-pizzaria--chopperiaaa', state: 'open' }
-}
-[DEBUG] Interpreted newStatus for roma-pizzaria--chopperiaaa: disconnected
-[DEBUG] instanceStatus for roma-pizzaria--chopperiaaa is already disconnected. No update needed.
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[DEBUG] Evolution API connectionState response for roma-pizzaria--chopperiaaa: {
-  instance: { instanceName: 'roma-pizzaria--chopperiaaa', state: 'open' }
-}
-[DEBUG] Interpreted newStatus for roma-pizzaria--chopperiaaa: disconnected
-[DEBUG] instanceStatus for roma-pizzaria--chopperiaaa is already disconnected. No update needed.
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[DEBUG] Evolution API connectionState response for roma-pizzaria--chopperiaaa: {
-  instance: { instanceName: 'roma-pizzaria--chopperiaaa', state: 'open' }
-}
-[DEBUG] Interpreted newStatus for roma-pizzaria--chopperiaaa: disconnected
-[DEBUG] instanceStatus for roma-pizzaria--chopperiaaa is already disconnected. No update needed.
+react-dom.production.min.js:188 Error: Minified React error #306; visit https://reactjs.org/docs/error-decoder.html?invariant=306&args[]=undefined&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+    at Sl (react-dom.production.min.js:290:512)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+    at oc (react-dom.production.min.js:267:429)
+    at w (scheduler.production.min.js:13:203)
+    at MessagePort.O (scheduler.production.min.js:14:128)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+react-dom.production.min.js:290 Uncaught Error: Minified React error #306; visit https://reactjs.org/docs/error-decoder.html?invariant=306&args[]=undefined&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+    at Sl (react-dom.production.min.js:290:512)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+    at oc (react-dom.production.min.js:267:429)
+    at w (scheduler.production.min.js:13:203)
+    at MessagePort.O (scheduler.production.min.js:14:128)
+Sl @ react-dom.production.min.js:290
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+ac @ react-dom.production.min.js:270
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14

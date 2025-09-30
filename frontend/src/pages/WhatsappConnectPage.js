@@ -148,24 +148,38 @@ const WhatsappConnectPage = () => {
   const [qrCode, setQrCode] = useState('');
   const [isPolling, setIsPolling] = useState(false);
   const [error, setError] = useState('');
+  const isMounted = useRef(true); // Adicionado para rastrear o estado de montagem
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false; // Define como false quando o componente é desmontado
+    };
+  }, []);
 
   const fetchConfig = useCallback(async () => {
+    if (!isMounted.current) return; // Não faz nada se o componente não estiver montado
+    setLoading(true);
     try {
       const response = await whatsappConfigService.getInstanceConfig();
-      setConfig(response.data);
-      if (response.data.status === 'connected') {
-        setQrCode('');
-        setIsPolling(false);
-      }
-      // Se o status for 'conectado' ou 'not_created', paramos de pollar
-      if (response.data.status === 'connected' || response.data.status === 'not_created') {
-        setIsPolling(false);
+      if (isMounted.current) {
+        setConfig(response.data);
+        if (response.data.status === 'connected') {
+          setQrCode('');
+          setIsPolling(false);
+        }
+        if (response.data.status === 'connected' || response.data.status === 'not_created') {
+          setIsPolling(false);
+        }
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Falha ao buscar configuração.');
-      setIsPolling(false);
+      if (isMounted.current) {
+        setError(err.response?.data?.message || 'Falha ao buscar configuração.');
+        setIsPolling(false);
+      }
     } finally {
-      setLoading(false);
+      if (isMounted.current) {
+        setLoading(false);
+      }
     }
   }, []);
 
@@ -191,6 +205,7 @@ const WhatsappConnectPage = () => {
   }, [isPolling, fetchConfig]);
 
   const handleAction = useCallback(async (serviceCall, expectQrCode = false) => {
+    if (!isMounted.current) return; // Não faz nada se o componente não estiver montado
     setActionLoading(true);
     setError('');
     if (expectQrCode) {
@@ -199,15 +214,21 @@ const WhatsappConnectPage = () => {
     }
     try {
       const response = await serviceCall();
-      if (expectQrCode) {
-        setQrCode(response.data.code);
+      if (isMounted.current) {
+        if (expectQrCode) {
+          setQrCode(response.data.code);
+        }
+        await fetchConfig(); // Re-fetch status after any action
       }
-      await fetchConfig(); // Re-fetch status after any action
     } catch (err) {
-      setError(err.response?.data?.message || 'Ocorreu um erro inesperado.');
-      setIsPolling(false);
+      if (isMounted.current) {
+        setError(err.response?.data?.message || 'Ocorreu um erro inesperado.');
+        setIsPolling(false);
+      }
     } finally {
-      setActionLoading(false);
+      if (isMounted.current) {
+        setActionLoading(false);
+      }
     }
   }, [fetchConfig]);
 

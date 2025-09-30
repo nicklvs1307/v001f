@@ -41,6 +41,7 @@ const whatsappConfigController = {
   getQrCode: asyncHandler(async (req, res) => {
     const { tenantId } = req.user;
     const qrCodeData = await whatsappService.getQrCodeForConnect(tenantId);
+    console.log('[DEBUG] QR Code Response from Service:', qrCodeData);
     res.json(qrCodeData);
   }),
 

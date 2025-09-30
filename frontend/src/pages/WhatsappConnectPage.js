@@ -209,8 +209,10 @@ const WhatsappConnectPage = () => {
     setActionLoading(true);
     setError('');
     if (expectQrCode) {
-      setQrCode('');
-      setIsPolling(true);
+      if (isMounted.current) {
+        setQrCode('');
+        setIsPolling(true);
+      }
     }
     try {
       const response = await serviceCall();

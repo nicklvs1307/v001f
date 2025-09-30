@@ -1,27 +1,37 @@
-=> ERROR [build 6/6] RUN npm run build                                                      156.3s
-------
- > [build 6/6] RUN npm run build:
-0.770
-0.770 > frontend@0.1.0 build
-0.770 > react-scripts build
-0.770
-4.572 Creating an optimized production build...
-156.0 Failed to compile.
-156.0
-156.0 [eslint]
-156.0 src/pages/WhatsappConnectPage.js
-156.0   Line 151:21:  'useRef' is not defined  no-undef
-156.0
-156.0 Search for the keywords to learn more about each error.
-156.0
-156.0
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+react-dom.production.min.js:188 Error: Minified React error #306; visit https://reactjs.org/docs/error-decoder.html?invariant=306&args[]=undefined&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+    at Sl (react-dom.production.min.js:290:512)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+    at oc (react-dom.production.min.js:267:429)
+    at w (scheduler.production.min.js:13:203)
+    at MessagePort.O (scheduler.production.min.js:14:128)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+react-dom.production.min.js:290 Uncaught Error: Minified React error #306; visit https://reactjs.org/docs/error-decoder.html?invariant=306&args[]=undefined&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+    at Sl (react-dom.production.min.js:290:512)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+    at oc (react-dom.production.min.js:267:429)
+    at w (scheduler.production.min.js:13:203)
+    at MessagePort.O (scheduler.production.min.js:14:128)
+Sl @ react-dom.production.min.js:290
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+ac @ react-dom.production.min.js:270
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14

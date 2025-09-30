@@ -199,7 +199,12 @@ const createRemoteInstance = async (tenantId) => {
     );
     return response.data;
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.message === 'Instance already exists') {
+    const apiResponse = error.response?.data?.response;
+    const apiMessage = Array.isArray(apiResponse?.message) ? apiResponse.message[0] : '';
+
+    // Trata tanto o erro 403 de nome em uso quanto o erro antigo de instância já existente
+    if ((error.response?.status === 403 && apiMessage.includes('is already in use')) || 
+        (error.response?.data?.message === 'Instance already exists')) {
       console.log(`[WhatsappService] Instância '${config.instanceName}' já existe. Continuando...`);
       return { status: 'success', code: 'INSTANCE_EXISTS', message: 'Instância já existe.' };
     }

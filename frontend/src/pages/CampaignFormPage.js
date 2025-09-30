@@ -16,26 +16,39 @@ const CampaignFormPage = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
+        let isMounted = true; // Flag para rastrear se o componente está montado
         const fetchData = async () => {
             try {
                 const [recompensasData, roletasData] = await Promise.all([
                     recompensaService.getAll(),
                     roletaService.getAll(),
                 ]);
-                setRecompensas(recompensasData);
-                setRoletas(roletasData);
+                if (isMounted) {
+                    setRecompensas(recompensasData);
+                    setRoletas(roletasData);
+                }
 
                 if (id) {
                     const campaignData = await campanhaService.getById(id);
-                    setCampaign(campaignData);
+                    if (isMounted) {
+                        setCampaign(campaignData);
+                    }
                 }
             } catch (err) {
-                setError('Falha ao carregar dados de suporte para a campanha.');
+                if (isMounted) {
+                    setError('Falha ao carregar dados de suporte para a campanha.');
+                }
             } finally {
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         };
         fetchData();
+
+        return () => {
+            isMounted = false; // Limpeza: define a flag como false quando o componente é desmontado
+        };
     }, [id]);
 
     const handleSubmit = async (e) => {

@@ -35,6 +35,8 @@ const WhatsappConnectPage = () => {
   const [qrCode, setQrCode] = useState('');
   const [error, setError] = useState('');
   const [confirmDeleteDialogOpen, setConfirmDeleteDialogOpen] = useState(false);
+  const [url, setUrl] = useState('');
+  const [apiKey, setApiKey] = useState('');
 
   const fetchConfig = useCallback(async () => {
     try {
@@ -137,8 +139,32 @@ const WhatsappConnectPage = () => {
       return (
         <CardContent sx={{ textAlign: 'center', p: 4 }}>
           <AddCircleOutline sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
-          <Typography variant="h6" gutterBottom>Primeiro Passo</Typography>
-          <Button variant="contained" onClick={() => handleAction(whatsappConfigService.createInstance)} disabled={actionLoading}>
+          <Typography variant="h6" gutterBottom>Primeiro Passo: Configurar Instância</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Insira a URL da sua API do WhatsApp e a Chave de API para criar sua instância.
+          </Typography>
+          <TextField
+            fullWidth
+            label="URL da Instância da API"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            margin="normal"
+            required
+          />
+          <TextField
+            fullWidth
+            label="Chave de API (API Key)"
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+            margin="normal"
+            required
+          />
+          <Button
+            variant="contained"
+            onClick={() => handleAction(() => whatsappConfigService.createInstance({ url, apiKey }))}
+            disabled={actionLoading || !url || !apiKey}
+            sx={{ mt: 2 }}
+          >
             {actionLoading ? <CircularProgress size={24} /> : 'Criar Instância Agora'}
           </Button>
         </CardContent>

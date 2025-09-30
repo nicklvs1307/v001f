@@ -1,4 +1,3 @@
-console.log('[DEBUG] Loading whatsappConfigController.js...');
 const asyncHandler = require('express-async-handler');
 const whatsappConfigRepository = require('../repositories/whatsappConfigRepository');
 const whatsappService = require('../services/whatsappService');
@@ -106,5 +105,4 @@ const whatsappConfigController = {
   }),
 };
 
-console.log('[DEBUG] Exporting whatsappConfigController:', Object.keys(whatsappConfigController));
 module.exports = whatsappConfigController;

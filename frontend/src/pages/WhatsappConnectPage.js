@@ -33,19 +33,17 @@ const WhatsappConnectPage = () => {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [qrCode, setQrCode] = useState('');
+  const [isPolling, setIsPolling] = useState(false);
   const [error, setError] = useState('');
   const [confirmDeleteDialogOpen, setConfirmDeleteDialogOpen] = useState(false);
-  const [url, setUrl] = useState('');
-  const [apiKey, setApiKey] = useState('');
 
   const fetchConfig = useCallback(async () => {
     try {
       const response = await whatsappConfigService.getInstanceConfig();
       setConfig(response.data);
-      setUrl(response.data.url || '');
-      setApiKey(response.data.apiKey || '');
       if (response.data.status === 'connected') {
         setQrCode(''); // Limpa QR code antigo
+        setIsPolling(false); // Para o polling
         // Busca as informações da conexão se estiver conectado
         const info = await whatsappConfigService.getConnectionInfo();
         setConnectionInfo(info.data);
@@ -78,25 +76,22 @@ const WhatsappConnectPage = () => {
   // Polling para verificar o status da conexão
   useEffect(() => {
     let statusInterval;
-  
-    // Inicia o polling se a configuração existe e não está conectado
-    if (config && config.status !== 'connected') {
+
+    if (isPolling) {
       statusInterval = setInterval(() => {
-        // Adiciona uma verificação de visibilidade para evitar chamadas em background
         if (document.visibilityState === 'visible') {
           fetchConfig();
         }
       }, 5000); // Verifica a cada 5 segundos
     }
-  
-    // Limpa o intervalo se o status mudar para conectado ou o componente for desmontado
+
     return () => clearInterval(statusInterval);
-  }, [config, fetchConfig]);
+  }, [isPolling, fetchConfig]);
 
   const getActiveStep = () => {
-    if (!config || config.status === 'no_instance') return 0;
-    if (config.status === 'disconnected' || qrCode) return 1;
-    if (config.status === 'connected') return 2;
+    if (config?.status === 'connected') return 2;
+    if (qrCode) return 1; // Se tem QR code, está no passo de escanear
+    if (config?.status === 'disconnected') return 0;
     return 0;
   };
 
@@ -117,11 +112,13 @@ const WhatsappConnectPage = () => {
     setActionLoading(true);
     setError('');
     setQrCode('');
+    setIsPolling(true); // Inicia o polling
     try {
       const response = await whatsappConfigService.getInstanceQrCode();
       setQrCode(response.data.code);
     } catch (err) {
       setError(err.response?.data?.message || 'Falha ao obter QR Code.');
+      setIsPolling(false); // Para o polling em caso de erro
     } finally {
       setActionLoading(false);
     }
@@ -133,44 +130,22 @@ const WhatsappConnectPage = () => {
   };
 
   const renderContent = () => {
-    if (loading) {
+    if (!config) {
       return <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>;
     }
 
-    if (!config || config.status === 'no_instance' || config.status === 'unconfigured') {
-      return (
-        <CardContent sx={{ textAlign: 'center', p: 4 }}>
-          <AddCircleOutline sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
-          <Typography variant="h6" gutterBottom>Primeiro Passo: Configurar Instância</Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Insira a URL da sua API do WhatsApp e a Chave de API para criar sua instância.
-          </Typography>
-          <TextField
-            fullWidth
-            label="URL da Instância da API"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            margin="normal"
-            required
-          />
-          <TextField
-            fullWidth
-            label="Chave de API (API Key)"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-            margin="normal"
-            required
-          />
-          <Button
-            variant="contained"
-            onClick={() => handleAction(() => whatsappConfigService.createInstance({ url, apiKey }))}
-            disabled={actionLoading || !url || !apiKey}
-            sx={{ mt: 2 }}
-          >
-            {actionLoading ? <CircularProgress size={24} /> : 'Criar Instância Agora'}
-          </Button>
-        </CardContent>
-      );
+    if (config.status === 'unconfigured') {
+        return (
+            <CardContent sx={{ textAlign: 'center', p: 4 }}>
+              <HourglassEmpty sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
+              <Typography variant="h6" gutterBottom>Configuração Pendente</Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                A configuração do WhatsApp para sua loja ainda não foi realizada pelo administrador.
+                <br />
+                Por favor, entre em contato com o suporte para habilitar esta funcionalidade.
+              </Typography>
+            </CardContent>
+        );
     }
 
     return (

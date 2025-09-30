@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { check } = require("express-validator");
 const whatsappConfigController = require('../controllers/whatsappConfigController');
-console.log('[DEBUG] Imported whatsappConfigController in routes:', whatsappConfigController);
 const { protect, authorize } = require('../middlewares/authMiddleware');
 const validate = require("../middlewares/validationMiddleware");
 

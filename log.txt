@@ -5,15 +5,6 @@ Conexão com o banco de dados estabelecida com sucesso (Sequelize).
 Server is running on port 5000
 Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
 Agendador de lembrete de cupons iniciado. A tarefa será executada todos os dias às 9:00.
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[DEBUG] Evolution API connectionState response for roma-pizzaria--chopperiaaa: {
-  instance: { instanceName: 'roma-pizzaria--chopperiaaa', state: 'open' }
-}
-[DEBUG] Interpreted newStatus for roma-pizzaria--chopperiaaa: disconnected
-[DEBUG] instanceStatus for roma-pizzaria--chopperiaaa is already disconnected. No update needed.
 [Auth Middleware] Request: POST /api/auth/verify-token
 Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
 [Auth Middleware] Request: GET /api/whatsapp-config/instance
@@ -51,32 +42,6 @@ Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStat
 }
 [DEBUG] Interpreted newStatus for roma-pizzaria--chopperiaaa: disconnected
 [DEBUG] instanceStatus for roma-pizzaria--chopperiaaa is already disconnected. No update needed.
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[DEBUG] Evolution API connectionState response for roma-pizzaria--chopperiaaa: {
-  instance: { instanceName: 'roma-pizzaria--chopperiaaa', state: 'open' }
-}
-[DEBUG] Interpreted newStatus for roma-pizzaria--chopperiaaa: disconnected
-[DEBUG] instanceStatus for roma-pizzaria--chopperiaaa is already disconnected. No update needed.
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[DEBUG] Evolution API connectionState response for roma-pizzaria--chopperiaaa: {
-  instance: { instanceName: 'roma-pizzaria--chopperiaaa', state: 'open' }
-}
-[DEBUG] Interpreted newStatus for roma-pizzaria--chopperiaaa: disconnected
-[DEBUG] instanceStatus for roma-pizzaria--chopperiaaa is already disconnected. No update needed.
-[Auth Middleware] Request: POST /api/whatsapp-config/instance/connect
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Instância 'roma-pizzaria--chopperiaaa' já existe. Continuando...
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[DEBUG] QR Code Response from Service: {
-  instance: { instanceName: 'roma-pizzaria--chopperiaaa', state: 'open' }
-}
 [Auth Middleware] Request: GET /api/whatsapp-config/instance
 Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
 Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;

@@ -254,7 +254,7 @@ exports.sendMessageToClient = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Este cliente não possui um número de telefone cadastrado.");
   }
 
-  await whatsappService.sendMessage(tenantId, client.phone, message);
+  await whatsappService.sendTenantMessage(tenantId, client.phone, message);
 
   res.status(200).json({ message: "Mensagem enviada com sucesso!" });
 });

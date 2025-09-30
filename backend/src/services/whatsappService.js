@@ -108,10 +108,6 @@ const getAxiosConfig = (config) => ({
   headers: { 'apikey': config.apiKey },
 });
 
-    return handleAxiosError(error, tenantId, config.instanceName, true);
-  }
-};
-
 const handleAxiosError = (error, tenantId, instanceName, isStatusCheck = false) => {
   console.error(`[WhatsappService] Error for tenant ${tenantId} (instance: ${instanceName}):`, error.message);
 
@@ -119,7 +115,6 @@ const handleAxiosError = (error, tenantId, instanceName, isStatusCheck = false) 
     const { status, data } = error.response;
     console.error(`[WhatsappService] Response data:`, data);
 
-    // Se for uma verificação de status e a instância não for encontrada, retorne um status especial
     if (isStatusCheck && status === 404) {
       return { status: 'not_created', message: 'A instância existe localmente, mas não foi criada na API do WhatsApp.' };
     }
@@ -148,7 +143,7 @@ const handleAxiosError = (error, tenantId, instanceName, isStatusCheck = false) 
 
 const getInstanceStatus = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
-  if (!config || !config.instanceName) return { status: 'unconfigured' };
+  if (!config || !config.instanceName) return { status: 'not_created' }; // Alterado para not_created se não tiver instanceName
 
   try {
     const response = await axios.get(`${config.url}/instance/connectionState/${config.instanceName}`, getAxiosConfig(config));
@@ -158,9 +153,12 @@ const getInstanceStatus = async (tenantId) => {
       await config.update({ instanceStatus: newStatus });
     }
 
-    return response.data;
+    // Retorna um objeto de status consistente
+    return { status: newStatus };
+
   } catch (error) {
-    return handleAxiosError(error, tenantId, config.instanceName);
+    // Passa o flag isStatusCheck como true
+    return handleAxiosError(error, tenantId, config.instanceName, true);
   }
 };
 
@@ -186,6 +184,7 @@ const createRemoteInstance = async (tenantId) => {
     const tenant = await Tenant.findByPk(tenantId);
     const newInstanceName = tenant.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
     await config.update({ instanceName: newInstanceName });
+    await config.reload(); // Recarrega para garantir que temos o instanceName
   }
 
   try {
@@ -205,19 +204,13 @@ const createRemoteInstance = async (tenantId) => {
 };
 
 const getQrCodeForConnect = async (tenantId) => {
+  // Garante que a instância exista antes de tentar conectar
   const createResult = await createRemoteInstance(tenantId);
-
   if (createResult && createResult.status === 'error' && createResult.code !== 'INSTANCE_EXISTS') {
     return createResult;
   }
 
-  return await getInstanceQrCode(tenantId);
-};
-
-const getInstanceQrCode = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
-  if (!config || !config.instanceName) return { error: 'unconfigured' };
-
   try {
     const response = await axios.get(`${config.url}/instance/connect/${config.instanceName}`, getAxiosConfig(config));
     return response.data;

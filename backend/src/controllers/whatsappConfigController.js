@@ -1,3 +1,4 @@
+console.log('[DEBUG] Loading whatsappConfigController.js...');
 const asyncHandler = require('express-async-handler');
 const whatsappConfigRepository = require('../repositories/whatsappConfigRepository');
 const whatsappService = require('../services/whatsappService');
@@ -32,6 +33,13 @@ const whatsappConfigController = {
     const { tenantId } = req.user;
     const info = await whatsappService.getConnectionInfo(tenantId);
     res.json(info);
+  }),
+
+  // POST /api/whatsapp/instance/connect -> Inicia a conexão e obtém o QR code
+  connectInstance: asyncHandler(async (req, res) => {
+    const { tenantId } = req.user;
+    const qrCodeData = await whatsappService.connectInstance(tenantId);
+    res.json(qrCodeData);
   }),
 
   // GET /api/whatsapp/instance/qr -> Obtém o QR code (usado pelo frontend para polling)
@@ -98,4 +106,5 @@ const whatsappConfigController = {
   }),
 };
 
+console.log('[DEBUG] Exporting whatsappConfigController:', Object.keys(whatsappConfigController));
 module.exports = whatsappConfigController;

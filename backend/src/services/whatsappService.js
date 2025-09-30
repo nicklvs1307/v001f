@@ -155,6 +155,18 @@ const getInstanceStatus = async (tenantId) => {
   }
 };
 
+const getConnectionInfo = async (tenantId) => {
+  const config = await WhatsappConfig.findOne({ where: { tenantId } });
+  if (!config || !config.instanceName) return { error: 'unconfigured' };
+
+  try {
+    const response = await axios.get(`${config.url}/instance/fetchInstance/${config.instanceName}`, getAxiosConfig(config));
+    return response.data;
+  } catch (error) {
+    return handleAxiosError(error, tenantId, config.instanceName);
+  }
+};
+
 const _createInstance = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
   if (!config || !config.url || !config.apiKey) {
@@ -242,6 +254,7 @@ module.exports = {
   sendTenantMessage, // Exporta a nova função
   sendInstanteDetractorMessage,
   getInstanceStatus, // Exporta a nova função
+  getConnectionInfo,
   connectInstance,
   getInstanceQrCode,
   logoutInstance,

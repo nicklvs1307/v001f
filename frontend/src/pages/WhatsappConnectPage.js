@@ -42,6 +42,8 @@ const WhatsappConnectPage = () => {
     try {
       const response = await whatsappConfigService.getInstanceConfig();
       setConfig(response.data);
+      setUrl(response.data.url || '');
+      setApiKey(response.data.apiKey || '');
       if (response.data.status === 'connected') {
         setQrCode(''); // Limpa QR code antigo
         // Busca as informações da conexão se estiver conectado

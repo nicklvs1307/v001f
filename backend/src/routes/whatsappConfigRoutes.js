@@ -15,28 +15,20 @@ router.get(
   whatsappConfigController.getInstanceConfig
 );
 
-// Busca informações da conexão (número, nome do perfil)
-router.get(
-  '/instance/connection-info',
-  protect,
-  authorize(['Admin']),
-  whatsappConfigController.getConnectionInfo
-);
-
-// Cria uma nova instância
+// Inicia a conexão e obtém o QR code
 router.post(
-  '/instance',
+  '/instance/connect',
   protect,
   authorize(['Admin']),
-  whatsappConfigController.createInstance
+  whatsappConfigController.connectInstance
 );
 
-// Obtém o QR code para conectar
+// Obtém o QR code para conectar (usado para polling)
 router.get(
   '/instance/qr',
   protect,
   authorize(['Admin']),
-  whatsappConfigController.getInstanceQrCode
+  whatsappConfigController.getQrCode
 );
 
 // Desconecta a instância (logout)

@@ -1,6 +1,6 @@
 const axios = require('axios');
 const dotenv = require('dotenv');
-const { WhatsappConfig } = require('../../models'); // Import the model
+const { WhatsappConfig, Tenant } = require('../../models'); // Import the model
 const whatsappConfigRepository = require('../repositories/whatsappConfigRepository');
 
 dotenv.config();
@@ -155,33 +155,42 @@ const getInstanceStatus = async (tenantId) => {
   }
 };
 
-const getConnectionInfo = async (tenantId) => {
+const _createInstance = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
-  if (!config || !config.instanceName) return { error: 'unconfigured' };
-
-  try {
-    const response = await axios.get(`${config.url}/instance/fetchInstance/${config.instanceName}`, getAxiosConfig(config));
-    return response.data;
-  } catch (error) {
-    return handleAxiosError(error, tenantId, config.instanceName);
+  if (!config || !config.url || !config.apiKey) {
+    throw new Error('URL ou API Key do WhatsApp não configuradas para este tenant.');
   }
-};
 
-const createInstance = async (tenantId) => {
-  const config = await WhatsappConfig.findOne({ where: { tenantId } });
-  if (!config || !config.instanceName) {
-    throw new Error('Configuração do WhatsApp ou nome da instância não encontrado.');
+  if (!config.instanceName) {
+    const tenant = await Tenant.findByPk(tenantId);
+    const newInstanceName = tenant.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    await config.update({ instanceName: newInstanceName });
   }
 
   try {
-    const response = await axios.post(`${config.url}/instance/create`, 
-      { instanceName: config.instanceName }, 
+    const response = await axios.post(
+      `${config.url}/instance/create`,
+      { instanceName: config.instanceName },
       getAxiosConfig(config)
     );
     return response.data;
   } catch (error) {
+    if (error.response && error.response.data && error.response.data.message === 'Instance already exists') {
+      console.log(`[WhatsappService] Instância '${config.instanceName}' já existe. Continuando...`);
+      return { status: 'success', code: 'INSTANCE_EXISTS', message: 'Instância já existe.' };
+    }
     return handleAxiosError(error, tenantId, config.instanceName);
   }
+};
+
+const connectInstance = async (tenantId) => {
+  const createResult = await _createInstance(tenantId);
+
+  if (createResult && createResult.status === 'error' && createResult.code !== 'INSTANCE_EXISTS') {
+    return createResult;
+  }
+
+  return await getInstanceQrCode(tenantId);
 };
 
 const getInstanceQrCode = async (tenantId) => {
@@ -233,8 +242,7 @@ module.exports = {
   sendTenantMessage, // Exporta a nova função
   sendInstanteDetractorMessage,
   getInstanceStatus, // Exporta a nova função
-  getConnectionInfo,
-  createInstance,
+  connectInstance,
   getInstanceQrCode,
   logoutInstance,
   deleteInstance,

@@ -12,16 +12,14 @@ const whatsappConfigController = {
   getInstanceConfig: asyncHandler(async (req, res) => {
     const { tenantId } = req.user;
     const config = await whatsappConfigRepository.findByTenant(tenantId);
-    
-    if (!config) {
-      // Se não há configuração, retorna um status que o frontend possa interpretar
+
+    if (!config || !config.url || !config.apiKey) {
       return res.json({
         instanceName: null,
         status: 'unconfigured',
       });
     }
 
-    // Adiciona o status atual da conexão à resposta
     const statusData = await whatsappService.getInstanceStatus(tenantId);
     res.json({
       instanceName: config.instanceName,
@@ -36,35 +34,8 @@ const whatsappConfigController = {
     res.json(info);
   }),
 
-  // POST /api/whatsapp/instance -> Cria uma nova instância
-  createInstance: asyncHandler(async (req, res) => {
-    const { tenantId } = req.user;
-    const { url, apiKey } = req.body;
-
-    if (!url || url.trim() === '') {
-      throw new ApiError(400, "A URL da API do WhatsApp é obrigatória.");
-    }
-    if (!apiKey || apiKey.trim() === '') {
-      throw new ApiError(400, "A chave da API do WhatsApp é obrigatória.");
-    }
-
-    // Passo 1: Cria ou atualiza a configuração do WhatsApp
-    await whatsappConfigRepository.upsert({ tenantId, url, apiKey });
-
-    // Passo 2: Tenta criar a instância na API do WhatsApp
-    const result = await whatsappService.createInstance(tenantId);
-
-    // Passo 3: Retorna o resultado ou o erro estruturado
-    if (result && result.status === 'error') {
-      const statusCode = result.code && (result.code.startsWith('HTTP_4') || result.code === 'not_found') ? 400 : 500;
-      return res.status(statusCode).json(result);
-    }
-
-    res.status(201).json(result);
-  }),
-
-  // GET /api/whatsapp/instance/qr -> Obtém o QR code
-  getInstanceQrCode: asyncHandler(async (req, res) => {
+  // GET /api/whatsapp/instance/qr -> Obtém o QR code (usado pelo frontend para polling)
+  getQrCode: asyncHandler(async (req, res) => {
     const { tenantId } = req.user;
     const qrCodeData = await whatsappService.getInstanceQrCode(tenantId);
     res.json(qrCodeData);

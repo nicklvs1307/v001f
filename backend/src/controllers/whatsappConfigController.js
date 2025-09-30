@@ -3,16 +3,86 @@ const whatsappConfigRepository = require('../repositories/whatsappConfigReposito
 const whatsappService = require('../services/whatsappService');
 const ApiError = require('../errors/ApiError');
 const whatsappWebhookRepository = require('../repositories/whatsappWebhookRepository');
-const { Tenant, WhatsappConfig } = require('../../models');
 
-module.exports = {
-  getInstanceConfig,
-  getConnectionInfo,
-  createInstance,       // <-- Nova
-  getQrCode,            // <-- Renomeada e agora a única para obter QR
-  logoutInstance,
-  deleteInstance,
-  getTenantConfig,
-  saveTenantConfig,
-  handleWebhook,
+const whatsappConfigController = {
+  // --- Rotas para o Tenant Admin ---
+
+  getInstanceConfig: asyncHandler(async (req, res) => {
+    const { tenantId } = req.user;
+    const result = await whatsappService.getInstanceStatus(tenantId);
+    res.json(result);
+  }),
+
+  getConnectionInfo: asyncHandler(async (req, res) => {
+    const { tenantId } = req.user;
+    const info = await whatsappService.getConnectionInfo(tenantId);
+    res.json(info);
+  }),
+
+  createInstance: asyncHandler(async (req, res) => {
+    const { tenantId } = req.user;
+    const result = await whatsappService.createRemoteInstance(tenantId);
+    res.json(result);
+  }),
+
+  getQrCode: asyncHandler(async (req, res) => {
+    const { tenantId } = req.user;
+    const qrCodeData = await whatsappService.getQrCodeForConnect(tenantId);
+    res.json(qrCodeData);
+  }),
+
+  logoutInstance: asyncHandler(async (req, res) => {
+    const { tenantId } = req.user;
+    const result = await whatsappService.logoutInstance(tenantId);
+    res.json(result);
+  }),
+
+  deleteInstance: asyncHandler(async (req, res) => {
+    const { tenantId } = req.user;
+    const result = await whatsappService.deleteInstance(tenantId);
+    res.json(result);
+  }),
+
+  // --- Rotas para o Super Admin ---
+  
+  getTenantConfig: asyncHandler(async (req, res) => {
+    const { tenantId } = req.params;
+    const config = await whatsappConfigRepository.findByTenant(tenantId);
+    if (!config) {
+      throw new ApiError(404, "Configuração do WhatsApp não encontrada.");
+    }
+    res.json(config);
+  }),
+
+  saveTenantConfig: asyncHandler(async (req, res) => {
+    const { tenantId } = req.params;
+    const { url, apiKey } = req.body;
+
+    if (!url || url.trim() === '') {
+      throw new ApiError(400, "A URL da API do WhatsApp é obrigatória.");
+    }
+    if (!apiKey || apiKey.trim() === '') {
+      throw new ApiError(400, "A chave da API do WhatsApp é obrigatória.");
+    }
+
+    const data = { ...req.body, tenantId };
+    const config = await whatsappConfigRepository.upsert(data);
+    res.json(config);
+  }),
+
+  // --- Webhook ---
+  handleWebhook: asyncHandler(async (req, res) => {
+    const { event, instance, data } = req.body;
+    console.log('Webhook recebido:', req.body);
+
+    if (event === 'connection.update') {
+      const { state } = data;
+      const newStatus = state === 'CONNECTED' ? 'connected' : 'disconnected';
+      await whatsappWebhookRepository.updateStatusByInstanceName(instance, newStatus);
+    }
+
+    res.sendStatus(200);
+  }),
 };
+
+module.exports = whatsappConfigController;

@@ -37,34 +37,24 @@ const whatsappConfigController = {
   }),
 
   // POST /api/whatsapp/instance -> Cria uma nova instância
-    createInstance: asyncHandler(async (req, res) => {
-          const { tenantId } = req.user;
-          const { url, apiKey } = req.body; // Extrair url e apiKey do req.body
-      
-          if (!url || url.trim() === '') {
-            throw new ApiError(400, "A URL da API do WhatsApp é obrigatória.");
-          }
-          if (!apiKey || apiKey.trim() === '') {
-            throw new ApiError(400, "A chave da API do WhatsApp é obrigatória.");
-          }
-      
-          // Passo 1: Garante que a configuração exista
-          let config = await whatsappConfigRepository.findByTenant(tenantId);
-          if (!config) {
-            config = await whatsappConfigRepository.upsert({ tenantId, url, apiKey });
-          }    // Passo 2: Garante que o instanceName seja válido
-    if (!config.instanceName || config.instanceName.includes(' ')) {
-      const tenant = await Tenant.findByPk(tenantId);
-      const newInstanceName = (tenant && tenant.name)
-        ? tenant.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
-        : tenantId;
-      await config.update({ instanceName: newInstanceName });
+  createInstance: asyncHandler(async (req, res) => {
+    const { tenantId } = req.user;
+    const { url, apiKey } = req.body;
+
+    if (!url || url.trim() === '') {
+      throw new ApiError(400, "A URL da API do WhatsApp é obrigatória.");
+    }
+    if (!apiKey || apiKey.trim() === '') {
+      throw new ApiError(400, "A chave da API do WhatsApp é obrigatória.");
     }
 
-    // Passo 3: Tenta criar a instância na API do WhatsApp
+    // Passo 1: Cria ou atualiza a configuração do WhatsApp
+    await whatsappConfigRepository.upsert({ tenantId, url, apiKey });
+
+    // Passo 2: Tenta criar a instância na API do WhatsApp
     const result = await whatsappService.createInstance(tenantId);
 
-    // Passo 4: Retorna o resultado ou o erro estruturado
+    // Passo 3: Retorna o resultado ou o erro estruturado
     if (result && result.status === 'error') {
       const statusCode = result.code && (result.code.startsWith('HTTP_4') || result.code === 'not_found') ? 400 : 500;
       return res.status(statusCode).json(result);

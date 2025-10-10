@@ -128,7 +128,11 @@ const RegistrationFormComponent = ({ tenant }) => {
             sessionStorage.removeItem('surveyState');
             navigate(`/roleta/${tenantId}/${pesquisaId}/${response.client.id}`);
         } catch (err) {
-            setError(err.response?.data?.message || 'Erro ao registrar cliente.');
+            if (err.response?.status === 409) {
+                setError("Este número de telefone já está cadastrado. Por favor, volte e use a opção 'Já tenho cadastro'.");
+            } else {
+                setError(err.response?.data?.message || 'Erro ao registrar cliente.');
+            }
         } finally {
             setLoading(false);
         }

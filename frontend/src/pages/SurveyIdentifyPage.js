@@ -28,7 +28,20 @@ const SurveyIdentifyPage = () => {
     };
 
     const handleIdentify = () => {
-        navigate(`/identificacao-cliente/${tenantId}/${pesquisaId}`);
+        const storedState = sessionStorage.getItem('surveyState');
+        if (!storedState) {
+            alert("Ocorreu um erro ao recuperar os dados da sua pesquisa. Por favor, tente novamente.");
+            return;
+        }
+        const surveyState = JSON.parse(storedState);
+        navigate(`/identificacao-cliente/${tenantId}/${pesquisaId}`, { 
+            state: {
+                surveyId: pesquisaId,
+                answers: surveyState.answers,
+                tenantId: surveyState.tenantId,
+                atendenteId: surveyState.atendenteId
+            } 
+        });
     };
 
     const handleAnonymous = () => {

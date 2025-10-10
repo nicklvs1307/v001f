@@ -110,7 +110,7 @@ const SpinTheWheel = ({ items, winningItem, winningIndex, onAnimationComplete })
         ctx.textBaseline = 'middle';
 
         const text = item.name || item.title;
-        let fontSize = Math.max(8, Math.floor(wheelSize / 30));
+        let fontSize = Math.max(8, Math.floor(wheelSize / 28));
         ctx.font = `bold ${fontSize}px Poppins`;
 
         const maxTextWidth = radius * Math.sin(segmentAngle / 2) * 2 * 0.8;

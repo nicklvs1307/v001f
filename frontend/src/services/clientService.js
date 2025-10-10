@@ -67,7 +67,7 @@ const registerClient = async (registrationData) => {
         const response = await apiAuthenticated.post('/clients/register', registrationData);
         return response.data;
     } catch (error) {
-        throw error.response?.data || error;
+        throw error;
     }
 };
 

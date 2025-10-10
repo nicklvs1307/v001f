@@ -50,7 +50,7 @@ const submitSurveyWithClient = async (data) => {
         const response = await publicApi.post('/surveys/submit-with-client', data);
         return response.data;
     } catch (error) {
-        throw error.response?.data || error;
+        throw error;
     }
 };
 

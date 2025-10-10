@@ -1,35 +1,34 @@
+const asyncHandler = require("express-async-handler");
 const publicSurveyRepository = require("../repositories/publicSurveyRepository");
 const clientRepository = require("../repositories/clientRepository");
 const { v4: uuidv4 } = require("uuid");
 const ApiError = require("../errors/ApiError");
 
-const getPublicSurveyById = async (req, res) => {
+const getPublicSurveyById = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const survey = await publicSurveyRepository.getPublicSurveyById(id);
   if (!survey) {
     throw new ApiError(404, "Pesquisa não encontrada.");
   }
   res.json(survey);
-};
+});
 
-const getPublicAtendentesByTenant = async (req, res) => {
+const getPublicAtendentesByTenant = asyncHandler(async (req, res) => {
   const { tenantId } = req.params;
   const atendentes = await publicSurveyRepository.getAtendentesByTenantId(tenantId);
   res.json(atendentes);
-};
+});
 
-const getPublicTenantById = async (req, res) => {
-  // Esta função pode precisar ser implementada no repositório se não existir
+const getPublicTenantById = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  // Supondo que exista uma função no repositório para buscar tenant
   const tenant = await publicSurveyRepository.getPublicTenantById(id); 
   if (!tenant) {
     throw new ApiError(404, "Tenant não encontrado.");
   }
   res.json(tenant);
-};
+});
 
-const submitSurveyResponses = async (req, res) => {
+const submitSurveyResponses = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { respostas, atendenteId } = req.body;
   const respondentSessionId = uuidv4();
@@ -42,9 +41,9 @@ const submitSurveyResponses = async (req, res) => {
     atendenteId
   );
   res.status(201).json(result);
-};
+});
 
-const submitSurveyWithClient = async (req, res) => {
+const submitSurveyWithClient = asyncHandler(async (req, res) => {
   const { surveyId, respostas, atendenteId, client } = req.body;
 
   if (!surveyId || !respostas || !client || !client.phone) {
@@ -71,7 +70,7 @@ const submitSurveyWithClient = async (req, res) => {
     clienteId: existingClient.id,
     respondentSessionId,
   });
-};
+});
 
 module.exports = {
   getPublicSurveyById,

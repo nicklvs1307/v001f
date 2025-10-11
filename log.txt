@@ -1,87 +1,28 @@
-
-C:\Users\Niquele\Desktop\barbearia\frontend>npm start
-
-> frontend@0.1.0 start
-> react-scripts start
-
-(node:8628) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
-(Use `node --trace-deprecation ...` to show where the warning was created)
-(node:8628) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
-Starting the development server...
-Failed to compile.
-
-SyntaxError: C:\Users\Niquele\Desktop\barbearia\frontend\src\pages\AreaCliente\AreaCliente.js: 'import' and 'export' may only appear at the top level. (136:0)
-  134 | };
-  135 |
-> 136 | export default AreaCliente;
-      | ^
-  137 |
-    at parser.next (<anonymous>)
-    at normalizeFile.next (<anonymous>)
-    at run.next (<anonymous>)
-    at transform.next (<anonymous>)
-ERROR in ./src/pages/AreaCliente/AreaCliente.js
-Module build failed (from ./node_modules/babel-loader/lib/index.js):
-SyntaxError: C:\Users\Niquele\Desktop\barbearia\frontend\src\pages\AreaCliente\AreaCliente.js: 'import' and 'export' may only appear at the top level. (136:0)
-
-  134 | };
-  135 |
-> 136 | export default AreaCliente;
-      | ^
-  137 |
-    at constructor (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:367:19)
-    at FlowParserMixin.raise (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:6630:19)
-    at FlowParserMixin.parseStatementContent (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12880:18)
-    at FlowParserMixin.parseStatementLike (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12776:17)
-    at FlowParserMixin.parseStatementLike (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:2949:24)
-    at FlowParserMixin.parseStatementListItem (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12756:17)
-    at FlowParserMixin.parseBlockOrModuleBlockBody (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:13325:61)
-    at FlowParserMixin.parseBlockBody (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:13318:10)
-    at FlowParserMixin.parseBlock (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:13306:10)
-    at FlowParserMixin.parseFunctionBody (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12110:24)
-    at C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:2923:63
-    at FlowParserMixin.forwardNoArrowParamsConversionAt (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:3099:16)
-    at FlowParserMixin.parseFunctionBody (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:2923:12)
-    at FlowParserMixin.parseArrowExpression (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12085:10)
-    at FlowParserMixin.parseParenAndDistinguishExpression (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:11695:12)
-    at FlowParserMixin.parseParenAndDistinguishExpression (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:3624:18)
-    at FlowParserMixin.parseExprAtom (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:11335:23)
-    at FlowParserMixin.parseExprAtom (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:4797:20)
-    at FlowParserMixin.parseExprSubscripts (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:11085:23)
-    at FlowParserMixin.parseUpdate (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:11070:21)
-    at FlowParserMixin.parseMaybeUnary (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:11050:23)
-    at FlowParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:10903:61)
-    at FlowParserMixin.parseExprOps (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:10908:23)
-    at FlowParserMixin.parseMaybeConditional (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:10885:23)
-    at FlowParserMixin.parseMaybeAssign (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:10835:21)
-    at FlowParserMixin.parseMaybeAssign (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:3582:18)
-    at C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:10804:39
-    at FlowParserMixin.allowInAnd (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12431:16)
-    at FlowParserMixin.parseMaybeAssignAllowIn (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:10804:17)
-    at FlowParserMixin.parseVar (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:13393:91)
-    at FlowParserMixin.parseVarStatement (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:13239:10)
-    at FlowParserMixin.parseStatementContent (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12860:23)
-    at FlowParserMixin.parseStatementLike (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12776:17)
-    at FlowParserMixin.parseStatementLike (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:2949:24)
-    at FlowParserMixin.parseModuleItem (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12753:17)
-    at FlowParserMixin.parseBlockOrModuleBlockBody (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:13325:36)
-    at FlowParserMixin.parseBlockBody (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:13318:10)
-    at FlowParserMixin.parseProgram (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12634:10)
-    at FlowParserMixin.parseTopLevel (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12624:25)
-    at FlowParserMixin.parseTopLevel (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:3718:28)
-    at FlowParserMixin.parse (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:14501:10)
-    at parse (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:14535:38)
-    at parser (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\core\lib\parser\index.js:41:34)
-    at parser.next (<anonymous>)
-    at normalizeFile (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
-    at normalizeFile.next (<anonymous>)
-    at run (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\core\lib\transformation\index.js:22:50)
-    at run.next (<anonymous>)
-    at transform (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\core\lib\transform.js:22:33)
-    at transform.next (<anonymous>)
-
-ERROR in [eslint]
-src\pages\AreaCliente\AreaCliente.js
-  Line 136:  Parsing error: 'import' and 'export' may only appear at the top level. (136:0)
-
-webpack compiled with 2 errors
+ => ERROR [build 6/6] RUN npm run build                                                      162.4s
+------
+ > [build 6/6] RUN npm run build:
+0.561
+0.561 > frontend@0.1.0 build
+0.561 > react-scripts build
+0.561
+3.532 Creating an optimized production build...
+161.2 Failed to compile.
+161.2
+161.2 [eslint]
+161.2 src/pages/CouponsPage.js
+161.2   Line 235:14:  'Divider' is not defined  react/jsx-no-undef
+161.2   Line 246:14:  'Divider' is not defined  react/jsx-no-undef
+161.2
+161.2 Search for the keywords to learn more about each error.
+161.2
+161.2
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

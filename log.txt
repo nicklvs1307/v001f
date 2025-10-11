@@ -1,33 +1,21 @@
- => ERROR [build 6/6] RUN npm run build                                                      145.8s
-------
- > [build 6/6] RUN npm run build:
-0.894
-0.894 > frontend@0.1.0 build
-0.894 > react-scripts build
-0.894
-4.803 Creating an optimized production build...
-145.4 Failed to compile.
-145.4
-145.4 [eslint]
-145.4 src/pages/ResultsOverviewPage.js
-145.4   Line 69:14:  'Grid' is not defined  react/jsx-no-undef
-145.4   Line 71:18:  'Grid' is not defined  react/jsx-no-undef
-145.4   Line 76:18:  'Grid' is not defined  react/jsx-no-undef
-145.4   Line 81:18:  'Grid' is not defined  react/jsx-no-undef
-145.4   Line 86:18:  'Grid' is not defined  react/jsx-no-undef
-145.4   Line 91:18:  'Grid' is not defined  react/jsx-no-undef
-145.4   Line 96:18:  'Grid' is not defined  react/jsx-no-undef
-145.4
-145.4 Search for the keywords to learn more about each error.
-145.4
-145.4
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+main.58ab530d.js:2 [Violation] 'click' handler took 264ms
+react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
+b @ react-dom.production.min.js:24
+Ks @ react-dom.production.min.js:230
+xc @ react-dom.production.min.js:280
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+react-dom.production.min.js:24 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
+b @ react-dom.production.min.js:24
+Ks @ react-dom.production.min.js:230
+xc @ react-dom.production.min.js:280
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14

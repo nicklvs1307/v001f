@@ -5,8 +5,9 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 const Demographics = ({ ageDistribution, genderDistribution }) => {
     const theme = useTheme();
 
-    const ageData = ageDistribution ? Object.entries(ageDistribution).map(([ageGroup, count]) => ({ ageGroup, count })) : [];
-    const genderData = genderDistribution ? Object.entries(genderDistribution).map(([name, value]) => ({ name, value })) : [];
+    const ageData = ageDistribution ? Object.entries(ageDistribution).map(([ageGroup, count]) => ({ ageGroup, count: Number(count) || 0 })) : [];
+    const genderData = genderDistribution ? Object.entries(genderDistribution).map(([name, value]) => ({ name, value: Number(value) || 0 })) : [];
+    const totalGender = genderData.reduce((sum, entry) => sum + entry.value, 0);
 
     return (
         <Paper sx={{ p: 2 }}>
@@ -37,7 +38,7 @@ const Demographics = ({ ageDistribution, genderDistribution }) => {
                                 outerRadius={80}
                                 fill="#8884d8"
                                 dataKey="value"
-                                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                                label={({ name, percent }) => totalGender > 0 ? `${name}: ${(percent * 100).toFixed(0)}%` : name}
                             >
                                 {genderData.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={theme.palette.gender[entry.name.toLowerCase()] || theme.palette.grey[500]} />

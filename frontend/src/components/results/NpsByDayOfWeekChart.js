@@ -18,7 +18,7 @@ const NpsByDayOfWeekChart = ({ data }) => {
             <Typography variant="h6" gutterBottom>NPS por Dia da Semana</Typography>
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                    data={data}
+                    data={data.map(item => ({ ...item, nps: Number(item.nps) || 0 }))}
                     margin={{
                         top: 5,
                         right: 30,

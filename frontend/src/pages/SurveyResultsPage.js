@@ -109,12 +109,16 @@ const SurveyResultsPage = () => {
                 );
             case 'rating_0_10':
             case 'rating_1_5':
-                const ratingChartData = qr.results.count > 0
-                    ? Object.entries(qr.results.allRatings.reduce((acc, rating) => {
-                        acc[rating] = (acc[rating] || 0) + 1;
-                        return acc;
-                      }, {})).map(([value, count]) => ({ value: parseInt(value), count }))
-                    : [];
+                const safeRatings = Array.isArray(qr.results?.allRatings) ? qr.results.allRatings : [];
+                const ratingCounts = safeRatings.reduce((acc, rating) => {
+                    const key = String(rating);
+                    acc[key] = (acc[key] || 0) + 1;
+                    return acc;
+                }, {});
+                const ratingChartData = Object.entries(ratingCounts).map(([value, count]) => ({
+                    value: value,
+                    count: Number(count) || 0,
+                }));
 
                 return (
                     <Box>
@@ -138,7 +142,7 @@ const SurveyResultsPage = () => {
                 );
             case 'multiple_choice':
             case 'checkbox':
-                const pieData = qr.results ? Object.entries(qr.results).map(([name, value], idx) => ({ name, value, fill: chartColors[idx % chartColors.length] })) : [];
+                const pieData = qr.results ? Object.entries(qr.results).map(([name, value], idx) => ({ name, value: Number(value) || 0, fill: chartColors[idx % chartColors.length] })) : [];
                 return (
                     <ResponsiveContainer width="100%" height={300}>
                         <PieChart>
@@ -243,7 +247,7 @@ const SurveyResultsPage = () => {
                         <RadarChart outerRadius={150} data={results.radarChartData}>
                             <PolarGrid />
                             <PolarAngleAxis dataKey="name" />
-                            <PolarRadiusAxis angle={90} domain={[0, results.questionsResults.some(q => q.type === 'rating_0_10') ? 10 : 5]} />
+                            <PolarRadiusAxis angle={90} domain={[0, Array.isArray(results.questionsResults) && results.questionsResults.some(q => q.type === 'rating_0_10') ? 10 : 5]} />
                             <Radar name="Média de Avaliação" dataKey="averageRating" stroke={theme.palette.primary.main} fill={theme.palette.primary.light} fillOpacity={0.6} />
                             <Tooltip />
                             <Legend />
@@ -253,11 +257,11 @@ const SurveyResultsPage = () => {
             )}
 
             {/* Distribuição Demográfica (Idade) */}
-            {results.demographics && results.demographics.ageDistribution && Object.keys(results.demographics.ageDistribution).length > 0 && (
+            {results.demographics?.ageDistribution && Object.keys(results.demographics.ageDistribution).length > 0 && (
                 <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
                     <Typography variant="h5" gutterBottom>Distribuição Demográfica (Idade)</Typography>
                     <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={Object.entries(results.demographics.ageDistribution).map(([ageGroup, count]) => ({ ageGroup, count }))}>
+                        <BarChart data={Object.entries(results.demographics.ageDistribution).map(([ageGroup, count]) => ({ ageGroup, count: Number(count) || 0 }))}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="ageGroup" />
                             <YAxis />

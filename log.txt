@@ -1,36 +1,26 @@
- => ERROR [build 6/6] RUN npm run build                                                      152.6s
+ => ERROR [build 6/6] RUN npm run build                                                      145.8s
 ------
  > [build 6/6] RUN npm run build:
-0.701
-0.701 > frontend@0.1.0 build
-0.701 > react-scripts build
-0.701
-4.535 Creating an optimized production build...
-152.3 Failed to compile.
-152.3
-152.3 [eslint]
-152.3 src/pages/ResultsOverviewPage.js
-152.3   Line 103:22:  'Paper' is not defined           react/jsx-no-undef
-152.3   Line 105:26:  'TableContainer' is not defined  react/jsx-no-undef
-152.3   Line 106:30:  'Table' is not defined           react/jsx-no-undef
-152.3   Line 107:34:  'TableHead' is not defined       react/jsx-no-undef
-152.3   Line 108:38:  'TableRow' is not defined        react/jsx-no-undef
-152.3   Line 109:42:  'TableCell' is not defined       react/jsx-no-undef
-152.3   Line 110:42:  'TableCell' is not defined       react/jsx-no-undef
-152.3   Line 111:42:  'TableCell' is not defined       react/jsx-no-undef
-152.3   Line 112:42:  'TableCell' is not defined       react/jsx-no-undef
-152.3   Line 115:34:  'TableBody' is not defined       react/jsx-no-undef
-152.3   Line 118:46:  'TableRow' is not defined        react/jsx-no-undef
-152.3   Line 119:50:  'TableCell' is not defined       react/jsx-no-undef
-152.3   Line 120:50:  'TableCell' is not defined       react/jsx-no-undef
-152.3   Line 121:50:  'TableCell' is not defined       react/jsx-no-undef
-152.3   Line 122:50:  'TableCell' is not defined       react/jsx-no-undef
-152.3   Line 126:42:  'TableRow' is not defined        react/jsx-no-undef
-152.3   Line 127:46:  'TableCell' is not defined       react/jsx-no-undef
-152.3
-152.3 Search for the keywords to learn more about each error.
-152.3
-152.3
+0.894
+0.894 > frontend@0.1.0 build
+0.894 > react-scripts build
+0.894
+4.803 Creating an optimized production build...
+145.4 Failed to compile.
+145.4
+145.4 [eslint]
+145.4 src/pages/ResultsOverviewPage.js
+145.4   Line 69:14:  'Grid' is not defined  react/jsx-no-undef
+145.4   Line 71:18:  'Grid' is not defined  react/jsx-no-undef
+145.4   Line 76:18:  'Grid' is not defined  react/jsx-no-undef
+145.4   Line 81:18:  'Grid' is not defined  react/jsx-no-undef
+145.4   Line 86:18:  'Grid' is not defined  react/jsx-no-undef
+145.4   Line 91:18:  'Grid' is not defined  react/jsx-no-undef
+145.4   Line 96:18:  'Grid' is not defined  react/jsx-no-undef
+145.4
+145.4 Search for the keywords to learn more about each error.
+145.4
+145.4
 ------
 Dockerfile:14
 --------------------

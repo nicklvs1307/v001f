@@ -1,25 +1,43 @@
-main.31a47588.js:2 [Violation] 'click' handler took 436ms
-ResultsOverviewPage.js:53 ResultsOverviewPage - tenantId: eb629ea8-7d69-47a1-b1f1-f9dcb33475f4
-ResultsOverviewPage.js:59 ResultsOverviewPage - overallResults data: {overallNPS: 92, npsPromoters: 71, npsNeutrals: 2, npsDetractors: 2, npsTotalResponses: 75, …}
-main.31a47588.js:2 [Violation] 'message' handler took 323ms
-[Violation] Forced reflow while executing JavaScript took 61ms
-react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-dom.production.min.js:24 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
+ => ERROR [build 6/6] RUN npm run build                                                      152.6s
+------
+ > [build 6/6] RUN npm run build:
+0.701
+0.701 > frontend@0.1.0 build
+0.701 > react-scripts build
+0.701
+4.535 Creating an optimized production build...
+152.3 Failed to compile.
+152.3
+152.3 [eslint]
+152.3 src/pages/ResultsOverviewPage.js
+152.3   Line 103:22:  'Paper' is not defined           react/jsx-no-undef
+152.3   Line 105:26:  'TableContainer' is not defined  react/jsx-no-undef
+152.3   Line 106:30:  'Table' is not defined           react/jsx-no-undef
+152.3   Line 107:34:  'TableHead' is not defined       react/jsx-no-undef
+152.3   Line 108:38:  'TableRow' is not defined        react/jsx-no-undef
+152.3   Line 109:42:  'TableCell' is not defined       react/jsx-no-undef
+152.3   Line 110:42:  'TableCell' is not defined       react/jsx-no-undef
+152.3   Line 111:42:  'TableCell' is not defined       react/jsx-no-undef
+152.3   Line 112:42:  'TableCell' is not defined       react/jsx-no-undef
+152.3   Line 115:34:  'TableBody' is not defined       react/jsx-no-undef
+152.3   Line 118:46:  'TableRow' is not defined        react/jsx-no-undef
+152.3   Line 119:50:  'TableCell' is not defined       react/jsx-no-undef
+152.3   Line 120:50:  'TableCell' is not defined       react/jsx-no-undef
+152.3   Line 121:50:  'TableCell' is not defined       react/jsx-no-undef
+152.3   Line 122:50:  'TableCell' is not defined       react/jsx-no-undef
+152.3   Line 126:42:  'TableRow' is not defined        react/jsx-no-undef
+152.3   Line 127:46:  'TableCell' is not defined       react/jsx-no-undef
+152.3
+152.3 Search for the keywords to learn more about each error.
+152.3
+152.3
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

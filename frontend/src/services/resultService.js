@@ -9,7 +9,7 @@ const getSurveyResults = async (surveyId) => {
     }
 };
 
-const getOverallResults = async (tenantId) => {
+const getLegacyOverallResults = async (tenantId) => {
     try {
         const response = await apiAuthenticated.get(`/dashboard/overall-results`, { params: { tenantId } });
         return response.data;
@@ -18,9 +18,19 @@ const getOverallResults = async (tenantId) => {
     }
 };
 
+const getMainDashboard = async (tenantId) => {
+    try {
+        const response = await apiAuthenticated.get(`/dashboard/main`, { params: { tenantId } });
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
 const resultService = {
     getSurveyResults,
-    getOverallResults,
+    getLegacyOverallResults,
+    getMainDashboard,
     getNpsTrend: async (tenantId, period = 'day') => {
         try {
             const response = await apiAuthenticated.get('/dashboard/nps-trend', { params: { tenantId, period } });

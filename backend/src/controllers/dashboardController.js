@@ -58,6 +58,12 @@ const dashboardController = {
         res.status(200).json(trendData);
     }),
 
+    getNpsByDayOfWeek: asyncHandler(async (req, res) => {
+        const tenantId = req.user.role === 'Super Admin' ? null : req.user.tenantId;
+        const npsByDayOfWeek = await dashboardRepository.getNpsByDayOfWeek(tenantId);
+        res.status(200).json(npsByDayOfWeek);
+    }),
+
     getWordCloud: asyncHandler(async (req, res) => {
         const tenantId = req.user.role === 'Super Admin' ? null : req.user.tenantId;
         const wordCloudData = await dashboardRepository.getWordCloudData(tenantId);

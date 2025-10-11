@@ -12,7 +12,7 @@ const CriteriaRadarChart = ({ data }) => {
     // Transforma os dados para o formato do gráfico de radar, usando o NPS
     const chartData = data.map(item => ({
         subject: item.criterio,
-        NPS: item.nps,
+        NPS: typeof item.nps === 'number' ? item.nps : 0,
         fullMark: 100, // O NPS vai de -100 a 100
     }));
 

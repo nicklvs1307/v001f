@@ -565,6 +565,62 @@ const dashboardRepository = {
             };
         });
     },
+    getNpsByDayOfWeek: async (tenantId = null) => {
+        const whereClause = tenantId ? { tenantId, ratingValue: { [Op.ne]: null } } : { ratingValue: { [Op.ne]: null } };
+
+        const responses = await Resposta.findAll({
+            where: whereClause,
+            include: [{
+                model: Pergunta,
+                as: 'pergunta',
+                attributes: ['type'],
+                where: {
+                    type: 'rating_0_10'
+                },
+                required: true
+            }],
+            attributes: ['createdAt', 'ratingValue']
+        });
+
+        const npsByDay = {
+            'Domingo': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+            'Segunda-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+            'Terça-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+            'Quarta-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+            'Quinta-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+            'Sexta-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+            'Sábado': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+        };
+
+        const daysOfWeek = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+
+        responses.forEach(response => {
+            const dayOfWeek = new Date(response.createdAt).getDay(); // 0 for Sunday, 6 for Saturday
+            const dayName = daysOfWeek[dayOfWeek];
+
+            const classification = npsService.classifyRating(response.ratingValue, response.pergunta.type);
+
+            if (classification) {
+                npsByDay[dayName].total++;
+                if (classification === 'promoter') npsByDay[dayName].promoters++;
+                else if (classification === 'neutral') npsByDay[dayName].neutrals++;
+                else if (classification === 'detractor') npsByDay[dayName].detractors++;
+            }
+        });
+
+        const result = Object.entries(npsByDay).map(([day, counts]) => {
+            let npsScore = 0;
+            if (counts.total > 0) {
+                npsScore = ((counts.promoters / counts.total) * 100) - ((counts.detractors / counts.total) * 100);
+            }
+            return {
+                day,
+                nps: parseFloat(npsScore.toFixed(1)),
+            };
+        });
+
+        return result;
+    },
     getAttendantsPerformanceWithGoals: async (tenantId = null) => {
         const whereClause = tenantId ? { tenantId } : {};
 
@@ -801,6 +857,7 @@ const dashboardRepository = {
         const npsCriteria = await this.getNPSCritera(tenantId, startDate, endDate);
         const feedbacks = await this.getFeedbacks(tenantId, startDate, endDate);
         const conversionChart = await this.getConversionChart(tenantId, startDate, endDate);
+        const npsByDayOfWeek = await this.getNpsByDayOfWeek(tenantId);
 
         return {
             summary,
@@ -809,6 +866,7 @@ const dashboardRepository = {
             npsCriteria,
             feedbacks,
             conversionChart,
+            npsByDayOfWeek,
         };
     },
 };

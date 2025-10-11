@@ -40,10 +40,9 @@ const WordCloudChart = ({ tenantId }) => {
 
     const options = {
         rotations: 1,
-        rotationAngles: [0, 0],
+        rotationAngles: [0, 0], // Apenas rotação horizontal
         fontSizes: [20, 60],
         padding: 1,
-        spiral: 'rectangular',
     };
 
     return (

@@ -25,10 +25,19 @@ import {
   Select,
   MenuItem,
   Chip,
+  Grid,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import PersonIcon from '@mui/icons-material/Person';
+import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
+import BusinessIcon from '@mui/icons-material/Business';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
 import cupomService from '../services/cupomService';
 import recompensaService from '../services/recompensaService';
 
@@ -215,37 +224,59 @@ const CupomListPage = () => {
       {selectedCupom && (
         <Dialog open={openDetailsDialog} onClose={handleCloseDetailsDialog}>
           <DialogTitle>Detalhes do Cupom</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              <strong>Código:</strong> {selectedCupom.codigo}
-            </DialogContentText>
-            <DialogContentText>
-              <strong>Recompensa:</strong> {selectedCupom.recompensa?.name}
-            </DialogContentText>
-            <DialogContentText>
-              <strong>Cliente:</strong> {selectedCupom.cliente?.name || 'N/A'}
-            </DialogContentText>
-            <DialogContentText>
-              <strong>Email do Cliente:</strong> {selectedCupom.cliente?.email || 'N/A'}
-            </DialogContentText>
-            <DialogContentText>
-              <strong>Telefone do Cliente:</strong> {selectedCupom.cliente?.phone || 'N/A'}
-            </DialogContentText>
-            <DialogContentText>
-              <strong>Empresa:</strong> {selectedCupom.tenant?.name || 'N/A'}
-            </DialogContentText>
-            <DialogContentText>
-              <strong>Data de Geração:</strong> {new Date(selectedCupom.dataGeracao).toLocaleString()}
-            </DialogContentText>
-            <DialogContentText>
-              <strong>Data de Validade:</strong> {new Date(selectedCupom.dataValidade).toLocaleString()}
-            </DialogContentText>
-            <DialogContentText>
-              <strong>Data de Utilização:</strong> {selectedCupom.dataUtilizacao ? new Date(selectedCupom.dataUtilizacao).toLocaleString() : 'N/A'}
-            </DialogContentText>
-            <DialogContentText>
-              <strong>Status:</strong> {selectedCupom.status}
-            </DialogContentText>
+          <DialogContent dividers>
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="h6" gutterBottom component="div">
+                <CardGiftcardIcon sx={{ verticalAlign: 'middle', mr: 1 }} /> Recompensa
+              </Typography>
+              <Typography variant="body1" color="text.secondary">{selectedCupom.recompensa?.name}</Typography>
+            </Box>
+
+            <Divider sx={{ my: 2 }} />
+
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="h6" gutterBottom component="div">
+                <PersonIcon sx={{ verticalAlign: 'middle', mr: 1 }} /> Cliente
+              </Typography>
+              <Typography variant="body1" color="text.secondary">{selectedCupom.cliente?.name || 'N/A'}</Typography>
+              <Typography variant="body2" color="text.secondary"><EmailIcon sx={{ verticalAlign: 'middle', mr: 1, fontSize: 'small' }} /> {selectedCupom.cliente?.email || 'N/A'}</Typography>
+              <Typography variant="body2" color="text.secondary"><PhoneIcon sx={{ verticalAlign: 'middle', mr: 1, fontSize: 'small' }} /> {selectedCupom.cliente?.phone || 'N/A'}</Typography>
+            </Box>
+
+            <Divider sx={{ my: 2 }} />
+
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Typography variant="subtitle1" component="div">
+                  <BusinessIcon sx={{ verticalAlign: 'middle', mr: 1 }} /> Empresa
+                </Typography>
+                <Typography variant="body2" color="text.secondary">{selectedCupom.tenant?.name || 'N/A'}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="subtitle1" component="div">
+                  <CalendarTodayIcon sx={{ verticalAlign: 'middle', mr: 1 }} /> Data de Geração
+                </Typography>
+                <Typography variant="body2" color="text.secondary">{new Date(selectedCupom.dataGeracao).toLocaleString()}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="subtitle1" component="div">
+                  <CalendarTodayIcon sx={{ verticalAlign: 'middle', mr: 1 }} /> Data de Validade
+                </Typography>
+                <Typography variant="body2" color="text.secondary">{new Date(selectedCupom.dataValidade).toLocaleString()}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="subtitle1" component="div">
+                  {selectedCupom.status === 'used' ? <CheckCircleIcon sx={{ verticalAlign: 'middle', mr: 1 }} /> : <CancelIcon sx={{ verticalAlign: 'middle', mr: 1 }} />} Data de Utilização
+                </Typography>
+                <Typography variant="body2" color="text.secondary">{selectedCupom.dataUtilizacao ? new Date(selectedCupom.dataUtilizacao).toLocaleString() : 'N/A'}</Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" component="div">
+                  Status
+                </Typography>
+                {getStatusChip(selectedCupom.status)}
+              </Grid>
+            </Grid>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDetailsDialog} color="primary">

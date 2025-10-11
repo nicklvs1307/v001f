@@ -233,8 +233,8 @@ const getSurveyStats = async (tenantId = null) => {
     col: 'respondentSessionId'
   });
 
-  const totalSurveys = await Pesquisa.count({ where: whereClause });
-  const responseRate = totalSurveys > 0 ? (responsesMonth / totalSurveys) * 100 : 0;
+  const totalClients = await Client.count({ where: whereClause });
+  const responseRate = totalClients > 0 ? (responsesMonth / totalClients) * 100 : 0;
 
   const pendingSurveys = await Pesquisa.count({
     where: { ...whereClause, status: 'pending' }
@@ -274,7 +274,7 @@ const findAllForList = async (tenantId = null, status = 'all') => {
   const respondentCounts = await Resposta.findAll({
     attributes: [
       'pesquisaId',
-      [sequelize.fn('COUNT', sequelize.col('id')), 'count']
+      [sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('respondentSessionId'))), 'count']
     ],
     where: {
       pesquisaId: {

@@ -266,7 +266,11 @@ const dashboardRepository = {
             whereClause.createdAt = dateFilter;
         }
 
-        const totalResponses = await Resposta.count({ where: whereClause });
+        const totalResponses = await Resposta.count({ 
+            where: whereClause, 
+            distinct: true,
+            col: 'respondentSessionId' 
+        });
         const totalUsers = await Client.count({ where: whereClause });
         const couponsGenerated = await Cupom.count({ where: { ...whereClause, createdAt: dateFilter } });
         const couponsUsed = await Cupom.count({ where: { ...whereClause, status: 'used', updatedAt: dateFilter } });
@@ -449,6 +453,15 @@ const dashboardRepository = {
         const feedbacks = await Resposta.findAll({
             where: whereClause,
             attributes: ['textValue'],
+            include: [{
+                model: Pergunta,
+                as: 'pergunta',
+                attributes: [],
+                where: {
+                    type: 'free_text'
+                },
+                required: true
+            }]
         });
 
         const text = feedbacks.map(f => f.textValue).join(' ');

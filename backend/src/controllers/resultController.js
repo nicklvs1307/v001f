@@ -1,31 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const resultRepository = require("../repositories/resultRepository");
 const ApiError = require("../errors/ApiError");
-
-// Função auxiliar para calcular NPS
-const calculateNPS = (ratings) => {
-  if (ratings.length === 0) return 0;
-
-  let promoters = 0; // Notas 9-10
-  let passives = 0; // Notas 7-8
-  let detractors = 0; // Notas 0-6
-
-  ratings.forEach((rating) => {
-    if (rating >= 9) {
-      promoters++;
-    } else if (rating >= 7) {
-      passives++;
-    } else {
-      detractors++;
-    }
-  });
-
-  const totalResponses = ratings.length;
-  const percentPromoters = (promoters / totalResponses) * 100;
-  const percentDetractors = (detractors / totalResponses) * 100;
-
-  return parseFloat((percentPromoters - percentDetractors).toFixed(2));
-};
+const npsService = require("../services/npsService"); // Importar o npsService
 
 // @desc    Obter resultados agregados de uma pesquisa
 // @route   GET /api/surveys/:id/results
@@ -98,9 +74,12 @@ exports.getSurveyResults = asyncHandler(async (req, res) => {
       result.averageRating =
         ratings.length > 0 ? parseFloat((sum / ratings.length).toFixed(2)) : 0;
       result.allRatings = ratings;
-      if (question.type === "rating_0_10") {
-        result.nps = calculateNPS(ratings);
-      }
+
+      // Adiciona o tipo da pergunta a cada resposta para o contexto do npsService
+      const responsesWithContext = questionResponses.map(r => ({ ...r, pergunta: { type: question.type } }));
+      const npsResult = npsService.calculateNPS(responsesWithContext);
+      result.nps = npsResult.npsScore;
+      
     } else if (question.type === "multiple_choice") {
       const optionsCount = {};
       question.options.forEach((opt) => (optionsCount[opt] = 0));

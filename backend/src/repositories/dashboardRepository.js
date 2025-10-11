@@ -1,5 +1,6 @@
 const { Pesquisa, Resposta, Usuario, Tenant, Pergunta, Cupom, Atendente, AtendenteMeta, Client, Criterio } = require('../../models');
 const { Sequelize, Op } = require('sequelize');
+const npsService = require('../services/npsService');
 
 const { fn, col, literal } = Sequelize;
 
@@ -28,51 +29,24 @@ const dashboardRepository = {
                 },
                 required: true
             }],
-            order: [['createdAt', 'ASC']] // Important to get the first response
+            // A lógica de contagem de respostas únicas deve ser revista,
+            // mas por agora vamos focar em padronizar o cálculo do NPS.
+            // A contagem de respostas distintas por respondentSessionId foi removida
+            // para evitar a subcontagem de respostas de NPS válidas.
         });
 
-        const processedSessions = new Set();
-        let promoters = 0;
-        let neutrals = 0;
-        let detractors = 0;
+        // Utiliza o npsService para calcular o NPS
+        const npsResult = npsService.calculateNPS(ratingResponses);
 
-        ratingResponses.forEach(response => {
-            if (!processedSessions.has(response.respondentSessionId)) {
-                const rating = response.ratingValue;
-                const questionType = response.pergunta.type;
-
-                if (questionType === 'rating_0_10') {
-                    if (rating >= 9) {
-                        promoters++;
-                    } else if (rating >= 7 && rating <= 8) {
-                        neutrals++;
-                    } else {
-                        detractors++;
-                    }
-                } else if (questionType === 'rating_1_5') {
-                    if (rating === 5) {
-                        promoters++;
-                    } else if (rating === 4) {
-                        neutrals++;
-                    } else {
-                        detractors++;
-                    }
-                }
-                processedSessions.add(response.respondentSessionId);
-            }
-        });
-
-        const totalRatingResponses = processedSessions.size;
-        let npsScore = 0;
+        const totalRatingResponses = npsResult.total;
         let promotersPercentage = 0;
         let neutralsPercentage = 0;
         let detractorsPercentage = 0;
 
         if (totalRatingResponses > 0) {
-            promotersPercentage = (promoters / totalRatingResponses) * 100;
-            neutralsPercentage = (neutrals / totalRatingResponses) * 100;
-            detractorsPercentage = (detractors / totalRatingResponses) * 100;
-            npsScore = promotersPercentage - detractorsPercentage;
+            promotersPercentage = (npsResult.promoters / totalRatingResponses) * 100;
+            neutralsPercentage = (npsResult.neutrals / totalRatingResponses) * 100;
+            detractorsPercentage = (npsResult.detractors / totalRatingResponses) * 100;
         }
 
         const totalResponses = await Resposta.count({ where: { ...whereClause, respondentSessionId: { [Op.ne]: null } }, distinct: true, col: 'respondentSessionId' });
@@ -96,12 +70,12 @@ const dashboardRepository = {
         const couponsUsed = await Cupom.count({ where: couponsUsedWhere });
 
         return {
-            npsScore: parseFloat(npsScore.toFixed(1)),
-            promoters,
+            npsScore: npsResult.npsScore,
+            promoters: npsResult.promoters,
             promotersPercentage: parseFloat(promotersPercentage.toFixed(2)),
-            neutrals,
+            neutrals: npsResult.neutrals,
             neutralsPercentage: parseFloat(neutralsPercentage.toFixed(2)),
-            detractors,
+            detractors: npsResult.detractors,
             detractorsPercentage: parseFloat(detractorsPercentage.toFixed(2)),
             registrations: totalUsers,
             registrationsConversion: totalResponses > 0 ? parseFloat(((totalUsers / totalResponses) * 100).toFixed(2)) : 0,
@@ -209,45 +183,44 @@ const dashboardRepository = {
             responseWhereClause.createdAt = dateFilter;
         }
 
-        const npsData = await Pergunta.findAll({
-            attributes: [
-                'id',
-                'text',
-                [fn('SUM', literal(`CASE WHEN "respostas"."ratingValue" >= 9 THEN 1 ELSE 0 END`)), 'promoters'],
-                [fn('SUM', literal(`CASE WHEN "respostas"."ratingValue" BETWEEN 7 AND 8 THEN 1 ELSE 0 END`)), 'neutrals'],
-                [fn('SUM', literal(`CASE WHEN "respostas"."ratingValue" <= 6 THEN 1 ELSE 0 END`)), 'detractors'],
-                [fn('COUNT', col('respostas.id')), 'total']
-            ],
+        const allRatingResponses = await Resposta.findAll({
+            where: responseWhereClause,
             include: [{
-                model: Resposta,
-                as: 'respostas',
-                attributes: [],
-                where: responseWhereClause,
-                required: true
+                model: Pergunta,
+                as: 'pergunta',
+                attributes: ['id', 'text', 'type', 'criterioId'],
+                where: { type: { [Op.like]: 'rating%' } },
+                required: true,
+                include: [{
+                    model: Criterio,
+                    as: 'criterio',
+                    attributes: ['name'],
+                }]
             }],
-            group: ['Pergunta.id', 'Pergunta.text'],
-            where: {
-                type: { [Op.like]: 'rating%' }
-            }
         });
 
-        return npsData.map(item => {
-            const promoters = parseInt(item.dataValues.promoters) || 0;
-            const detractors = parseInt(item.dataValues.detractors) || 0;
-            const total = parseInt(item.dataValues.total) || 0;
-            let nps = 0;
-            if (total > 0) {
-                nps = ((promoters / total) * 100) - ((detractors / total) * 100);
+        const responsesByCriteria = allRatingResponses.reduce((acc, response) => {
+            const criteriaName = response.pergunta.criterio ? response.pergunta.criterio.name : 'Sem Critério';
+            if (!acc[criteriaName]) {
+                acc[criteriaName] = [];
             }
+            acc[criteriaName].push(response);
+            return acc;
+        }, {});
+
+        const npsByCriteria = Object.entries(responsesByCriteria).map(([criteriaName, responses]) => {
+            const npsResult = npsService.calculateNPS(responses);
             return {
-                question: item.text,
-                nps: parseFloat(nps.toFixed(1)),
-                promoters,
-                neutrals: parseInt(item.dataValues.neutrals) || 0,
-                detractors,
-                total,
+                question: criteriaName, // Mantendo a chave 'question' para consistência com o frontend
+                nps: npsResult.npsScore,
+                promoters: npsResult.promoters,
+                neutrals: npsResult.neutrals,
+                detractors: npsResult.detractors,
+                total: npsResult.total,
             };
         });
+
+        return npsByCriteria;
     },
 
     getFeedbacks: async (tenantId = null, startDate = null, endDate = null) => {
@@ -336,75 +309,31 @@ const dashboardRepository = {
         });
 
         // 1. Calcular NPS Geral
-        let overallPromoters = 0;
-        let overallNeutrals = 0;
-        let overallDetractors = 0;
-        
-        // Filter for NPS questions (rating_0_10) before calculating the overall score
         const npsResponses = allResponses.filter(response => response.pergunta && response.pergunta.type === 'rating_0_10');
-        const overallTotalRatingResponses = npsResponses.length;
-
-        npsResponses.forEach(response => {
-            const rating = response.ratingValue;
-
-            if (rating !== null) {
-                if (rating >= 9) {
-                    overallPromoters++;
-                } else if (rating >= 7 && rating <= 8) {
-                    overallNeutrals++;
-                } else {
-                    overallDetractors++;
-                }
-            }
-        });
-
-        let overallNpsScore = 0;
-        if (overallTotalRatingResponses > 0) {
-            overallNpsScore = ((overallPromoters / overallTotalRatingResponses) * 100) - ((overallDetractors / overallTotalRatingResponses) * 100);
-        }
+        const overallNpsResult = npsService.calculateNPS(npsResponses);
 
         // 2. Calcular NPS por Critério (Agregado)
-        const npsCriterioMap = new Map();
-
-        allResponses.forEach(response => {
-            const pergunta = response.pergunta;
-            if (pergunta && pergunta.criterio && pergunta.type.startsWith('rating')) {
-                const criterioName = pergunta.criterio.name;
-                if (!npsCriterioMap.has(criterioName)) {
-                    npsCriterioMap.set(criterioName, { promoters: 0, neutrals: 0, detractors: 0, total: 0 });
+        const responsesByCriteria = allResponses.reduce((acc, response) => {
+            if (response.pergunta && response.pergunta.criterio && response.pergunta.type.startsWith('rating')) {
+                const criteriaName = response.pergunta.criterio.name;
+                if (!acc[criteriaName]) {
+                    acc[criteriaName] = [];
                 }
-                const criterioStats = npsCriterioMap.get(criterioName);
-
-                const rating = response.ratingValue;
-                if (rating !== null) {
-                    criterioStats.total++;
-                    if (pergunta.type === 'rating_1_5') {
-                        if (rating === 5) criterioStats.promoters++;
-                        else if (rating === 4) criterioStats.neutrals++;
-                        else criterioStats.detractors++;
-                    } else if (pergunta.type === 'rating_0_10') {
-                        if (rating >= 9) criterioStats.promoters++;
-                        else if (rating >= 7 && rating <= 8) criterioStats.neutrals++;
-                        else criterioStats.detractors++;
-                    }
-                }
+                acc[criteriaName].push(response);
             }
-        });
+            return acc;
+        }, {});
 
-        const npsByCriterio = [];
-        npsCriterioMap.forEach((stats, criterioName) => {
-            let nps = 0;
-            if (stats.total > 0) {
-                nps = ((stats.promoters / stats.total) * 100) - ((stats.detractors / stats.total) * 100);
-            }
-            npsByCriterio.push({
+        const npsByCriterio = Object.entries(responsesByCriteria).map(([criterioName, responses]) => {
+            const npsResult = npsService.calculateNPS(responses);
+            return {
                 criterio: criterioName,
-                nps: parseFloat(nps.toFixed(1)),
-                promoters: stats.promoters,
-                neutrals: stats.neutrals,
-                detractors: stats.detractors,
-                total: stats.total,
-            });
+                nps: npsResult.npsScore,
+                promoters: npsResult.promoters,
+                neutrals: npsResult.neutrals,
+                detractors: npsResult.detractors,
+                total: npsResult.total,
+            };
         });
 
         // 3. Preparar dados para Radar Chart (média de avaliação por critério/pergunta)
@@ -461,76 +390,39 @@ const dashboardRepository = {
         }
 
         // 5. Top 5 Atendentes por respostas (e metas)
-        const attendantPerformance = new Map();
-
-        allResponses.forEach(response => {
+        const responsesByAttendant = allResponses.reduce((acc, response) => {
             if (response.atendente && response.atendente.id) {
                 const attendantId = response.atendente.id;
-                const attendantName = response.atendente.name;
-
-                if (!attendantPerformance.has(attendantId)) {
-                    attendantPerformance.set(attendantId, {
+                if (!acc[attendantId]) {
+                    acc[attendantId] = {
                         id: attendantId,
-                        name: attendantName,
-                        responses: 0,
-                        promoters: 0,
-                        neutrals: 0,
-                        detractors: 0,
-                        npsGoal: 0,
-                        responsesGoal: 0,
-                        registrationsGoal: 0,
-                        currentNPS: 0,
-                    });
+                        name: response.atendente.name,
+                        responses: [],
+                    };
                 }
-
-                const stats = attendantPerformance.get(attendantId);
-                stats.responses++;
-
-                const rating = response.ratingValue;
-                const questionType = response.pergunta ? response.pergunta.type : null;
-
-                if (rating !== null && questionType) {
-                    if (questionType === 'rating_1_5') {
-                        if (rating === 5) stats.promoters++;
-                        else if (rating === 4) stats.neutrals++;
-                        else stats.detractors++;
-                    } else if (questionType === 'rating_0_10') {
-                        if (rating >= 9) stats.promoters++;
-                        else if (rating >= 7 && rating <= 8) stats.neutrals++;
-                        else stats.detractors++;
-                    }
-                }
+                acc[attendantId].responses.push(response);
             }
-        });
+            return acc;
+        }, {});
 
         const topAttendantsWithGoals = [];
-        const sortedAttendants = Array.from(attendantPerformance.values())
-            .sort((a, b) => b.responses - a.responses)
+        const sortedAttendants = Object.values(responsesByAttendant)
+            .sort((a, b) => b.responses.length - a.responses.length)
             .slice(0, 5);
 
         for (const attendant of sortedAttendants) {
+            const npsResult = npsService.calculateNPS(attendant.responses);
             const meta = await AtendenteMeta.findOne({
                 where: { atendenteId: attendant.id, tenantId: tenantId },
             });
 
-            if (meta) {
-                attendant.npsGoal = meta.npsGoal || 0;
-                attendant.responsesGoal = meta.responsesGoal || 0;
-                attendant.registrationsGoal = meta.registrationsGoal || 0;
-            }
-
-            const totalRatingResponses = attendant.promoters + attendant.neutrals + attendant.detractors;
-            if (totalRatingResponses > 0) {
-                attendant.currentNPS = ((attendant.promoters / totalRatingResponses) * 100) - ((attendant.detractors / totalRatingResponses) * 100);
-            }
-
             topAttendantsWithGoals.push({
                 name: attendant.name,
-                responses: attendant.responses,
-                currentNPS: parseFloat(attendant.currentNPS.toFixed(1)),
-                npsGoal: attendant.npsGoal,
-                responsesGoal: attendant.responsesGoal,
-                registrationsGoal: attendant.registrationsGoal,
+                responses: attendant.responses.length,
+                currentNPS: npsResult.npsScore,
+                npsGoal: meta ? meta.npsGoal || 0 : 0,
+                responsesGoal: meta ? meta.responsesGoal || 0 : 0,
+                registrationsGoal: meta ? meta.registrationsGoal || 0 : 0,
             });
         }
 
@@ -538,11 +430,11 @@ const dashboardRepository = {
         const responseChartData = await this.getResponseChart(tenantId, null, null);
 
         return {
-            overallNPS: parseFloat(overallNpsScore.toFixed(1)),
-            npsPromoters: overallPromoters,
-            npsNeutrals: overallNeutrals,
-            npsDetractors: overallDetractors,
-            npsTotalResponses: overallTotalRatingResponses,
+            overallNPS: overallNpsResult.npsScore,
+            npsPromoters: overallNpsResult.promoters,
+            npsNeutrals: overallNpsResult.neutrals,
+            npsDetractors: overallNpsResult.detractors,
+            npsTotalResponses: overallNpsResult.total,
             npsByCriterio,
             radarChartData,
             demographics,
@@ -644,82 +536,41 @@ const dashboardRepository = {
             ]
         });
 
-        const attendantPerformance = new Map();
-
-        allResponses.forEach(response => {
+        const attendantPerformance = allResponses.reduce((acc, response) => {
             if (response.atendente && response.atendente.id) {
                 const attendantId = response.atendente.id;
-                const attendantName = response.atendente.name;
-
-                if (!attendantPerformance.has(attendantId)) {
-                    attendantPerformance.set(attendantId, {
+                if (!acc[attendantId]) {
+                    acc[attendantId] = {
                         id: attendantId,
-                        name: attendantName,
-                        responses: 0,
-                        promoters: 0,
-                        neutrals: 0,
-                        detractors: 0,
-                        uniqueClients: new Set(), // Para contar cadastros únicos
-                        npsGoal: 0,
-                        responsesGoal: 0,
-                        registrationsGoal: 0,
-                        currentNPS: 0,
-                    });
+                        name: response.atendente.name,
+                        responses: [],
+                        uniqueClients: new Set(),
+                    };
                 }
-
-                const stats = attendantPerformance.get(attendantId);
-                stats.responses++;
-
-                // Contar clientes únicos
+                acc[attendantId].responses.push(response);
                 if (response.client && response.client.id) {
-                    stats.uniqueClients.add(response.client.id);
-                }
-
-                const rating = response.ratingValue;
-                const questionType = response.pergunta ? response.pergunta.type : null;
-
-                if (rating !== null && questionType) {
-                    if (questionType === 'rating_1_5') {
-                        if (rating === 5) stats.promoters++;
-                        else if (rating === 4) stats.neutrals++;
-                        else stats.detractors++;
-                    } else if (questionType === 'rating_0_10') {
-                        if (rating >= 9) stats.promoters++;
-                        else if (rating >= 7 && rating <= 8) stats.neutrals++;
-                        else stats.detractors++;
-                    }
+                    acc[attendantId].uniqueClients.add(response.client.id);
                 }
             }
-        });
+            return acc;
+        }, {});
 
         const attendantsWithPerformance = [];
-        for (const attendantStats of attendantPerformance.values()) {
-            // Buscar a meta do atendente
+        for (const attendantStats of Object.values(attendantPerformance)) {
+            const npsResult = npsService.calculateNPS(attendantStats.responses);
             const meta = await AtendenteMeta.findOne({
                 where: { atendenteId: attendantStats.id, tenantId: tenantId },
             });
 
-            if (meta) {
-                attendantStats.npsGoal = meta.npsGoal || 0;
-                attendantStats.responsesGoal = meta.responsesGoal || 0;
-                attendantStats.registrationsGoal = meta.registrationsGoal || 0;
-            }
-
-            // Calcular NPS atual
-            const totalRatingResponses = attendantStats.promoters + attendantStats.neutrals + attendantStats.detractors;
-            if (totalRatingResponses > 0) {
-                attendantStats.currentNPS = ((attendantStats.promoters / totalRatingResponses) * 100) - ((attendantStats.detractors / totalRatingResponses) * 100);
-            }
-
             attendantsWithPerformance.push({
                 id: attendantStats.id,
                 name: attendantStats.name,
-                responses: attendantStats.responses,
-                currentNPS: parseFloat(attendantStats.currentNPS.toFixed(1)),
-                currentRegistrations: attendantStats.uniqueClients.size, // Número de clientes únicos
-                npsGoal: attendantStats.npsGoal,
-                responsesGoal: attendantStats.responsesGoal,
-                registrationsGoal: attendantStats.registrationsGoal,
+                responses: attendantStats.responses.length,
+                currentNPS: npsResult.npsScore,
+                currentRegistrations: attendantStats.uniqueClients.size,
+                npsGoal: meta ? meta.npsGoal || 0 : 0,
+                responsesGoal: meta ? meta.responsesGoal || 0 : 0,
+                registrationsGoal: meta ? meta.registrationsGoal || 0 : 0,
             });
         }
 
@@ -846,44 +697,29 @@ const dashboardRepository = {
             where: whereClause,
             include: [
                 { model: Client, as: 'client', attributes: ['name'] },
-                { model: Pergunta, as: 'pergunta', attributes: ['text'] }
+                { 
+                    model: Pergunta, 
+                    as: 'pergunta', 
+                    attributes: ['text', 'type'] // Incluir o tipo da pergunta
+                }
             ],
             order: [['createdAt', 'DESC']],
         });
 
-        let promoters = 0;
-        let neutrals = 0;
-        let detractors = 0;
+        // Filtrar apenas respostas de avaliação para o cálculo de NPS
+        const ratingResponses = responses.filter(r => r.ratingValue !== null && r.pergunta && r.pergunta.type.startsWith('rating'));
 
-        responses.forEach(response => {
-            const rating = response.ratingValue;
-            if (rating !== null) {
-                if (rating >= 9) {
-                    promoters++;
-                } else if (rating >= 7 && rating <= 8) {
-                    neutrals++;
-                } else {
-                    detractors++;
-                }
-            }
-        });
-
-        const totalRatingResponses = promoters + neutrals + detractors;
-        let npsScore = 0;
-        if (totalRatingResponses > 0) {
-            npsScore = ((promoters / totalRatingResponses) * 100) - ((detractors / totalRatingResponses) * 100);
-        }
-
+        const npsResult = npsService.calculateNPS(ratingResponses);
         const attendant = await Atendente.findByPk(attendantId, { attributes: ['name'] });
 
         return {
             attendantName: attendant ? attendant.name : 'Desconhecido',
-            npsScore: parseFloat(npsScore.toFixed(1)),
-            promoters,
-            neutrals,
-            detractors,
-            totalResponses: responses.length,
-            responses,
+            npsScore: npsResult.npsScore,
+            promoters: npsResult.promoters,
+            neutrals: npsResult.neutrals,
+            detractors: npsResult.detractors,
+            totalResponses: responses.length, // Total de interações
+            responses, // Respostas detalhadas
         };
     },
 

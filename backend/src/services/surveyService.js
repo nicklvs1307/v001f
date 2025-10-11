@@ -1,5 +1,6 @@
 const surveyRepository = require('../repositories/surveyRepository');
 const ApiError = require('../errors/ApiError');
+const npsService = require('./npsService'); // Importar o npsService
 
 const createSurvey = async (surveyData, requestingUser) => {
   const { recompensaId, roletaId } = surveyData;
@@ -135,36 +136,18 @@ const getSurveyResultsById = async (surveyId, tenantId = null) => {
 
   const { survey, totalResponsesCount } = rawResults;
 
-  // Calcular NPS Geral
-  let promoters = 0;
-  let neutrals = 0;
-  let detractors = 0;
-  let totalRatingResponses = 0;
-
-  survey.perguntas.forEach(pergunta => {
+  // Coleta todas as respostas de avaliação de todas as perguntas
+  const allRatingResponses = survey.perguntas.reduce((acc, pergunta) => {
     if (pergunta.type.startsWith('rating')) {
-      pergunta.respostas.forEach(resposta => {
-        const rating = resposta.ratingValue;
-        if (rating !== null) {
-          totalRatingResponses++;
-          if (pergunta.type === 'rating_1_5') {
-            if (rating === 5) promoters++;
-            else if (rating === 4) neutrals++;
-            else detractors++;
-          } else if (pergunta.type === 'rating_0_10') {
-            if (rating >= 9) promoters++;
-            else if (rating >= 7 && rating <= 8) neutrals++;
-            else detractors++;
-          }
-        }
-      });
+      // Adiciona o tipo da pergunta a cada resposta para o contexto do npsService
+      const responsesWithContext = pergunta.respostas.map(r => ({ ...r, pergunta: { type: pergunta.type } }));
+      acc.push(...responsesWithContext);
     }
-  });
+    return acc;
+  }, []);
 
-  let npsScore = 0;
-  if (totalRatingResponses > 0) {
-    npsScore = ((promoters / totalRatingResponses) * 100) - ((detractors / totalRatingResponses) * 100);
-  }
+  // Calcula o NPS geral usando o serviço centralizado
+  const overallNpsResult = npsService.calculateNPS(allRatingResponses);
 
   const formattedResults = {
     surveyTitle: survey.title,
@@ -172,11 +155,11 @@ const getSurveyResultsById = async (surveyId, tenantId = null) => {
     surveyCreatedAt: survey.createdAt,
     surveyTenantId: survey.tenantId,
     totalResponsesCount: totalResponsesCount,
-    overallNPS: parseFloat(npsScore.toFixed(1)),
-    npsPromoters: promoters,
-    npsNeutrals: neutrals,
-    npsDetractors: detractors,
-    npsTotalResponses: totalRatingResponses,
+    overallNPS: overallNpsResult.npsScore,
+    npsPromoters: overallNpsResult.promoters,
+    npsNeutrals: overallNpsResult.neutrals,
+    npsDetractors: overallNpsResult.detractors,
+    npsTotalResponses: overallNpsResult.total,
     questionsResults: survey.perguntas.map((pergunta) => {
       const questionData = {
         id: pergunta.id,
@@ -209,36 +192,16 @@ const getSurveyResultsById = async (surveyId, tenantId = null) => {
         const sum = ratings.reduce((acc, val) => acc + val, 0);
         const avgRating = ratings.length > 0 ? (sum / ratings.length) : 0;
 
-        let qPromoters = 0;
-        let qNeutrals = 0;
-        let qDetractors = 0;
-
-        pergunta.respostas.forEach(resposta => {
-          const rating = resposta.ratingValue;
-          if (rating !== null) {
-            if (pergunta.type === 'rating_1_5') {
-              if (rating === 5) qPromoters++;
-              else if (rating === 4) qNeutrals++;
-              else qDetractors++;
-            } else if (pergunta.type === 'rating_0_10') {
-              if (rating >= 9) qPromoters++;
-              else if (rating >= 7 && rating <= 8) qNeutrals++;
-              else qDetractors++;
-            }
-          }
-        });
-
-        let qNpsScore = 0;
-        if (ratings.length > 0) {
-          qNpsScore = ((qPromoters / ratings.length) * 100) - ((qDetractors / ratings.length) * 100);
-        }
+        // Adiciona o tipo da pergunta a cada resposta para o contexto do npsService
+        const responsesWithContext = pergunta.respostas.map(r => ({ ...r, pergunta: { type: pergunta.type } }));
+        const npsResult = npsService.calculateNPS(responsesWithContext);
 
         questionData.results.average = parseFloat(avgRating.toFixed(2));
         questionData.results.count = ratings.length;
-        questionData.results.nps = parseFloat(qNpsScore.toFixed(1));
-        questionData.results.promoters = qPromoters;
-        questionData.results.neutrals = qNeutrals;
-        questionData.results.detractors = qDetractors;
+        questionData.results.nps = npsResult.npsScore;
+        questionData.results.promoters = npsResult.promoters;
+        questionData.results.neutrals = npsResult.neutrals;
+        questionData.results.detractors = npsResult.detractors;
 
       } else {
         questionData.results.responses = pergunta.respostas.map(r => ({
@@ -257,46 +220,29 @@ const getSurveyResultsById = async (surveyId, tenantId = null) => {
     demographics: {},
   };
 
-  const npsCriterioMap = new Map();
-  survey.perguntas.forEach(pergunta => {
-    if (pergunta.type.startsWith('rating') && pergunta.criterio) {
-      const criterioName = pergunta.criterio.name;
-      if (!npsCriterioMap.has(criterioName)) {
-        npsCriterioMap.set(criterioName, { promoters: 0, neutrals: 0, detractors: 0, total: 0 });
+  // Agrupa respostas por critério
+  const responsesByCriteria = allRatingResponses.reduce((acc, response) => {
+    if (response.pergunta && response.pergunta.criterio) {
+      const criteriaName = response.pergunta.criterio.name;
+      if (!acc[criteriaName]) {
+        acc[criteriaName] = [];
       }
-      const criterioStats = npsCriterioMap.get(criterioName);
-
-      pergunta.respostas.forEach(resposta => {
-        const rating = resposta.ratingValue;
-        if (rating !== null) {
-          criterioStats.total++;
-          if (pergunta.type === 'rating_1_5') {
-            if (rating === 5) criterioStats.promoters++;
-            else if (rating === 4) criterioStats.neutrals++;
-            else criterioStats.detractors++;
-          } else if (pergunta.type === 'rating_0_10') {
-            if (rating >= 9) criterioStats.promoters++;
-            else if (rating >= 7 && rating <= 8) criterioStats.neutrals++;
-            else criterioStats.detractors++;
-          }
-        }
-      });
+      acc[criteriaName].push(response);
     }
-  });
+    return acc;
+  }, {});
 
-  npsCriterioMap.forEach((stats, criterioName) => {
-    let nps = 0;
-    if (stats.total > 0) {
-      nps = ((stats.promoters / stats.total) * 100) - ((stats.detractors / stats.total) * 100);
-    }
-    formattedResults.npsByCriterio.push({
+  // Calcula NPS para cada critério
+  formattedResults.npsByCriterio = Object.entries(responsesByCriteria).map(([criterioName, responses]) => {
+    const npsResult = npsService.calculateNPS(responses);
+    return {
       criterio: criterioName,
-      nps: parseFloat(nps.toFixed(1)),
-      promoters: stats.promoters,
-      neutrals: stats.neutrals,
-      detractors: stats.detractors,
-      total: stats.total,
-    });
+      nps: npsResult.npsScore,
+      promoters: npsResult.promoters,
+      neutrals: npsResult.neutrals,
+      detractors: npsResult.detractors,
+      total: npsResult.total,
+    };
   });
 
   const radarDataMap = new Map();

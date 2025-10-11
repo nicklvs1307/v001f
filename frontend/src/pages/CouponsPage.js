@@ -24,6 +24,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Chip,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -111,6 +112,31 @@ const CupomListPage = () => {
     setSelectedCupom(null);
   };
 
+  const getStatusChip = (status) => {
+    let color;
+    let label;
+
+    switch (status) {
+      case 'pending':
+        color = 'warning';
+        label = 'Pendente';
+        break;
+      case 'used':
+        color = 'success';
+        label = 'Utilizado';
+        break;
+      case 'expired':
+        color = 'error';
+        label = 'Expirado';
+        break;
+      default:
+        color = 'default';
+        label = status;
+    }
+
+    return <Chip label={label} color={color} size="small" />;
+  };
+
   if (loading) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
@@ -168,7 +194,7 @@ const CupomListPage = () => {
                   <TableCell>{new Date(cupom.dataGeracao).toLocaleDateString()}</TableCell>
                   <TableCell>{cupom.dataUtilizacao ? new Date(cupom.dataUtilizacao).toLocaleDateString() : 'N/A'}</TableCell>
                   <TableCell>{new Date(cupom.dataValidade).toLocaleDateString()}</TableCell>
-                  <TableCell>{cupom.status}</TableCell>
+                  <TableCell>{getStatusChip(cupom.status)}</TableCell>
                   <TableCell align="right">
                     {/* Ações como reenviar, editar validade, etc. */}
                     <IconButton color="primary" disabled={cupom.status !== 'active'}>

@@ -42,6 +42,8 @@ const CupomListPage = () => {
     clienteId: '', // Opcional
     dataValidade: '',
   });
+  const [selectedCupom, setSelectedCupom] = useState(null);
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
 
   useEffect(() => {
     fetchCupons();
@@ -96,8 +98,17 @@ const CupomListPage = () => {
       fetchCupons();
       handleCloseGenerateForm();
     } catch (err) {
-      setError(err.message || 'Erro ao gerar cupom.');
     }
+  };
+
+  const handleRowClick = (cupom) => {
+    setSelectedCupom(cupom);
+    setOpenDetailsDialog(true);
+  };
+
+  const handleCloseDetailsDialog = () => {
+    setOpenDetailsDialog(false);
+    setSelectedCupom(null);
   };
 
   if (loading) {
@@ -149,7 +160,7 @@ const CupomListPage = () => {
             </TableHead>
             <TableBody>
               {cupons.map((cupom) => (
-                <TableRow key={cupom.id}>
+                <TableRow key={cupom.id} onClick={() => handleRowClick(cupom)} style={{ cursor: 'pointer' }}>
                   <TableCell>{cupom.codigo}</TableCell>
                   <TableCell>{cupom.recompensa?.name}</TableCell>
                   <TableCell>{cupom.cliente?.name || 'N/A'}</TableCell>
@@ -174,7 +185,51 @@ const CupomListPage = () => {
         </TableContainer>
       </Paper>
 
-      {/* Dialog para Gerar Novo Cupom */}
+      {/* Dialog para Detalhes do Cupom */}
+      {selectedCupom && (
+        <Dialog open={openDetailsDialog} onClose={handleCloseDetailsDialog}>
+          <DialogTitle>Detalhes do Cupom</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              <strong>Código:</strong> {selectedCupom.codigo}
+            </DialogContentText>
+            <DialogContentText>
+              <strong>Recompensa:</strong> {selectedCupom.recompensa?.name}
+            </DialogContentText>
+            <DialogContentText>
+              <strong>Cliente:</strong> {selectedCupom.cliente?.name || 'N/A'}
+            </DialogContentText>
+            <DialogContentText>
+              <strong>Email do Cliente:</strong> {selectedCupom.cliente?.email || 'N/A'}
+            </DialogContentText>
+            <DialogContentText>
+              <strong>Telefone do Cliente:</strong> {selectedCupom.cliente?.phone || 'N/A'}
+            </DialogContentText>
+            <DialogContentText>
+              <strong>Empresa:</strong> {selectedCupom.tenant?.name || 'N/A'}
+            </DialogContentText>
+            <DialogContentText>
+              <strong>Data de Geração:</strong> {new Date(selectedCupom.dataGeracao).toLocaleString()}
+            </DialogContentText>
+            <DialogContentText>
+              <strong>Data de Validade:</strong> {new Date(selectedCupom.dataValidade).toLocaleString()}
+            </DialogContentText>
+            <DialogContentText>
+              <strong>Data de Utilização:</strong> {selectedCupom.dataUtilizacao ? new Date(selectedCupom.dataUtilizacao).toLocaleString() : 'N/A'}
+            </DialogContentText>
+            <DialogContentText>
+              <strong>Status:</strong> {selectedCupom.status}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDetailsDialog} color="primary">
+              Fechar
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+
+      {/* Dialog para Gerar Novo Cupom */}}
       <Dialog open={openGenerateForm} onClose={handleCloseGenerateForm}>
         <DialogTitle>Gerar Novo Cupom</DialogTitle>
         <DialogContent>

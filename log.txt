@@ -1,22 +1,87 @@
-Postgres is up - executing command
-Server.js is being executed!
-API_KEY_ENCRYPTION_KEY is not defined in .env. Please set it for security.
-Conexão com o banco de dados estabelecida com sucesso (Sequelize).
-Server is running on port 5000
-Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
-Agendador de lembrete de cupons iniciado. A tarefa será executada todos os dias às 9:00.
-Executing (default): SELECT "Pesquisa"."id", "Pesquisa"."title", "Pesquisa"."description", "Pesquisa"."createdAt", "Pesquisa"."updatedAt", "Pesquisa"."isOpen", "Pesquisa"."tenantId", "Pesquisa"."askForAttendant", "Pesquisa"."status", "Pesquisa"."recompensaId", "Pesquisa"."roletaId", "perguntas"."id" AS "perguntas.id", "perguntas"."type" AS "perguntas.type", "perguntas"."text" AS "perguntas.text", "perguntas"."options" AS "perguntas.options", "perguntas"."order" AS "perguntas.order", "perguntas"."required" AS "perguntas.required", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."description" AS "tenant.description", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "roleta"."id" AS "roleta.id", "roleta"."nome" AS "roleta.nome", "roleta"."descricao" AS "roleta.descricao", "roleta"."active" AS "roleta.active" FROM "pesquisas" AS "Pesquisa" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Pesquisa"."id" = "perguntas"."pesquisaId" LEFT OUTER JOIN "tenants" AS "tenant" ON "Pesquisa"."tenantId" = "tenant"."id" LEFT OUTER JOIN "roletas" AS "roleta" ON "Pesquisa"."roletaId" = "roleta"."id" WHERE "Pesquisa"."id" = 'b56d81f7-cd09-438b-b9b9-b54e1cbef49f';
-[Auth Middleware] Request: POST /api/auth/verify-token
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '00055233-b221-4eaa-8e8b-7c14d02d221c';
-Executing (default): SELECT "id", "name" FROM "atendentes" AS "Atendente" WHERE "Atendente"."tenantId" = '00055233-b221-4eaa-8e8b-7c14d02d221c' AND "Atendente"."status" = 'active' ORDER BY "Atendente"."name" ASC;
-Executing (b2f3fe67-6aac-4051-8f92-40558d5024a7): SELECT "Pesquisa"."id", "Pesquisa"."isOpen", "Pesquisa"."tenantId", "Pesquisa"."askForAttendant", "Pesquisa"."title", "perguntas"."id" AS "perguntas.id", "perguntas"."type" AS "perguntas.type", "perguntas"."options" AS "perguntas.options", "perguntas"."required" AS "perguntas.required", "perguntas"."text" AS "perguntas.text" FROM "pesquisas" AS "Pesquisa" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Pesquisa"."id" = "perguntas"."pesquisaId" WHERE "Pesquisa"."id" = 'b56d81f7-cd09-438b-b9b9-b54e1cbef49f';
-Executing (b2f3fe67-6aac-4051-8f92-40558d5024a7): INSERT INTO "respostas" ("id","perguntaId","pesquisaId","tenantId","atendenteId","respondentSessionId","ratingValue","textValue","createdAt","updatedAt","selectedOption") VALUES ('f9a13de5-3b48-4bd7-9c61-a09ebb5ba3b2','22e1cef6-15c1-45bc-a319-ac83a09c9b43','b56d81f7-cd09-438b-b9b9-b54e1cbef49f','00055233-b221-4eaa-8e8b-7c14d02d221c','9cf0ba4d-8daa-42bf-82f2-7a77a777c7e3','1db28272-e152-4b79-a63e-c8c3933cc4ca',5,NULL,'2025-10-10 17:33:19.402 +00:00','2025-10-10 17:33:19.402 +00:00',NULL),('49cac5e3-a44a-4272-9fd6-1e27ec59a439','f10756da-40a7-42b9-9121-141d37f5d5bc','b56d81f7-cd09-438b-b9b9-b54e1cbef49f','00055233-b221-4eaa-8e8b-7c14d02d221c','9cf0ba4d-8daa-42bf-82f2-7a77a777c7e3','1db28272-e152-4b79-a63e-c8c3933cc4ca',NULL,NULL,'2025-10-10 17:33:19.402 +00:00','2025-10-10 17:33:19.402 +00:00','a'),('6dc9790e-489b-488d-9f0b-2e1af4a2309e','74c8d1fc-17d8-44a1-bdf3-8ac42e90b595','b56d81f7-cd09-438b-b9b9-b54e1cbef49f','00055233-b221-4eaa-8e8b-7c14d02d221c','9cf0ba4d-8daa-42bf-82f2-7a77a777c7e3','1db28272-e152-4b79-a63e-c8c3933cc4ca',5,NULL,'2025-10-10 17:33:19.402 +00:00','2025-10-10 17:33:19.402 +00:00',NULL),('6cecbf32-156c-414b-9542-65c599bbf688','c5b5bb51-b01a-41ad-be0e-8410b5a6903d','b56d81f7-cd09-438b-b9b9-b54e1cbef49f','00055233-b221-4eaa-8e8b-7c14d02d221c','9cf0ba4d-8daa-42bf-82f2-7a77a777c7e3','1db28272-e152-4b79-a63e-c8c3933cc4ca',NULL,NULL,'2025-10-10 17:33:19.402 +00:00','2025-10-10 17:33:19.402 +00:00','a'),('fae85d02-d5c9-425b-a236-019e2fdf314f','d4a9084f-9a4f-460b-bf02-35119f4b53a8','b56d81f7-cd09-438b-b9b9-b54e1cbef49f','00055233-b221-4eaa-8e8b-7c14d02d221c','9cf0ba4d-8daa-42bf-82f2-7a77a777c7e3','1db28272-e152-4b79-a63e-c8c3933cc4ca',9,NULL,'2025-10-10 17:33:19.402 +00:00','2025-10-10 17:33:19.402 +00:00',NULL) RETURNING "id","perguntaId","pesquisaId","tenantId","atendenteId","respondentSessionId","ratingValue","textValue","selectedOption","createdAt","updatedAt";
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '00055233-b221-4eaa-8e8b-7c14d02d221c';
-Executing (default): SELECT "id", "name", "logoUrl", "primaryColor", "secondaryColor", "description" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '00055233-b221-4eaa-8e8b-7c14d02d221c';
-[Auth Middleware] Request: POST /api/auth/verify-token
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '00055233-b221-4eaa-8e8b-7c14d02d221c';
-[Auth Middleware] Request: POST /api/auth/verify-token
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '00055233-b221-4eaa-8e8b-7c14d02d221c';
-Executing (default): SELECT "id", "name", "logoUrl", "primaryColor", "secondaryColor", "description" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '00055233-b221-4eaa-8e8b-7c14d02d221c';
-Executing (default): SELECT "id", "tenantId", "name", "email", "phone", "birthDate", "respondentSessionId", "gender", "createdAt", "updatedAt" FROM "clients" AS "Client" WHERE "Client"."phone" = '(35) 98989-8989';
-Executing (default): SELECT "id", "tenantId", "name", "email", "phone", "birthDate", "respondentSessionId", "gender", "createdAt", "updatedAt" FROM "clients" AS "Client" WHERE "Client"."phone" = '(35) 99898-9898';
+
+C:\Users\Niquele\Desktop\barbearia\frontend>npm start
+
+> frontend@0.1.0 start
+> react-scripts start
+
+(node:8628) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:8628) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+Starting the development server...
+Failed to compile.
+
+SyntaxError: C:\Users\Niquele\Desktop\barbearia\frontend\src\pages\AreaCliente\AreaCliente.js: 'import' and 'export' may only appear at the top level. (136:0)
+  134 | };
+  135 |
+> 136 | export default AreaCliente;
+      | ^
+  137 |
+    at parser.next (<anonymous>)
+    at normalizeFile.next (<anonymous>)
+    at run.next (<anonymous>)
+    at transform.next (<anonymous>)
+ERROR in ./src/pages/AreaCliente/AreaCliente.js
+Module build failed (from ./node_modules/babel-loader/lib/index.js):
+SyntaxError: C:\Users\Niquele\Desktop\barbearia\frontend\src\pages\AreaCliente\AreaCliente.js: 'import' and 'export' may only appear at the top level. (136:0)
+
+  134 | };
+  135 |
+> 136 | export default AreaCliente;
+      | ^
+  137 |
+    at constructor (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:367:19)
+    at FlowParserMixin.raise (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:6630:19)
+    at FlowParserMixin.parseStatementContent (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12880:18)
+    at FlowParserMixin.parseStatementLike (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12776:17)
+    at FlowParserMixin.parseStatementLike (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:2949:24)
+    at FlowParserMixin.parseStatementListItem (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12756:17)
+    at FlowParserMixin.parseBlockOrModuleBlockBody (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:13325:61)
+    at FlowParserMixin.parseBlockBody (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:13318:10)
+    at FlowParserMixin.parseBlock (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:13306:10)
+    at FlowParserMixin.parseFunctionBody (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12110:24)
+    at C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:2923:63
+    at FlowParserMixin.forwardNoArrowParamsConversionAt (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:3099:16)
+    at FlowParserMixin.parseFunctionBody (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:2923:12)
+    at FlowParserMixin.parseArrowExpression (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12085:10)
+    at FlowParserMixin.parseParenAndDistinguishExpression (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:11695:12)
+    at FlowParserMixin.parseParenAndDistinguishExpression (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:3624:18)
+    at FlowParserMixin.parseExprAtom (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:11335:23)
+    at FlowParserMixin.parseExprAtom (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:4797:20)
+    at FlowParserMixin.parseExprSubscripts (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:11085:23)
+    at FlowParserMixin.parseUpdate (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:11070:21)
+    at FlowParserMixin.parseMaybeUnary (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:11050:23)
+    at FlowParserMixin.parseMaybeUnaryOrPrivate (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:10903:61)
+    at FlowParserMixin.parseExprOps (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:10908:23)
+    at FlowParserMixin.parseMaybeConditional (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:10885:23)
+    at FlowParserMixin.parseMaybeAssign (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:10835:21)
+    at FlowParserMixin.parseMaybeAssign (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:3582:18)
+    at C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:10804:39
+    at FlowParserMixin.allowInAnd (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12431:16)
+    at FlowParserMixin.parseMaybeAssignAllowIn (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:10804:17)
+    at FlowParserMixin.parseVar (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:13393:91)
+    at FlowParserMixin.parseVarStatement (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:13239:10)
+    at FlowParserMixin.parseStatementContent (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12860:23)
+    at FlowParserMixin.parseStatementLike (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12776:17)
+    at FlowParserMixin.parseStatementLike (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:2949:24)
+    at FlowParserMixin.parseModuleItem (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12753:17)
+    at FlowParserMixin.parseBlockOrModuleBlockBody (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:13325:36)
+    at FlowParserMixin.parseBlockBody (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:13318:10)
+    at FlowParserMixin.parseProgram (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12634:10)
+    at FlowParserMixin.parseTopLevel (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:12624:25)
+    at FlowParserMixin.parseTopLevel (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:3718:28)
+    at FlowParserMixin.parse (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:14501:10)
+    at parse (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\parser\lib\index.js:14535:38)
+    at parser (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\core\lib\parser\index.js:41:34)
+    at parser.next (<anonymous>)
+    at normalizeFile (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+    at normalizeFile.next (<anonymous>)
+    at run (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\core\lib\transformation\index.js:22:50)
+    at run.next (<anonymous>)
+    at transform (C:\Users\Niquele\Desktop\barbearia\frontend\node_modules\@babel\core\lib\transform.js:22:33)
+    at transform.next (<anonymous>)
+
+ERROR in [eslint]
+src\pages\AreaCliente\AreaCliente.js
+  Line 136:  Parsing error: 'import' and 'export' may only appear at the top level. (136:0)
+
+webpack compiled with 2 errors

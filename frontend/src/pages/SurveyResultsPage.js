@@ -244,7 +244,7 @@ const SurveyResultsPage = () => {
                 <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
                     <Typography variant="h5" gutterBottom>Avaliação por Critério/Pergunta (Radar)</Typography>
                     <ResponsiveContainer width="100%" height={400}>
-                        <RadarChart outerRadius={150} data={results.radarChartData}>
+                        <RadarChart outerRadius={150} data={results.radarChartData.map(item => ({ ...item, averageRating: Number(item.averageRating) || 0 }))}>
                             <PolarGrid />
                             <PolarAngleAxis dataKey="name" />
                             <PolarRadiusAxis angle={90} domain={[0, Array.isArray(results.questionsResults) && results.questionsResults.some(q => q.type === 'rating_0_10') ? 10 : 5]} />

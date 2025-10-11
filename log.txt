@@ -1,4 +1,8 @@
-main.58ab530d.js:2 [Violation] 'click' handler took 264ms
+SurveyResultsPage.js:55 Survey ID from useParams: 70644ab0-f9a5-49e5-88cc-86773acfd2a4
+SurveyResultsPage.js:58 Calling resultService.getSurveyResults with ID: 70644ab0-f9a5-49e5-88cc-86773acfd2a4
+main.3d75bb58.js:2 [Violation] 'click' handler took 497ms
+main.3d75bb58.js:2 [Violation] 'message' handler took 219ms
+main.3d75bb58.js:2 [Violation] 'message' handler took 194ms
 react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
 b @ react-dom.production.min.js:24
 Ks @ react-dom.production.min.js:230

@@ -29,6 +29,11 @@ const getDynamicTheme = (primaryColor = '#4e73df', secondaryColor = '#6f42c1') =
     background: {
       default: '#f8f9fc', // body background
     },
+    gender: {
+      masculino: '#36b9cc',
+      feminino: '#f6c23e',
+      outro: '#5a5c69'
+    },
   },
   typography: {
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",

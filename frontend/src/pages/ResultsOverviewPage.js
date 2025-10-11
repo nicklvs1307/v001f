@@ -13,6 +13,12 @@ import {
     ListItem,
     ListItemText,
     useTheme,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
 } from '@mui/material';
 import {
     BarChart,
@@ -24,7 +30,10 @@ import {
     Legend,
     ResponsiveContainer,
     LineChart,
-    Line
+    Line,
+    PieChart,
+    Pie,
+    Cell
 } from 'recharts';
 import resultService from '../services/resultService';
 import AuthContext from '../context/AuthContext';
@@ -137,14 +146,22 @@ const ResultsOverviewPage = () => {
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 {/* Gráfico de Radar (Aranha) - NPS por Critério */}
                 <Grid item xs={12} md={6}>
-                    <Paper elevation={3} sx={{ p: 3 }}>
-                        <CriteriaRadarChart data={overallResults.npsByCriterio} />
+                    <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
+                        <Typography variant="h6" gutterBottom>NPS por Critério</Typography>
+                        {overallResults.npsByCriterio && overallResults.npsByCriterio.length > 0 ? (
+                            <CriteriaRadarChart data={overallResults.npsByCriterio} />
+                        ) : (
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '90%' }}>
+                                <Typography>Dados de NPS por critério indisponíveis.</Typography>
+                            </Box>
+                        )}
                     </Paper>
                 </Grid>
 
                 {/* Nuvem de Palavras */}
                 <Grid item xs={12} md={6}>
-                    <Paper elevation={3} sx={{ p: 3 }}>
+                    <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
+                        <Typography variant="h6" gutterBottom>Nuvem de Palavras</Typography>
                         <WordCloudChart tenantId={tenantId} />
                     </Paper>
                 </Grid>
@@ -170,39 +187,115 @@ const ResultsOverviewPage = () => {
                 </Paper>
             )}
 
-            {/* Distribuição Demográfica (Idade) */}
-            {overallResults.demographics && overallResults.demographics.ageDistribution && Object.keys(overallResults.demographics.ageDistribution).length > 0 && (
-                <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>Distribuição Demográfica (Idade)</Typography>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={Object.entries(overallResults.demographics.ageDistribution).map(([ageGroup, count]) => ({ ageGroup, count }))}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="ageGroup" />
-                            <YAxis />
-                            <Tooltip />
-                            <Legend />
-                            <Bar dataKey="count" fill={theme.palette.info.main} />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </Paper>
-            )}
+            <Grid container spacing={3} sx={{ mb: 4 }}>
+                {/* Distribuição Demográfica (Idade) */}
+                {overallResults.demographics && overallResults.demographics.ageDistribution && Object.keys(overallResults.demographics.ageDistribution).length > 0 && (
+                    <Grid item xs={12} md={6}>
+                        <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
+                            <Typography variant="h5" gutterBottom>Distribuição por Idade</Typography>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <BarChart data={Object.entries(overallResults.demographics.ageDistribution).map(([ageGroup, count]) => ({ ageGroup, count }))}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="ageGroup" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Bar dataKey="count" fill={theme.palette.info.main} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </Paper>
+                    </Grid>
+                )}
 
-            {/* Top 5 Atendentes por Respostas */}
-            {overallResults.topAttendants && overallResults.topAttendants.length > 0 && (
-                <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>Top 5 Atendentes por Respostas</Typography>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={overallResults.topAttendants}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="name" />
-                            <YAxis />
-                            <Tooltip />
-                            <Legend />
-                            <Bar dataKey="responses" fill={theme.palette.success.main} />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </Paper>
-            )}
+                {/* Distribuição por Gênero */}
+                {overallResults.demographics && overallResults.demographics.genderDistribution && Object.keys(overallResults.demographics.genderDistribution).length > 0 && (
+                    <Grid item xs={12} md={6}>
+                        <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
+                            <Typography variant="h6" gutterBottom>Distribuição por Gênero</Typography>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <PieChart>
+                                    <Pie
+                                        data={Object.entries(overallResults.demographics.genderDistribution).map(([name, value]) => ({ name, value }))}
+                                        cx="50%"
+                                        cy="50%"
+                                        labelLine={false}
+                                        outerRadius={80}
+                                        fill="#8884d8"
+                                        dataKey="value"
+                                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                                    >
+                                        {Object.entries(overallResults.demographics.genderDistribution).map(([name, value], index) => (
+                                            <Cell key={`cell-${index}`} fill={theme.palette.gender[name.toLowerCase()] || theme.palette.grey[500]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip />
+                                    <Legend />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </Paper>
+                    </Grid>
+                )}
+            </Grid>
+
+            <Grid container spacing={3} sx={{ mb: 4 }}>
+                {/* Top 5 Atendentes */}
+                {overallResults.topAttendants && overallResults.topAttendants.length > 0 && (
+                    <Grid item xs={12} md={6}>
+                        <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
+                            <Typography variant="h6" gutterBottom>Top 5 Atendentes (por Respostas)</Typography>
+                            <TableContainer>
+                                <Table size="small">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Atendente</TableCell>
+                                            <TableCell align="right">Respostas</TableCell>
+                                            <TableCell align="right">NPS</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {overallResults.topAttendants.map((attendant, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell>{attendant.name}</TableCell>
+                                                <TableCell align="right">{attendant.responses}</TableCell>
+                                                <TableCell align="right">{attendant.currentNPS}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Paper>
+                    </Grid>
+                )}
+
+                {/* Bottom 5 Atendentes */}
+                {overallResults.bottomAttendants && overallResults.bottomAttendants.length > 0 && (
+                    <Grid item xs={12} md={6}>
+                        <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
+                            <Typography variant="h6" gutterBottom>Bottom 5 Atendentes (por Respostas)</Typography>
+                            <TableContainer>
+                                <Table size="small">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Atendente</TableCell>
+                                            <TableCell align="right">Respostas</TableCell>
+                                            <TableCell align="right">NPS</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {overallResults.bottomAttendants.map((attendant, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell>{attendant.name}</TableCell>
+                                                <TableCell align="right">{attendant.responses}</TableCell>
+                                                <TableCell align="right">{attendant.currentNPS}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Paper>
+                    </Grid>
+                )}
+            </Grid>
 
             {/* Tendência de Respostas ao Longo do Tempo */}
             {overallResults.responseChartData && overallResults.responseChartData.length > 0 && (

@@ -302,7 +302,7 @@ const dashboardRepository = {
                 {
                     model: Client,
                     as: 'client',
-                    attributes: ['birthDate'],
+                    attributes: ['birthDate', 'gender'],
                 },
                 {
                     model: Atendente,
@@ -369,15 +369,21 @@ const dashboardRepository = {
             });
         });
 
-        // 4. Processar dados demográficos (idade)
+        // 4. Processar dados demográficos
+        const demographics = {};
         const birthDates = [];
+        const genders = [];
         allResponses.forEach(response => {
-            if (response.client && response.client.birthDate) {
-                birthDates.push(new Date(response.client.birthDate));
+            if (response.client) {
+                if (response.client.birthDate) {
+                    birthDates.push(new Date(response.client.birthDate));
+                }
+                if (response.client.gender) {
+                    genders.push(response.client.gender);
+                }
             }
         });
 
-        const demographics = {};
         if (birthDates.length > 0) {
             const ageGroups = { '18-24': 0, '25-34': 0, '35-44': 0, '45-54': 0, '55+': 0 };
             const currentYear = new Date().getFullYear();
@@ -393,7 +399,21 @@ const dashboardRepository = {
             demographics.ageDistribution = ageGroups;
         }
 
-        // 5. Top 5 Atendentes por respostas (e metas)
+        if (genders.length > 0) {
+            const genderDistribution = { 'masculino': 0, 'feminino': 0, 'outro': 0 };
+            genders.forEach(gender => {
+                const g = gender.toLowerCase();
+                if (genderDistribution.hasOwnProperty(g)) {
+                    genderDistribution[g]++;
+                } else {
+                    genderDistribution['outro']++;
+                }
+            });
+            demographics.genderDistribution = genderDistribution;
+        }
+
+
+        // 5. Top e Bottom 5 Atendentes por respostas (e metas)
         const responsesByAttendant = allResponses.reduce((acc, response) => {
             if (response.atendente && response.atendente.id) {
                 const attendantId = response.atendente.id;
@@ -409,18 +429,37 @@ const dashboardRepository = {
             return acc;
         }, {});
 
-        const topAttendantsWithGoals = [];
-        const sortedAttendants = Object.values(responsesByAttendant)
-            .sort((a, b) => b.responses.length - a.responses.length)
-            .slice(0, 5);
+        const attendantsArray = Object.values(responsesByAttendant);
 
-        for (const attendant of sortedAttendants) {
+        const topAttendantsWithGoals = [];
+        const sortedAttendantsTop = [...attendantsArray].sort((a, b) => b.responses.length - a.responses.length).slice(0, 5);
+
+        for (const attendant of sortedAttendantsTop) {
             const npsResult = npsService.calculateNPS(attendant.responses);
             const meta = await AtendenteMeta.findOne({
                 where: { atendenteId: attendant.id, tenantId: tenantId },
             });
 
             topAttendantsWithGoals.push({
+                name: attendant.name,
+                responses: attendant.responses.length,
+                currentNPS: npsResult.npsScore,
+                npsGoal: meta ? meta.npsGoal || 0 : 0,
+                responsesGoal: meta ? meta.responsesGoal || 0 : 0,
+                registrationsGoal: meta ? meta.registrationsGoal || 0 : 0,
+            });
+        }
+
+        const bottomAttendantsWithGoals = [];
+        const sortedAttendantsBottom = [...attendantsArray].sort((a, b) => a.responses.length - b.responses.length).slice(0, 5);
+
+        for (const attendant of sortedAttendantsBottom) {
+            const npsResult = npsService.calculateNPS(attendant.responses);
+            const meta = await AtendenteMeta.findOne({
+                where: { atendenteId: attendant.id, tenantId: tenantId },
+            });
+
+            bottomAttendantsWithGoals.push({
                 name: attendant.name,
                 responses: attendant.responses.length,
                 currentNPS: npsResult.npsScore,
@@ -443,6 +482,7 @@ const dashboardRepository = {
             radarChartData,
             demographics,
             topAttendants: topAttendantsWithGoals,
+            bottomAttendants: bottomAttendantsWithGoals,
             responseChartData,
         };
     },

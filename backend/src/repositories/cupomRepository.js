@@ -14,6 +14,7 @@ class CupomRepository {
     const whereClause = tenantId ? { tenantId } : {};
     return Cupom.findAll({
       where: whereClause,
+      include: [{ model: Recompensa, as: 'recompensa' }, { model: Client, as: 'cliente' }],
     });
   }
 

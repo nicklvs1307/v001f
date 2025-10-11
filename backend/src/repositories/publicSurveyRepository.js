@@ -148,7 +148,12 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
           break;
         case 'multiple_choice':
         case 'checkbox':
-          responseData.selectedOption = res.valor;
+          if (res.valor) {
+            const valueAsArray = Array.isArray(res.valor) ? res.valor : [res.valor];
+            responseData.selectedOption = JSON.stringify(valueAsArray);
+          } else {
+            responseData.selectedOption = null;
+          }
           break;
         default:
           // Ignorar tipos de pergunta desconhecidos ou lançar um erro

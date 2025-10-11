@@ -175,15 +175,29 @@ const getSurveyResultsById = async (surveyId, tenantId = null) => {
         const optionCounts = {};
         pergunta.options.forEach(option => (optionCounts[option] = 0));
         pergunta.respostas.forEach(resposta => {
+          if (!resposta.selectedOption) {
+            return;
+          }
           try {
-            const values = JSON.parse(resposta.selectedOption);
+            let values;
+            try {
+                values = JSON.parse(resposta.selectedOption);
+            } catch (e) {
+                // If parsing fails, assume it's a single string value
+                values = [resposta.selectedOption];
+            }
+
+            if (!Array.isArray(values)) {
+                values = [values];
+            }
+
             values.forEach(val => {
               if (optionCounts.hasOwnProperty(val)) {
                 optionCounts[val]++;
               }
             });
           } catch (e) {
-            console.error(`Erro ao fazer parse de selectedOption para resposta ${resposta.id}:`, e);
+            console.error(`Erro ao processar selectedOption para resposta ${resposta.id}:`, e);
           }
         });
         questionData.results = optionCounts;

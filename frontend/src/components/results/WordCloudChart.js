@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import WordCloud from 'react-wordcloud';
+import WordCloud from '@isoterik/react-word-cloud';
 import { Box, Typography, CircularProgress, Alert } from '@mui/material';
 import resultService from '../../services/resultService';
 

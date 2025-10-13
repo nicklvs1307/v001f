@@ -14,6 +14,19 @@ class CampanhaService {
 
   // Métodos CRUD (sem alterações)
   async create(data) {
+    // Garante que dataValidade seja definida para evitar erros de notNull.
+    // Prioriza endDate se existir, que é a nova abordagem de agendamento.
+    if (data.endDate && !data.dataValidade) {
+      data.dataValidade = data.endDate;
+    }
+
+    // Se ainda assim dataValidade não estiver definida, cria um fallback para 30 dias.
+    if (!data.dataValidade) {
+      const defaultValidade = new Date();
+      defaultValidade.setDate(defaultValidade.getDate() + 30);
+      data.dataValidade = defaultValidade;
+    }
+
     return this.campanhaRepository.create(data);
   }
 

@@ -57,6 +57,14 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 'draft',
         allowNull: false,
       },
+      startDate: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      endDate: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
     },
     {
       sequelize,

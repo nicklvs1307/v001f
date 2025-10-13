@@ -1,24 +1,15 @@
- 1 - # Variáveis de Ambiente do Backend                                                                                                   │
- │     2 -                                                                                                                                      │
- │     3 - # Configuração do Servidor                                                                                                           │
- │     1   PORT=3001                                                                                                                            │
- │     5 -                                                                                                                                      │
- │     6 - # Configuração do Banco de Dados PostgreSQL                                                                                          │
- │     7 - DB_USER=postgres                                                                                                                     │
- │     2   DB_HOST=localhost                                                                                                                    │
- │    ════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════  │
- │     9 - DB_DATABASE=lealfood                                                                                                                 │
- │    10 - DB_PASSWORD=123456789                                                                                                                │
- │    11 - DB_PORT=5432                                                                                                                         │
- │    12 -                                                                                                                                      │
- │    13 - # URL Pública do Frontend (para QR Codes)                                                                                            │
- │    14 - FRONTEND_PUBLIC_URL=http://localhost:3000                                                                                            │
- │    15 -                                                                                                                                      │
- │    16 - # Segredo para o JSON Web Token (JWT)                                                                                                │
- │    17 - # Troque por uma string longa e aleatória em produção                                                                                │
- │    18 - JWT_SECRET=YrvWABCrjcTJ73ScR3Z1IQUs6Y0EnnOC                                                                                          │
- │    19 -                                                                                                                                      │
- │    20 - # Configuração do Google My Business (GMB)                                                                                           │
- │    21 - GOOGLE_CLIENT_ID="SEU_CLIENT_ID_DO_GOOGLE"                                                                                           │
- │    22 - GOOGLE_CLIENT_SECRET="SEU_CLIENT_SECRET_DO_GOOGLE"                                                                                   │
- │    23 - GOOGLE_REDIRECT_URI="http://localhost:3001/api/gmb/auth/callback"
+URL da solicitação
+https://apiloyalfood.towersfy.com/api/campanhas
+Método da solicitação
+POST
+Código de status
+500 Internal Server Error
+Endereço remoto
+95.217.16.187:443
+
+{
+    "status": "error",
+    "code": "HTTP_500",
+    "message": "notNull Violation: Campanha.dataValidade cannot be null",
+    "details": "SequelizeValidationError: notNull Violation: Campanha.dataValidade cannot be null\n    at InstanceValidator._validate (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:50:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async InstanceValidator._validateAndRunHooks (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:60:7)\n    at async InstanceValidator.validate (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:54:12)\n    at async Campanha.save (/usr/src/app/node_modules/sequelize/lib/model.js:2426:7)\n    at async Campanha.create (/usr/src/app/node_modules/sequelize/lib/model.js:1362:12)\n    at async CampanhaController.create (/usr/src/app/src/controllers/campanhaController.js:21:24)"
+}

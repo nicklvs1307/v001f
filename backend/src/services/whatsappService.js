@@ -55,7 +55,7 @@ const sendTenantMessage = async (tenantId, number, message) => {
   }
 
   try {
-    const response = await axios.post(`${config.url}/message/sendText`, {
+    const response = await axios.post(`${config.url}/message/sendText/${config.instanceName}`, {
       number: number,
       options: {
         delay: 1200,
@@ -69,9 +69,6 @@ const sendTenantMessage = async (tenantId, number, message) => {
         'Content-Type': 'application/json',
         'apikey': config.apiKey,
       },
-      params: {
-        instance: config.instanceName
-      }
     });
 
     console.log(`Mensagem do tenant ${tenantId} enviada para ${number}:`, response.data);

@@ -48,24 +48,26 @@ const InstanceCard = ({ config, onAction, actionLoading }) => {
               Criar Instância na API
             </Button>
           ) : (
-            <Button 
-              variant="outlined" 
-              color="warning" 
-              onClick={() => onAction(whatsappConfigService.restartInstance)} 
-              disabled={actionLoading}
-              startIcon={<Replay />}
-            >
-              Reiniciar Instância
-            </Button>
-            <Button 
-              variant="outlined" 
-              color="error" 
-              onClick={() => setConfirmDeleteDialogOpen(true)} 
-              disabled={actionLoading}
-              startIcon={<DeleteForever />}
-            >
-              Deletar Instância
-            </Button>
+            <>
+              <Button 
+                variant="outlined" 
+                color="warning" 
+                onClick={() => onAction(whatsappConfigService.restartInstance)} 
+                disabled={actionLoading}
+                startIcon={<Replay />}
+              >
+                Reiniciar Instância
+              </Button>
+              <Button 
+                variant="outlined" 
+                color="error" 
+                onClick={() => setConfirmDeleteDialogOpen(true)} 
+                disabled={actionLoading}
+                startIcon={<DeleteForever />}
+              >
+                Deletar Instância
+              </Button>
+            </>
           )}
         </Stack>
       </CardContent>

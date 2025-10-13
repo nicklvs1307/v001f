@@ -1,25 +1,23 @@
-root@Server:~/loyalfood/v001f/frontend# npm install
-npm ERR! code ERESOLVE
-npm ERR! ERESOLVE unable to resolve dependency tree
-npm ERR!
-npm ERR! While resolving: frontend@0.1.0
-npm ERR! Found: react@18.3.1
-npm ERR! node_modules/react
-npm ERR!   react@"^18.3.1" from the root project
-npm ERR!
-npm ERR! Could not resolve dependency:
-npm ERR! peer react@"^16.13.0" from react-wordcloud@1.2.7
-npm ERR! node_modules/react-wordcloud
-npm ERR!   react-wordcloud@"^1.2.7" from the root project
-npm ERR!
-npm ERR! Fix the upstream dependency conflict, or retry
-npm ERR! this command with --force or --legacy-peer-deps
-npm ERR! to accept an incorrect (and potentially broken) dependency resolution.
-npm ERR!
-npm ERR!
-npm ERR! For a full report see:
-npm ERR! /root/.npm/_logs/2025-10-13T13_06_11_507Z-eresolve-report.txt
-
-npm ERR! A complete log of this run can be found in:
-npm ERR!     /root/.npm/_logs/2025-10-13T13_06_11_507Z-debug-0.log
-root@Server:~/loyalfood/v001f/frontend#
+ => ERROR [build 6/6] RUN npm run build                                                      163.6s
+------
+ > [build 6/6] RUN npm run build:
+0.576
+0.576 > frontend@0.1.0 build
+0.576 > react-scripts build
+0.576
+3.445 Creating an optimized production build...
+163.3 Failed to compile.
+163.3
+163.3 Attempted import error: '@isoterik/react-word-cloud' does not contain a default export (imported as 'WordCloud').
+163.3
+163.3
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

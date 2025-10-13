@@ -13,6 +13,7 @@ const whatsappConfigService = {
   logoutInstance: () => apiAuthenticated.delete('/whatsapp-config/instance/logout'),
   restartInstance: () => apiAuthenticated.put('/whatsapp-config/instance/restart'),
   deleteInstance: () => apiAuthenticated.delete('/whatsapp-config/instance'),
+  saveAutomationsConfig: (data) => apiAuthenticated.put('/whatsapp-config/automations', data),
 };
 
 export default whatsappConfigService;

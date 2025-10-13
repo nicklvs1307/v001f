@@ -63,6 +63,24 @@ const whatsappConfigController = {
     res.json(result);
   }),
 
+  updateAutomationsConfig: asyncHandler(async (req, res) => {
+    const { tenantId } = req.user;
+    const { sendPrizeMessage, prizeMessageTemplate } = req.body;
+
+    const config = await whatsappConfigRepository.findByTenant(tenantId);
+
+    if (!config) {
+      throw new ApiError(404, "Configuração do WhatsApp não encontrada. Configure a conexão primeiro.");
+    }
+
+    const updatedConfig = await config.update({
+      sendPrizeMessage,
+      prizeMessageTemplate,
+    });
+
+    res.json(updatedConfig);
+  }),
+
   // --- Rotas para o Super Admin ---
   
   getTenantConfig: asyncHandler(async (req, res) => {
@@ -105,4 +123,7 @@ const whatsappConfigController = {
   }),
 };
 
-module.exports = whatsappConfigController;
+module.exports = {
+  ...whatsappConfigController,
+  updateAutomationsConfig: whatsappConfigController.updateAutomationsConfig
+};

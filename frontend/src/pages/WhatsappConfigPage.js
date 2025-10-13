@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {
   Container, Typography, Box, TextField, Button, CircularProgress,
-  MenuItem, Snackbar, Alert, Paper, FormControl, InputLabel, Select,
-  FormControlLabel, Switch
+  MenuItem, Snackbar, Alert, Paper, FormControl, InputLabel, Select
 } from '@mui/material';
 import AuthContext from '../context/AuthContext';
 import whatsappConfigService from '../services/whatsappConfigService';
@@ -12,15 +11,13 @@ import tenantService from '../services/tenantService';
 const SuperAdminView = () => {
     const [tenants, setTenants] = useState([]);
     const [selectedTenant, setSelectedTenant] = useState('');
-    const [config, setConfig] = useState({ url: '', apiKey: '', sendPrizeMessage: false, prizeMessageTemplate: '' });
+    const [config, setConfig] = useState({ url: '', apiKey: '' });
     const [loadingTenants, setLoadingTenants] = useState(true);
     const [loadingConfig, setLoadingConfig] = useState(false);
     const [saving, setSaving] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-
-    const defaultConfig = { url: '', apiKey: '', sendPrizeMessage: false, prizeMessageTemplate: 'Parabéns, {{cliente}}! Você ganhou um prêmio: {{premio}}. Use o cupom {{cupom}} para resgatar.' };
 
     useEffect(() => {
         tenantService.getAllTenants()
@@ -37,13 +34,11 @@ const SuperAdminView = () => {
         let isMounted = true;
         if (selectedTenant) {
             setLoadingConfig(true);
-            setConfig(defaultConfig); // Limpa a configuração anterior ao carregar uma nova
+            setConfig({ url: '', apiKey: '' }); // Limpa a configuração anterior ao carregar uma nova
             whatsappConfigService.getTenantConfig(selectedTenant)
                 .then(response => {
                     if (isMounted) {
-                        // Garante que o template de mensagem tenha um valor padrão se for nulo/vazio
-                        const fetchedConfig = response.data || {};
-                        setConfig({ ...defaultConfig, ...fetchedConfig });
+                        setConfig(response.data || { url: '', apiKey: '' });
                     }
                 })
                 .catch(() => {
@@ -51,7 +46,7 @@ const SuperAdminView = () => {
                         setSnackbarMessage('Falha ao buscar a configuração do WhatsApp. Pode não existir uma para este tenant.');
                         setSnackbarSeverity('info');
                         setSnackbarOpen(true);
-                        setConfig(defaultConfig);
+                        setConfig({ url: '', apiKey: '' });
                     }
                 })
                 .finally(() => {
@@ -104,34 +99,8 @@ const SuperAdminView = () => {
                 {selectedTenant && (loadingConfig ? <CircularProgress sx={{ mt: 2 }}/> : (
                     <form onSubmit={handleSubmit}>
                         <Box sx={{ mt: 3 }}>
-                            <Typography variant="h6" gutterBottom>Dados da Conexão</Typography>
                             <TextField fullWidth label="URL da Instância da API" name="url" value={config.url} onChange={e => setConfig({...config, url: e.target.value})} margin="normal" required />
                             <TextField fullWidth label="Chave de API (API Key)" name="apiKey" value={config.apiKey} onChange={e => setConfig({...config, apiKey: e.target.value})} margin="normal" required />
-                            
-                            <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>Automações</Typography>
-                            <FormControlLabel
-                                control={
-                                    <Switch
-                                        checked={config.sendPrizeMessage || false}
-                                        onChange={e => setConfig({ ...config, sendPrizeMessage: e.target.checked })}
-                                        name="sendPrizeMessage"
-                                    />
-                                }
-                                label="Enviar mensagem ao ganhar prêmio na roleta"
-                            />
-                            <TextField
-                                fullWidth
-                                label="Modelo da Mensagem do Prêmio"
-                                name="prizeMessageTemplate"
-                                value={config.prizeMessageTemplate}
-                                onChange={e => setConfig({ ...config, prizeMessageTemplate: e.target.value })}
-                                margin="normal"
-                                multiline
-                                rows={4}
-                                disabled={!config.sendPrizeMessage}
-                                helperText="Variáveis disponíveis: {{cliente}}, {{premio}}, {{cupom}}"
-                            />
-
                             <Button type="submit" variant="contained" color="primary" disabled={saving} sx={{ mt: 2 }}>
                                 {saving ? <CircularProgress size={24} /> : 'Salvar'}
                             </Button>

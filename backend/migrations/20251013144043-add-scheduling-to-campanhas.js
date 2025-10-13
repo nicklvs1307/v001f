@@ -2,18 +2,18 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn('Campanhas', 'startDate', {
+    await queryInterface.addColumn('campanhas', 'startDate', {
       type: Sequelize.DATE,
       allowNull: true,
     });
-    await queryInterface.addColumn('Campanhas', 'endDate', {
+    await queryInterface.addColumn('campanhas', 'endDate', {
       type: Sequelize.DATE,
       allowNull: true,
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeColumn('Campanhas', 'startDate');
-    await queryInterface.removeColumn('Campanhas', 'endDate');
+    await queryInterface.removeColumn('campanhas', 'startDate');
+    await queryInterface.removeColumn('campanhas', 'endDate');
   }
 };

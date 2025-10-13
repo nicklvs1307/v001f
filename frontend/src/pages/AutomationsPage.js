@@ -9,9 +9,111 @@ import {
   CircularProgress,
   Alert,
   FormControlLabel,
+  Grid,
 } from '@mui/material';
 import whatsappTemplateService from '../services/whatsappTemplateService';
+import whatsappConfigService from '../services/whatsappConfigService';
 import AuthContext from '../context/AuthContext';
+
+const PrizeRouletteAutomation = () => {
+  const [config, setConfig] = useState({
+    sendPrizeMessage: false,
+    prizeMessageTemplate: 'Parabéns, {{cliente}}! Você ganhou um prêmio: {{premio}}. Use o cupom {{cupom}} para resgatar.',
+  });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  useEffect(() => {
+    setLoading(true);
+    whatsappConfigService.getInstanceConfig()
+      .then(response => {
+        if (response && response.status !== 'unconfigured') {
+          setConfig(prev => ({
+            ...prev,
+            sendPrizeMessage: response.sendPrizeMessage || false,
+            prizeMessageTemplate: response.prizeMessageTemplate || prev.prizeMessageTemplate,
+          }));
+        } else {
+          setError('A configuração do WhatsApp ainda não foi feita. Conecte uma instância primeiro.');
+        }
+      })
+      .catch(() => {
+        setError('Falha ao carregar a configuração do WhatsApp.');
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setConfig(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
+
+  const handleSave = () => {
+    setSaving(true);
+    setError('');
+    setSuccess('');
+    whatsappConfigService.saveAutomationsConfig(config)
+      .then(() => {
+        setSuccess('Automação da Roleta salva com sucesso!');
+      })
+      .catch(() => {
+        setError('Falha ao salvar a automação da roleta.');
+      })
+      .finally(() => setSaving(false));
+  };
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  return (
+    <Paper sx={{ p: 4, height: '100%' }}>
+      <Typography variant="h5" gutterBottom>Prêmio da Roleta</Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+        Envie uma mensagem automática para o cliente assim que ele ganhar um prêmio na roleta.
+      </Typography>
+
+      {error && !config.sendPrizeMessage ? (
+          <Alert severity="warning">{error}</Alert>
+      ) : (
+        <>
+          <FormControlLabel
+            control={<Switch checked={config.sendPrizeMessage} onChange={handleChange} name="sendPrizeMessage" />}
+            label={config.sendPrizeMessage ? 'Automação Ativa' : 'Automação Inativa'}
+            sx={{ mb: 2 }}
+          />
+
+          {config.sendPrizeMessage && (
+            <Box>
+              <TextField
+                label="Mensagem de Premiação"
+                name="prizeMessageTemplate"
+                value={config.prizeMessageTemplate}
+                onChange={handleChange}
+                fullWidth
+                multiline
+                rows={5}
+                helperText="Variáveis disponíveis: {{cliente}}, {{premio}}, {{cupom}}"
+                sx={{ mb: 3 }}
+              />
+            </Box>
+          )}
+
+          <Button variant="contained" onClick={handleSave} disabled={saving}>
+            {saving ? <CircularProgress size={24} /> : 'Salvar'}
+          </Button>
+
+          {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
+        </>
+      )}
+    </Paper>
+  );
+}
 
 const CouponReminderAutomation = () => {
   const [template, setTemplate] = useState({
@@ -34,7 +136,6 @@ const CouponReminderAutomation = () => {
         }
       })
       .catch(err => {
-        // Não é um erro se o template ainda não existir
         if (err.response && err.response.status !== 404) {
           setError('Falha ao carregar configuração.');
         }
@@ -69,7 +170,7 @@ const CouponReminderAutomation = () => {
   }
 
   return (
-    <Paper sx={{ p: 4, mt: 4 }}>
+    <Paper sx={{ p: 4, height: '100%' }}>
       <Typography variant="h5" gutterBottom>Lembrete de Cupom Expirando</Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
         Envie uma mensagem automática para seus clientes quando o cupom deles estiver prestes a vencer.
@@ -118,10 +219,16 @@ const CouponReminderAutomation = () => {
 
 const AutomationsPage = () => {
   return (
-    <Box>
+    <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>Automações do WhatsApp</Typography>
-      <CouponReminderAutomation />
-      {/* Outras automações podem ser adicionadas aqui no futuro */}
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={6}>
+          <CouponReminderAutomation />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <PrizeRouletteAutomation />
+        </Grid>
+      </Grid>
     </Box>
   );
 };

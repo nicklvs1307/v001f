@@ -4,7 +4,13 @@ import apiAuthenticated, { setupAuthObserver } from '../services/apiAuthenticate
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
 
-const AuthContext = createContext();
+const AuthContext = createContext({
+  user: null,
+  login: () => {},
+  logout: () => {},
+  loading: true,
+  refreshUser: () => {},
+});
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);

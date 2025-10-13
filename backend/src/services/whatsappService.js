@@ -143,7 +143,7 @@ const handleAxiosError = (error, tenantId, instanceName, isStatusCheck = false) 
 
 const getInstanceStatus = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
-  if (!config || !config.instanceName) return { status: 'not_created' }; // Alterado para not_created se não tiver instanceName
+  if (!config || !config.instanceName) return 'not_created';
 
   try {
     const response = await axios.get(`${config.url}/instance/connectionState/${config.instanceName}`, getAxiosConfig(config));

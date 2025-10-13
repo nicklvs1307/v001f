@@ -89,7 +89,12 @@ const sendTenantMessage = async (tenantId, number, message) => {
     console.log(`Mensagem do tenant ${tenantId} enviada para ${number}:`, response.data);
     return response.data;
   } catch (error) {
-    console.error(`Falha ao enviar mensagem do tenant ${tenantId} para ${number}:`, error.response ? error.response.data : error.message);
+    console.error(`[WhatsApp Service] Falha ao enviar mensagem para o tenant ${tenantId}. Número: ${number}.`);
+    if (error.response) {
+      console.error('[WhatsApp Service] Erro detalhado da API:', JSON.stringify(error.response.data, null, 2));
+    } else {
+      console.error('[WhatsApp Service] Erro sem resposta da API:', error.message);
+    }
     throw error;
   }
 };

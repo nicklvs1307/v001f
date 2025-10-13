@@ -3,12 +3,12 @@ import {
   Container, Typography, Box, Button, CircularProgress,
   Alert, Paper, Grid, Card, CardContent, Divider, Chip, Dialog, 
   DialogActions, DialogContent, DialogContentText, DialogTitle,
-  Stack, AlertTitle
+  Stack, AlertTitle, IconButton
 } from '@mui/material';
 import AuthContext from '../context/AuthContext';
 import whatsappConfigService from '../services/whatsappConfigService';
 import QRCode from 'react-qr-code';
-import { CheckCircle, HourglassEmpty, LinkOff, QrCodeScanner, AddCircle, DeleteForever, Wifi, WifiOff } from '@mui/icons-material';
+import { CheckCircle, HourglassEmpty, LinkOff, QrCodeScanner, AddCircle, DeleteForever, Wifi, WifiOff, Refresh } from '@mui/icons-material';
 
 // --- Subcomponentes para a nova estrutura ---
 
@@ -271,7 +271,14 @@ const WhatsappConnectPage = () => {
 
   return (
     <Container maxWidth="lg">
-      <Typography variant="h4" gutterBottom sx={{ mt: 3 }}>Conectar WhatsApp</Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', mt: 3, mb: 1 }}>
+        <Typography variant="h4" gutterBottom sx={{ flexGrow: 1, mb: 0 }}>
+          Conectar WhatsApp
+        </Typography>
+        <IconButton onClick={fetchConfig} disabled={loading || actionLoading} color="primary">
+          <Refresh />
+        </IconButton>
+      </Box>
       <Alert severity="warning" sx={{ mt: 2, mb: 3 }}>
         <AlertTitle>Aviso Importante</AlertTitle>
         O uso desta ferramenta está sujeito aos <strong>Termos de Serviço do WhatsApp.</strong> O envio de spam pode levar ao <strong>bloqueio do seu número.</strong><br/>

@@ -54,15 +54,24 @@ const sendTenantMessage = async (tenantId, number, message) => {
     throw new Error('A instância do WhatsApp desta loja não está conectada.');
   }
 
+  // --- DEBUGGING LOGS ---
+  console.log(`[WhatsApp Service] Iniciando envio para o tenant: ${tenantId}`);
+  console.log(`[WhatsApp Service] Número original recebido: ${number}`);
+
   // Normaliza o número de telefone
   let normalizedNumber = number.replace(/\D/g, '');
   if (normalizedNumber.length <= 11) { // Se for um número brasileiro sem o código do país
     normalizedNumber = '55' + normalizedNumber;
   }
+  console.log(`[WhatsApp Service] Número após normalização (dígitos + código do país): ${normalizedNumber}`);
+
+  const finalNumber = `${normalizedNumber}@s.whatsapp.net`;
+  console.log(`[WhatsApp Service] Número final enviado para a API: ${finalNumber}`);
+  // --- FIM DEBUGGING LOGS ---
 
   try {
     const response = await axios.post(`${config.url}/message/sendText/${config.instanceName}`, {
-      number: normalizedNumber, // Usa o número normalizado
+      number: finalNumber, // Usa o número final com sufixo
       options: {
         delay: 1200,
         presence: 'composing'

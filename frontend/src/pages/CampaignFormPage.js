@@ -20,8 +20,8 @@ const CampaignFormPage = () => {
         const fetchData = async () => {
             try {
                 const [recompensasData, roletasData] = await Promise.all([
-                    recompensaService.getAll(),
-                    roletaService.getAll(),
+                    recompensaService.getAllRecompensas(),
+                    roletaService.getAllRoletas(),
                 ]);
                 if (isMounted) {
                     setRecompensas(recompensasData);

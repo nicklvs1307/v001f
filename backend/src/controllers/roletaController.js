@@ -6,6 +6,8 @@ const roletaPremioRepository = require('../repositories/roletaPremioRepository')
 const cupomRepository = require('../repositories/cupomRepository');
 const clientRepository = require('../repositories/clientRepository');
 const ApiError = require('../errors/ApiError');
+const { WhatsappConfig } = require('../../models');
+const whatsappService = require('../services/whatsappService');
 
 // @desc    Girar a roleta e conceder um prêmio
 // @route   POST /api/roleta/spin
@@ -106,6 +108,26 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
   };
 
   const novoCupom = await cupomRepository.createCupom(cupomData);
+
+  // Envio da mensagem de WhatsApp se a automação estiver ativa
+  try {
+    const whatsappConfig = await WhatsappConfig.findOne({ where: { tenantId: tenantId } });
+
+    if (whatsappConfig && whatsappConfig.sendPrizeMessage && whatsappConfig.instanceStatus === 'connected' && cliente.phone) {
+      let message = whatsappConfig.prizeMessageTemplate;
+      message = message.replace('{{cliente}}', cliente.name.split(' ')[0]);
+      message = message.replace('{{premio}}', premioGanhador.nome);
+      message = message.replace('{{cupom}}', novoCupom.codigo);
+
+      // A função sendTenantMessage já está no whatsappService
+      await whatsappService.sendTenantMessage(tenantId, cliente.phone, message);
+    }
+  } catch (error) {
+    // A falha no envio do WhatsApp não deve impedir o cliente de ver seu prêmio.
+    // Apenas registramos o erro no console.
+    console.error(`[RoletaController] Falha ao tentar enviar mensagem de prêmio via WhatsApp para o tenant ${tenantId}. Erro:`,
+    error.message);
+  }
 
   res.status(200).json({
     message: 'Parabéns! Você ganhou um prêmio!',

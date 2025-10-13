@@ -87,6 +87,16 @@ module.exports = (sequelize, DataTypes) => {
     tenantId: {
       type: DataTypes.UUID,
       allowNull: false,
+    },
+    sendPrizeMessage: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    prizeMessageTemplate: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      defaultValue: 'Parabéns, {{cliente}}! Você ganhou um prêmio: {{premio}}. Use o cupom {{cupom}} para resgatar.',
     }
   }, {
     sequelize,

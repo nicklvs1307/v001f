@@ -1,39 +1,24 @@
-https://loyalfood.towersfy.com/cupons/campanhas/nova
-
-react-dom.production.min.js:188 Error: Minified React error #306; visit https://reactjs.org/docs/error-decoder.html?invariant=306&args[]=undefined&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
-    at Sl (react-dom.production.min.js:290:512)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at oc (react-dom.production.min.js:267:429)
-    at w (scheduler.production.min.js:13:203)
-    at MessagePort.O (scheduler.production.min.js:14:128)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-dom.production.min.js:290 Uncaught Error: Minified React error #306; visit https://reactjs.org/docs/error-decoder.html?invariant=306&args[]=undefined&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
-    at Sl (react-dom.production.min.js:290:512)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at oc (react-dom.production.min.js:267:429)
-    at w (scheduler.production.min.js:13:203)
-    at MessagePort.O (scheduler.production.min.js:14:128)
-Sl @ react-dom.production.min.js:290
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-ac @ react-dom.production.min.js:270
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
+ 1 - # Variáveis de Ambiente do Backend                                                                                                   │
+ │     2 -                                                                                                                                      │
+ │     3 - # Configuração do Servidor                                                                                                           │
+ │     1   PORT=3001                                                                                                                            │
+ │     5 -                                                                                                                                      │
+ │     6 - # Configuração do Banco de Dados PostgreSQL                                                                                          │
+ │     7 - DB_USER=postgres                                                                                                                     │
+ │     2   DB_HOST=localhost                                                                                                                    │
+ │    ════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════  │
+ │     9 - DB_DATABASE=lealfood                                                                                                                 │
+ │    10 - DB_PASSWORD=123456789                                                                                                                │
+ │    11 - DB_PORT=5432                                                                                                                         │
+ │    12 -                                                                                                                                      │
+ │    13 - # URL Pública do Frontend (para QR Codes)                                                                                            │
+ │    14 - FRONTEND_PUBLIC_URL=http://localhost:3000                                                                                            │
+ │    15 -                                                                                                                                      │
+ │    16 - # Segredo para o JSON Web Token (JWT)                                                                                                │
+ │    17 - # Troque por uma string longa e aleatória em produção                                                                                │
+ │    18 - JWT_SECRET=YrvWABCrjcTJ73ScR3Z1IQUs6Y0EnnOC                                                                                          │
+ │    19 -                                                                                                                                      │
+ │    20 - # Configuração do Google My Business (GMB)                                                                                           │
+ │    21 - GOOGLE_CLIENT_ID="SEU_CLIENT_ID_DO_GOOGLE"                                                                                           │
+ │    22 - GOOGLE_CLIENT_SECRET="SEU_CLIENT_SECRET_DO_GOOGLE"                                                                                   │
+ │    23 - GOOGLE_REDIRECT_URI="http://localhost:3001/api/gmb/auth/callback"

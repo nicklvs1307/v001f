@@ -1,68 +1,109 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { TextField, Button, Container, Typography, Box, Paper, MenuItem, CircularProgress, Alert } from '@mui/material';
+import { TextField, Button, Container, Typography, Box, Paper, CircularProgress, Alert } from '@mui/material';
 import campanhaService from '../services/campanhaService';
 import recompensaService from '../services/recompensaService';
 import roletaService from '../services/roletaService';
 import ClientSegmentSelector from '../components/campaigns/ClientSegmentSelector';
+import RewardSelector from '../components/campaigns/RewardSelector';
+
+const initialState = {
+    campaign: { nome: '', mensagem: '', criterioSelecao: 'todos', recompensaId: null, roletaId: null },
+    recompensas: [],
+    roletas: [],
+    loading: true,
+    error: '',
+};
+
+function campaignFormReducer(state, action) {
+    switch (action.type) {
+        case 'FETCH_START':
+            return { ...state, loading: true, error: '' };
+        case 'FETCH_SUCCESS':
+            return {
+                ...state,
+                loading: false,
+                recompensas: action.payload.recompensas,
+                roletas: action.payload.roletas,
+                campaign: action.payload.campaign || state.campaign,
+            };
+        case 'FETCH_ERROR':
+            return { ...state, loading: false, error: action.payload };
+        case 'FIELD_CHANGE':
+            return {
+                ...state,
+                campaign: { ...state.campaign, [action.payload.field]: action.payload.value },
+            };
+        case 'SET_CAMPAIGN':
+            return { ...state, campaign: action.payload };
+        default:
+            return state;
+    }
+}
 
 const CampaignFormPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [campaign, setCampaign] = useState({ nome: '', mensagem: '', criterioSelecao: 'todos', recompensaId: null, roletaId: null });
-    const [recompensas, setRecompensas] = useState([]);
-    const [roletas, setRoletas] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
+    const [state, dispatch] = useReducer(campaignFormReducer, initialState);
+    const { campaign, recompensas, roletas, loading, error } = state;
 
     useEffect(() => {
-        let isMounted = true; // Flag para rastrear se o componente está montado
+        let isMounted = true;
         const fetchData = async () => {
+            dispatch({ type: 'FETCH_START' });
             try {
                 const [recompensasData, roletasData] = await Promise.all([
                     recompensaService.getAllRecompensas(),
                     roletaService.getAllRoletas(),
                 ]);
-                if (isMounted) {
-                    setRecompensas(recompensasData);
-                    setRoletas(roletasData);
+
+                let campaignData = null;
+                if (id) {
+                    campaignData = await campanhaService.getById(id);
                 }
 
-                if (id) {
-                    const campaignData = await campanhaService.getById(id);
-                    if (isMounted) {
-                        setCampaign(campaignData);
-                    }
+                if (isMounted) {
+                    dispatch({ 
+                        type: 'FETCH_SUCCESS', 
+                        payload: { 
+                            recompensas: recompensasData, 
+                            roletas: roletasData, 
+                            campaign: campaignData 
+                        }
+                    });
                 }
             } catch (err) {
                 if (isMounted) {
-                    setError('Falha ao carregar dados de suporte para a campanha.');
-                }
-            } finally {
-                if (isMounted) {
-                    setLoading(false);
+                    dispatch({ type: 'FETCH_ERROR', payload: 'Falha ao carregar dados de suporte para a campanha.' });
                 }
             }
         };
         fetchData();
 
         return () => {
-            isMounted = false; // Limpeza: define a flag como false quando o componente é desmontado
+            isMounted = false;
         };
     }, [id]);
+
+    const handleFieldChange = (field) => (event) => {
+        dispatch({ type: 'FIELD_CHANGE', payload: { field, value: event.target.value } });
+    };
+
+    const handleSegmentChange = (value) => {
+        dispatch({ type: 'FIELD_CHANGE', payload: { field: 'criterioSelecao', value } });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const payload = { ...campaign };
             if (id) {
-                await campanhaService.update(id, payload);
+                await campanhaService.update(id, campaign);
             } else {
-                await campanhaService.create(payload);
+                await campanhaService.create(campaign);
             }
             navigate('/cupons/campanhas');
         } catch (err) {
-            setError(err.response?.data?.message || 'Erro ao salvar campanha.');
+            dispatch({ type: 'FETCH_ERROR', payload: err.response?.data?.message || 'Erro ao salvar campanha.' });
         }
     };
 
@@ -81,7 +122,7 @@ const CampaignFormPage = () => {
                         margin="normal"
                         label="Nome da Campanha"
                         value={campaign.nome}
-                        onChange={(e) => setCampaign({ ...campaign, nome: e.target.value })}
+                        onChange={handleFieldChange('nome')}
                         required
                     />
                     <TextField
@@ -91,38 +132,21 @@ const CampaignFormPage = () => {
                         multiline
                         rows={4}
                         value={campaign.mensagem}
-                        onChange={(e) => setCampaign({ ...campaign, mensagem: e.target.value })}
+                        onChange={handleFieldChange('mensagem')}
                         required
                     />
                     
                     <ClientSegmentSelector 
                         selectedValue={campaign.criterioSelecao}
-                        onChange={(value) => setCampaign({ ...campaign, criterioSelecao: value })}
+                        onChange={handleSegmentChange}
                     />
 
-                    <TextField
-                        select
-                        fullWidth
-                        margin="normal"
-                        label="Recompensa (Opcional)"
-                        value={campaign.recompensaId || ''}
-                        onChange={(e) => setCampaign({ ...campaign, recompensaId: e.target.value, roletaId: null })}
-                    >
-                        <MenuItem value=""><em>Nenhuma</em></MenuItem>
-                        {recompensas.map(r => <MenuItem key={r.id} value={r.id}>{r.nome}</MenuItem>)}
-                    </TextField>
-
-                    <TextField
-                        select
-                        fullWidth
-                        margin="normal"
-                        label="Roleta (Opcional)"
-                        value={campaign.roletaId || ''}
-                        onChange={(e) => setCampaign({ ...campaign, roletaId: e.target.value, recompensaId: null })}
-                    >
-                        <MenuItem value=""><em>Nenhuma</em></MenuItem>
-                        {roletas.map(r => <MenuItem key={r.id} value={r.id}>{r.nome}</MenuItem>)}
-                    </TextField>
+                    <RewardSelector 
+                        campaign={campaign}
+                        recompensas={recompensas}
+                        roletas={roletas}
+                        dispatch={dispatch}
+                    />
 
                     <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
                         <Button type="submit" variant="contained">Salvar</Button>
@@ -135,3 +159,5 @@ const CampaignFormPage = () => {
         </Container>
     );
 };
+
+export default CampaignFormPage;

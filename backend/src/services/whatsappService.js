@@ -71,14 +71,12 @@ const sendTenantMessage = async (tenantId, number, message) => {
 
   try {
     const response = await axios.post(`${config.url}/message/sendText/${config.instanceName}`, {
-      number: finalNumber, // Usa o número final com sufixo
+      number: finalNumber,
+      text: message, // O texto da mensagem vai diretamente aqui
       options: {
         delay: 1200,
         presence: 'composing'
-      },
-      textMessage: {
-        text: message,
-      },
+      }
     }, {
       headers: {
         'Content-Type': 'application/json',

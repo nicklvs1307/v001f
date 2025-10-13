@@ -163,13 +163,13 @@ const getInstanceStatus = async (tenantId) => {
 
   } catch (error) {
     const errorStatus = handleAxiosError(error, tenantId, config.instanceName, true);
-    // Se a instância não foi encontrada na API, deleta a configuração local
+
+    // Se a instância não foi encontrada na API, atualiza o banco de dados local
     if (errorStatus.status === 'not_created') {
-      await whatsappConfigRepository.deleteByTenantId(tenantId);
-      return 'unconfigured'; // Retorna um status que a UI entende como "não configurado"
+      await config.update({ instanceStatus: 'not_created', instanceName: null });
     }
 
-    return errorStatus.status;
+    return errorStatus.status; // ex: 'not_created'
   }
 };
 

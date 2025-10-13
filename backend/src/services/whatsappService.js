@@ -17,11 +17,21 @@ const sendSystemMessage = async (number, message) => {
     throw new Error('WhatsApp do sistema não configurado.');
   }
 
+  // Normaliza o número de telefone
+  let normalizedNumber = String(number).replace(/\D/g, '');
+  if (normalizedNumber.length <= 11) {
+    normalizedNumber = '55' + normalizedNumber;
+  }
+  const finalNumber = `${normalizedNumber}@s.whatsapp.net`;
+
   try {
-    const response = await axios.post(`${SYSTEM_WHATSAPP_URL}/message/send`, {
-      number: number,
-      message: message,
-      instance: SYSTEM_WHATSAPP_INSTANCE,
+    const response = await axios.post(`${SYSTEM_WHATSAPP_URL}/message/sendText/${SYSTEM_WHATSAPP_INSTANCE}`, {
+      number: finalNumber,
+      text: message,
+      options: {
+        delay: 1200,
+        presence: 'composing'
+      }
     }, {
       headers: {
         'Content-Type': 'application/json',
@@ -29,10 +39,15 @@ const sendSystemMessage = async (number, message) => {
       },
     });
 
-    console.log(`Mensagem de sistema enviada para ${number}:`, response.data);
+    console.log(`Mensagem de sistema enviada para ${finalNumber}:`, response.data);
     return response.data;
   } catch (error) {
-    console.error(`Falha ao enviar mensagem de sistema para ${number}:`, error.response ? error.response.data : error.message);
+    console.error(`[WhatsApp Service] Falha ao enviar mensagem de sistema para ${finalNumber}.`);
+    if (error.response) {
+      console.error('[WhatsApp Service] Erro detalhado da API:', JSON.stringify(error.response.data, null, 2));
+    } else {
+      console.error('[WhatsApp Service] Erro sem resposta da API:', error.message);
+    }
     throw error;
   }
 };

@@ -111,16 +111,27 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
 
   // Envio da mensagem de WhatsApp se a automação estiver ativa
   try {
+    console.log(`[RoletaController] Verificando se deve enviar mensagem de prêmio para o tenant ${tenantId}.`);
     const whatsappConfig = await WhatsappConfig.findOne({ where: { tenantId: tenantId } });
 
-    if (whatsappConfig && whatsappConfig.sendPrizeMessage && whatsappConfig.instanceStatus === 'connected' && cliente.phone) {
+    if (!whatsappConfig) {
+      console.log(`[RoletaController] Nenhuma configuração do WhatsApp encontrada para o tenant. Mensagem não enviada.`);
+    } else if (!whatsappConfig.sendPrizeMessage) {
+      console.log(`[RoletaController] Automação de envio de prêmio está desativada para o tenant. Mensagem não enviada.`);
+    } else if (whatsappConfig.instanceStatus !== 'connected') {
+      console.log(`[RoletaController] Instância do WhatsApp não está conectada (${whatsappConfig.instanceStatus}). Mensagem não enviada.`);
+    } else if (!cliente.phone) {
+      console.log(`[RoletaController] Cliente não possui número de telefone cadastrado. Mensagem não enviada.`);
+    } else {
+      console.log(`[RoletaController] Todas as condições satisfeitas. Preparando para enviar a mensagem.`);
       let message = whatsappConfig.prizeMessageTemplate;
       message = message.replace('{{cliente}}', cliente.name.split(' ')[0]);
       message = message.replace('{{premio}}', premioGanhador.nome);
       message = message.replace('{{cupom}}', novoCupom.codigo);
 
-      // A função sendTenantMessage já está no whatsappService
+      console.log(`[RoletaController] Mensagem final: "${message}"`);
       await whatsappService.sendTenantMessage(tenantId, cliente.phone, message);
+      console.log(`[RoletaController] Chamada para sendTenantMessage concluída.`);
     }
   } catch (error) {
     // A falha no envio do WhatsApp não deve impedir o cliente de ver seu prêmio.

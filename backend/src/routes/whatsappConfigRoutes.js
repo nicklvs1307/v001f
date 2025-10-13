@@ -46,6 +46,14 @@ router.delete(
   whatsappConfigController.logoutInstance
 );
 
+// Reinicia a instância
+router.put(
+  '/instance/restart',
+  protect,
+  authorize(['Admin']),
+  whatsappConfigController.restartInstance
+);
+
 // Deleta a instância permanentemente
 router.delete(
   '/instance',

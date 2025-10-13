@@ -51,6 +51,12 @@ const whatsappConfigController = {
     res.json(result);
   }),
 
+  restartInstance: asyncHandler(async (req, res) => {
+    const { tenantId } = req.user;
+    const result = await whatsappService.restartInstance(tenantId);
+    res.json(result);
+  }),
+
   deleteInstance: asyncHandler(async (req, res) => {
     const { tenantId } = req.user;
     const result = await whatsappService.deleteInstance(tenantId);

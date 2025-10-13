@@ -8,7 +8,7 @@ import {
 import AuthContext from '../context/AuthContext';
 import whatsappConfigService from '../services/whatsappConfigService';
 import QRCode from 'react-qr-code';
-import { CheckCircle, HourglassEmpty, LinkOff, QrCodeScanner, AddCircle, DeleteForever, Wifi, WifiOff, Refresh } from '@mui/icons-material';
+import { CheckCircle, HourglassEmpty, LinkOff, QrCodeScanner, AddCircle, DeleteForever, Wifi, WifiOff, Refresh, Replay } from '@mui/icons-material';
 
 // --- Subcomponentes para a nova estrutura ---
 
@@ -48,6 +48,15 @@ const InstanceCard = ({ config, onAction, actionLoading }) => {
               Criar Instância na API
             </Button>
           ) : (
+            <Button 
+              variant="outlined" 
+              color="warning" 
+              onClick={() => onAction(whatsappConfigService.restartInstance)} 
+              disabled={actionLoading}
+              startIcon={<Replay />}
+            >
+              Reiniciar Instância
+            </Button>
             <Button 
               variant="outlined" 
               color="error" 

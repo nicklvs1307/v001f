@@ -239,6 +239,18 @@ const getQrCodeForConnect = async (tenantId) => {
   }
 };
 
+const restartInstance = async (tenantId) => {
+  const config = await WhatsappConfig.findOne({ where: { tenantId } });
+  if (!config || !config.instanceName) return { message: "Instância não configurada." };
+
+  try {
+    const response = await axios.put(`${config.url}/instance/restart/${config.instanceName}`, {}, getAxiosConfig(config));
+    return response.data;
+  } catch (error) {
+    return handleAxiosError(error, tenantId, config.instanceName);
+  }
+};
+
 const logoutInstance = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
   if (!config || !config.instanceName) return { message: "Instância já desconectada ou não configurada." };
@@ -279,6 +291,7 @@ module.exports = {
   getConnectionInfo,
   createRemoteInstance, // <-- Adicionada
   getQrCodeForConnect,  // <-- Renomeada
+  restartInstance,
   logoutInstance,
   deleteInstance,
 };

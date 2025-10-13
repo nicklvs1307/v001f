@@ -11,6 +11,7 @@ const whatsappConfigService = {
   getQrCode: () => apiAuthenticated.post('/whatsapp-config/instance/connect'), // Corrigido e renomeado
   getConnectionInfo: () => apiAuthenticated.get('/whatsapp-config/instance/connection-info'),
   logoutInstance: () => apiAuthenticated.delete('/whatsapp-config/instance/logout'),
+  restartInstance: () => apiAuthenticated.put('/whatsapp-config/instance/restart'),
   deleteInstance: () => apiAuthenticated.delete('/whatsapp-config/instance'),
 };
 

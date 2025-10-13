@@ -55,10 +55,11 @@ const sendTenantMessage = async (tenantId, number, message) => {
   }
 
   try {
-    const response = await axios.post(`${config.url}/message/sendText`, { // Endpoint pode variar, ex: sendText
+    const response = await axios.post(`${config.url}/message/sendText`, {
       number: number,
       options: {
         delay: 1200,
+        presence: 'composing'
       },
       textMessage: {
         text: message,

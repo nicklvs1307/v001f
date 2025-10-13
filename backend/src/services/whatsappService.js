@@ -54,9 +54,15 @@ const sendTenantMessage = async (tenantId, number, message) => {
     throw new Error('A instância do WhatsApp desta loja não está conectada.');
   }
 
+  // Normaliza o número de telefone
+  let normalizedNumber = number.replace(/\D/g, '');
+  if (normalizedNumber.length <= 11) { // Se for um número brasileiro sem o código do país
+    normalizedNumber = '55' + normalizedNumber;
+  }
+
   try {
     const response = await axios.post(`${config.url}/message/sendText/${config.instanceName}`, {
-      number: number,
+      number: normalizedNumber, // Usa o número normalizado
       options: {
         delay: 1200,
         presence: 'composing'

@@ -1,5 +1,5 @@
 URL da solicitação
-https://apiloyalfood.towersfy.com/api/campanhas
+https://apiloyalfood.towersfy.com/api/clients/07adfe04-c0e5-4ad2-88c9-e935cf3e9832/send-message
 Método da solicitação
 POST
 Código de status
@@ -10,6 +10,6 @@ Endereço remoto
 {
     "status": "error",
     "code": "HTTP_500",
-    "message": "notNull Violation: Campanha.dataValidade cannot be null",
-    "details": "SequelizeValidationError: notNull Violation: Campanha.dataValidade cannot be null\n    at InstanceValidator._validate (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:50:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async InstanceValidator._validateAndRunHooks (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:60:7)\n    at async InstanceValidator.validate (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:54:12)\n    at async Campanha.save (/usr/src/app/node_modules/sequelize/lib/model.js:2426:7)\n    at async Campanha.create (/usr/src/app/node_modules/sequelize/lib/model.js:1362:12)\n    at async CampanhaController.create (/usr/src/app/src/controllers/campanhaController.js:21:24)"
+    "message": "Request failed with status code 400",
+    "details": "AxiosError: Request failed with status code 400\n    at settle (/usr/src/app/node_modules/axios/dist/node/axios.cjs:2097:12)\n    at IncomingMessage.handleStreamEnd (/usr/src/app/node_modules/axios/dist/node/axios.cjs:3305:11)\n    at IncomingMessage.emit (node:events:529:35)\n    at endReadableNT (node:internal/streams/readable:1400:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)\n    at Axios.request (/usr/src/app/node_modules/axios/dist/node/axios.cjs:4483:41)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Object.sendTenantMessage (/usr/src/app/src/services/whatsappService.js:58:22)\n    at async /usr/src/app/src/controllers/clientController.js:257:3"
 }

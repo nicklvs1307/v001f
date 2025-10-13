@@ -1,4 +1,5 @@
 import React, { useContext, useMemo } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import AuthContext, { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from '@mui/material/styles';
 import getDynamicTheme from './theme'; // Importar a função getDynamicTheme
@@ -6,11 +7,13 @@ import AppRoutes from './routes/AppRoutes'; // Importar o novo componente de rot
 
 function App() {
   return (
-    <AuthProvider>
-      <ThemeWrapper>
-        <AppRoutes /> {/* Usar o componente AppRoutes */}
-      </ThemeWrapper>
-    </AuthProvider>
+    <Router>
+      <AuthProvider>
+        <ThemeWrapper>
+          <AppRoutes /> {/* Usar o componente AppRoutes */}
+        </ThemeWrapper>
+      </AuthProvider>
+    </Router>
   );
 }
 

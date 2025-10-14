@@ -1,8 +1,9 @@
-RoulettePage.js:50 Erro ao buscar dados iniciais: TypeError: Cannot read properties of undefined (reading 'primaryColor')
-    at RoulettePage.js:42:57
-(anônimo) @ RoulettePage.js:50
+RoulettePage.js:42 DEBUG: Survey object in RoulettePage: undefined
+RoulettePage.js:53 Erro ao buscar dados iniciais: TypeError: Cannot read properties of undefined (reading 'roletaId')
+    at RoulettePage.js:43:82
+(anônimo) @ RoulettePage.js:53
 await in (anônimo)
-(anônimo) @ RoulettePage.js:58
+(anônimo) @ RoulettePage.js:61
 rl @ react-dom.production.min.js:243
 wc @ react-dom.production.min.js:285
 (anônimo) @ react-dom.production.min.js:281

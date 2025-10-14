@@ -39,7 +39,8 @@ class CampanhaService {
   }
 
   async update(id, data, tenantId) {
-    // ... (lógica existente)
+    console.log(`[CampanhaService] Updating campaign ${id} with data:`, data);
+    return this.campanhaRepository.update(id, data, tenantId);
   }
 
   async delete(id, tenantId) {

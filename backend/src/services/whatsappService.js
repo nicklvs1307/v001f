@@ -7,36 +7,38 @@ dotenv.config();
 
 const { SYSTEM_WHATSAPP_URL, SYSTEM_WHATSAPP_API_KEY, SYSTEM_WHATSAPP_INSTANCE } = process.env;
 
-/**
- * Envia uma mensagem usando a instância GLOBAL do sistema.
- * Usado para alertas para os administradores do tenant.
- */
 const sendSystemMessage = async (number, message) => {
   if (!SYSTEM_WHATSAPP_URL || !SYSTEM_WHATSAPP_API_KEY || !SYSTEM_WHATSAPP_INSTANCE) {
     console.error('Variáveis de ambiente do WhatsApp do sistema não configuradas.');
     throw new Error('WhatsApp do sistema não configurado.');
   }
 
-  // Normaliza o número de telefone
-  let normalizedNumber = String(number).replace(/\D/g, '');
-  if (normalizedNumber.length <= 11) {
-    normalizedNumber = '55' + normalizedNumber;
+  console.log(`[WhatsApp Service] Enviando mensagem de sistema. Número original: ${number}`);
+  let digitsOnly = String(number).replace(/\D/g, '');
+
+  if (digitsOnly.startsWith('55')) {
+    digitsOnly = digitsOnly.substring(2);
   }
+
+  if (digitsOnly.length === 11) {
+    const ddd = parseInt(digitsOnly.substring(0, 2), 10);
+    if (ddd >= 29 && digitsOnly.substring(2, 3) === '9') {
+      console.log(`[WhatsApp Service] DDD ${ddd} >= 29, removendo nono dígito.`);
+      digitsOnly = digitsOnly.substring(0, 2) + digitsOnly.substring(3);
+    }
+  }
+
+  const normalizedNumber = '55' + digitsOnly;
   const finalNumber = `${normalizedNumber}@s.whatsapp.net`;
+  console.log(`[WhatsApp Service] Número final para API (sistema): ${finalNumber}`);
 
   try {
     const response = await axios.post(`${SYSTEM_WHATSAPP_URL}/message/sendText/${SYSTEM_WHATSAPP_INSTANCE}`, {
       number: finalNumber,
       text: message,
-      options: {
-        delay: 1200,
-        presence: 'composing'
-      }
+      options: { delay: 1200, presence: 'composing' }
     }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SYSTEM_WHATSAPP_API_KEY,
-      },
+      headers: { 'Content-Type': 'application/json', 'apikey': SYSTEM_WHATSAPP_API_KEY },
     });
 
     console.log(`Mensagem de sistema enviada para ${finalNumber}:`, response.data);
@@ -52,51 +54,42 @@ const sendSystemMessage = async (number, message) => {
   }
 };
 
-/**
- * Envia uma mensagem usando a instância de um TENANT específico.
- * Usado para campanhas, lembretes, etc., para os clientes do tenant.
- */
 const sendTenantMessage = async (tenantId, number, message) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
 
   if (!config || !config.url || !config.apiKey || !config.instanceName) {
-    console.error(`Configuração do WhatsApp não encontrada ou incompleta para o tenant ${tenantId}`);
     throw new Error('A configuração do WhatsApp para esta loja não foi encontrada ou está incompleta.');
   }
-
   if (config.instanceStatus !== 'connected') {
-    console.error(`A instância do WhatsApp para o tenant ${tenantId} não está conectada.`);
     throw new Error('A instância do WhatsApp desta loja não está conectada.');
   }
 
-  // --- DEBUGGING LOGS ---
-  console.log(`[WhatsApp Service] Iniciando envio para o tenant: ${tenantId}`);
-  console.log(`[WhatsApp Service] Número original recebido: ${number}`);
+  console.log(`[WhatsApp Service] Enviando mensagem de tenant ${tenantId}. Número original: ${number}`);
+  let digitsOnly = String(number).replace(/\D/g, '');
 
-  // Normaliza o número de telefone
-  let normalizedNumber = number.replace(/\D/g, '');
-  if (normalizedNumber.length <= 11) { // Se for um número brasileiro sem o código do país
-    normalizedNumber = '55' + normalizedNumber;
+  if (digitsOnly.startsWith('55')) {
+    digitsOnly = digitsOnly.substring(2);
   }
-  console.log(`[WhatsApp Service] Número após normalização (dígitos + código do país): ${normalizedNumber}`);
 
+  if (digitsOnly.length === 11) {
+    const ddd = parseInt(digitsOnly.substring(0, 2), 10);
+    if (ddd >= 29 && digitsOnly.substring(2, 3) === '9') {
+      console.log(`[WhatsApp Service] DDD ${ddd} >= 29, removendo nono dígito.`);
+      digitsOnly = digitsOnly.substring(0, 2) + digitsOnly.substring(3);
+    }
+  }
+
+  const normalizedNumber = '55' + digitsOnly;
   const finalNumber = `${normalizedNumber}@s.whatsapp.net`;
-  console.log(`[WhatsApp Service] Número final enviado para a API: ${finalNumber}`);
-  // --- FIM DEBUGGING LOGS ---
+  console.log(`[WhatsApp Service] Número final para API (tenant): ${finalNumber}`);
 
   try {
     const response = await axios.post(`${config.url}/message/sendText/${config.instanceName}`, {
       number: finalNumber,
-      text: message, // O texto da mensagem vai diretamente aqui
-      options: {
-        delay: 1200,
-        presence: 'composing'
-      }
+      text: message,
+      options: { delay: 1200, presence: 'composing' }
     }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': config.apiKey,
-      },
+      headers: { 'Content-Type': 'application/json', 'apikey': config.apiKey },
     });
 
     console.log(`Mensagem do tenant ${tenantId} enviada para ${number}:`, response.data);

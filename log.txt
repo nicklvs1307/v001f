@@ -20,28 +20,22 @@ Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStat
 [DEBUG] Interpreted newStatus for roma-pizzaria--chopperiaaa: connected
 [DEBUG] instanceStatus for roma-pizzaria--chopperiaaa is already connected. No update needed.
 [Auth Middleware] Request: PUT /api/whatsapp-config/automations
-[Auth Middleware] Request: POST /api/whatsapp-templates
 Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+[Auth Middleware] Request: POST /api/whatsapp-templates
 Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
 Executing (default): UPDATE "whatsapp_configs" SET "sendPrizeMessage"=$1,"prizeMessageTemplate"=$2,"updatedAt"=$3 WHERE "tenantId" = $4 RETURNING "id","url","apiKey","instanceName","instanceStatus","tenantId","sendPrizeMessage","prizeMessageTemplate","createdAt","updatedAt"
 Executing (default): SELECT "id", "tenantId", "type", "isEnabled", "daysBefore", "message", "createdAt", "updatedAt" FROM "whatsapp_templates" AS "WhatsappTemplate" WHERE "WhatsappTemplate"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "WhatsappTemplate"."type" = 'COUPON_REMINDER' LIMIT 1;
 [Auth Middleware] Request: POST /api/auth/verify-token
 Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
 [Auth Middleware] Request: GET /api/whatsapp-templates?type=COUPON_REMINDER
 Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
 Executing (default): SELECT "id", "tenantId", "type", "isEnabled", "daysBefore", "message", "createdAt", "updatedAt" FROM "whatsapp_templates" AS "WhatsappTemplate" WHERE "WhatsappTemplate"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "WhatsappTemplate"."type" = 'COUPON_REMINDER' LIMIT 1;
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
 Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
 [DEBUG] Evolution API connectionState response for roma-pizzaria--chopperiaaa: {
   instance: { instanceName: 'roma-pizzaria--chopperiaaa', state: 'open' }
 }
 [DEBUG] Interpreted newStatus for roma-pizzaria--chopperiaaa: connected
 [DEBUG] instanceStatus for roma-pizzaria--chopperiaaa is already connected. No update needed.
-[Auth Middleware] Request: POST /api/whatsapp-templates
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-[Auth Middleware] Request: PUT /api/whatsapp-config/automations
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "tenantId", "type", "isEnabled", "daysBefore", "message", "createdAt", "updatedAt" FROM "whatsapp_templates" AS "WhatsappTemplate" WHERE "WhatsappTemplate"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "WhatsappTemplate"."type" = 'COUPON_REMINDER' LIMIT 1;
-Executing (default): UPDATE "whatsapp_configs" SET "sendPrizeMessage"=$1,"prizeMessageTemplate"=$2,"updatedAt"=$3 WHERE "tenantId" = $4 RETURNING "id","url","apiKey","instanceName","instanceStatus","tenantId","sendPrizeMessage","prizeMessageTemplate","createdAt","updatedAt"

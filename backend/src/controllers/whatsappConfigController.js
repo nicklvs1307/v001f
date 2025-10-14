@@ -72,7 +72,7 @@ const whatsappConfigController = {
       prizeMessageTemplate,
     };
 
-    const config = await whatsappConfigRepository.updateAutomations(tenantId, automationData);
+    const config = await whatsappConfigRepository.update(tenantId, automationData);
 
     res.json(config);
   }),

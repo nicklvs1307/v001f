@@ -64,6 +64,7 @@ const whatsappConfigController = {
   }),
 
   updateAutomationsConfig: asyncHandler(async (req, res) => {
+    console.log('[whatsappConfigController] updateAutomationsConfig req.body:', req.body);
     const { tenantId } = req.user;
     const { sendPrizeMessage, prizeMessageTemplate } = req.body;
 

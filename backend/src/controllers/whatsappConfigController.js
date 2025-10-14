@@ -74,10 +74,13 @@ const whatsappConfigController = {
       throw new ApiError(404, "Configuração do WhatsApp não encontrada. Configure a conexão primeiro.");
     }
 
+    console.log('[whatsappConfigController] Before config.update()');
     const updatedConfig = await config.update({
       sendPrizeMessage,
       prizeMessageTemplate,
     });
+    console.log('[whatsappConfigController] After config.update()');
+    console.log('[whatsappConfigController] updatedConfig:', updatedConfig);
 
     res.json(updatedConfig);
   }),

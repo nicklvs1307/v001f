@@ -88,8 +88,15 @@ const whatsappConfigController = {
       throw new ApiError(400, "A chave da API do WhatsApp é obrigatória.");
     }
 
-    const data = { ...req.body, tenantId };
-    const config = await whatsappConfigRepository.upsert(data);
+    const existingConfig = await whatsappConfigRepository.findByTenant(tenantId);
+
+    let config;
+    if (existingConfig) {
+      config = await whatsappConfigRepository.updateByTenant(tenantId, { url, apiKey });
+    } else {
+      config = await whatsappConfigRepository.create({ tenantId, url, apiKey });
+    }
+
     res.json(config);
   }),
 

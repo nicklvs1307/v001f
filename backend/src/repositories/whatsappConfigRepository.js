@@ -6,6 +6,10 @@ class WhatsappConfigRepository {
     return await WhatsappConfig.findOne({ where: { tenantId } });
   }
 
+  async create(data) {
+    return await WhatsappConfig.create(data);
+  }
+
   async updateByTenant(tenantId, data) {
     await WhatsappConfig.update(data, { where: { tenantId } });
     return await this.findByTenant(tenantId);

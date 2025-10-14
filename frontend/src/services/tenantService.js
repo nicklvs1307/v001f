@@ -7,5 +7,3 @@ const tenantService = {
 };
 
 export default tenantService;
-
-export default tenantService;

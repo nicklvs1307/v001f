@@ -1,47 +1,25 @@
-react-dom.production.min.js:188 TypeError: j.A.getAllTenants is not a function
-    at WhatsappConfigPage.js:23:23
-    at rl (react-dom.production.min.js:243:332)
-    at wc (react-dom.production.min.js:285:111)
-    at lc (react-dom.production.min.js:272:185)
-    at Vo (react-dom.production.min.js:127:105)
-    at react-dom.production.min.js:282:470
-    at Ac (react-dom.production.min.js:280:398)
-    at oc (react-dom.production.min.js:269:269)
-    at w (scheduler.production.min.js:13:203)
-    at MessagePort.O (scheduler.production.min.js:14:128)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-lc @ react-dom.production.min.js:272
-Vo @ react-dom.production.min.js:127
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-dom.production.min.js:127 Uncaught TypeError: j.A.getAllTenants is not a function
-    at WhatsappConfigPage.js:23:23
-    at rl (react-dom.production.min.js:243:332)
-    at wc (react-dom.production.min.js:285:111)
-    at lc (react-dom.production.min.js:272:185)
-    at Vo (react-dom.production.min.js:127:105)
-    at react-dom.production.min.js:282:470
-    at Ac (react-dom.production.min.js:280:398)
-    at oc (react-dom.production.min.js:269:269)
-    at w (scheduler.production.min.js:13:203)
-    at MessagePort.O (scheduler.production.min.js:14:128)
-(anônimo) @ WhatsappConfigPage.js:23
-rl @ react-dom.production.min.js:243
-wc @ react-dom.production.min.js:285
-lc @ react-dom.production.min.js:272
-Vo @ react-dom.production.min.js:127
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
+ => ERROR [build 6/6] RUN npm run build                                                      147.0s
+------
+ > [build 6/6] RUN npm run build:
+0.999
+0.999 > frontend@0.1.0 build
+0.999 > react-scripts build
+0.999
+4.916 Creating an optimized production build...
+146.7 Failed to compile.
+146.7
+146.7 [eslint]
+146.7 src/services/tenantService.js
+146.7 Syntax error: Only one default export allowed per module. (11:0) (11:undefined)
+146.7
+146.7
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

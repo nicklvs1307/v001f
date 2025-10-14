@@ -2,7 +2,8 @@ const { WhatsappConfig, Tenant } = require('../../models');
 
 class WhatsappConfigRepository {
   async findByTenant(tenantId) {
-    return await WhatsappConfig.findOne({ where: { tenantId }, raw: true });
+    const { WhatsappConfig } = require('../../models');
+    return await WhatsappConfig.findOne({ where: { tenantId } });
   }
 
   async upsert(tenantId, data) {
@@ -11,13 +12,8 @@ class WhatsappConfigRepository {
     const existingConfig = await this.findByTenant(tenantId);
 
     if (existingConfig) {
-      // O findByTenant retorna um objeto raw, então não podemos usar o .update() da instância.
-      // Usamos o update do modelo, que é o que eu tentei antes, mas agora faz parte de uma lógica de upsert.
-      const [rowCount] = await WhatsappConfig.update(data, { where: { tenantId } });
-      // Retorna os dados atualizados
-      return this.findByTenant(tenantId);
+      return existingConfig.update(data);
     } else {
-      // Cria um novo registro se não existir
       return WhatsappConfig.create({ ...data, tenantId });
     }
   }

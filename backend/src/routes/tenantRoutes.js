@@ -26,6 +26,7 @@ router
 
 // Rota para obter o tenant do usuário logado
 router.get("/me", authorize("tenants:read"), tenantController.getMe);
+router.put("/me", authorize("tenants:update"), tenantController.updateMe);
 
 // Rota para upload de logo de tenant
 router.post(

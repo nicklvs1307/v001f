@@ -11,11 +11,12 @@ class WhatsappConfigRepository {
 
     // Usando query bruta para contornar qualquer problema com hooks ou getters do Sequelize
     const [results] = await sequelize.query(
-      'UPDATE whatsapp_configs SET "sendPrizeMessage" = :sendPrizeMessage, "prizeMessageTemplate" = :prizeMessageTemplate, "updatedAt" = :now WHERE "tenantId" = :tenantId',
+      'UPDATE whatsapp_configs SET "sendPrizeMessage" = :sendPrizeMessage, "prizeMessageTemplate" = :prizeMessageTemplate, "dailyReportEnabled" = :dailyReportEnabled, "updatedAt" = :now WHERE "tenantId" = :tenantId',
       {
         replacements: {
           sendPrizeMessage,
           prizeMessageTemplate,
+          dailyReportEnabled,
           tenantId,
           now: new Date(),
         },

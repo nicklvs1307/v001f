@@ -66,17 +66,14 @@ const whatsappConfigController = {
 
   updateAutomationsConfig: asyncHandler(async (req, res) => {
     const { tenantId } = req.user;
-    const { reportPhoneNumbers, ...configData } = req.body;
+    
+    // Apenas os campos de whatsapp_configs são tratados aqui
+    const { sendPrizeMessage, prizeMessageTemplate, dailyReportEnabled } = req.body;
+    const configData = { sendPrizeMessage, prizeMessageTemplate, dailyReportEnabled };
 
-    // 1. Atualiza a tabela whatsapp_configs
     await whatsappConfigRepository.update(tenantId, configData);
 
-    // 2. Atualiza a tabela tenants
-    if (reportPhoneNumbers !== undefined) {
-      await tenantRepository.update(tenantId, { reportPhoneNumber: reportPhoneNumbers });
-    }
-
-    res.status(200).json({ message: 'Automações atualizadas com sucesso.' });
+    res.status(200).json({ message: 'Configurações de automação do WhatsApp atualizadas com sucesso.' });
   }),
 
   // --- Rotas para o Super Admin ---

@@ -149,6 +149,7 @@ const AutomationsPage = () => {
 
       await Promise.all([
         whatsappConfigService.update(configPayload),
+        tenantService.update({ reportPhoneNumber: configPayload.reportPhoneNumbers }), // Salva o reportPhoneNumber no tenant
         whatsappTemplateService.upsert(templatePayload),
       ]);
 

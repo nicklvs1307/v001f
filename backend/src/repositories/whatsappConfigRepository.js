@@ -36,7 +36,14 @@ class WhatsappConfigRepository {
     if (!config) {
       throw new Error('WhatsappConfig not found for this tenant');
     }
-    return await config.update(data);
+
+    // Atribuição manual para garantir a atualização correta
+    config.sendPrizeMessage = data.sendPrizeMessage;
+    if (data.prizeMessageTemplate !== undefined) {
+      config.prizeMessageTemplate = data.prizeMessageTemplate;
+    }
+
+    return await config.save();
   }
 
   async deleteByTenantId(tenantId) {

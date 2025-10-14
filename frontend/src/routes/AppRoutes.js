@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { CircularProgress, Box } from '@mui/material';
 import PrivateRoute from './PrivateRoute';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import PublicLayout from '../components/layout/PublicLayout'; // Importar PublicLayout
 import LoginPage from '../pages/LoginPage';
 import PublicSurveyPage from '../pages/PublicSurveyPage';
 import ClientRegistrationPage from '../pages/ClientRegistrationPage';
@@ -63,7 +64,7 @@ const AppRoutes = () => {
         <Route path="/identificacao-cliente/:tenantId/:pesquisaId" element={<ClientIdentificationPage />} />
         <Route path="/confirmar-cliente/:surveyId" element={<ConfirmClientPage />} />
         <Route path="/cadastro-cliente/:tenantId/:pesquisaId" element={<ClientRegistrationPage />} />
-        <Route path="/roleta/:tenantId/:pesquisaId/:clientId" element={<RoulettePage />} />
+        <Route path="/roleta/:tenantId/:pesquisaId/:clientId" element={<PublicLayout><RoulettePage /></PublicLayout>} />
         <Route path="/parabens" element={<CongratulationsPage />} />
         <Route path="/validar-cupom/:cupomId" element={<CupomValidationPage />} />
         <Route path="/agradecimento" element={<ThankYouPage />} />

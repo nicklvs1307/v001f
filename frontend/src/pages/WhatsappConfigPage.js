@@ -21,7 +21,7 @@ const SuperAdminView = () => {
 
     useEffect(() => {
         tenantService.getAllTenants()
-            .then(response => setTenants(response || []))
+            .then(response => setTenants(response.data || []))
             .catch(() => {
                 setSnackbarMessage('Falha ao buscar tenants.');
                 setSnackbarSeverity('error');

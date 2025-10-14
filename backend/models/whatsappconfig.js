@@ -106,6 +106,34 @@ module.exports = (sequelize, DataTypes) => {
     reportPhoneNumbers: {
       type: DataTypes.TEXT,
       allowNull: true,
+    },
+    birthdayAutomationEnabled: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    birthdayMessageTemplate: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      defaultValue: 'Feliz aniversário, {{cliente}}! Ganhe {{recompensa}} com o cupom {{cupom}}.',
+    },
+    birthdayDaysBefore: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    birthdayRewardType: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    }, // 'recompensa', 'roleta'
+    birthdayRewardId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+    birthdayCouponValidityDays: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 30,
     }
   }, {
     sequelize,

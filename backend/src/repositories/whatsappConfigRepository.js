@@ -29,6 +29,15 @@ class WhatsappConfigRepository {
     });
   }
 
+  async findAllWithBirthdayAutomationEnabled() {
+    return await WhatsappConfig.findAll({
+      where: {
+        birthdayAutomationEnabled: true,
+      },
+      raw: true,
+    });
+  }
+
   async deleteByTenantId(tenantId) {
     return await WhatsappConfig.destroy({ where: { tenantId } });
   }

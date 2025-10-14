@@ -13,7 +13,7 @@ const getAllRecompensas = async (tenantId) => {
   });
 };
 
-const getRecompensaById = async (id, tenantId = null) => {
+const findById = async (id, tenantId = null) => {
   const whereClause = tenantId ? { id, tenantId } : { id };
   return Recompensa.findOne({ where: whereClause });
 };
@@ -33,7 +33,7 @@ const deleteRecompensa = async (id, tenantId) => {
 module.exports = {
   createRecompensa,
   getAllRecompensas,
-  getRecompensaById,
+  findById,
   updateRecompensa,
   deleteRecompensa,
 };

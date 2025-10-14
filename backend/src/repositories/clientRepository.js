@@ -1,8 +1,22 @@
-const { Client, Resposta } = require('../../models');
+const { Client, Resposta, sequelize } = require('../../models');
 const { Op, where, fn, literal } = require('sequelize');
 const ApiError = require("../errors/ApiError");
 
 class ClientRepository {
+  async findClientsByBirthdayMonthAndDay(month, day, tenantId) {
+    return Client.findAll({
+      where: {
+        tenantId,
+        [Op.and]: [
+          sequelize.where(sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "birthDate"')), month),
+          sequelize.where(sequelize.fn('EXTRACT', sequelize.literal('DAY FROM "birthDate"')), day),
+        ],
+      },
+      attributes: ['id', 'name', 'phone', 'birthDate'],
+      raw: true,
+    });
+  }
+
   async findCuriosos(tenantId) {
     return Client.findAll({
       where: { tenantId },

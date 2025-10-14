@@ -17,4 +17,11 @@ router.put(
   automationController.updateAutomations
 );
 
+router.post(
+  '/daily-report/test',
+  protect,
+  authorize(['Admin']),
+  automationController.sendDailyReportTest
+);
+
 module.exports = router;

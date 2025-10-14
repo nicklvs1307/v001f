@@ -6,7 +6,7 @@ class CupomRepository {
     return Cupom.bulkCreate(cupons);
   }
 
-  async createCupom(cupomData) {
+  async create(cupomData) {
     return Cupom.create(cupomData);
   }
 

@@ -37,9 +37,9 @@ const RoulettePage = () => {
       ]);
 
       setSurvey(surveyResponse.data);
-      setTenant(tenantResponse.data);
+      setTenant(tenantResponse);
 
-      const theme = getDynamicTheme(tenantResponse.data.primaryColor, tenantResponse.data.secondaryColor);
+      const theme = getDynamicTheme(tenantResponse.primaryColor, tenantResponse.secondaryColor);
       setDynamicTheme(theme);
 
       // Carregar a configuração da roleta

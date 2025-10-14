@@ -1,40 +1,16 @@
-URL da solicitação
-https://apiloyalfood.towersfy.com/api/roletas
-Método da solicitação
-GET
-Código de status
-304 Not Modified
-Endereço remoto
-95.217.16.187:443
-{
-    "roletas": [
-        {
-            "id": "f40e45de-fb16-477d-b385-85eb9d38304c",
-            "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd",
-            "nome": "Roleta Salão",
-            "descricao": "Roleta de Premios para o salão",
-            "active": true,
-            "createdAt": "2025-09-27T19:54:41.691Z",
-            "updatedAt": "2025-09-27T19:54:41.691Z"
-        },
-        {
-            "id": "738bef61-6269-4219-9391-a393b22c0e82",
-            "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd",
-            "nome": "a",
-            "descricao": "a",
-            "active": true,
-            "createdAt": "2025-10-14T20:29:57.492Z",
-            "updatedAt": "2025-10-14T20:29:57.492Z"
-        }
-    ]
-}
-
-RoulettePage.js:50 Erro ao buscar dados iniciais: TypeError: On.getSurvey is not a function
-    at RoulettePage.js:35:29
-    at RoulettePage.js:58:5
+RoulettePage.js:34 DEBUG: publicSurveyService no RoulettePage: {getPublicSurveyById: ƒ, getPublicAtendentes: ƒ, getPublicTenantById: ƒ, submitSurveyResponses: ƒ, submitSurveyWithClient: ƒ}getPublicAtendentes: async e=> {…}getPublicSurveyById: async e=> {…}getPublicTenantById: async e=> {…}submitSurveyResponses: async ƒ (e,t)submitSurveyWithClient: async e=> {…}[[Prototype]]: Object
+RoulettePage.js:52 Erro ao buscar dados iniciais: TypeError: zn.A.getTenantById is not a function
+    at RoulettePage.js:38:23
+    at RoulettePage.js:60:5
     at rl (react-dom.production.min.js:243:332)
     at wc (react-dom.production.min.js:285:111)
     at react-dom.production.min.js:281:391
     at w (scheduler.production.min.js:13:203)
     at MessagePort.O (scheduler.production.min.js:14:128)
-(anônimo) @ RoulettePage.js:50
+(anônimo) @ RoulettePage.js:52
+(anônimo) @ RoulettePage.js:60
+rl @ react-dom.production.min.js:243
+wc @ react-dom.production.min.js:285
+(anônimo) @ react-dom.production.min.js:281
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14

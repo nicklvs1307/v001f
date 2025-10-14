@@ -31,11 +31,9 @@ const RoulettePage = () => {
         return;
       }
 
-      console.log("DEBUG: publicSurveyService no RoulettePage:", publicSurveyService);
-
       const [surveyResponse, tenantResponse] = await Promise.all([
         publicSurveyService.getPublicSurveyById(pesquisaId),
-        tenantService.getTenantById(tenantId),
+        publicSurveyService.getPublicTenantById(tenantId),
       ]);
 
       setSurvey(surveyResponse.data);

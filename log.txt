@@ -1,25 +1,40 @@
- => ERROR [build 6/6] RUN npm run build                                                      156.6s
-------
- > [build 6/6] RUN npm run build:
-0.663
-0.663 > frontend@0.1.0 build
-0.663 > react-scripts build
-0.663
-4.411 Creating an optimized production build...
-155.4 Failed to compile.
-155.4
-155.4 [eslint]
-155.4 src/pages/RoulettePage.js
-155.4 Syntax error: Identifier 'SpinTheWheel' has already been declared. (79:7) (79:7)
-155.4
-155.4
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+URL da solicitação
+https://apiloyalfood.towersfy.com/api/roletas
+Método da solicitação
+GET
+Código de status
+304 Not Modified
+Endereço remoto
+95.217.16.187:443
+{
+    "roletas": [
+        {
+            "id": "f40e45de-fb16-477d-b385-85eb9d38304c",
+            "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd",
+            "nome": "Roleta Salão",
+            "descricao": "Roleta de Premios para o salão",
+            "active": true,
+            "createdAt": "2025-09-27T19:54:41.691Z",
+            "updatedAt": "2025-09-27T19:54:41.691Z"
+        },
+        {
+            "id": "738bef61-6269-4219-9391-a393b22c0e82",
+            "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd",
+            "nome": "a",
+            "descricao": "a",
+            "active": true,
+            "createdAt": "2025-10-14T20:29:57.492Z",
+            "updatedAt": "2025-10-14T20:29:57.492Z"
+        }
+    ]
+}
+
+RoulettePage.js:50 Erro ao buscar dados iniciais: TypeError: On.getSurvey is not a function
+    at RoulettePage.js:35:29
+    at RoulettePage.js:58:5
+    at rl (react-dom.production.min.js:243:332)
+    at wc (react-dom.production.min.js:285:111)
+    at react-dom.production.min.js:281:391
+    at w (scheduler.production.min.js:13:203)
+    at MessagePort.O (scheduler.production.min.js:14:128)
+(anônimo) @ RoulettePage.js:50

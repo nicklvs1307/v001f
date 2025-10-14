@@ -44,7 +44,7 @@ const RoletasPage = () => {
     try {
       setLoading(true);
       const response = await roletaService.getAll();
-      setRoletas(response.data && Array.isArray(response.data) ? response.data : []);
+      setRoletas(response.data.roletas && Array.isArray(response.data.roletas) ? response.data.roletas : []);
     } catch (err) {
       setError(err.message || 'Erro ao buscar roletas.');
     } finally {

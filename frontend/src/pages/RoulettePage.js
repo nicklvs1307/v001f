@@ -75,154 +75,125 @@ const RoulettePage = () => {
     );
 };
 
-// UI Component
-const RouletteComponent = ({ tenant, survey }) => {
-    const { clientId, pesquisaId } = useParams(); // Obter pesquisaId aqui
-    const { t } = useTranslation();
-    const theme = useTheme();
-    const navigate = useNavigate();
-    const [config, setConfig] = useState(null);
-    const [items, setItems] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [spinning, setSpinning] = useState(false);
-    const [winningItem, setWinningItem] = useState(null);
-    const [winningIndex, setWinningIndex] = useState(-1);
-    const [generatedCupom, setGeneratedCupom] = useState(null);
-    const [hasSpun, setHasSpun] = useState(false);
-    const { showNotification } = useNotification();
+import publicRoletaService from '../services/publicRoletaService';
+import SpinTheWheel from '../components/roleta/SpinTheWheel';
 
-    useEffect(() => {
-        const fetchRoletaConfig = async () => {
-            if (!pesquisaId || !clientId) {
-                showNotification(t('roulette.error_ids_missing'), 'warning');
-                setLoading(false);
-                return;
-            }
-            try {
-                const configData = await roletaService.getRoletaConfig(pesquisaId, clientId);
-                setConfig(configData);
-                setItems(configData.items || []);
-                setHasSpun(configData.hasSpun);
-            } catch (err) {
-                showNotification(err.response?.data?.message || err.message || t('roulette.error_fetching_config'), 'error');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchRoletaConfig();
-    }, [pesquisaId, clientId, t, showNotification]);
+const RoulettePage = () => {
+  const { tenantId, pesquisaId, clientId } = useParams();
+  const [survey, setSurvey] = useState(null);
+  const [roletaConfig, setRoletaConfig] = useState({ items: [], hasSpun: false });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [spinResult, setSpinResult] = useState(null);
+  const [tenant, setTenant] = useState(null);
 
-    const handleSpin = async () => {
-        if (hasSpun) {
-            showNotification(t('roulette.already_spun'), 'warning');
-            return;
-        }
-        if (!pesquisaId || !clientId) {
-            showNotification(t('roulette.error_ids_missing'), 'warning');
-            return;
-        }
-        setSpinning(true);
-        try {
-            const result = await roletaService.spin(pesquisaId, clientId); // Passar pesquisaId
-            const wonItem = result.premio;
-            const generatedCupomData = result.cupom;
-            const foundIndex = items.findIndex(item => item.recompensa.name === wonItem.recompensa.name);
-            if (foundIndex === -1) {
-                showNotification(t('roulette.error_winning_item_not_found'), 'error');
-                setSpinning(false);
-                return;
-            }
-            setWinningItem(wonItem);
-            setWinningIndex(foundIndex);
-            setGeneratedCupom(generatedCupomData);
-            setHasSpun(true); // Marcar que o usuário já girou
-        } catch (err) {
-            showNotification(err.response?.data?.message || err.message || t('roulette.error_spinning_wheel'), 'error');
-            if (err.response?.status === 409) {
-                setHasSpun(true);
-            }
-            setSpinning(false);
-        }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const surveyResponse = await publicSurveyService.getSurvey(pesquisaId);
+        setSurvey(surveyResponse.data);
+
+        const tenantResponse = await tenantService.getTenantById(tenantId);
+        setTenant(tenantResponse.data);
+
+        // Carregar a configuração da roleta
+        const configData = await publicRoletaService.getRoletaConfig(pesquisaId, clientId);
+        setRoletaConfig(configData.data);
+
+      } catch (err) {
+        setError(err.message || 'Erro ao carregar dados da pesquisa ou roleta.');
+      } finally {
+        setLoading(false);
+      }
     };
+    fetchData();
+  }, [pesquisaId, clientId, tenantId]);
 
-    const handleAnimationComplete = () => {
-        setSpinning(false);
-        if (winningItem) {
-            showNotification(t('roulette.win_message'), 'success');
-            navigate(`/parabens`, { state: { premio: winningItem, cupom: generatedCupom, tenantId: tenant.id } });
-        } else {
-            console.error("Winning item is null after spin animation completes.");
-            showNotification(t('roulette.error_no_winning_item'), 'error');
-        }
-    };
-
-    if (loading) {
-        return <Box sx={{ p: 4, textAlign: 'center' }}><CircularProgress /></Box>;
+  const handleSpin = async () => {
+    try {
+      setError('');
+      const result = await publicRoletaService.spinRoleta(pesquisaId, clientId);
+      setSpinResult(result.data);
+      // Atualizar o estado para refletir que a roleta foi girada
+      setRoletaConfig(prev => ({ ...prev, hasSpun: true }));
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || 'Erro ao girar a roleta.');
     }
+  };
 
-    if (items.length === 0) {
-        return <Box sx={{ p: 4, textAlign: 'center' }}><Alert severity="warning">{t('roulette.no_items_configured')}</Alert></Box>;
-    }
-
+  if (loading) {
     return (
-        <Box sx={{
-            background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.secondary.dark} 100%)`,
-            minHeight: '100vh',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-around',
-            alignItems: 'center',
-            textAlign: 'center',
-            p: { xs: 2, sm: 3 },
-            color: 'white'
-        }}>
-            <Box>
-                {tenant?.logoUrl && (
-                    <Box sx={{ mb: 2 }}>
-                        <img src={`${process.env.REACT_APP_API_URL}${tenant.logoUrl}`} alt="Logo" style={{ maxHeight: '50px', maxWidth: '150px', objectFit: 'contain' }} />
-                    </Box>
-                )}
-                <Typography variant="h2" component="h1" gutterBottom sx={{ fontWeight: 'bold', textShadow: '0 2px 4px rgba(0,0,0,0.3)', fontSize: { xs: '2.5rem', sm: '3.5rem' } }}>
-                    {config?.title || t('roulette.title')}
-                </Typography>
-                <Typography variant="h6" sx={{ mb: 3, opacity: 0.9, fontSize: { xs: '1rem', sm: '1.2rem' } }}>
-                    {config?.description || t('roulette.description')}
-                </Typography>
-            </Box>
-
-            {hasSpun && (
-                <Alert severity="info" sx={{ mb: 2 }}>
-                    {t('roulette.already_spun_message')}
-                </Alert>
-            )}
-
-            <SpinTheWheel items={items} winningItem={winningItem} winningIndex={winningIndex} onAnimationComplete={handleAnimationComplete} />
-
-            <Button
-                variant="contained"
-                color="primary"
-                size="large"
-                onClick={handleSpin}
-                disabled={spinning || winningIndex !== -1 || hasSpun}
-                sx={{
-                    mt: 3,
-                    px: 6,
-                    py: 2,
-                    borderRadius: '50px',
-                    fontWeight: 'bold',
-                    fontSize: { xs: '1rem', sm: '1.2rem' },
-                    boxShadow: `0 0 20px ${theme.palette.primary.light}`,
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                        transform: 'scale(1.05)',
-                        boxShadow: `0 0 30px ${theme.palette.primary.light}`,
-                    }
-                }}
-            >
-                {spinning ? <CircularProgress size={28} color="inherit" /> : (hasSpun ? t('roulette.spun_button') : t('roulette.spin_button'))}
-            </Button>
-        </Box>
+      <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </Container>
     );
+  }
+
+  if (error) {
+    return (
+      <Container sx={{ mt: 4, textAlign: 'center' }}>
+        <Alert severity="error">{error}</Alert>
+      </Container>
+    );
+  }
+
+  if (!survey || !survey.roletaId) {
+    return (
+      <Container sx={{ mt: 4, textAlign: 'center' }}>
+        <Alert severity="warning">{tenant?.name || 'O restaurante'} não configurou uma roleta para esta pesquisa.</Alert>
+      </Container>
+    );
+  }
+
+  return (
+    <Container maxWidth="md" sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
+      <Typography variant="h4" component="h1" gutterBottom>
+        Gire a Roleta e Ganhe um Prêmio!
+      </Typography>
+      <Typography variant="subtitle1" gutterBottom>
+        {survey.title}
+      </Typography>
+
+      {roletaConfig.hasSpun && !spinResult && (
+        <Alert severity="info" sx={{ mb: 2 }}>
+          Você já girou a roleta para esta pesquisa nas últimas 24 horas. Volte amanhã para tentar novamente!
+        </Alert>
+      )}
+
+      <Box sx={{ my: 4 }}>
+        <SpinTheWheel
+          segments={roletaConfig.items.map(item => item.name)}
+          segColors={['#FFD700', '#FF6347', '#3CB371', '#6A5ACD', '#FF8C00', '#4682B4']}
+          onFinished={(winner) => console.log('Vencedor:', winner)}
+          primaryColor='#1976d2'
+          contrastColor='#ffffff'
+          buttonText={roletaConfig.hasSpun ? 'Já Girou' : 'GIRAR'}
+          isSpinning={false} // Controlar isso com o estado de loading do handleSpin
+          disabled={roletaConfig.hasSpun || !roletaConfig.items.length}
+          onSpin={handleSpin}
+        />
+      </Box>
+
+      {spinResult && (
+        <Box sx={{ mt: 4, p: 3, border: '1px solid #ddd', borderRadius: '8px', bgcolor: '#f9f9f9' }}>
+          <Typography variant="h5" color="primary" gutterBottom>
+            Parabéns! Você ganhou:
+          </Typography>
+          <Typography variant="h6">{spinResult.premio.nome}</Typography>
+          <Typography variant="body1">{spinResult.premio.descricao}</Typography>
+          <Typography variant="body2" sx={{ mt: 2 }}>
+            Use o cupom: <strong>{spinResult.cupom.codigo}</strong>
+          </Typography>
+          <Typography variant="body2">
+            Válido até: {new Date(spinResult.cupom.dataValidade).toLocaleDateString('pt-BR')}
+          </Typography>
+        </Box>
+      )}
+    </Container>
+  );
 };
+
+export default RoulettePage;
 
 export default RoulettePage;

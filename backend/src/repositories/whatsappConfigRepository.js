@@ -31,6 +31,14 @@ class WhatsappConfigRepository {
     return config.reload();
   }
 
+  async updateAutomations(tenantId, data) {
+    const config = await this.findByTenant(tenantId);
+    if (!config) {
+      throw new Error('WhatsappConfig not found for this tenant');
+    }
+    return await config.update(data);
+  }
+
   async deleteByTenantId(tenantId) {
     return await WhatsappConfig.destroy({ where: { tenantId } });
   }

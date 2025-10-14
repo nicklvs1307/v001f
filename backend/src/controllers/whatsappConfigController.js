@@ -65,9 +65,14 @@ const whatsappConfigController = {
 
   updateAutomationsConfig: asyncHandler(async (req, res) => {
     const { tenantId } = req.user;
-    const data = { ...req.body, tenantId };
+    const { sendPrizeMessage, prizeMessageTemplate } = req.body;
 
-    const config = await whatsappConfigRepository.upsert(data);
+    const automationData = {
+      sendPrizeMessage,
+      prizeMessageTemplate,
+    };
+
+    const config = await whatsappConfigRepository.updateAutomations(tenantId, automationData);
 
     res.json(config);
   }),

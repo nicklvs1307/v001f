@@ -39,6 +39,9 @@ const RoulettePage = () => {
       setSurvey(surveyResponse.data);
       setTenant(tenantResponse);
 
+      console.log("DEBUG: Survey object in RoulettePage:", surveyResponse.data);
+      console.log("DEBUG: survey.roletaId in RoulettePage:", surveyResponse.data.roletaId);
+
       const theme = getDynamicTheme(tenantResponse.primaryColor, tenantResponse.secondaryColor);
       setDynamicTheme(theme);
 

@@ -71,7 +71,7 @@ const automationService = {
   },
 
   sendDailyReportTest: async (tenantId, phoneNumbers) => {
-    const report = await dashboardRepository.getNPSDashboardData(tenantId);
+    const report = await dashboardRepository.getSummary(tenantId);
     const message = `*Relatório Diário de NPS*\n\n` +
                     `*NPS:* ${report.npsScore}\n` +
                     `*Promotores:* ${report.promoters} (${report.promotersPercentage}%)\n` +

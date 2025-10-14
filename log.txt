@@ -1,14 +1,14 @@
 URL da solicitação
-https://apiloyalfood.towersfy.com/api/whatsapp-config/3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd
+https://apiloyalfood.towersfy.com/api/automations/daily-report/test
 Método da solicitação
-GET
+POST
 Código de status
-404 Not Found
+500 Internal Server Error
 Endereço remoto
 95.217.16.187:443
 {
     "status": "error",
-    "code": "HTTP_404",
-    "message": "Configuração do WhatsApp não encontrada.",
-    "details": "Error: Configuração do WhatsApp não encontrada.\n    at /usr/src/app/src/controllers/whatsappConfigController.js:75:13\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
+    "code": "HTTP_500",
+    "message": "dashboardRepository.getNPSDashboardData is not a function",
+    "details": "TypeError: dashboardRepository.getNPSDashboardData is not a function\n    at Object.sendDailyReportTest (/usr/src/app/src/services/automationService.js:74:46)\n    at /usr/src/app/src/controllers/automationController.js:20:29\n    at asyncUtilWrap (/usr/src/app/node_modules/express-async-handler/index.js:3:20)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at /usr/src/app/src/middlewares/authMiddleware.js:62:18\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at protect (/usr/src/app/src/middlewares/authMiddleware.js:29:5)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
 }

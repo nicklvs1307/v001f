@@ -8,21 +8,37 @@ class WhatsappConfigRepository {
 
   async upsert(tenantId, data) {
     const { WhatsappConfig, sequelize } = require('../../models');
-
-    // Estratégia radical: DELETE e INSERT para contornar possíveis triggers de UPDATE
+  
     return sequelize.transaction(async (t) => {
-      // Deleta o registro existente, se houver
-      await WhatsappConfig.destroy(
-        { where: { tenantId } },
-        { transaction: t }
-      );
-
-      // Cria um novo registro com os dados fornecidos
-      const newConfig = await WhatsappConfig.create(
-        { ...data, tenantId },
-        { transaction: t }
-      );
-
+      // 1. Encontra a configuração existente para obter os campos não relacionados à automação
+      const existingConfig = await WhatsappConfig.findOne({
+        where: { tenantId },
+        raw: true, // Retorna um objeto simples, não uma instância do Sequelize
+        transaction: t,
+      });
+  
+      // 2. Deleta o registro existente para evitar conflitos de chave única e triggers
+      await WhatsappConfig.destroy({
+        where: { tenantId },
+        transaction: t,
+      });
+  
+      // 3. Mescla os dados existentes (se houver) com os novos dados
+      // Isso garante que `url` e `apiKey` sejam preservados.
+      const mergedData = {
+        ...existingConfig,
+        ...data,
+        tenantId,
+      };
+  
+      // Remove o ID antigo para que o banco de dados gere um novo
+      delete mergedData.id;
+  
+      // 4. Cria um novo registro com os dados mesclados
+      const newConfig = await WhatsappConfig.create(mergedData, {
+        transaction: t,
+      });
+  
       return newConfig;
     });
   }

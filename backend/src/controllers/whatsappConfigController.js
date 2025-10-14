@@ -65,13 +65,11 @@ const whatsappConfigController = {
   }),
 
   updateAutomationsConfig: asyncHandler(async (req, res) => {
-    const { tenantId } = req.user;
-    
-    // Apenas os campos de whatsapp_configs são tratados aqui
-    const { sendPrizeMessage, prizeMessageTemplate, dailyReportEnabled, reportPhoneNumbers } = req.body;
-    const configData = { sendPrizeMessage, prizeMessageTemplate, dailyReportEnabled, reportPhoneNumbers };
+    const { tenantId } = req.user; // O tenantId vem do usuário autenticado
+    const automationsData = req.body; // Dados vêm do corpo da requisição
 
-    await whatsappConfigRepository.upsert(tenantId, configData);
+    // O repositório agora lida com a lógica de mesclagem
+    await whatsappConfigRepository.upsert(tenantId, automationsData);
 
     res.status(200).json({ message: 'Configurações de automação do WhatsApp atualizadas com sucesso.' });
   }),

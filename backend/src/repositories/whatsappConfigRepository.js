@@ -7,12 +7,27 @@ class WhatsappConfigRepository {
   }
 
   async upsert(tenantId, data) {
-    const { WhatsappConfig } = require('../../models');
+    const { WhatsappConfig, sequelize } = require('../../models');
 
     const existingConfig = await this.findByTenant(tenantId);
 
     if (existingConfig) {
-      return existingConfig.update(data);
+      const { sendPrizeMessage, prizeMessageTemplate, dailyReportEnabled, reportPhoneNumbers } = data;
+      await sequelize.query(
+        'UPDATE whatsapp_configs SET "sendPrizeMessage" = :sendPrizeMessage, "prizeMessageTemplate" = :prizeMessageTemplate, "dailyReportEnabled" = :dailyReportEnabled, "reportPhoneNumbers" = :reportPhoneNumbers, "updatedAt" = :now WHERE "tenantId" = :tenantId',
+        {
+          replacements: {
+            sendPrizeMessage,
+            prizeMessageTemplate,
+            dailyReportEnabled,
+            reportPhoneNumbers,
+            tenantId,
+            now: new Date(),
+          },
+          type: sequelize.QueryTypes.UPDATE,
+        }
+      );
+      return this.findByTenant(tenantId);
     } else {
       return WhatsappConfig.create({ ...data, tenantId });
     }

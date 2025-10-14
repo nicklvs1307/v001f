@@ -27,10 +27,11 @@ const getTenants = async (tenantId = null) => {
 };
 
 const getTenantById = async (id, tenantId = null) => {
-  const whereClause = tenantId ? { id, id: tenantId } : { id }; // Garante que o ID do tenant seja o mesmo do filtro
+  const whereClause = tenantId ? { id, id: tenantId } : { id };
   return Tenant.findByPk(id, {
     where: whereClause,
-    attributes: ['id', 'name', 'address', 'phone', 'email', 'cnpj', 'description', 'createdAt'],
+    attributes: ['id', 'name', 'address', 'phone', 'email', 'cnpj', 'description', 'createdAt', 'reportPhoneNumber'],
+    raw: true,
   });
 };
 
@@ -80,8 +81,12 @@ const findByName = async (name) => {
 const update = async (id, data) => {
   const [updatedRows] = await Tenant.update(data, {
     where: { id },
+    returning: true,
   });
-  return updatedRows;
+  if (updatedRows > 0) {
+    return Tenant.findByPk(id, { raw: true });
+  }
+  return null;
 };
 module.exports = {
   createTenant,

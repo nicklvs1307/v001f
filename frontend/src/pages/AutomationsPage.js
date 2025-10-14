@@ -94,7 +94,7 @@ const AutomationsPage = () => {
         },
         dailyReport: {
           enabled: configResponse?.dailyReportEnabled || false,
-          phoneNumbers: tenantResponse?.reportPhoneNumber || '',
+          phoneNumbers: configResponse?.reportPhoneNumbers || '',
         },
       };
 
@@ -149,7 +149,6 @@ const AutomationsPage = () => {
 
       await Promise.all([
         whatsappConfigService.update(configPayload),
-        tenantService.update({ reportPhoneNumber: configPayload.reportPhoneNumbers }), // Salva o reportPhoneNumber no tenant
         whatsappTemplateService.upsert(templatePayload),
       ]);
 

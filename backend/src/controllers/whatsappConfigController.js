@@ -68,8 +68,8 @@ const whatsappConfigController = {
     const { tenantId } = req.user;
     
     // Apenas os campos de whatsapp_configs são tratados aqui
-    const { sendPrizeMessage, prizeMessageTemplate, dailyReportEnabled } = req.body;
-    const configData = { sendPrizeMessage, prizeMessageTemplate, dailyReportEnabled };
+    const { sendPrizeMessage, prizeMessageTemplate, dailyReportEnabled, reportPhoneNumbers } = req.body;
+    const configData = { sendPrizeMessage, prizeMessageTemplate, dailyReportEnabled, reportPhoneNumbers };
 
     await whatsappConfigRepository.update(tenantId, configData);
 

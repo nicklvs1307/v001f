@@ -1,7 +1,8 @@
 const cron = require('node-cron');
 const { format } = require('date-fns');
 const whatsappService = require('../services/whatsappService');
-const tenantRepository = require('../repositories/tenantRepository');
+const whatsappConfigRepository = require('../repositories/whatsappConfigRepository'); // Importar o novo repositório
+const tenantRepository = require('../repositories/tenantRepository'); // Manter para buscar o nome do tenant
 const resultRepository = require('../repositories/resultRepository');
 
 const schedule = '0 8 * * *'; // Todos os dias às 8:00
@@ -10,21 +11,28 @@ const dailyReportTask = cron.schedule(schedule, async () => {
   console.log('Executando a tarefa de relatório diário...');
 
   try {
-    // 1. Buscar todos os tenants que têm um número de telefone para receber relatórios.
-    const tenantsToReport = await tenantRepository.findAllWithReportPhoneNumber();
+    // 1. Buscar todas as configurações do WhatsApp que têm o relatório diário ativado.
+    const configsToReport = await whatsappConfigRepository.findAllWithDailyReportEnabled();
 
-    if (!tenantsToReport || tenantsToReport.length === 0) {
-      console.log('Nenhum tenant com número de telefone para relatório encontrado.');
+    if (!configsToReport || configsToReport.length === 0) {
+      console.log('Nenhuma configuração de WhatsApp com relatório diário ativado encontrada.');
       return;
     }
 
-    console.log(`Encontrados ${tenantsToReport.length} tenants para receber relatórios.`);
+    console.log(`Encontradas ${configsToReport.length} configurações para receber relatórios.`);
 
-    // 2. Para cada tenant, gerar o relatório e enviar usando a instância do SISTEMA.
-    for (const tenant of tenantsToReport) {
-      console.log(`Gerando relatório para o tenant: ${tenant.name}`);
+    // 2. Para cada configuração, gerar o relatório e enviar.
+    for (const config of configsToReport) {
+      console.log(`Gerando relatório para o tenantId: ${config.tenantId}`);
       
-      const stats = await resultRepository.getDailyStats(tenant.id);
+      // Precisamos do nome do tenant para a mensagem
+      const tenant = await tenantRepository.getTenantById(config.tenantId);
+      if (!tenant) {
+        console.warn(`Tenant ${config.tenantId} não encontrado para a configuração de relatório.`);
+        continue;
+      }
+
+      const stats = await resultRepository.getDailyStats(config.tenantId);
       
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
@@ -44,10 +52,11 @@ Olá! Aqui está o resumo de ontem:
 _Este é um relatório automático do sistema Feedeliza._
       `.trim();
 
-      if (tenant.reportPhoneNumber) {
-        // **MUDANÇA CHAVE:** Chamando a nova função de envio do sistema.
-        await whatsappService.sendSystemMessage(tenant.reportPhoneNumber, message);
-        console.log(`Relatório para "${tenant.name}" enviado com sucesso.`);
+      // Envia para cada número configurado
+      const phoneNumbers = config.reportPhoneNumbers.split(',').map(p => p.trim()).filter(p => p);
+      for (const phoneNumber of phoneNumbers) {
+        await whatsappService.sendSystemMessage(phoneNumber, message);
+        console.log(`Relatório para "${tenant.name}" enviado para ${phoneNumber}.`);
       }
     }
 

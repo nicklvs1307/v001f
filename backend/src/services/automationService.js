@@ -83,7 +83,8 @@ const automationService = {
     const numbersArray = phoneNumbers.split(',').map(num => num.trim()).filter(num => num);
 
     for (const number of numbersArray) {
-      await whatsappService.sendTextMessage(tenantId, number, message);
+          await whatsappService.sendTenantMessage(tenantId, number, message);
+          console.log(`Mensagem de aniversário enviada para ${client.name} (${client.phone}) do tenant ${config.tenantId}`);
     }
     return { message: 'Relatório de teste enviado com sucesso!' };
   },

@@ -2,7 +2,7 @@ const { WhatsappConfig, Tenant } = require('../../models');
 
 class WhatsappConfigRepository {
   async findByTenant(tenantId) {
-    return await WhatsappConfig.findOne({ where: { tenantId } });
+    return await WhatsappConfig.findOne({ where: { tenantId }, raw: true });
   }
 
   async update(tenantId, data) {

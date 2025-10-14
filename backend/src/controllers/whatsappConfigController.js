@@ -20,7 +20,7 @@ const whatsappConfigController = {
     
     // Retorna o objeto de configuração completo do banco de dados, com o status atualizado
     const response = {
-      ...config.get({ plain: true }),
+      ...config,
       status: currentStatus,
     };
 

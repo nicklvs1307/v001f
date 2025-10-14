@@ -5,6 +5,20 @@ Conexão com o banco de dados estabelecida com sucesso (Sequelize).
 Server is running on port 5000
 Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
 Agendador de lembrete de cupons iniciado. A tarefa será executada todos os dias às 9:00.
+[Auth Middleware] Request: POST /api/auth/verify-token
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+[Auth Middleware] Request: GET /api/whatsapp-templates?type=COUPON_REMINDER
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "tenantId", "type", "isEnabled", "daysBefore", "message", "createdAt", "updatedAt" FROM "whatsapp_templates" AS "WhatsappTemplate" WHERE "WhatsappTemplate"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "WhatsappTemplate"."type" = 'COUPON_REMINDER' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[DEBUG] Evolution API connectionState response for roma-pizzaria--chopperiaaa: {
+  instance: { instanceName: 'roma-pizzaria--chopperiaaa', state: 'open' }
+}
+[DEBUG] Interpreted newStatus for roma-pizzaria--chopperiaaa: connected
+[DEBUG] instanceStatus for roma-pizzaria--chopperiaaa is already connected. No update needed.
 [Auth Middleware] Request: PUT /api/whatsapp-config/automations
 Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
 [whatsappConfigController] updateAutomationsConfig req.body: {
@@ -12,3 +26,54 @@ Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl"
   prizeMessageTemplate: 'Parabéns, {{cliente}}! Você ganhou um prêmio: {{premio}}. Use o cupom {{cupom}} para resgatar.'
 }
 Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[whatsappConfigController] Before config.update()
+[whatsappConfigController] After config.update()
+[whatsappConfigController] updatedConfig: WhatsappConfig {
+  dataValues: {
+    id: 'b9ad1534-bdad-42da-9140-47d3114450fd',
+    url: 'https://evolution2.towersfy.com',
+    apiKey: '9df82dcbee60ce08f6ca93aa4024ca6c',
+    instanceName: 'roma-pizzaria--chopperiaaa',
+    instanceStatus: 'connected',
+    tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd',
+    sendPrizeMessage: true,
+    prizeMessageTemplate: 'Parabéns, {{cliente}}! Você ganhou um prêmio: {{premio}}. Use o cupom {{cupom}} para resgatar.',
+    createdAt: 2025-10-13T14:26:11.003Z,
+    updatedAt: 2025-10-14T10:22:34.427Z
+  },
+  _previousDataValues: {
+    id: 'b9ad1534-bdad-42da-9140-47d3114450fd',
+    url: 'https://evolution2.towersfy.com',
+    apiKey: '9df82dcbee60ce08f6ca93aa4024ca6c',
+    instanceName: 'roma-pizzaria--chopperiaaa',
+    instanceStatus: 'connected',
+    tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd',
+    sendPrizeMessage: true,
+    prizeMessageTemplate: 'Parabéns, {{cliente}}! Você ganhou um prêmio: {{premio}}. Use o cupom {{cupom}} para resgatar.',
+    createdAt: 2025-10-13T14:26:11.003Z,
+    updatedAt: 2025-10-14T10:22:34.427Z
+  },
+
+  uniqno: 1,
+  _changed: Set(0) {},
+  _options: {
+    isNewRecord: false,
+    _schema: null,
+    _schemaDelimiter: '',
+    raw: true,
+    attributes: [
+      'id',
+
+      'url',
+      'apiKey',
+      'instanceName',
+      'instanceStatus',
+      'tenantId',
+      'sendPrizeMessage',
+      'prizeMessageTemplate',
+      'createdAt',
+      'updatedAt'
+    ]
+  },
+  isNewRecord: false
+}

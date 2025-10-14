@@ -64,25 +64,12 @@ const whatsappConfigController = {
   }),
 
   updateAutomationsConfig: asyncHandler(async (req, res) => {
-    console.log('[whatsappConfigController] updateAutomationsConfig req.body:', req.body);
     const { tenantId } = req.user;
-    const { sendPrizeMessage, prizeMessageTemplate } = req.body;
+    const data = { ...req.body, tenantId };
 
-    const config = await whatsappConfigRepository.findByTenant(tenantId);
+    const config = await whatsappConfigRepository.upsert(data);
 
-    if (!config) {
-      throw new ApiError(404, "Configuração do WhatsApp não encontrada. Configure a conexão primeiro.");
-    }
-
-    console.log('[whatsappConfigController] Before config.update()');
-    const updatedConfig = await config.update({
-      sendPrizeMessage,
-      prizeMessageTemplate,
-    });
-    console.log('[whatsappConfigController] After config.update()');
-    console.log('[whatsappConfigController] updatedConfig:', updatedConfig);
-
-    res.json(updatedConfig);
+    res.json(config);
   }),
 
   // --- Rotas para o Super Admin ---

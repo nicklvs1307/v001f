@@ -9,28 +9,22 @@ class WhatsappConfigRepository {
   async upsert(tenantId, data) {
     const { WhatsappConfig, sequelize } = require('../../models');
 
-    const existingConfig = await this.findByTenant(tenantId);
-
-    if (existingConfig) {
-      const { sendPrizeMessage, prizeMessageTemplate, dailyReportEnabled, reportPhoneNumbers } = data;
-      await sequelize.query(
-        'UPDATE whatsapp_configs SET "sendPrizeMessage" = :sendPrizeMessage, "prizeMessageTemplate" = :prizeMessageTemplate, "dailyReportEnabled" = :dailyReportEnabled, "reportPhoneNumbers" = :reportPhoneNumbers, "updatedAt" = :now WHERE "tenantId" = :tenantId',
-        {
-          replacements: {
-            sendPrizeMessage,
-            prizeMessageTemplate,
-            dailyReportEnabled,
-            reportPhoneNumbers,
-            tenantId,
-            now: new Date(),
-          },
-          type: sequelize.QueryTypes.UPDATE,
-        }
+    // Estratégia radical: DELETE e INSERT para contornar possíveis triggers de UPDATE
+    return sequelize.transaction(async (t) => {
+      // Deleta o registro existente, se houver
+      await WhatsappConfig.destroy(
+        { where: { tenantId } },
+        { transaction: t }
       );
-      return this.findByTenant(tenantId);
-    } else {
-      return WhatsappConfig.create({ ...data, tenantId });
-    }
+
+      // Cria um novo registro com os dados fornecidos
+      const newConfig = await WhatsappConfig.create(
+        { ...data, tenantId },
+        { transaction: t }
+      );
+
+      return newConfig;
+    });
   }
 
   async findAllWithDailyReportEnabled() {

@@ -87,7 +87,7 @@ const AutomationsPage = () => {
       setAutomations(automationsResponse.data);
       setOriginalAutomations(automationsResponse.data);
       setRecompensas(recompensasResponse.data);
-      setRoletas(roletasResponse.data);
+      setRoletas(roletasResponse.data.roletas);
     } catch (err) {
       setError('Falha ao carregar as configurações de automação.');
     } finally {

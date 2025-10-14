@@ -28,24 +28,12 @@ import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from '@mui/icons-material/Close';
 
-import whatsappTemplateService from '../services/whatsappTemplateService';
-import whatsappConfigService from '../services/whatsappConfigService';
-import tenantService from '../services/tenantService';
+import automationService from '../services/automationService';
 
 const initialAutomationState = {
-  prizeRoulette: {
-    enabled: false,
-    template: 'Parabéns, {{cliente}}! Você ganhou um prêmio: {{premio}}. Use o cupom {{cupom}} para resgatar.',
-  },
-  couponReminder: {
-    enabled: false,
-    daysBefore: 7,
-    template: 'Olá {{nome_cliente}}, seu cupom {{codigo_cupom}} está prestes a vencer! Use antes que expire em {{data_validade}}.',
-  },
-  dailyReport: {
-    enabled: false,
-    phoneNumbers: '',
-  },
+  prizeRoulette: { enabled: false, template: '' },
+  couponReminder: { enabled: false, daysBefore: 0, template: '' },
+  dailyReport: { enabled: false, phoneNumbers: '' },
 };
 
 const AutomationItem = styled(Paper)(({ theme }) => ({
@@ -73,36 +61,11 @@ const AutomationsPage = () => {
     try {
       setLoading(true);
       setError('');
-      const [configResponse, templateResponse, tenantResponse] = await Promise.all([
-        whatsappConfigService.getInstanceConfig(),
-        whatsappTemplateService.get('COUPON_REMINDER').catch(err => {
-          if (err.response && err.response.status === 404) return { data: null };
-          throw err;
-        }),
-        tenantService.getMe(),
-      ]);
-
-      const initialState = {
-        prizeRoulette: {
-          enabled: configResponse?.sendPrizeMessage || false,
-          template: configResponse?.prizeMessageTemplate || initialAutomationState.prizeRoulette.template,
-        },
-        couponReminder: {
-          enabled: templateResponse?.data?.isEnabled || false,
-          daysBefore: templateResponse?.data?.daysBefore || initialAutomationState.couponReminder.daysBefore,
-          template: templateResponse?.data?.message || initialAutomationState.couponReminder.template,
-        },
-        dailyReport: {
-          enabled: configResponse?.dailyReportEnabled || false,
-          phoneNumbers: configResponse?.reportPhoneNumbers || '',
-        },
-      };
-
-      setAutomations(initialState);
-      setOriginalAutomations(initialState);
-
+      const response = await automationService.getAutomations();
+      setAutomations(response.data);
+      setOriginalAutomations(response.data);
     } catch (err) {
-      setError('Falha ao carregar as configurações de automação. Verifique se a instância do WhatsApp está conectada.');
+      setError('Falha ao carregar as configurações de automação.');
     } finally {
       setLoading(false);
     }
@@ -130,29 +93,9 @@ const AutomationsPage = () => {
     try {
       setSaving(true);
       setError('');
-
-      // Payload para as configurações gerais de automação (whatsapp_configs e tenants)
-      const configPayload = {
-        sendPrizeMessage: automations.prizeRoulette.enabled,
-        prizeMessageTemplate: automations.prizeRoulette.template,
-        dailyReportEnabled: automations.dailyReport.enabled,
-        reportPhoneNumbers: automations.dailyReport.phoneNumbers,
-      };
-
-      // Payload para a automação de templates (whatsapp_templates)
-      const templatePayload = {
-        type: 'COUPON_REMINDER',
-        isEnabled: automations.couponReminder.enabled,
-        daysBefore: automations.couponReminder.daysBefore,
-        message: automations.couponReminder.template,
-      };
-
-      await Promise.all([
-        whatsappConfigService.update(configPayload),
-        whatsappTemplateService.upsert(templatePayload),
-      ]);
-
-      setOriginalAutomations(automations);
+      const response = await automationService.updateAutomations(automations);
+      setAutomations(response.data);
+      setOriginalAutomations(response.data);
       setSnackbar({ open: true, message: 'Automações salvas com sucesso!', severity: 'success' });
     } catch (err) {
       console.error('Falha ao salvar:', err);

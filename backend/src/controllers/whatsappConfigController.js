@@ -64,15 +64,7 @@ const whatsappConfigController = {
     res.json(result);
   }),
 
-  updateAutomationsConfig: asyncHandler(async (req, res) => {
-    const { tenantId } = req.user; // O tenantId vem do usuário autenticado
-    const automationsData = req.body; // Dados vêm do corpo da requisição
-
-    // O repositório agora lida com a lógica de mesclagem
-    await whatsappConfigRepository.upsert(tenantId, automationsData);
-
-    res.status(200).json({ message: 'Configurações de automação do WhatsApp atualizadas com sucesso.' });
-  }),
+  
 
   // --- Rotas para o Super Admin ---
   
@@ -116,7 +108,4 @@ const whatsappConfigController = {
   }),
 };
 
-module.exports = {
-  ...whatsappConfigController,
-  updateAutomationsConfig: whatsappConfigController.updateAutomationsConfig
-};
+module.exports = whatsappConfigController;

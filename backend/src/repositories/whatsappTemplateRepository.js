@@ -1,19 +1,20 @@
 const { WhatsappTemplate } = require('../../models');
 
 class WhatsappTemplateRepository {
-  async findOne(tenantId, type) {
-    return WhatsappTemplate.findOne({ where: { tenantId, type } });
+  async findByType(type, tenantId) {
+    return await WhatsappTemplate.findOne({ where: { type, tenantId } });
   }
 
-  async upsert(templateData) {
-    const { tenantId, type } = templateData;
-    const existing = await this.findOne(tenantId, type);
+  async upsert(data) {
+    const { type, tenantId } = data;
+    const existingTemplate = await this.findByType(type, tenantId);
 
-    if (existing) {
-      return existing.update(templateData);
+    if (existingTemplate) {
+      await WhatsappTemplate.update(data, { where: { type, tenantId } });
     } else {
-      return WhatsappTemplate.create(templateData);
+      await WhatsappTemplate.create(data);
     }
+    return await this.findByType(type, tenantId);
   }
 }
 

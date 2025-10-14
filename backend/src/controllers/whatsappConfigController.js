@@ -71,7 +71,7 @@ const whatsappConfigController = {
     const { sendPrizeMessage, prizeMessageTemplate, dailyReportEnabled, reportPhoneNumbers } = req.body;
     const configData = { sendPrizeMessage, prizeMessageTemplate, dailyReportEnabled, reportPhoneNumbers };
 
-    await whatsappConfigRepository.update(tenantId, configData);
+    await whatsappConfigRepository.upsert(tenantId, configData);
 
     res.status(200).json({ message: 'Configurações de automação do WhatsApp atualizadas com sucesso.' });
   }),

@@ -5,18 +5,21 @@ class WhatsappConfigRepository {
     return await WhatsappConfig.findOne({ where: { tenantId }, raw: true });
   }
 
-  async update(tenantId, data) {
+  async upsert(tenantId, data) {
     const { WhatsappConfig } = require('../../models');
 
-    // Usando o método padrão do Sequelize para maior robustez
-    const [rowCount] = await WhatsappConfig.update(data, {
-      where: { tenantId },
-    });
+    const existingConfig = await this.findByTenant(tenantId);
 
-    console.log('[DEBUG] WhatsappConfigRepository update result:', { rowCount });
-
-    // Após a atualização, busca os dados mais recentes para retornar ao frontend
-    return this.findByTenant(tenantId);
+    if (existingConfig) {
+      // O findByTenant retorna um objeto raw, então não podemos usar o .update() da instância.
+      // Usamos o update do modelo, que é o que eu tentei antes, mas agora faz parte de uma lógica de upsert.
+      const [rowCount] = await WhatsappConfig.update(data, { where: { tenantId } });
+      // Retorna os dados atualizados
+      return this.findByTenant(tenantId);
+    } else {
+      // Cria um novo registro se não existir
+      return WhatsappConfig.create({ ...data, tenantId });
+    }
   }
 
   async findAllWithDailyReportEnabled() {

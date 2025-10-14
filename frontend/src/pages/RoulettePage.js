@@ -31,22 +31,25 @@ const RoulettePage = () => {
         return;
       }
 
-      const [surveyResponse, tenantResponse] = await Promise.all([
-        publicSurveyService.getPublicSurveyById(pesquisaId),
-        publicSurveyService.getPublicTenantById(tenantId),
-      ]);
+      // Fetch Survey Data
+      console.log("DEBUG: Fetching survey with ID:", pesquisaId);
+      const surveyResponse = await publicSurveyService.getPublicSurveyById(pesquisaId);
+      console.log("DEBUG: Survey Response from service:", surveyResponse);
+      setSurvey(surveyResponse);
 
-      setSurvey(surveyResponse.data);
+      // Fetch Tenant Data
+      console.log("DEBUG: Fetching tenant with ID:", tenantId);
+      const tenantResponse = await publicSurveyService.getPublicTenantById(tenantId);
+      console.log("DEBUG: Tenant Response from service:", tenantResponse);
       setTenant(tenantResponse);
-
-      console.log("DEBUG: Survey object in RoulettePage:", surveyResponse.data);
-      console.log("DEBUG: survey.roletaId in RoulettePage:", surveyResponse.data.roletaId);
 
       const theme = getDynamicTheme(tenantResponse.primaryColor, tenantResponse.secondaryColor);
       setDynamicTheme(theme);
 
       // Carregar a configuração da roleta
+      console.log("DEBUG: Fetching roleta config for pesquisaId:", pesquisaId, "clientId:", clientId);
       const configData = await publicRoletaService.getRoletaConfig(pesquisaId, clientId);
+      console.log("DEBUG: Roleta Config Response from service:", configData);
       setRoletaConfig(configData.data);
 
     } catch (err) {

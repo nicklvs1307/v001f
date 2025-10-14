@@ -1,11 +1,214 @@
-RoulettePage.js:42 DEBUG: Survey object in RoulettePage: undefined
-RoulettePage.js:53 Erro ao buscar dados iniciais: TypeError: Cannot read properties of undefined (reading 'roletaId')
-    at RoulettePage.js:43:82
-(anônimo) @ RoulettePage.js:53
-await in (anônimo)
-(anônimo) @ RoulettePage.js:61
-rl @ react-dom.production.min.js:243
-wc @ react-dom.production.min.js:285
-(anônimo) @ react-dom.production.min.js:281
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
+Postgres is up - executing command
+Server.js is being executed!
+API_KEY_ENCRYPTION_KEY is not defined in .env. Please set it for security.
+Conexão com o banco de dados estabelecida com sucesso (Sequelize).
+Server is running on port 5000
+Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
+Agendador de lembrete de cupons iniciado. A tarefa será executada todos os dias às 9:00.
+Executing (default): SELECT "Pesquisa"."id", "Pesquisa"."title", "Pesquisa"."description", "Pesquisa"."createdAt", "Pesquisa"."updatedAt", "Pesquisa"."isOpen", "Pesquisa"."tenantId", "Pesquisa"."askForAttendant", "Pesquisa"."status", "Pesquisa"."recompensaId", "Pesquisa"."roletaId", "perguntas"."id" AS "perguntas.id", "perguntas"."type" AS "perguntas.type", "perguntas"."text" AS "perguntas.text", "perguntas"."options" AS "perguntas.options", "perguntas"."order" AS "perguntas.order", "perguntas"."required" AS "perguntas.required", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."description" AS "tenant.description", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "roleta"."id" AS "roleta.id", "roleta"."nome" AS "roleta.nome", "roleta"."descricao" AS "roleta.descricao", "roleta"."active" AS "roleta.active" FROM "pesquisas" AS "Pesquisa" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Pesquisa"."id" = "perguntas"."pesquisaId" LEFT OUTER JOIN "tenants" AS "tenant" ON "Pesquisa"."tenantId" = "tenant"."id" LEFT OUTER JOIN "roletas" AS "roleta" ON "Pesquisa"."roletaId" = "roleta"."id" WHERE "Pesquisa"."id" = '87d63f62-4bb9-43e5-ab76-9eb004d4d2bb';
+Executing (default): SELECT "id", "name", "logoUrl", "primaryColor", "secondaryColor", "description" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+DEBUG: Survey object in publicSurveyController: {
+  id: '87d63f62-4bb9-43e5-ab76-9eb004d4d2bb',
+  title: 'Avaliação de Pizzaria',
+  description: 'Feedback específico para pizzarias, focando no sabor, qualidade dos ingredientes e tempo de forno.',
+  createdAt: 2025-09-30T15:21:26.005Z,
+  updatedAt: 2025-10-14T21:24:04.161Z,
+  isOpen: true,
+  tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd',
+  askForAttendant: true,
+  status: 'active',
+  roletaId: 'f40e45de-fb16-477d-b385-85eb9d38304c',
+  restaurantName: 'Roma Pizzaria & Chopperiaaa',
+  restaurantLogoUrl: '/uploads/logos/3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1758996127619.png',
+  restaurantDescription: 'teste',
+  primaryColor: '#313131',
+  secondaryColor: '#9d2406',
+  roleta: {
+    id: 'f40e45de-fb16-477d-b385-85eb9d38304c',
+    nome: 'Roleta Salão',
+    descricao: 'Roleta de Premios para o salão',
+    active: true
+  },
+  questions: [
+    {
+      id: 'cc2c724c-3580-4f94-ab87-5822e4497770',
+      type: 'rating_1_5',
+      text: 'Como você avalia o sabor da sua pizza?',
+      options: [],
+      order: 1,
+      required: undefined
+    },
+    {
+      id: '2ffb181f-141b-472d-9abd-3c51595c7f29',
+      type: 'rating_1_5',
+      text: 'Como você avalia a qualidade dos ingredientes?',
+      options: [],
+      order: 2,
+      required: undefined
+    },
+    {
+      id: '5f7acf91-90d6-44cd-963f-6f81effd5e1a',
+      type: 'rating_1_5',
+      text: 'A pizza chegou quentinha e na consistência certa?',
+      options: [],
+      order: 3,
+      required: undefined
+    },
+    {
+      id: '5e59c492-6d0c-41a4-ba3e-51e8310302ea',
+      type: 'free_text',
+      text: 'Qual seu sabor favorito? Gostaríamos de saber!',
+      options: [],
+      order: 4,
+      required: undefined
+    },
+    {
+      id: 'd5938446-234d-40c3-967c-050cb336aa06',
+      type: 'rating_0_10',
+      text: 'De 0 a 10, qual a chance de você nos recomendar como a melhor pizzaria da cidade?',
+      options: [],
+      order: 5,
+      required: undefined
+    }
+  ]
+}
+[Auth Middleware] Request: POST /api/auth/verify-token
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "Pesquisa"."id", "Pesquisa"."title", "Pesquisa"."description", "Pesquisa"."createdAt", "Pesquisa"."updatedAt", "Pesquisa"."isOpen", "Pesquisa"."tenantId", "Pesquisa"."askForAttendant", "Pesquisa"."status", "Pesquisa"."recompensaId", "Pesquisa"."roletaId", "perguntas"."id" AS "perguntas.id", "perguntas"."type" AS "perguntas.type", "perguntas"."text" AS "perguntas.text", "perguntas"."options" AS "perguntas.options", "perguntas"."order" AS "perguntas.order", "perguntas"."required" AS "perguntas.required", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."description" AS "tenant.description", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "roleta"."id" AS "roleta.id", "roleta"."nome" AS "roleta.nome", "roleta"."descricao" AS "roleta.descricao", "roleta"."active" AS "roleta.active" FROM "pesquisas" AS "Pesquisa" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Pesquisa"."id" = "perguntas"."pesquisaId" LEFT OUTER JOIN "tenants" AS "tenant" ON "Pesquisa"."tenantId" = "tenant"."id" LEFT OUTER JOIN "roletas" AS "roleta" ON "Pesquisa"."roletaId" = "roleta"."id" WHERE "Pesquisa"."id" = '87d63f62-4bb9-43e5-ab76-9eb004d4d2bb';
+Executing (default): SELECT "id", "name", "logoUrl", "primaryColor", "secondaryColor", "description" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+DEBUG: Survey object in publicSurveyController: {
+  id: '87d63f62-4bb9-43e5-ab76-9eb004d4d2bb',
+  title: 'Avaliação de Pizzaria',
+  description: 'Feedback específico para pizzarias, focando no sabor, qualidade dos ingredientes e tempo de forno.',
+  createdAt: 2025-09-30T15:21:26.005Z,
+  updatedAt: 2025-10-14T21:24:04.161Z,
+  isOpen: true,
+  tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd',
+  askForAttendant: true,
+  status: 'active',
+  roletaId: 'f40e45de-fb16-477d-b385-85eb9d38304c',
+  restaurantName: 'Roma Pizzaria & Chopperiaaa',
+  restaurantLogoUrl: '/uploads/logos/3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1758996127619.png',
+  restaurantDescription: 'teste',
+  primaryColor: '#313131',
+  secondaryColor: '#9d2406',
+  roleta: {
+    id: 'f40e45de-fb16-477d-b385-85eb9d38304c',
+    nome: 'Roleta Salão',
+    descricao: 'Roleta de Premios para o salão',
+    active: true
+  },
+  questions: [
+    {
+      id: 'cc2c724c-3580-4f94-ab87-5822e4497770',
+      type: 'rating_1_5',
+      text: 'Como você avalia o sabor da sua pizza?',
+      options: [],
+      order: 1,
+      required: undefined
+    },
+    {
+      id: '2ffb181f-141b-472d-9abd-3c51595c7f29',
+      type: 'rating_1_5',
+      text: 'Como você avalia a qualidade dos ingredientes?',
+      options: [],
+      order: 2,
+      required: undefined
+    },
+    {
+      id: '5f7acf91-90d6-44cd-963f-6f81effd5e1a',
+      type: 'rating_1_5',
+      text: 'A pizza chegou quentinha e na consistência certa?',
+      options: [],
+      order: 3,
+      required: undefined
+    },
+    {
+      id: '5e59c492-6d0c-41a4-ba3e-51e8310302ea',
+      type: 'free_text',
+      text: 'Qual seu sabor favorito? Gostaríamos de saber!',
+      options: [],
+      order: 4,
+      required: undefined
+    },
+    {
+      id: 'd5938446-234d-40c3-967c-050cb336aa06',
+      type: 'rating_0_10',
+      text: 'De 0 a 10, qual a chance de você nos recomendar como a melhor pizzaria da cidade?',
+      options: [],
+      order: 5,
+      required: undefined
+    }
+  ]
+}
+[Auth Middleware] Request: POST /api/auth/verify-token
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "name", "logoUrl", "primaryColor", "secondaryColor", "description" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "Pesquisa"."id", "Pesquisa"."title", "Pesquisa"."description", "Pesquisa"."createdAt", "Pesquisa"."updatedAt", "Pesquisa"."isOpen", "Pesquisa"."tenantId", "Pesquisa"."askForAttendant", "Pesquisa"."status", "Pesquisa"."recompensaId", "Pesquisa"."roletaId", "perguntas"."id" AS "perguntas.id", "perguntas"."type" AS "perguntas.type", "perguntas"."text" AS "perguntas.text", "perguntas"."options" AS "perguntas.options", "perguntas"."order" AS "perguntas.order", "perguntas"."required" AS "perguntas.required", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."description" AS "tenant.description", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "roleta"."id" AS "roleta.id", "roleta"."nome" AS "roleta.nome", "roleta"."descricao" AS "roleta.descricao", "roleta"."active" AS "roleta.active" FROM "pesquisas" AS "Pesquisa" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Pesquisa"."id" = "perguntas"."pesquisaId" LEFT OUTER JOIN "tenants" AS "tenant" ON "Pesquisa"."tenantId" = "tenant"."id" LEFT OUTER JOIN "roletas" AS "roleta" ON "Pesquisa"."roletaId" = "roleta"."id" WHERE "Pesquisa"."id" = '87d63f62-4bb9-43e5-ab76-9eb004d4d2bb';
+DEBUG: Survey object in publicSurveyController: {
+  id: '87d63f62-4bb9-43e5-ab76-9eb004d4d2bb',
+  title: 'Avaliação de Pizzaria',
+  description: 'Feedback específico para pizzarias, focando no sabor, qualidade dos ingredientes e tempo de forno.',
+  createdAt: 2025-09-30T15:21:26.005Z,
+  updatedAt: 2025-10-14T21:24:04.161Z,
+  isOpen: true,
+  tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd',
+  askForAttendant: true,
+  status: 'active',
+  roletaId: 'f40e45de-fb16-477d-b385-85eb9d38304c',
+  restaurantName: 'Roma Pizzaria & Chopperiaaa',
+  restaurantLogoUrl: '/uploads/logos/3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1758996127619.png',
+  restaurantDescription: 'teste',
+  primaryColor: '#313131',
+  secondaryColor: '#9d2406',
+  roleta: {
+    id: 'f40e45de-fb16-477d-b385-85eb9d38304c',
+    nome: 'Roleta Salão',
+    descricao: 'Roleta de Premios para o salão',
+    active: true
+  },
+  questions: [
+    {
+      id: 'cc2c724c-3580-4f94-ab87-5822e4497770',
+      type: 'rating_1_5',
+      text: 'Como você avalia o sabor da sua pizza?',
+      options: [],
+      order: 1,
+      required: undefined
+    },
+    {
+      id: '2ffb181f-141b-472d-9abd-3c51595c7f29',
+      type: 'rating_1_5',
+      text: 'Como você avalia a qualidade dos ingredientes?',
+      options: [],
+      order: 2,
+      required: undefined
+    },
+    {
+      id: '5f7acf91-90d6-44cd-963f-6f81effd5e1a',
+      type: 'rating_1_5',
+      text: 'A pizza chegou quentinha e na consistência certa?',
+      options: [],
+      order: 3,
+      required: undefined
+    },
+    {
+      id: '5e59c492-6d0c-41a4-ba3e-51e8310302ea',
+      type: 'free_text',
+      text: 'Qual seu sabor favorito? Gostaríamos de saber!',
+      options: [],
+      order: 4,
+      required: undefined
+    },
+    {
+      id: 'd5938446-234d-40c3-967c-050cb336aa06',
+      type: 'rating_0_10',
+      text: 'De 0 a 10, qual a chance de você nos recomendar como a melhor pizzaria da cidade?',
+      options: [],
+      order: 5,
+      required: undefined
+    }
+  ]
+}
+[Auth Middleware] Request: POST /api/auth/verify-token
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';

@@ -97,6 +97,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: true,
       defaultValue: 'Parabéns, {{cliente}}! Você ganhou um prêmio: {{premio}}. Use o cupom {{cupom}} para resgatar.',
+    },
+    dailyReportEnabled: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    reportPhoneNumbers: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     }
   }, {
     sequelize,

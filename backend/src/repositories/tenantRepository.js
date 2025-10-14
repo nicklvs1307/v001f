@@ -77,6 +77,12 @@ const findByName = async (name) => {
   return Tenant.findOne({ where: { name } });
 };
 
+const update = async (id, data) => {
+  const [updatedRows] = await Tenant.update(data, {
+    where: { id },
+  });
+  return updatedRows;
+};
 module.exports = {
   createTenant,
   getTenants,
@@ -85,4 +91,5 @@ module.exports = {
   deleteTenant,
   getTenantLogoUrlById,
   findAllWithReportPhoneNumber,
+  update, // Adicionando a nova função
 };

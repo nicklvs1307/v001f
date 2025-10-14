@@ -24,6 +24,9 @@ router
     tenantController.createTenant
   );
 
+// Rota para obter o tenant do usuário logado
+router.get("/me", authorize("tenants:read"), tenantController.getMe);
+
 // Rota para upload de logo de tenant
 router.post(
   "/:id/upload-logo",

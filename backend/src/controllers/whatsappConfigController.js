@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const whatsappConfigRepository = require('../repositories/whatsappConfigRepository');
+const tenantRepository = require('../repositories/tenantRepository'); // Importar tenantRepository
 const whatsappService = require('../services/whatsappService');
 const ApiError = require('../errors/ApiError');
 const whatsappWebhookRepository = require('../repositories/whatsappWebhookRepository');
@@ -65,16 +66,17 @@ const whatsappConfigController = {
 
   updateAutomationsConfig: asyncHandler(async (req, res) => {
     const { tenantId } = req.user;
-    const { sendPrizeMessage, prizeMessageTemplate } = req.body;
+    const { reportPhoneNumbers, ...configData } = req.body;
 
-    const automationData = {
-      sendPrizeMessage,
-      prizeMessageTemplate,
-    };
+    // 1. Atualiza a tabela whatsapp_configs
+    await whatsappConfigRepository.update(tenantId, configData);
 
-    const config = await whatsappConfigRepository.update(tenantId, automationData);
+    // 2. Atualiza a tabela tenants
+    if (reportPhoneNumbers !== undefined) {
+      await tenantRepository.update(tenantId, { reportPhoneNumber: reportPhoneNumbers });
+    }
 
-    res.json(config);
+    res.status(200).json({ message: 'Automações atualizadas com sucesso.' });
   }),
 
   // --- Rotas para o Super Admin ---

@@ -117,3 +117,22 @@ exports.uploadLogo = asyncHandler(async (req, res) => {
     logoUrl: updatedTenant.logoUrl,
   });
 });
+
+// @desc    Obter o tenant do usuário logado
+// @route   GET /api/tenants/me
+// @access  Private (Admin do Tenant)
+exports.getMe = asyncHandler(async (req, res) => {
+  const { tenantId } = req.user;
+
+  if (!tenantId) {
+    throw new ApiError(404, "Tenant não encontrado para este usuário.");
+  }
+
+  const tenant = await tenantRepository.getTenantById(tenantId);
+
+  if (!tenant) {
+    throw new ApiError(404, "Tenant não encontrado.");
+  }
+
+  res.status(200).json(tenant);
+});

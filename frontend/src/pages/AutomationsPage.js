@@ -17,17 +17,20 @@ import {
   Toolbar,
   Snackbar,
   IconButton,
+  Tooltip,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import MarkunreadMailboxOutlinedIcon from '@mui/icons-material/MarkunreadMailboxOutlined';
 import UpcomingOutlinedIcon from '@mui/icons-material/UpcomingOutlined';
+import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from '@mui/icons-material/Close';
 
 import whatsappTemplateService from '../services/whatsappTemplateService';
 import whatsappConfigService from '../services/whatsappConfigService';
+import tenantService from '../services/tenantService';
 
 const initialAutomationState = {
   prizeRoulette: {
@@ -39,18 +42,26 @@ const initialAutomationState = {
     daysBefore: 7,
     template: 'Olá {{nome_cliente}}, seu cupom {{codigo_cupom}} está prestes a vencer! Use antes que expire em {{data_validade}}.',
   },
+  dailyReport: {
+    enabled: false,
+    phoneNumbers: '',
+  },
 };
 
 const AutomationItem = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
   marginBottom: theme.spacing(3),
   borderRadius: theme.shape.borderRadius,
+  transition: 'box-shadow 0.3s',
+  '&:hover': {
+    boxShadow: theme.shadows[4],
+  },
 }));
 
 const AutomationsPage = () => {
   const [automations, setAutomations] = useState(initialAutomationState);
   const [originalAutomations, setOriginalAutomations] = useState(initialAutomationState);
-  const [open, setOpen] = useState({ prizeRoulette: false, couponReminder: false });
+  const [open, setOpen] = useState({ prizeRoulette: false, couponReminder: false, dailyReport: false });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -62,12 +73,13 @@ const AutomationsPage = () => {
     try {
       setLoading(true);
       setError('');
-      const [configResponse, templateResponse] = await Promise.all([
+      const [configResponse, templateResponse, tenantResponse] = await Promise.all([
         whatsappConfigService.getInstanceConfig(),
         whatsappTemplateService.get('COUPON_REMINDER').catch(err => {
           if (err.response && err.response.status === 404) return { data: null };
           throw err;
         }),
+        tenantService.getMe(),
       ]);
 
       const initialState = {
@@ -79,6 +91,10 @@ const AutomationsPage = () => {
           enabled: templateResponse?.data?.isEnabled || false,
           daysBefore: templateResponse?.data?.daysBefore || initialAutomationState.couponReminder.daysBefore,
           template: templateResponse?.data?.message || initialAutomationState.couponReminder.template,
+        },
+        dailyReport: {
+          enabled: configResponse?.dailyReportEnabled || false,
+          phoneNumbers: tenantResponse?.reportPhoneNumber || '',
         },
       };
 
@@ -115,12 +131,16 @@ const AutomationsPage = () => {
       setSaving(true);
       setError('');
 
-      const prizeRouletteConfig = {
+      // Payload para as configurações gerais de automação (whatsapp_configs e tenants)
+      const configPayload = {
         sendPrizeMessage: automations.prizeRoulette.enabled,
         prizeMessageTemplate: automations.prizeRoulette.template,
+        dailyReportEnabled: automations.dailyReport.enabled,
+        reportPhoneNumbers: automations.dailyReport.phoneNumbers,
       };
 
-      const couponReminderConfig = {
+      // Payload para a automação de templates (whatsapp_templates)
+      const templatePayload = {
         type: 'COUPON_REMINDER',
         isEnabled: automations.couponReminder.enabled,
         daysBefore: automations.couponReminder.daysBefore,
@@ -128,14 +148,15 @@ const AutomationsPage = () => {
       };
 
       await Promise.all([
-        whatsappConfigService.update(prizeRouletteConfig), // Usando um método `update` que precisa ser criado
-        whatsappTemplateService.upsert(couponReminderConfig),
+        whatsappConfigService.update(configPayload),
+        whatsappTemplateService.upsert(templatePayload),
       ]);
 
       setOriginalAutomations(automations);
       setSnackbar({ open: true, message: 'Automações salvas com sucesso!', severity: 'success' });
     } catch (err) {
-      setError('Falha ao salvar as automações.');
+      console.error('Falha ao salvar:', err);
+      setError('Falha ao salvar as automações. Verifique os dados e tente novamente.');
       setSnackbar({ open: true, message: 'Erro ao salvar as automações.', severity: 'error' });
     } finally {
       setSaving(false);
@@ -155,7 +176,7 @@ const AutomationsPage = () => {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: 3, pb: 15 /* Padding extra para a barra de ações */ }}>
       <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
         Automações do WhatsApp
       </Typography>
@@ -163,6 +184,36 @@ const AutomationsPage = () => {
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
       <List component="nav">
+        {/* Relatório Diário */}
+        <AutomationItem>
+          <ListItem onClick={() => setOpen(prev => ({ ...prev, dailyReport: !prev.dailyReport }))} sx={{ cursor: 'pointer' }}>
+            <ListItemIcon><AssessmentOutlinedIcon /></ListItemIcon>
+            <ListItemText primary="Relatório Diário de NPS" secondary="Receber um resumo diário de performance via WhatsApp." />
+            <Switch
+              edge="end"
+              onChange={() => handleToggle('dailyReport')}
+              checked={automations.dailyReport.enabled}
+              onClick={(e) => e.stopPropagation()}
+            />
+            {open.dailyReport ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={open.dailyReport} timeout="auto" unmountOnExit>
+            <Box sx={{ p: 2, pl: 4, borderTop: '1px solid #eee' }}>
+              <TextField
+                label="Números de Telefone"
+                value={automations.dailyReport.phoneNumbers}
+                onChange={(e) => handleChange('dailyReport', 'phoneNumbers', e.target.value)}
+                fullWidth
+                multiline
+                rows={2}
+                helperText="Insira os números com DDI e DDD, separados por vírgula. Ex: 5511999998888, 5521988887777"
+                margin="normal"
+                disabled={!automations.dailyReport.enabled}
+              />
+            </Box>
+          </Collapse>
+        </AutomationItem>
+
         {/* Prêmio da Roleta */}
         <AutomationItem>
           <ListItem onClick={() => setOpen(prev => ({ ...prev, prizeRoulette: !prev.prizeRoulette }))} sx={{ cursor: 'pointer' }}>
@@ -172,7 +223,7 @@ const AutomationsPage = () => {
               edge="end"
               onChange={() => handleToggle('prizeRoulette')}
               checked={automations.prizeRoulette.enabled}
-              onClick={(e) => e.stopPropagation()} // Evita que o clique no switch expanda o item
+              onClick={(e) => e.stopPropagation()}
             />
             {open.prizeRoulette ? <ExpandLess /> : <ExpandMore />}
           </ListItem>

@@ -31,26 +31,10 @@ const RoulettePage = () => {
         return;
       }
 
-      // Fetch Survey Data
-      console.log("DEBUG: Fetching survey with ID:", pesquisaId);
-      const surveyResponse = await publicSurveyService.getPublicSurveyById(pesquisaId);
-      console.log("DEBUG: Survey Response from service:", surveyResponse);
-      setSurvey(surveyResponse);
-
-      // Fetch Tenant Data
-      console.log("DEBUG: Fetching tenant with ID:", tenantId);
-      const tenantResponse = await publicSurveyService.getPublicTenantById(tenantId);
-      console.log("DEBUG: Tenant Response from service:", tenantResponse);
-      setTenant(tenantResponse);
-
-      const theme = getDynamicTheme(tenantResponse.primaryColor, tenantResponse.secondaryColor);
-      setDynamicTheme(theme);
-
-      // Carregar a configuração da roleta
-      console.log("DEBUG: Fetching roleta config for pesquisaId:", pesquisaId, "clientId:", clientId);
-      const configData = await publicRoletaService.getRoletaConfig(pesquisaId, clientId);
-      console.log("DEBUG: Roleta Config Response from service:", configData);
-      setRoletaConfig(configData.data);
+      const [surveyResponse, tenantResponse] = await Promise.all([
+        publicSurveyService.getPublicSurveyById(pesquisaId),
+        publicSurveyService.getPublicTenantById(tenantId),
+      ]);
 
     } catch (err) {
       console.error("Erro ao buscar dados iniciais:", err);
@@ -118,14 +102,14 @@ const RoulettePage = () => {
 
         <Box sx={{ my: 4 }}>
           <SpinTheWheel
-            segments={roletaConfig.items.map(item => item.name)}
+            segments={roletaConfig.items?.map(item => item.name) || []}
             segColors={['#FFD700', '#FF6347', '#3CB371', '#6A5ACD', '#FF8C00', '#4682B4']}
             onFinished={(winner) => console.log('Vencedor:', winner)}
             primaryColor='#1976d2'
             contrastColor='#ffffff'
             buttonText={roletaConfig.hasSpun ? 'Já Girou' : 'GIRAR'}
             isSpinning={false} // Controlar isso com o estado de loading do handleSpin
-            disabled={roletaConfig.hasSpun || !roletaConfig.items.length}
+            disabled={roletaConfig.hasSpun || !roletaConfig.items?.length}
             onSpin={handleSpin}
           />
         </Box>

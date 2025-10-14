@@ -1,214 +1,289 @@
-Postgres is up - executing command
-Server.js is being executed!
-API_KEY_ENCRYPTION_KEY is not defined in .env. Please set it for security.
-Conexão com o banco de dados estabelecida com sucesso (Sequelize).
-Server is running on port 5000
-Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
-Agendador de lembrete de cupons iniciado. A tarefa será executada todos os dias às 9:00.
-Executing (default): SELECT "Pesquisa"."id", "Pesquisa"."title", "Pesquisa"."description", "Pesquisa"."createdAt", "Pesquisa"."updatedAt", "Pesquisa"."isOpen", "Pesquisa"."tenantId", "Pesquisa"."askForAttendant", "Pesquisa"."status", "Pesquisa"."recompensaId", "Pesquisa"."roletaId", "perguntas"."id" AS "perguntas.id", "perguntas"."type" AS "perguntas.type", "perguntas"."text" AS "perguntas.text", "perguntas"."options" AS "perguntas.options", "perguntas"."order" AS "perguntas.order", "perguntas"."required" AS "perguntas.required", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."description" AS "tenant.description", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "roleta"."id" AS "roleta.id", "roleta"."nome" AS "roleta.nome", "roleta"."descricao" AS "roleta.descricao", "roleta"."active" AS "roleta.active" FROM "pesquisas" AS "Pesquisa" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Pesquisa"."id" = "perguntas"."pesquisaId" LEFT OUTER JOIN "tenants" AS "tenant" ON "Pesquisa"."tenantId" = "tenant"."id" LEFT OUTER JOIN "roletas" AS "roleta" ON "Pesquisa"."roletaId" = "roleta"."id" WHERE "Pesquisa"."id" = '87d63f62-4bb9-43e5-ab76-9eb004d4d2bb';
-Executing (default): SELECT "id", "name", "logoUrl", "primaryColor", "secondaryColor", "description" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-DEBUG: Survey object in publicSurveyController: {
-  id: '87d63f62-4bb9-43e5-ab76-9eb004d4d2bb',
-  title: 'Avaliação de Pizzaria',
-  description: 'Feedback específico para pizzarias, focando no sabor, qualidade dos ingredientes e tempo de forno.',
-  createdAt: 2025-09-30T15:21:26.005Z,
-  updatedAt: 2025-10-14T21:24:04.161Z,
-  isOpen: true,
-  tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd',
-  askForAttendant: true,
-  status: 'active',
-  roletaId: 'f40e45de-fb16-477d-b385-85eb9d38304c',
-  restaurantName: 'Roma Pizzaria & Chopperiaaa',
-  restaurantLogoUrl: '/uploads/logos/3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1758996127619.png',
-  restaurantDescription: 'teste',
-  primaryColor: '#313131',
-  secondaryColor: '#9d2406',
-  roleta: {
-    id: 'f40e45de-fb16-477d-b385-85eb9d38304c',
-    nome: 'Roleta Salão',
-    descricao: 'Roleta de Premios para o salão',
-    active: true
-  },
-  questions: [
-    {
-      id: 'cc2c724c-3580-4f94-ab87-5822e4497770',
-      type: 'rating_1_5',
-      text: 'Como você avalia o sabor da sua pizza?',
-      options: [],
-      order: 1,
-      required: undefined
+{
+    "data": {
+        "items": [
+            {
+                "id": "ee6842f4-84f1-4d5c-851c-0b2e23d0ebe6",
+                "name": "10% de desconto na pizza\t",
+                "description": "10% de desconto na pizza\t",
+                "probabilidade": 11,
+                "recompensa": {
+                    "id": "9970edd1-49a1-4f36-ae63-d0e417616878",
+                    "name": "10% de desconto na pizza\t",
+                    "value": null,
+                    "type": null
+                }
+            },
+            {
+                "id": "380abc35-3c5f-4b4c-a83a-a9dbab6244ae",
+                "name": "1 Borda Recheada\t",
+                "description": "1 Borda Recheada\t",
+                "probabilidade": 11,
+                "recompensa": {
+                    "id": "2bb94097-20e2-4165-bd22-3d466250445b",
+                    "name": "1 Borda Recheada\t",
+                    "value": null,
+                    "type": null
+                }
+            },
+            {
+                "id": "5799348a-a6b6-4f0d-8086-daa083ecec2d",
+                "name": "1 Caipirinha\t",
+                "description": "1 Caipirinha\t",
+                "probabilidade": 12,
+                "recompensa": {
+                    "id": "85388f5b-94b8-4b55-bb78-5f270ecef4c5",
+                    "name": "1 Caipirinha\t",
+                    "value": null,
+                    "type": null
+                }
+            },
+            {
+                "id": "9adb2900-4a05-4503-bf89-0e302cbdece3",
+                "name": "1 Chopp\t",
+                "description": "1 Chopp\t",
+                "probabilidade": 11,
+                "recompensa": {
+                    "id": "57cca86c-265c-4c4d-861c-5aab54be61a8",
+                    "name": "1 Chopp\t",
+                    "value": null,
+                    "type": null
+                }
+            },
+            {
+                "id": "c04ac0e0-8a34-409d-9e0e-4b1d32cdd532",
+                "name": "1 Esfiha Doce\t",
+                "description": "1 Esfiha Doce\t",
+                "probabilidade": 12,
+                "recompensa": {
+                    "id": "d482dbc8-4404-4158-bada-baacffa05e80",
+                    "name": "1 Esfiha Doce\t",
+                    "value": null,
+                    "type": null
+                }
+            },
+            {
+                "id": "62854c2e-12af-4e85-a198-a027b0e23687",
+                "name": "1 Esfiha Salgada\t",
+                "description": "1 Esfiha Salgada\t",
+                "probabilidade": 11,
+                "recompensa": {
+                    "id": "2c029c66-3f6a-4de3-a829-e9cc01e90f14",
+                    "name": "1 Esfiha Salgada\t",
+                    "value": null,
+                    "type": null
+                }
+            },
+            {
+                "id": "b0b01b69-8fca-4dcb-8177-dcfcc4edcf9d",
+                "name": "1 Pizza Grátis\t",
+                "description": "1 Pizza Grátis\t",
+                "probabilidade": 4,
+                "recompensa": {
+                    "id": "3e036a1a-0c12-4aa3-85ca-1ab08a724210",
+                    "name": "1 Pizza Grátis\t",
+                    "value": null,
+                    "type": null
+                }
+            },
+            {
+                "id": "90bd40b8-94e3-418b-8683-f1b000a4fdc2",
+                "name": "1 Refri Lata\t",
+                "description": "1 Refri Lata\t",
+                "probabilidade": 12,
+                "recompensa": {
+                    "id": "b4b88515-9408-4aa3-b8e3-2faf752a9d61",
+                    "name": "1 Refri Lata\t",
+                    "value": null,
+                    "type": null
+                }
+            },
+            {
+                "id": "3534be50-3b68-4962-bd29-e4a6d4b403e0",
+                "name": "1 Rodízio Grátis\t",
+                "description": "1 Rodízio Grátis\t",
+                "probabilidade": 4,
+                "recompensa": {
+                    "id": "675a6d1a-efcb-4137-a976-b88fba7d4aa1",
+                    "name": "1 Rodízio Grátis\t",
+                    "value": null,
+                    "type": null
+                }
+            },
+            {
+                "id": "b5806763-1c07-4fc2-bd33-412a90c9a02a",
+                "name": "1 Suco\t",
+                "description": "1 Suco\t",
+                "probabilidade": 12,
+                "recompensa": {
+                    "id": "23a971f5-3406-4ce8-aa56-2e52db0193f5",
+                    "name": "1 Suco",
+                    "value": null,
+                    "type": null
+                }
+            }
+        ],
+        "hasSpun": false
     },
-    {
-      id: '2ffb181f-141b-472d-9abd-3c51595c7f29',
-      type: 'rating_1_5',
-      text: 'Como você avalia a qualidade dos ingredientes?',
-      options: [],
-      order: 2,
-      required: undefined
+    "status": 200,
+    "statusText": "",
+    "headers": {
+        "content-length": "2360",
+        "content-type": "application/json; charset=utf-8"
     },
-    {
-      id: '5f7acf91-90d6-44cd-963f-6f81effd5e1a',
-      type: 'rating_1_5',
-      text: 'A pizza chegou quentinha e na consistência certa?',
-      options: [],
-      order: 3,
-      required: undefined
+    "config": {
+        "transitional": {
+            "silentJSONParsing": true,
+            "forcedJSONParsing": true,
+            "clarifyTimeoutError": false
+        },
+        "adapter": [
+            "xhr",
+            "http",
+            "fetch"
+        ],
+        "transformRequest": [
+            null
+        ],
+        "transformResponse": [
+            null
+        ],
+        "timeout": 0,
+        "xsrfCookieName": "XSRF-TOKEN",
+        "xsrfHeaderName": "X-XSRF-TOKEN",
+        "maxContentLength": -1,
+        "maxBodyLength": -1,
+        "env": {},
+        "headers": {
+            "Accept": "application/json, text/plain, */*"
+        },
+        "baseURL": "https://apiloyalfood.towersfy.com/api",
+        "method": "get",
+        "url": "/roleta/config/87d63f62-4bb9-43e5-ab76-9eb004d4d2bb/07adfe04-c0e5-4ad2-88c9-e935cf3e9832",
+        "allowAbsoluteUrls": true
     },
-    {
-      id: '5e59c492-6d0c-41a4-ba3e-51e8310302ea',
-      type: 'free_text',
-      text: 'Qual seu sabor favorito? Gostaríamos de saber!',
-      options: [],
-      order: 4,
-      required: undefined
-    },
-    {
-      id: 'd5938446-234d-40c3-967c-050cb336aa06',
-      type: 'rating_0_10',
-      text: 'De 0 a 10, qual a chance de você nos recomendar como a melhor pizzaria da cidade?',
-      options: [],
-      order: 5,
-      required: undefined
-    }
-  ]
+    "request": {}
 }
-[Auth Middleware] Request: POST /api/auth/verify-token
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "Pesquisa"."id", "Pesquisa"."title", "Pesquisa"."description", "Pesquisa"."createdAt", "Pesquisa"."updatedAt", "Pesquisa"."isOpen", "Pesquisa"."tenantId", "Pesquisa"."askForAttendant", "Pesquisa"."status", "Pesquisa"."recompensaId", "Pesquisa"."roletaId", "perguntas"."id" AS "perguntas.id", "perguntas"."type" AS "perguntas.type", "perguntas"."text" AS "perguntas.text", "perguntas"."options" AS "perguntas.options", "perguntas"."order" AS "perguntas.order", "perguntas"."required" AS "perguntas.required", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."description" AS "tenant.description", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "roleta"."id" AS "roleta.id", "roleta"."nome" AS "roleta.nome", "roleta"."descricao" AS "roleta.descricao", "roleta"."active" AS "roleta.active" FROM "pesquisas" AS "Pesquisa" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Pesquisa"."id" = "perguntas"."pesquisaId" LEFT OUTER JOIN "tenants" AS "tenant" ON "Pesquisa"."tenantId" = "tenant"."id" LEFT OUTER JOIN "roletas" AS "roleta" ON "Pesquisa"."roletaId" = "roleta"."id" WHERE "Pesquisa"."id" = '87d63f62-4bb9-43e5-ab76-9eb004d4d2bb';
-Executing (default): SELECT "id", "name", "logoUrl", "primaryColor", "secondaryColor", "description" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-DEBUG: Survey object in publicSurveyController: {
-  id: '87d63f62-4bb9-43e5-ab76-9eb004d4d2bb',
-  title: 'Avaliação de Pizzaria',
-  description: 'Feedback específico para pizzarias, focando no sabor, qualidade dos ingredientes e tempo de forno.',
-  createdAt: 2025-09-30T15:21:26.005Z,
-  updatedAt: 2025-10-14T21:24:04.161Z,
-  isOpen: true,
-  tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd',
-  askForAttendant: true,
-  status: 'active',
-  roletaId: 'f40e45de-fb16-477d-b385-85eb9d38304c',
-  restaurantName: 'Roma Pizzaria & Chopperiaaa',
-  restaurantLogoUrl: '/uploads/logos/3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1758996127619.png',
-  restaurantDescription: 'teste',
-  primaryColor: '#313131',
-  secondaryColor: '#9d2406',
-  roleta: {
-    id: 'f40e45de-fb16-477d-b385-85eb9d38304c',
-    nome: 'Roleta Salão',
-    descricao: 'Roleta de Premios para o salão',
-    active: true
-  },
-  questions: [
-    {
-      id: 'cc2c724c-3580-4f94-ab87-5822e4497770',
-      type: 'rating_1_5',
-      text: 'Como você avalia o sabor da sua pizza?',
-      options: [],
-      order: 1,
-      required: undefined
-    },
-    {
-      id: '2ffb181f-141b-472d-9abd-3c51595c7f29',
-      type: 'rating_1_5',
-      text: 'Como você avalia a qualidade dos ingredientes?',
-      options: [],
-      order: 2,
-      required: undefined
-    },
-    {
-      id: '5f7acf91-90d6-44cd-963f-6f81effd5e1a',
-      type: 'rating_1_5',
-      text: 'A pizza chegou quentinha e na consistência certa?',
-      options: [],
-      order: 3,
-      required: undefined
-    },
-    {
-      id: '5e59c492-6d0c-41a4-ba3e-51e8310302ea',
-      type: 'free_text',
-      text: 'Qual seu sabor favorito? Gostaríamos de saber!',
-      options: [],
-      order: 4,
-      required: undefined
-    },
-    {
-      id: 'd5938446-234d-40c3-967c-050cb336aa06',
-      type: 'rating_0_10',
-      text: 'De 0 a 10, qual a chance de você nos recomendar como a melhor pizzaria da cidade?',
-      options: [],
-      order: 5,
-      required: undefined
-    }
-  ]
+
+{
+    "id": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd",
+    "name": "Roma Pizzaria & Chopperiaaa",
+    "logoUrl": "/uploads/logos/3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1758996127619.png",
+    "primaryColor": "#313131",
+    "secondaryColor": "#9d2406",
+    "description": "teste"
 }
-[Auth Middleware] Request: POST /api/auth/verify-token
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "name", "logoUrl", "primaryColor", "secondaryColor", "description" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "Pesquisa"."id", "Pesquisa"."title", "Pesquisa"."description", "Pesquisa"."createdAt", "Pesquisa"."updatedAt", "Pesquisa"."isOpen", "Pesquisa"."tenantId", "Pesquisa"."askForAttendant", "Pesquisa"."status", "Pesquisa"."recompensaId", "Pesquisa"."roletaId", "perguntas"."id" AS "perguntas.id", "perguntas"."type" AS "perguntas.type", "perguntas"."text" AS "perguntas.text", "perguntas"."options" AS "perguntas.options", "perguntas"."order" AS "perguntas.order", "perguntas"."required" AS "perguntas.required", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."description" AS "tenant.description", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "roleta"."id" AS "roleta.id", "roleta"."nome" AS "roleta.nome", "roleta"."descricao" AS "roleta.descricao", "roleta"."active" AS "roleta.active" FROM "pesquisas" AS "Pesquisa" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Pesquisa"."id" = "perguntas"."pesquisaId" LEFT OUTER JOIN "tenants" AS "tenant" ON "Pesquisa"."tenantId" = "tenant"."id" LEFT OUTER JOIN "roletas" AS "roleta" ON "Pesquisa"."roletaId" = "roleta"."id" WHERE "Pesquisa"."id" = '87d63f62-4bb9-43e5-ab76-9eb004d4d2bb';
-DEBUG: Survey object in publicSurveyController: {
-  id: '87d63f62-4bb9-43e5-ab76-9eb004d4d2bb',
-  title: 'Avaliação de Pizzaria',
-  description: 'Feedback específico para pizzarias, focando no sabor, qualidade dos ingredientes e tempo de forno.',
-  createdAt: 2025-09-30T15:21:26.005Z,
-  updatedAt: 2025-10-14T21:24:04.161Z,
-  isOpen: true,
-  tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd',
-  askForAttendant: true,
-  status: 'active',
-  roletaId: 'f40e45de-fb16-477d-b385-85eb9d38304c',
-  restaurantName: 'Roma Pizzaria & Chopperiaaa',
-  restaurantLogoUrl: '/uploads/logos/3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1758996127619.png',
-  restaurantDescription: 'teste',
-  primaryColor: '#313131',
-  secondaryColor: '#9d2406',
-  roleta: {
-    id: 'f40e45de-fb16-477d-b385-85eb9d38304c',
-    nome: 'Roleta Salão',
-    descricao: 'Roleta de Premios para o salão',
-    active: true
-  },
-  questions: [
-    {
-      id: 'cc2c724c-3580-4f94-ab87-5822e4497770',
-      type: 'rating_1_5',
-      text: 'Como você avalia o sabor da sua pizza?',
-      options: [],
-      order: 1,
-      required: undefined
+
+{
+    "id": "87d63f62-4bb9-43e5-ab76-9eb004d4d2bb",
+    "title": "Avaliação de Pizzaria",
+    "description": "Feedback específico para pizzarias, focando no sabor, qualidade dos ingredientes e tempo de forno.",
+    "createdAt": "2025-09-30T15:21:26.005Z",
+    "updatedAt": "2025-10-14T21:24:04.161Z",
+    "isOpen": true,
+    "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd",
+    "askForAttendant": true,
+    "status": "active",
+    "roletaId": "f40e45de-fb16-477d-b385-85eb9d38304c",
+    "restaurantName": "Roma Pizzaria & Chopperiaaa",
+    "restaurantLogoUrl": "/uploads/logos/3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1758996127619.png",
+    "restaurantDescription": "teste",
+    "primaryColor": "#313131",
+    "secondaryColor": "#9d2406",
+    "roleta": {
+        "id": "f40e45de-fb16-477d-b385-85eb9d38304c",
+        "nome": "Roleta Salão",
+        "descricao": "Roleta de Premios para o salão",
+        "active": true
     },
-    {
-      id: '2ffb181f-141b-472d-9abd-3c51595c7f29',
-      type: 'rating_1_5',
-      text: 'Como você avalia a qualidade dos ingredientes?',
-      options: [],
-      order: 2,
-      required: undefined
-    },
-    {
-      id: '5f7acf91-90d6-44cd-963f-6f81effd5e1a',
-      type: 'rating_1_5',
-      text: 'A pizza chegou quentinha e na consistência certa?',
-      options: [],
-      order: 3,
-      required: undefined
-    },
-    {
-      id: '5e59c492-6d0c-41a4-ba3e-51e8310302ea',
-      type: 'free_text',
-      text: 'Qual seu sabor favorito? Gostaríamos de saber!',
-      options: [],
-      order: 4,
-      required: undefined
-    },
-    {
-      id: 'd5938446-234d-40c3-967c-050cb336aa06',
-      type: 'rating_0_10',
-      text: 'De 0 a 10, qual a chance de você nos recomendar como a melhor pizzaria da cidade?',
-      options: [],
-      order: 5,
-      required: undefined
-    }
-  ]
+    "questions": [
+        {
+            "id": "cc2c724c-3580-4f94-ab87-5822e4497770",
+            "type": "rating_1_5",
+            "text": "Como você avalia o sabor da sua pizza?",
+            "options": [],
+            "order": 1
+        },
+        {
+            "id": "2ffb181f-141b-472d-9abd-3c51595c7f29",
+            "type": "rating_1_5",
+            "text": "Como você avalia a qualidade dos ingredientes?",
+            "options": [],
+            "order": 2
+        },
+        {
+            "id": "5f7acf91-90d6-44cd-963f-6f81effd5e1a",
+            "type": "rating_1_5",
+            "text": "A pizza chegou quentinha e na consistência certa?",
+            "options": [],
+            "order": 3
+        },
+        {
+            "id": "5e59c492-6d0c-41a4-ba3e-51e8310302ea",
+            "type": "free_text",
+            "text": "Qual seu sabor favorito? Gostaríamos de saber!",
+            "options": [],
+            "order": 4
+        },
+        {
+            "id": "d5938446-234d-40c3-967c-050cb336aa06",
+            "type": "rating_0_10",
+            "text": "De 0 a 10, qual a chance de você nos recomendar como a melhor pizzaria da cidade?",
+            "options": [],
+            "order": 5
+        }
+    ]
 }
-[Auth Middleware] Request: POST /api/auth/verify-token
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+
+RoulettePage.js:35 DEBUG: Fetching survey with ID: 87d63f62-4bb9-43e5-ab76-9eb004d4d2bb
+RoulettePage.js:37 DEBUG: Survey Response from service: {id: '87d63f62-4bb9-43e5-ab76-9eb004d4d2bb', title: 'Avaliação de Pizzaria', description: 'Feedback específico para pizzarias, focando no sabor, qualidade dos ingredientes e tempo de forno.', createdAt: '2025-09-30T15:21:26.005Z', updatedAt: '2025-10-14T21:24:04.161Z', …}
+RoulettePage.js:41 DEBUG: Fetching tenant with ID: 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd
+RoulettePage.js:43 DEBUG: Tenant Response from service: {id: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd', name: 'Roma Pizzaria & Chopperiaaa', logoUrl: '/uploads/logos/3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1758996127619.png', primaryColor: '#313131', secondaryColor: '#9d2406', …}
+RoulettePage.js:50 DEBUG: Fetching roleta config for pesquisaId: 87d63f62-4bb9-43e5-ab76-9eb004d4d2bb clientId: 07adfe04-c0e5-4ad2-88c9-e935cf3e9832
+RoulettePage.js:52 DEBUG: Roleta Config Response from service: {data: {…}, status: 200, statusText: '', headers: ke, config: {…}, …}
+react-dom.production.min.js:188 TypeError: Cannot read properties of undefined (reading 'map')
+    at SpinTheWheel.js:47:13
+    at Object.useMemo (react-dom.production.min.js:177:189)
+    at t.useMemo (react.production.min.js:26:48)
+    at _n (SpinTheWheel.js:45:24)
+    at gi (react-dom.production.min.js:160:137)
+    at Sl (react-dom.production.min.js:289:337)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+qa @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+SpinTheWheel.js:47 Uncaught TypeError: Cannot read properties of undefined (reading 'map')
+    at SpinTheWheel.js:47:13
+    at Object.useMemo (react-dom.production.min.js:177:189)
+    at t.useMemo (react.production.min.js:26:48)
+    at _n (SpinTheWheel.js:45:24)
+    at gi (react-dom.production.min.js:160:137)
+    at Sl (react-dom.production.min.js:289:337)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+(anônimo) @ SpinTheWheel.js:47
+useMemo @ react-dom.production.min.js:177
+t.useMemo @ react.production.min.js:26
+_n @ SpinTheWheel.js:45
+gi @ react-dom.production.min.js:160
+Sl @ react-dom.production.min.js:289
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+ac @ react-dom.production.min.js:270
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+

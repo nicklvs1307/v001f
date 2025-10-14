@@ -36,6 +36,16 @@ const RoulettePage = () => {
         publicSurveyService.getPublicTenantById(tenantId),
       ]);
 
+      setSurvey(surveyResponse);
+      setTenant(tenantResponse);
+
+      const theme = getDynamicTheme(tenantResponse.primaryColor, tenantResponse.secondaryColor);
+      setDynamicTheme(theme);
+
+      // Carregar a configuração da roleta
+      const configData = await publicRoletaService.getRoletaConfig(pesquisaId, clientId);
+      setRoletaConfig(configData.data);
+
     } catch (err) {
       console.error("Erro ao buscar dados iniciais:", err);
       setError(err.message || 'Erro ao carregar dados da pesquisa ou roleta.');
@@ -102,7 +112,7 @@ const RoulettePage = () => {
 
         <Box sx={{ my: 4 }}>
           <SpinTheWheel
-            segments={roletaConfig.items?.map(item => item.name) || []}
+            items={roletaConfig.items?.map(item => item.name) || []}
             segColors={['#FFD700', '#FF6347', '#3CB371', '#6A5ACD', '#FF8C00', '#4682B4']}
             onFinished={(winner) => console.log('Vencedor:', winner)}
             primaryColor='#1976d2'

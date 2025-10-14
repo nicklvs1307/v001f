@@ -7,7 +7,7 @@ class WhatsappConfigRepository {
 
   async update(tenantId, data) {
     const { sequelize } = require('../../models');
-    const { sendPrizeMessage, prizeMessageTemplate } = data;
+    const { sendPrizeMessage, prizeMessageTemplate, dailyReportEnabled } = data;
 
     // Usando query bruta para contornar qualquer problema com hooks ou getters do Sequelize
     const [results] = await sequelize.query(

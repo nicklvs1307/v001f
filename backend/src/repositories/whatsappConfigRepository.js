@@ -6,15 +6,25 @@ class WhatsappConfigRepository {
   }
 
   async update(tenantId, data) {
-    const config = await this.findByTenant(tenantId);
+    const { sequelize } = require('../../models');
+    const { sendPrizeMessage, prizeMessageTemplate } = data;
 
-    if (!config) {
-      // A criação de uma nova config deve ser feita por uma rota que forneça todos os dados necessários (url, apiKey)
-      // Esta rota de automação não deve criar uma nova config do zero.
-      throw new Error('WhatsappConfig not found for this tenant. Cannot update automations.');
-    }
+    // Usando query bruta para contornar qualquer problema com hooks ou getters do Sequelize
+    const [results] = await sequelize.query(
+      'UPDATE whatsapp_configs SET "sendPrizeMessage" = :sendPrizeMessage, "prizeMessageTemplate" = :prizeMessageTemplate, "updatedAt" = :now WHERE "tenantId" = :tenantId',
+      {
+        replacements: {
+          sendPrizeMessage,
+          prizeMessageTemplate,
+          tenantId,
+          now: new Date(),
+        },
+        type: sequelize.QueryTypes.UPDATE,
+      }
+    );
 
-    return config.update(data);
+    // Após a atualização, busca os dados mais recentes para retornar ao frontend
+    return this.findByTenant(tenantId);
   }
 
   async deleteByTenantId(tenantId) {

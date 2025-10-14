@@ -43,8 +43,8 @@ const RoletasPage = () => {
   const fetchRoletas = async () => {
     try {
       setLoading(true);
-      const data = await roletaService.getAllRoletas();
-      setRoletas(data.roletas && Array.isArray(data.roletas) ? data.roletas : []);
+      const response = await roletaService.getAll();
+      setRoletas(response.data && Array.isArray(response.data) ? response.data : []);
     } catch (err) {
       setError(err.message || 'Erro ao buscar roletas.');
     } finally {

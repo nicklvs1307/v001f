@@ -84,7 +84,7 @@ const automationService = {
 
     for (const number of numbersArray) {
           await whatsappService.sendTenantMessage(tenantId, number, message);
-          console.log(`Mensagem de aniversário enviada para ${client.name} (${client.phone}) do tenant ${config.tenantId}`);
+          console.log(`Relatório de teste enviado para ${number} do tenant ${tenantId}`);
     }
     return { message: 'Relatório de teste enviado com sucesso!' };
   },

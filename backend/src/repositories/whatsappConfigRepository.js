@@ -10,7 +10,7 @@ class WhatsappConfigRepository {
     const { sendPrizeMessage, prizeMessageTemplate, dailyReportEnabled, reportPhoneNumbers } = data;
 
     // Usando query bruta para contornar qualquer problema com hooks ou getters do Sequelize
-    const [results] = await sequelize.query(
+    const [results, rowCount] = await sequelize.query(
       'UPDATE whatsapp_configs SET "sendPrizeMessage" = :sendPrizeMessage, "prizeMessageTemplate" = :prizeMessageTemplate, "dailyReportEnabled" = :dailyReportEnabled, "reportPhoneNumbers" = :reportPhoneNumbers, "updatedAt" = :now WHERE "tenantId" = :tenantId',
       {
         replacements: {
@@ -24,6 +24,8 @@ class WhatsappConfigRepository {
         type: sequelize.QueryTypes.UPDATE,
       }
     );
+
+    console.log('[DEBUG] WhatsappConfigRepository update result:', { results, rowCount });
 
     // Após a atualização, busca os dados mais recentes para retornar ao frontend
     return this.findByTenant(tenantId);

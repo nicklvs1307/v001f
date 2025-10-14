@@ -32,18 +32,26 @@ class WhatsappConfigRepository {
   }
 
   async updateAutomations(tenantId, data) {
+    const [numberOfAffectedRows, affectedRows] = await WhatsappConfig.update(
+      {
+        sendPrizeMessage: data.sendPrizeMessage,
+        prizeMessageTemplate: data.prizeMessageTemplate,
+      },
+      {
+        where: { tenantId },
+        returning: true,
+      }
+    );
+
+    if (numberOfAffectedRows > 0) {
+      return affectedRows[0];
+    }
+
     const config = await this.findByTenant(tenantId);
     if (!config) {
       throw new Error('WhatsappConfig not found for this tenant');
     }
-
-    // Atribuição manual para garantir a atualização correta
-    config.sendPrizeMessage = data.sendPrizeMessage;
-    if (data.prizeMessageTemplate !== undefined) {
-      config.prizeMessageTemplate = data.prizeMessageTemplate;
-    }
-
-    return await config.save();
+    return config;
   }
 
   async deleteByTenantId(tenantId) {

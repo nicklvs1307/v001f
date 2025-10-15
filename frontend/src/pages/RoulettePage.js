@@ -20,6 +20,9 @@ const RoulettePage = () => {
   const [spinResult, setSpinResult] = useState(null);
   const [tenant, setTenant] = useState(null);
   const [dynamicTheme, setDynamicTheme] = useState(null);
+  const [winningIndex, setWinningIndex] = useState(-1);
+  const [isSpinning, setIsSpinning] = useState(false);
+
 
   const fetchData = useCallback(async () => {
     try {
@@ -59,16 +62,32 @@ const RoulettePage = () => {
   }, [fetchData]);
 
   const handleSpin = async () => {
+    if (isSpinning || roletaConfig.hasSpun) return;
+
     try {
+      setIsSpinning(true);
       setError('');
       const result = await publicRoletaService.spinRoleta(pesquisaId, clientId);
-      setSpinResult(result.data);
+      const spinData = result.data;
+      setSpinResult(spinData);
+
+      const winnerIndex = roletaConfig.items.findIndex(item => item.id === spinData.premio.id);
+      setWinningIndex(winnerIndex);
+
       // Atualizar o estado para refletir que a roleta foi girada
       setRoletaConfig(prev => ({ ...prev, hasSpun: true }));
     } catch (err) {
       setError(err.response?.data?.message || err.message || 'Erro ao girar a roleta.');
+      setIsSpinning(false);
     }
   };
+
+  const handleAnimationComplete = () => {
+    // A animação terminou, agora podemos mostrar o resultado final com segurança.
+    setIsSpinning(false);
+    // O resultado já está sendo exibido condicionalmente com base em `spinResult`
+  };
+
 
   if (loading || !dynamicTheme) {
     return (
@@ -106,26 +125,29 @@ const RoulettePage = () => {
 
         {roletaConfig.hasSpun && !spinResult && (
           <Alert severity="info" sx={{ mb: 2 }}>
-            Você já girou a roleta para esta pesquisa nas últimas 24 horas. Volte amanhã para tentar novamente!
+            Você já girou a roleta para esta pesquisa.
           </Alert>
         )}
 
-        <Box sx={{ my: 4 }}>
+        <Box sx={{ my: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <SpinTheWheel
             items={roletaConfig.items || []}
-            segColors={['#FFD700', '#FF6347', '#3CB371', '#6A5ACD', '#FF8C00', '#4682B4']}
-            onFinished={(winner) => console.log('Vencedor:', winner)}
-            primaryColor='#1976d2'
-            contrastColor='#ffffff'
-            buttonText={roletaConfig.hasSpun ? 'Já Girou' : 'GIRAR'}
-            isSpinning={false} // Controlar isso com o estado de loading do handleSpin
-            disabled={roletaConfig.hasSpun || !roletaConfig.items?.length}
-            onSpin={handleSpin}
+            winningIndex={winningIndex}
+            onAnimationComplete={handleAnimationComplete}
           />
+           <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSpin}
+            disabled={isSpinning || roletaConfig.hasSpun || !roletaConfig.items?.length}
+            sx={{ mt: 4 }}
+          >
+            {isSpinning ? 'Girando...' : (roletaConfig.hasSpun ? 'Já Girou' : 'GIRAR')}
+          </Button>
         </Box>
 
         {spinResult && (
-          <Box sx={{ mt: 4, p: 3, border: '1px solid #ddd', borderRadius: '8px', bgcolor: '#f9f9f9' }}>
+          <Box sx={{ mt: 4, p: 3, border: '1px solid #ddd', borderRadius: '8px', bgcolor: 'background.paper' }}>
             <Typography variant="h5" color="primary" gutterBottom>
               Parabéns! Você ganhou:
             </Typography>

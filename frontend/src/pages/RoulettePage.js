@@ -3,7 +3,7 @@ import {
   Container, Typography, Box, Button, CircularProgress, Alert,
 } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import { ThemeProvider } from '@mui/material/styles';
+
 
 import publicSurveyService from '../services/publicSurveyService';
 import tenantService from '../services/tenantService';
@@ -114,7 +114,6 @@ const RoulettePage = () => {
   }
 
   return (
-    <ThemeProvider theme={dynamicTheme}>
       <Container maxWidth="md" sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Gire a Roleta e Ganhe um Prêmio!
@@ -131,21 +130,9 @@ const RoulettePage = () => {
 
         <Box sx={{ my: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <SpinTheWheel
-<<<<<<< HEAD
             items={roletaConfig.items || []}
             winningIndex={winningIndex}
             onAnimationComplete={handleAnimationComplete}
-=======
-            items={roletaConfig.items?.map(item => item.name) || []}
-            segColors={['#FFD700', '#FF6347', '#3CB371', '#6A5ACD', '#FF8C00', '#4682B4']}
-            onFinished={(winner) => console.log('Vencedor:', winner)}
-            primaryColor='#1976d2'
-            contrastColor='#ffffff'
-            buttonText={roletaConfig.hasSpun ? 'Já Girou' : 'GIRAR'}
-            isSpinning={false} // Controlar isso com o estado de loading do handleSpin
-            disabled={roletaConfig.hasSpun || !roletaConfig.items?.length}
-            onSpin={handleSpin}
->>>>>>> parent of e3e3db0 (feat: atualiza projeto feedeliza)
           />
            <Button
             variant="contained"
@@ -174,7 +161,6 @@ const RoulettePage = () => {
           </Box>
         )}
       </Container>
-    </ThemeProvider>
   );
 };
 

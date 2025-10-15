@@ -112,7 +112,7 @@ const RoulettePage = () => {
 
         <Box sx={{ my: 4 }}>
           <SpinTheWheel
-            items={roletaConfig.items?.map(item => item.name) || []}
+            items={roletaConfig.items || []}
             segColors={['#FFD700', '#FF6347', '#3CB371', '#6A5ACD', '#FF8C00', '#4682B4']}
             onFinished={(winner) => console.log('Vencedor:', winner)}
             primaryColor='#1976d2'

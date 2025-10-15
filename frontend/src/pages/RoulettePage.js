@@ -5,6 +5,7 @@ import {
 import { useParams } from 'react-router-dom';
 
 
+import { ThemeProvider } from '@mui/material/styles';
 import publicSurveyService from '../services/publicSurveyService';
 import tenantService from '../services/tenantService';
 import publicRoletaService from '../services/publicRoletaService';

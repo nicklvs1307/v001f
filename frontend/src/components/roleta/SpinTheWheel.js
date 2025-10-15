@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useCallback, useMemo, useState } from 'react';
 import { Box, Button } from '@mui/material';
 
-const SpinTheWheel = ({ items, onFinished, primaryColor, contrastColor, buttonText, isSpinning, disabled, onSpin }) => {
+const SpinTheWheel = ({ items, onFinished, primaryColor, contrastColor, buttonText, isSpinning, disabled, onSpin, segColors }) => {
   const canvasRef = useRef(null);
   const rotationRef = useRef(0);
   const animationFrameId = useRef(null);
@@ -44,15 +44,15 @@ const SpinTheWheel = ({ items, onFinished, primaryColor, contrastColor, buttonTe
 
   const coloredItems = useMemo(
     () =>
-      items.map((item) => {
-        const randomColor = getRandomHexColor();
+      items.map((item, index) => {
+        const color = segColors && segColors.length > 0 ? segColors[index % segColors.length] : getRandomHexColor();
         return {
           ...item,
-          color: randomColor,
-          textColor: getContrastingTextColor(randomColor),
+          color,
+          textColor: getContrastingTextColor(color),
         };
       }),
-    [items, getRandomHexColor, getContrastingTextColor]
+    [items, segColors, getRandomHexColor, getContrastingTextColor]
   );
 
   const drawWheel = useCallback(

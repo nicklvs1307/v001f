@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {
-  Container, Typography, Box, Button, CircularProgress, Alert,
-} from '@mui/material';
+import { Container, Typography, Box, Button, CircularProgress, Alert, Paper } from '@mui/material';
+import PublicPageLayout from '../components/layout/PublicPageLayout';
 import { useParams, useNavigate } from 'react-router-dom';
 
 
@@ -117,38 +116,39 @@ const RoulettePage = () => {
   }
 
   return (
-    <ThemeProvider theme={dynamicTheme}>
-      <Container maxWidth="md" sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Gire a Roleta e Ganhe um Prêmio!
-        </Typography>
-        <Typography variant="subtitle1" gutterBottom>
-          {survey.title}
-        </Typography>
+    <PublicPageLayout maxWidth="md">
+      <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+        {survey?.title || 'Gire a Roleta e Ganhe um Prêmio!'}
+      </Typography>
+      <Typography variant="subtitle1" sx={{ mb: 4, color: 'text.secondary' }}>
+        {survey?.description || 'Gire a roleta para ganhar prêmios incríveis.'}
+      </Typography>
 
-        {roletaConfig.hasSpun && !spinResult && (
-          <Alert severity="info" sx={{ mb: 2 }}>
-            Você já girou a roleta para esta pesquisa.
-          </Alert>
-        )}
+      <Paper elevation={6} sx={{ my: 4, p: 4, borderRadius: 2, bgcolor: 'background.paper' }}>
+        <SpinTheWheel
+          items={roletaConfig.items || []}
+          winningIndex={winningIndex}
+          onAnimationComplete={handleAnimationComplete}
+          primaryColor={tenant.primaryColor}
+          contrastColor="#ffffff"
+          buttonText={roletaConfig.hasSpun ? 'Já Girou' : 'GIRAR'}
+          isSpinning={isSpinning}
+          disabled={isSpinning || roletaConfig.hasSpun || !roletaConfig.items?.length}
+          onSpin={handleSpin}
+        />
+      </Paper>
 
-        <Box sx={{ my: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <SpinTheWheel
-            items={roletaConfig.items || []}
-            winningIndex={winningIndex}
-            onAnimationComplete={handleAnimationComplete}
-            primaryColor={tenant.primaryColor}
-            contrastColor="#ffffff"
-            buttonText={roletaConfig.hasSpun ? 'Já Girou' : 'GIRAR'}
-            isSpinning={isSpinning}
-            disabled={isSpinning || roletaConfig.hasSpun || !roletaConfig.items?.length}
-            onSpin={handleSpin}
-          />
-        </Box>
-
-
-      </Container>
-    </ThemeProvider>
+      <Button
+        variant="contained"
+        color="primary"
+        size="large"
+        onClick={handleSpin}
+        disabled={isSpinning || roletaConfig.hasSpun || !roletaConfig.items?.length}
+        sx={{ mt: 3 }}
+      >
+        {isSpinning ? <CircularProgress size={24} /> : 'GIRAR'}
+      </Button>
+    </PublicPageLayout>
   );
 };
 

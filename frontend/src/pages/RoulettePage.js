@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Container, Typography, Box, Button, CircularProgress, Alert,
+  Container, Typography, Box, Button, CircularProgress, Alert, Paper,
 } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
-
-
-import { ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider, useTheme } from '@mui/material/styles';
 import publicSurveyService from '../services/publicSurveyService';
-import tenantService from '../services/tenantService';
 import publicRoletaService from '../services/publicRoletaService';
 import SpinTheWheel from '../components/roleta/SpinTheWheel';
 import getDynamicTheme from '../theme';
@@ -24,7 +21,6 @@ const RoulettePage = () => {
   const [dynamicTheme, setDynamicTheme] = useState(null);
   const [winningIndex, setWinningIndex] = useState(-1);
   const [isSpinning, setIsSpinning] = useState(false);
-
 
   const fetchData = useCallback(async () => {
     try {
@@ -47,7 +43,6 @@ const RoulettePage = () => {
       const theme = getDynamicTheme(tenantResponse.primaryColor, tenantResponse.secondaryColor);
       setDynamicTheme(theme);
 
-      // Carregar a configuração da roleta
       const configData = await publicRoletaService.getRoletaConfig(pesquisaId, clientId);
       setRoletaConfig(configData.data);
 
@@ -76,7 +71,6 @@ const RoulettePage = () => {
       const winnerIndex = roletaConfig.items.findIndex(item => item.id === spinData.premio.id);
       setWinningIndex(winnerIndex);
 
-      // Atualizar o estado para refletir que a roleta foi girada
       setRoletaConfig(prev => ({ ...prev, hasSpun: true }));
     } catch (err) {
       setError(err.response?.data?.message || err.message || 'Erro ao girar a roleta.');
@@ -91,12 +85,11 @@ const RoulettePage = () => {
     }
   };
 
-
   if (loading || !dynamicTheme) {
     return (
-      <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
         <CircularProgress />
-      </Container>
+      </Box>
     );
   }
 
@@ -118,39 +111,70 @@ const RoulettePage = () => {
 
   return (
     <ThemeProvider theme={dynamicTheme}>
-      <Container maxWidth="md" sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Gire a Roleta e Ganhe um Prêmio!
-        </Typography>
-        <Typography variant="subtitle1" gutterBottom>
-          {survey.title}
-        </Typography>
-
-        {roletaConfig.hasSpun && !spinResult && (
-          <Alert severity="info" sx={{ mb: 2 }}>
-            Você já girou a roleta para esta pesquisa.
-          </Alert>
-        )}
-
-        <Box sx={{ my: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <SpinTheWheel
-            items={roletaConfig.items || []}
-            segColors={['#FFD700', '#FF6347', '#3CB371', '#6A5ACD', '#FF8C00', '#4682B4']}
-            winningIndex={winningIndex}
-            onAnimationComplete={handleAnimationComplete}
-            primaryColor={tenant.primaryColor}
-            contrastColor="#ffffff"
-            buttonText={roletaConfig.hasSpun ? 'Já Girou' : 'GIRAR'}
-            isSpinning={isSpinning}
-            disabled={isSpinning || roletaConfig.hasSpun || !roletaConfig.items?.length}
-            onSpin={handleSpin}
-          />
-        </Box>
-
-
-      </Container>
+      <ThemedRoulettePage
+        survey={survey}
+        tenant={tenant}
+        roletaConfig={roletaConfig}
+        isSpinning={isSpinning}
+        winningIndex={winningIndex}
+        handleSpin={handleSpin}
+        handleAnimationComplete={handleAnimationComplete}
+        spinResult={spinResult}
+      />
     </ThemeProvider>
   );
 };
+
+const ThemedRoulettePage = ({ survey, tenant, roletaConfig, isSpinning, winningIndex, handleSpin, handleAnimationComplete, spinResult }) => {
+  const theme = useTheme();
+  const buttonNextStyle = { background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, color: 'white', borderRadius: '50px', padding: '12px 25px', fontWeight: 600, '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 5px 15px rgba(0, 0, 0, 0.1)' } };
+
+  return (
+    <Box sx={{ background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`, minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', p: { xs: 1, sm: 2 } }}>
+      <Container maxWidth="md">
+        <Paper elevation={10} sx={{ borderRadius: '20px', overflow: 'hidden', textAlign: 'center' }}>
+          <Box sx={{ background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, padding: { xs: '20px', sm: '30px' }, color: 'white' }}>
+            {tenant?.logoUrl && (
+              <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
+                <img src={`${process.env.REACT_APP_API_URL}${tenant.logoUrl}`} alt="Logo" style={{ maxHeight: '70px', maxWidth: '180px', objectFit: 'contain' }} />
+              </Box>
+            )}
+            <Typography variant="h4" component="h1" gutterBottom>
+              Gire a Roleta e Ganhe um Prêmio!
+            </Typography>
+            <Typography variant="subtitle1">
+              {survey.title}
+            </Typography>
+          </Box>
+
+          <Box sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
+            {roletaConfig.hasSpun && !spinResult && (
+              <Alert severity="info" sx={{ mb: 2 }}>
+                Você já girou a roleta para esta pesquisa.
+              </Alert>
+            )}
+
+            <Box sx={{ my: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <SpinTheWheel
+                items={roletaConfig.items || []}
+                segColors={['#FFD700', '#FF6347', '#3CB371', '#6A5ACD', '#FF8C00', '#4682B4']}
+                winningIndex={winningIndex}
+                onAnimationComplete={handleAnimationComplete}
+              />
+            </Box>
+
+            <Button
+              onClick={handleSpin}
+              disabled={isSpinning || roletaConfig.hasSpun || !roletaConfig.items?.length}
+              sx={buttonNextStyle}
+            >
+              {isSpinning ? <CircularProgress size={24} color="inherit" /> : (roletaConfig.hasSpun ? 'Já Girou' : 'GIRAR')}
+            </Button>
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
+  );
+}
 
 export default RoulettePage;

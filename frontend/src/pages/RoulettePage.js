@@ -130,10 +130,9 @@ const ThemedRoulettePage = ({ survey, tenant, roletaConfig, isSpinning, winningI
   const buttonNextStyle = { background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, color: 'white', borderRadius: '50px', padding: '12px 25px', fontWeight: 600, '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 5px 15px rgba(0, 0, 0, 0.1)' } };
 
   return (
-    <Box sx={{ background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`, minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', p: { xs: 1, sm: 2 } }}>
+    <Box sx={{ background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`, minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', p: { xs: 1, sm: 2 }, textAlign: 'center' }}>
       <Container maxWidth="md">
-        <Paper elevation={10} sx={{ borderRadius: '20px', overflow: 'hidden', textAlign: 'center' }}>
-          <Box sx={{ background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, padding: { xs: '20px', sm: '30px' }, color: 'white' }}>
+          <Box sx={{ padding: { xs: '20px', sm: '30px' }, color: 'white' }}>
             {tenant?.logoUrl && (
               <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
                 <img src={`${process.env.REACT_APP_API_URL}${tenant.logoUrl}`} alt="Logo" style={{ maxHeight: '70px', maxWidth: '180px', objectFit: 'contain' }} />
@@ -149,7 +148,7 @@ const ThemedRoulettePage = ({ survey, tenant, roletaConfig, isSpinning, winningI
 
           <Box sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
             {roletaConfig.hasSpun && !spinResult && (
-              <Alert severity="info" sx={{ mb: 2 }}>
+              <Alert severity="info" sx={{ mb: 2, bgcolor: 'rgba(255, 255, 255, 0.2)', color: 'white' }}>
                 Você já girou a roleta para esta pesquisa.
               </Alert>
             )}
@@ -171,7 +170,6 @@ const ThemedRoulettePage = ({ survey, tenant, roletaConfig, isSpinning, winningI
               {isSpinning ? <CircularProgress size={24} color="inherit" /> : (roletaConfig.hasSpun ? 'Já Girou' : 'GIRAR')}
             </Button>
           </Box>
-        </Paper>
       </Container>
     </Box>
   );

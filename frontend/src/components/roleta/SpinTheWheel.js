@@ -12,7 +12,7 @@ const SpinTheWheel = ({ items, onAnimationComplete, segColors, winningIndex }) =
 
   useEffect(() => {
     const handleResize = () => {
-      const size = Math.min(window.innerWidth * 0.8, 400);
+            const size = Math.min(window.innerWidth * 0.9, 400);
       setWheelSize(size);
     };
 

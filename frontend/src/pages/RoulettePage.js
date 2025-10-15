@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Container, Typography, Box, Button, CircularProgress, Alert, Paper,
+  Container, Typography, Box, Button, CircularProgress, Alert,
 } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
@@ -78,12 +78,12 @@ const RoulettePage = () => {
     }
   };
 
-  const handleAnimationComplete = () => {
+  const handleAnimationComplete = useCallback(() => {
     setIsSpinning(false);
     if (spinResult) {
       navigate('/parabens', { state: { premio: spinResult.premio, cupom: spinResult.cupom, tenantId: tenant.id } });
     }
-  };
+  }, [navigate, spinResult, tenant]);
 
   if (loading || !dynamicTheme) {
     return (
@@ -111,7 +111,7 @@ const RoulettePage = () => {
 
   return (
     <ThemeProvider theme={dynamicTheme}>
-      <ThemedRoulettePage
+      <RoulettePageComponent
         survey={survey}
         tenant={tenant}
         roletaConfig={roletaConfig}
@@ -125,7 +125,7 @@ const RoulettePage = () => {
   );
 };
 
-const ThemedRoulettePage = ({ survey, tenant, roletaConfig, isSpinning, winningIndex, handleSpin, handleAnimationComplete, spinResult }) => {
+const RoulettePageComponent = ({ survey, tenant, roletaConfig, isSpinning, winningIndex, handleSpin, handleAnimationComplete, spinResult }) => {
   const theme = useTheme();
   const buttonNextStyle = { background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, color: 'white', borderRadius: '50px', padding: '12px 25px', fontWeight: 600, '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 5px 15px rgba(0, 0, 0, 0.1)' } };
 

@@ -114,6 +114,7 @@ const RoulettePage = () => {
   }
 
   return (
+    <ThemeProvider theme={dynamicTheme}>
       <Container maxWidth="md" sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Gire a Roleta e Ganhe um Prêmio!
@@ -133,16 +134,13 @@ const RoulettePage = () => {
             items={roletaConfig.items || []}
             winningIndex={winningIndex}
             onAnimationComplete={handleAnimationComplete}
-          />
-           <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSpin}
+            primaryColor={tenant.primaryColor}
+            contrastColor="#ffffff"
+            buttonText={roletaConfig.hasSpun ? 'Já Girou' : 'GIRAR'}
+            isSpinning={isSpinning}
             disabled={isSpinning || roletaConfig.hasSpun || !roletaConfig.items?.length}
-            sx={{ mt: 4 }}
-          >
-            {isSpinning ? 'Girando...' : (roletaConfig.hasSpun ? 'Já Girou' : 'GIRAR')}
-          </Button>
+            onSpin={handleSpin}
+          />
         </Box>
 
         {spinResult && (
@@ -161,6 +159,7 @@ const RoulettePage = () => {
           </Box>
         )}
       </Container>
+    </ThemeProvider>
   );
 };
 

@@ -107,7 +107,7 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
     status: 'active',
   };
 
-  const novoCupom = await cupomRepository.createCupom(cupomData);
+  const novoCupom = await cupomRepository.create(cupomData);
 
   // Envio da mensagem de WhatsApp se a automação estiver ativa
   try {

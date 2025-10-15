@@ -143,6 +143,7 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
   res.status(200).json({
     message: 'Parabéns! Você ganhou um prêmio!',
     premio: {
+      id: premioGanhador.id,
       nome: premioGanhador.nome,
       descricao: premioGanhador.descricao,
       recompensa: {

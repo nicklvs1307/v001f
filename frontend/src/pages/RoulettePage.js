@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   Container, Typography, Box, Button, CircularProgress, Alert,
 } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 
 import { ThemeProvider } from '@mui/material/styles';
@@ -14,6 +14,7 @@ import getDynamicTheme from '../theme';
 
 const RoulettePage = () => {
   const { tenantId, pesquisaId, clientId } = useParams();
+  const navigate = useNavigate();
   const [survey, setSurvey] = useState(null);
   const [roletaConfig, setRoletaConfig] = useState({ items: [], hasSpun: false });
   const [loading, setLoading] = useState(true);
@@ -84,9 +85,10 @@ const RoulettePage = () => {
   };
 
   const handleAnimationComplete = () => {
-    // A animação terminou, agora podemos mostrar o resultado final com segurança.
     setIsSpinning(false);
-    // O resultado já está sendo exibido condicionalmente com base em `spinResult`
+    if (spinResult) {
+      navigate('/parabens', { state: { premio: spinResult.premio, cupom: spinResult.cupom, tenantId: tenant.id } });
+    }
   };
 
 
@@ -144,21 +146,7 @@ const RoulettePage = () => {
           />
         </Box>
 
-        {spinResult && (
-          <Box sx={{ mt: 4, p: 3, border: '1px solid #ddd', borderRadius: '8px', bgcolor: 'background.paper' }}>
-            <Typography variant="h5" color="primary" gutterBottom>
-              Parabéns! Você ganhou:
-            </Typography>
-            <Typography variant="h6">{spinResult.premio.nome}</Typography>
-            <Typography variant="body1">{spinResult.premio.descricao}</Typography>
-            <Typography variant="body2" sx={{ mt: 2 }}>
-              Use o cupom: <strong>{spinResult.cupom.codigo}</strong>
-            </Typography>
-            <Typography variant="body2">
-              Válido até: {new Date(spinResult.cupom.dataValidade).toLocaleDateString('pt-BR')}
-            </Typography>
-          </Box>
-        )}
+
       </Container>
     </ThemeProvider>
   );

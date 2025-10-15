@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useCallback, useMemo, useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 
-const SpinTheWheel = ({ items, winningItem, winningIndex, onAnimationComplete }) => {
+const SpinTheWheel = ({ items, onFinished, primaryColor, contrastColor, buttonText, isSpinning, disabled, onSpin }) => {
   const canvasRef = useRef(null);
   const rotationRef = useRef(0);
   const animationFrameId = useRef(null);
@@ -182,10 +182,11 @@ const SpinTheWheel = ({ items, winningItem, winningIndex, onAnimationComplete })
         } else {
           rotationRef.current = targetRotationRadians;
           drawWheel(targetRotationRadians);
-          if (onAnimationComplete) {
-            setTimeout(() => {
-              onAnimationComplete();
-            }, 100);
+          if (onFinished) {
+            const numItems = items.length;
+            const segmentAngle = 360 / numItems;
+            const winningSegment = Math.floor((360 - (targetRotationRadians * 180 / Math.PI) % 360) / segmentAngle);
+            onFinished(items[winningSegment]);
           }
         }
       };
@@ -195,28 +196,26 @@ const SpinTheWheel = ({ items, winningItem, winningIndex, onAnimationComplete })
       }
       animationFrameId.current = requestAnimationFrame(animate);
     },
-    [drawWheel, onAnimationComplete]
+    [drawWheel, onFinished, items]
   );
 
-  useEffect(() => {
-    if (winningIndex !== -1 && items && items.length > 0) {
-      const numItems = items.length;
-      const segmentAngleRadians = (2 * Math.PI) / numItems;
+  const startSpin = () => {
+    if (isSpinning || disabled || !items || items.length === 0) return;
 
-      const randomSpins = 5 + Math.floor(Math.random() * 3);
+    const winningIndex = Math.floor(Math.random() * items.length);
+    const numItems = items.length;
+    const segmentAngleRadians = (2 * Math.PI) / numItems;
+    const randomSpins = 5 + Math.floor(Math.random() * 3);
+    const winningSegmentCenterAngle = winningIndex * segmentAngleRadians + segmentAngleRadians / 2;
+    let targetOffset = (3 * Math.PI) / 2 - winningSegmentCenterAngle;
+    targetOffset = ((targetOffset % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+    const targetRotationRadians = 2 * Math.PI * randomSpins + targetOffset;
 
-      const winningSegmentCenterAngle =
-        winningIndex * segmentAngleRadians + segmentAngleRadians / 2;
-
-      let targetOffset = (3 * Math.PI) / 2 - winningSegmentCenterAngle;
-
-      targetOffset = ((targetOffset % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-
-      const targetRotationRadians = 2 * Math.PI * randomSpins + targetOffset;
-
-      animateSpin(targetRotationRadians);
+    animateSpin(targetRotationRadians);
+    if(onSpin) {
+      onSpin();
     }
-  }, [winningIndex, items, animateSpin]);
+  };
 
   return (
     <Box
@@ -229,6 +228,7 @@ const SpinTheWheel = ({ items, winningItem, winningIndex, onAnimationComplete })
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        flexDirection: 'column'
       }}
     >
       <canvas
@@ -247,6 +247,7 @@ const SpinTheWheel = ({ items, winningItem, winningIndex, onAnimationComplete })
           position: 'relative',
           zIndex: 1,
         }}
+        onClick={startSpin}
       />
       <Box
         className="seta"
@@ -276,6 +277,21 @@ const SpinTheWheel = ({ items, winningItem, winningIndex, onAnimationComplete })
           },
         }}
       />
+      <Button 
+        variant="contained" 
+        onClick={startSpin} 
+        disabled={disabled || isSpinning}
+        sx={{
+          mt: 2,
+          backgroundColor: primaryColor,
+          color: contrastColor,
+          '&:hover': {
+            backgroundColor: primaryColor,
+          }
+        }}
+      >
+        {buttonText}
+      </Button>
     </Box>
   );
 };

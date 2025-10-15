@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Container, Typography, Box, Button, CircularProgress, Alert,
 } from '@mui/material';
@@ -21,6 +21,9 @@ const RoulettePage = () => {
   const [dynamicTheme, setDynamicTheme] = useState(null);
   const [winningIndex, setWinningIndex] = useState(-1);
   const [isSpinning, setIsSpinning] = useState(false);
+
+  const spinResultRef = useRef(spinResult);
+  spinResultRef.current = spinResult;
 
   const fetchData = useCallback(async () => {
     try {
@@ -80,10 +83,10 @@ const RoulettePage = () => {
 
   const handleAnimationComplete = useCallback(() => {
     setIsSpinning(false);
-    if (spinResult) {
-      navigate('/parabens', { state: { premio: spinResult.premio, cupom: spinResult.cupom, tenantId: tenant.id } });
+    if (spinResultRef.current) {
+      navigate('/parabens', { state: { premio: spinResultRef.current.premio, cupom: spinResultRef.current.cupom, tenantId: tenant.id } });
     }
-  }, [navigate, spinResult, tenant]);
+  }, [navigate, tenant]);
 
   if (loading || !dynamicTheme) {
     return (

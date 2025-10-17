@@ -254,7 +254,7 @@ const SurveyResultsPage = () => {
                         <RadarChart outerRadius={150} data={results.radarChartData}>
                             <PolarGrid />
                             <PolarAngleAxis dataKey="name" />
-                            <PolarRadiusAxis angle={90} domain={[0, 5]} /> {/* Ajustar domain conforme a escala de rating */}
+                            <PolarRadiusAxis angle={90} domain={[0, results.questionsResults.some(q => q.type === 'rating_0_10') ? 10 : 5]} />
                             <Radar name="Média de Avaliação" dataKey="averageRating" stroke={theme.palette.primary.main} fill={theme.palette.primary.light} fillOpacity={0.6} />
                             <Tooltip />
                             <Legend />

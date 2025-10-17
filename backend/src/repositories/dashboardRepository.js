@@ -163,7 +163,7 @@ const dashboardRepository = {
             where: whereClause,
             attributes: [
                 'atendenteId',
-                [fn('COUNT', col('Resposta.id')), 'occurrences']
+                [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'occurrences']
             ],
             group: ['atendenteId', 'atendente.id', 'atendente.name'],
             order: [[literal('occurrences'), 'DESC']],

@@ -228,7 +228,9 @@ const getSurveyStats = async (tenantId = null) => {
   });
 
   const responsesMonth = await Resposta.count({
-    where: { ...whereClause, createdAt: { [Op.gte]: startOfMonth } }
+    where: { ...whereClause, createdAt: { [Op.gte]: startOfMonth } },
+    distinct: true,
+    col: 'respondentSessionId'
   });
 
   const totalSurveys = await Pesquisa.count({ where: whereClause });

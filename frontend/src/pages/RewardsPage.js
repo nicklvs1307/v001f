@@ -42,8 +42,8 @@ const RecompensaListPage = () => {
   const fetchRecompensas = async () => {
     try {
       setLoading(true);
-      const data = await recompensaService.getAllRecompensas();
-      setRecompensas(Array.isArray(data) ? data : []);
+      const data = await recompensaService.getAll();
+      setRecompensas(Array.isArray(data.data) ? data.data : []);
     } catch (err) {
       setError(err.message || 'Erro ao buscar recompensas.');
     } finally {
@@ -123,23 +123,43 @@ const RecompensaListPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {recompensas.map((recompensa) => (
-                <TableRow key={recompensa.id}>
-                  <TableCell>{recompensa.name}</TableCell>
-                  <TableCell>{recompensa.description}</TableCell>
-                  <TableCell>{recompensa.value}</TableCell>
-                  <TableCell>{recompensa.type}</TableCell>
-                  <TableCell>{recompensa.active ? 'Ativo' : 'Inativo'}</TableCell>
-                  <TableCell align="right">
-                    <IconButton color="primary" onClick={() => handleOpenForm(recompensa)}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton color="secondary" onClick={() => handleOpenConfirm(recompensa)}>
-                      <DeleteIcon />
-                    </IconButton>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={6} align="center">
+                    <CircularProgress />
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : error ? (
+                <TableRow>
+                  <TableCell colSpan={6} align="center">
+                    <Alert severity="error">{error}</Alert>
+                  </TableCell>
+                </TableRow>
+              ) : recompensas.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} align="center">
+                    <Typography>Nenhuma recompensa encontrada.</Typography>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                recompensas.map((recompensa) => (
+                  <TableRow key={recompensa.id}>
+                    <TableCell>{recompensa.name}</TableCell>
+                    <TableCell>{recompensa.description}</TableCell>
+                    <TableCell>{recompensa.value}</TableCell>
+                    <TableCell>{recompensa.type}</TableCell>
+                    <TableCell>{recompensa.active ? 'Ativo' : 'Inativo'}</TableCell>
+                    <TableCell align="right">
+                      <IconButton color="primary" onClick={() => handleOpenForm(recompensa)}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton color="secondary" onClick={() => handleOpenConfirm(recompensa)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>

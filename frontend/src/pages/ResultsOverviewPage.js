@@ -137,14 +137,14 @@ const ResultsOverviewPage = () => {
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 {/* Gráfico de Radar (Aranha) - NPS por Critério */}
                 <Grid item xs={12} md={6}>
-                    <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
+                    <Paper elevation={3} sx={{ p: 3 }}>
                         <CriteriaRadarChart data={overallResults.npsByCriterio} />
                     </Paper>
                 </Grid>
 
                 {/* Nuvem de Palavras */}
                 <Grid item xs={12} md={6}>
-                    <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
+                    <Paper elevation={3} sx={{ p: 3 }}>
                         <WordCloudChart tenantId={tenantId} />
                     </Paper>
                 </Grid>

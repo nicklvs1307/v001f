@@ -1,15 +1,22 @@
-URL da solicitação
-https://apiloyalfood.towersfy.com/api/dashboard/overall-results?tenantId=eb629ea8-7d69-47a1-b1f1-f9dcb33475f4
-Método da solicitação
-GET
-Código de status
-500 Internal Server Error
-Endereço remoto
-95.217.16.187:443
-
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "this.getResponseChart is not a function",
-    "details": "TypeError: this.getResponseChart is not a function\n    at Object.getOverallResults (/usr/src/app/src/repositories/dashboardRepository.js:527:46)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async /usr/src/app/src/controllers/dashboardController.js:50:25"
-}
+ResultsOverviewPage.js:44 ResultsOverviewPage - tenantId: eb629ea8-7d69-47a1-b1f1-f9dcb33475f4
+ResultsOverviewPage.js:50 ResultsOverviewPage - overallResults data: {overallNPS: 93.2, npsPromoters: 56, npsNeutrals: 2, npsDetractors: 1, npsTotalResponses: 59, …}
+react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
+b @ react-dom.production.min.js:24
+Ks @ react-dom.production.min.js:230
+xc @ react-dom.production.min.js:280
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+react-dom.production.min.js:24 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
+b @ react-dom.production.min.js:24
+Ks @ react-dom.production.min.js:230
+xc @ react-dom.production.min.js:280
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14

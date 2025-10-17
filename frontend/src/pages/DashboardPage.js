@@ -1,3 +1,4 @@
+
 import React, { useContext, useState, useEffect } from 'react';
 import {
     Container,
@@ -38,6 +39,9 @@ import {
     Line
 } from 'recharts';
 import dashboardService from '../services/dashboardService'; // Importar o serviço
+import DetailsModal from '../components/Dashboard/DetailsModal'; // Importar o modal
+
+import AttendantDetailsModal from '../components/Dashboard/AttendantDetailsModal'; // Importar o modal de atendente
 
 const DashboardPage = () => {
     const { user } = useContext(AuthContext);
@@ -46,6 +50,19 @@ const DashboardPage = () => {
     const [dashboardData, setDashboardData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+
+    // State for the details modal
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalTitle, setModalTitle] = useState('');
+    const [modalData, setModalData] = useState([]);
+    const [modalLoading, setModalLoading] = useState(false);
+    const [modalError, setModalError] = useState('');
+
+    // State for the attendant details modal
+    const [attendantModalOpen, setAttendantModalOpen] = useState(false);
+    const [attendantModalData, setAttendantModalData] = useState(null);
+    const [attendantModalLoading, setAttendantModalLoading] = useState(false);
+    const [attendantModalError, setAttendantModalError] = useState('');
 
     useEffect(() => {
         const fetchDashboardData = async () => {
@@ -64,7 +81,61 @@ const DashboardPage = () => {
         fetchDashboardData();
     }, []);
 
-    const MetricCard = ({ title, value, percentage, arrow, bgColor, borderColor, children }) => (
+    const handleCardClick = async (category) => {
+        setModalTitle(`Detalhes de ${category}`);
+        setModalOpen(true);
+        setModalLoading(true);
+        try {
+            const data = await dashboardService.getDetails(category);
+            setModalData(data);
+        } catch (err) {
+            setModalError(err.message || 'Falha ao carregar os detalhes.');
+        } finally {
+            setModalLoading(false);
+        }
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+        setModalTitle('');
+        setModalData([]);
+        setModalError('');
+    };
+
+    const handleAttendantClick = async (attendantId) => {
+        setAttendantModalOpen(true);
+        setAttendantModalLoading(true);
+        try {
+            const data = await dashboardService.getAttendantDetails(attendantId);
+            setAttendantModalData(data);
+        } catch (err) {
+            setAttendantModalError(err.message || 'Falha ao carregar os detalhes do atendente.');
+        } finally {
+            setAttendantModalLoading(false);
+        }
+    };
+
+    const handleFeedbackClick = async (sessionId) => {
+        setModalTitle('Detalhes da Resposta');
+        setModalOpen(true);
+        setModalLoading(true);
+        try {
+            const data = await dashboardService.getResponseDetails(sessionId);
+            setModalData(data);
+        } catch (err) {
+            setModalError(err.message || 'Falha ao carregar os detalhes da resposta.');
+        } finally {
+            setModalLoading(false);
+        }
+    };
+
+    const handleCloseAttendantModal = () => {
+        setAttendantModalOpen(false);
+        setAttendantModalData(null);
+        setAttendantModalError('');
+    };
+
+    const MetricCard = ({ title, value, percentage, arrow, bgColor, borderColor, children, onClick }) => (
         <Paper elevation={2} sx={{
             p: 2,
             display: 'flex',
@@ -73,7 +144,13 @@ const DashboardPage = () => {
             height: '100%',
             borderLeft: `4px solid ${borderColor || theme.palette.primary.main}`,
             backgroundColor: bgColor || 'white',
-        }}>
+            cursor: onClick ? 'pointer' : 'default',
+            '&:hover': {
+                backgroundColor: onClick ? theme.palette.action.hover : 'white',
+            }
+        }}
+        onClick={onClick}
+        >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Typography variant="subtitle2" color="text.secondary" textTransform="uppercase">
                     {title}
@@ -146,6 +223,7 @@ const DashboardPage = () => {
                         value={summary?.promoters}
                         percentage={summary?.promotersPercentage}
                         borderColor={theme.palette.success.main}
+                        onClick={() => handleCardClick('Promotores')}
                     />
                 </Grid>
 
@@ -156,6 +234,7 @@ const DashboardPage = () => {
                         value={summary?.neutrals}
                         percentage={summary?.neutralsPercentage}
                         borderColor={theme.palette.warning.main}
+                        onClick={() => handleCardClick('Neutros')}
                     />
                 </Grid>
 
@@ -166,6 +245,7 @@ const DashboardPage = () => {
                         value={summary?.detractors}
                         percentage={summary?.detractorsPercentage}
                         borderColor={theme.palette.error.main}
+                        onClick={() => handleCardClick('Detratores')}
                     />
                 </Grid>
 
@@ -177,6 +257,7 @@ const DashboardPage = () => {
                         percentage={summary?.registrationsConversion}
                         arrow="up"
                         borderColor={theme.palette.info.main}
+                        onClick={() => handleCardClick('Cadastros')}
                     >
                         <Typography variant="caption" color="text.secondary">conversão</Typography>
                     </MetricCard>
@@ -186,6 +267,7 @@ const DashboardPage = () => {
                         title="Ambresários no Mês"
                         value={summary?.ambassadorsMonth}
                         borderColor={theme.palette.secondary.main}
+                        onClick={() => handleCardClick('Ambresários no Mês')}
                     />
                 </Grid>
                 <Grid item xs={12} md={6} lg={3}>
@@ -193,6 +275,7 @@ const DashboardPage = () => {
                         title="Cupons Gerados"
                         value={summary?.couponsGenerated}
                         borderColor={theme.palette.primary.main}
+                        onClick={() => handleCardClick('Cupons Gerados')}
                     >
                         <Typography variant="caption" color="text.secondary">{summary?.couponsGeneratedPeriod}</Typography>
                     </MetricCard>
@@ -204,11 +287,30 @@ const DashboardPage = () => {
                         percentage={summary?.couponsUsedConversion}
                         arrow="down"
                         borderColor={theme.palette.error.main}
+                        onClick={() => handleCardClick('Cupons Utilizados')}
                     >
                         <Typography variant="caption" color="text.secondary">conversão</Typography>
                     </MetricCard>
                 </Grid>
             </Grid>
+
+            <DetailsModal
+                open={modalOpen}
+                handleClose={handleCloseModal}
+                title={modalTitle}
+                data={modalData}
+                loading={modalLoading}
+                error={modalError}
+            />
+
+            <AttendantDetailsModal
+                open={attendantModalOpen}
+                handleClose={handleCloseAttendantModal}
+                data={attendantModalData}
+                loading={attendantModalLoading}
+                error={attendantModalError}
+            />
+
 
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 {/* Gráfico de Respostas dos Últimos 7 dias */}
@@ -271,7 +373,12 @@ const DashboardPage = () => {
                                 </TableHead>
                                 <TableBody>
                                     {ranking && ranking.map((row, index) => (
-                                        <TableRow key={index}>
+                                        <TableRow
+                                            key={index}
+                                            hover
+                                            onClick={() => handleAttendantClick(row.atendenteId)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
                                             <TableCell>{index + 1}°</TableCell>
                                             <TableCell>{row.name}</TableCell>
                                             <TableCell>{row.responses}</TableCell>
@@ -340,7 +447,12 @@ const DashboardPage = () => {
                         </Typography>
                         <List sx={{ flexGrow: 1, overflowY: 'auto' }}>
                             {feedbacks.map((feedback, index) => (
-                                <ListItem key={index} divider>
+                                <ListItem
+                                    key={index}
+                                    divider
+                                    button
+                                    onClick={() => handleFeedbackClick(feedback.respondentSessionId)}
+                                >
                                     <ListItemText
                                         primary={
                                             <Box>
@@ -385,7 +497,14 @@ const DashboardPage = () => {
                             Análise da conversão em cada etapa, desde as respostas coletadas até os cupons utilizados.
                         </Typography>
                         <ResponsiveContainer width="100%" height={280}>
-                            <LineChart data={conversionChart}>
+                            <LineChart
+                                data={conversionChart}
+                                onClick={(e) => {
+                                    if (e && e.activePayload && e.activePayload.length > 0) {
+                                        handleCardClick(e.activePayload[0].payload.name);
+                                    }
+                                }}
+                            >
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="name" />
                                 <YAxis />

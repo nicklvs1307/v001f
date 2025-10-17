@@ -176,6 +176,7 @@ const dashboardRepository = {
         });
 
         const formattedRanking = rankingData.map((item, index) => ({
+            atendenteId: item.atendenteId,
             ranking: `${index + 1}°`,
             name: item.atendente ? item.atendente.name : 'Desconhecido',
             occurrences: parseInt(item.dataValues.occurrences),
@@ -263,6 +264,7 @@ const dashboardRepository = {
         });
 
         return feedbacksData.map(feedback => ({
+            respondentSessionId: feedback.respondentSessionId,
             date: new Date(feedback.createdAt).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
             client: feedback.client ? feedback.client.name : 'Anônimo',
             nps: feedback.ratingValue !== null ? feedback.ratingValue : null,
@@ -734,6 +736,146 @@ const dashboardRepository = {
             day: new Date(client.birthDate).getDate(),
         }));
     },
+    getDetailsByCategory: async (tenantId, category, startDate, endDate) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const categoryLower = category.toLowerCase();
+
+        if (categoryLower === 'promotores' || categoryLower === 'neutros' || categoryLower === 'detratores') {
+            let ratingWhere = {};
+            if (categoryLower === 'promotores') {
+                ratingWhere = { ratingValue: { [Op.gte]: 9 } };
+            } else if (categoryLower === 'neutros') {
+                ratingWhere = { ratingValue: { [Op.between]: [7, 8] } };
+            } else { // detratores
+                ratingWhere = { ratingValue: { [Op.lte]: 6 } };
+            }
+
+            return await Resposta.findAll({
+                where: { ...whereClause, ...ratingWhere },
+                include: [
+                    { model: Client, as: 'client', attributes: ['name'] },
+                    { model: Pergunta, as: 'pergunta', attributes: ['text'] }
+                ],
+                order: [['createdAt', 'DESC']],
+            });
+        }
+
+        if (categoryLower === 'cadastros') {
+            return await Client.findAll({
+                where: whereClause,
+                order: [['createdAt', 'DESC']],
+            });
+        }
+
+        if (categoryLower === 'cupons gerados') {
+            return await Cupom.findAll({
+                where: whereClause,
+                include: [{ model: Client, as: 'client', attributes: ['name'] }],
+                order: [['createdAt', 'DESC']],
+            });
+        }
+
+        if (categoryLower === 'cupons utilizados') {
+            const usedWhere = { ...whereClause, status: 'used' };
+            if (whereClause.createdAt) {
+                usedWhere.updatedAt = whereClause.createdAt;
+                delete usedWhere.createdAt;
+            }
+            return await Cupom.findAll({
+                where: usedWhere,
+                include: [{ model: Client, as: 'client', attributes: ['name'] }],
+                order: [['updatedAt', 'DESC']],
+            });
+        }
+
+        return []; // For "Ambresários no Mês" and any other unhandled category
+    },
+
+    getAttendantDetailsById: async (tenantId, attendantId, startDate, endDate) => {
+        const whereClause = { atendenteId: attendantId };
+        if (tenantId) {
+            whereClause.tenantId = tenantId;
+        }
+
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const responses = await Resposta.findAll({
+            where: whereClause,
+            include: [
+                { model: Client, as: 'client', attributes: ['name'] },
+                { model: Pergunta, as: 'pergunta', attributes: ['text'] }
+            ],
+            order: [['createdAt', 'DESC']],
+        });
+
+        let promoters = 0;
+        let neutrals = 0;
+        let detractors = 0;
+
+        responses.forEach(response => {
+            const rating = response.ratingValue;
+            if (rating !== null) {
+                if (rating >= 9) {
+                    promoters++;
+                } else if (rating >= 7 && rating <= 8) {
+                    neutrals++;
+                } else {
+                    detractors++;
+                }
+            }
+        });
+
+        const totalRatingResponses = promoters + neutrals + detractors;
+        let npsScore = 0;
+        if (totalRatingResponses > 0) {
+            npsScore = ((promoters / totalRatingResponses) * 100) - ((detractors / totalRatingResponses) * 100);
+        }
+
+        const attendant = await Atendente.findByPk(attendantId, { attributes: ['name'] });
+
+        return {
+            attendantName: attendant ? attendant.name : 'Desconhecido',
+            npsScore: parseFloat(npsScore.toFixed(1)),
+            promoters,
+            neutrals,
+            detractors,
+            totalResponses: responses.length,
+            responses,
+        };
+    },
+
+    getResponseDetailsBySessionId: async (tenantId, sessionId) => {
+        const whereClause = { respondentSessionId: sessionId };
+        if (tenantId) {
+            whereClause.tenantId = tenantId;
+        }
+
+        const responses = await Resposta.findAll({
+            where: whereClause,
+            include: [
+                { model: Client, as: 'client', attributes: ['name'] },
+                { model: Pergunta, as: 'pergunta', attributes: ['text'] }
+            ],
+            order: [['createdAt', 'ASC']],
+        });
+
+        return responses;
+    },
+
     getMainDashboard: async function (tenantId = null, startDate = null, endDate = null) {
         const summary = await this.getSummary(tenantId, startDate, endDate);
         const responseChart = await this.getResponseChart(tenantId, startDate, endDate);

@@ -77,7 +77,8 @@ const birthdayAutomationJob = cron.schedule('0 9 * * *', async () => { // Execut
     console.error('Erro no job de automação de aniversário:', error);
   }
 }, {
-  scheduled: false // Não inicia automaticamente, será iniciado pelo server.js
+  scheduled: false, // Não inicia automaticamente, será iniciado pelo server.js
+  timezone: "America/Sao_Paulo"
 });
 
 module.exports = birthdayAutomationJob;

@@ -6,6 +6,21 @@ const dashboardService = {
         return response.data;
     },
 
+    getDetails: async (category, params) => {
+        const response = await apiAuthenticated.get(`/dashboard/details/${category}`, { params });
+        return response.data;
+    },
+
+    getAttendantDetails: async (attendantId, params) => {
+        const response = await apiAuthenticated.get(`/dashboard/attendant/${attendantId}`, { params });
+        return response.data;
+    },
+
+    getResponseDetails: async (sessionId) => {
+        const response = await apiAuthenticated.get(`/dashboard/response/${sessionId}`);
+        return response.data;
+    },
+
     getAttendantsPerformance: async () => {
         const response = await apiAuthenticated.get('/dashboard/attendants-performance');
         return response.data;

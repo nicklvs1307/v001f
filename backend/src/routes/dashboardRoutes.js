@@ -112,4 +112,33 @@ router.get(
   dashboardController.getMainDashboard
 );
 
+router.get(
+    '/details/:category',
+    [
+        check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
+        check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+    ],
+    validate,
+    authorize('dashboard:read'),
+    dashboardController.getDetails
+);
+
+router.get(
+    '/attendant/:id',
+    [
+        check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
+        check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+    ],
+    validate,
+    authorize('dashboard:read'),
+    dashboardController.getAttendantDetails
+);
+
+router.get(
+    '/response/:sessionId',
+    validate,
+    authorize('dashboard:read'),
+    dashboardController.getResponseDetails
+);
+
 module.exports = router;

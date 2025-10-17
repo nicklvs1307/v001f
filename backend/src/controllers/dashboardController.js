@@ -75,6 +75,29 @@ const dashboardController = {
         const dashboardData = await dashboardRepository.getMainDashboard(tenantId, startDate, endDate);
         res.status(200).json(dashboardData);
     }),
+
+    getDetails: asyncHandler(async (req, res) => {
+        const tenantId = req.user.role === 'Super Admin' ? null : req.user.tenantId;
+        const { category } = req.params;
+        const { startDate, endDate } = req.query;
+        const details = await dashboardRepository.getDetailsByCategory(tenantId, category, startDate, endDate);
+        res.status(200).json(details);
+    }),
+
+    getAttendantDetails: asyncHandler(async (req, res) => {
+        const tenantId = req.user.role === 'Super Admin' ? null : req.user.tenantId;
+        const { id } = req.params;
+        const { startDate, endDate } = req.query;
+        const details = await dashboardRepository.getAttendantDetailsById(tenantId, id, startDate, endDate);
+        res.status(200).json(details);
+    }),
+
+    getResponseDetails: asyncHandler(async (req, res) => {
+        const tenantId = req.user.role === 'Super Admin' ? null : req.user.tenantId;
+        const { sessionId } = req.params;
+        const details = await dashboardRepository.getResponseDetailsBySessionId(tenantId, sessionId);
+        res.status(200).json(details);
+    }),
 };
 
 module.exports = dashboardController;

@@ -1,26 +1,27 @@
-https://loyalfood.towersfy.com/resultados
-main.6514a58a.js:2 [Violation] 'click' handler took 264ms
-ResultsOverviewPage.js:44 ResultsOverviewPage - tenantId: eb629ea8-7d69-47a1-b1f1-f9dcb33475f4
-ResultsOverviewPage.js:50 ResultsOverviewPage - overallResults data: {overallNPS: 93.2, npsPromoters: 56, npsNeutrals: 2, npsDetractors: 1, npsTotalResponses: 59, …}
-main.6514a58a.js:2 [Violation] 'message' handler took 303ms
-[Violation] Forced reflow while executing JavaScript took 43ms
-react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-dom.production.min.js:24 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
+ => ERROR [build 6/6] RUN npm run build                                                      153.5s
+------
+ > [build 6/6] RUN npm run build:
+0.641
+0.641 > frontend@0.1.0 build
+0.641 > react-scripts build
+0.641
+3.541 Creating an optimized production build...
+153.2 Failed to compile.
+153.2
+153.2 [eslint]
+153.2 src/components/results/CriteriaRadarChart.js
+153.2   Line 34:18:  'Alert' is not defined  react/jsx-no-undef
+153.2
+153.2 Search for the keywords to learn more about each error.
+153.2
+153.2
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

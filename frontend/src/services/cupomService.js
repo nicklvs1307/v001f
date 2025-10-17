@@ -28,7 +28,15 @@ const cupomService = {
     return response.data;
   },
 
-  // Não há update/delete direto de cupons, apenas validação e expiração automática
+  getCupomByCodigo: async (codigo) => {
+    const response = await apiAuthenticated.get(`${CUPOM_API_URL}/codigo/${codigo}`);
+    return response.data;
+  },
+
+  deleteCupom: async (id) => {
+    const response = await apiAuthenticated.delete(`${CUPOM_API_URL}/${id}`);
+    return response.data;
+  },
 };
 
 export default cupomService;

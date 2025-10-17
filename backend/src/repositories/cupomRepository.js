@@ -128,6 +128,14 @@ class CupomRepository {
       order: [['dataGeracao', 'DESC']],
     });
   }
+
+  async deleteCupom(id, tenantId) {
+    const whereClause = { id };
+    if (tenantId) {
+      whereClause.tenantId = tenantId;
+    }
+    return Cupom.destroy({ where: whereClause });
+  }
 }
 
 module.exports = new CupomRepository();

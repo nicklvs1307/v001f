@@ -9,7 +9,7 @@ const cupomController = {
     const { recompensaId, clienteId, dataValidade } = req.body;
     const requestingUser = req.user;
 
-    const recompensa = await recompensaRepository.getRecompensaById(recompensaId);
+    const recompensa = await recompensaRepository.findById(recompensaId);
     if (!recompensa) {
       throw new ApiError(404, 'Recompensa não encontrada.');
     }
@@ -109,6 +109,50 @@ const cupomController = {
 
     const summary = await cupomRepository.getCuponsSummary(tenantId);
     res.status(200).json(summary);
+  }),
+
+  getCupomByCodigo: asyncHandler(async (req, res) => {
+    const { codigo } = req.params;
+    const requestingUser = req.user;
+    const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+
+    const cupom = await cupomRepository.getCupomByCodigo(codigo, tenantId);
+
+    if (!cupom) {
+      throw new ApiError(404, 'Cupom não encontrado.');
+    }
+
+    if (
+      requestingUser.role !== 'Super Admin' &&
+      cupom.tenantId !== requestingUser.tenantId
+    ) {
+      throw new ApiError(403, 'Você não tem permissão para ver este cupom.');
+    }
+
+    res.status(200).json(cupom);
+  }),
+
+  deleteCupom: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const requestingUser = req.user;
+    const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+
+    const cupom = await cupomRepository.getCupomById(id, tenantId);
+
+    if (!cupom) {
+      throw new ApiError(404, 'Cupom não encontrado.');
+    }
+
+    if (
+      requestingUser.role !== 'Super Admin' &&
+      cupom.tenantId !== requestingUser.tenantId
+    ) {
+      throw new ApiError(403, 'Você não tem permissão para deletar este cupom.');
+    }
+
+    await cupomRepository.deleteCupom(id, tenantId);
+
+    res.status(200).json({ message: 'Cupom deletado com sucesso!' });
   }),
 };
 

@@ -12,31 +12,80 @@ import {
   Icon,
   Chip,
   Divider,
+  Modal,
 } from '@mui/material';
 import { CheckCircleOutline, ErrorOutline, ConfirmationNumber, Redeem, Event, Person, Today, AccessTime } from '@mui/icons-material';
 import cupomService from '../services/cupomService';
 import { format } from 'date-fns';
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
 const CupomValidationPage = () => {
   const [codigo, setCodigo] = useState('');
-  const [validationResult, setValidationResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [selectedCupom, setSelectedCupom] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
 
-  const handleValidate = async () => {
+  const handleSearch = async () => {
     setLoading(true);
     setError('');
-    setValidationResult(null);
+    setSelectedCupom(null);
     try {
-      const result = await cupomService.validateCupom(codigo);
-      setValidationResult({ success: true, message: result.message, cupom: result.cupom });
+      const result = await cupomService.getCupomByCodigo(codigo);
+      setSelectedCupom(result);
+      setOpenModal(true);
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || 'Erro ao validar cupom.';
-      setValidationResult({ success: false, message: errorMessage });
+      const errorMessage = err.response?.data?.message || err.message || 'Erro ao buscar cupom.';
       setError(errorMessage);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleValidate = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await cupomService.validateCupom(selectedCupom.codigo);
+      setOpenModal(false);
+      alert('Cupom validado com sucesso!');
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || err.message || 'Erro ao validar cupom.';
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await cupomService.deleteCupom(selectedCupom.id);
+      setOpenModal(false);
+      alert('Cupom deletado com sucesso!');
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || err.message || 'Erro ao deletar cupom.';
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedCupom(null);
   };
 
   const getStatusChip = (cupom) => {
@@ -127,34 +176,37 @@ const CupomValidationPage = () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={handleValidate}
+            onClick={handleSearch}
             disabled={loading || !codigo}
             sx={{ py: 1.5, px: 4, whiteSpace: 'nowrap' }}
           >
-            {loading ? <CircularProgress size={24} color="inherit" /> : 'Validar'}
+            {loading ? <CircularProgress size={24} color="inherit" /> : 'Buscar'}
           </Button>
         </Box>
       </Paper>
 
-      {validationResult && (
-        <Box sx={{ mt: 4 }}>
-          <Alert
-            severity={validationResult.success ? 'success' : 'error'}
-            iconMapping={{
-              success: <CheckCircleOutline fontSize="inherit" />,
-              error: <ErrorOutline fontSize="inherit" />,
-            }}
-            sx={{ mb: 2, '.MuiAlert-message': { fontSize: '1.1rem', fontWeight: 'bold' } }}
-          >
-            {validationResult.message}
-          </Alert>
-          {validationResult.success && validationResult.cupom && renderCupomDetails(validationResult.cupom)}
-        </Box>
-      )}
-
-      {error && !validationResult?.success && (
+      {error && (
         <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>
       )}
+
+      <Modal
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          {selectedCupom && renderCupomDetails(selectedCupom)}
+          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
+            <Button variant="contained" color="success" onClick={handleValidate} disabled={loading}>
+              Validar Cupom
+            </Button>
+            <Button variant="contained" color="error" onClick={handleDelete} disabled={loading}>
+              Excluir Cupom
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </Container>
   );
 };

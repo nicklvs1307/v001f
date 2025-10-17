@@ -32,6 +32,14 @@ router
     validate,
     authorize('cupons:read'),
     cupomController.getCupomById
+  )
+  .delete(
+    [
+      check("id", "ID do cupom inválido").isUUID().not().isEmpty(),
+    ],
+    validate,
+    authorize('cupons:delete'),
+    cupomController.deleteCupom
   );
 
 // Rota para validação de cupom (pode ser acessada por um papel específico, como 'Validador de Cupom')
@@ -44,5 +52,7 @@ router.post(
   authorize('cupons:validate'),
   cupomController.validateCupom
 );
+
+router.get('/codigo/:codigo', authorize('cupons:read'), cupomController.getCupomByCodigo);
 
 module.exports = router;

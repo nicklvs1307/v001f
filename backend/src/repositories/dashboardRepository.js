@@ -24,7 +24,7 @@ const dashboardRepository = {
                 as: 'pergunta',
                 attributes: ['type'],
                 where: {
-                    type: 'rating_0_10' // Only fetch answers for NPS-style questions
+                    type: { [Op.or]: ['rating_0_10', 'rating_1_5'] }
                 },
                 required: true
             }],
@@ -39,13 +39,24 @@ const dashboardRepository = {
         ratingResponses.forEach(response => {
             if (!processedSessions.has(response.respondentSessionId)) {
                 const rating = response.ratingValue;
-                
-                if (rating >= 9) {
-                    promoters++;
-                } else if (rating >= 7 && rating <= 8) {
-                    neutrals++;
-                } else {
-                    detractors++;
+                const questionType = response.pergunta.type;
+
+                if (questionType === 'rating_0_10') {
+                    if (rating >= 9) {
+                        promoters++;
+                    } else if (rating >= 7 && rating <= 8) {
+                        neutrals++;
+                    } else {
+                        detractors++;
+                    }
+                } else if (questionType === 'rating_1_5') {
+                    if (rating === 5) {
+                        promoters++;
+                    } else if (rating === 4) {
+                        neutrals++;
+                    } else {
+                        detractors++;
+                    }
                 }
                 processedSessions.add(response.respondentSessionId);
             }
@@ -64,7 +75,7 @@ const dashboardRepository = {
             npsScore = promotersPercentage - detractorsPercentage;
         }
 
-        const totalResponses = await Resposta.count({ where: whereClause });
+        const totalResponses = await Resposta.count({ where: { ...whereClause, respondentSessionId: { [Op.ne]: null } }, distinct: true, col: 'respondentSessionId' });
         const totalUsers = await Client.count({ where: whereClause });
 
         // Crie um where clause específico para cupons gerados, aplicando o filtro de data a createdAt
@@ -754,18 +765,33 @@ const dashboardRepository = {
         if (categoryLower === 'promotores' || categoryLower === 'neutros' || categoryLower === 'detratores') {
             let ratingWhere = {};
             if (categoryLower === 'promotores') {
-                ratingWhere = { ratingValue: { [Op.gte]: 9 } };
+                ratingWhere = {
+                    [Op.or]: [
+                        { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.gte]: 9 } },
+                        { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.eq]: 5 } },
+                    ]
+                };
             } else if (categoryLower === 'neutros') {
-                ratingWhere = { ratingValue: { [Op.between]: [7, 8] } };
+                ratingWhere = {
+                    [Op.or]: [
+                        { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.between]: [7, 8] } },
+                        { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.eq]: 4 } },
+                    ]
+                };
             } else { // detratores
-                ratingWhere = { ratingValue: { [Op.lte]: 6 } };
+                ratingWhere = {
+                    [Op.or]: [
+                        { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.lte]: 6 } },
+                        { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.lte]: 3 } },
+                    ]
+                };
             }
 
             return await Resposta.findAll({
                 where: { ...whereClause, ...ratingWhere },
                 include: [
                     { model: Client, as: 'client', attributes: ['name'] },
-                    { model: Pergunta, as: 'pergunta', attributes: ['text'] }
+                    { model: Pergunta, as: 'pergunta', attributes: ['text', 'type'] }
                 ],
                 order: [['createdAt', 'DESC']],
             });

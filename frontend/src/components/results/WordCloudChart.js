@@ -38,10 +38,6 @@ const WordCloudChart = ({ tenantId }) => {
         return <Alert severity="info">{error}</Alert>;
     }
 
-    if (words.length === 0) {
-        return <Alert severity="info">Não há dados suficientes para gerar a nuvem de palavras.</Alert>;
-    }
-
     const options = {
         rotations: 2,
         rotationAngles: [-90, 0],
@@ -52,7 +48,11 @@ const WordCloudChart = ({ tenantId }) => {
     return (
         <Box sx={{ height: 300, width: '100%' }}>
             <Typography variant="h6" gutterBottom>Nuvem de Palavras dos Comentários</Typography>
-            <WordCloud words={words} options={options} />
+            {words && words.length > 0 ? (
+                <WordCloud words={words} options={options} />
+            ) : (
+                <Alert severity="info">Não há dados suficientes para gerar a nuvem de palavras.</Alert>
+            )}
         </Box>
     );
 };

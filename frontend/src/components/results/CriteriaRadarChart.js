@@ -19,16 +19,20 @@ const CriteriaRadarChart = ({ data }) => {
     return (
         <Box sx={{ height: 400 }}>
             <Typography variant="h6" gutterBottom>NPS por Critério</Typography>
-            <ResponsiveContainer width="100%" height="100%">
-                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
-                    <PolarGrid />
-                    <PolarAngleAxis dataKey="subject" />
-                    <PolarRadiusAxis angle={30} domain={[-100, 100]} />
-                    <Radar name="NPS" dataKey="NPS" stroke={theme.palette.primary.main} fill={theme.palette.primary.main} fillOpacity={0.6} />
-                    <Tooltip />
-                    <Legend />
-                </RadarChart>
-            </ResponsiveContainer>
+            {chartData && chartData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                    <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
+                        <PolarGrid />
+                        <PolarAngleAxis dataKey="subject" />
+                        <PolarRadiusAxis angle={30} domain={[-100, 100]} />
+                        <Radar name="NPS" dataKey="NPS" stroke={theme.palette.primary.main} fill={theme.palette.primary.main} fillOpacity={0.6} />
+                        <Tooltip />
+                        <Legend />
+                    </RadarChart>
+                </ResponsiveContainer>
+            ) : (
+                <Alert severity="info">Não há dados de NPS por critério para exibir.</Alert>
+            )}
         </Box>
     );
 };

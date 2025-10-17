@@ -1,7 +1,9 @@
-SurveyResultsPage.js:55 Survey ID from useParams: 70644ab0-f9a5-49e5-88cc-86773acfd2a4
-SurveyResultsPage.js:58 Calling resultService.getSurveyResults with ID: 70644ab0-f9a5-49e5-88cc-86773acfd2a4
+https://loyalfood.towersfy.com/resultados
+main.6514a58a.js:2 [Violation] 'click' handler took 264ms
 ResultsOverviewPage.js:44 ResultsOverviewPage - tenantId: eb629ea8-7d69-47a1-b1f1-f9dcb33475f4
 ResultsOverviewPage.js:50 ResultsOverviewPage - overallResults data: {overallNPS: 93.2, npsPromoters: 56, npsNeutrals: 2, npsDetractors: 1, npsTotalResponses: 59, …}
+main.6514a58a.js:2 [Violation] 'message' handler took 303ms
+[Violation] Forced reflow while executing JavaScript took 43ms
 react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
 b @ react-dom.production.min.js:24
 Ks @ react-dom.production.min.js:230

@@ -198,7 +198,7 @@ const ResultsOverviewPage = () => {
                             <YAxis />
                             <Tooltip />
                             <Legend />
-                            <Bar dataKey="count" fill={theme.palette.success.main} />
+                            <Bar dataKey="responses" fill={theme.palette.success.main} />
                         </BarChart>
                     </ResponsiveContainer>
                 </Paper>

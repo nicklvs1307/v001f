@@ -14,6 +14,7 @@ import {
   Divider,
   Modal,
   useTheme,
+  IconButton,
 } from '@mui/material';
 import { CheckCircleOutline, ErrorOutline, ConfirmationNumber, Redeem, Event, Person, Today, AccessTime, Close } from '@mui/icons-material';
 import cupomService from '../services/cupomService';

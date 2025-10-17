@@ -73,7 +73,7 @@ const getDynamicTheme = (primaryColor = '#4e73df', secondaryColor = '#6f42c1') =
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          background: 'linear-gradient(180deg, #4e73df 0%, #6f42c1 100%)',
+          background: 'linear-gradient(180deg, #000000 0%, #434343 100%)',
           color: 'white',
           '&::-webkit-scrollbar': {
             width: '8px',

@@ -5,17 +5,16 @@ import {
     Box,
     Typography,
     IconButton,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
     CircularProgress,
-    Alert
+    Alert,
+    Card,
+    CardContent,
+    Grid,
+    Button
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import MessageIcon from '@mui/icons-material/Message';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 
 const DetailsModal = ({ open, handleClose, title, data, loading, error }) => {
     const style = {
@@ -23,12 +22,14 @@ const DetailsModal = ({ open, handleClose, title, data, loading, error }) => {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: '80%',
+        width: '90%',
         maxWidth: '900px',
         bgcolor: 'background.paper',
         border: '2px solid #000',
         boxShadow: 24,
         p: 4,
+        display: 'flex',
+        flexDirection: 'column',
     };
 
     const renderContent = () => {
@@ -36,53 +37,84 @@ const DetailsModal = ({ open, handleClose, title, data, loading, error }) => {
         if (error) return <Alert severity="error">{error}</Alert>;
         if (!data || data.length === 0) return <Typography>Nenhum dado encontrado.</Typography>;
 
-        let headers = [];
-        let rows = [];
+        const renderActions = (row) => (
+            <Box sx={{ mt: 2 }}>
+                <Button variant="outlined" size="small" sx={{ mr: 1 }}>
+                    <MessageIcon sx={{ mr: 0.5 }} fontSize="small" />
+                    Enviar Mensagem
+                </Button>
+                <Button variant="contained" size="small">
+                    <ConfirmationNumberIcon sx={{ mr: 0.5 }} fontSize="small" />
+                    Enviar Cupom
+                </Button>
+            </Box>
+        );
+
+        let items = [];
 
         switch (title) {
             case 'Detalhes de Promotores':
             case 'Detalhes de Neutros':
             case 'Detalhes de Detratores':
-                headers = ['Cliente', 'Data', 'Comentário', 'Ações'];
-                rows = data.map((row) => (
-                    <TableRow key={row.id}>
-                        <TableCell>{row.client?.name || 'N/A'}</TableCell>
-                        <TableCell>{new Date(row.createdAt).toLocaleDateString()}</TableCell>
-                        <TableCell>{row.textValue || 'N/A'}</TableCell>
-                        <TableCell>{/* Ações */}</TableCell>
-                    </TableRow>
+                items = data.map((row) => (
+                    <Card key={row.id} sx={{ mb: 2 }}>
+                        <CardContent>
+                            <Grid container spacing={2} alignItems="center">
+                                <Grid item xs={12} sm={4}>
+                                    <Typography variant="body1"><strong>Cliente:</strong> {row.client?.name || 'N/A'}</Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={4}>
+                                    <Typography variant="body2" color="text.secondary"><strong>Data:</strong> {new Date(row.createdAt).toLocaleDateString()}</Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={4}>
+                                    <Typography variant="body2" color="text.secondary"><strong>Nota:</strong> {row.ratingValue}</Typography>
+                                </Grid>
+                                {row.textValue && (
+                                    <Grid item xs={12}>
+                                        <Typography variant="body2"><strong>Comentário:</strong> {row.textValue}</Typography>
+                                    </Grid>
+                                )}
+                                <Grid item xs={12}>
+                                    {renderActions(row)}
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Card>
                 ));
                 break;
 
             case 'Detalhes de Cadastros':
-                headers = ['Nome', 'Data de Cadastro'];
-                rows = data.map((row) => (
-                    <TableRow key={row.id}>
-                        <TableCell>{row.name}</TableCell>
-                        <TableCell>{new Date(row.createdAt).toLocaleDateString()}</TableCell>
-                    </TableRow>
+                items = data.map((row) => (
+                    <Card key={row.id} sx={{ mb: 2 }}>
+                        <CardContent>
+                            <Typography variant="body1"><strong>Nome:</strong> {row.name}</Typography>
+                            <Typography variant="body2" color="text.secondary"><strong>Data de Cadastro:</strong> {new Date(row.createdAt).toLocaleDateString()}</Typography>
+                        </CardContent>
+                    </Card>
                 ));
                 break;
 
             case 'Detalhes de Cupons Gerados':
-                headers = ['Cliente', 'Data de Geração', 'Cupom'];
-                rows = data.map((row) => (
-                    <TableRow key={row.id}>
-                        <TableCell>{row.client?.name || 'N/A'}</TableCell>
-                        <TableCell>{new Date(row.createdAt).toLocaleDateString()}</TableCell>
-                        <TableCell>{row.code}</TableCell>
-                    </TableRow>
+                items = data.map((row) => (
+                    <Card key={row.id} sx={{ mb: 2 }}>
+                        <CardContent>
+                            <Typography variant="body1"><strong>Cliente:</strong> {row.client?.name || 'N/A'}</Typography>
+                            <Typography variant="body2" color="text.secondary"><strong>Data de Geração:</strong> {new Date(row.createdAt).toLocaleDateString()}</Typography>
+                            <Typography variant="body2"><strong>Cupom:</strong> {row.code}</Typography>
+                        </CardContent>
+                    </Card>
                 ));
                 break;
 
             case 'Detalhes de Cupons Utilizados':
-                headers = ['Cliente', 'Data de Utilização', 'Cupom'];
-                rows = data.map((row) => (
-                    <TableRow key={row.id}>
-                        <TableCell>{row.client?.name || 'N/A'}</TableCell>
-                        <TableCell>{new Date(row.updatedAt).toLocaleDateString()}</TableCell>
-                        <TableCell>{row.code}</TableCell>
-                    </TableRow>
+                items = data.map((row) => (
+                    <Card key={row.id} sx={{ mb: 2 }}>
+                        <CardContent>
+                            <Typography variant="body1"><strong>Cliente:</strong> {row.client?.name || 'N/A'}</Typography>
+                            <Typography variant="body2" color="text.secondary"><strong>Data de Utilização:</strong> {new Date(row.updatedAt).toLocaleDateString()}</Typography>
+                            <Typography variant="body2"><strong>Cupom:</strong> {row.code}</Typography>
+                        </CardContent>
+                    </Card>
                 ));
                 break;
 
@@ -90,18 +122,7 @@ const DetailsModal = ({ open, handleClose, title, data, loading, error }) => {
                 return <Typography>Categoria não reconhecida.</Typography>;
         }
 
-        return (
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            {headers.map((header) => <TableCell key={header}>{header}</TableCell>)}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>{rows}</TableBody>
-                </Table>
-            </TableContainer>
-        );
+        return <Box sx={{ maxHeight: '70vh', overflowY: 'auto', p: 1 }}>{items}</Box>;
     };
 
     return (

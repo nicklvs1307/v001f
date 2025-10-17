@@ -5,18 +5,16 @@ import {
     Box,
     Typography,
     IconButton,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
     CircularProgress,
     Alert,
-    Grid
+    Grid,
+    Card,
+    CardContent,
+    Button
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import MessageIcon from '@mui/icons-material/Message';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 
 const AttendantDetailsModal = ({ open, handleClose, data, loading, error }) => {
     const style = {
@@ -24,12 +22,14 @@ const AttendantDetailsModal = ({ open, handleClose, data, loading, error }) => {
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: '80%',
+        width: '90%',
         maxWidth: '1000px',
         bgcolor: 'background.paper',
         border: '2px solid #000',
         boxShadow: 24,
         p: 4,
+        display: 'flex',
+        flexDirection: 'column',
     };
 
     const renderContent = () => {
@@ -38,6 +38,19 @@ const AttendantDetailsModal = ({ open, handleClose, data, loading, error }) => {
         if (!data) return <Typography>Nenhum dado encontrado.</Typography>;
 
         const { attendantName, npsScore, promoters, neutrals, detractors, totalResponses, responses } = data;
+
+        const renderActions = (row) => (
+            <Box sx={{ mt: 2 }}>
+                <Button variant="outlined" size="small" sx={{ mr: 1 }}>
+                    <MessageIcon sx={{ mr: 0.5 }} fontSize="small" />
+                    Enviar Mensagem
+                </Button>
+                <Button variant="contained" size="small">
+                    <ConfirmationNumberIcon sx={{ mr: 0.5 }} fontSize="small" />
+                    Enviar Cupom
+                </Button>
+            </Box>
+        );
 
         return (
             <Box>
@@ -49,28 +62,33 @@ const AttendantDetailsModal = ({ open, handleClose, data, loading, error }) => {
                     <Grid item xs={12}><Typography><strong>Total de Respostas:</strong> {totalResponses}</Typography></Grid>
                 </Grid>
 
-                <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Cliente</TableCell>
-                                <TableCell>Data</TableCell>
-                                <TableCell>Nota</TableCell>
-                                <TableCell>Comentário</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {responses && responses.map((row) => (
-                                <TableRow key={row.id}>
-                                    <TableCell>{row.client?.name || 'N/A'}</TableCell>
-                                    <TableCell>{new Date(row.createdAt).toLocaleDateString()}</TableCell>
-                                    <TableCell>{row.ratingValue}</TableCell>
-                                    <TableCell>{row.textValue || 'N/A'}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                <Box sx={{ maxHeight: '60vh', overflowY: 'auto', p: 1 }}>
+                    {responses && responses.map((row) => (
+                        <Card key={row.id} sx={{ mb: 2 }}>
+                            <CardContent>
+                                <Grid container spacing={2} alignItems="center">
+                                    <Grid item xs={12} sm={4}>
+                                        <Typography variant="body1"><strong>Cliente:</strong> {row.client?.name || 'N/A'}</Typography>
+                                    </Grid>
+                                    <Grid item xs={12} sm={4}>
+                                        <Typography variant="body2" color="text.secondary"><strong>Data:</strong> {new Date(row.createdAt).toLocaleDateString()}</Typography>
+                                    </Grid>
+                                    <Grid item xs={12} sm={4}>
+                                        <Typography variant="body2" color="text.secondary"><strong>Nota:</strong> {row.ratingValue}</Typography>
+                                    </Grid>
+                                    {row.textValue && (
+                                        <Grid item xs={12}>
+                                            <Typography variant="body2"><strong>Comentário:</strong> {row.textValue}</Typography>
+                                        </Grid>
+                                    )}
+                                    <Grid item xs={12}>
+                                        {renderActions(row)}
+                                    </Grid>
+                                </Grid>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </Box>
             </Box>
         );
     };

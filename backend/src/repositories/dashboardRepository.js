@@ -295,7 +295,7 @@ const dashboardRepository = {
         ];
     },
 
-    getOverallResults: async (tenantId = null) => {
+    getOverallResults: async function (tenantId = null) {
         const whereClause = tenantId ? { tenantId } : {};
 
         const allResponses = await Resposta.findAll({

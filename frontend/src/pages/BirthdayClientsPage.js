@@ -1,6 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box, CircularProgress, Alert, List, ListItem, ListItemText, Paper } from '@mui/material';
+import { Container, Typography, Box, CircularProgress, Alert, Grid, Card, CardContent, Avatar, Button } from '@mui/material';
 import clientService from '../services/clientService'; // Importar o serviço de cliente
+import MessageIcon from '@mui/icons-material/Message';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 
 const BirthdayClientsPage = () => {
     const [birthdayClients, setBirthdayClients] = useState([]);
@@ -47,26 +50,52 @@ const BirthdayClientsPage = () => {
                 Aniversariantes do Mês
             </Typography>
 
-            <Paper elevation={2} sx={{ mt: 3, p: 2 }}>
+            <Grid container spacing={3} sx={{ mt: 3 }}>
                 {birthdayClients.length > 0 ? (
-                    <List>
-                        {birthdayClients.map((client) => (
-                            <ListItem key={client.id} divider>
-                                <ListItemText
-                                    primary={client.name}
-                                    secondary={`Email: ${client.email || 'N/A'} | Telefone: ${client.phone || 'N/A'} | Aniversário: ${new Date(client.birthDate).toLocaleDateString('pt-BR', { month: 'long', day: 'numeric' })}`}
-                                />
-                            </ListItem>
-                        ))}
-                    </List>
+                    birthdayClients.map((client) => (
+                        <Grid item xs={12} sm={6} md={4} key={client.id}>
+                            <Card>
+                                <CardContent>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                                        <Avatar sx={{ mr: 2, bgcolor: 'primary.main' }}>
+                                            {client.name.charAt(0)}
+                                        </Avatar>
+                                        <Box>
+                                            <Typography variant="h6">{client.name}</Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                Aniversário: {new Date(client.birthDate).toLocaleDateString('pt-BR', { month: 'long', day: 'numeric' })}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                    <Typography variant="body2" color="text.secondary">
+                                        Email: {client.email || 'N/A'}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        Telefone: {client.phone || 'N/A'}
+                                    </Typography>
+                                    <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
+                                        <Button variant="outlined" size="small" startIcon={<MessageIcon />}>
+                                            Enviar Mensagem
+                                        </Button>
+                                        <Button variant="contained" size="small" startIcon={<ConfirmationNumberIcon />}>
+                                            Enviar Cupom
+                                        </Button>
+                                    </Box>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    ))
                 ) : (
-                    <Typography variant="body1" sx={{ textAlign: 'center', py: 2 }}>
-                        Nenhum aniversariante encontrado para este mês.
-                    </Typography>
+                    <Grid item xs={12}>
+                        <Typography variant="body1" sx={{ textAlign: 'center', py: 2 }}>
+                            Nenhum aniversariante encontrado para este mês.
+                        </Typography>
+                    </Grid>
                 )}
-            </Paper>
+            </Grid>
         </Container>
     );
 };
 
 export default BirthdayClientsPage;
+

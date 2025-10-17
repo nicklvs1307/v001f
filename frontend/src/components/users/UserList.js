@@ -6,16 +6,23 @@ import ConfirmationDialog from '../layout/ConfirmationDialog';
 import { 
     Box, 
     Typography, 
-    List, 
-    ListItem, 
-    ListItemText, 
+    Table, 
+    TableBody, 
+    TableCell, 
+    TableContainer, 
+    TableHead, 
+    TableRow, 
+    Paper, 
     CircularProgress, 
     Alert,
     Button,
-    IconButton
+    IconButton,
+    TextField,
+    InputAdornment,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
 import { useNotification } from '../../context/NotificationContext'; // Import useNotification
 
 const UserList = () => {
@@ -24,19 +31,17 @@ const UserList = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
-    // const [formError, setFormError] = useState(''); // Removed
-    const { showNotification } = useNotification(); // Get showNotification
+    const { showNotification } = useNotification();
+    const [filter, setFilter] = useState('');
 
     const handleOpenModal = (user = null) => {
         setSelectedUser(user);
         setIsModalOpen(true);
-        // setFormError(''); // Removed
     };
 
     const handleCloseModal = () => {
         setSelectedUser(null);
         setIsModalOpen(false);
-        // setFormError(''); // Removed
     };
 
     const handleOpenConfirm = (user) => {
@@ -79,52 +84,84 @@ const UserList = () => {
         }
     };
 
+    const filteredUsers = users.filter(user =>
+        user.name.toLowerCase().includes(filter.toLowerCase()) ||
+        user.email.toLowerCase().includes(filter.toLowerCase())
+    );
+
     if (loading) {
         return <CircularProgress />;
     }
 
     return (
         <Box sx={{ mt: 4 }}>
-            <Typography variant="h5" gutterBottom>Gerenciamento de Usuários</Typography>
-            {(currentUser.role === 'Super Admin' || currentUser.role === 'Admin') && (
-                <Button variant="contained" sx={{ mb: 2 }} onClick={() => handleOpenModal()}>Adicionar Novo Usuário</Button>
-            )}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                <TextField
+                    label="Filtrar por nome ou email"
+                    variant="outlined"
+                    size="small"
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon />
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+                {(currentUser.role === 'Super Admin' || currentUser.role === 'Admin') && (
+                    <Button variant="contained" onClick={() => handleOpenModal()}>Adicionar Novo Usuário</Button>
+                )}
+            </Box>
             
             {error && <Alert severity="error">{error}</Alert>}
-            <List>
-                {users.length > 0 ? (
-                    users.map((user) => (
-                        <ListItem 
-                            key={user.id} 
-                            divider
-                            secondaryAction={
-                                <>
-                                    {(currentUser.role === 'Super Admin' || 
-                                      (currentUser.role === 'Admin' && user.tenant_id === currentUser.tenantId)) && (
-                                        <IconButton edge="end" aria-label="edit" onClick={() => handleOpenModal(user)}>
-                                            <EditIcon />
-                                        </IconButton>
-                                    )}
-                                    {(currentUser.role === 'Super Admin' || 
-                                      (currentUser.role === 'Admin' && user.tenant_id === currentUser.tenantId)) && 
-                                      currentUser.userId !== user.id && (
-                                        <IconButton edge="end" aria-label="delete" onClick={() => handleOpenConfirm(user)}>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    )}
-                                </>
-                            }
-                        >
-                            <ListItemText 
-                                primary={`${user.name} (${user.email})`}
-                                secondary={`Papel: ${user.role_name} ${user.tenant_id ? ` | Tenant ID: ${user.tenant_id}` : ''}`}
-                            />
-                        </ListItem>
-                    ))
-                ) : (
-                    <Typography>Nenhum usuário encontrado.</Typography>
-                )}
-            </List>
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Nome</TableCell>
+                            <TableCell>Email</TableCell>
+                            <TableCell>Papel</TableCell>
+                            <TableCell>Tenant</TableCell>
+                            <TableCell>Ações</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {filteredUsers.length > 0 ? (
+                            filteredUsers.map((user) => (
+                                <TableRow key={user.id}>
+                                    <TableCell>{user.name}</TableCell>
+                                    <TableCell>{user.email}</TableCell>
+                                    <TableCell>{user.role_name}</TableCell>
+                                    <TableCell>{user.tenant_id || 'N/A'}</TableCell>
+                                    <TableCell>
+                                        {(currentUser.role === 'Super Admin' || 
+                                        (currentUser.role === 'Admin' && user.tenant_id === currentUser.tenantId)) && (
+                                            <IconButton edge="end" aria-label="edit" onClick={() => handleOpenModal(user)}>
+                                                <EditIcon />
+                                            </IconButton>
+                                        )}
+                                        {(currentUser.role === 'Super Admin' || 
+                                        (currentUser.role === 'Admin' && user.tenant_id === currentUser.tenantId)) && 
+                                        currentUser.userId !== user.id && (
+                                            <IconButton edge="end" aria-label="delete" onClick={() => handleOpenConfirm(user)}>
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        )}
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={5} align="center">
+                                    <Typography>Nenhum usuário encontrado.</Typography>
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </TableContainer>
 
             <UserModal
                 open={isModalOpen}
@@ -132,8 +169,6 @@ const UserList = () => {
                 onUserCreated={handleUserCreate}
                 onUserUpdated={handleUserUpdate}
                 initialData={selectedUser}
-                // formError={formError} // Removed
-                // onError={setFormError} // Removed
             />
 
             <ConfirmationDialog

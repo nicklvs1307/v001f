@@ -13,8 +13,9 @@ import {
   Chip,
   Divider,
   Modal,
+  useTheme,
 } from '@mui/material';
-import { CheckCircleOutline, ErrorOutline, ConfirmationNumber, Redeem, Event, Person, Today, AccessTime } from '@mui/icons-material';
+import { CheckCircleOutline, ErrorOutline, ConfirmationNumber, Redeem, Event, Person, Today, AccessTime, Close } from '@mui/icons-material';
 import cupomService from '../services/cupomService';
 import { format } from 'date-fns';
 
@@ -23,9 +24,9 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: { xs: '90%', sm: 500 },
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  borderRadius: 2,
   boxShadow: 24,
   p: 4,
 };
@@ -36,6 +37,7 @@ const CupomValidationPage = () => {
   const [error, setError] = useState('');
   const [selectedCupom, setSelectedCupom] = useState(null);
   const [openModal, setOpenModal] = useState(false);
+  const theme = useTheme();
 
   const handleSearch = async () => {
     setLoading(true);
@@ -91,73 +93,59 @@ const CupomValidationPage = () => {
   const getStatusChip = (cupom) => {
     const isExpired = new Date(cupom.dataValidade) < new Date();
     if (cupom.status === 'used') {
-      return <Chip label="Utilizado" color="warning" />;
+      return <Chip label="Utilizado" color="warning" size="small" />;
     }
     if (isExpired) {
-      return <Chip label="Expirado" color="error" />;
+      return <Chip label="Expirado" color="error" size="small" />;
     }
-    return <Chip label="Ativo" color="success" />;
+    return <Chip label="Ativo" color="success" size="small" />;
   };
 
   const renderCupomDetails = (cupom) => (
-    <Paper elevation={3} sx={{ p: 4, borderRadius: 2, mt: 4, backgroundColor: '#f9f9f9' }}>
+    <Box>
       <Typography variant="h5" component="h2" gutterBottom sx={{ display: 'flex', alignItems: 'center', color: 'primary.main' }}>
         <ConfirmationNumber sx={{ mr: 1 }} /> Detalhes do Cupom
       </Typography>
       <Divider sx={{ my: 2 }} />
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body1"><strong>Código:</strong> {cupom.codigo}</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center' }}>
-            <Person sx={{ mr: 1, color: 'text.secondary' }} />
-            <strong>Cliente:</strong> {cupom.cliente?.name || 'Não identificado'}
-          </Typography>
-        </Grid>
         <Grid item xs={12}>
-          <Divider sx={{ my: 1 }} />
+          <Typography variant="h6" component="h3" color="text.primary">{cupom.recompensa?.name}</Typography>
+          <Typography variant="body2" color="text.secondary">{cupom.recompensa?.description}</Typography>
+        </Grid>
+        <Grid item xs={12}><Divider /></Grid>
+        <Grid item xs={12} sm={6}>
+          <Typography variant="body2" color="text.secondary">Código do Cupom</Typography>
+          <Typography variant="h6" component="p" fontWeight="bold">{cupom.codigo}</Typography>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center' }}>
-            <Today sx={{ mr: 1, color: 'text.secondary' }} />
-            <strong>Gerado em:</strong> {format(new Date(cupom.dataGeracao), 'dd/MM/yyyy HH:mm')}
-          </Typography>
+          <Typography variant="body2" color="text.secondary">Status</Typography>
+          {getStatusChip(cupom)}
+        </Grid>
+        <Grid item xs={12}><Divider /></Grid>
+        <Grid item xs={12}>
+          <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}><Person sx={{ mr: 1 }} /> Cliente</Typography>
+          <Typography variant="body1">{cupom.cliente?.name || 'Não identificado'}</Typography>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center' }}>
-            <Event sx={{ mr: 1, color: 'text.secondary' }} />
-            <strong>Validade:</strong> {format(new Date(cupom.dataValidade), 'dd/MM/yyyy')}
-          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}><Today sx={{ mr: 1 }} /> Gerado em</Typography>
+          <Typography variant="body1">{format(new Date(cupom.dataGeracao), 'dd/MM/yyyy HH:mm')}</Typography>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}><Event sx={{ mr: 1 }} /> Válido até</Typography>
+          <Typography variant="body1">{format(new Date(cupom.dataValidade), 'dd/MM/yyyy')}</Typography>
         </Grid>
         {cupom.status === 'used' && cupom.dataUtilizacao && (
           <Grid item xs={12} sm={6}>
-            <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center' }}>
-              <AccessTime sx={{ mr: 1, color: 'text.secondary' }} />
-              <strong>Utilizado em:</strong> {format(new Date(cupom.dataUtilizacao), 'dd/MM/yyyy HH:mm')}
-            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}><AccessTime sx={{ mr: 1 }} /> Utilizado em</Typography>
+            <Typography variant="body1">{format(new Date(cupom.dataUtilizacao), 'dd/MM/yyyy HH:mm')}</Typography>
           </Grid>
         )}
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body1"><strong>Status:</strong> {getStatusChip(cupom)}</Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Divider sx={{ my: 2 }} />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6" component="h3" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
-            <Redeem sx={{ mr: 1 }} /> Recompensa
-          </Typography>
-          <Typography variant="body1"><strong>Nome:</strong> {cupom.recompensa?.name}</Typography>
-          <Typography variant="body1"><strong>Tipo:</strong> {cupom.recompensa?.type}</Typography>
-          <Typography variant="body1"><strong>Valor:</strong> {cupom.recompensa?.value}</Typography>
-        </Grid>
       </Grid>
-    </Paper>
+    </Box>
   );
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 8, mb: 4 }}>
+    <Container maxWidth="sm" sx={{ mt: { xs: 4, sm: 8 }, mb: 4 }}>
       <Paper elevation={4} sx={{ p: { xs: 2, sm: 4 }, borderRadius: 2, textAlign: 'center' }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Validação de Cupom
@@ -178,7 +166,7 @@ const CupomValidationPage = () => {
             color="primary"
             onClick={handleSearch}
             disabled={loading || !codigo}
-            sx={{ py: 1.5, px: 4, whiteSpace: 'nowrap' }}
+            sx={{ py: 1.5, px: 4, whiteWhiteSpace: 'nowrap' }}
           >
             {loading ? <CircularProgress size={24} color="inherit" /> : 'Buscar'}
           </Button>
@@ -196,12 +184,24 @@ const CupomValidationPage = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseModal}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <Close />
+          </IconButton>
           {selectedCupom && renderCupomDetails(selectedCupom)}
-          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
-            <Button variant="contained" color="success" onClick={handleValidate} disabled={loading}>
+          <Box sx={{ mt: 4, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', gap: 2 }}>
+            <Button variant="contained" color="success" onClick={handleValidate} disabled={loading || selectedCupom?.status !== 'pending'} fullWidth>
               Validar Cupom
             </Button>
-            <Button variant="contained" color="error" onClick={handleDelete} disabled={loading}>
+            <Button variant="outlined" color="error" onClick={handleDelete} disabled={loading} fullWidth>
               Excluir Cupom
             </Button>
           </Box>

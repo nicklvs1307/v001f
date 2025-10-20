@@ -41,7 +41,7 @@ import {
     PolarRadiusAxis, 
     Radar 
 } from 'recharts';
-import WordCloud from '@isoterik/react-word-cloud';
+import { WordCloud } from '@isoterik/react-word-cloud';
 import PollIcon from '@mui/icons-material/Poll';
 import ThumbsUpDownIcon from '@mui/icons-material/ThumbsUpDown';
 import StarIcon from '@mui/icons-material/Star';

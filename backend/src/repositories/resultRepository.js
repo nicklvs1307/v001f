@@ -51,7 +51,7 @@ const getDailyStats = async (tenantId) => {
       as: 'pergunta',
       attributes: [],
       where: {
-        type: 'nps' // Focando apenas em respostas de perguntas NPS para classificação
+        type: 'rating_0_10' // Focando apenas em respostas de perguntas NPS para classificação
       },
       required: true
     }],

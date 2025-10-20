@@ -1,6 +1,6 @@
 const surveyRepository = require('../repositories/surveyRepository');
 const ApiError = require('../errors/ApiError');
-const npsService = require('./npsService'); // Importar o npsService
+const ratingService = require('./ratingService'); // Importar o ratingService
 
 const createSurvey = async (surveyData, requestingUser) => {
   const { recompensaId, roletaId } = surveyData;
@@ -139,15 +139,18 @@ const getSurveyResultsById = async (surveyId, tenantId = null) => {
   // Coleta todas as respostas de avaliação de todas as perguntas
   const allRatingResponses = survey.perguntas.reduce((acc, pergunta) => {
     if (pergunta.type.startsWith('rating')) {
-      // Adiciona o tipo da pergunta a cada resposta para o contexto do npsService
-      const responsesWithContext = pergunta.respostas.map(r => ({ ...r, pergunta: { type: pergunta.type } }));
+      const responsesWithContext = pergunta.respostas.map(r => ({ ...r, pergunta: { type: pergunta.type, criterio: pergunta.criterio } }));
       acc.push(...responsesWithContext);
     }
     return acc;
   }, []);
 
-  // Calcula o NPS geral usando o serviço centralizado
-  const overallNpsResult = npsService.calculateNPS(allRatingResponses);
+  const npsResponses = allRatingResponses.filter(r => r.pergunta.type === 'rating_0_10');
+  const csatResponses = allRatingResponses.filter(r => r.pergunta.type === 'rating_1_5');
+
+  // Calcula os scores gerais usando o serviço centralizado
+  const overallNpsResult = ratingService.calculateNPS(npsResponses);
+  const overallCsatResult = ratingService.calculateCSAT(csatResponses);
 
   const formattedResults = {
     surveyTitle: survey.title,
@@ -155,11 +158,8 @@ const getSurveyResultsById = async (surveyId, tenantId = null) => {
     surveyCreatedAt: survey.createdAt,
     surveyTenantId: survey.tenantId,
     totalResponsesCount: totalResponsesCount,
-    overallNPS: overallNpsResult.npsScore,
-    npsPromoters: overallNpsResult.promoters,
-    npsNeutrals: overallNpsResult.neutrals,
-    npsDetractors: overallNpsResult.detractors,
-    npsTotalResponses: overallNpsResult.total,
+    overallNPS: overallNpsResult,
+    overallCSAT: overallCsatResult,
     questionsResults: survey.perguntas.map((pergunta) => {
       const questionData = {
         id: pergunta.id,
@@ -175,29 +175,17 @@ const getSurveyResultsById = async (surveyId, tenantId = null) => {
         const optionCounts = {};
         pergunta.options.forEach(option => (optionCounts[option] = 0));
         pergunta.respostas.forEach(resposta => {
-          if (!resposta.selectedOption) {
-            return;
-          }
+          if (!resposta.selectedOption) return;
           try {
-            let values;
-            try {
-                values = JSON.parse(resposta.selectedOption);
-            } catch (e) {
-                // If parsing fails, assume it's a single string value
-                values = [resposta.selectedOption];
-            }
-
-            if (!Array.isArray(values)) {
-                values = [values];
-            }
-
+            let values = JSON.parse(resposta.selectedOption);
+            if (!Array.isArray(values)) values = [values];
             values.forEach(val => {
-              if (optionCounts.hasOwnProperty(val)) {
-                optionCounts[val]++;
-              }
+              if (optionCounts.hasOwnProperty(val)) optionCounts[val]++;
             });
           } catch (e) {
-            console.error(`Erro ao processar selectedOption para resposta ${resposta.id}:`, e);
+            if (optionCounts.hasOwnProperty(resposta.selectedOption)) {
+                optionCounts[resposta.selectedOption]++;
+            }
           }
         });
         questionData.results = optionCounts;
@@ -206,16 +194,9 @@ const getSurveyResultsById = async (surveyId, tenantId = null) => {
         const sum = ratings.reduce((acc, val) => acc + val, 0);
         const avgRating = ratings.length > 0 ? (sum / ratings.length) : 0;
 
-        // Adiciona o tipo da pergunta a cada resposta para o contexto do npsService
-        const responsesWithContext = pergunta.respostas.map(r => ({ ...r, pergunta: { type: pergunta.type } }));
-        const npsResult = npsService.calculateNPS(responsesWithContext);
-
-        questionData.results.average = parseFloat(avgRating.toFixed(2));
+        questionData.results.averageRating = parseFloat(avgRating.toFixed(2));
+        questionData.results.allRatings = ratings;
         questionData.results.count = ratings.length;
-        questionData.results.nps = npsResult.npsScore;
-        questionData.results.promoters = npsResult.promoters;
-        questionData.results.neutrals = npsResult.neutrals;
-        questionData.results.detractors = npsResult.detractors;
 
       } else {
         questionData.results.responses = pergunta.respostas.map(r => ({
@@ -229,7 +210,7 @@ const getSurveyResultsById = async (surveyId, tenantId = null) => {
 
       return questionData;
     }),
-    npsByCriterio: [],
+    scoresByCriteria: [],
     radarChartData: [],
     demographics: {},
   };
@@ -239,25 +220,28 @@ const getSurveyResultsById = async (surveyId, tenantId = null) => {
     if (response.pergunta && response.pergunta.criterio) {
       const criteriaName = response.pergunta.criterio.name;
       if (!acc[criteriaName]) {
-        acc[criteriaName] = [];
+        acc[criteriaName] = {
+            responses: [],
+            type: response.pergunta.criterio.type
+        };
       }
-      acc[criteriaName].push(response);
+      acc[criteriaName].responses.push(response);
     }
     return acc;
   }, {});
 
-  // Calcula NPS para cada critério
-  formattedResults.npsByCriterio = Object.entries(responsesByCriteria).map(([criterioName, responses]) => {
-    const npsResult = npsService.calculateNPS(responses);
-    return {
-      criterio: criterioName,
-      nps: npsResult.npsScore,
-      promoters: npsResult.promoters,
-      neutrals: npsResult.neutrals,
-      detractors: npsResult.detractors,
-      total: npsResult.total,
-    };
-  });
+  // Calcula scores para cada critério
+  formattedResults.scoresByCriteria = Object.entries(responsesByCriteria).map(([criteriaName, data]) => {
+      const { responses, type } = data;
+      if (type === 'NPS') {
+          const npsResult = ratingService.calculateNPS(responses);
+          return { criterion: criteriaName, scoreType: 'NPS', ...npsResult };
+      } else if (type === 'CSAT' || type === 'Star') {
+          const csatResult = ratingService.calculateCSAT(responses);
+          return { criterion: criteriaName, scoreType: 'CSAT', ...csatResult };
+      }
+      return null;
+  }).filter(Boolean);
 
   const radarDataMap = new Map();
   survey.perguntas.forEach(pergunta => {

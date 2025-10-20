@@ -195,12 +195,12 @@ const DashboardPage = () => {
             </Container>
         );
     }
-    const { summary, responseChart = [], ranking = [], npsCriteria = [], feedbacks = [], conversionChart = [] } = dashboardData || {};
+    const { summary, responseChart = [], attendantsPerformance = [], criteriaScores = [], feedbacks = [], conversionChart = [] } = dashboardData || {};
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Typography variant="h4" component="h1" gutterBottom>
-                Dashboard de Análise NPS
+                Dashboard de Análise
             </Typography>
 
             <Grid container spacing={3} sx={{ mb: 4 }}>
@@ -208,10 +208,22 @@ const DashboardPage = () => {
                 <Grid item xs={12} md={6} lg={3}>
                     <Paper elevation={2} sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
                         <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
-                            NPS
+                            NPS Geral
                         </Typography>
                         <Typography variant="h3" component="div" fontWeight="bold" textAlign="center" color="primary" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {summary?.npsScore}
+                            {summary?.nps?.score}
+                        </Typography>
+                    </Paper>
+                </Grid>
+
+                {/* Card CSAT Score */}
+                <Grid item xs={12} md={6} lg={3}>
+                    <Paper elevation={2} sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
+                        <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
+                            Média de Satisfação
+                        </Typography>
+                        <Typography variant="h3" component="div" fontWeight="bold" textAlign="center" color="secondary.main" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {summary?.csat?.averageScore}
                         </Typography>
                     </Paper>
                 </Grid>
@@ -219,33 +231,44 @@ const DashboardPage = () => {
                 {/* Promotores */}
                 <Grid item xs={12} md={6} lg={3}>
                     <MetricCard
-                        title="Promotores"
-                        value={summary?.promoters}
-                        percentage={summary?.promotersPercentage}
+                        title="Promotores (NPS)"
+                        value={summary?.nps?.promoters}
+                        percentage={summary?.nps?.total > 0 ? ((summary?.nps?.promoters / summary?.nps?.total) * 100).toFixed(1) : 0}
                         borderColor={theme.palette.success.main}
                         onClick={() => handleCardClick('Promotores')}
-                    />
-                </Grid>
-
-                {/* Neutros */}
-                <Grid item xs={12} md={6} lg={3}>
-                    <MetricCard
-                        title="Neutros"
-                        value={summary?.neutrals}
-                        percentage={summary?.neutralsPercentage}
-                        borderColor={theme.palette.warning.main}
-                        onClick={() => handleCardClick('Neutros')}
                     />
                 </Grid>
 
                 {/* Detratores */}
                 <Grid item xs={12} md={6} lg={3}>
                     <MetricCard
-                        title="Detratores"
-                        value={summary?.detractors}
-                        percentage={summary?.detractorsPercentage}
+                        title="Detratores (NPS)"
+                        value={summary?.nps?.detractors}
+                        percentage={summary?.nps?.total > 0 ? ((summary?.nps?.detractors / summary?.nps?.total) * 100).toFixed(1) : 0}
                         borderColor={theme.palette.error.main}
                         onClick={() => handleCardClick('Detratores')}
+                    />
+                </Grid>
+
+                {/* Satisfeitos (CSAT) */}
+                <Grid item xs={12} md={6} lg={3}>
+                    <MetricCard
+                        title="Satisfeitos (CSAT)"
+                        value={summary?.csat?.satisfied}
+                        percentage={summary?.csat?.total > 0 ? ((summary?.csat?.satisfied / summary?.csat?.total) * 100).toFixed(1) : 0}
+                        borderColor={theme.palette.success.main}
+                        onClick={() => handleCardClick('Satisfeitos')}
+                    />
+                </Grid>
+
+                {/* Insatisfeitos (CSAT) */}
+                <Grid item xs={12} md={6} lg={3}>
+                    <MetricCard
+                        title="Insatisfeitos (CSAT)"
+                        value={summary?.csat?.unsatisfied}
+                        percentage={summary?.csat?.total > 0 ? ((summary?.csat?.unsatisfied / summary?.csat?.total) * 100).toFixed(1) : 0}
+                        borderColor={theme.palette.error.main}
+                        onClick={() => handleCardClick('Insatisfeitos')}
                     />
                 </Grid>
 
@@ -335,14 +358,11 @@ const DashboardPage = () => {
                     </Paper>
                 </Grid>
 
-                {/* Ranking Atendentes */}
+                {/* Performance dos Atendentes */}
                 <Grid item xs={12} md={6}>
                     <Paper elevation={2} sx={{ p: 2, height: 400, display: 'flex', flexDirection: 'column' }}>
                         <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
-                            Ranking Atendentes
-                        </Typography>
-                        <Typography variant="subtitle2" color="text.secondary" mb={2}>
-                            Últimas 200 respostas
+                            Performance dos Atendentes
                         </Typography>
                         <TextField
                             fullWidth
@@ -362,74 +382,103 @@ const DashboardPage = () => {
                             <Table size="small" stickyHeader>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>Ranking</TableCell>
-                                        <TableCell>NOME</TableCell>
-                                        <TableCell>RESPOSTAS</TableCell>
-                                        <TableCell>META NPS</TableCell>
-                                        <TableCell>NPS ATUAL</TableCell>
-                                        <TableCell>META RESPOSTAS</TableCell>
-                                        <TableCell>META CADASTROS</TableCell>
+                                        <TableCell>Atendente</TableCell>
+                                        <TableCell>Respostas</TableCell>
+                                        <TableCell>NPS</TableCell>
+                                        <TableCell>Média CSAT</TableCell>
+                                        <TableCell>Meta NPS</TableCell>
+                                        <TableCell>Meta CSAT</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {ranking && ranking.map((row, index) => (
+                                    {attendantsPerformance && attendantsPerformance.map((row, index) => (
                                         <TableRow
                                             key={index}
                                             hover
-                                            onClick={() => handleAttendantClick(row.atendenteId)}
+                                            onClick={() => handleAttendantClick(row.id)}
                                             sx={{ cursor: 'pointer' }}
                                         >
-                                            <TableCell>{index + 1}°</TableCell>
                                             <TableCell>{row.name}</TableCell>
                                             <TableCell>{row.responses}</TableCell>
-                                            <TableCell>{row.npsGoal}</TableCell>
                                             <TableCell>{row.currentNPS}</TableCell>
-                                            <TableCell>{row.responsesGoal}</TableCell>
-                                            <TableCell>{row.registrationsGoal}</TableCell>
+                                            <TableCell>{row.currentCSAT}</TableCell>
+                                            <TableCell>{row.npsGoal}</TableCell>
+                                            <TableCell>{row.csatGoal}</TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                        {/* Paginação - Mocked */}
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
                             <Typography variant="body2">Itens por página: 5</Typography>
-                            <Typography variant="body2">1 - 5 de {ranking?.length || 0}</Typography>
+                            <Typography variant="body2">1 - 5 de {attendantsPerformance?.length || 0}</Typography>
                         </Box>
                     </Paper>
                 </Grid>
             </Grid>
 
             <Grid container spacing={3} sx={{ mb: 4 }}>
-                {/* NPS dos Critérios */}
+                {/* NPS por Critério */}
                 <Grid item xs={12} md={6}>
                     <Paper elevation={2} sx={{ p: 2, height: 400, display: 'flex', flexDirection: 'column' }}>
                         <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
-                            NPS dos Critérios
-                        </Typography>
-                        <Typography variant="subtitle2" color="text.secondary" mb={2}>
-                            Últimas 200 respostas
+                            NPS por Critério
                         </Typography>
                         <TableContainer sx={{ flexGrow: 1, overflowY: 'auto' }}>
                             <Table size="small" stickyHeader>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>QUESTÃO</TableCell>
+                                        <TableCell>Critério</TableCell>
                                         <TableCell>NPS</TableCell>
-                                        <TableCell>PROMOTORES</TableCell>
-                                        <TableCell>NEUTROS</TableCell>
-                                        <TableCell>DETRATORES</TableCell>
-                                        <TableCell>TOTAL</TableCell>
+                                        <TableCell>Promotores</TableCell>
+                                        <TableCell>Neutros</TableCell>
+                                        <TableCell>Detratores</TableCell>
+                                        <TableCell>Total</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {npsCriteria && npsCriteria.map((row, index) => (
+                                    {criteriaScores && criteriaScores.filter(c => c.scoreType === 'NPS').map((row, index) => (
                                         <TableRow key={index}>
-                                            <TableCell>{row.question}</TableCell>
-                                            <TableCell>{row.nps}</TableCell>
+                                            <TableCell>{row.criterion}</TableCell>
+                                            <TableCell>{row.score}</TableCell>
                                             <TableCell>{row.promoters}</TableCell>
                                             <TableCell>{row.neutrals}</TableCell>
                                             <TableCell>{row.detractors}</TableCell>
+                                            <TableCell>{row.total}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Paper>
+                </Grid>
+
+                {/* Satisfação por Critério */}
+                <Grid item xs={12} md={6}>
+                    <Paper elevation={2} sx={{ p: 2, height: 400, display: 'flex', flexDirection: 'column' }}>
+                        <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
+                            Satisfação por Critério
+                        </Typography>
+                        <TableContainer sx={{ flexGrow: 1, overflowY: 'auto' }}>
+                            <Table size="small" stickyHeader>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Critério</TableCell>
+                                        <TableCell>Média</TableCell>
+                                        <TableCell>Satisfeitos</TableCell>
+                                        <TableCell>Neutros</TableCell>
+                                        <TableCell>Insatisfeitos</TableCell>
+                                        <TableCell>Total</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {criteriaScores && criteriaScores.filter(c => c.scoreType === 'CSAT').map((row, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>{row.criterion}</TableCell>
+                                            <TableCell>{row.average}</TableCell>
+                                            <TableCell>{row.satisfied}</TableCell>
+                                            <TableCell>{row.neutral}</TableCell>
+                                            <TableCell>{row.unsatisfied}</TableCell>
                                             <TableCell>{row.total}</TableCell>
                                         </TableRow>
                                     ))}
@@ -469,7 +518,7 @@ const DashboardPage = () => {
                                         secondary={
                                             <Box sx={{ mt: 0.5 }}>
                                                 <Typography component="span" variant="caption" sx={{ backgroundColor: theme.palette.primary.main, color: 'white', p: '2px 8px', borderRadius: '12px', mr: 1 }}>
-                                                    {feedback.nps}
+                                                    Nota: {feedback.rating}
                                                 </Typography>
                                                 {feedback.comment && (
                                                     <Typography component="span" variant="body2" color="text.primary">

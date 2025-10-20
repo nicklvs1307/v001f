@@ -53,11 +53,15 @@ const AtendenteDashboardPage = () => {
   const averageNps = totalAttendants > 0
     ? (performanceData.reduce((sum, att) => sum + att.currentNPS, 0) / totalAttendants).toFixed(1)
     : 0;
+  const averageCsat = totalAttendants > 0
+    ? (performanceData.reduce((sum, att) => sum + att.currentCSAT, 0) / totalAttendants).toFixed(2)
+    : 0;
 
   const chartData = performanceData.map(att => ({
       name: att.name.split(' ')[0], // Shorten name for chart
       Respostas: att.responses,
       NPS: att.currentNPS,
+      CSAT: att.currentCSAT,
   }));
 
   if (loading) {
@@ -85,13 +89,16 @@ const AtendenteDashboardPage = () => {
 
       {/* Summary Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={3}>
             <MetricCard title="Atendentes Ativos" value={totalAttendants} />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={3}>
             <MetricCard title="Média Geral de NPS" value={averageNps} />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={3}>
+            <MetricCard title="Média Geral de CSAT" value={averageCsat} />
+        </Grid>
+        <Grid item xs={12} sm={3}>
             <MetricCard title="Total de Respostas" value={totalResponses} />
         </Grid>
       </Grid>
@@ -100,7 +107,7 @@ const AtendenteDashboardPage = () => {
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12}>
             <Paper elevation={3} sx={{ p: 2, height: 400 }}>
-                <Typography variant="h6" gutterBottom>Performance de Respostas por Atendente</Typography>
+                <Typography variant="h6" gutterBottom>Performance por Atendente</Typography>
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 50 }}>
                         <CartesianGrid strokeDasharray="3 3" />
@@ -108,7 +115,9 @@ const AtendenteDashboardPage = () => {
                         <YAxis />
                         <Tooltip />
                         <Legend verticalAlign="top" />
-                        <Bar dataKey="Respostas" fill={theme.palette.primary.main} />
+                        <Bar dataKey="Respostas" fill={theme.palette.grey[500]} />
+                        <Bar dataKey="NPS" fill={theme.palette.primary.main} />
+                        <Bar dataKey="CSAT" fill={theme.palette.secondary.main} />
                     </BarChart>
                 </ResponsiveContainer>
             </Paper>
@@ -126,7 +135,9 @@ const AtendenteDashboardPage = () => {
                   <TableRow>
                     <TableCell>Nome do Atendente</TableCell>
                     <TableCell align="right">NPS</TableCell>
+                    <TableCell align="right">Média CSAT</TableCell>
                     <TableCell align="right">Meta de NPS</TableCell>
+                    <TableCell align="right">Meta de CSAT</TableCell>
                     <TableCell align="right">Total de Respostas</TableCell>
                     <TableCell align="right">Meta de Respostas</TableCell>
                     <TableCell align="right">Cadastros</TableCell>
@@ -139,7 +150,9 @@ const AtendenteDashboardPage = () => {
                       <TableRow key={atendente.id} hover>
                         <TableCell>{atendente.name}</TableCell>
                         <TableCell align="right">{atendente.currentNPS}</TableCell>
+                        <TableCell align="right">{atendente.currentCSAT}</TableCell>
                         <TableCell align="right">{atendente.npsGoal || 'N/A'}</TableCell>
+                        <TableCell align="right">{atendente.csatGoal || 'N/A'}</TableCell>
                         <TableCell align="right">{atendente.responses}</TableCell>
                         <TableCell align="right">{atendente.responsesGoal || 'N/A'}</TableCell>
                         <TableCell align="right">{atendente.currentRegistrations}</TableCell>
@@ -148,7 +161,7 @@ const AtendenteDashboardPage = () => {
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={7} align="center">Nenhum atendente encontrado ou dados indisponíveis.</TableCell>
+                      <TableCell colSpan={9} align="center">Nenhum atendente encontrado ou dados indisponíveis.</TableCell>
                     </TableRow>
                   )}
                 </TableBody>

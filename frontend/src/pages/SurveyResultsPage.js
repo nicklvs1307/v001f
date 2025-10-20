@@ -109,7 +109,7 @@ const SurveyResultsPage = () => {
                 );
             case 'rating_0_10':
             case 'rating_1_5':
-                const safeRatings = Array.isArray(qr.results?.allRatings) ? qr.results.allRatings : [];
+                const safeRatings = Array.isArray(qr.allRatings) ? qr.allRatings : [];
                 const ratingCounts = safeRatings.reduce((acc, rating) => {
                     const key = String(rating);
                     acc[key] = (acc[key] || 0) + 1;
@@ -122,13 +122,7 @@ const SurveyResultsPage = () => {
 
                 return (
                     <Box>
-                        <Typography variant="h6">Avaliação Média: {qr.results.average}</Typography>
-                        {qr.questionType === 'rating_0_10' && <Typography variant="h6" sx={{ mt: 1 }}>NPS: {qr.results.nps}</Typography>}
-                        <Grid container spacing={1} sx={{ mt: 2, mb: 2 }}>
-                            <Grid item xs={4}><Typography variant="body2" color="success.main">Promotores: {qr.results.promoters}</Typography></Grid>
-                            <Grid item xs={4}><Typography variant="body2" color="warning.main">Neutros: {qr.results.neutrals}</Typography></Grid>
-                            <Grid item xs={4}><Typography variant="body2" color="error.main">Detratores: {qr.results.detractors}</Typography></Grid>
-                        </Grid>
+                        <Typography variant="h6">Avaliação Média: {qr.averageRating}</Typography>
                         <ResponsiveContainer width="100%" height={300}>
                             <BarChart data={ratingChartData}>
                                 <CartesianGrid strokeDasharray="3 3" />
@@ -182,62 +176,7 @@ const SurveyResultsPage = () => {
                 </Grid>
             </Paper>
 
-            {/* Cards de NPS Geral */}
-            <Grid container spacing={3} sx={{ mb: 4 }}>
-                <Grid item xs={12} md={3}>
-                    <Card elevation={2}>
-                        <CardContent>
-                            <Typography variant="h6" color="primary" gutterBottom>NPS Geral</Typography>
-                            <Typography variant="h4" component="div" fontWeight="bold">{results.overallNPS}</Typography>
-                            <Typography variant="body2" color="text.secondary">Baseado em {results.npsTotalResponses} respostas</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} md={3}>
-                    <Card elevation={2}>
-                        <CardContent>
-                            <Typography variant="h6" color="success.main" gutterBottom>Promotores</Typography>
-                            <Typography variant="h4" component="div" fontWeight="bold">{results.npsPromoters}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} md={3}>
-                    <Card elevation={2}>
-                        <CardContent>
-                            <Typography variant="h6" color="warning.main" gutterBottom>Neutros</Typography>
-                            <Typography variant="h4" component="div" fontWeight="bold">{results.npsNeutrals}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} md={3}>
-                    <Card elevation={2}>
-                        <CardContent>
-                            <Typography variant="h6" color="error.main" gutterBottom>Detratores</Typography>
-                            <Typography variant="h4" component="div" fontWeight="bold">{results.npsDetractors}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            </Grid>
 
-            {/* NPS por Critério */}
-            {results.npsByCriterio && results.npsByCriterio.length > 0 && (
-                <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>NPS por Critério</Typography>
-                    <Grid container spacing={2}>
-                        {results.npsByCriterio.map((npsCrit, index) => (
-                            <Grid item xs={12} sm={6} md={4} key={index}>
-                                <Card elevation={1}>
-                                    <CardContent>
-                                        <Typography variant="h6" color="primary">{npsCrit.criterio}</Typography>
-                                        <Typography variant="h5" fontWeight="bold">{npsCrit.nps}</Typography>
-                                        <Typography variant="body2" color="text.secondary">({npsCrit.promoters} Promotores, {npsCrit.neutrals} Neutros, {npsCrit.detractors} Detratores)</Typography>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        ))}
-                    </Grid>
-                </Paper>
-            )}
 
             {/* Gráfico de Radar (Aranha) */}
             {results.radarChartData && results.radarChartData.length > 0 && (

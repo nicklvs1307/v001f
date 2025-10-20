@@ -1,6 +1,6 @@
 const { Pesquisa, Resposta, Usuario, Tenant, Pergunta, Cupom, Atendente, AtendenteMeta, Client, Criterio } = require('../../models');
 const { Sequelize, Op } = require('sequelize');
-const npsService = require('../services/npsService');
+const ratingService = require('../services/ratingService');
 
 const { fn, col, literal } = Sequelize;
 
@@ -29,37 +29,23 @@ const dashboardRepository = {
                 },
                 required: true
             }],
-            // A lógica de contagem de respostas únicas deve ser revista,
-            // mas por agora vamos focar em padronizar o cálculo do NPS.
-            // A contagem de respostas distintas por respondentSessionId foi removida
-            // para evitar a subcontagem de respostas de NPS válidas.
         });
 
-        // Utiliza o npsService para calcular o NPS
-        const npsResult = npsService.calculateNPS(ratingResponses);
+        const npsResponses = ratingResponses.filter(r => r.pergunta.type === 'rating_0_10');
+        const csatResponses = ratingResponses.filter(r => r.pergunta.type === 'rating_1_5');
 
-        const totalRatingResponses = npsResult.total;
-        let promotersPercentage = 0;
-        let neutralsPercentage = 0;
-        let detractorsPercentage = 0;
-
-        if (totalRatingResponses > 0) {
-            promotersPercentage = (npsResult.promoters / totalRatingResponses) * 100;
-            neutralsPercentage = (npsResult.neutrals / totalRatingResponses) * 100;
-            detractorsPercentage = (npsResult.detractors / totalRatingResponses) * 100;
-        }
+        const npsResult = ratingService.calculateNPS(npsResponses);
+        const csatResult = ratingService.calculateCSAT(csatResponses);
 
         const totalResponses = await Resposta.count({ where: { ...whereClause, respondentSessionId: { [Op.ne]: null } }, distinct: true, col: 'respondentSessionId' });
         const totalUsers = await Client.count({ where: whereClause });
 
-        // Crie um where clause específico para cupons gerados, aplicando o filtro de data a createdAt
         const couponsGeneratedWhere = tenantId ? { tenantId } : {};
         if (Object.keys(dateFilter).length > 0) {
             couponsGeneratedWhere.createdAt = dateFilter;
         }
         const couponsGenerated = await Cupom.count({ where: couponsGeneratedWhere });
 
-        // Crie um where clause específico para cupons usados, aplicando o filtro de data a updatedAt
         const couponsUsedWhere = { status: 'used' };
         if (tenantId) {
             couponsUsedWhere.tenantId = tenantId;
@@ -70,18 +56,24 @@ const dashboardRepository = {
         const couponsUsed = await Cupom.count({ where: couponsUsedWhere });
 
         return {
-            npsScore: npsResult.npsScore,
-            promoters: npsResult.promoters,
-            promotersPercentage: parseFloat(promotersPercentage.toFixed(2)),
-            neutrals: npsResult.neutrals,
-            neutralsPercentage: parseFloat(neutralsPercentage.toFixed(2)),
-            detractors: npsResult.detractors,
-            detractorsPercentage: parseFloat(detractorsPercentage.toFixed(2)),
+            nps: {
+                score: npsResult.npsScore,
+                promoters: npsResult.promoters,
+                neutrals: npsResult.neutrals,
+                detractors: npsResult.detractors,
+                total: npsResult.total,
+            },
+            csat: {
+                satisfactionRate: csatResult.satisfactionRate,
+                averageScore: csatResult.averageScore,
+                satisfied: csatResult.satisfied,
+                neutral: csatResult.neutral,
+                unsatisfied: csatResult.unsatisfied,
+                total: csatResult.total,
+            },
             registrations: totalUsers,
             registrationsConversion: totalResponses > 0 ? parseFloat(((totalUsers / totalResponses) * 100).toFixed(2)) : 0,
-            ambassadorsMonth: 0, // Manter como 0 por enquanto
             couponsGenerated,
-            couponsGeneratedPeriod: 'N/A',
             couponsUsed,
             couponsUsedConversion: couponsGenerated > 0 ? parseFloat(((couponsUsed / couponsGenerated) * 100).toFixed(2)) : 0,
             totalResponses,
@@ -170,7 +162,7 @@ const dashboardRepository = {
         return formattedRanking || [];
     },
 
-    getNPSCritera: async (tenantId = null, startDate = null, endDate = null) => {
+    getCriteriaScores: async (tenantId = null, startDate = null, endDate = null) => {
         const responseWhereClause = { ratingValue: { [Op.ne]: null } };
         if (tenantId) {
             responseWhereClause.tenantId = tenantId;
@@ -194,7 +186,7 @@ const dashboardRepository = {
                 include: [{
                     model: Criterio,
                     as: 'criterio',
-                    attributes: ['name'],
+                    attributes: ['name', 'type'], // Include criterio type
                 }]
             }],
         });
@@ -202,25 +194,56 @@ const dashboardRepository = {
         const responsesByCriteria = allRatingResponses.reduce((acc, response) => {
             const criteriaName = response.pergunta.criterio ? response.pergunta.criterio.name : 'Sem Critério';
             if (!acc[criteriaName]) {
-                acc[criteriaName] = [];
+                acc[criteriaName] = {
+                    responses: [],
+                    // Assuming all questions under a criterion have the same type, which they should.
+                    // We can grab the type from the first response.
+                    type: response.pergunta.criterio ? response.pergunta.criterio.type : null
+                };
             }
-            acc[criteriaName].push(response);
+            acc[criteriaName].responses.push(response);
             return acc;
         }, {});
 
-        const npsByCriteria = Object.entries(responsesByCriteria).map(([criteriaName, responses]) => {
-            const npsResult = npsService.calculateNPS(responses);
-            return {
-                question: criteriaName, // Mantendo a chave 'question' para consistência com o frontend
-                nps: npsResult.npsScore,
-                promoters: npsResult.promoters,
-                neutrals: npsResult.neutrals,
-                detractors: npsResult.detractors,
-                total: npsResult.total,
-            };
+        const scoresByCriteria = Object.entries(responsesByCriteria).map(([criteriaName, data]) => {
+            const { responses, type } = data;
+            
+            if (type === 'NPS') {
+                const npsResult = ratingService.calculateNPS(responses);
+                return {
+                    criterion: criteriaName,
+                    scoreType: 'NPS',
+                    score: npsResult.npsScore,
+                    promoters: npsResult.promoters,
+                    neutrals: npsResult.neutrals,
+                    detractors: npsResult.detractors,
+                    total: npsResult.total,
+                };
+            } else if (type === 'CSAT' || type === 'Star') {
+                const csatResult = ratingService.calculateCSAT(responses);
+                return {
+                    criterion: criteriaName,
+                    scoreType: 'CSAT',
+                    score: csatResult.satisfactionRate,
+                    average: csatResult.averageScore,
+                    satisfied: csatResult.satisfied,
+                    neutral: csatResult.neutral,
+                    unsatisfied: csatResult.unsatisfied,
+                    total: csatResult.total,
+                };
+            } else {
+                // Handle other types or return a default structure
+                return {
+                    criterion: criteriaName,
+                    scoreType: type,
+                    total: responses.length,
+                    // Maybe calculate average for any rating type as a fallback
+                    average: responses.reduce((sum, r) => sum + r.ratingValue, 0) / responses.length,
+                };
+            }
         });
 
-        return npsByCriteria;
+        return scoresByCriteria;
     },
 
     getFeedbacks: async (tenantId = null, startDate = null, endDate = null) => {
@@ -251,7 +274,7 @@ const dashboardRepository = {
             respondentSessionId: feedback.respondentSessionId,
             date: new Date(feedback.createdAt).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
             client: feedback.client ? feedback.client.name : 'Anônimo',
-            nps: feedback.ratingValue !== null ? feedback.ratingValue : null,
+            rating: feedback.ratingValue !== null ? feedback.ratingValue : null,
             comment: feedback.textValue,
         }));
     },
@@ -292,11 +315,11 @@ const dashboardRepository = {
                 {
                     model: Pergunta,
                     as: 'pergunta',
-                    attributes: ['type', 'criterioId'],
+                    attributes: ['id', 'type', 'criterioId'],
                     include: [{
                         model: Criterio,
                         as: 'criterio',
-                        attributes: ['name'],
+                        attributes: ['name', 'type'],
                     }]
                 },
                 {
@@ -307,67 +330,66 @@ const dashboardRepository = {
                 {
                     model: Atendente,
                     as: 'atendente',
-                    attributes: ['name'],
+                    attributes: ['id', 'name'],
                 }
             ]
         });
 
-        // 1. Calcular NPS Geral
-        const npsResponses = allResponses.filter(response => response.pergunta && response.pergunta.type === 'rating_0_10');
-        const overallNpsResult = npsService.calculateNPS(npsResponses);
+        // 1. Calcular Scores Gerais (NPS e CSAT)
+        const npsResponses = allResponses.filter(r => r.pergunta && r.pergunta.type === 'rating_0_10');
+        const csatResponses = allResponses.filter(r => r.pergunta && r.pergunta.type === 'rating_1_5');
+        
+        const overallNpsResult = ratingService.calculateNPS(npsResponses);
+        const overallCsatResult = ratingService.calculateCSAT(csatResponses);
 
-        // 2. Calcular NPS por Critério (Agregado)
+        // 2. Calcular Scores por Critério (reutilizando a lógica de getCriteriaScores)
         const responsesByCriteria = allResponses.reduce((acc, response) => {
             if (response.pergunta && response.pergunta.criterio && response.pergunta.type.startsWith('rating')) {
                 const criteriaName = response.pergunta.criterio.name;
                 if (!acc[criteriaName]) {
-                    acc[criteriaName] = [];
+                    acc[criteriaName] = {
+                        responses: [],
+                        type: response.pergunta.criterio.type
+                    };
                 }
-                acc[criteriaName].push(response);
+                acc[criteriaName].responses.push(response);
             }
             return acc;
         }, {});
 
-        const npsByCriterio = Object.entries(responsesByCriteria).map(([criterioName, responses]) => {
-            const npsResult = npsService.calculateNPS(responses);
-            return {
-                criterio: criterioName,
-                nps: npsResult.npsScore,
-                promoters: npsResult.promoters,
-                neutrals: npsResult.neutrals,
-                detractors: npsResult.detractors,
-                total: npsResult.total,
-            };
-        });
+        const scoresByCriteria = Object.entries(responsesByCriteria).map(([criteriaName, data]) => {
+            const { responses, type } = data;
+            if (type === 'NPS') {
+                const npsResult = ratingService.calculateNPS(responses);
+                return { criterion: criteriaName, scoreType: 'NPS', ...npsResult };
+            } else if (type === 'CSAT' || type === 'Star') {
+                const csatResult = ratingService.calculateCSAT(responses);
+                return { criterion: criteriaName, scoreType: 'CSAT', ...csatResult };
+            }
+            return null;
+        }).filter(Boolean);
 
-        // 3. Preparar dados para Radar Chart (média de avaliação por critério/pergunta)
+        // 3. Preparar dados para Radar Chart (Média de avaliação por critério)
         const radarDataMap = new Map();
-
         allResponses.forEach(response => {
             const pergunta = response.pergunta;
             if (pergunta && pergunta.type.startsWith('rating')) {
-                const key = pergunta.criterio ? pergunta.criterio.name : (pergunta.id ? `Pergunta ${pergunta.id.substring(0, 4)}` : 'Pergunta Desconhecida'); // Usar critério ou ID da pergunta
+                const key = pergunta.criterio ? pergunta.criterio.name : 'Outros';
                 if (!radarDataMap.has(key)) {
                     radarDataMap.set(key, { sum: 0, count: 0 });
                 }
                 const dataStats = radarDataMap.get(key);
-
-                const rating = response.ratingValue;
-                if (rating !== null) {
-                    dataStats.sum += rating;
+                if (response.ratingValue !== null) {
+                    dataStats.sum += response.ratingValue;
                     dataStats.count++;
                 }
             }
         });
+        const radarChartData = Array.from(radarDataMap.entries()).map(([name, stats]) => ({
+            name: name,
+            averageRating: stats.count > 0 ? parseFloat((stats.sum / stats.count).toFixed(2)) : 0,
+        }));
 
-        const radarChartData = [];
-        radarDataMap.forEach((stats, name) => {
-            const average = stats.count > 0 ? (stats.sum / stats.count) : 0;
-            radarChartData.push({
-                name: name,
-                averageRating: parseFloat(average.toFixed(2)),
-            });
-        });
 
         // 4. Processar dados demográficos
         const demographics = {};
@@ -375,19 +397,14 @@ const dashboardRepository = {
         const genders = [];
         allResponses.forEach(response => {
             if (response.client) {
-                if (response.client.birthDate) {
-                    birthDates.push(new Date(response.client.birthDate));
-                }
-                if (response.client.gender) {
-                    genders.push(response.client.gender);
-                }
+                if (response.client.birthDate) birthDates.push(new Date(response.client.birthDate));
+                if (response.client.gender) genders.push(response.client.gender);
             }
         });
 
         if (birthDates.length > 0) {
             const ageGroups = { '18-24': 0, '25-34': 0, '35-44': 0, '45-54': 0, '55+': 0 };
             const currentYear = new Date().getFullYear();
-
             birthDates.forEach(dob => {
                 const age = currentYear - dob.getFullYear();
                 if (age >= 18 && age <= 24) ageGroups['18-24']++;
@@ -403,86 +420,53 @@ const dashboardRepository = {
             const genderDistribution = { 'masculino': 0, 'feminino': 0, 'outro': 0 };
             genders.forEach(gender => {
                 const g = gender.toLowerCase();
-                if (genderDistribution.hasOwnProperty(g)) {
-                    genderDistribution[g]++;
-                } else {
-                    genderDistribution['outro']++;
-                }
+                if (genderDistribution.hasOwnProperty(g)) genderDistribution[g]++;
+                else genderDistribution['outro']++;
             });
             demographics.genderDistribution = genderDistribution;
         }
 
-
-        // 5. Top e Bottom 5 Atendentes por respostas (e metas)
+        // 5. Top e Bottom 5 Atendentes por performance
         const responsesByAttendant = allResponses.reduce((acc, response) => {
             if (response.atendente && response.atendente.id) {
                 const attendantId = response.atendente.id;
                 if (!acc[attendantId]) {
-                    acc[attendantId] = {
-                        id: attendantId,
-                        name: response.atendente.name,
-                        responses: [],
-                    };
+                    acc[attendantId] = { id: attendantId, name: response.atendente.name, responses: [] };
                 }
                 acc[attendantId].responses.push(response);
             }
             return acc;
         }, {});
 
-        const attendantsArray = Object.values(responsesByAttendant);
-
-        const topAttendantsWithGoals = [];
-        const sortedAttendantsTop = [...attendantsArray].sort((a, b) => b.responses.length - a.responses.length).slice(0, 5);
-
-        for (const attendant of sortedAttendantsTop) {
-            const npsResult = npsService.calculateNPS(attendant.responses);
-            const meta = await AtendenteMeta.findOne({
-                where: { atendenteId: attendant.id, tenantId: tenantId },
-            });
-
-            topAttendantsWithGoals.push({
+        const attendantsArray = await Promise.all(Object.values(responsesByAttendant).map(async (attendant) => {
+            const npsResult = ratingService.calculateNPS(attendant.responses);
+            const csatResult = ratingService.calculateCSAT(attendant.responses);
+            const meta = await AtendenteMeta.findOne({ where: { atendenteId: attendant.id, tenantId: tenantId } });
+            return {
                 name: attendant.name,
                 responses: attendant.responses.length,
-                currentNPS: npsResult.npsScore,
-                npsGoal: meta ? meta.npsGoal || 0 : 0,
-                responsesGoal: meta ? meta.responsesGoal || 0 : 0,
-                registrationsGoal: meta ? meta.registrationsGoal || 0 : 0,
-            });
-        }
+                nps: npsResult,
+                csat: csatResult,
+                meta: meta || {},
+            };
+        }));
 
-        const bottomAttendantsWithGoals = [];
-        const sortedAttendantsBottom = [...attendantsArray].sort((a, b) => a.responses.length - b.responses.length).slice(0, 5);
+        const sortedAttendants = attendantsArray.sort((a, b) => (b.nps.npsScore || 0) - (a.nps.npsScore || 0) || (b.csat.averageScore || 0) - (a.csat.averageScore || 0));
+        
+        const topAttendants = sortedAttendants.slice(0, 5);
+        const bottomAttendants = sortedAttendants.slice(-5).reverse();
 
-        for (const attendant of sortedAttendantsBottom) {
-            const npsResult = npsService.calculateNPS(attendant.responses);
-            const meta = await AtendenteMeta.findOne({
-                where: { atendenteId: attendant.id, tenantId: tenantId },
-            });
-
-            bottomAttendantsWithGoals.push({
-                name: attendant.name,
-                responses: attendant.responses.length,
-                currentNPS: npsResult.npsScore,
-                npsGoal: meta ? meta.npsGoal || 0 : 0,
-                responsesGoal: meta ? meta.responsesGoal || 0 : 0,
-                registrationsGoal: meta ? meta.registrationsGoal || 0 : 0,
-            });
-        }
-
-        // 6. Respostas ao longo do tempo (reutilizando getResponseChart logic)
+        // 6. Respostas ao longo do tempo
         const responseChartData = await this.getResponseChart(tenantId, null, null);
 
         return {
-            overallNPS: overallNpsResult.npsScore,
-            npsPromoters: overallNpsResult.promoters,
-            npsNeutrals: overallNpsResult.neutrals,
-            npsDetractors: overallNpsResult.detractors,
-            npsTotalResponses: overallNpsResult.total,
-            npsByCriterio,
+            overallNPS: overallNpsResult,
+            overallCSAT: overallCsatResult,
+            scoresByCriteria,
             radarChartData,
             demographics,
-            topAttendants: topAttendantsWithGoals,
-            bottomAttendants: bottomAttendantsWithGoals,
+            topAttendants,
+            bottomAttendants,
             responseChartData,
         };
     },
@@ -598,7 +582,7 @@ const dashboardRepository = {
             const dayOfWeek = new Date(response.createdAt).getDay(); // 0 for Sunday, 6 for Saturday
             const dayName = daysOfWeek[dayOfWeek];
 
-            const classification = npsService.classifyRating(response.ratingValue, response.pergunta.type);
+            const classification = ratingService.classifyNPS(response.ratingValue);
 
             if (classification) {
                 npsByDay[dayName].total++;
@@ -635,7 +619,7 @@ const dashboardRepository = {
                 {
                     model: Client,
                     as: 'client',
-                    attributes: ['id'], // Precisamos do ID do cliente para contar cadastros únicos
+                    attributes: ['id'],
                 },
                 {
                     model: Atendente,
@@ -666,7 +650,8 @@ const dashboardRepository = {
 
         const attendantsWithPerformance = [];
         for (const attendantStats of Object.values(attendantPerformance)) {
-            const npsResult = npsService.calculateNPS(attendantStats.responses);
+            const npsResult = ratingService.calculateNPS(attendantStats.responses);
+            const csatResult = ratingService.calculateCSAT(attendantStats.responses);
             const meta = await AtendenteMeta.findOne({
                 where: { atendenteId: attendantStats.id, tenantId: tenantId },
             });
@@ -676,8 +661,10 @@ const dashboardRepository = {
                 name: attendantStats.name,
                 responses: attendantStats.responses.length,
                 currentNPS: npsResult.npsScore,
+                currentCSAT: csatResult.averageScore,
                 currentRegistrations: attendantStats.uniqueClients.size,
                 npsGoal: meta ? meta.npsGoal || 0 : 0,
+                csatGoal: meta ? meta.csatGoal || 0 : 0, // Assuming a csatGoal might exist
                 responsesGoal: meta ? meta.responsesGoal || 0 : 0,
                 registrationsGoal: meta ? meta.registrationsGoal || 0 : 0,
             });
@@ -721,32 +708,43 @@ const dashboardRepository = {
         }
 
         const categoryLower = category.toLowerCase();
+        let ratingWhere = {};
 
-        if (categoryLower === 'promotores' || categoryLower === 'neutros' || categoryLower === 'detratores') {
-            let ratingWhere = {};
-            if (categoryLower === 'promotores') {
-                ratingWhere = {
-                    [Op.or]: [
-                        { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.gte]: 9 } },
-                        { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.eq]: 5 } },
-                    ]
-                };
-            } else if (categoryLower === 'neutros') {
-                ratingWhere = {
-                    [Op.or]: [
-                        { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.between]: [7, 8] } },
-                        { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.eq]: 4 } },
-                    ]
-                };
-            } else { // detratores
-                ratingWhere = {
-                    [Op.or]: [
-                        { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.lte]: 6 } },
-                        { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.lte]: 3 } },
-                    ]
-                };
-            }
+        switch (categoryLower) {
+            case 'promotores':
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.gte]: 9 } };
+                break;
+            case 'neutros': // NPS Neutral
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.between]: [7, 8] } };
+                break;
+            case 'detratores':
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.lte]: 6 } };
+                break;
+            case 'satisfeitos': // CSAT Satisfied
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.gte]: 4 } };
+                break;
+            case 'neutros-csat': // CSAT Neutral
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.eq]: 3 } };
+                break;
+            case 'insatisfeitos': // CSAT Unsatisfied
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.lte]: 2 } };
+                break;
+            case 'cadastros':
+                return await Client.findAll({ where: whereClause, order: [['createdAt', 'DESC']] });
+            case 'cupons gerados':
+                return await Cupom.findAll({ where: whereClause, include: [{ model: Client, as: 'client', attributes: ['name'] }], order: [['createdAt', 'DESC']] });
+            case 'cupons utilizados':
+                const usedWhere = { ...whereClause, status: 'used' };
+                if (whereClause.createdAt) {
+                    usedWhere.updatedAt = whereClause.createdAt;
+                    delete usedWhere.createdAt;
+                }
+                return await Cupom.findAll({ where: usedWhere, include: [{ model: Client, as: 'client', attributes: ['name'] }], order: [['updatedAt', 'DESC']] });
+            default:
+                return [];
+        }
 
+        if (Object.keys(ratingWhere).length > 0) {
             return await Resposta.findAll({
                 where: { ...whereClause, ...ratingWhere },
                 include: [
@@ -757,35 +755,7 @@ const dashboardRepository = {
             });
         }
 
-        if (categoryLower === 'cadastros') {
-            return await Client.findAll({
-                where: whereClause,
-                order: [['createdAt', 'DESC']],
-            });
-        }
-
-        if (categoryLower === 'cupons gerados') {
-            return await Cupom.findAll({
-                where: whereClause,
-                include: [{ model: Client, as: 'client', attributes: ['name'] }],
-                order: [['createdAt', 'DESC']],
-            });
-        }
-
-        if (categoryLower === 'cupons utilizados') {
-            const usedWhere = { ...whereClause, status: 'used' };
-            if (whereClause.createdAt) {
-                usedWhere.updatedAt = whereClause.createdAt;
-                delete usedWhere.createdAt;
-            }
-            return await Cupom.findAll({
-                where: usedWhere,
-                include: [{ model: Client, as: 'client', attributes: ['name'] }],
-                order: [['updatedAt', 'DESC']],
-            });
-        }
-
-        return []; // For "Ambresários no Mês" and any other unhandled category
+        return [];
     },
 
     getAttendantDetailsById: async (tenantId, attendantId, startDate, endDate) => {
@@ -809,26 +779,24 @@ const dashboardRepository = {
                 { 
                     model: Pergunta, 
                     as: 'pergunta', 
-                    attributes: ['text', 'type'] // Incluir o tipo da pergunta
+                    attributes: ['text', 'type']
                 }
             ],
             order: [['createdAt', 'DESC']],
         });
 
-        // Filtrar apenas respostas de avaliação para o cálculo de NPS
         const ratingResponses = responses.filter(r => r.ratingValue !== null && r.pergunta && r.pergunta.type.startsWith('rating'));
 
-        const npsResult = npsService.calculateNPS(ratingResponses);
+        const npsResult = ratingService.calculateNPS(ratingResponses);
+        const csatResult = ratingService.calculateCSAT(ratingResponses);
         const attendant = await Atendente.findByPk(attendantId, { attributes: ['name'] });
 
         return {
             attendantName: attendant ? attendant.name : 'Desconhecido',
-            npsScore: npsResult.npsScore,
-            promoters: npsResult.promoters,
-            neutrals: npsResult.neutrals,
-            detractors: npsResult.detractors,
-            totalResponses: responses.length, // Total de interações
-            responses, // Respostas detalhadas
+            nps: npsResult,
+            csat: csatResult,
+            totalResponses: responses.length,
+            responses,
         };
     },
 
@@ -853,8 +821,8 @@ const dashboardRepository = {
     getMainDashboard: async function (tenantId = null, startDate = null, endDate = null) {
         const summary = await this.getSummary(tenantId, startDate, endDate);
         const responseChart = await this.getResponseChart(tenantId, startDate, endDate);
-        const ranking = await this.getRanking(tenantId, startDate, endDate);
-        const npsCriteria = await this.getNPSCritera(tenantId, startDate, endDate);
+        const attendantsPerformance = await this.getAttendantsPerformanceWithGoals(tenantId);
+        const criteriaScores = await this.getCriteriaScores(tenantId, startDate, endDate);
         const feedbacks = await this.getFeedbacks(tenantId, startDate, endDate);
         const conversionChart = await this.getConversionChart(tenantId, startDate, endDate);
         const npsByDayOfWeek = await this.getNpsByDayOfWeek(tenantId);
@@ -862,8 +830,8 @@ const dashboardRepository = {
         return {
             summary,
             responseChart,
-            ranking,
-            npsCriteria,
+            attendantsPerformance,
+            criteriaScores,
             feedbacks,
             conversionChart,
             npsByDayOfWeek,

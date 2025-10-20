@@ -1,7 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const resultRepository = require("../repositories/resultRepository");
 const ApiError = require("../errors/ApiError");
-const npsService = require("../services/npsService"); // Importar o npsService
 
 // @desc    Obter resultados agregados de uma pesquisa
 // @route   GET /api/surveys/:id/results
@@ -75,11 +74,6 @@ exports.getSurveyResults = asyncHandler(async (req, res) => {
         ratings.length > 0 ? parseFloat((sum / ratings.length).toFixed(2)) : 0;
       result.allRatings = ratings;
 
-      // Adiciona o tipo da pergunta a cada resposta para o contexto do npsService
-      const responsesWithContext = questionResponses.map(r => ({ ...r, pergunta: { type: question.type } }));
-      const npsResult = npsService.calculateNPS(responsesWithContext);
-      result.nps = npsResult.npsScore;
-      
     } else if (question.type === "multiple_choice") {
       const optionsCount = {};
       question.options.forEach((opt) => (optionsCount[opt] = 0));

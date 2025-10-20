@@ -74,7 +74,7 @@ const ResultsOverviewPage = () => {
 
                 {/* NPS Charts will go here */}
                 <Grid item xs={12} lg={8}>
-                    <NpsCharts npsTrend={data.responseChart} npsByCriteria={data.npsCriteria} npsByDayOfWeek={data.npsByDayOfWeek} tenantId={tenantId} />
+                    <NpsCharts npsTrend={data.responseChart} criteriaScores={data.criteriaScores} npsByDayOfWeek={data.npsByDayOfWeek} tenantId={tenantId} />
                 </Grid>
 
                 {/* Customer Feedback will go here */}
@@ -89,7 +89,7 @@ const ResultsOverviewPage = () => {
 
                 {/* Attendant Performance */} 
                 <Grid item xs={12} lg={6}>
-                    <AttendantPerformance topAttendants={data.ranking} bottomAttendants={data.bottomAttendants} />
+                    <AttendantPerformance topAttendants={data.attendantsPerformance} bottomAttendants={data.bottomAttendants} />
                 </Grid>
 
                 {/* Latest Responses */}
@@ -102,7 +102,7 @@ const ResultsOverviewPage = () => {
                                     <TableRow>
                                         <TableCell>Data</TableCell>
                                         <TableCell>Cliente</TableCell>
-                                        <TableCell>NPS</TableCell>
+                                        <TableCell>Nota</TableCell>
                                         <TableCell>Comentário</TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -112,7 +112,7 @@ const ResultsOverviewPage = () => {
                                             <TableRow key={index}>
                                                 <TableCell>{feedback.date}</TableCell>
                                                 <TableCell>{feedback.client}</TableCell>
-                                                <TableCell>{feedback.nps}</TableCell>
+                                                <TableCell>{feedback.rating}</TableCell>
                                                 <TableCell>{feedback.comment}</TableCell>
                                             </TableRow>
                                         ))

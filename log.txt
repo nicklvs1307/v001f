@@ -1,34 +1,25 @@
-Postgres is up - executing command
-Server.js is being executed!
-API_KEY_ENCRYPTION_KEY is not defined in .env. Please set it for security.
-node:internal/modules/cjs/loader:1143
-
-  throw err;
-  ^
-Error: Cannot find module './npsService'
-Require stack:
-- /usr/src/app/src/services/surveyService.js
-- /usr/src/app/src/controllers/surveyController.js
-- /usr/src/app/src/routes/surveyRoutes.js
-- /usr/src/app/src/routes/index.js
-- /usr/src/app/src/server.js
-    at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
-    at Module._load (node:internal/modules/cjs/loader:981:27)
-    at Module.require (node:internal/modules/cjs/loader:1231:19)
-    at require (node:internal/modules/helpers:177:18)
-    at Object.<anonymous> (/usr/src/app/src/services/surveyService.js:3:20)
-    at Module._compile (node:internal/modules/cjs/loader:1364:14)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
-    at Module.load (node:internal/modules/cjs/loader:1203:32)
-    at Module._load (node:internal/modules/cjs/loader:1019:12)
-    at Module.require (node:internal/modules/cjs/loader:1231:19) {
-  code: 'MODULE_NOT_FOUND',
-  requireStack: [
-    '/usr/src/app/src/services/surveyService.js',
-    '/usr/src/app/src/controllers/surveyController.js',
-    '/usr/src/app/src/routes/surveyRoutes.js',
-    '/usr/src/app/src/routes/index.js',
-    '/usr/src/app/src/server.js'
-  ]
-}
-Node.js v18.20.8
+https://loyalfood.towersfy.com/resultados
+
+apiloyalfood.towersfy.com/api/criterios/a32031fa-dfb3-4e39-9da7-783b3fb5519e:1  Failed to load resource: the server responded with a status of 400 ()
+656.74ab3814.chunk.js:sourcemap:1 Survey ID from useParams: 70644ab0-f9a5-49e5-88cc-86773acfd2a4
+656.74ab3814.chunk.js:sourcemap:1 Calling resultService.getSurveyResults with ID: 70644ab0-f9a5-49e5-88cc-86773acfd2a4
+main.8eda16bf.js:sourcemap:2 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
+b @ main.8eda16bf.js:sourcemap:2
+Ks @ main.8eda16bf.js:sourcemap:2
+xc @ main.8eda16bf.js:sourcemap:2
+bc @ main.8eda16bf.js:sourcemap:2
+vc @ main.8eda16bf.js:sourcemap:2
+gc @ main.8eda16bf.js:sourcemap:2
+oc @ main.8eda16bf.js:sourcemap:2
+w @ main.8eda16bf.js:sourcemap:2
+O @ main.8eda16bf.js:sourcemap:2
+main.8eda16bf.js:sourcemap:2 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
+b @ main.8eda16bf.js:sourcemap:2
+Ks @ main.8eda16bf.js:sourcemap:2
+xc @ main.8eda16bf.js:sourcemap:2
+bc @ main.8eda16bf.js:sourcemap:2
+vc @ main.8eda16bf.js:sourcemap:2
+gc @ main.8eda16bf.js:sourcemap:2
+oc @ main.8eda16bf.js:sourcemap:2
+w @ main.8eda16bf.js:sourcemap:2
+O @ main.8eda16bf.js:sourcemap:2

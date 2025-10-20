@@ -53,21 +53,21 @@ const DetailsModal = ({ open, handleClose, title, data, loading, error }) => {
         let items = [];
 
         switch (title) {
-            case 'Detalhes de Promotores':
-            case 'Detalhes de Neutros':
-            case 'Detalhes de Detratores':
+            case 'Detalhes de Promotores (NPS)':
+            case 'Detalhes de Detratores (NPS)':
+            case 'Detalhes de Satisfeitos (CSAT)':
+            case 'Detalhes de Insatisfeitos (CSAT)':
                 items = data.map((row) => (
                     <Card key={row.id} sx={{ mb: 2 }}>
                         <CardContent>
                             <Grid container spacing={2} alignItems="center">
-                                <Grid item xs={12} sm={4}>
+                                <Grid item xs={12} sm={6}>
                                     <Typography variant="body1"><strong>Cliente:</strong> {row.client?.name || 'N/A'}</Typography>
-                                </Grid>
-                                <Grid item xs={12} sm={4}>
                                     <Typography variant="body2" color="text.secondary"><strong>Data:</strong> {new Date(row.createdAt).toLocaleDateString()}</Typography>
                                 </Grid>
-                                <Grid item xs={12} sm={4}>
-                                    <Typography variant="body2" color="text.secondary"><strong>Nota:</strong> {row.ratingValue}</Typography>
+                                <Grid item xs={12} sm={6}>
+                                    <Typography variant="body1"><strong>Nota:</strong> {row.ratingValue}</Typography>
+                                    <Typography variant="body2" color="text.secondary"><strong>Pergunta:</strong> {row.pergunta?.text || 'N/A'}</Typography>
                                 </Grid>
                                 {row.textValue && (
                                     <Grid item xs={12}>

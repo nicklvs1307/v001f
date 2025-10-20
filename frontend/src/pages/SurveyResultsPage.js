@@ -109,7 +109,7 @@ const SurveyResultsPage = () => {
                 );
             case 'rating_0_10':
             case 'rating_1_5':
-                const safeRatings = Array.isArray(qr.allRatings) ? qr.allRatings : [];
+                const safeRatings = Array.isArray(qr.results.allRatings) ? qr.results.allRatings : [];
                 const ratingCounts = safeRatings.reduce((acc, rating) => {
                     const key = String(rating);
                     acc[key] = (acc[key] || 0) + 1;
@@ -122,7 +122,7 @@ const SurveyResultsPage = () => {
 
                 return (
                     <Box>
-                        <Typography variant="h6">Avaliação Média: {qr.averageRating}</Typography>
+                        <Typography variant="h6">Avaliação Média: {qr.results.averageRating}</Typography>
                         <ResponsiveContainer width="100%" height={300}>
                             <BarChart data={ratingChartData}>
                                 <CartesianGrid strokeDasharray="3 3" />

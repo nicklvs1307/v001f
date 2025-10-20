@@ -35,9 +35,11 @@ import { ROLES } from '../../constants/roles';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 
 const drawerWidth = 250;
+const collapsedDrawerWidth = 60;
 
 const DashboardLayout = () => {
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [drawerOpen, setDrawerOpen] = useState(true); // New state for permanent drawer
     const [openSubMenu, setOpenSubMenu] = useState({});
     const navigate = useNavigate();
     const location = useLocation();
@@ -69,6 +71,10 @@ const DashboardLayout = () => {
 
     const handleSubMenuClick = (text) => {
         setOpenSubMenu(prev => ({ ...prev, [text]: !prev[text] }));
+    };
+
+    const handleDrawerOpen = () => {
+        setDrawerOpen(!drawerOpen);
     };
 
     const menuItems = useMemo(() => [
@@ -117,9 +123,9 @@ const DashboardLayout = () => {
             ],
         },
         {
-            text: 'WhatsApp', 
-            icon: <WhatsAppIcon />, 
-            roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], // Only for tenant admins
+                        text: 'WhatsApp',
+                        icon: <WhatsAppIcon />,
+                        badge: 'NOVO',            roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], // Only for tenant admins
             children: [
                 { text: 'Conexão', path: '/whatsapp-connect', roles: [ROLES.ADMIN] },
                 { text: 'Campanhas', path: '/cupons/campanhas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
@@ -216,11 +222,12 @@ const DashboardLayout = () => {
                                         )}
                                     </Box>
                                 }
+                                sx={{ opacity: drawerOpen ? 1 : 0, transition: 'opacity 0.3s ease-in-out' }} // Hide text when collapsed
                             />
                             {item.children && (openSubMenu[item.text] ? <ExpandLess /> : <ExpandMore />)}
                         </ListItemButton>
                         {item.children && (
-                            <Collapse in={openSubMenu[item.text]} timeout="auto" unmountOnExit>
+                            <Collapse in={drawerOpen && openSubMenu[item.text]} timeout="auto" unmountOnExit>
                                 <List component="div" disablePadding>
                                     {item.children.filter(child => child.roles.includes(user?.role)).map((child) => (
                                         <ListItemButton 
@@ -253,6 +260,7 @@ const DashboardLayout = () => {
                                                     )}
                                                 </Box>
                                             }
+                                            sx={{ opacity: drawerOpen ? 1 : 0, transition: 'opacity 0.3s ease-in-out' }} // Hide text when collapsed
                                         />
                                         </ListItemButton>
                                     ))}
@@ -271,8 +279,8 @@ const DashboardLayout = () => {
             <AppBar
                 position="fixed"
                 sx={{
-                    width: { sm: `calc(100% - ${drawerWidth}px)` },
-                    ml: { sm: `${drawerWidth}px` },
+                    width: { sm: drawerOpen ? `calc(100% - ${drawerWidth}px)` : `calc(100% - ${collapsedDrawerWidth}px)` },
+                    ml: { sm: drawerOpen ? `${drawerWidth}px` : `${collapsedDrawerWidth}px` },
                     borderBottom: '1px solid #e3e6f0',
                     boxShadow: 'none',
                 }}
@@ -287,6 +295,16 @@ const DashboardLayout = () => {
                             sx={{ mr: 2, display: { sm: 'none' } }}
                         >
                             <MenuIcon />
+                        </IconButton>
+                        {/* New IconButton for toggling permanent drawer */}
+                        <IconButton
+                            color="inherit"
+                            aria-label="toggle drawer"
+                            edge="start"
+                            onClick={handleDrawerOpen}
+                            sx={{ mr: 2, display: { xs: 'none', sm: 'block' } }} // Only for desktop
+                        >
+                            {drawerOpen ? <MenuIcon /> : <MenuIcon />} {/* Can use different icons for open/close */}
                         </IconButton>
                         <Typography variant="h6" noWrap component="div">
                             {pageTitle}
@@ -367,7 +385,15 @@ const DashboardLayout = () => {
                     variant="permanent"
                     sx={{
                         display: { xs: 'none', sm: 'block' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                        '& .MuiDrawer-paper': {
+                            boxSizing: 'border-box',
+                            width: drawerOpen ? drawerWidth : collapsedDrawerWidth,
+                            transition: (theme) => theme.transitions.create('width', {
+                                easing: theme.transitions.easing.sharp,
+                                duration: theme.transitions.duration.enteringScreen,
+                            }),
+                            overflowX: 'hidden', // Hide horizontal scrollbar when collapsed
+                        },
                     }}
                     open
                 >
@@ -376,7 +402,17 @@ const DashboardLayout = () => {
             </Box>
             <Box
                 component="main"
-                sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` }, backgroundColor: 'background.default' }}
+                sx={{
+                    flexGrow: 1,
+                    p: 3,
+                    width: { sm: drawerOpen ? `calc(100% - ${drawerWidth}px)` : `calc(100% - ${collapsedDrawerWidth}px)` },
+                    ml: { sm: drawerOpen ? `${drawerWidth}px` : `${collapsedDrawerWidth}px` }, // Add this for proper margin
+                    backgroundColor: 'background.default',
+                    transition: (theme) => theme.transitions.create('margin', {
+                        easing: theme.transitions.easing.sharp,
+                        duration: theme.transitions.duration.enteringScreen,
+                    }),
+                }}
             >
                 <Toolbar /> 
                 <Outlet /> 

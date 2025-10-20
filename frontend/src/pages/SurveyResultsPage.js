@@ -218,7 +218,7 @@ const SurveyResultsPage = () => {
                     <CardHeader title="Nuvem de Palavras" avatar={<WcIcon />} />
                     <CardContent>
                         <Box sx={{ height: 400, width: '100%' }}>
-                            <WordCloud data={results.wordCloudData} options={wordCloudOptions} />
+                            <WordCloud words={results.wordCloudData} options={wordCloudOptions} />
                         </Box>
                     </CardContent>
                 </Card>

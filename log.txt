@@ -1,85 +1,48 @@
-surveyService.js:91  GET https://apiloyalfood.towersfy.com/api/surveys/stats 500 (Internal Server Error)
-(anônimo) @ xhr.js:198
-xhr @ xhr.js:15
-ht @ dispatchRequest.js:51
-Promise.then
-_request @ Axios.js:163
-request @ Axios.js:40
-xt.<computed> @ Axios.js:211
-(anônimo) @ bind.js:5
-getSurveyStats @ surveyService.js:91
-(anônimo) @ SurveysPage.js:123
-(anônimo) @ SurveysPage.js:138
-rl @ react-dom.production.min.js:243
-wc @ react-dom.production.min.js:285
-lc @ react-dom.production.min.js:272
-Vo @ react-dom.production.min.js:127
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-dom.production.min.js:24 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-word-cloud.es.js:123 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'length')
-    at M.j.start (react-word-cloud.es.js:123:121)
-    at S.current.e (react-word-cloud.es.js:471:12)
-    at new Promise (<anonymous>)
-    at react-word-cloud.es.js:418:10
-    at react-word-cloud.es.js:1021:7
-    at rl (react-dom.production.min.js:243:332)
-    at wc (react-dom.production.min.js:285:111)
-    at lc (react-dom.production.min.js:272:185)
-    at Vo (react-dom.production.min.js:127:105)
-    at react-dom.production.min.js:282:470
-M.j.start @ react-word-cloud.es.js:123
-S.current.e @ react-word-cloud.es.js:471
-(anônimo) @ react-word-cloud.es.js:418
-(anônimo) @ react-word-cloud.es.js:1021
-rl @ react-dom.production.min.js:243
-wc @ react-dom.production.min.js:285
-lc @ react-dom.production.min.js:272
-Vo @ react-dom.production.min.js:127
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-dom.production.min.js:24 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
+root@Server:~/loyalfood/v001f# git pull origin main
+From https://github.com/nicklvs1307/v001f
+ * branch            main       -> FETCH_HEAD
+Already up to date.
+root@Server:~/loyalfood/v001f# cd frontend
+root@Server:~/loyalfood/v001f/frontend# npm install
+npm ERR! code ERESOLVE
+npm ERR! ERESOLVE could not resolve
+npm ERR!
+npm ERR! While resolving: react-scripts@5.0.1
+npm ERR! Found: typescript@5.9.3
+npm ERR! node_modules/typescript
+npm ERR!   peer typescript@">= 2.7" from fork-ts-checker-webpack-plugin@6.5.3
+npm ERR!   node_modules/fork-ts-checker-webpack-plugin
+npm ERR!     fork-ts-checker-webpack-plugin@"^6.5.0" from react-dev-utils@12.0.1
+npm ERR!     node_modules/react-dev-utils
+npm ERR!       react-dev-utils@"^12.0.1" from react-scripts@5.0.1
+npm ERR!       node_modules/react-scripts
+npm ERR!         react-scripts@"5.0.1" from the root project
+npm ERR!   peerOptional typescript@"^5" from i18next@25.5.2
+npm ERR!   node_modules/i18next
+npm ERR!     i18next@"^25.5.2" from the root project
+npm ERR!     peer i18next@">= 25.4.1" from react-i18next@15.7.3
+npm ERR!     node_modules/react-i18next
+npm ERR!       react-i18next@"^15.7.3" from the root project
+npm ERR!   2 more (react-i18next, tsutils)
+npm ERR!
+npm ERR! Could not resolve dependency:
+npm ERR! peerOptional typescript@"^3.2.1 || ^4" from react-scripts@5.0.1
+npm ERR! node_modules/react-scripts
+npm ERR!   react-scripts@"5.0.1" from the root project
+npm ERR!
+npm ERR! Conflicting peer dependency: typescript@4.9.5
+npm ERR! node_modules/typescript
+npm ERR!   peerOptional typescript@"^3.2.1 || ^4" from react-scripts@5.0.1
+npm ERR!   node_modules/react-scripts
+npm ERR!     react-scripts@"5.0.1" from the root project
+npm ERR!
+npm ERR! Fix the upstream dependency conflict, or retry
+npm ERR! this command with --force or --legacy-peer-deps
+npm ERR! to accept an incorrect (and potentially broken) dependency resolution.
+npm ERR!
+npm ERR!
+npm ERR! For a full report see:
+npm ERR! /root/.npm/_logs/2025-10-20T14_18_24_363Z-eresolve-report.txt
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /root/.npm/_logs/2025-10-20T14_18_24_363Z-debug-0.log

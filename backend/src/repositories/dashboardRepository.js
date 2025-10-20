@@ -38,7 +38,7 @@ const dashboardRepository = {
         const csatResult = ratingService.calculateCSAT(csatResponses);
 
         const totalResponses = await Resposta.count({ where: { ...whereClause, respondentSessionId: { [Op.ne]: null } }, distinct: true, col: 'respondentSessionId' });
-        const totalUsers = await Client.count({ where: whereClause });
+        const totalUsers = await Client.count({ where: { ...whereClause } });
 
         const couponsGeneratedWhere = tenantId ? { tenantId } : {};
         if (Object.keys(dateFilter).length > 0) {
@@ -294,7 +294,7 @@ const dashboardRepository = {
             distinct: true,
             col: 'respondentSessionId' 
         });
-        const totalUsers = await Client.count({ where: whereClause });
+        const totalUsers = await Client.count({ where: { ...whereClause } });
         const couponsGenerated = await Cupom.count({ where: { ...whereClause, createdAt: dateFilter } });
         const couponsUsed = await Cupom.count({ where: { ...whereClause, status: 'used', updatedAt: dateFilter } });
 

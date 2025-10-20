@@ -129,8 +129,8 @@ const DashboardLayout = () => {
                         badge: 'NOVO',            roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], // Only for tenant admins
             children: [
                 { text: 'Conexão', path: '/whatsapp-connect', roles: [ROLES.ADMIN] },
-                { text: 'Campanhas', path: '/cupons/campanhas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], badge: 'PRO', badgeIcon: <StarsIcon sx={{ fontSize: '0.8rem', ml: 0.5 }} /> },
-                { text: 'Automações', path: '/whatsapp/automations', roles: [ROLES.ADMIN], badge: 'PRO', badgeIcon: <StarsIcon sx={{ fontSize: '0.8rem', ml: 0.5 }} /> },
+                { text: 'Campanhas', path: '/cupons/campanhas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], badge: 'PRO' },
+                { text: 'Automações', path: '/whatsapp/automations', roles: [ROLES.ADMIN], badge: 'PRO' },
             ],
         },
         { text: 'Recompensas', icon: <SettingsIcon />, path: '/recompensas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
@@ -201,13 +201,12 @@ const DashboardLayout = () => {
                             </ListItemIcon>
                             <ListItemText
                                 primary={
-                                    <Box component="span" sx={{ display: 'flex', alignItems: 'center' }}>
-                                        {item.text}
+                                    <Box component="span" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                                        <Typography variant="body1" component="span">{item.text}</Typography>
                                         {item.badge && (
                                             <Box
                                                 component="span"
                                                 sx={{
-                                                    ml: 1,
                                                     px: '6px',
                                                     py: '2px',
                                                     fontSize: '0.65rem',
@@ -218,7 +217,7 @@ const DashboardLayout = () => {
                                                     lineHeight: '1',
                                                 }}
                                             >
-                                                                                        {item.badgeIcon}{item.badge}
+                                                {item.badge}
                                             </Box>
                                         )}
                                     </Box>
@@ -237,33 +236,33 @@ const DashboardLayout = () => {
                                             onClick={() => navigate(child.path)}
                                             selected={location.pathname === child.path}
                                         >
-                                            <ListItemText
-                                            primary={
-                                                <Box component="span" sx={{ display: 'flex', alignItems: 'center' }}>
-                                                    {child.text}
-                                                    {child.badge && (
-                                                        <Box
-                                                            component="span"
-                                                            sx={{
-                                                                ml: 1,
-                                                                px: '6px',
-                                                                py: '2px',
-                                                                fontSize: '0.65rem',
-                                                                fontWeight: 'bold',
-                                                                color: 'white',
-                                                                backgroundColor: 'error.main',
-                                                                borderRadius: '8px',
-                                                                lineHeight: '1',
-                                                            }}
-                                                        >
-                                                                                                                        {child.badgeIcon}{child.badge}
-                                                        </Box>
-                                                    )}
-                                                </Box>
-                                            }
-                                            sx={{ opacity: drawerOpen ? 1 : 0, transition: 'opacity 0.3s ease-in-out' }} // Hide text when collapsed
-                                        />
-                                        </ListItemButton>
+                                                                                    <ListItemText
+                                                                                        primary={
+                                                                                            <Box component="span" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                                                                                                <Typography variant="body2" component="span">{child.text}</Typography>
+                                                                                                {child.badge && (
+                                                                                                    <Box
+                                                                                                        component="span"
+                                                                                                        sx={{
+                                                                                                            px: '6px',
+                                                                                                            py: '2px',
+                                                                                                            fontSize: '0.65rem',
+                                                                                                            fontWeight: 'bold',
+                                                                                                            color: 'white',
+                                                                                                            backgroundColor: 'error.main',
+                                                                                                            borderRadius: '8px',
+                                                                                                            lineHeight: '1',
+                                                                                                            display: 'flex',
+                                                                                                            alignItems: 'center',
+                                                                                                        }}
+                                                                                                    >
+                                                                                                        {child.badge}
+                                                                                                    </Box>
+                                                                                                )}
+                                                                                            </Box>
+                                                                                        }
+                                                                                        sx={{ opacity: drawerOpen ? 1 : 0, transition: 'opacity 0.3s ease-in-out' }} // Hide text when collapsed
+                                                                                    />                                        </ListItemButton>
                                     ))}
                                 </List>
                             </Collapse>

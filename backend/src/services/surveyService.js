@@ -324,3 +324,13 @@ const getSurveyStats = async (requestingUser) => {
   const stats = await surveyRepository.getSurveyStats(tenantId);
   return stats;
 };
+
+module.exports = {
+  createSurvey,
+  updateSurvey,
+  deleteSurvey,
+  getSurveysList,
+  getSurveyResultsById,
+  getSurveyById,
+  getSurveyStats,
+};

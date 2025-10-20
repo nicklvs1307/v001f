@@ -555,7 +555,7 @@ const DashboardPage = () => {
                         </Typography>
                         <Box sx={{ height: 300, width: '100%' }}>
                             {wordCloudData && wordCloudData.length > 0 ? (
-                                <WordCloud data={wordCloudData} options={wordCloudOptions} />
+                                <WordCloud words={wordCloudData} options={wordCloudOptions} />
                             ) : (
                                 <Typography>Não há dados suficientes para gerar a nuvem de palavras.</Typography>
                             )}

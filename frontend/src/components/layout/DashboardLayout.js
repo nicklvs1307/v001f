@@ -28,6 +28,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import StarsIcon from '@mui/icons-material/Stars'; // New import
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 import { ROLES } from '../../constants/roles';
@@ -128,8 +129,8 @@ const DashboardLayout = () => {
                         badge: 'NOVO',            roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], // Only for tenant admins
             children: [
                 { text: 'Conexão', path: '/whatsapp-connect', roles: [ROLES.ADMIN] },
-                { text: 'Campanhas', path: '/cupons/campanhas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Automações', path: '/whatsapp/automations', roles: [ROLES.ADMIN] },
+                { text: 'Campanhas', path: '/cupons/campanhas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], badge: 'PRO', badgeIcon: <StarsIcon sx={{ fontSize: '0.8rem', ml: 0.5 }} /> },
+                { text: 'Automações', path: '/whatsapp/automations', roles: [ROLES.ADMIN], badge: 'PRO', badgeIcon: <StarsIcon sx={{ fontSize: '0.8rem', ml: 0.5 }} /> },
             ],
         },
         { text: 'Recompensas', icon: <SettingsIcon />, path: '/recompensas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
@@ -217,7 +218,7 @@ const DashboardLayout = () => {
                                                     lineHeight: '1',
                                                 }}
                                             >
-                                                {item.badge}
+                                                                                        {item.badgeIcon}{item.badge}
                                             </Box>
                                         )}
                                     </Box>
@@ -255,7 +256,7 @@ const DashboardLayout = () => {
                                                                 lineHeight: '1',
                                                             }}
                                                         >
-                                                            {child.badge}
+                                                                                                                        {child.badgeIcon}{child.badge}
                                                         </Box>
                                                     )}
                                                 </Box>
@@ -406,9 +407,8 @@ const DashboardLayout = () => {
                     flexGrow: 1,
                     p: 3,
                     width: { sm: drawerOpen ? `calc(100% - ${drawerWidth}px)` : `calc(100% - ${collapsedDrawerWidth}px)` },
-                    ml: { sm: drawerOpen ? `${drawerWidth}px` : `${collapsedDrawerWidth}px` }, // Add this for proper margin
                     backgroundColor: 'background.default',
-                    transition: (theme) => theme.transitions.create('margin', {
+                    transition: (theme) => theme.transitions.create('width', { // Change 'margin' to 'width' for transition
                         easing: theme.transitions.easing.sharp,
                         duration: theme.transitions.duration.enteringScreen,
                     }),

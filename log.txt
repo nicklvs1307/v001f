@@ -1,23 +1,20 @@
-main.cbe1a7c3.js:sourcemap:2 [Violation] 'message' handler took 152ms
-main.cbe1a7c3.js:sourcemap:2 [Violation] 'message' handler took 161ms
-[Violation] Forced reflow while executing JavaScript took 95ms
-main.cbe1a7c3.js:sourcemap:2 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
-b @ main.cbe1a7c3.js:sourcemap:2
-Ks @ main.cbe1a7c3.js:sourcemap:2
-xc @ main.cbe1a7c3.js:sourcemap:2
-bc @ main.cbe1a7c3.js:sourcemap:2
-vc @ main.cbe1a7c3.js:sourcemap:2
-gc @ main.cbe1a7c3.js:sourcemap:2
-oc @ main.cbe1a7c3.js:sourcemap:2
-w @ main.cbe1a7c3.js:sourcemap:2
-O @ main.cbe1a7c3.js:sourcemap:2
-main.cbe1a7c3.js:sourcemap:2 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
-b @ main.cbe1a7c3.js:sourcemap:2
-Ks @ main.cbe1a7c3.js:sourcemap:2
-xc @ main.cbe1a7c3.js:sourcemap:2
-bc @ main.cbe1a7c3.js:sourcemap:2
-vc @ main.cbe1a7c3.js:sourcemap:2
-gc @ main.cbe1a7c3.js:sourcemap:2
-oc @ main.cbe1a7c3.js:sourcemap:2
-w @ main.cbe1a7c3.js:sourcemap:2
-O @ main.cbe1a7c3.js:sourcemap:2
+react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
+b @ react-dom.production.min.js:24
+Ks @ react-dom.production.min.js:230
+xc @ react-dom.production.min.js:280
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+react-dom.production.min.js:24 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
+b @ react-dom.production.min.js:24
+Ks @ react-dom.production.min.js:230
+xc @ react-dom.production.min.js:280
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14

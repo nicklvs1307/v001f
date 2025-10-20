@@ -233,7 +233,7 @@ const getSurveyStats = async (tenantId = null) => {
     col: 'respondentSessionId'
   });
 
-  const totalClients = await Client.count({ where: whereClause });
+  const totalClients = await Client.count({ where: { ...whereClause } });
   const responseRate = totalClients > 0 ? (responsesMonth / totalClients) * 100 : 0;
 
   const pendingSurveys = await Pesquisa.count({

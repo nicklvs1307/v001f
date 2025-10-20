@@ -1,9 +1,20 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Container, Typography, Box, CircularProgress, Alert, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Grid } from '@mui/material';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
+import { 
+    Container, 
+    Typography, 
+    Box, 
+    CircularProgress, 
+    Alert, 
+    Grid, 
+    Card, 
+    CardContent,
+    TextField,
+    Button
+} from '@mui/material';
+import { subDays, format } from 'date-fns';
 import resultService from '../services/resultService';
 import AuthContext from '../context/AuthContext';
 
-// I will create these components later
 import KeyMetrics from '../components/results/KeyMetrics';
 import NpsCharts from '../components/results/NpsCharts';
 import CustomerFeedback from '../components/results/CustomerFeedback';
@@ -17,24 +28,36 @@ const ResultsOverviewPage = () => {
     const { user } = useContext(AuthContext);
     const tenantId = user?.role === 'Super Admin' ? null : user?.tenantId;
 
-    useEffect(() => {
-        const fetchResults = async () => {
-            try {
-                setLoading(true);
-                setError('');
-                const resultData = await resultService.getMainDashboard(tenantId);
-                setData(resultData);
-            } catch (err) {
-                setError(err.message || 'Falha ao carregar os resultados.');
-            } finally {
-                setLoading(false);
-            }
-        };
+    // State for date range filter
+    const [startDate, setStartDate] = useState(format(subDays(new Date(), 30), 'yyyy-MM-dd'));
+    const [endDate, setEndDate] = useState(format(new Date(), 'yyyy-MM-dd'));
 
+    const fetchResults = useCallback(async () => {
+        try {
+            setLoading(true);
+            setError('');
+            const params = { tenantId };
+            if (startDate) params.startDate = startDate;
+            if (endDate) params.endDate = endDate;
+            
+            const resultData = await resultService.getMainDashboard(params);
+            setData(resultData);
+        } catch (err) {
+            setError(err.message || 'Falha ao carregar os resultados.');
+        } finally {
+            setLoading(false);
+        }
+    }, [tenantId, startDate, endDate]);
+
+    useEffect(() => {
         if (tenantId !== undefined) {
             fetchResults();
         }
-    }, [tenantId]);
+    }, [fetchResults, tenantId]);
+
+    const handleFilter = () => {
+        fetchResults();
+    };
 
     if (loading) {
         return (
@@ -47,86 +70,93 @@ const ResultsOverviewPage = () => {
 
     if (error) {
         return (
-            <Box sx={{ mt: 8, textAlign: 'center' }}>
+            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                 <Alert severity="error">{error}</Alert>
-            </Box>
+            </Container>
         );
     }
 
     if (!data) {
         return (
-            <Box sx={{ mt: 8, textAlign: 'center' }}>
+            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                 <Typography>Nenhum resultado encontrado.</Typography>
-            </Box>
+            </Container>
         );
     }
 
     return (
         <Box sx={{ flexGrow: 1, p: 3, backgroundColor: '#f4f6f8' }}>
-            <Typography variant="h4" component="h1" sx={{ mb: 4, fontWeight: 'bold' }}>
-                Dashboard de Resultados
-            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+                <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold' }}>
+                    Dashboard de Resultados
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                    <TextField
+                        label="Data de Início"
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        InputLabelProps={{ shrink: true }}
+                        size="small"
+                    />
+                    <TextField
+                        label="Data de Fim"
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        InputLabelProps={{ shrink: true }}
+                        size="small"
+                    />
+                    <Button variant="contained" onClick={handleFilter}>
+                        Filtrar
+                    </Button>
+                </Box>
+            </Box>
+            
             <Grid container spacing={3}>
-                {/* Key Metrics will go here */}
+                {/* Key Metrics */}
                 <Grid item xs={12}>
                     <KeyMetrics data={data.summary} />
                 </Grid>
 
-                {/* NPS Charts will go here */}
+                {/* NPS Charts */}
                 <Grid item xs={12} lg={8}>
-                    <NpsCharts npsTrend={data.responseChart} criteriaScores={data.criteriaScores} npsByDayOfWeek={data.npsByDayOfWeek} tenantId={tenantId} />
+                    <NpsCharts 
+                        npsTrend={data.npsTrend} 
+                        criteriaScores={data.criteriaScores} 
+                        npsByDayOfWeek={data.npsByDayOfWeek} 
+                    />
                 </Grid>
 
-                {/* Customer Feedback will go here */}
+                {/* Customer Feedback */}
                 <Grid item xs={12} lg={4}>
-                    <CustomerFeedback latestComments={data.feedbacks} tenantId={tenantId} />
+                    <Card sx={{ height: '100%' }}>
+                        <CardContent>
+                            <CustomerFeedback latestComments={data.feedbacks} />
+                        </CardContent>
+                    </Card>
                 </Grid>
 
-                {/* Demographics will go here */}
+                {/* Demographics */}
                 <Grid item xs={12} lg={6}>
-                    <Demographics ageDistribution={data.demographics?.ageDistribution} genderDistribution={data.demographics?.genderDistribution} />
+                     <Card sx={{ height: '100%' }}>
+                        <CardContent>
+                            <Demographics 
+                                ageDistribution={data.demographics?.ageDistribution} 
+                                genderDistribution={data.demographics?.genderDistribution} 
+                            />
+                        </CardContent>
+                    </Card>
                 </Grid>
 
                 {/* Attendant Performance */} 
                 <Grid item xs={12} lg={6}>
-                    <AttendantPerformance topAttendants={data.attendantsPerformance} bottomAttendants={data.bottomAttendants} />
+                    <Card sx={{ height: '100%' }}>
+                        <CardContent>
+                            <AttendantPerformance performanceData={data.attendantsPerformance} />
+                        </CardContent>
+                    </Card>
                 </Grid>
-
-                {/* Latest Responses */}
-                <Grid item xs={12}>
-                    <Paper sx={{ p: 2 }}>
-                        <Typography variant="h6" gutterBottom>Últimas Respostas</Typography>
-                        <TableContainer>
-                            <Table size="small">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Data</TableCell>
-                                        <TableCell>Cliente</TableCell>
-                                        <TableCell>Nota</TableCell>
-                                        <TableCell>Comentário</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {data.feedbacks && data.feedbacks.length > 0 ? (
-                                        data.feedbacks.map((feedback, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell>{feedback.date}</TableCell>
-                                                <TableCell>{feedback.client}</TableCell>
-                                                <TableCell>{feedback.rating}</TableCell>
-                                                <TableCell>{feedback.comment}</TableCell>
-                                            </TableRow>
-                                        ))
-                                    ) : (
-                                        <TableRow>
-                                            <TableCell colSpan={4}>Nenhuma resposta recente.</TableCell>
-                                        </TableRow>
-                                    )}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Paper>
-                </Grid>
-
             </Grid>
         </Box>
     );

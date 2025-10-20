@@ -471,8 +471,16 @@ const dashboardRepository = {
         };
     },
 
-    getWordCloudData: async (tenantId = null) => {
+    getWordCloudData: async (tenantId = null, startDate = null, endDate = null) => {
         const whereClause = tenantId ? { tenantId, textValue: { [Op.ne]: null, [Op.ne]: '' } } : { textValue: { [Op.ne]: null, [Op.ne]: '' } };
+
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
 
         const feedbacks = await Resposta.findAll({
             where: whereClause,
@@ -510,8 +518,16 @@ const dashboardRepository = {
             .slice(0, 100); // Limita a 100 palavras
     },
 
-    getNpsTrendData: async (tenantId = null, period = 'day') => {
+    getNpsTrendData: async (tenantId = null, period = 'day', startDate = null, endDate = null) => {
         const whereClause = tenantId ? { tenantId, ratingValue: { [Op.ne]: null } } : { ratingValue: { [Op.ne]: null } };
+
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause['$Resposta.createdAt$'] = dateFilter; // Use alias to avoid ambiguity
+        }
 
         const trendData = await Resposta.findAll({
             where: whereClause,
@@ -549,8 +565,16 @@ const dashboardRepository = {
             };
         });
     },
-    getNpsByDayOfWeek: async (tenantId = null) => {
+    getNpsByDayOfWeek: async (tenantId = null, startDate = null, endDate = null) => {
         const whereClause = tenantId ? { tenantId, ratingValue: { [Op.ne]: null } } : { ratingValue: { [Op.ne]: null } };
+
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
 
         const responses = await Resposta.findAll({
             where: whereClause,
@@ -605,8 +629,16 @@ const dashboardRepository = {
 
         return result;
     },
-    getAttendantsPerformanceWithGoals: async (tenantId = null) => {
+    getAttendantsPerformanceWithGoals: async (tenantId = null, startDate = null, endDate = null) => {
         const whereClause = tenantId ? { tenantId } : {};
+
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
 
         const allResponses = await Resposta.findAll({
             where: { ...whereClause, ratingValue: { [Op.ne]: null } },
@@ -821,12 +853,14 @@ const dashboardRepository = {
     getMainDashboard: async function (tenantId = null, startDate = null, endDate = null) {
         const summary = await this.getSummary(tenantId, startDate, endDate);
         const responseChart = await this.getResponseChart(tenantId, startDate, endDate);
-        const attendantsPerformance = await this.getAttendantsPerformanceWithGoals(tenantId);
+        const attendantsPerformance = await this.getAttendantsPerformanceWithGoals(tenantId, startDate, endDate);
         const criteriaScores = await this.getCriteriaScores(tenantId, startDate, endDate);
         const feedbacks = await this.getFeedbacks(tenantId, startDate, endDate);
         const conversionChart = await this.getConversionChart(tenantId, startDate, endDate);
-        const npsByDayOfWeek = await this.getNpsByDayOfWeek(tenantId);
-        const wordCloudData = await this.getWordCloudData(tenantId);
+        const npsByDayOfWeek = await this.getNpsByDayOfWeek(tenantId, startDate, endDate);
+        const wordCloudData = await this.getWordCloudData(tenantId, startDate, endDate);
+        const npsTrend = await this.getNpsTrendData(tenantId, 'day', startDate, endDate);
+
 
         return {
             summary,
@@ -837,6 +871,7 @@ const dashboardRepository = {
             conversionChart,
             npsByDayOfWeek,
             wordCloudData,
+            npsTrend,
         };
     },
 };

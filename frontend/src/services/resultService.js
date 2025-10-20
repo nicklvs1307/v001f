@@ -9,18 +9,11 @@ const getSurveyResults = async (surveyId) => {
     }
 };
 
-const getLegacyOverallResults = async (tenantId) => {
+const getMainDashboard = async ({ tenantId, startDate, endDate }) => {
     try {
-        const response = await apiAuthenticated.get(`/dashboard/overall-results`, { params: { tenantId } });
-        return response.data;
-    } catch (error) {
-        throw error.response.data;
-    }
-};
-
-const getMainDashboard = async (tenantId) => {
-    try {
-        const response = await apiAuthenticated.get(`/dashboard/main`, { params: { tenantId } });
+        const response = await apiAuthenticated.get(`/dashboard/main`, { 
+            params: { tenantId, startDate, endDate } 
+        });
         return response.data;
     } catch (error) {
         throw error.response.data;
@@ -29,24 +22,7 @@ const getMainDashboard = async (tenantId) => {
 
 const resultService = {
     getSurveyResults,
-    getLegacyOverallResults,
     getMainDashboard,
-    getNpsTrend: async (tenantId, period = 'day') => {
-        try {
-            const response = await apiAuthenticated.get('/dashboard/nps-trend', { params: { tenantId, period } });
-            return response.data;
-        } catch (error) {
-            throw error.response.data;
-        }
-    },
-    getWordCloudData: async (tenantId) => {
-        try {
-            const response = await apiAuthenticated.get('/dashboard/wordcloud', { params: { tenantId } });
-            return response.data;
-        } catch (error) {
-            throw error.response.data;
-        }
-    },
 };
 
 export default resultService;

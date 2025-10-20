@@ -1,37 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Box, Typography, CircularProgress, Alert } from '@mui/material';
-import resultService from '../../services/resultService';
+import { Box, Typography, Paper } from '@mui/material';
 
-const NpsTrendChart = ({ tenantId }) => {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                const trendData = await resultService.getNpsTrend(tenantId);
-                setData(trendData);
-            } catch (err) {
-                setError('Não foi possível carregar o gráfico de tendência de NPS.');
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-        if (tenantId !== undefined) {
-            fetchData();
-        }
-    }, [tenantId]);
-
-    if (loading) {
-        return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 300 }}><CircularProgress /></Box>;
-    }
-
-    if (error) {
-        return <Alert severity="error">{error}</Alert>;
+const NpsTrendChart = ({ data }) => {
+    if (!data || data.length === 0) {
+        return (
+            <Paper sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 300 }}>
+                <Typography>Não há dados de tendência de NPS para exibir.</Typography>
+            </Paper>
+        );
     }
 
     return (

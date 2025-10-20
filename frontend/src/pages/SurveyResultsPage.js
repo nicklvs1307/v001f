@@ -10,11 +10,18 @@ import {
     Paper, 
     Grid, 
     Card, 
-    CardContent, 
+    CardContent,
+    CardHeader,
     List, 
     ListItem, 
     ListItemText, 
-    useTheme 
+    useTheme,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
 } from '@mui/material';
 import { 
     BarChart, 
@@ -35,6 +42,22 @@ import {
     Radar 
 } from 'recharts';
 import WordCloud from '@isoterik/react-word-cloud';
+import PollIcon from '@mui/icons-material/Poll';
+import ThumbsUpDownIcon from '@mui/icons-material/ThumbsUpDown';
+import StarIcon from '@mui/icons-material/Star';
+import PeopleIcon from '@mui/icons-material/People';
+import CakeIcon from '@mui/icons-material/Cake';
+import WcIcon from '@mui/icons-material/Wc';
+
+const MetricCard = ({ title, value, icon, color }) => (
+    <Paper elevation={3} sx={{ p: 2, display: 'flex', alignItems: 'center', height: '100%' }}>
+        <Box sx={{ mr: 2, color: color || 'text.secondary' }}>{icon}</Box>
+        <Box>
+            <Typography variant="h4" component="div" fontWeight="bold">{value}</Typography>
+            <Typography variant="body1" color="text.secondary">{title}</Typography>
+        </Box>
+    </Paper>
+);
 
 const SurveyResultsPage = () => {
     const { id } = useParams();
@@ -61,10 +84,9 @@ const SurveyResultsPage = () => {
     };
 
     useEffect(() => {
-        console.log('Survey ID from useParams:', id);
         const fetchResults = async () => {
             try {
-                console.log('Calling resultService.getSurveyResults with ID:', id);
+                setLoading(true);
                 const data = await resultService.getSurveyResults(id);
                 setResults(data);
             } catch (err) {
@@ -171,65 +193,142 @@ const SurveyResultsPage = () => {
     };
 
     return (
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
-                <Typography variant="h3" component="h1" gutterBottom>{results.surveyTitle}</Typography>
-                <Typography variant="h6" color="text.secondary">{results.surveyDescription}</Typography>
-                <Grid container spacing={2} sx={{ mt: 2 }}>
-                    <Grid item xs={12} sm={6}>
-                        <Typography variant="body1"><strong>Total de Respostas:</strong> {results.totalResponsesCount}</Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <Typography variant="body1"><strong>Data de Criação:</strong> {new Date(results.surveyCreatedAt).toLocaleDateString()}</Typography>
-                    </Grid>
-                </Grid>
+        <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+            <Paper elevation={2} sx={{ p: { xs: 2, md: 4 }, mb: 4, backgroundColor: theme.palette.primary.main, color: 'white' }}>
+                <Typography variant="h3" component="h1" gutterBottom fontWeight="bold">{results.surveyTitle}</Typography>
+                <Typography variant="h6" sx={{ opacity: 0.9 }}>{results.surveyDescription}</Typography>
             </Paper>
+
+            {/* Overall Metrics */}
+            <Grid container spacing={3} sx={{ mb: 4 }}>
+                <Grid item xs={12} sm={6} md={4}>
+                    <MetricCard title="Total de Respostas" value={results.totalResponsesCount} icon={<PollIcon fontSize="large" />} />
+                </Grid>
+                <Grid item xs={12} sm={6} md={4}>
+                    <MetricCard title="NPS Geral" value={results.overallNPS?.npsScore || 0} icon={<ThumbsUpDownIcon fontSize="large" />} color={theme.palette.primary.main} />
+                </Grid>
+                <Grid item xs={12} sm={6} md={4}>
+                    <MetricCard title="Média de Satisfação" value={results.overallCSAT?.averageScore || 0} icon={<StarIcon fontSize="large" />} color={theme.palette.secondary.main} />
+                </Grid>
+            </Grid>
 
             {/* Word Cloud */}
             {results.wordCloudData && results.wordCloudData.length > 0 && (
-                <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>Nuvem de Palavras</Typography>
-                    <Box sx={{ height: 400, width: '100%' }}>
-                        <WordCloud data={results.wordCloudData} options={wordCloudOptions} />
-                    </Box>
-                </Paper>
+                <Card elevation={3} sx={{ mb: 4 }}>
+                    <CardHeader title="Nuvem de Palavras" avatar={<WcIcon />} />
+                    <CardContent>
+                        <Box sx={{ height: 400, width: '100%' }}>
+                            <WordCloud data={results.wordCloudData} options={wordCloudOptions} />
+                        </Box>
+                    </CardContent>
+                </Card>
             )}
 
-            {/* Gráfico de Radar (Aranha) */}
-            {results.radarChartData && results.radarChartData.length > 0 && (
-                <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>Avaliação por Critério/Pergunta (Radar)</Typography>
-                    <ResponsiveContainer width="100%" height={400}>
-                        <RadarChart outerRadius={150} data={results.radarChartData.map(item => ({ ...item, averageRating: Number(item.averageRating) || 0 }))}>
-                            <PolarGrid />
-                            <PolarAngleAxis dataKey="name" />
-                            <PolarRadiusAxis angle={90} domain={[0, Array.isArray(results.questionsResults) && results.questionsResults.some(q => q.type === 'rating_0_10') ? 10 : 5]} />
-                            <Radar name="Média de Avaliação" dataKey="averageRating" stroke={theme.palette.primary.main} fill={theme.palette.primary.light} fillOpacity={0.6} />
-                            <Tooltip />
-                            <Legend />
-                        </RadarChart>
-                    </ResponsiveContainer>
-                </Paper>
-            )}
+            {/* Scores by Criteria */}
+            <Grid container spacing={3} sx={{ mb: 4 }}>
+                {results.scoresByCriteria?.filter(c => c.scoreType === 'NPS').length > 0 && (
+                    <Grid item xs={12} md={6}>
+                        <Card elevation={3}>
+                            <CardHeader title="NPS por Critério" avatar={<ThumbsUpDownIcon />} />
+                            <CardContent>
+                                <TableContainer>
+                                    <Table size="small">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Critério</TableCell>
+                                                <TableCell align="right">NPS</TableCell>
+                                                <TableCell align="right">Respostas</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {results.scoresByCriteria.filter(c => c.scoreType === 'NPS').map((row) => (
+                                                <TableRow key={row.criterion}>
+                                                    <TableCell>{row.criterion}</TableCell>
+                                                    <TableCell align="right">{row.npsScore}</TableCell>
+                                                    <TableCell align="right">{row.total}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                )}
+                {results.scoresByCriteria?.filter(c => c.scoreType === 'CSAT').length > 0 && (
+                    <Grid item xs={12} md={6}>
+                        <Card elevation={3}>
+                            <CardHeader title="Satisfação por Critério" avatar={<StarIcon />} />
+                            <CardContent>
+                                <TableContainer>
+                                    <Table size="small">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Critério</TableCell>
+                                                <TableCell align="right">Média</TableCell>
+                                                <TableCell align="right">Respostas</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {results.scoresByCriteria.filter(c => c.scoreType === 'CSAT').map((row) => (
+                                                <TableRow key={row.criterion}>
+                                                    <TableCell>{row.criterion}</TableCell>
+                                                    <TableCell align="right">{row.averageScore}</TableCell>
+                                                    <TableCell align="right">{row.total}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                )}
+            </Grid>
+            
+            {/* Demographics */}
+            <Grid container spacing={3} sx={{ mb: 4 }}>
+                {results.demographics?.ageDistribution && (
+                    <Grid item xs={12} md={6}>
+                        <Card elevation={3}>
+                            <CardHeader title="Distribuição por Idade" avatar={<CakeIcon />} />
+                            <CardContent sx={{ height: 400 }}>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={Object.entries(results.demographics.ageDistribution).map(([name, value]) => ({ name, value }))}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="name" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Bar dataKey="value" fill={theme.palette.info.main} name="Clientes" />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                )}
+                {results.demographics?.genderDistribution && (
+                     <Grid item xs={12} md={6}>
+                        <Card elevation={3}>
+                            <CardHeader title="Distribuição por Gênero" avatar={<WcIcon />} />
+                            <CardContent sx={{ height: 400 }}>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie data={Object.entries(results.demographics.genderDistribution).map(([name, value]) => ({ name, value }))} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} label>
+                                            {Object.entries(results.demographics.genderDistribution).map(([name, value], index) => (
+                                                <Cell key={`cell-${index}`} fill={chartColors[index % chartColors.length]} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip />
+                                        <Legend />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                )}
+            </Grid>
 
-            {/* Distribuição Demográfica (Idade) */}
-            {results.demographics?.ageDistribution && Object.keys(results.demographics.ageDistribution).length > 0 && (
-                <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>Distribuição Demográfica (Idade)</Typography>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={Object.entries(results.demographics.ageDistribution).map(([ageGroup, count]) => ({ ageGroup, count: Number(count) || 0 }))}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="ageGroup" />
-                            <YAxis />
-                            <Tooltip />
-                            <Legend />
-                            <Bar dataKey="count" fill={theme.palette.info.main} />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </Paper>
-            )}
-
-            {/* Resultados por Pergunta */}
+            {/* Detailed Question Results */}
             <Typography variant="h4" component="h2" gutterBottom sx={{ mt: 4, mb: 2 }}>
                 Detalhes por Pergunta
             </Typography>
@@ -237,8 +336,8 @@ const SurveyResultsPage = () => {
                 {results.questionsResults && results.questionsResults.map((qr, index) => (
                     <Grid item xs={12} md={6} key={qr.questionId}>
                         <Card elevation={2} sx={{ height: '100%' }}>
+                            <CardHeader title={`${index + 1}. ${qr.questionText}`} />
                             <CardContent>
-                                <Typography variant="h6" gutterBottom>{index + 1}. {qr.questionText}</Typography>
                                 {renderQuestionResult(qr, index)}
                             </CardContent>
                         </Card>

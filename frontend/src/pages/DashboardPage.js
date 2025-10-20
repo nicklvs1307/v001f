@@ -38,7 +38,7 @@ import {
     LineChart,
     Line
 } from 'recharts';
-import WordCloud from '@isoterik/react-word-cloud';
+import { WordCloud } from '@isoterik/react-word-cloud';
 import dashboardService from '../services/dashboardService';
 import DetailsModal from '../components/Dashboard/DetailsModal';
 import AttendantDetailsModal from '../components/Dashboard/AttendantDetailsModal';

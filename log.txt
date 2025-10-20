@@ -1,25 +1,23 @@
-https://loyalfood.towersfy.com/resultados
-
-apiloyalfood.towersfy.com/api/criterios/a32031fa-dfb3-4e39-9da7-783b3fb5519e:1  Failed to load resource: the server responded with a status of 400 ()
-656.74ab3814.chunk.js:sourcemap:1 Survey ID from useParams: 70644ab0-f9a5-49e5-88cc-86773acfd2a4
-656.74ab3814.chunk.js:sourcemap:1 Calling resultService.getSurveyResults with ID: 70644ab0-f9a5-49e5-88cc-86773acfd2a4
-main.8eda16bf.js:sourcemap:2 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
-b @ main.8eda16bf.js:sourcemap:2
-Ks @ main.8eda16bf.js:sourcemap:2
-xc @ main.8eda16bf.js:sourcemap:2
-bc @ main.8eda16bf.js:sourcemap:2
-vc @ main.8eda16bf.js:sourcemap:2
-gc @ main.8eda16bf.js:sourcemap:2
-oc @ main.8eda16bf.js:sourcemap:2
-w @ main.8eda16bf.js:sourcemap:2
-O @ main.8eda16bf.js:sourcemap:2
-main.8eda16bf.js:sourcemap:2 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
-b @ main.8eda16bf.js:sourcemap:2
-Ks @ main.8eda16bf.js:sourcemap:2
-xc @ main.8eda16bf.js:sourcemap:2
-bc @ main.8eda16bf.js:sourcemap:2
-vc @ main.8eda16bf.js:sourcemap:2
-gc @ main.8eda16bf.js:sourcemap:2
-oc @ main.8eda16bf.js:sourcemap:2
-w @ main.8eda16bf.js:sourcemap:2
-O @ main.8eda16bf.js:sourcemap:2
+ => ERROR [build 6/6] RUN npm run build                                                                                                       152.1s
+------
+ > [build 6/6] RUN npm run build:
+0.756
+0.756 > frontend@0.1.0 build
+0.756 > react-scripts build
+0.756
+4.501 Creating an optimized production build...
+151.8 Failed to compile.
+151.8
+151.8 Attempted import error: '@isoterik/react-word-cloud' does not contain a default export (imported as 'WordCloud').
+151.8
+151.8
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

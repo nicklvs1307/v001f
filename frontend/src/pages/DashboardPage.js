@@ -197,8 +197,6 @@ const DashboardPage = () => {
     }
     const { summary, responseChart = [], attendantsPerformance = [], criteriaScores = [], feedbacks = [], conversionChart = [], wordCloudData = [] } = dashboardData || {};
 
-    alert(JSON.stringify(wordCloudData));
-
     const wordCloudOptions = {
         colors: [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.info.main, theme.palette.success.main],
         fontSizes: [20, 60],
@@ -557,7 +555,7 @@ const DashboardPage = () => {
                         </Typography>
                         <Box sx={{ height: 300, width: '100%' }}>
                             {wordCloudData && wordCloudData.length > 0 ? (
-                                <WordCloud words={wordCloudData} options={wordCloudOptions} />
+                                <WordCloud words={wordCloudData} />
                             ) : (
                                 <Typography>Não há dados suficientes para gerar a nuvem de palavras.</Typography>
                             )}

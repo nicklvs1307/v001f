@@ -826,6 +826,7 @@ const dashboardRepository = {
         const feedbacks = await this.getFeedbacks(tenantId, startDate, endDate);
         const conversionChart = await this.getConversionChart(tenantId, startDate, endDate);
         const npsByDayOfWeek = await this.getNpsByDayOfWeek(tenantId);
+        const wordCloudData = await this.getWordCloudData(tenantId);
 
         return {
             summary,
@@ -835,6 +836,7 @@ const dashboardRepository = {
             feedbacks,
             conversionChart,
             npsByDayOfWeek,
+            wordCloudData,
         };
     },
 };

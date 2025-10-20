@@ -1,4 +1,5 @@
 const surveyRepository = require('../repositories/surveyRepository');
+const resultRepository = require('../repositories/resultRepository');
 const ApiError = require('../errors/ApiError');
 const ratingService = require('./ratingService'); // Importar o ratingService
 
@@ -294,7 +295,44 @@ const getSurveyResultsById = async (surveyId, tenantId = null) => {
     formattedResults.demographics.ageDistribution = ageGroups;
   }
 
+  formattedResults.wordCloudData = await resultRepository.getWordCloudDataForSurvey(surveyId, tenantId);
+
   return formattedResults;
+};
+
+const getSurveyById = async (surveyId, requestingUser) => {
+  const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+  const survey = await surveyRepository.getSurveyById(surveyId, tenantId);
+
+  if (!survey) {
+    throw new ApiError(404, "Pesquisa não encontrada.");
+  }
+
+  // A verificação de tenant já é feita no repositório, mas uma dupla verificação aqui é boa para segurança
+  if (
+    requestingUser.role !== "Super Admin" &&
+    survey.tenantId !== requestingUser.tenantId
+  ) {
+    throw new ApiError(403, "Você não tem permissão para ver esta pesquisa.");
+  }
+
+  return survey;
+};
+
+const getSurveyStats = async (requestingUser) => {
+  const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+  const stats = await surveyRepository.getSurveyStats(tenantId);
+  return stats;
+};
+
+module.exports = {
+  createSurvey,
+  updateSurvey,
+  deleteSurvey,
+  getSurveysList,
+  getSurveyResultsById,
+  getSurveyById,
+  getSurveyStats,
 };
 
 const getSurveyById = async (surveyId, requestingUser) => {

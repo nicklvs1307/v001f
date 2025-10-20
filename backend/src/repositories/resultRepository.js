@@ -74,9 +74,52 @@ const getDailyStats = async (tenantId) => {
   };
 };
 
+const getWordCloudDataForSurvey = async (surveyId, tenantId = null) => {
+    const whereClause = {
+        textValue: { [Op.ne]: null, [Op.ne]: '' }
+    };
+    if (tenantId) {
+        whereClause.tenantId = tenantId;
+    }
+
+    const feedbacks = await Resposta.findAll({
+        where: whereClause,
+        attributes: ['textValue'],
+        include: [{
+            model: Pergunta,
+            as: 'pergunta',
+            attributes: [],
+            where: {
+                pesquisaId: surveyId,
+                type: 'free_text'
+            },
+            required: true
+        }]
+    });
+
+    const text = feedbacks.map(f => f.textValue).join(' ');
+
+    const words = text.toLowerCase().replace(/[.,!?;:"'()]/g, '').split(/\s+/);
+
+    const stopwords = new Set(['de', 'a', 'o', 'que', 'e', 'do', 'da', 'em', 'um', 'para', 'com', 'não', 'uma', 'os', 'no', 'na', 'por', 'mais', 'as', 'dos', 'como', 'mas', 'foi', 'ao', 'ele', 'das', 'tem', 'à', 'seu', 'sua', 'ou', 'ser', 'quando', 'muito', 'há', 'nos', 'já', 'está', 'eu', 'também', 'só', 'pelo', 'pela', 'até', 'isso', 'ela', 'entre', 'era', 'depois', 'sem', 'mesmo', 'aos', 'ter', 'seus', 'quem', 'nas', 'me', 'esse', 'eles', 'estão', 'você', 'tinha', 'foram', 'essa', 'num', 'nem', 'suas', 'meu', 'às', 'minha', 'numa', 'pelos', 'elas', 'havia', 'seja', 'qual', 'será', 'nós', 'tenho', 'lhe', 'deles', 'essas', 'esses', 'pelas', 'este', 'fosse', 'dele', 'tu', 'te', 'vocês', 'vos', 'lhes', 'meus', 'minhas', 'teu', 'tua', 'teus', 'tuas', 'nosso', 'nossa', 'nossos', 'nossas', 'dela', 'delas', 'esta', 'estes', 'estas', 'aquele', 'aquela', 'aqueles', 'aquelas', 'isto', 'aquilo', 'estou', 'está', 'estamos', 'estão', 'estive', 'esteve', 'estivemos', 'estiveram', 'estava', 'estávamos', 'estavam', 'estivera', 'estivéramos', 'esteja', 'estejamos', 'estejam', 'estivesse', 'estivéssemos', 'estivessem', 'estiver', 'estivermos', 'estiverem', 'hei', 'há', 'havemos', 'hão', 'houve', 'houvemos', 'houveram', 'houvera', 'houvéramos', 'haja', 'hajamos', 'hajam', 'houvesse', 'houvéssemos', 'houvessem', 'houver', 'houvermos', 'houverem', 'houverei', 'houverá', 'houveremos', 'houverão', 'houveria', 'houveríamos', 'houveriam', 'sou', 'somos', 'são', 'era', 'éramos', 'eram', 'fui', 'foi', 'fomos', 'foram', 'fora', 'fôramos', 'seja', 'sejamos', 'sejam', 'fosse', 'fôssemos', 'fossem', 'for', 'formos', 'forem', 'serei', 'será', 'seremos', 'serão', 'seria', 'seríamos', 'seriam', 'tenho', 'tem', 'temos', 'tém', 'tinha', 'tínhamos', 'tinham', 'tive', 'teve', 'tivemos', 'tiveram', 'tivera', 'tivéramos', 'tenha', 'tenhamos', 'tenham', 'tivesse', 'tivéssemos', 'tivessem', 'tiver', 'tivermos', 'tiverem', 'terei', 'terá', 'teremos', 'terão', 'teria', 'teríamos', 'teriam']);
+
+    const frequencies = {};
+    for (const word of words) {
+        if (word && word.length > 2 && !stopwords.has(word)) {
+            frequencies[word] = (frequencies[word] || 0) + 1;
+        }
+    }
+
+    return Object.entries(frequencies)
+        .map(([text, value]) => ({ text, value }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 100);
+};
+
 module.exports = {
   getSurveyDetails,
   getQuestionsBySurveyId,
   getResponsesBySurveyId,
   getDailyStats,
+  getWordCloudDataForSurvey,
 };

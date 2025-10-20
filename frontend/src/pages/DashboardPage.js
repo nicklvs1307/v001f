@@ -38,10 +38,10 @@ import {
     LineChart,
     Line
 } from 'recharts';
-import dashboardService from '../services/dashboardService'; // Importar o serviço
-import DetailsModal from '../components/Dashboard/DetailsModal'; // Importar o modal
-
-import AttendantDetailsModal from '../components/Dashboard/AttendantDetailsModal'; // Importar o modal de atendente
+import WordCloud from '@isoterik/react-word-cloud';
+import dashboardService from '../services/dashboardService';
+import DetailsModal from '../components/Dashboard/DetailsModal';
+import AttendantDetailsModal from '../components/Dashboard/AttendantDetailsModal';
 
 const DashboardPage = () => {
     const { user } = useContext(AuthContext);
@@ -81,8 +81,8 @@ const DashboardPage = () => {
         fetchDashboardData();
     }, []);
 
-    const handleCardClick = async (category) => {
-        setModalTitle(`Detalhes de ${category}`);
+    const handleCardClick = async (category, title) => {
+        setModalTitle(title || `Detalhes de ${category}`);
         setModalOpen(true);
         setModalLoading(true);
         try {
@@ -195,7 +195,15 @@ const DashboardPage = () => {
             </Container>
         );
     }
-    const { summary, responseChart = [], attendantsPerformance = [], criteriaScores = [], feedbacks = [], conversionChart = [] } = dashboardData || {};
+    const { summary, responseChart = [], attendantsPerformance = [], criteriaScores = [], feedbacks = [], conversionChart = [], wordCloudData = [] } = dashboardData || {};
+
+    const wordCloudOptions = {
+        colors: [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.info.main, theme.palette.success.main],
+        fontSizes: [20, 60],
+        enableTooltip: true,
+        rotationAngles: [0, 0],
+        padding: 1,
+    };
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -235,7 +243,7 @@ const DashboardPage = () => {
                         value={summary?.nps?.promoters}
                         percentage={summary?.nps?.total > 0 ? ((summary?.nps?.promoters / summary?.nps?.total) * 100).toFixed(1) : 0}
                         borderColor={theme.palette.success.main}
-                        onClick={() => handleCardClick('Promotores')}
+                        onClick={() => handleCardClick('promotores', 'Detalhes de Promotores (NPS)')}
                     />
                 </Grid>
 
@@ -246,7 +254,7 @@ const DashboardPage = () => {
                         value={summary?.nps?.detractors}
                         percentage={summary?.nps?.total > 0 ? ((summary?.nps?.detractors / summary?.nps?.total) * 100).toFixed(1) : 0}
                         borderColor={theme.palette.error.main}
-                        onClick={() => handleCardClick('Detratores')}
+                        onClick={() => handleCardClick('detratores', 'Detalhes de Detratores (NPS)')}
                     />
                 </Grid>
 
@@ -257,7 +265,7 @@ const DashboardPage = () => {
                         value={summary?.csat?.satisfied}
                         percentage={summary?.csat?.total > 0 ? ((summary?.csat?.satisfied / summary?.csat?.total) * 100).toFixed(1) : 0}
                         borderColor={theme.palette.success.main}
-                        onClick={() => handleCardClick('Satisfeitos')}
+                        onClick={() => handleCardClick('satisfeitos', 'Detalhes de Satisfeitos (CSAT)')}
                     />
                 </Grid>
 
@@ -268,7 +276,7 @@ const DashboardPage = () => {
                         value={summary?.csat?.unsatisfied}
                         percentage={summary?.csat?.total > 0 ? ((summary?.csat?.unsatisfied / summary?.csat?.total) * 100).toFixed(1) : 0}
                         borderColor={theme.palette.error.main}
-                        onClick={() => handleCardClick('Insatisfeitos')}
+                        onClick={() => handleCardClick('insatisfeitos', 'Detalhes de Insatisfeitos (CSAT)')}
                     />
                 </Grid>
 
@@ -531,6 +539,27 @@ const DashboardPage = () => {
                                 </ListItem>
                             ))}
                         </List>
+                    </Paper>
+                </Grid>
+            </Grid>
+
+            <Grid container spacing={3} sx={{ mb: 4 }}>
+                {/* Word Cloud */}
+                <Grid item xs={12}>
+                    <Paper elevation={2} sx={{ p: 2, height: 400 }}>
+                        <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
+                            Nuvem de Palavras
+                        </Typography>
+                        <Typography variant="subtitle2" color="text.secondary" mb={2}>
+                            Termos mais frequentes nos feedbacks
+                        </Typography>
+                        <Box sx={{ height: 300, width: '100%' }}>
+                            {wordCloudData && wordCloudData.length > 0 ? (
+                                <WordCloud data={wordCloudData} options={wordCloudOptions} />
+                            ) : (
+                                <Typography>Não há dados suficientes para gerar a nuvem de palavras.</Typography>
+                            )}
+                        </Box>
                     </Paper>
                 </Grid>
             </Grid>

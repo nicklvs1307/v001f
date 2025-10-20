@@ -34,6 +34,7 @@ import {
     PolarRadiusAxis, 
     Radar 
 } from 'recharts';
+import WordCloud from '@isoterik/react-word-cloud';
 
 const SurveyResultsPage = () => {
     const { id } = useParams();
@@ -50,6 +51,14 @@ const SurveyResultsPage = () => {
         theme.palette.secondary.main,
         theme.palette.error.main,
     ];
+
+    const wordCloudOptions = {
+        colors: [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.info.main, theme.palette.success.main],
+        fontSizes: [20, 60],
+        enableTooltip: true,
+        rotationAngles: [0, 0],
+        padding: 1,
+    };
 
     useEffect(() => {
         console.log('Survey ID from useParams:', id);
@@ -176,7 +185,15 @@ const SurveyResultsPage = () => {
                 </Grid>
             </Paper>
 
-
+            {/* Word Cloud */}
+            {results.wordCloudData && results.wordCloudData.length > 0 && (
+                <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
+                    <Typography variant="h5" gutterBottom>Nuvem de Palavras</Typography>
+                    <Box sx={{ height: 400, width: '100%' }}>
+                        <WordCloud data={results.wordCloudData} options={wordCloudOptions} />
+                    </Box>
+                </Paper>
+            )}
 
             {/* Gráfico de Radar (Aranha) */}
             {results.radarChartData && results.radarChartData.length > 0 && (

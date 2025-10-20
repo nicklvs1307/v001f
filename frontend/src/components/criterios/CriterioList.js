@@ -23,9 +23,10 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import CriterioForm from './CriterioForm';
-import { ROLES } from '../../constants/roles'; // Importando a constante ROLES
-import { useNotification } from '../../context/NotificationContext'; // Import useNotification
+import { ROLES } from '../../constants/roles';
+import { useNotification } from '../../context/NotificationContext';
 
 const modalStyle = {
   position: 'absolute',
@@ -45,21 +46,17 @@ const CriterioList = () => {
   const { user: currentUser } = useContext(AuthContext);
   const [criterios, setCriterios] = useState([]);
   const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(''); // Removed
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
+  const [openHelpModal, setOpenHelpModal] = useState(false); // State for the help modal
   const [selectedCriterio, setSelectedCriterio] = useState(null);
-  // const [formError, setFormError] = useState(''); // Removed
   const [formData, setFormData] = useState({});
   const [formLoading, setFormLoading] = useState(false);
-  const { showNotification } = useNotification(); // Get showNotification
+  const { showNotification } = useNotification();
 
   const handleOpenCreateModal = () => setOpenCreateModal(true);
-  const handleCloseCreateModal = () => {
-    setOpenCreateModal(false);
-    // setFormError(''); // Removed
-  };
+  const handleCloseCreateModal = () => setOpenCreateModal(false);
 
   const handleOpenEditModal = (criterio) => {
     setSelectedCriterio(criterio);
@@ -69,7 +66,6 @@ const CriterioList = () => {
   const handleCloseEditModal = () => {
     setSelectedCriterio(null);
     setOpenEditModal(false);
-    // setFormError(''); // Removed
   };
 
   const handleOpenDeleteConfirm = (criterio) => {
@@ -86,10 +82,8 @@ const CriterioList = () => {
       setLoading(true);
       const data = await criterioService.getAllCriterios();
       setCriterios(data);
-      // setError(''); // Removed
     } catch (err) {
-      showNotification(err.message || 'Falha ao buscar critérios.', 'error'); // Show error notification
-      // setError(err.message || 'Falha ao buscar critérios.'); // Removed
+      showNotification(err.message || 'Falha ao buscar critérios.', 'error');
     } finally {
       setLoading(false);
     }
@@ -97,24 +91,21 @@ const CriterioList = () => {
 
   useEffect(() => {
     fetchCriterios();
-  }, [showNotification]); // Add showNotification to dependencies
+  }, [showNotification]);
 
   const handleCriterioCreated = async (criterioData) => {
     try {
-      // setFormError(''); // Removed
       const newCriterio = await criterioService.createCriterio(criterioData);
       setCriterios((prevCriterios) => [...prevCriterios, newCriterio]);
       handleCloseCreateModal();
-      showNotification('Critério criado com sucesso!', 'success'); // Show success notification
+      showNotification('Critério criado com sucesso!', 'success');
     } catch (err) {
-      showNotification(err.message || 'Erro ao criar critério.', 'error'); // Show error notification
-      // setFormError(err.message || 'Erro ao criar critério.'); // Removed
+      showNotification(err.message || 'Erro ao criar critério.', 'error');
     }
   };
 
   const handleCriterioUpdated = async (criterioData) => {
     try {
-      // setFormError(''); // Removed
       await criterioService.updateCriterio(selectedCriterio.id, criterioData);
       setCriterios((prevCriterios) =>
         prevCriterios.map((criterio) =>
@@ -122,10 +113,9 @@ const CriterioList = () => {
         )
       );
       handleCloseEditModal();
-      showNotification('Critério atualizado com sucesso!', 'success'); // Show success notification
+      showNotification('Critério atualizado com sucesso!', 'success');
     } catch (err) {
-      showNotification(err.message || 'Erro ao atualizar critério.', 'error'); // Show error notification
-      // setFormError(err.message || 'Erro ao atualizar critério.'); // Removed
+      showNotification(err.message || 'Erro ao atualizar critério.', 'error');
     }
   };
 
@@ -136,10 +126,9 @@ const CriterioList = () => {
         prevCriterios.filter((criterio) => criterio.id !== selectedCriterio.id)
       );
       handleCloseDeleteConfirm();
-      showNotification('Critério deletado com sucesso!', 'success'); // Show success notification
+      showNotification('Critério deletado com sucesso!', 'success');
     } catch (err) {
-      showNotification(err.message || 'Falha ao deletar critério.', 'error'); // Show error notification
-      // setError(err.message || 'Falha ao deletar critério.'); // Removed
+      showNotification(err.message || 'Falha ao deletar critério.', 'error');
     }
   };
 
@@ -149,7 +138,15 @@ const CriterioList = () => {
 
   return (
     <Box sx={{ mt: 4 }}>
-      <Typography variant="h5" gutterBottom>Gerenciamento de Critérios</Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+        <Typography variant="h5" gutterBottom sx={{ mb: 0 }}>
+          Gerenciamento de Critérios
+        </Typography>
+        <IconButton onClick={() => setOpenHelpModal(true)} color="primary" aria-label="ajuda sobre critérios">
+          <InfoOutlinedIcon />
+        </IconButton>
+      </Box>
+
       {(currentUser.role === ROLES.SUPER_ADMIN || currentUser.role === ROLES.ADMIN) && (
         <Button
           variant="contained"
@@ -161,7 +158,6 @@ const CriterioList = () => {
         </Button>
       )}
 
-      {/* error && <Alert severity="error">{error}</Alert> */}
       <List>
         {criterios.length > 0 ? (
           criterios.map((criterio) => (
@@ -186,7 +182,7 @@ const CriterioList = () => {
               }
             >
               <ListItemText
-                primary={criterio.name}
+                primary={`${criterio.name} (${criterio.type})`}
                 secondary={criterio.description}
               />
             </ListItem>
@@ -195,6 +191,65 @@ const CriterioList = () => {
           <Typography>Nenhum critério encontrado.</Typography>
         )}
       </List>
+
+      {/* Help Modal */}
+      <Dialog open={openHelpModal} onClose={() => setOpenHelpModal(false)} maxWidth="md">
+        <DialogTitle>Ajuda: Entendendo e Cadastrando Critérios</DialogTitle>
+        <DialogContent>
+          <DialogContentText component="div">
+            <Typography variant="body1" gutterBottom>
+              Critérios são as bases para as perguntas da sua pesquisa. Cada critério que você cria pode ser associado a uma ou mais perguntas, permitindo agrupar os resultados e analisar o desempenho de áreas específicas do seu negócio.
+            </Typography>
+            <Typography variant="h6" sx={{ mt: 2 }}>Como Cadastrar:</Typography>
+            <ol>
+              <li>Clique no botão <strong>"Criar Novo Critério"</strong>.</li>
+              <li>Preencha o nome (ex: "Atendimento", "Qualidade do Produto").</li>
+              <li>Selecione o <strong>Tipo de Critério</strong> que melhor se encaixa na sua pergunta.</li>
+              <li>Adicione uma descrição (opcional).</li>
+              <li>Salve.</li>
+            </ol>
+            <Typography variant="h6" sx={{ mt: 2 }}>Tipos de Critérios e Exemplos:</Typography>
+            <Box sx={{ mt: 1 }}>
+              <Typography variant="subtitle1" component="div"><strong>NPS (Net Promoter Score)</strong></Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ pl: 2 }}>
+                <strong>Uso:</strong> Mede a lealdade do cliente com uma única pergunta de escala.<br />
+                <strong>Exemplo de Pergunta:</strong> "Em uma escala de 0 a 10, o quanto você recomendaria nosso restaurante a um amigo?"
+              </Typography>
+            </Box>
+            <Box sx={{ mt: 1 }}>
+              <Typography variant="subtitle1" component="div"><strong>CSAT (Customer Satisfaction Score)</strong></Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ pl: 2 }}>
+                <strong>Uso:</strong> Mede a satisfação com um serviço ou produto específico, geralmente com uma escala de 1 a 5.<br />
+                <strong>Exemplo de Pergunta:</strong> "Qual o seu nível de satisfação com a limpeza do ambiente?" (com respostas de "Muito Insatisfeito" a "Muito Satisfeito").
+              </Typography>
+            </Box>
+            <Box sx={{ mt: 1 }}>
+              <Typography variant="subtitle1" component="div"><strong>CES (Customer Effort Score)</strong></Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ pl: 2 }}>
+                <strong>Uso:</strong> Mede o esforço que o cliente precisou fazer para resolver um problema ou usar um serviço.<br />
+                <strong>Exemplo de Pergunta:</strong> "O quão fácil foi fazer o seu pedido?" (com respostas de "Muito Difícil" a "Muito Fácil").
+              </Typography>
+            </Box>
+            <Box sx={{ mt: 1 }}>
+              <Typography variant="subtitle1" component="div"><strong>Star (Avaliação por Estrelas)</strong></Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ pl: 2 }}>
+                <strong>Uso:</strong> Uma avaliação visual simples, geralmente de 1 a 5 estrelas.<br />
+                <strong>Exemplo de Pergunta:</strong> "Como você avalia a nossa sobremesa?"
+              </Typography>
+            </Box>
+            <Box sx={{ mt: 1 }}>
+              <Typography variant="subtitle1" component="div"><strong>Text (Texto Livre)</strong></Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ pl: 2 }}>
+                <strong>Uso:</strong> Permite que o cliente deixe um comentário aberto. Este tipo de critério não gera um score numérico, mas é ótimo para coletar feedback qualitativo.<br />
+                <strong>Exemplo de Pergunta:</strong> "Deixe sua sugestão ou comentário."
+              </Typography>
+            </Box>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenHelpModal(false)}>Fechar</Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Modal para criar novo critério */}
       <Modal
@@ -212,13 +267,11 @@ const CriterioList = () => {
       >
         <Fade in={openCreateModal}>
           <Box sx={modalStyle}>
-            {/* formError was removed, global notification will handle it */}
             <CriterioForm
               formData={formData}
               setFormData={setFormData}
               onSubmit={handleCriterioCreated}
               loading={formLoading}
-              // error={formError} // Removed
             />
           </Box>
         </Fade>
@@ -240,14 +293,12 @@ const CriterioList = () => {
       >
         <Fade in={openEditModal}>
           <Box sx={modalStyle}>
-            {/* formError was removed, global notification will handle it */}
             {selectedCriterio && (
               <CriterioForm
                 formData={formData}
                 setFormData={setFormData}
                 onSubmit={handleCriterioUpdated}
                 loading={formLoading}
-                // error={formError} // Removed
               />
             )}
           </Box>

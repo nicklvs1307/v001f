@@ -38,7 +38,7 @@ import {
     LineChart,
     Line
 } from 'recharts';
-import { WordCloud } from '@isoterik/react-word-cloud';
+
 import dashboardService from '../services/dashboardService';
 import DetailsModal from '../components/Dashboard/DetailsModal';
 import AttendantDetailsModal from '../components/Dashboard/AttendantDetailsModal';
@@ -197,13 +197,7 @@ const DashboardPage = () => {
     }
     const { summary, responseChart = [], attendantsPerformance = [], criteriaScores = [], feedbacks = [], conversionChart = [], wordCloudData = [] } = dashboardData || {};
 
-    const wordCloudOptions = {
-        colors: [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.info.main, theme.palette.success.main],
-        fontSizes: [20, 60],
-        enableTooltip: true,
-        rotationAngles: [0, 0],
-        padding: 1,
-    };
+
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -543,26 +537,7 @@ const DashboardPage = () => {
                 </Grid>
             </Grid>
 
-            <Grid container spacing={3} sx={{ mb: 4 }}>
-                {/* Word Cloud */}
-                <Grid item xs={12}>
-                    <Paper elevation={2} sx={{ p: 2, height: 400 }}>
-                        <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
-                            Nuvem de Palavras
-                        </Typography>
-                        <Typography variant="subtitle2" color="text.secondary" mb={2}>
-                            Termos mais frequentes nos feedbacks
-                        </Typography>
-                        <Box sx={{ height: 300, width: '100%' }}>
-                            {wordCloudData && wordCloudData.length > 0 ? (
-                                <WordCloud words={wordCloudData} options={wordCloudOptions} />
-                            ) : (
-                                <Typography>Não há dados suficientes para gerar a nuvem de palavras.</Typography>
-                            )}
-                        </Box>
-                    </Paper>
-                </Grid>
-            </Grid>
+
 
             {/* Gráfico de Conversão */}
             <Grid container spacing={3}>

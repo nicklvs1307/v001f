@@ -41,7 +41,7 @@ import {
     PolarRadiusAxis, 
     Radar 
 } from 'recharts';
-import { WordCloud } from '@isoterik/react-word-cloud';
+
 import PollIcon from '@mui/icons-material/Poll';
 import ThumbsUpDownIcon from '@mui/icons-material/ThumbsUpDown';
 import StarIcon from '@mui/icons-material/Star';
@@ -75,13 +75,7 @@ const SurveyResultsPage = () => {
         theme.palette.error.main,
     ];
 
-    const wordCloudOptions = {
-        colors: [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.info.main, theme.palette.success.main],
-        fontSizes: [20, 60],
-        enableTooltip: true,
-        rotationAngles: [0, 0],
-        padding: 1,
-    };
+
 
     useEffect(() => {
         const fetchResults = async () => {
@@ -212,17 +206,7 @@ const SurveyResultsPage = () => {
                 </Grid>
             </Grid>
 
-            {/* Word Cloud */}
-            {results.wordCloudData && results.wordCloudData.length > 0 && (
-                <Card elevation={3} sx={{ mb: 4 }}>
-                    <CardHeader title="Nuvem de Palavras" avatar={<WcIcon />} />
-                    <CardContent>
-                        <Box sx={{ height: 400, width: '100%' }}>
-                            <WordCloud words={results.wordCloudData} options={wordCloudOptions} />
-                        </Box>
-                    </CardContent>
-                </Card>
-            )}
+
 
             {/* Scores by Criteria */}
             <Grid container spacing={3} sx={{ mb: 4 }}>

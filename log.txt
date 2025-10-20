@@ -1,14 +1,20 @@
-URL da solicitação
-https://apiloyalfood.towersfy.com/api/surveys/stats
-Método da solicitação
-GET
-Código de status
-500 Internal Server Error
-Endereço remoto
-95.217.16.187:443
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "surveyService.getSurveyStats is not a function",
-    "details": "TypeError: surveyService.getSurveyStats is not a function\n    at /usr/src/app/src/controllers/surveyController.js:62:37\n    at asyncUtilWrap (/usr/src/app/node_modules/express-async-handler/index.js:3:20)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at /usr/src/app/src/middlewares/authMiddleware.js:99:9\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
-}
+react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
+b @ react-dom.production.min.js:24
+Ks @ react-dom.production.min.js:230
+xc @ react-dom.production.min.js:280
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+react-dom.production.min.js:24 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
+b @ react-dom.production.min.js:24
+Ks @ react-dom.production.min.js:230
+xc @ react-dom.production.min.js:280
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14

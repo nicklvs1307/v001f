@@ -22,6 +22,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import SettingsIcon from '@mui/icons-material/Settings';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircle from '@mui/icons-material/AccountCircle';
@@ -84,7 +85,7 @@ const DashboardLayout = () => {
             children: [
                 { text: 'Listar Atendentes', path: '/atendentes', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
                 { text: 'Painel', path: '/atendentes-dashboard', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Metas', path: '/metas-atendentes', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Metas', path: '/metas-atendentes', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], badge: 'NOVO' },
             ],
         },
         {
@@ -104,6 +105,17 @@ const DashboardLayout = () => {
             ],
         },
         { text: 'Resultados', icon: <BarChartIcon />, path: '/resultados', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+        {
+            text: 'Relatórios',
+            icon: <AssessmentIcon />,
+            badge: 'NOVO',
+            roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
+            children: [
+                { text: 'Diário', path: '/relatorios/diario', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Semanal', path: '/relatorios/semanal', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Mensal', path: '/relatorios/mensal', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+            ],
+        },
         {
             text: 'WhatsApp', 
             icon: <WhatsAppIcon />, 
@@ -180,7 +192,31 @@ const DashboardLayout = () => {
                             <ListItemIcon>
                                 {item.icon}
                             </ListItemIcon>
-                            <ListItemText primary={item.text} />
+                            <ListItemText
+                                primary={
+                                    <Box component="span" sx={{ display: 'flex', alignItems: 'center' }}>
+                                        {item.text}
+                                        {item.badge && (
+                                            <Box
+                                                component="span"
+                                                sx={{
+                                                    ml: 1,
+                                                    px: '6px',
+                                                    py: '2px',
+                                                    fontSize: '0.65rem',
+                                                    fontWeight: 'bold',
+                                                    color: 'white',
+                                                    backgroundColor: 'error.main',
+                                                    borderRadius: '8px',
+                                                    lineHeight: '1',
+                                                }}
+                                            >
+                                                {item.badge}
+                                            </Box>
+                                        )}
+                                    </Box>
+                                }
+                            />
                             {item.children && (openSubMenu[item.text] ? <ExpandLess /> : <ExpandMore />)}
                         </ListItemButton>
                         {item.children && (
@@ -193,7 +229,31 @@ const DashboardLayout = () => {
                                             onClick={() => navigate(child.path)}
                                             selected={location.pathname === child.path}
                                         >
-                                            <ListItemText primary={child.text} />
+                                            <ListItemText
+                                            primary={
+                                                <Box component="span" sx={{ display: 'flex', alignItems: 'center' }}>
+                                                    {child.text}
+                                                    {child.badge && (
+                                                        <Box
+                                                            component="span"
+                                                            sx={{
+                                                                ml: 1,
+                                                                px: '6px',
+                                                                py: '2px',
+                                                                fontSize: '0.65rem',
+                                                                fontWeight: 'bold',
+                                                                color: 'white',
+                                                                backgroundColor: 'error.main',
+                                                                borderRadius: '8px',
+                                                                lineHeight: '1',
+                                                            }}
+                                                        >
+                                                            {child.badge}
+                                                        </Box>
+                                                    )}
+                                                </Box>
+                                            }
+                                        />
                                         </ListItemButton>
                                     ))}
                                 </List>

@@ -47,6 +47,9 @@ const SurveyResultsPage = React.lazy(() => import('../pages/SurveyResultsPage'))
 const ClientDashboardPage = React.lazy(() => import('../pages/ClientDashboardPage'));
 const ClientDetailsPage = React.lazy(() => import('../pages/ClientDetailsPage'));
 const AutomationsPage = React.lazy(() => import('../pages/AutomationsPage'));
+const RelatorioDiario = React.lazy(() => import('../pages/Relatorios/Diario'));
+const RelatorioSemanal = React.lazy(() => import('../pages/Relatorios/Semanal'));
+const RelatorioMensal = React.lazy(() => import('../pages/Relatorios/Mensal'));
 
 
 const AppRoutes = () => {
@@ -107,6 +110,10 @@ const AppRoutes = () => {
             <Route path="whatsapp/automations" element={<AutomationsPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="config" element={<GMBConfigsPage />} />
+            {/* Novas Rotas de Relatórios */}
+            <Route path="relatorios/diario" element={<RelatorioDiario />} />
+            <Route path="relatorios/semanal" element={<RelatorioSemanal />} />
+            <Route path="relatorios/mensal" element={<RelatorioMensal />} />
           </Route>
         </Route>
 

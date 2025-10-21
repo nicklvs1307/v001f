@@ -140,6 +140,7 @@ class CampanhaService {
 
   async _sendRewardMessages(campanha, clients, rewards) {
     const clientMap = new Map(clients.map(c => [c.id, c]));
+    const delay = campanha.messageDelaySeconds * 1000; // Convertendo segundos para milissegundos
 
     for (const reward of rewards) {
       const client = clientMap.get(reward.clienteId);
@@ -159,6 +160,9 @@ class CampanhaService {
 
         try {
           await this.whatsappService.sendTenantMessage(campanha.tenantId, client.phone, personalizedMessage);
+          if (delay > 0) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+          }
         } catch (err) {
           console.error(`[Campanha] Falha ao enviar mensagem para ${client.phone} na campanha ${campanha.id}:`, err.message);
           // Continuar o processo mesmo que uma mensagem falhe

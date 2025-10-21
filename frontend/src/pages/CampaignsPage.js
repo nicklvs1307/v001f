@@ -175,18 +175,20 @@ const CampaignsPage = () => {
             {campaigns.map((campaign) => (
               <Grid item xs={12} sm={6} md={4} key={campaign.id}>
                 <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="h6" component="div" noWrap title={campaign.nome}>
-                      {campaign.nome}
-                    </Typography>
-                    <Box sx={{ my: 1 }}>
-                      {getCampaignType(campaign.criterioSelecao)}
-                    </Box>
-                    {getStatusChip(campaign.status)}
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>
-                      Criada em: {new Date(campaign.createdAt).toLocaleDateString()}
-                    </Typography>
-                  </CardContent>
+                  <CardActionArea onClick={() => navigate(`/cupons/campanhas/detalhes/${campaign.id}`)} sx={{ flexGrow: 1 }}>
+                    <CardContent>
+                      <Typography variant="h6" component="div" noWrap title={campaign.nome}>
+                        {campaign.nome}
+                      </Typography>
+                      <Box sx={{ my: 1 }}>
+                        {getCampaignType(campaign.criterioSelecao)}
+                      </Box>
+                      {getStatusChip(campaign.status)}
+                      <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>
+                        Criada em: {new Date(campaign.createdAt).toLocaleDateString()}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
                   <CardActions sx={{ justifyContent: 'flex-end', pt: 0 }}>
                     <Tooltip title="Iniciar Envio">
                       <span>

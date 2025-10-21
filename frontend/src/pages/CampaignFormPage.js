@@ -23,7 +23,7 @@ import roletaService from '../services/roletaService';
 import ClientSegmentSelector from '../components/campaigns/ClientSegmentSelector';
 
 const initialState = {
-  campaign: { nome: '', mensagem: '', criterioSelecao: 'todos', recompensaId: null, roletaId: null },
+  campaign: { nome: '', mensagem: '', criterioSelecao: 'todos', recompensaId: null, roletaId: null, messageDelaySeconds: 0 },
   recompensas: [],
   roletas: [],
   loading: true,
@@ -89,8 +89,8 @@ const CampaignFormPage = () => {
           dispatch({
             type: 'FETCH_SUCCESS',
             payload: {
-              recompensas: recompensasData,
-              roletas: roletasData,
+              recompensas: recompensasData.data || [],
+              roletas: roletasData.data || [],
               campaign: campaignData,
               rewardType: newRewardType,
             }
@@ -177,13 +177,12 @@ const CampaignFormPage = () => {
               <TextField
                 fullWidth
                 margin="normal"
-                label="Mensagem da Campanha"
-                helperText="Inclua a variável {{linkCupom}} para o link do cupom/roleta."
-                multiline
-                rows={6}
-                value={campaign.mensagem}
-                onChange={handleFieldChange('mensagem')}
-                required
+                label="Atraso entre Mensagens (segundos)"
+                type="number"
+                value={campaign.messageDelaySeconds}
+                onChange={handleFieldChange('messageDelaySeconds')}
+                inputProps={{ min: 0 }}
+                helperText="Defina um atraso em segundos entre o envio de cada mensagem de WhatsApp para evitar bloqueios."
               />
             </Paper>
           </Grid>

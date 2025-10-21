@@ -1,20 +1,53 @@
-react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
+main.5788e865.js:2 [Violation] 'message' handler took 164ms
+react-dom.production.min.js:188 TypeError: E.map is not a function
+    at W (CampaignFormPage.js:214:32)
+    at gi (react-dom.production.min.js:160:137)
+    at Es (react-dom.production.min.js:196:258)
+    at Sl (react-dom.production.min.js:291:88)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+    at lc (react-dom.production.min.js:272:300)
+    at Vo (react-dom.production.min.js:127:105)
+ds @ react-dom.production.min.js:188
+(anônimo) @ react-dom.production.min.js:188
+qa @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+lc @ react-dom.production.min.js:272
+Vo @ react-dom.production.min.js:127
+uc @ react-dom.production.min.js:273
+Me @ react-dom.production.min.js:52
+qr @ react-dom.production.min.js:109
+Kt @ react-dom.production.min.js:74
+Ht @ react-dom.production.min.js:73
+react-dom.production.min.js:127 Uncaught TypeError: E.map is not a function
+    at W (CampaignFormPage.js:214:32)
+    at gi (react-dom.production.min.js:160:137)
+    at Es (react-dom.production.min.js:196:258)
+    at Sl (react-dom.production.min.js:291:88)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+    at lc (react-dom.production.min.js:272:300)
+    at Vo (react-dom.production.min.js:127:105)
+W @ CampaignFormPage.js:214
+gi @ react-dom.production.min.js:160
+Es @ react-dom.production.min.js:196
+Sl @ react-dom.production.min.js:291
 bc @ react-dom.production.min.js:279
 vc @ react-dom.production.min.js:279
 gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-dom.production.min.js:24 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
+ac @ react-dom.production.min.js:270
+lc @ react-dom.production.min.js:272
+Vo @ react-dom.production.min.js:127
+uc @ react-dom.production.min.js:273
+Me @ react-dom.production.min.js:52
+qr @ react-dom.production.min.js:109
+Kt @ react-dom.production.min.js:74
+Ht @ react-dom.production.min.js:73

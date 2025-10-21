@@ -28,6 +28,7 @@ const RewardsPage = React.lazy(() => import('../pages/RewardsPage'));
 const CouponsPage = React.lazy(() => import('../pages/CouponsPage'));
 const CampaignsPage = React.lazy(() => import('../pages/CampaignsPage'));
 const CampaignFormPage = React.lazy(() => import('../pages/CampaignFormPage'));
+const CampaignDetailsPage = React.lazy(() => import('../pages/CampaignDetailsPage'));
 const ClientsPage = React.lazy(() => import('../pages/ClientsPage'));
 const AttendantsPage = React.lazy(() => import('../pages/AttendantsPage'));
 const AttendantGoalsPage = React.lazy(() => import('../pages/AttendantGoalsPage'));
@@ -90,6 +91,8 @@ const AppRoutes = () => {
             <Route path="cupons" element={<CouponsPage />} />
             <Route path="cupons/campanhas" element={<CampaignsPage />} />
             <Route path="cupons/campanhas/nova" element={<CampaignFormPage />} />
+            <Route path="cupons/campanhas/editar/:id" element={<CampaignFormPage />} />
+            <Route path="cupons/campanhas/detalhes/:id" element={<CampaignDetailsPage />} />
             <Route path="cupons/dashboard" element={<CupomDashboardPage />} />
             <Route path="validar-cupom" element={<CupomValidationPage />} />
             <Route path="clientes" element={<ClientsPage />} />

@@ -77,7 +77,7 @@ class CampanhaService {
       return;
     }
 
-    const clients = await this._selectClients(campanha.criterioSelecao, tenantId);
+    const clients = await this._selectClients(campanha.criterioSelecao.type, tenantId);
     if (!clients || clients.length === 0) {
       console.log(`[Campanha] Nenhum cliente encontrado para os critérios da campanha ${campaignId}.`);
       await this.campanhaRepository.update(campaignId, { status: 'sent' }, tenantId);

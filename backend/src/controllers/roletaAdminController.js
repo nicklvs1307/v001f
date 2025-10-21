@@ -18,7 +18,7 @@ exports.createRoleta = asyncHandler(async (req, res) => {
 exports.getAllRoletas = asyncHandler(async (req, res) => {
   const tenantId = req.user.tenantId;
   const roletas = await roletaRepository.findAllByTenant(tenantId);
-  res.status(200).json({ roletas });
+  res.status(200).json(roletas);
 });
 
 exports.getRoletaById = asyncHandler(async (req, res) => {

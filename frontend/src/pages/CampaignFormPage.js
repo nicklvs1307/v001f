@@ -86,6 +86,10 @@ const CampaignFormPage = () => {
         }
 
         if (isMounted) {
+          console.log('Recompensas carregadas:', recompensasData.data);
+          console.log('Roletas carregadas:', roletasData.data);
+          console.log('Campanha carregada (se houver):', campaignData);
+          console.log('Tipo de recompensa inicial:', newRewardType);
           dispatch({
             type: 'FETCH_SUCCESS',
             payload: {
@@ -183,6 +187,16 @@ const CampaignFormPage = () => {
                 onChange={handleFieldChange('messageDelaySeconds')}
                 inputProps={{ min: 0 }}
                 helperText="Defina um atraso em segundos entre o envio de cada mensagem de WhatsApp para evitar bloqueios."
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Corpo da Mensagem"
+                value={campaign.mensagem}
+                onChange={handleFieldChange('mensagem')}
+                multiline
+                rows={4}
+                required
               />
             </Paper>
           </Grid>

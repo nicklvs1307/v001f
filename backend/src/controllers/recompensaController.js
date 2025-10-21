@@ -30,8 +30,9 @@ const recompensaController = {
   getAllRecompensas: asyncHandler(async (req, res) => {
     const requestingUser = req.user;
     const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+    const { active } = req.query; 
 
-    const recompensas = await recompensaRepository.getAllRecompensas(tenantId);
+    const recompensas = await recompensaRepository.getAllRecompensas(tenantId, active === 'true');
     res.status(200).json(recompensas);
   }),
 

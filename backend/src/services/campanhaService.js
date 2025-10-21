@@ -71,8 +71,15 @@ class CampanhaService {
     console.log(`[Campanha] Iniciando processamento para campanha ${campaignId}`);
     const campanha = await this.campanhaRepository.findById(campaignId, tenantId);
 
+    if (campanha.rewardType === 'RECOMPENSA' && !campanha.recompensaId) {
+      console.error(`[Campanha] Falha no processamento da campanha ${campaignId}: Campanha de recompensa não tem uma recompensa associada.`);
+      await this.campanhaRepository.update(campaignId, { status: 'failed' }, tenantId);
+      return;
+    }
+
     const clients = await this._selectClients(campanha.criterioSelecao, tenantId);
     if (!clients || clients.length === 0) {
+      console.log(`[Campanha] Nenhum cliente encontrado para os critérios da campanha ${campaignId}.`);
       await this.campanhaRepository.update(campaignId, { status: 'sent' }, tenantId);
       return;
     }
@@ -109,6 +116,9 @@ class CampanhaService {
 
   async _generateRewards(campanha, clients) {
     if (campanha.rewardType === 'RECOMPENSA') {
+      if (!campanha.recompensaId) {
+        return []; 
+      }
       const cuponsParaCriar = clients.map(client => ({
         tenantId: campanha.tenantId,
         recompensaId: campanha.recompensaId,
@@ -120,9 +130,7 @@ class CampanhaService {
         status: 'active',
       }));
       return this.cupomRepository.bulkCreate(cuponsParaCriar);
-    }
-
-    if (campanha.rewardType === 'ROLETA') {
+    } else if (campanha.rewardType === 'ROLETA') {
       const spinsParaCriar = clients.map(client => ({
         tenantId: campanha.tenantId,
         roletaId: campanha.roletaId,
@@ -130,7 +138,7 @@ class CampanhaService {
         campanhaId: campanha.id,
         token: crypto.randomBytes(16).toString('hex'),
         status: 'PENDING',
-        expiresAt: campanha.dataValidade, // Reutilizando dataValidade para expiração do link
+        expiresAt: campanha.dataValidade, 
       }));
       return this.roletaSpinRepository.bulkCreate(spinsParaCriar);
     }

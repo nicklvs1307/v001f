@@ -3,7 +3,7 @@ import apiAuthenticated from "./apiAuthenticated";
 const API_URL = "/recompensas";
 
 const recompensaService = {
-  getAll: () => apiAuthenticated.get(API_URL),
+  getAll: (activeOnly = false) => apiAuthenticated.get(`${API_URL}${activeOnly ? '?active=true' : ''}`),
 
   createRecompensa: (data) => apiAuthenticated.post(API_URL, data),
 

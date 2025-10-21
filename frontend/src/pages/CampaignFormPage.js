@@ -70,7 +70,7 @@ const CampaignFormPage = () => {
       dispatch({ type: 'FETCH_START' });
       try {
         const [recompensasData, roletasData] = await Promise.all([
-          recompensaService.getAll(),
+          recompensaService.getAll(true),
           roletaService.getAll(),
         ]);
 

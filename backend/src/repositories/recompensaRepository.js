@@ -5,8 +5,11 @@ const createRecompensa = async (tenantId, name, description, pointsRequired, act
   return Recompensa.create({ tenantId, name, description, pointsRequired, active });
 };
 
-const getAllRecompensas = async (tenantId) => {
+const getAllRecompensas = async (tenantId, activeOnly = false) => {
   const whereClause = tenantId ? { tenantId } : {};
+  if (activeOnly) {
+    whereClause.active = true;
+  }
   return Recompensa.findAll({
     where: whereClause,
     order: [['name', 'ASC']],

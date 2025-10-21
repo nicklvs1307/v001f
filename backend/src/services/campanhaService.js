@@ -84,9 +84,12 @@ class CampanhaService {
       return;
     }
 
-    const rewards = await this._generateRewards(campanha, clients);
-
-    await this._sendRewardMessages(campanha, clients, rewards);
+    if (campanha.rewardType === 'none') {
+      await this._sendSimpleMessages(campanha, clients);
+    } else {
+      const rewards = await this._generateRewards(campanha, clients);
+      await this._sendRewardMessages(campanha, clients, rewards);
+    }
 
     await this.campanhaRepository.update(campaignId, { status: 'sent' }, tenantId);
     console.log(`[Campanha] Processamento da campanha ${campaignId} concluído com sucesso.`);
@@ -144,6 +147,24 @@ class CampanhaService {
     }
 
     return [];
+  }
+
+  async _sendSimpleMessages(campanha, clients) {
+    const delay = campanha.messageDelaySeconds * 1000;
+    console.log(`[Campanha] Enviando ${clients.length} mensagens simples para a campanha ${campanha.id}.`);
+    for (const client of clients) {
+      if (client && client.phone) {
+        let personalizedMessage = campanha.mensagem.replace(/{{nome_cliente}}/g, client.name);
+        try {
+          await this.whatsappService.sendTenantMessage(campanha.tenantId, client.phone, personalizedMessage);
+          if (delay > 0) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+          }
+        } catch (err) {
+          console.error(`[Campanha] Falha ao enviar mensagem para ${client.phone} na campanha ${campanha.id}:`, err.message);
+        }
+      }
+    }
   }
 
   async _sendRewardMessages(campanha, clients, rewards) {

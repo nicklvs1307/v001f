@@ -57,6 +57,18 @@ function campaignFormReducer(state, action) {
         ...state,
         campaign: { ...state.campaign, [action.payload.field]: action.payload.value },
       };
+    case 'REWARD_TYPE_CHANGE':
+      const newType = action.payload;
+      const newCampaignState = { ...state.campaign, rewardType: newType };
+      if (newType === 'none') {
+        newCampaignState.recompensaId = null;
+        newCampaignState.roletaId = null;
+      } else if (newType === 'recompensa') {
+        newCampaignState.roletaId = null;
+      } else if (newType === 'roleta') {
+        newCampaignState.recompensaId = null;
+      }
+      return { ...state, campaign: newCampaignState };
     default:
       return state;
   }
@@ -123,16 +135,7 @@ const CampaignFormPage = () => {
   };
 
   const handleRewardTypeChange = (event) => {
-    const newType = event.target.value;
-    dispatch({ type: 'FIELD_CHANGE', payload: { field: 'rewardType', value: newType } });
-    if (newType === 'none') {
-      dispatch({ type: 'FIELD_CHANGE', payload: { field: 'recompensaId', value: null } });
-      dispatch({ type: 'FIELD_CHANGE', payload: { field: 'roletaId', value: null } });
-    } else if (newType === 'recompensa') {
-      dispatch({ type: 'FIELD_CHANGE', payload: { field: 'roletaId', value: null } });
-    } else if (newType === 'roleta') {
-      dispatch({ type: 'FIELD_CHANGE', payload: { field: 'recompensaId', value: null } });
-    }
+    dispatch({ type: 'REWARD_TYPE_CHANGE', payload: event.target.value });
   };
 
   const isFormValid = useCallback(() => {

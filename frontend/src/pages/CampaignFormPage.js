@@ -23,12 +23,19 @@ import roletaService from '../services/roletaService';
 import ClientSegmentSelector from '../components/campaigns/ClientSegmentSelector';
 
 const initialState = {
-  campaign: { nome: '', mensagem: '', criterioSelecao: { type: 'todos' }, recompensaId: null, roletaId: null, messageDelaySeconds: 0 },
+  campaign: {
+    nome: '',
+    mensagem: '',
+    criterioSelecao: { type: 'todos' },
+    recompensaId: null,
+    roletaId: null,
+    messageDelaySeconds: 0,
+    rewardType: 'none',
+  },
   recompensas: [],
   roletas: [],
   loading: true,
   error: '',
-  rewardType: 'none',
 };
 
 function campaignFormReducer(state, action) {
@@ -41,8 +48,7 @@ function campaignFormReducer(state, action) {
         loading: false,
         recompensas: action.payload.recompensas,
         roletas: action.payload.roletas,
-        campaign: action.payload.campaign || state.campaign,
-        rewardType: action.payload.rewardType || state.rewardType,
+        campaign: { ...state.campaign, ...action.payload.campaign },
       };
     case 'FETCH_ERROR':
       return { ...state, loading: false, error: action.payload };
@@ -51,8 +57,6 @@ function campaignFormReducer(state, action) {
         ...state,
         campaign: { ...state.campaign, [action.payload.field]: action.payload.value },
       };
-    case 'REWARD_TYPE_CHANGE':
-      return { ...state, rewardType: action.payload };
     default:
       return state;
   }
@@ -62,7 +66,7 @@ const CampaignFormPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [state, dispatch] = useReducer(campaignFormReducer, initialState);
-  const { campaign, recompensas, roletas, loading, error, rewardType } = state;
+  const { campaign, recompensas, roletas, loading, error } = state;
 
   useEffect(() => {
     let isMounted = true;
@@ -74,30 +78,26 @@ const CampaignFormPage = () => {
           roletaService.getAll(),
         ]);
 
-        let campaignData = null;
-        let newRewardType = 'none';
+        let campaignData = {};
         if (id) {
           const response = await campanhaService.getById(id);
           campaignData = response.data;
           if (campaignData.recompensaId) {
-            newRewardType = 'recompensa';
+            campaignData.rewardType = 'recompensa';
           } else if (campaignData.roletaId) {
-            newRewardType = 'roleta';
+            campaignData.rewardType = 'roleta';
+          } else {
+            campaignData.rewardType = 'none';
           }
         }
 
         if (isMounted) {
-          console.log('Recompensas carregadas:', recompensasData.data);
-          console.log('Roletas carregadas:', roletasData.data);
-          console.log('Campanha carregada (se houver):', campaignData);
-          console.log('Tipo de recompensa inicial:', newRewardType);
           dispatch({
             type: 'FETCH_SUCCESS',
             payload: {
               recompensas: recompensasData.data || [],
               roletas: roletasData.data || [],
               campaign: campaignData,
-              rewardType: newRewardType,
             }
           });
         }
@@ -124,7 +124,7 @@ const CampaignFormPage = () => {
 
   const handleRewardTypeChange = (event) => {
     const newType = event.target.value;
-    dispatch({ type: 'REWARD_TYPE_CHANGE', payload: newType });
+    dispatch({ type: 'FIELD_CHANGE', payload: { field: 'rewardType', value: newType } });
     if (newType === 'none') {
       dispatch({ type: 'FIELD_CHANGE', payload: { field: 'recompensaId', value: null } });
       dispatch({ type: 'FIELD_CHANGE', payload: { field: 'roletaId', value: null } });
@@ -136,8 +136,8 @@ const CampaignFormPage = () => {
   };
 
   const isFormValid = useCallback(() => {
-    return campaign.nome && campaign.mensagem && (rewardType === 'none' || (rewardType === 'recompensa' && campaign.recompensaId) || (rewardType === 'roleta' && campaign.roletaId));
-  }, [campaign, rewardType]);
+    return campaign.nome && campaign.mensagem && (campaign.rewardType === 'none' || (campaign.rewardType === 'recompensa' && campaign.recompensaId) || (campaign.rewardType === 'roleta' && campaign.roletaId));
+  }, [campaign]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -207,14 +207,14 @@ const CampaignFormPage = () => {
               <Typography variant="h6" gutterBottom>Recompensa</Typography>
               <FormControl component="fieldset" fullWidth margin="normal">
                 <FormLabel component="legend">Tipo de Prêmio</FormLabel>
-                <RadioGroup row name="rewardType" value={rewardType} onChange={handleRewardTypeChange}>
+                <RadioGroup row name="rewardType" value={campaign.rewardType} onChange={handleRewardTypeChange}>
                   <FormControlLabel value="none" control={<Radio />} label="Nenhum" />
                   <FormControlLabel value="recompensa" control={<Radio />} label="Recompensa" />
                   <FormControlLabel value="roleta" control={<Radio />} label="Roleta" />
                 </RadioGroup>
               </FormControl>
 
-              {rewardType === 'recompensa' && (
+              {campaign.rewardType === 'recompensa' && (
                 <TextField
                   select
                   fullWidth
@@ -229,7 +229,7 @@ const CampaignFormPage = () => {
                 </TextField>
               )}
 
-              {rewardType === 'roleta' && (
+              {campaign.rewardType === 'roleta' && (
                 <TextField
                   select
                   fullWidth

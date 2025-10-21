@@ -1,27 +1,16 @@
- => ERROR [build 6/6] RUN npm run build                                                      304.0s
-------
- > [build 6/6] RUN npm run build:
-0.814
-0.814 > frontend@0.1.0 build
-0.814 > react-scripts build
-0.814
-4.448 Creating an optimized production build...
-303.7 Failed to compile.
-303.7
-303.7 [eslint]
-303.7 src/pages/CampaignsPage.js
-303.7   Line 178:20:  'CardActionArea' is not defined  react/jsx-no-undef
-303.7
-303.7 Search for the keywords to learn more about each error.
-303.7
-303.7
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+$ npx sequelize-cli db:migrate
+
+Sequelize CLI [Node: 18.20.8, CLI: 6.6.3, ORM: 6.37.7]
+
+Loaded configuration file "src/config/sequelize-config.js".
+Using environment "production".
+== 20251021100000-add-messageDelaySeconds-to-campanhas: migrating =======
+
+ERROR: relation "public.Campanhas" does not exist
+
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.6.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.2
+npm notice To update run: npm install -g npm@11.6.2
+npm notice
+$

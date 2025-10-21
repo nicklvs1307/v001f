@@ -70,6 +70,7 @@ class CampanhaService {
   async _processCampaign(campaignId, tenantId) {
     console.log(`[Campanha] Iniciando processamento para campanha ${campaignId}`);
     const campanha = await this.campanhaRepository.findById(campaignId, tenantId);
+    campanha.rewardType = campanha.rewardType.toUpperCase();
 
     if (campanha.rewardType === 'RECOMPENSA' && !campanha.recompensaId) {
       console.error(`[Campanha] Falha no processamento da campanha ${campaignId}: Campanha de recompensa não tem uma recompensa associada.`);
@@ -84,7 +85,7 @@ class CampanhaService {
       return;
     }
 
-    if (campanha.rewardType === 'none') {
+    if (campanha.rewardType === 'NONE') {
       await this._sendSimpleMessages(campanha, clients);
     } else {
       const rewards = await this._generateRewards(campanha, clients);

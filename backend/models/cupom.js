@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     recompensaId: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true, // Permitir nulo para cupons sem recompensa associada
       references: {
         model: 'recompensas',
         key: 'id',

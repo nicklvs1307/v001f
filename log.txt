@@ -1,53 +1,27 @@
-main.5788e865.js:2 [Violation] 'message' handler took 164ms
-react-dom.production.min.js:188 TypeError: E.map is not a function
-    at W (CampaignFormPage.js:214:32)
-    at gi (react-dom.production.min.js:160:137)
-    at Es (react-dom.production.min.js:196:258)
-    at Sl (react-dom.production.min.js:291:88)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at lc (react-dom.production.min.js:272:300)
-    at Vo (react-dom.production.min.js:127:105)
-ds @ react-dom.production.min.js:188
-(anônimo) @ react-dom.production.min.js:188
-qa @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-lc @ react-dom.production.min.js:272
-Vo @ react-dom.production.min.js:127
-uc @ react-dom.production.min.js:273
-Me @ react-dom.production.min.js:52
-qr @ react-dom.production.min.js:109
-Kt @ react-dom.production.min.js:74
-Ht @ react-dom.production.min.js:73
-react-dom.production.min.js:127 Uncaught TypeError: E.map is not a function
-    at W (CampaignFormPage.js:214:32)
-    at gi (react-dom.production.min.js:160:137)
-    at Es (react-dom.production.min.js:196:258)
-    at Sl (react-dom.production.min.js:291:88)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at lc (react-dom.production.min.js:272:300)
-    at Vo (react-dom.production.min.js:127:105)
-W @ CampaignFormPage.js:214
-gi @ react-dom.production.min.js:160
-Es @ react-dom.production.min.js:196
-Sl @ react-dom.production.min.js:291
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-ac @ react-dom.production.min.js:270
-lc @ react-dom.production.min.js:272
-Vo @ react-dom.production.min.js:127
-uc @ react-dom.production.min.js:273
-Me @ react-dom.production.min.js:52
-qr @ react-dom.production.min.js:109
-Kt @ react-dom.production.min.js:74
-Ht @ react-dom.production.min.js:73
+ => ERROR [build 6/6] RUN npm run build                                                      304.0s
+------
+ > [build 6/6] RUN npm run build:
+0.814
+0.814 > frontend@0.1.0 build
+0.814 > react-scripts build
+0.814
+4.448 Creating an optimized production build...
+303.7 Failed to compile.
+303.7
+303.7 [eslint]
+303.7 src/pages/CampaignsPage.js
+303.7   Line 178:20:  'CardActionArea' is not defined  react/jsx-no-undef
+303.7
+303.7 Search for the keywords to learn more about each error.
+303.7
+303.7
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

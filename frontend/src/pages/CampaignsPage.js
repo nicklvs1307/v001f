@@ -9,6 +9,7 @@ import {
   Card,
   CardContent,
   CardActions,
+  CardActionArea,
   Chip,
   IconButton,
   Dialog,

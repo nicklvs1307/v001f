@@ -10,7 +10,7 @@ const segments = [
     { key: 'super_cliente', title: 'Super Cliente', description: '5+ visitas nos últimos 3 meses', icon: <Star style={{ color: '#FFD700' }} /> },
     { key: 'inativos', title: 'Inativos', description: 'Nenhuma visita nos últimos 3 meses', icon: <DirectionsRun /> },
     { key: 'curiosos', title: 'Curiosos', description: 'Cadastrados, sem visitas', icon: <HelpOutline /> },
-    { key: 'aniversariantes', title: 'Aniversariantes do Mês', icon: <AccessibleForward /> },
+
 ];
 
 const ClientSegmentSelector = ({ selectedValue, onChange }) => {

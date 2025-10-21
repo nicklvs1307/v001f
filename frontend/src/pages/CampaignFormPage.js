@@ -23,7 +23,7 @@ import roletaService from '../services/roletaService';
 import ClientSegmentSelector from '../components/campaigns/ClientSegmentSelector';
 
 const initialState = {
-  campaign: { nome: '', mensagem: '', criterioSelecao: 'todos', recompensaId: null, roletaId: null, messageDelaySeconds: 0 },
+  campaign: { nome: '', mensagem: '', criterioSelecao: { type: 'todos' }, recompensaId: null, roletaId: null, messageDelaySeconds: 0 },
   recompensas: [],
   roletas: [],
   loading: true,
@@ -77,7 +77,8 @@ const CampaignFormPage = () => {
         let campaignData = null;
         let newRewardType = 'none';
         if (id) {
-          campaignData = await campanhaService.getById(id);
+          const response = await campanhaService.getById(id);
+          campaignData = response.data;
           if (campaignData.recompensaId) {
             newRewardType = 'recompensa';
           } else if (campaignData.roletaId) {
@@ -118,7 +119,7 @@ const CampaignFormPage = () => {
   };
 
   const handleSegmentChange = (value) => {
-    dispatch({ type: 'FIELD_CHANGE', payload: { field: 'criterioSelecao', value } });
+    dispatch({ type: 'FIELD_CHANGE', payload: { field: 'criterioSelecao', value: { type: value } } });
   };
 
   const handleRewardTypeChange = (event) => {
@@ -247,7 +248,7 @@ const CampaignFormPage = () => {
 
           <Grid item xs={12}>
             <ClientSegmentSelector
-              selectedValue={campaign.criterioSelecao}
+              selectedValue={campaign.criterioSelecao?.type}
               onChange={handleSegmentChange}
             />
           </Grid>

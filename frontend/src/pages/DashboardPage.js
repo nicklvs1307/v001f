@@ -431,7 +431,10 @@ const DashboardPage = () => {
                                             key={index}
                                             hover
                                             onClick={() => handleAttendantClick(row.id)}
-                                            sx={{ cursor: 'pointer' }}
+                                            sx={{
+                                                cursor: 'pointer',
+                                                backgroundColor: index % 2 === 0 ? theme.palette.action.hover : 'inherit',
+                                            }}
                                         >
                                             <TableCell>{row.name}</TableCell>
                                             <TableCell>{row.responses}</TableCell>
@@ -473,7 +476,12 @@ const DashboardPage = () => {
                                 </TableHead>
                                 <TableBody>
                                     {criteriaScores && criteriaScores.filter(c => c.scoreType === 'NPS').map((row, index) => (
-                                        <TableRow key={index}>
+                                        <TableRow
+                                            key={index}
+                                            sx={{
+                                                backgroundColor: index % 2 === 0 ? theme.palette.action.hover : 'inherit',
+                                            }}
+                                        >
                                             <TableCell>{row.criterion}</TableCell>
                                             <TableCell>{row.score}</TableCell>
                                             <TableCell>{row.promoters}</TableCell>
@@ -508,7 +516,12 @@ const DashboardPage = () => {
                                 </TableHead>
                                 <TableBody>
                                     {criteriaScores && criteriaScores.filter(c => c.scoreType === 'CSAT').map((row, index) => (
-                                        <TableRow key={index}>
+                                        <TableRow
+                                            key={index}
+                                            sx={{
+                                                backgroundColor: index % 2 === 0 ? theme.palette.action.hover : 'inherit',
+                                            }}
+                                        >
                                             <TableCell>{row.criterion}</TableCell>
                                             <TableCell>{row.average}</TableCell>
                                             <TableCell>{row.satisfied}</TableCell>

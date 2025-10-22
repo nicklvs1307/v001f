@@ -1,52 +1,30 @@
-react-dom.production.min.js:188 TypeError: Cannot read properties of undefined (reading 'map')
-    at G (SurveyForm.js:111:78)
-    at gi (react-dom.production.min.js:160:137)
-    at Es (react-dom.production.min.js:196:258)
-    at Sl (react-dom.production.min.js:291:88)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at lc (react-dom.production.min.js:272:300)
-    at Vo (react-dom.production.min.js:127:105)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-qa @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-lc @ react-dom.production.min.js:272
-Vo @ react-dom.production.min.js:127
-uc @ react-dom.production.min.js:273
-Me @ react-dom.production.min.js:52
-qr @ react-dom.production.min.js:109
-Kt @ react-dom.production.min.js:74
-Ht @ react-dom.production.min.js:73
-react-dom.production.min.js:127 Uncaught TypeError: Cannot read properties of undefined (reading 'map')
-    at G (SurveyForm.js:111:78)
-    at gi (react-dom.production.min.js:160:137)
-    at Es (react-dom.production.min.js:196:258)
-    at Sl (react-dom.production.min.js:291:88)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at lc (react-dom.production.min.js:272:300)
-    at Vo (react-dom.production.min.js:127:105)
-G @ SurveyForm.js:111
-gi @ react-dom.production.min.js:160
-Es @ react-dom.production.min.js:196
-Sl @ react-dom.production.min.js:291
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-ac @ react-dom.production.min.js:270
-lc @ react-dom.production.min.js:272
-Vo @ react-dom.production.min.js:127
-uc @ react-dom.production.min.js:273
-Me @ react-dom.production.min.js:52
-qr @ react-dom.production.min.js:109
-Kt @ react-dom.production.min.js:74
-Ht @ react-dom.production.min.js:73
+URL da solicitação
+https://apiloyalfood.towersfy.com/api/dashboard/main?startDate=&endDate=
+Método da solicitação
+GET
+Código de status
+400 Bad Request
+Endereço remoto
+95.217.16.187:443
+
+{
+    "status": "error",
+    "code": [
+        {
+            "type": "field",
+            "value": "",
+            "msg": "Data de início inválida",
+            "path": "startDate",
+            "location": "query"
+        },
+        {
+            "type": "field",
+            "value": "",
+            "msg": "Data de fim inválida",
+            "path": "endDate",
+            "location": "query"
+        }
+    ],
+    "message": "Erros de validação",
+    "details": "Error: Erros de validação\n    at validate (/usr/src/app/src/middlewares/validationMiddleware.js:7:11)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at middleware (/usr/src/app/node_modules/express-validator/lib/middlewares/check.js:16:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
+}

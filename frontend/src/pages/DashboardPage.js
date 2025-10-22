@@ -72,7 +72,14 @@ const DashboardPage = () => {
             try {
                 setLoading(true);
                 setError('');
-                const data = await dashboardService.getMainDashboard({ startDate, endDate });
+                const params = {};
+                if (startDate) {
+                    params.startDate = startDate;
+                }
+                if (endDate) {
+                    params.endDate = endDate;
+                }
+                const data = await dashboardService.getMainDashboard(params);
                 setDashboardData(data);
             } catch (err) {
                 setError(err.message || 'Falha ao carregar os dados do dashboard.');
@@ -154,7 +161,7 @@ const DashboardPage = () => {
         }}
         onClick={onClick}
         >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                 <Typography variant="subtitle2" color="text.secondary" textTransform="uppercase">
                     {title}
                 </Typography>

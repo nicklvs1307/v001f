@@ -1,52 +1,11 @@
-main.3d507b1f.js:2 [Violation] 'message' handler took 291ms
-react-dom.production.min.js:188 TypeError: Cannot read properties of undefined (reading 'map')
-    at G (SurveyForm.js:111:78)
-    at gi (react-dom.production.min.js:160:137)
-    at Es (react-dom.production.min.js:196:258)
-    at Sl (react-dom.production.min.js:291:88)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at oc (react-dom.production.min.js:267:429)
-    at w (scheduler.production.min.js:13:203)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-qa @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-dom.production.min.js:282 Uncaught TypeError: Cannot read properties of undefined (reading 'map')
-    at G (SurveyForm.js:111:78)
-    at gi (react-dom.production.min.js:160:137)
-    at Es (react-dom.production.min.js:196:258)
-    at Sl (react-dom.production.min.js:291:88)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at oc (react-dom.production.min.js:267:429)
-    at w (scheduler.production.min.js:13:203)
-G @ SurveyForm.js:111
-gi @ react-dom.production.min.js:160
-Es @ react-dom.production.min.js:196
-Sl @ react-dom.production.min.js:291
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-ac @ react-dom.production.min.js:270
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-
-
-m.A.getAllRecompensas is not a function
-
+main.c3849a46.js:2 [Violation] 'message' handler took 176ms
+main.c3849a46.js:2 [Violation] 'message' handler took 154ms
+main.c3849a46.js:2 [Violation] 'message' handler took 234ms
+main.c3849a46.js:2 [Violation] 'click' handler took 167ms
+main.c3849a46.js:2 [Violation] 'click' handler took 186ms
+main.c3849a46.js:2 [Violation] 'click' handler took 318ms
+main.c3849a46.js:2 [Violation] 'message' handler took 181ms
+main.c3849a46.js:2 [Violation] 'click' handler took 205ms
 react-dom.production.min.js:188 TypeError: Cannot read properties of undefined (reading 'map')
     at G (SurveyForm.js:111:78)
     at gi (react-dom.production.min.js:160:137)

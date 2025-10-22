@@ -1,186 +1,52 @@
-main.81efd284.js:2 [Violation] 'message' handler took 160ms
-react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
+react-dom.production.min.js:188 TypeError: Cannot read properties of undefined (reading 'map')
+    at G (SurveyForm.js:111:78)
+    at gi (react-dom.production.min.js:160:137)
+    at Es (react-dom.production.min.js:196:258)
+    at Sl (react-dom.production.min.js:291:88)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+    at lc (react-dom.production.min.js:272:300)
+    at Vo (react-dom.production.min.js:127:105)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+qa @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+lc @ react-dom.production.min.js:272
+Vo @ react-dom.production.min.js:127
+uc @ react-dom.production.min.js:273
+Me @ react-dom.production.min.js:52
+qr @ react-dom.production.min.js:109
+Kt @ react-dom.production.min.js:74
+Ht @ react-dom.production.min.js:73
+react-dom.production.min.js:127 Uncaught TypeError: Cannot read properties of undefined (reading 'map')
+    at G (SurveyForm.js:111:78)
+    at gi (react-dom.production.min.js:160:137)
+    at Es (react-dom.production.min.js:196:258)
+    at Sl (react-dom.production.min.js:291:88)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+    at lc (react-dom.production.min.js:272:300)
+    at Vo (react-dom.production.min.js:127:105)
+G @ SurveyForm.js:111
+gi @ react-dom.production.min.js:160
+Es @ react-dom.production.min.js:196
+Sl @ react-dom.production.min.js:291
 bc @ react-dom.production.min.js:279
 vc @ react-dom.production.min.js:279
 gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-dom.production.min.js:24 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-word-cloud.es.js:123 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'length')
-    at S.j.start (react-word-cloud.es.js:123:121)
-    at react-word-cloud.es.js:471:12
-    at new Promise (<anonymous>)
-    at react-word-cloud.es.js:418:10
-    at react-word-cloud.es.js:1021:7
-    at rl (react-dom.production.min.js:243:332)
-    at wc (react-dom.production.min.js:285:111)
-    at react-dom.production.min.js:281:391
-    at w (scheduler.production.min.js:13:203)
-    at MessagePort.O (scheduler.production.min.js:14:128)
-S.j.start @ react-word-cloud.es.js:123
-(anônimo) @ react-word-cloud.es.js:471
-(anônimo) @ react-word-cloud.es.js:418
-(anônimo) @ react-word-cloud.es.js:1021
-rl @ react-dom.production.min.js:243
-wc @ react-dom.production.min.js:285
-(anônimo) @ react-dom.production.min.js:281
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-dom.production.min.js:24 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-word-cloud.es.js:123 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'length')
-    at S.j.start (react-word-cloud.es.js:123:121)
-    at react-word-cloud.es.js:471:12
-    at new Promise (<anonymous>)
-    at react-word-cloud.es.js:418:10
-    at react-word-cloud.es.js:1021:7
-    at rl (react-dom.production.min.js:243:332)
-    at wc (react-dom.production.min.js:285:111)
-    at react-dom.production.min.js:281:391
-    at w (scheduler.production.min.js:13:203)
-    at MessagePort.O (scheduler.production.min.js:14:128)
-S.j.start @ react-word-cloud.es.js:123
-(anônimo) @ react-word-cloud.es.js:471
-(anônimo) @ react-word-cloud.es.js:418
-(anônimo) @ react-word-cloud.es.js:1021
-rl @ react-dom.production.min.js:243
-wc @ react-dom.production.min.js:285
-(anônimo) @ react-dom.production.min.js:281
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-Dito pelo ChatGPT:
-
-Perfeito, mestre 👇
-esses logs confirmam 100% o que eu suspeitava: o componente react-word-cloud está quebrando por falta de dados válidos ou dimensões indefinidas no momento da renderização.
-
-Vamos fazer o diagnóstico completo com base no stack trace e eu te deixo a correção exata.
-
-💀 O que os erros realmente estão dizendo
-1️⃣ translate(NaN,NaN)
-
-<g> attribute transform: Expected number, "translate(NaN,NaN)"
-
-👉 Isso é gerado pelo D3 (que o react-word-cloud usa internamente).
-Significa que o cálculo da posição (x, y) de uma palavra resultou em NaN.
-
-Motivo mais comum:
-
-width e height do container SVG são undefined quando o componente monta.
-
-2️⃣ viewBox: Expected number, "0 0 undefined undefined"
-
-<svg> attribute viewBox: Expected number, "0 0 undefined undefined"
-
-👉 O SVG do wordcloud tenta desenhar com dimensões inválidas.
-Ou seja: size (ou o bounding box do container) não tem números válidos ainda.
-
-3️⃣ Cannot read properties of undefined (reading 'length')
-
-at S.j.start (react-word-cloud.es.js:123:121)
-
-👉 Esse é o mais crítico.
-O componente está tentando acessar words.length, mas words é undefined.
-
-Então você tem dois problemas simultâneos:
-
-A prop words chega undefined ou vazia.
-
-O componente é renderizado antes de o container ter dimensões válidas.
-
-🧠 Diagnóstico técnico
-
-Esses três juntos acontecem quase sempre quando o código é algo tipo:
-
-<ReactWordcloud words={data} />
-
-
-mas data ainda está sendo carregado via API (useEffect, fetch, etc.),
-ou quando o componente pai ainda não definiu o tamanho do container (ex: width: 100%, mas o pai tem height: auto).
-
-✅ Solução segura e à prova de erro
-
-Aqui vai o padrão que elimina os três erros:
-
-import React, { useEffect, useState, useRef } from "react";
-import ReactWordcloud from "react-wordcloud";
-
-export default function WordCloudContainer({ wordsData }) {
-  const ref = useRef(null);
-  const [size, setSize] = useState([0, 0]);
-
-  useEffect(() => {
-    if (ref.current) {
-      const { offsetWidth, offsetHeight } = ref.current;
-      setSize([offsetWidth, offsetHeight]);
-    }
-  }, [ref.current]);
-
-  // Só renderiza quando tiver dados e dimensões válidas
-  const hasWords = Array.isArray(wordsData) && wordsData.length > 0;
-  const hasSize = size[0] > 0 && size[1] > 0;
-
-  const options = {
-    rotations: 2,
-    rotationAngles: [-90, 0],
-    fontSizes: [20, 60],
-  };
-
-  return (
-    <div
-      ref={ref}
-      style={{
-        width: "100%",
-        height: "400px",
-        background: "#111",
-      }}
-    >
-      {hasWords && hasSize ? (
-        <ReactWordcloud words={wordsData} options={options} size={size} />
-      ) : (
-        <p style={{ color: "#fff", textAlign: "center", paddingTop: "150px" }}>
-          Carregando nuvem de palavras...
-        </p>
-      )}
-    </div>
-  );
-}
-
-⚙️ Como usar
-const words = [
-  { text: "React", value: 50 },
-  { text: "Node.js", value: 30 },
-  { text: "JavaScript", value: 60 },
-];
-
-<WordCloudContainer wordsData={words} />;
+ac @ react-dom.production.min.js:270
+lc @ react-dom.production.min.js:272
+Vo @ react-dom.production.min.js:127
+uc @ react-dom.production.min.js:273
+Me @ react-dom.production.min.js:52
+qr @ react-dom.production.min.js:109
+Kt @ react-dom.production.min.js:74
+Ht @ react-dom.production.min.js:73

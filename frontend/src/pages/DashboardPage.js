@@ -51,6 +51,9 @@ const DashboardPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+
     // State for the details modal
     const [modalOpen, setModalOpen] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
@@ -69,7 +72,7 @@ const DashboardPage = () => {
             try {
                 setLoading(true);
                 setError('');
-                const data = await dashboardService.getMainDashboard();
+                const data = await dashboardService.getMainDashboard({ startDate, endDate });
                 setDashboardData(data);
             } catch (err) {
                 setError(err.message || 'Falha ao carregar os dados do dashboard.');
@@ -79,7 +82,7 @@ const DashboardPage = () => {
         };
 
         fetchDashboardData();
-    }, []);
+    }, [startDate, endDate]);
 
     const handleCardClick = async (category, title) => {
         setModalTitle(title || `Detalhes de ${category}`);
@@ -204,6 +207,29 @@ const DashboardPage = () => {
             <Typography variant="h4" component="h1" gutterBottom>
                 Dashboard de Análise
             </Typography>
+
+            <Grid container spacing={2} sx={{ mb: 3 }}>
+                <Grid item xs={12} sm={6} md={3}>
+                    <TextField
+                        label="Data de Início"
+                        type="date"
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                    <TextField
+                        label="Data de Fim"
+                        type="date"
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                    />
+                </Grid>
+            </Grid>
 
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 {/* Card NPS Score */}

@@ -36,11 +36,11 @@ const SatisfacaoPage = () => {
         return <Typography>Não foi possível carregar os dados.</Typography>;
     }
 
-    const npsData = [
+    const npsData = data.nps ? [
         { name: 'Promotores', value: data.nps.promoters },
         { name: 'Neutros', value: data.nps.passives },
         { name: 'Detratores', value: data.nps.detractors },
-    ];
+    ] : [];
 
     return (
         <Box>
@@ -51,7 +51,7 @@ const SatisfacaoPage = () => {
                 <Grid item xs={12} md={6}>
                     <Paper elevation={3} sx={{ p: 2 }}>
                         <Typography variant="h6" align="center">NPS Geral</Typography>
-                        <Typography variant="h2" align="center">{data.nps.score}</Typography>
+                        <Typography variant="h2" align="center">{data.nps?.score || 0}</Typography>
                         <ResponsiveContainer width="100%" height={300}>
                             <PieChart>
                                 <Pie

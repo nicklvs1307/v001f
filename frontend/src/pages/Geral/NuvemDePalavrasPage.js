@@ -21,7 +21,7 @@ const NuvemDePalavrasPage = () => {
     const [endDate, setEndDate] = useState(format(endOfMonth(new Date()), 'yyyy-MM-dd'));
     
     const containerRef = useRef(null);
-    const [size, setSize] = useState([500, 500]); // Inicializa com um tamanho padrão
+    const [size, setSize] = useState([1, 1]); // Inicializa com um tamanho mínimo para evitar NaN
 
     useEffect(() => {
         const currentContainer = containerRef.current;
@@ -30,7 +30,7 @@ const NuvemDePalavrasPage = () => {
             setSize([currentContainer.offsetWidth, currentContainer.offsetHeight]);
 
             const observer = new ResizeObserver(() => {
-                if (containerRef.current) {
+                if (containerRef.current && containerRef.current.offsetWidth > 0 && containerRef.current.offsetHeight > 0) {
                     setSize([containerRef.current.offsetWidth, containerRef.current.offsetHeight]);
                 }
             });
@@ -100,7 +100,7 @@ const NuvemDePalavrasPage = () => {
                         </Box>
                     ) : error ? (
                         <Typography color="error">{error}</Typography>
-                    ) : words && words.length > 0 && size[0] > 0 && size[1] > 0 ? (
+                    ) : words.length > 0 && size[0] > 0 && size[1] > 0 ? (
                         <WordCloud 
                             data={words} 
                             options={wordCloudOptions} 

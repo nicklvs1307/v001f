@@ -1,3 +1,92 @@
+main.e08d9733.js:2 [Violation] 'message' handler took 151ms
+main.e08d9733.js:2 [Violation] 'message' handler took 221ms
+main.e08d9733.js:2 [Violation] 'message' handler took 184ms
+main.e08d9733.js:2 [Violation] 'click' handler took 167ms
+react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
+b @ react-dom.production.min.js:24
+Ks @ react-dom.production.min.js:230
+xc @ react-dom.production.min.js:280
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+react-dom.production.min.js:24 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
+b @ react-dom.production.min.js:24
+Ks @ react-dom.production.min.js:230
+xc @ react-dom.production.min.js:280
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+react-word-cloud.es.js:123 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'length')
+    at S.j.start (react-word-cloud.es.js:123:121)
+    at react-word-cloud.es.js:471:12
+    at new Promise (<anonymous>)
+    at react-word-cloud.es.js:418:10
+    at react-word-cloud.es.js:1021:7
+    at rl (react-dom.production.min.js:243:332)
+    at wc (react-dom.production.min.js:285:111)
+    at react-dom.production.min.js:281:391
+    at w (scheduler.production.min.js:13:203)
+    at MessagePort.O (scheduler.production.min.js:14:128)
+S.j.start @ react-word-cloud.es.js:123
+(anônimo) @ react-word-cloud.es.js:471
+(anônimo) @ react-word-cloud.es.js:418
+(anônimo) @ react-word-cloud.es.js:1021
+rl @ react-dom.production.min.js:243
+wc @ react-dom.production.min.js:285
+(anônimo) @ react-dom.production.min.js:281
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+
+main.e08d9733.js:2 [Violation] 'message' handler took 151ms
+main.e08d9733.js:2 [Violation] 'message' handler took 221ms
+main.e08d9733.js:2 [Violation] 'message' handler took 184ms
+main.e08d9733.js:2 [Violation] 'click' handler took 167ms
+react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
+b @ react-dom.production.min.js:24
+Ks @ react-dom.production.min.js:230
+xc @ react-dom.production.min.js:280
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+react-dom.production.min.js:24 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
+b @ react-dom.production.min.js:24
+Ks @ react-dom.production.min.js:230
+xc @ react-dom.production.min.js:280
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+react-word-cloud.es.js:123 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'length')
+    at S.j.start (react-word-cloud.es.js:123:121)
+    at react-word-cloud.es.js:471:12
+    at new Promise (<anonymous>)
+    at react-word-cloud.es.js:418:10
+    at react-word-cloud.es.js:1021:7
+    at rl (react-dom.production.min.js:243:332)
+    at wc (react-dom.production.min.js:285:111)
+    at react-dom.production.min.js:281:391
+    at w (scheduler.production.min.js:13:203)
+    at MessagePort.O (scheduler.production.min.js:14:128)
+S.j.start @ react-word-cloud.es.js:123
+(anônimo) @ react-word-cloud.es.js:471
+(anônimo) @ react-word-cloud.es.js:418
+(anônimo) @ react-word-cloud.es.js:1021
+rl @ react-dom.production.min.js:243
+wc @ react-dom.production.min.js:285
+(anônimo) @ react-dom.production.min.js:281
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
 react-dom.production.min.js:188 TypeError: Cannot read properties of undefined (reading 'map')
     at G (SurveyForm.js:111:78)
     at gi (react-dom.production.min.js:160:137)
@@ -7,8 +96,8 @@ react-dom.production.min.js:188 TypeError: Cannot read properties of undefined (
     at vc (react-dom.production.min.js:279:320)
     at gc (react-dom.production.min.js:279:180)
     at ac (react-dom.production.min.js:270:88)
-    at lc (react-dom.production.min.js:272:300)
-    at Vo (react-dom.production.min.js:127:105)
+    at oc (react-dom.production.min.js:267:429)
+    at w (scheduler.production.min.js:13:203)
 ds @ react-dom.production.min.js:188
 n.callback @ react-dom.production.min.js:188
 qa @ react-dom.production.min.js:156
@@ -17,14 +106,10 @@ bl @ react-dom.production.min.js:259
 yl @ react-dom.production.min.js:258
 (anônimo) @ react-dom.production.min.js:282
 Ac @ react-dom.production.min.js:280
-lc @ react-dom.production.min.js:272
-Vo @ react-dom.production.min.js:127
-uc @ react-dom.production.min.js:273
-Me @ react-dom.production.min.js:52
-qr @ react-dom.production.min.js:109
-Kt @ react-dom.production.min.js:74
-Ht @ react-dom.production.min.js:73
-react-dom.production.min.js:127 Uncaught TypeError: Cannot read properties of undefined (reading 'map')
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+react-dom.production.min.js:282 Uncaught TypeError: Cannot read properties of undefined (reading 'map')
     at G (SurveyForm.js:111:78)
     at gi (react-dom.production.min.js:160:137)
     at Es (react-dom.production.min.js:196:258)
@@ -33,8 +118,8 @@ react-dom.production.min.js:127 Uncaught TypeError: Cannot read properties of un
     at vc (react-dom.production.min.js:279:320)
     at gc (react-dom.production.min.js:279:180)
     at ac (react-dom.production.min.js:270:88)
-    at lc (react-dom.production.min.js:272:300)
-    at Vo (react-dom.production.min.js:127:105)
+    at oc (react-dom.production.min.js:267:429)
+    at w (scheduler.production.min.js:13:203)
 G @ SurveyForm.js:111
 gi @ react-dom.production.min.js:160
 Es @ react-dom.production.min.js:196
@@ -43,10 +128,6 @@ bc @ react-dom.production.min.js:279
 vc @ react-dom.production.min.js:279
 gc @ react-dom.production.min.js:279
 ac @ react-dom.production.min.js:270
-lc @ react-dom.production.min.js:272
-Vo @ react-dom.production.min.js:127
-uc @ react-dom.production.min.js:273
-Me @ react-dom.production.min.js:52
-qr @ react-dom.production.min.js:109
-Kt @ react-dom.production.min.js:74
-Ht @ react-dom.production.min.js:73
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14

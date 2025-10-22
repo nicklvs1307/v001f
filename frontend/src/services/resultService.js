@@ -20,9 +20,21 @@ const getMainDashboard = async ({ tenantId, startDate, endDate }) => {
     }
 };
 
+const getWordCloudData = async (tenantId) => {
+    try {
+        const response = await apiAuthenticated.get(`/results/word-cloud`, {
+            params: { tenantId }
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
 const resultService = {
     getSurveyResults,
     getMainDashboard,
+    getWordCloudData,
 };
 
 export default resultService;

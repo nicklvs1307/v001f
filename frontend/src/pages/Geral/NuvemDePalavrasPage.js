@@ -8,7 +8,7 @@ import {
     TextField,
     Grid
 } from '@mui/material';
-import WordCloud from '@isoterik/react-word-cloud';
+import { WordCloud } from '@isoterik/react-word-cloud';
 import dashboardService from '../../services/dashboardService';
 import { startOfMonth, endOfMonth, format } from 'date-fns';
 

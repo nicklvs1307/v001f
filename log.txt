@@ -1,31 +1,23 @@
-root@Server:~/loyalfood/v001f/frontend# npm install
-npm ERR! code ERESOLVE
-npm ERR! ERESOLVE could not resolve
-npm ERR!
-npm ERR! While resolving: @mui/x-date-pickers@6.19.2
-npm ERR! Found: date-fns@4.1.0
-npm ERR! node_modules/date-fns
-npm ERR!   date-fns@"^4.1.0" from the root project
-npm ERR!
-npm ERR! Could not resolve dependency:
-npm ERR! peerOptional date-fns@"^2.25.0 || ^3.2.0" from @mui/x-date-pickers@6.19.2
-npm ERR! node_modules/@mui/x-date-pickers
-npm ERR!   @mui/x-date-pickers@"6.19.2" from the root project
-npm ERR!
-npm ERR! Conflicting peer dependency: date-fns@3.6.0
-npm ERR! node_modules/date-fns
-npm ERR!   peerOptional date-fns@"^2.25.0 || ^3.2.0" from @mui/x-date-pickers@6.19.2
-npm ERR!   node_modules/@mui/x-date-pickers
-npm ERR!     @mui/x-date-pickers@"6.19.2" from the root project
-npm ERR!
-npm ERR! Fix the upstream dependency conflict, or retry
-npm ERR! this command with --force or --legacy-peer-deps
-npm ERR! to accept an incorrect (and potentially broken) dependency resolution.
-npm ERR!
-npm ERR!
-npm ERR! For a full report see:
-npm ERR! /root/.npm/_logs/2025-10-22T14_04_34_438Z-eresolve-report.txt
-
-npm ERR! A complete log of this run can be found in:
-npm ERR!     /root/.npm/_logs/2025-10-22T14_04_34_438Z-debug-0.log
-root@Server:~/loyalfood/v001f/frontend#
+ => ERROR [build 6/6] RUN npm run build                                                       91.4s
+------
+ > [build 6/6] RUN npm run build:
+0.544
+0.544 > frontend@0.1.0 build
+0.544 > react-scripts build
+0.544
+2.559 Creating an optimized production build...
+90.91 Failed to compile.
+90.91
+90.91 Module not found: Error: Package path ./_lib/format/longFormatters is not exported from package /app/node_modules/date-fns (see exports field in /app/node_modules/date-fns/package.json)
+90.91
+90.91
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

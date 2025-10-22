@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
     Box,
     Typography,
@@ -18,6 +19,21 @@ const NuvemDePalavrasPage = () => {
     const [error, setError] = useState(null);
     const [startDate, setStartDate] = useState(format(startOfMonth(new Date()), 'yyyy-MM-dd'));
     const [endDate, setEndDate] = useState(format(endOfMonth(new Date()), 'yyyy-MM-dd'));
+    
+    const containerRef = useRef(null);
+    const [size, setSize] = useState([0, 0]);
+
+    useEffect(() => {
+        if (containerRef.current) {
+            const observer = new ResizeObserver(() => {
+                if (containerRef.current) {
+                    setSize([containerRef.current.offsetWidth, containerRef.current.offsetHeight]);
+                }
+            });
+            observer.observe(containerRef.current);
+            return () => observer.disconnect();
+        }
+    }, []);
 
     const fetchWordCloudData = useCallback(async () => {
         try {
@@ -73,19 +89,23 @@ const NuvemDePalavrasPage = () => {
             </Grid>
 
             <Card>
-                <CardContent>
+                <CardContent ref={containerRef} sx={{ height: 500 }}>
                     {loading ? (
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 400 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                             <CircularProgress />
                         </Box>
                     ) : error ? (
                         <Typography color="error">{error}</Typography>
-                    ) : words && words.length > 0 ? (
-                        <Box sx={{ height: 500, width: '100%' }}>
-                           <WordCloud data={words} options={wordCloudOptions} />
-                        </Box>
+                    ) : words && words.length > 0 && size[0] > 0 ? (
+                        <WordCloud 
+                            data={words} 
+                            options={wordCloudOptions} 
+                            size={size} 
+                        />
                     ) : (
-                        <Typography>Nenhuma palavra encontrada para o período selecionado.</Typography>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                            <Typography>Nenhuma palavra encontrada para o período selecionado.</Typography>
+                        </Box>
                     )}
                 </CardContent>
             </Card>

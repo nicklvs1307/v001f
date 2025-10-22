@@ -902,22 +902,23 @@ const dashboardRepository = {
 
         const dailyNps = Object.keys(dailyData).map(day => {
             const dayData = dailyData[day];
-            const npsScore = ratingService.calculateNPSFromCounts(dayData.promoters, dayData.neutrals, dayData.detractors).npsScore;
+            const totalDaily = dayData.total;
+            const npsScore = totalDaily > 0 ? ((dayData.promoters / totalDaily) * 100) - ((dayData.detractors / totalDaily) * 100) : 0;
             
             accumulatedPromoters += dayData.promoters;
             accumulatedNeutrals += dayData.neutrals;
             accumulatedDetractors += dayData.detractors;
             accumulatedTotal += dayData.total;
             
-            const accumulatedNps = ratingService.calculateNPSFromCounts(accumulatedPromoters, accumulatedNeutrals, accumulatedDetractors).npsScore;
+            const accumulatedNps = accumulatedTotal > 0 ? ((accumulatedPromoters / accumulatedTotal) * 100) - ((accumulatedDetractors / accumulatedTotal) * 100) : 0;
 
             return {
                 date: day,
                 promoters: dayData.promoters,
                 neutrals: dayData.neutrals,
                 detractors: dayData.detractors,
-                nps: npsScore,
-                accumulatedNps: accumulatedNps
+                nps: parseFloat(npsScore.toFixed(1)),
+                accumulatedNps: parseFloat(accumulatedNps.toFixed(1))
             };
         });
 

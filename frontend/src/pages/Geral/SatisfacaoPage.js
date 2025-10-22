@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Box, Paper, Grid, CircularProgress } from '@mui/material';
+import { Typography, Box, Paper, Grid, CircularProgress, TextField } from '@mui/material';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import resultService from '../../services/resultService';
 import { useAuth } from '../../context/AuthContext';
+import { format, startOfMonth, endOfMonth } from 'date-fns';
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 const NPS_COLORS = ['#4CAF50', '#FFC107', '#F44336']; // Promoters, Neutrals, Detractors
 const CSAT_COLORS = ['#4CAF50', '#FFC107', '#F44336']; // Satisfied, Neutral, Unsatisfied
 
@@ -12,11 +12,13 @@ const SatisfacaoPage = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const { user } = useAuth();
+    const [startDate, setStartDate] = useState(format(startOfMonth(new Date()), 'yyyy-MM-dd'));
+    const [endDate, setEndDate] = useState(format(endOfMonth(new Date()), 'yyyy-MM-dd'));
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await resultService.getMainDashboard({ tenantId: user.tenantId });
+                const response = await resultService.getMainDashboard({ tenantId: user.tenantId, startDate, endDate });
                 setData(response);
             } catch (error) {
                 console.error("Error fetching data", error);
@@ -28,7 +30,7 @@ const SatisfacaoPage = () => {
         if (user && user.tenantId) {
             fetchData();
         }
-    }, [user]);
+    }, [user, startDate, endDate]);
 
     if (loading) {
         return <CircularProgress />;
@@ -44,11 +46,47 @@ const SatisfacaoPage = () => {
         { name: 'Detratores', value: data.nps.detractors },
     ] : [];
 
+    const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+        const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
+        const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
+
+        return (
+            <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+                {`${(percent * 100).toFixed(0)}%`}
+            </text>
+        );
+    };
+
     return (
         <Box>
             <Typography variant="h4" gutterBottom>
                 Painel de Satisfação
             </Typography>
+            
+            <Grid container spacing={2} sx={{ mb: 3 }}>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        label="Data de Início"
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        InputLabelProps={{ shrink: true }}
+                        fullWidth
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        label="Data de Fim"
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        InputLabelProps={{ shrink: true }}
+                        fullWidth
+                    />
+                </Grid>
+            </Grid>
+
             <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                     <Paper elevation={3} sx={{ p: 2 }}>
@@ -61,9 +99,12 @@ const SatisfacaoPage = () => {
                                     cx="50%"
                                     cy="50%"
                                     labelLine={false}
-                                    outerRadius={80}
+                                    outerRadius={120}
+                                    innerRadius={80}
                                     fill="#8884d8"
                                     dataKey="value"
+                                    isAnimationActive={true}
+                                    label={renderCustomizedLabel}
                                 >
                                     {npsData.map((entry, index) => (
                                         <Cell key={`cell-${index}`} fill={NPS_COLORS[index % NPS_COLORS.length]} />
@@ -94,9 +135,12 @@ const SatisfacaoPage = () => {
                                                 cx="50%"
                                                 cy="50%"
                                                 labelLine={false}
-                                                outerRadius={80}
+                                                outerRadius={120}
+                                                innerRadius={80}
                                                 fill="#8884d8"
                                                 dataKey="value"
+                                                isAnimationActive={true}
+                                                label={renderCustomizedLabel}
                                             >
                                                 {[
                                                     { name: 'Promotores', value: criterion.promoters },
@@ -126,9 +170,12 @@ const SatisfacaoPage = () => {
                                                 cx="50%"
                                                 cy="50%"
                                                 labelLine={false}
-                                                outerRadius={80}
+                                                outerRadius={120}
+                                                innerRadius={80}
                                                 fill="#8884d8"
                                                 dataKey="value"
+                                                isAnimationActive={true}
+                                                label={renderCustomizedLabel}
                                             >
                                                 {[
                                                     { name: 'Satisfeitos', value: criterion.satisfied },

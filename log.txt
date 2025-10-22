@@ -1,21 +1,21 @@
- => ERROR [build 6/6] RUN npm run build                                                       87.4s
+ => ERROR [build 6/6] RUN npm run build                                                       93.0s
 ------
  > [build 6/6] RUN npm run build:
-0.562
-0.562 > frontend@0.1.0 build
-0.562 > react-scripts build
-0.562
-2.802 Creating an optimized production build...
-86.99 Failed to compile.
-86.99
-86.99 Module not found: Error: Can't resolve '@mui/material/styles' in '/app/node_modules/@mui/x-date-pickers/esm/DatePicker'
-86.99 Did you mean 'index.js'?
-86.99 BREAKING CHANGE: The request '@mui/material/styles' failed to resolve only because it was resolved as fully specified
-86.99 (probably because the origin is strict EcmaScript Module, e. g. a module with javascript mimetype, a '*.mjs' file, or a '*.js' file where the package.json contains '"type": "module"').
-86.99 The extension in the request is mandatory for it to be fully specified.
-86.99 Add the extension to the request.
-86.99
-86.99
+0.564
+0.564 > frontend@0.1.0 build
+0.564 > react-scripts build
+0.564
+3.265 Creating an optimized production build...
+92.58 Failed to compile.
+92.58
+92.59 Module not found: Error: Can't resolve '@mui/material/styles' in '/app/node_modules/@mui/x-date-pickers/esm/DatePicker'
+92.59 Did you mean 'index.js'?
+92.59 BREAKING CHANGE: The request '@mui/material/styles' failed to resolve only because it was resolved as fully specified
+92.59 (probably because the origin is strict EcmaScript Module, e. g. a module with javascript mimetype, a '*.mjs' file, or a '*.js' file where the package.json contains '"type": "module"').
+92.59 The extension in the request is mandatory for it to be fully specified.
+92.59 Add the extension to the request.
+92.59
+92.59
 ------
 Dockerfile:14
 --------------------

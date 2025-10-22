@@ -55,5 +55,8 @@
   "proxy": "http://localhost:3001",
   "overrides": {
     "typescript": "^4.9.5"
+  },
+  "resolutions": {
+    "@mui/material": "5.15.20"
   }
 }

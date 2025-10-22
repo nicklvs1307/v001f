@@ -1,16 +1,22 @@
- => ERROR [build 6/6] RUN npm run build                                                       17.0s
+ => [build 5/6] COPY . .                                                                       0.1s
+ => ERROR [build 6/6] RUN npm run build                                                       90.6s
 ------
  > [build 6/6] RUN npm run build:
-0.539
-0.539 > frontend@0.1.0 build
-0.539 > react-scripts build
-0.539
-3.340 Creating an optimized production build...
-16.78 Failed to compile.
-16.78
-16.78 Module not found: Error: Can't resolve '@isoterik/react-word-cloud' in '/app/src/pages/Geral'
-16.78
-16.79
+0.555
+0.555 > frontend@0.1.0 build
+0.555 > react-scripts build
+0.555
+4.275 Creating an optimized production build...
+90.21 Failed to compile.
+90.21
+90.21 Module not found: Error: Can't resolve '@mui/material/styles' in '/app/node_modules/@mui/x-date-pickers/esm/DatePicker'
+90.21 Did you mean 'index.js'?
+90.21 BREAKING CHANGE: The request '@mui/material/styles' failed to resolve only because it was resolved as fully specified
+90.21 (probably because the origin is strict EcmaScript Module, e. g. a module with javascript mimetype, a '*.mjs' file, or a '*.js' file where the package.json contains '"type": "module"').
+90.21 The extension in the request is mandatory for it to be fully specified.
+90.21 Add the extension to the request.
+90.21
+90.21
 ------
 Dockerfile:14
 --------------------

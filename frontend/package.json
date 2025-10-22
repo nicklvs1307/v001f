@@ -8,6 +8,7 @@
     "@isoterik/react-word-cloud": "^1.2.0",
     "@mui/icons-material": "^5.15.19",
     "@mui/material": "^5.15.20",
+    "@mui/x-date-pickers": "^8.14.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",

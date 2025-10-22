@@ -30,6 +30,11 @@ const dashboardService = {
         const response = await apiAuthenticated.get('/dashboard/month-summary', { params });
         return response.data;
     },
+
+    getWordCloudData: async (params) => {
+        const response = await apiAuthenticated.get('/dashboard/wordcloud', { params });
+        return response.data;
+    },
 };
 
 export default dashboardService;

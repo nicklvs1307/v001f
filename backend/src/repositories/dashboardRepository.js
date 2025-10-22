@@ -871,8 +871,12 @@ const dashboardRepository = {
                 attributes: ['type'],
                 where: { type: 'rating_0_10' },
                 required: true
+            }, {
+                model: Client,
+                as: 'client',
+                attributes: ['id'] // We only need to check for its existence
             }],
-            attributes: ['id', 'ratingValue', 'createdAt', 'clientId'],
+            attributes: ['id', 'ratingValue', 'createdAt'],
             order: [['createdAt', 'ASC']]
         });
 
@@ -954,7 +958,7 @@ const dashboardRepository = {
         const totalResponses = await Resposta.count({ where: whereClause });
 
         // 5. Registered vs. Unregistered
-        const registeredResponses = npsResponses.filter(r => r.clientId).length;
+        const registeredResponses = npsResponses.filter(r => r.client).length;
         const unregisteredResponses = npsResponses.length - registeredResponses;
         const clientProportion = {
             registered: registeredResponses,

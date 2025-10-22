@@ -1,16 +1,20 @@
- => ERROR [build 6/6] RUN npm run build                                                      153.9s
+ => ERROR [build 6/6] RUN npm run build                                                      148.1s
 ------
  > [build 6/6] RUN npm run build:
-0.668
-0.668 > frontend@0.1.0 build
-0.668 > react-scripts build
-0.668
-4.502 Creating an optimized production build...
-153.6 Failed to compile.
-153.6
-153.6 Attempted import error: 'useAuth' is not exported from '../../context/AuthContext' (imported as 'useAuth').
-153.6
-153.6
+0.673
+0.673 > frontend@0.1.0 build
+0.673 > react-scripts build
+0.673
+4.430 Creating an optimized production build...
+147.8 Failed to compile.
+147.8
+147.8 [eslint]
+147.8 src/context/AuthContext.js
+147.8   Line 82:10:  'useContext' is not defined  no-undef
+147.8
+147.8 Search for the keywords to learn more about each error.
+147.8
+147.8
 ------
 Dockerfile:14
 --------------------

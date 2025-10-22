@@ -57,6 +57,7 @@
     "typescript": "^4.9.5"
   },
   "resolutions": {
-    "@mui/material": "5.15.20"
+    "@mui/material": "5.15.20",
+    "@mui/system": "5.15.20"
   }
 }

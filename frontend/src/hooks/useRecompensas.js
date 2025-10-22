@@ -10,7 +10,7 @@ const useRecompensas = () => {
         const fetchRecompensas = async () => {
             try {
                 setLoading(true);
-                const data = await recompensaService.getAllRecompensas();
+                const data = await recompensaService.getAll();
                 setRecompensas(data.recompensas);
                 setError(null);
             } catch (err) {

@@ -30,10 +30,12 @@ const ComparativoPesquisaPage = () => {
 
     useEffect(() => {
         const fetchComparisonData = async () => {
-            if (selectedSurveyIds.length > 0 && user && user.tenantId) {
+            const surveysToFetch = selectedSurveyIds.length > 0 ? selectedSurveyIds : surveys.map(s => s.id);
+
+            if (surveysToFetch.length > 0 && user && user.tenantId) {
                 setLoadingComparison(true);
                 const newComparisonData = {};
-                for (const surveyId of selectedSurveyIds) {
+                for (const surveyId of surveysToFetch) {
                     try {
                         const response = await resultService.getMainDashboard({ tenantId: user.tenantId, surveyId });
                         newComparisonData[surveyId] = response;
@@ -43,11 +45,14 @@ const ComparativoPesquisaPage = () => {
                 }
                 setComparisonData(newComparisonData);
                 setLoadingComparison(false);
+            } else if (surveysToFetch.length === 0) {
+                setComparisonData({});
+                setLoadingComparison(false);
             }
         };
 
         fetchComparisonData();
-    }, [selectedSurveyIds, user]);
+    }, [selectedSurveyIds, surveys, user]);
 
     const handleSurveyChange = (event) => {
         setSelectedSurveyIds(event.target.value);
@@ -57,23 +62,25 @@ const ComparativoPesquisaPage = () => {
         return <CircularProgress />;
     }
 
-    const npsComparisonData = selectedSurveyIds.map(id => {
+    const surveysToDisplay = selectedSurveyIds.length > 0 ? selectedSurveyIds : surveys.map(s => s.id);
+
+    const npsComparisonData = surveysToDisplay.map(id => {
         const survey = surveys.find(s => s.id === id);
         const data = comparisonData[id];
         return {
             name: survey ? survey.name : `Pesquisa ${id}`,
-            NPS: data ? data.nps.score : 0,
+            NPS: data && data.nps ? data.nps.score : 0,
         };
     });
 
-    const promoterNeutroDetractorComparisonData = selectedSurveyIds.map(id => {
+    const promoterNeutroDetractorComparisonData = surveysToDisplay.map(id => {
         const survey = surveys.find(s => s.id === id);
         const data = comparisonData[id];
         return {
             name: survey ? survey.name : `Pesquisa ${id}`,
-            Promotores: data ? data.nps.promoters : 0,
-            Neutros: data ? data.nps.passives : 0,
-            Detratores: data ? data.nps.detractors : 0,
+            Promotores: data && data.nps ? data.nps.promoters : 0,
+            Neutros: data && data.nps ? data.nps.passives : 0,
+            Detratores: data && data.nps ? data.nps.detractors : 0,
         };
     });
 
@@ -102,7 +109,7 @@ const ComparativoPesquisaPage = () => {
 
             {loadingComparison ? (
                 <CircularProgress />
-            ) : selectedSurveyIds.length > 0 && npsComparisonData.length > 0 ? (
+            ) : surveysToDisplay.length > 0 && npsComparisonData.length > 0 ? (
                 <Grid container spacing={3} mt={3}>
                     <Grid item xs={12}>
                         <Paper elevation={3} sx={{ p: 2 }}>
@@ -148,7 +155,7 @@ const ComparativoPesquisaPage = () => {
                     </Grid>
                 </Grid>
             ) : (
-                <Typography variant="body1" mt={3}>Selecione pesquisas para comparar.</Typography>
+                <Typography variant="body1" mt={3}>Nenhuma pesquisa selecionada ou dados não disponíveis.</Typography>
             )}
         </Box>
     );

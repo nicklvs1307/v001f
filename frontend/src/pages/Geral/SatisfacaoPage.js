@@ -5,6 +5,8 @@ import resultService from '../../services/resultService';
 import { useAuth } from '../../context/AuthContext';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const NPS_COLORS = ['#4CAF50', '#FFC107', '#F44336']; // Promoters, Neutrals, Detractors
+const CSAT_COLORS = ['#4CAF50', '#FFC107', '#F44336']; // Satisfied, Neutral, Unsatisfied
 
 const SatisfacaoPage = () => {
     const [data, setData] = useState(null);
@@ -64,7 +66,7 @@ const SatisfacaoPage = () => {
                                     dataKey="value"
                                 >
                                     {npsData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        <Cell key={`cell-${index}`} fill={NPS_COLORS[index % NPS_COLORS.length]} />
                                     ))}
                                 </Pie>
                                 <Tooltip />
@@ -73,6 +75,78 @@ const SatisfacaoPage = () => {
                         </ResponsiveContainer>
                     </Paper>
                 </Grid>
+
+                {data.criteriaScores && data.criteriaScores.map((criterion, index) => (
+                    <Grid item xs={12} md={6} key={index}>
+                        <Paper elevation={3} sx={{ p: 2 }}>
+                            <Typography variant="h6" align="center">{criterion.criterion}</Typography>
+                            {criterion.scoreType === 'NPS' && (
+                                <>
+                                    <Typography variant="h2" align="center">{criterion.score || 0}</Typography>
+                                    <ResponsiveContainer width="100%" height={300}>
+                                        <PieChart>
+                                            <Pie
+                                                data={[
+                                                    { name: 'Promotores', value: criterion.promoters },
+                                                    { name: 'Neutros', value: criterion.neutrals },
+                                                    { name: 'Detratores', value: criterion.detractors },
+                                                ]}
+                                                cx="50%"
+                                                cy="50%"
+                                                labelLine={false}
+                                                outerRadius={80}
+                                                fill="#8884d8"
+                                                dataKey="value"
+                                            >
+                                                {[
+                                                    { name: 'Promotores', value: criterion.promoters },
+                                                    { name: 'Neutros', value: criterion.neutrals },
+                                                    { name: 'Detratores', value: criterion.detractors },
+                                                ].map((entry, idx) => (
+                                                    <Cell key={`cell-${idx}`} fill={NPS_COLORS[idx % NPS_COLORS.length]} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip />
+                                            <Legend />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </>
+                            )}
+                            {criterion.scoreType === 'CSAT' && (
+                                <>
+                                    <Typography variant="h2" align="center">{criterion.satisfactionRate || 0}%</Typography>
+                                    <ResponsiveContainer width="100%" height={300}>
+                                        <PieChart>
+                                            <Pie
+                                                data={[
+                                                    { name: 'Satisfeitos', value: criterion.satisfied },
+                                                    { name: 'Neutros', value: criterion.neutral },
+                                                    { name: 'Insatisfeitos', value: criterion.unsatisfied },
+                                                ]}
+                                                cx="50%"
+                                                cy="50%"
+                                                labelLine={false}
+                                                outerRadius={80}
+                                                fill="#8884d8"
+                                                dataKey="value"
+                                            >
+                                                {[
+                                                    { name: 'Satisfeitos', value: criterion.satisfied },
+                                                    { name: 'Neutros', value: criterion.neutral },
+                                                    { name: 'Insatisfeitos', value: criterion.unsatisfied },
+                                                ].map((entry, idx) => (
+                                                    <Cell key={`cell-${idx}`} fill={CSAT_COLORS[idx % CSAT_COLORS.length]} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip />
+                                            <Legend />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </>
+                            )}
+                        </Paper>
+                    </Grid>
+                ))}
             </Grid>
         </Box>
     );

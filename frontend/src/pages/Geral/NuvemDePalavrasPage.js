@@ -23,7 +23,7 @@ const NuvemDePalavrasPage = () => {
         try {
             setLoading(true);
             const data = await dashboardService.getWordCloudData({ startDate, endDate });
-            setWords(data);
+            setWords(Array.isArray(data) ? data : []);
             setError(null);
         } catch (err) {
             setError('Falha ao carregar os dados da nuvem de palavras.');
@@ -80,7 +80,7 @@ const NuvemDePalavrasPage = () => {
                         </Box>
                     ) : error ? (
                         <Typography color="error">{error}</Typography>
-                    ) : words.length > 0 ? (
+                    ) : words && words.length > 0 ? (
                         <Box sx={{ height: 500, width: '100%' }}>
                            <WordCloud data={words} options={wordCloudOptions} />
                         </Box>

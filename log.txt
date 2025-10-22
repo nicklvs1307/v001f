@@ -1,16 +1,21 @@
- => ERROR [build 6/6] RUN npm run build                                                       17.8s
+ => ERROR [build 6/6] RUN npm run build                                                       87.4s
 ------
  > [build 6/6] RUN npm run build:
-0.720
-0.720 > frontend@0.1.0 build
-0.720 > react-scripts build
-0.720
-4.369 Creating an optimized production build...
-17.62 Failed to compile.
-17.62
-17.63 Module not found: Error: Can't resolve '@mui/x-date-pickers/DatePicker' in '/app/src/pages/Relatorios'
-17.63
-17.63
+0.562
+0.562 > frontend@0.1.0 build
+0.562 > react-scripts build
+0.562
+2.802 Creating an optimized production build...
+86.99 Failed to compile.
+86.99
+86.99 Module not found: Error: Can't resolve '@mui/material/styles' in '/app/node_modules/@mui/x-date-pickers/esm/DatePicker'
+86.99 Did you mean 'index.js'?
+86.99 BREAKING CHANGE: The request '@mui/material/styles' failed to resolve only because it was resolved as fully specified
+86.99 (probably because the origin is strict EcmaScript Module, e. g. a module with javascript mimetype, a '*.mjs' file, or a '*.js' file where the package.json contains '"type": "module"').
+86.99 The extension in the request is mandatory for it to be fully specified.
+86.99 Add the extension to the request.
+86.99
+86.99
 ------
 Dockerfile:14
 --------------------

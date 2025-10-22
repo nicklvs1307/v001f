@@ -1,11 +1,3 @@
-main.c3849a46.js:2 [Violation] 'message' handler took 176ms
-main.c3849a46.js:2 [Violation] 'message' handler took 154ms
-main.c3849a46.js:2 [Violation] 'message' handler took 234ms
-main.c3849a46.js:2 [Violation] 'click' handler took 167ms
-main.c3849a46.js:2 [Violation] 'click' handler took 186ms
-main.c3849a46.js:2 [Violation] 'click' handler took 318ms
-main.c3849a46.js:2 [Violation] 'message' handler took 181ms
-main.c3849a46.js:2 [Violation] 'click' handler took 205ms
 react-dom.production.min.js:188 TypeError: Cannot read properties of undefined (reading 'map')
     at G (SurveyForm.js:111:78)
     at gi (react-dom.production.min.js:160:137)

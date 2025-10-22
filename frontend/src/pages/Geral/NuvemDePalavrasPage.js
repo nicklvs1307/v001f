@@ -100,7 +100,7 @@ const NuvemDePalavrasPage = () => {
                         </Box>
                     ) : error ? (
                         <Typography color="error">{error}</Typography>
-                    ) : words.length > 0 && size[0] > 0 && size[1] > 0 ? (
+                    ) : Array.isArray(words) && words.length > 0 && size[0] > 0 && size[1] > 0 ? (
                         <WordCloud 
                             data={words} 
                             options={wordCloudOptions} 

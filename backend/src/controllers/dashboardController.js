@@ -104,6 +104,13 @@ const dashboardController = {
         const details = await dashboardRepository.getResponseDetailsBySessionId(tenantId, sessionId);
         res.status(200).json(details);
     }),
+
+    getMonthSummary: asyncHandler(async (req, res) => {
+        const tenantId = req.user.role === 'Super Admin' ? null : req.user.tenantId;
+        const { startDate, endDate } = req.query;
+        const summary = await dashboardRepository.getMonthSummary(tenantId, startDate, endDate);
+        res.status(200).json(summary);
+    }),
 };
 
 module.exports = dashboardController;

@@ -850,6 +850,127 @@ const dashboardRepository = {
         return responses;
     },
 
+    getMonthSummary: async (tenantId = null, startDate = null, endDate = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = new Date(startDate);
+        if (endDate) dateFilter[Op.lte] = new Date(endDate);
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const npsResponses = await Resposta.findAll({
+            where: {
+                ...whereClause,
+                ratingValue: { [Op.ne]: null }
+            },
+            include: [{
+                model: Pergunta,
+                as: 'pergunta',
+                attributes: ['type'],
+                where: { type: 'rating_0_10' },
+                required: true
+            }],
+            attributes: ['id', 'ratingValue', 'createdAt', 'clientId'],
+            order: [['createdAt', 'ASC']]
+        });
+
+        // 1. Daily distribution and NPS
+        const dailyData = {};
+        let accumulatedPromoters = 0;
+        let accumulatedNeutrals = 0;
+        let accumulatedDetractors = 0;
+        let accumulatedTotal = 0;
+
+        npsResponses.forEach(response => {
+            const day = response.createdAt.toISOString().split('T')[0];
+            if (!dailyData[day]) {
+                dailyData[day] = { promoters: 0, neutrals: 0, detractors: 0, total: 0 };
+            }
+
+            const classification = ratingService.classifyNPS(response.ratingValue);
+            if (classification) {
+                dailyData[day][`${classification}s`]++;
+                dailyData[day].total++;
+            }
+        });
+
+        const dailyNps = Object.keys(dailyData).map(day => {
+            const dayData = dailyData[day];
+            const npsScore = ratingService.calculateNPSFromCounts(dayData.promoters, dayData.neutrals, dayData.detractors).npsScore;
+            
+            accumulatedPromoters += dayData.promoters;
+            accumulatedNeutrals += dayData.neutrals;
+            accumulatedDetractors += dayData.detractors;
+            accumulatedTotal += dayData.total;
+            
+            const accumulatedNps = ratingService.calculateNPSFromCounts(accumulatedPromoters, accumulatedNeutrals, accumulatedDetractors).npsScore;
+
+            return {
+                date: day,
+                promoters: dayData.promoters,
+                neutrals: dayData.neutrals,
+                detractors: dayData.detractors,
+                nps: npsScore,
+                accumulatedNps: accumulatedNps
+            };
+        });
+
+        // 2. Peak response times
+        const responsesByHour = await Resposta.findAll({
+            where: whereClause,
+            attributes: [
+                [fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'hour'],
+                [fn('COUNT', col('id')), 'count']
+            ],
+            group: [fn('EXTRACT', literal('HOUR FROM "createdAt"'))],
+            order: [[fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'ASC']]
+        });
+        
+        const peakHours = responsesByHour.map(item => ({
+            hour: parseInt(item.dataValues.hour),
+            count: parseInt(item.dataValues.count)
+        }));
+
+        // 3. Distribution by day of the week
+        const responsesByWeekday = await Resposta.findAll({
+            where: whereClause,
+            attributes: [
+                [fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'weekday'], // 1=Monday, 7=Sunday
+                [fn('COUNT', col('id')), 'count']
+            ],
+            group: [fn('EXTRACT', literal('ISODOW FROM "createdAt"'))],
+            order: [[fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'ASC']]
+        });
+
+        const weekdays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+        const weekdayDistribution = responsesByWeekday.map(item => ({
+            day: weekdays[parseInt(item.dataValues.weekday) - 1],
+            count: parseInt(item.dataValues.count)
+        }));
+
+        // 4. Total responses
+        const totalResponses = await Resposta.count({ where: whereClause });
+
+        // 5. Registered vs. Unregistered
+        const registeredResponses = npsResponses.filter(r => r.clientId).length;
+        const unregisteredResponses = npsResponses.length - registeredResponses;
+        const clientProportion = {
+            registered: registeredResponses,
+            unregistered: unregisteredResponses,
+            total: npsResponses.length
+        };
+
+        return {
+            dailyNps,
+            peakHours,
+            weekdayDistribution,
+            totalResponses,
+            clientProportion
+        };
+    },
+
     getMainDashboard: async function (tenantId = null, startDate = null, endDate = null) {
         const summary = await this.getSummary(tenantId, startDate, endDate);
         const responseChart = await this.getResponseChart(tenantId, startDate, endDate);

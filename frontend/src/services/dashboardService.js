@@ -25,6 +25,11 @@ const dashboardService = {
         const response = await apiAuthenticated.get('/dashboard/attendants-performance');
         return response.data;
     },
+
+    getMonthSummary: async (params) => {
+        const response = await apiAuthenticated.get('/dashboard/month-summary', { params });
+        return response.data;
+    },
 };
 
 export default dashboardService;

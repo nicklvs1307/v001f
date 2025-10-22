@@ -52,6 +52,13 @@ const RelatorioDiario = React.lazy(() => import('../pages/Relatorios/Diario'));
 const RelatorioSemanal = React.lazy(() => import('../pages/Relatorios/Semanal'));
 const RelatorioMensal = React.lazy(() => import('../pages/Relatorios/Mensal'));
 
+const SatisfacaoPage = React.lazy(() => import('../pages/Geral/SatisfacaoPage'));
+const ResumoMesPage = React.lazy(() => import('../pages/Geral/ResumoMesPage'));
+const ComparativoPesquisaPage = React.lazy(() => import('../pages/Geral/ComparativoPesquisaPage'));
+const EvolucaoPage = React.lazy(() => import('../pages/Geral/EvolucaoPage'));
+const BenchmarkingPage = React.lazy(() => import('../pages/Geral/BenchmarkingPage'));
+const NuvemDePalavrasPage = React.lazy(() => import('../pages/Geral/NuvemDePalavrasPage'));
+
 
 const AppRoutes = () => {
   return (
@@ -117,6 +124,14 @@ const AppRoutes = () => {
             <Route path="relatorios/diario" element={<RelatorioDiario />} />
             <Route path="relatorios/semanal" element={<RelatorioSemanal />} />
             <Route path="relatorios/mensal" element={<RelatorioMensal />} />
+
+            {/* Novas Rotas de Geral */}
+            <Route path="geral/satisfacao" element={<SatisfacaoPage />} />
+            <Route path="geral/resumo" element={<ResumoMesPage />} />
+            <Route path="geral/comparativo" element={<ComparativoPesquisaPage />} />
+            <Route path="geral/evolucao" element={<EvolucaoPage />} />
+            <Route path="geral/benchmarking" element={<BenchmarkingPage />} />
+            <Route path="geral/nuvem-de-palavras" element={<NuvemDePalavrasPage />} />
           </Route>
         </Route>
 

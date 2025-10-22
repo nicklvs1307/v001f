@@ -124,6 +124,19 @@ const DashboardLayout = () => {
             ],
         },
         {
+            text: 'Geral',
+            icon: <BarChartIcon />,
+            roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
+            children: [
+                { text: 'Satisfação', path: '/geral/satisfacao', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Resumo do mês', path: '/geral/resumo', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Comparativo de pesquisa', path: '/geral/comparativo', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Evolução', path: '/geral/evolucao', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Benchmarking', path: '/geral/benchmarking', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Nuvem de palavras', path: '/geral/nuvem-de-palavras', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+            ],
+        },
+        {
                         text: 'WhatsApp',
                         icon: <WhatsAppIcon />,
                         badge: 'NOVO',            roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], // Only for tenant admins

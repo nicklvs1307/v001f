@@ -141,4 +141,15 @@ router.get(
     dashboardController.getResponseDetails
 );
 
+router.get(
+  '/month-summary',
+  [
+    check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
+    check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+  ],
+  validate,
+  authorize('dashboard:read'),
+  dashboardController.getMonthSummary
+);
+
 module.exports = router;

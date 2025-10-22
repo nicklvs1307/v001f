@@ -1,16 +1,16 @@
- => ERROR [build 6/6] RUN npm run build                                                       13.9s
+ => ERROR [build 6/6] RUN npm run build                                                       17.0s
 ------
  > [build 6/6] RUN npm run build:
-0.513
-0.513 > frontend@0.1.0 build
-0.513 > react-scripts build
-0.513
-3.105 Creating an optimized production build...
-13.68 Failed to compile.
-13.68
-13.68 Module not found: Error: Can't resolve '@mui/system' in '/app/src/pages'
-13.68
-13.68
+0.539
+0.539 > frontend@0.1.0 build
+0.539 > react-scripts build
+0.539
+3.340 Creating an optimized production build...
+16.78 Failed to compile.
+16.78
+16.78 Module not found: Error: Can't resolve '@isoterik/react-word-cloud' in '/app/src/pages/Geral'
+16.78
+16.79
 ------
 Dockerfile:14
 --------------------

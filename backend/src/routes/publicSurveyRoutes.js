@@ -40,11 +40,28 @@ router.post(
   [
     param("id", "ID da pesquisa inválido").isUUID().not().isEmpty(),
     check("clientId", "ID do cliente inválido").optional().isUUID(),
-    check("atendenteId", "ID do atendente inválido").optional().isUUID(),
     check("respostas", "Respostas são obrigatórias e devem ser um array").isArray().not().isEmpty(),
     check("respostas.*.perguntaId", "ID da pergunta inválido").isUUID().not().isEmpty(),
     check("respostas.*.valor").optional(),
     check("respostas.*.criterioId", "ID do critério inválido").optional().isUUID(),
+    // Validação customizada para o atendenteId
+    check('atendenteId').custom(async (value, { req }) => {
+      const surveyId = req.params.id;
+      const { Pesquisa } = require('../../models');
+      const survey = await Pesquisa.findByPk(surveyId, { attributes: ['askForAttendant'] });
+
+      if (survey && survey.askForAttendant) {
+        if (!value) {
+          return Promise.reject('O nome do atendente é obrigatório.');
+        }
+        // Valida se o valor é um UUID
+        const isUUID = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/.test(value);
+        if (!isUUID) {
+          return Promise.reject('ID do atendente inválido.');
+        }
+      }
+      return true;
+    }),
   ],
   validate,
   publicSurveyController.submitSurveyResponses,

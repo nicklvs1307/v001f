@@ -17,6 +17,7 @@ import {
     InputLabel,
     Select,
     MenuItem,
+    FormHelperText, // Adicionado FormHelperText
 } from '@mui/material';
 import { Star, StarBorder } from '@mui/icons-material';
 import publicSurveyService from '../services/publicSurveyService';
@@ -85,6 +86,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
     const [selectedAtendente, setSelectedAtendente] = useState('');
     const [submitLoading, setSubmitLoading] = useState(false);
     const [submitError, setSubmitError] = useState(null);
+    const [atendenteError, setAtendenteError] = useState(null); // Added attendant error state
 
     useEffect(() => {
         const initialAnswers = {};
@@ -139,6 +141,16 @@ const SurveyComponent = ({ survey, tenantId }) => {
 
     const handleSubmit = async () => {
         setSubmitLoading(true);
+        setSubmitError(null); // Clear previous submission errors
+        setAtendenteError(null); // Clear previous attendant errors
+
+        // Frontend validation for attendant
+        if (survey.askForAttendant && !selectedAtendente) {
+            setAtendenteError('O nome do atendente é obrigatório.');
+            setSubmitLoading(false);
+            return;
+        }
+
         try {
             const finalAnswers = Object.values(answers).filter(a => a.perguntaId !== 'attendant-question');
             const submissionData = { respostas: finalAnswers, atendenteId: selectedAtendente };
@@ -154,7 +166,18 @@ const SurveyComponent = ({ survey, tenantId }) => {
                 navigate(`/identificacao-pesquisa/${tenantId}/${pesquisaId}`);
             }
         } catch (err) {
-            setSubmitError(err.message || 'Ocorreu um erro ao enviar suas respostas.');
+            // Check if it's a validation error from the backend
+            if (err.response && err.response.data && err.response.data.errors && Array.isArray(err.response.data.errors)) {
+                const attendantBackendError = err.response.data.errors.find(e => e.msg === 'O nome do atendente é obrigatório.');
+                if (attendantBackendError) {
+                    setAtendenteError(attendantBackendError.msg);
+                } else {
+                    // Display other backend validation errors
+                    setSubmitError(err.response.data.errors.map(e => e.msg).join(', ') || 'Ocorreu um erro de validação.');
+                }
+            } else {
+                setSubmitError(err.message || 'Ocorreu um erro ao enviar suas respostas.');
+            }
             setSubmitLoading(false);
         }
     };
@@ -166,12 +189,21 @@ const SurveyComponent = ({ survey, tenantId }) => {
         switch (question.type) {
             case 'attendant_selection':
                 return (
-                    <FormControl fullWidth sx={{ mt: 2 }}>
+                    <FormControl fullWidth sx={{ mt: 2 }} error={!!atendenteError}>
                         <InputLabel id="atendente-select-label">Selecione o Atendente</InputLabel>
-                        <Select labelId="atendente-select-label" value={selectedAtendente} label="Selecione o Atendente" onChange={(e) => setSelectedAtendente(e.target.value)}>
+                        <Select
+                            labelId="atendente-select-label"
+                            value={selectedAtendente}
+                            label="Selecione o Atendente"
+                            onChange={(e) => {
+                                setSelectedAtendente(e.target.value);
+                                setAtendenteError(null); // Clear error on change
+                            }}
+                        >
                             <MenuItem value=""><em>Não me lembro</em></MenuItem>
                             {atendentes.map((atendente) => <MenuItem key={atendente.id} value={atendente.id}>{atendente.name}</MenuItem>)}
                         </Select>
+                        {atendenteError && <FormHelperText>{atendenteError}</FormHelperText>}
                     </FormControl>
                 );
             case 'rating_1_5':

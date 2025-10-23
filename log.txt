@@ -1,56 +1,19 @@
- => ERROR [build 6/6] RUN npm run build                                                      161.5s
-------
- > [build 6/6] RUN npm run build:
-0.805
-0.805 > frontend@0.1.0 build
-0.805 > react-scripts build
-0.805
-4.440 Creating an optimized production build...
-161.2 Failed to compile.
-161.2
-161.2 [eslint]
-161.2 src/pages/RoulettePage.js
-161.2   Line 12:31:   'useState' is not defined          no-undef
-161.2   Line 13:43:   'useState' is not defined          no-undef
-161.2   Line 14:33:   'useState' is not defined          no-undef
-161.2   Line 15:29:   'useState' is not defined          no-undef
-161.2   Line 16:39:   'useState' is not defined          no-undef
-161.2   Line 17:31:   'useState' is not defined          no-undef
-161.2   Line 18:43:   'useState' is not defined          no-undef
-161.2   Line 19:43:   'useState' is not defined          no-undef
-161.2   Line 20:39:   'useState' is not defined          no-undef
-161.2   Line 22:25:   'useRef' is not defined            no-undef
-161.2   Line 25:21:   'useCallback' is not defined       no-undef
-161.2   Line 80:3:    'useEffect' is not defined         no-undef
-161.2   Line 113:35:  'useCallback' is not defined       no-undef
-161.2   Line 122:8:   'Box' is not defined               react/jsx-no-undef
-161.2   Line 123:10:  'CircularProgress' is not defined  react/jsx-no-undef
-161.2   Line 130:8:   'Container' is not defined         react/jsx-no-undef
-161.2   Line 131:10:  'Alert' is not defined             react/jsx-no-undef
-161.2   Line 140:8:   'Container' is not defined         react/jsx-no-undef
-161.2   Line 141:10:  'Alert' is not defined             react/jsx-no-undef
-161.2   Line 167:6:   'Box' is not defined               react/jsx-no-undef
-161.2   Line 168:8:   'Container' is not defined         react/jsx-no-undef
-161.2   Line 169:12:  'Box' is not defined               react/jsx-no-undef
-161.2   Line 171:16:  'Box' is not defined               react/jsx-no-undef
-161.2   Line 175:14:  'Typography' is not defined        react/jsx-no-undef
-161.2   Line 178:14:  'Typography' is not defined        react/jsx-no-undef
-161.2   Line 183:12:  'Box' is not defined               react/jsx-no-undef
-161.2   Line 185:16:  'Alert' is not defined             react/jsx-no-undef
-161.2   Line 190:14:  'Box' is not defined               react/jsx-no-undef
-161.2   Line 199:14:  'Button' is not defined            react/jsx-no-undef
-161.2   Line 204:30:  'CircularProgress' is not defined  react/jsx-no-undef
-161.2
-161.2 Search for the keywords to learn more about each error.
-161.2
-161.2
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+URL da solicitação
+https://apiloyalfood.towersfy.com/api/roleta-spins/validate/a255ba581aed50808f462adac7ce7313
+Método da solicitação
+GET
+Código de status
+404 Not Found
+Endereço remoto
+95.217.16.187:443
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /api/roleta-spins/validate/a255ba581aed50808f462adac7ce7313</pre>
+</body>
+</html>

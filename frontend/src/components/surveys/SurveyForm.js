@@ -90,7 +90,7 @@ const SurveyForm = ({ initialData = {}, onSubmit, loading = false, error = null 
               onChange={handleRewardChange}
               label="Selecione a Recompensa"
             >
-              {recompensasLoading ? <MenuItem>Carregando...</MenuItem> : recompensas.map(r => (
+              {recompensasLoading ? <MenuItem>Carregando...</MenuItem> : (recompensas || []).map(r => (
                 <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
               ))}
             </Select>
@@ -108,7 +108,7 @@ const SurveyForm = ({ initialData = {}, onSubmit, loading = false, error = null 
               onChange={handleRewardChange}
               label="Selecione a Roleta"
             >
-              {roletasLoading ? <MenuItem>Carregando...</MenuItem> : roletas.map(r => (
+              {roletasLoading ? <MenuItem>Carregando...</MenuItem> : (roletas || []).map(r => (
                 <MenuItem key={r.id} value={r.id}>{r.nome}</MenuItem>
               ))}
             </Select>

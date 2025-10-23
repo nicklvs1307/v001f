@@ -3,9 +3,9 @@
 [Violation] 'message' handler levou <N> ms
 [Violation] 'message' handler levou <N> ms
 [Violation] 'message' handler levou <N> ms
-main.968d6c24.js:2 [Violation] 'click' handler took 198ms
-[Violation] Forced reflow while executing JavaScript took 32ms
-[Violation] Forced reflow while executing JavaScript took 49ms
+main.794225c6.js:2 [Violation] 'click' handler took 235ms
+[Violation] Forced reflow while executing JavaScript took 80ms
+[Violation] Forced reflow while executing JavaScript took 35ms
 react-dom.production.min.js:188 TypeError: Cannot read properties of undefined (reading 'map')
     at G (SurveyForm.js:111:78)
     at gi (react-dom.production.min.js:160:137)
@@ -58,3 +58,66 @@ Me @ react-dom.production.min.js:52
 qr @ react-dom.production.min.js:109
 Kt @ react-dom.production.min.js:74
 Ht @ react-dom.production.min.js:73
+
+
+[Violation] 'message' handler levou <N> ms
+[Violation] 'message' handler levou <N> ms
+[Violation] 'message' handler levou <N> ms
+[Violation] 'message' handler levou <N> ms
+[Violation] 'message' handler levou <N> ms
+main.794225c6.js:2 [Violation] 'click' handler took 230ms
+main.794225c6.js:2 [Violation] 'click' handler took 234ms
+[Violation] Forced reflow while executing JavaScript took 30ms
+react-dom.production.min.js:188 TypeError: Cannot read properties of undefined (reading 'map')
+    at G (SurveyForm.js:111:78)
+    at gi (react-dom.production.min.js:160:137)
+    at Es (react-dom.production.min.js:196:258)
+    at Sl (react-dom.production.min.js:291:88)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+    at lc (react-dom.production.min.js:272:300)
+    at Vo (react-dom.production.min.js:127:105)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+qa @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+lc @ react-dom.production.min.js:272
+Vo @ react-dom.production.min.js:127
+uc @ react-dom.production.min.js:273
+Me @ react-dom.production.min.js:52
+qr @ react-dom.production.min.js:109
+Kt @ react-dom.production.min.js:74
+Ht @ react-dom.production.min.js:73
+react-dom.production.min.js:127 Uncaught TypeError: Cannot read properties of undefined (reading 'map')
+    at G (SurveyForm.js:111:78)
+    at gi (react-dom.production.min.js:160:137)
+    at Es (react-dom.production.min.js:196:258)
+    at Sl (react-dom.production.min.js:291:88)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+    at lc (react-dom.production.min.js:272:300)
+    at Vo (react-dom.production.min.js:127:105)
+G @ SurveyForm.js:111
+gi @ react-dom.production.min.js:160
+Es @ react-dom.production.min.js:196
+Sl @ react-dom.production.min.js:291
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+ac @ react-dom.production.min.js:270
+lc @ react-dom.production.min.js:272
+Vo @ react-dom.production.min.js:127
+uc @ react-dom.production.min.js:273
+Me @ react-dom.production.min.js:52
+qr @ react-dom.production.min.js:109
+Kt @ react-dom.production.min.js:74
+Ht @ react-dom.production.min.js:73
+

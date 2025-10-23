@@ -1,133 +1,56 @@
-main.e08d9733.js:2 [Violation] 'message' handler took 151ms
-main.e08d9733.js:2 [Violation] 'message' handler took 221ms
-main.e08d9733.js:2 [Violation] 'message' handler took 184ms
-main.e08d9733.js:2 [Violation] 'click' handler took 167ms
-react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-dom.production.min.js:24 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-word-cloud.es.js:123 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'length')
-    at S.j.start (react-word-cloud.es.js:123:121)
-    at react-word-cloud.es.js:471:12
-    at new Promise (<anonymous>)
-    at react-word-cloud.es.js:418:10
-    at react-word-cloud.es.js:1021:7
-    at rl (react-dom.production.min.js:243:332)
-    at wc (react-dom.production.min.js:285:111)
-    at react-dom.production.min.js:281:391
-    at w (scheduler.production.min.js:13:203)
-    at MessagePort.O (scheduler.production.min.js:14:128)
-S.j.start @ react-word-cloud.es.js:123
-(anônimo) @ react-word-cloud.es.js:471
-(anônimo) @ react-word-cloud.es.js:418
-(anônimo) @ react-word-cloud.es.js:1021
-rl @ react-dom.production.min.js:243
-wc @ react-dom.production.min.js:285
-(anônimo) @ react-dom.production.min.js:281
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-
-main.e08d9733.js:2 [Violation] 'message' handler took 151ms
-main.e08d9733.js:2 [Violation] 'message' handler took 221ms
-main.e08d9733.js:2 [Violation] 'message' handler took 184ms
-main.e08d9733.js:2 [Violation] 'click' handler took 167ms
-react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-dom.production.min.js:24 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-word-cloud.es.js:123 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'length')
-    at S.j.start (react-word-cloud.es.js:123:121)
-    at react-word-cloud.es.js:471:12
-    at new Promise (<anonymous>)
-    at react-word-cloud.es.js:418:10
-    at react-word-cloud.es.js:1021:7
-    at rl (react-dom.production.min.js:243:332)
-    at wc (react-dom.production.min.js:285:111)
-    at react-dom.production.min.js:281:391
-    at w (scheduler.production.min.js:13:203)
-    at MessagePort.O (scheduler.production.min.js:14:128)
-S.j.start @ react-word-cloud.es.js:123
-(anônimo) @ react-word-cloud.es.js:471
-(anônimo) @ react-word-cloud.es.js:418
-(anônimo) @ react-word-cloud.es.js:1021
-rl @ react-dom.production.min.js:243
-wc @ react-dom.production.min.js:285
-(anônimo) @ react-dom.production.min.js:281
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-dom.production.min.js:188 TypeError: Cannot read properties of undefined (reading 'map')
-    at G (SurveyForm.js:111:78)
-    at gi (react-dom.production.min.js:160:137)
-    at Es (react-dom.production.min.js:196:258)
-    at Sl (react-dom.production.min.js:291:88)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at oc (react-dom.production.min.js:267:429)
-    at w (scheduler.production.min.js:13:203)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-qa @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-dom.production.min.js:282 Uncaught TypeError: Cannot read properties of undefined (reading 'map')
-    at G (SurveyForm.js:111:78)
-    at gi (react-dom.production.min.js:160:137)
-    at Es (react-dom.production.min.js:196:258)
-    at Sl (react-dom.production.min.js:291:88)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at oc (react-dom.production.min.js:267:429)
-    at w (scheduler.production.min.js:13:203)
-G @ SurveyForm.js:111
-gi @ react-dom.production.min.js:160
-Es @ react-dom.production.min.js:196
-Sl @ react-dom.production.min.js:291
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-ac @ react-dom.production.min.js:270
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
+ => ERROR [build 6/6] RUN npm run build                                                      161.5s
+------
+ > [build 6/6] RUN npm run build:
+0.805
+0.805 > frontend@0.1.0 build
+0.805 > react-scripts build
+0.805
+4.440 Creating an optimized production build...
+161.2 Failed to compile.
+161.2
+161.2 [eslint]
+161.2 src/pages/RoulettePage.js
+161.2   Line 12:31:   'useState' is not defined          no-undef
+161.2   Line 13:43:   'useState' is not defined          no-undef
+161.2   Line 14:33:   'useState' is not defined          no-undef
+161.2   Line 15:29:   'useState' is not defined          no-undef
+161.2   Line 16:39:   'useState' is not defined          no-undef
+161.2   Line 17:31:   'useState' is not defined          no-undef
+161.2   Line 18:43:   'useState' is not defined          no-undef
+161.2   Line 19:43:   'useState' is not defined          no-undef
+161.2   Line 20:39:   'useState' is not defined          no-undef
+161.2   Line 22:25:   'useRef' is not defined            no-undef
+161.2   Line 25:21:   'useCallback' is not defined       no-undef
+161.2   Line 80:3:    'useEffect' is not defined         no-undef
+161.2   Line 113:35:  'useCallback' is not defined       no-undef
+161.2   Line 122:8:   'Box' is not defined               react/jsx-no-undef
+161.2   Line 123:10:  'CircularProgress' is not defined  react/jsx-no-undef
+161.2   Line 130:8:   'Container' is not defined         react/jsx-no-undef
+161.2   Line 131:10:  'Alert' is not defined             react/jsx-no-undef
+161.2   Line 140:8:   'Container' is not defined         react/jsx-no-undef
+161.2   Line 141:10:  'Alert' is not defined             react/jsx-no-undef
+161.2   Line 167:6:   'Box' is not defined               react/jsx-no-undef
+161.2   Line 168:8:   'Container' is not defined         react/jsx-no-undef
+161.2   Line 169:12:  'Box' is not defined               react/jsx-no-undef
+161.2   Line 171:16:  'Box' is not defined               react/jsx-no-undef
+161.2   Line 175:14:  'Typography' is not defined        react/jsx-no-undef
+161.2   Line 178:14:  'Typography' is not defined        react/jsx-no-undef
+161.2   Line 183:12:  'Box' is not defined               react/jsx-no-undef
+161.2   Line 185:16:  'Alert' is not defined             react/jsx-no-undef
+161.2   Line 190:14:  'Box' is not defined               react/jsx-no-undef
+161.2   Line 199:14:  'Button' is not defined            react/jsx-no-undef
+161.2   Line 204:30:  'CircularProgress' is not defined  react/jsx-no-undef
+161.2
+161.2 Search for the keywords to learn more about each error.
+161.2
+161.2
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

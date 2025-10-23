@@ -32,44 +32,85 @@ const RoulettePage = ({ spinData }) => {
       let currentTenantId, currentPesquisaId, currentClientId, currentRoletaId;
       let roletaData, clientData;
 
-      if (spinData) {
-        // Se spinData for fornecido (acesso via token)
-        currentTenantId = spinData.roleta.tenantId;
-        currentPesquisaId = spinData.campanhaId; // Assumindo que campanhaId pode ser usado como pesquisaId para contexto
-        currentClientId = spinData.clienteId;
-        currentRoletaId = spinData.roletaId;
-        roletaData = spinData.roleta;
-        clientData = spinData.client;
+            let actualTenant;
 
-        setRoletaConfig({ items: roletaData.premios, hasSpun: spinData.status === 'USED' });
-        setTenant(spinData.roleta.tenant);
-        setSurvey({ title: 'Gire a Roleta e Ganhe um Prêmio!', roletaId: spinData.roletaId }); // Mock de survey para contexto
+            if (spinData) {
 
-      } else {
-        // Se acesso via parâmetros de URL (rota antiga)
-        currentTenantId = tenantId;
-        currentPesquisaId = pesquisaId;
-        currentClientId = clientId;
+              // Se spinData for fornecido (acesso via token)
 
-        if (!currentTenantId || !currentPesquisaId) {
-          setError("ID do restaurante ou da pesquisa não encontrado na URL.");
-          return;
-        }
+              currentTenantId = spinData.roleta.tenantId;
 
-        const [surveyResponse, tenantResponse] = await Promise.all([
-          publicSurveyService.getPublicSurveyById(currentPesquisaId),
-          publicSurveyService.getPublicTenantById(currentTenantId),
-        ]);
+              currentPesquisaId = spinData.campanhaId; // Assumindo que campanhaId pode ser usado como pesquisaId para contexto
 
-        setSurvey(surveyResponse);
-        setTenant(tenantResponse);
+              currentClientId = spinData.clienteId;
 
-        const configData = await publicRoletaService.getRoletaConfig(currentPesquisaId, currentClientId);
-        setRoletaConfig(configData.data);
-      }
+              currentRoletaId = spinData.roletaId;
 
-      const theme = getDynamicTheme(tenant?.primaryColor || currentTenantId, tenant?.secondaryColor || currentTenantId); // Usar tenant do estado ou do spinData
-      setDynamicTheme(theme);
+              roletaData = spinData.roleta;
+
+              clientData = spinData.client;
+
+      
+
+              setRoletaConfig({ items: roletaData.premios, hasSpun: spinData.status === 'USED' });
+
+              setTenant(spinData.roleta.tenant);
+
+              setSurvey({ title: 'Gire a Roleta e Ganhe um Prêmio!', roletaId: spinData.roletaId }); // Mock de survey para contexto
+
+              actualTenant = spinData.roleta.tenant;
+
+      
+
+            } else {
+
+              // Se acesso via parâmetros de URL (rota antiga)
+
+              currentTenantId = tenantId;
+
+              currentPesquisaId = pesquisaId;
+
+              currentClientId = clientId;
+
+      
+
+              if (!currentTenantId || !currentPesquisaId) {
+
+                setError("ID do restaurante ou da pesquisa não encontrado na URL.");
+
+                return;
+
+              }
+
+      
+
+              const [surveyResponse, tenantResponse] = await Promise.all([
+
+                publicSurveyService.getPublicSurveyById(currentPesquisaId),
+
+                publicSurveyService.getPublicTenantById(currentTenantId),
+
+              ]);
+
+      
+
+              setSurvey(surveyResponse);
+
+              setTenant(tenantResponse);
+
+              const configData = await publicRoletaService.getRoletaConfig(currentPesquisaId, currentClientId);
+
+              setRoletaConfig(configData.data);
+
+              actualTenant = tenantResponse;
+
+            }
+
+      
+
+            const theme = getDynamicTheme(actualTenant?.primaryColor || currentTenantId, actualTenant?.secondaryColor || currentTenantId);
+
+            setDynamicTheme(theme);
 
     } catch (err) {
       console.error("Erro ao buscar dados iniciais:", err);

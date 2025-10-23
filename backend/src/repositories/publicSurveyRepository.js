@@ -117,6 +117,8 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
 
     const questionsMap = new Map(survey.perguntas.map(q => [q.id, q]));
 
+    const finalAtendenteId = atendenteId === '' ? null : atendenteId;
+
     const responsesToCreate = [];
     for (const res of responses) {
       const question = questionsMap.get(res.perguntaId);
@@ -132,7 +134,7 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
         respondentSessionId: respondentSessionId,
         clienteId: clienteId,
         tenantId: survey.tenantId,
-        atendenteId: atendenteId,
+        atendenteId: finalAtendenteId,
         textValue: res.comentario || null, // Comentário vai para textValue
       };
 

@@ -108,9 +108,11 @@ const RoulettePage = ({ spinData }) => {
 
       
 
-            const theme = getDynamicTheme(actualTenant?.primaryColor || currentTenantId, actualTenant?.secondaryColor || currentTenantId);
+                  const theme = getDynamicTheme(actualTenant?.primaryColor, actualTenant?.secondaryColor);
 
-            setDynamicTheme(theme);
+      
+
+                  setDynamicTheme(theme);
 
     } catch (err) {
       console.error("Erro ao buscar dados iniciais:", err);

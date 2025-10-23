@@ -15,7 +15,7 @@ import {
   Pie,
   Cell,
 } from 'recharts';
-import WordCloud from '@isoterik/react-word-cloud';
+import { WordCloud } from '@isoterik/react-word-cloud';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 

@@ -120,7 +120,7 @@ const RoulettePage = ({ spinData }) => {
     } finally {
       setLoading(false);
     }
-  }, [tenantId, pesquisaId, clientId, spinData, tenant]); // Adicionar spinData e tenant às dependências
+  }, [tenantId, pesquisaId, clientId, spinData]); // Removido 'tenant' das dependências para evitar loop infinito
 
   useEffect(() => {
     fetchData();

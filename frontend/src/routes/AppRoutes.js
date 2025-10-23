@@ -14,6 +14,7 @@ import ThankYouPage from '../pages/ThankYouPage';
 import SurveyIdentifyPage from '../pages/SurveyIdentifyPage';
 import ConfirmClientPage from '../pages/ConfirmClientPage';
 import ClientIdentificationPage from '../pages/ClientIdentificationPage';
+import RoletaSpinPage from '../pages/RoletaSpinPage';
 
 // Páginas
 const DashboardPage = React.lazy(() => import('../pages/DashboardPage'));
@@ -79,6 +80,7 @@ const AppRoutes = () => {
         <Route path="/parabens" element={<CongratulationsPage />} />
         <Route path="/validar-cupom/:cupomId" element={<CupomValidationPage />} />
         <Route path="/agradecimento" element={<ThankYouPage />} />
+        <Route path="/roleta/spin/:token" element={<RoletaSpinPage />} />
 
         {/* Rotas Privadas */}
         <Route element={<PrivateRoute />}>

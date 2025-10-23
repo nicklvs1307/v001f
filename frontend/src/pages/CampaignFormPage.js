@@ -200,6 +200,7 @@ const CampaignFormPage = () => {
                 onChange={handleFieldChange('mensagem')}
                 multiline
                 rows={4}
+                helperText="Variáveis disponíveis: {{nome_cliente}}, {{codigo_premio}}"
                 required
               />
             </Paper>
@@ -228,7 +229,7 @@ const CampaignFormPage = () => {
                   onChange={handleFieldChange('recompensaId')}
                   required
                 >
-                  {recompensas.map(r => <MenuItem key={r.id} value={r.id}>{r.nome}</MenuItem>)}
+                  {recompensas.map(r => <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>)}
                 </TextField>
               )}
 

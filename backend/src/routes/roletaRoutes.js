@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const { check } = require("express-validator");
 const roletaController = require('../controllers/roletaController');
+const roletaSpinController = require('../controllers/roletaSpinController');
 const { protect, authorize } = require('../middlewares/authMiddleware');
 const validate = require("../middlewares/validationMiddleware");
 
@@ -22,5 +23,8 @@ router.post(
 );
 
 router.get('/config/:pesquisaId/:clientId', roletaController.getRoletaConfig);
+
+router.get('/spins/validate/:token', roletaSpinController.validateToken);
+router.post('/spins/spin/:token', roletaSpinController.spinRoleta);
 
 module.exports = router;

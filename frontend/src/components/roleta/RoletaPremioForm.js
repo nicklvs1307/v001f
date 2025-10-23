@@ -32,7 +32,8 @@ const RoletaPremioForm = ({ open, handleClose, premio, handleSubmit, roletaId })
     const fetchRecompensas = async () => {
       try {
         setLoadingRecompensas(true);
-        const data = await recompensaService.getAllRecompensas();
+        const response = await recompensaService.getAll();
+        const data = response.data;
         setRecompensas(Array.isArray(data) ? data : []);
       } catch (err) {
         setError(err.message || 'Erro ao carregar recompensas.');

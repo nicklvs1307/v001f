@@ -1,19 +1,15 @@
 URL da solicitação
-https://apiloyalfood.towersfy.com/api/roleta-spins/validate/a255ba581aed50808f462adac7ce7313
+https://apiloyalfood.towersfy.com/api/roleta/spins/validate/a55d20440d251b2977f9f2f47c782c83
 Método da solicitação
 GET
 Código de status
-404 Not Found
+500 Internal Server Error
 Endereço remoto
 95.217.16.187:443
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Error</title>
-</head>
-<body>
-<pre>Cannot GET /api/roleta-spins/validate/a255ba581aed50808f462adac7ce7313</pre>
-</body>
-</html>
+{
+    "status": "error",
+    "code": "HTTP_500",
+    "message": "Client is associated to RoletaSpin using an alias. You've included an alias (client), but it does not match the alias(es) defined in your association (cliente).",
+    "details": "SequelizeEagerLoadingError: Client is associated to RoletaSpin using an alias. You've included an alias (client), but it does not match the alias(es) defined in your association (cliente).\n    at RoletaSpin._getIncludedAssociation (/usr/src/app/node_modules/sequelize/lib/model.js:574:15)\n    at RoletaSpin._validateIncludedElement (/usr/src/app/node_modules/sequelize/lib/model.js:502:53)\n    at /usr/src/app/node_modules/sequelize/lib/model.js:421:37\n    at Array.map (<anonymous>)\n    at RoletaSpin._validateIncludedElements (/usr/src/app/node_modules/sequelize/lib/model.js:417:39)\n    at RoletaSpin.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1124:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async RoletaSpin.findOne (/usr/src/app/node_modules/sequelize/lib/model.js:1240:12)\n    at async RoletaSpinService.validateToken (/usr/src/app/src/services/roletaSpinService.js:6:24)\n    at async validateToken (/usr/src/app/src/controllers/roletaSpinController.js:7:24)"
+}

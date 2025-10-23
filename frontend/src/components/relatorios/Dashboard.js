@@ -1,7 +1,7 @@
 import React from 'react';
 import { Paper, Grid, Typography, Box } from '@mui/material';
 import {
-  LineChart,
+  ComposedChart,
   Line,
   BarChart,
   Bar,
@@ -14,10 +14,12 @@ import {
   PieChart,
   Pie,
   Cell,
+  Area,
 } from 'recharts';
 import { WordCloud } from '@isoterik/react-word-cloud';
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const NPS_COLORS = ['#2ECC71', '#F1C40F', '#E74C3C']; // Promoters, Passives, Detractors
+const TREND_COLOR = '#3498DB';
 
 // --- Mock Data ---
 // TODO: Replace with actual data from the API
@@ -68,6 +70,12 @@ const attendantsLeaderboardData = [
   { name: 'Ana', score: 8.5, responses: 42 },
 ];
 
+const Card = ({ title, children }) => (
+    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%', borderRadius: 2, boxShadow: 3 }}>
+        <Typography variant="h6" gutterBottom component="div">{title}</Typography>
+        {children}
+    </Paper>
+);
 
 const Dashboard = ({ data }) => {
   if (!data) {
@@ -86,60 +94,56 @@ const Dashboard = ({ data }) => {
     <Grid container spacing={3}>
       {/* NPS Score */}
       <Grid item xs={12} md={4}>
-        <Paper sx={{ p: 2, textAlign: 'center' }}>
-          <Typography variant="h6">NPS Geral</Typography>
-          <Typography variant="h3">{nps?.score || 'N/A'}</Typography>
-          <ResponsiveContainer width="100%" height={200}>
+        <Card title="NPS Geral">
+          <Typography variant="h3" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>{nps?.score || 'N/A'}</Typography>
+          <ResponsiveContainer width="100%" height={150}>
             <PieChart>
-              <Pie data={npsData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8">
+              <Pie data={npsData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={40} outerRadius={60} fill="#8884d8" paddingAngle={5}>
                 {npsData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  <Cell key={`cell-${index}`} fill={NPS_COLORS[index % NPS_COLORS.length]} />
                 ))}
               </Pie>
               <Tooltip />
               <Legend />
             </PieChart>
           </ResponsiveContainer>
-        </Paper>
+        </Card>
       </Grid>
 
       {/* Total Responses */}
       <Grid item xs={12} md={4}>
-        <Paper sx={{ p: 2, textAlign: 'center' }}>
-          <Typography variant="h6">Total de Respostas</Typography>
-          <Typography variant="h3">{totalResponses || 'N/A'}</Typography>
-        </Paper>
+        <Card title="Total de Respostas">
+            <Typography variant="h2" component="div" sx={{ flexGrow: 1, textAlign: 'center', mt: 4 }}>{totalResponses || 'N/A'}</Typography>
+        </Card>
       </Grid>
       
       {/* Placeholder for future metric */}
       <Grid item xs={12} md={4}>
-        <Paper sx={{ p: 2, textAlign: 'center' }}>
-          <Typography variant="h6">Métrica Futura</Typography>
-          <Typography variant="h3">--</Typography>
-        </Paper>
+        <Card title="Métrica Futura">
+            <Typography variant="h2" component="div" sx={{ flexGrow: 1, textAlign: 'center', mt: 4 }}>--</Typography>
+        </Card>
       </Grid>
 
       {/* NPS Trend */}
       <Grid item xs={12}>
-        <Paper sx={{ p: 2 }}>
-          <Typography variant="h6">Tendência do NPS</Typography>
+        <Card title="Tendência do NPS">
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={npsTrendData}>
+            <ComposedChart data={npsTrendData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
               <Legend />
-              <Line type="monotone" dataKey="score" stroke="#8884d8" activeDot={{ r: 8 }} />
-            </LineChart>
+              <Area type="monotone" dataKey="score" fill="#e9f3fb" stroke="#3498DB" />
+              <Line type="monotone" dataKey="score" stroke="#3498DB" strokeWidth={2} activeDot={{ r: 8 }} />
+            </ComposedChart>
           </ResponsiveContainer>
-        </Paper>
+        </Card>
       </Grid>
 
       {/* Responses Trend */}
       <Grid item xs={12}>
-        <Paper sx={{ p: 2 }}>
-          <Typography variant="h6">Tendência de Respostas</Typography>
+        <Card title="Tendência de Respostas">
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={responsesTrendData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -147,76 +151,71 @@ const Dashboard = ({ data }) => {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="count" fill="#82ca9d" />
+              <Bar dataKey="count" fill={TREND_COLOR} />
             </BarChart>
           </ResponsiveContainer>
-        </Paper>
+        </Card>
       </Grid>
 
       {/* Word Cloud */}
       <Grid item xs={12} md={6}>
-        <Paper sx={{ p: 2 }}>
-          <Typography variant="h6">Nuvem de Palavras</Typography>
+        <Card title="Nuvem de Palavras">
           <Box sx={{ height: 300, width: '100%' }}>
             <WordCloud
-                data={wordCloudData}
-                width={500}
-                height={300}
-                fontFamily="Verdana"
-                fontWeight="bold"
-                fontSize={(word) => Math.sqrt(word.value) * 5}
-                spiral="archimedean"
-                rotate={(word) => word.value % 90}
-                padding={2}
-                random={Math.random}
+                words={wordCloudData}
+                options={{
+                    fontFamily: "Verdana",
+                    fontWeight: "bold",
+                    fontSizes: [20, 80],
+                    padding: 2,
+                    rotations: 2,
+                    rotationAngles: [-60, 0, 60],
+                }}
             />
           </Box>
-        </Paper>
+        </Card>
       </Grid>
 
       {/* Criteria Comparison */}
       <Grid item xs={12} md={6}>
-        <Paper sx={{ p: 2 }}>
-          <Typography variant="h6">Satisfação por Critério</Typography>
+        <Card title="Satisfação por Critério">
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={criteriaComparisonData} layout="vertical">
+            <BarChart data={criteriaComparisonData} layout="vertical" margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis type="number" />
               <YAxis type="category" dataKey="name" />
               <Tooltip />
               <Legend />
-              <Bar dataKey="promoters" stackId="a" fill="#00C49F" name="Promotores" />
-              <Bar dataKey="passives" stackId="a" fill="#FFBB28" name="Neutros" />
-              <Bar dataKey="detractors" stackId="a" fill="#FF8042" name="Detratores" />
+              <Bar dataKey="promoters" stackId="a" fill="#2ECC71" name="Promotores" />
+              <Bar dataKey="passives" stackId="a" fill="#F1C40F" name="Neutros" />
+              <Bar dataKey="detractors" stackId="a" fill="#E74C3C" name="Detratores" />
             </BarChart>
           </ResponsiveContainer>
-        </Paper>
+        </Card>
       </Grid>
 
       {/* Attendants Leaderboard */}
       <Grid item xs={12}>
-        <Paper sx={{ p: 2 }}>
-          <Typography variant="h6">Ranking de Atendentes</Typography>
-          {/* Basic table for now, can be improved with a dedicated component */}
-          <table style={{ width: '100%', marginTop: '1rem' }}>
+        <Card title="Ranking de Atendentes">
+          <table style={{ width: '100%', marginTop: '1rem', borderCollapse: 'collapse' }}>
             <thead>
-              <tr>
-                <th>Atendente</th>
-                <th>Nota Média</th>
-                <th>Respostas</th>
+              <tr style={{ borderBottom: '1px solid #ddd' }}>
+                <th style={{ padding: '8px', textAlign: 'left' }}>Atendente</th>
+                <th style={{ padding: '8px', textAlign: 'left' }}>Nota Média</th>
+                <th style={{ padding: '8px', textAlign: 'left' }}>Respostas</th>
               </tr>
             </thead>
             <tbody>
               {attendantsLeaderboardData.map((attendant, index) => (
-                <tr key={index}>
-                  <td>{attendant.name}</td>
-                  <td>{attendant.score}</td>
-                  <td>{attendant.responses}</td>
+                <tr key={index} style={{ borderBottom: '1px solid #ddd' }}>
+                  <td style={{ padding: '8px' }}>{attendant.name}</td>
+                  <td style={{ padding: '8px' }}>{attendant.score}</td>
+                  <td style={{ padding: '8px' }}>{attendant.responses}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </Paper>
+        </Card>
       </Grid>
 
     </Grid>

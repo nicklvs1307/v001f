@@ -1,23 +1,60 @@
- => ERROR [build 6/6] RUN npm run build                                                      163.3s
-------
- > [build 6/6] RUN npm run build:
-0.662
-0.662 > frontend@0.1.0 build
-0.662 > react-scripts build
-0.662
-4.356 Creating an optimized production build...
-163.0 Failed to compile.
-163.0
-163.0 Attempted import error: '@isoterik/react-word-cloud' does not contain a default export (imported as 'WordCloud').
-163.0
-163.0
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+[Violation] 'message' handler levou <N> ms
+[Violation] 'message' handler levou <N> ms
+[Violation] 'message' handler levou <N> ms
+[Violation] 'message' handler levou <N> ms
+[Violation] 'message' handler levou <N> ms
+[Violation] 'message' handler levou <N> ms
+[Violation] Forced reflow while executing JavaScript took 33ms
+[Violation] Forced reflow while executing JavaScript took 31ms
+[Violation] Forced reflow while executing JavaScript took 69ms
+react-word-cloud.es.js:123 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'length')
+    at M.j.start (react-word-cloud.es.js:123:121)
+    at S.current.e (react-word-cloud.es.js:471:12)
+    at new Promise (<anonymous>)
+    at react-word-cloud.es.js:418:10
+    at react-word-cloud.es.js:1021:7
+    at rl (react-dom.production.min.js:243:332)
+    at wc (react-dom.production.min.js:285:111)
+    at lc (react-dom.production.min.js:272:185)
+    at Vo (react-dom.production.min.js:127:105)
+    at react-dom.production.min.js:282:470
+M.j.start @ react-word-cloud.es.js:123
+S.current.e @ react-word-cloud.es.js:471
+(anônimo) @ react-word-cloud.es.js:418
+(anônimo) @ react-word-cloud.es.js:1021
+rl @ react-dom.production.min.js:243
+wc @ react-dom.production.min.js:285
+lc @ react-dom.production.min.js:272
+Vo @ react-dom.production.min.js:127
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14
+main.9c85b300.js:2 [Violation] 'click' handler took 276ms
+main.9c85b300.js:2 [Violation] 'click' handler took 180ms
+main.9c85b300.js:2 [Violation] 'click' handler took 410ms
+react-word-cloud.es.js:123 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'length')
+    at M.j.start (react-word-cloud.es.js:123:121)
+    at S.current.e (react-word-cloud.es.js:471:12)
+    at new Promise (<anonymous>)
+    at react-word-cloud.es.js:418:10
+    at react-word-cloud.es.js:1021:7
+    at rl (react-dom.production.min.js:243:332)
+    at wc (react-dom.production.min.js:285:111)
+    at lc (react-dom.production.min.js:272:185)
+    at Vo (react-dom.production.min.js:127:105)
+    at react-dom.production.min.js:282:470
+M.j.start @ react-word-cloud.es.js:123
+S.current.e @ react-word-cloud.es.js:471
+(anônimo) @ react-word-cloud.es.js:418
+(anônimo) @ react-word-cloud.es.js:1021
+rl @ react-dom.production.min.js:243
+wc @ react-dom.production.min.js:285
+lc @ react-dom.production.min.js:272
+Vo @ react-dom.production.min.js:127
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14

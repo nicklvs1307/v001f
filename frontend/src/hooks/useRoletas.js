@@ -11,7 +11,7 @@ const useRoletas = () => {
             try {
                 setLoading(true);
                 const response = await roletaService.getAll();
-                setRoletas(response.data.roletas);
+                setRoletas(response.data || []);
                 setError(null);
             } catch (err) {
                 setError(err.message || 'Falha ao carregar roletas.');

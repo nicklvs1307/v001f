@@ -1,12 +1,14 @@
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
+import { Container, Box, Typography, Button, CircularProgress, Alert } from '@mui/material';
 import publicSurveyService from '../services/publicSurveyService';
 import publicRoletaService from '../services/publicRoletaService';
-import roletaSpinService from '../services/roletaSpinService'; // Importar o novo serviço
+import roletaSpinService from '../services/roletaSpinService';
 import SpinTheWheel from '../components/roleta/SpinTheWheel';
 import getDynamicTheme from '../theme';
 
-const RoulettePage = ({ spinData }) => { // Aceitar spinData como prop
+const RoulettePage = ({ spinData }) => {
   const { tenantId, pesquisaId, clientId } = useParams();
   const navigate = useNavigate();
   const [survey, setSurvey] = useState(null);

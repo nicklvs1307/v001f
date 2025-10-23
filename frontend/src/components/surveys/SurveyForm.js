@@ -224,7 +224,7 @@ const SurveyForm = ({ initialData = {}, onSubmit, loading = false, error = null 
       {atendentesError && <Alert severity="error">{atendentesError}</Alert>}
 
       <Stack spacing={2}>
-        {(survey && survey.questions || []).map((question, qIndex) => (
+        {(survey?.questions || []).map((question, qIndex) => (
           <QuestionForm
             key={qIndex}
             question={question}

@@ -138,10 +138,14 @@ const RoletaPremioForm = ({ open, handleClose, premio, handleSubmit, roletaId })
                   label="Recompensa Associada"
                   onChange={handleChange}
                   renderValue={(selected) => {
+                    if (!selected) {
+                      return "Nenhuma";
+                    }
                     const selectedRecompensa = recompensas.find(r => r.id === selected);
                     return selectedRecompensa ? selectedRecompensa.name : '';
                   }}
                 >
+                  <MenuItem value=""><em>Nenhuma</em></MenuItem>
                   {loadingRecompensas ? (
                     <MenuItem disabled>
                       <CircularProgress size={20} /> Carregando...

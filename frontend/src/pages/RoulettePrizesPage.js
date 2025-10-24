@@ -150,7 +150,7 @@ const RoletaPremiosPage = () => {
               {premios.map((premio) => (
                 <TableRow key={premio.id}>
                   <TableCell>{premio.nome}</TableCell>
-                  <TableCell>{premio.recompensa?.name || 'N/A'}</TableCell>
+                  <TableCell>{premio.recompensa ? premio.recompensa.name : 'Não foi dessa vez'}</TableCell>
                   <TableCell>{premio.probabilidade}</TableCell>
                   <TableCell align="right">
                     <IconButton color="primary" onClick={() => handleOpenForm(premio)}>

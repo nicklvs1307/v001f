@@ -92,14 +92,18 @@ const CupomValidationPage = () => {
   };
 
   const getStatusChip = (cupom) => {
-    const isExpired = new Date(cupom.dataValidade) < new Date();
-    if (cupom.status === 'used') {
-      return <Chip label="Utilizado" color="warning" size="small" />;
+    switch (cupom.status) {
+      case 'active':
+        return <Chip label="Ativo" color="success" size="small" />;
+      case 'pending':
+        return <Chip label="Pendente" color="info" size="small" />;
+      case 'used':
+        return <Chip label="Utilizado" color="warning" size="small" />;
+      case 'expired':
+        return <Chip label="Expirado" color="error" size="small" />;
+      default:
+        return <Chip label={cupom.status} size="small" />;
     }
-    if (isExpired) {
-      return <Chip label="Expirado" color="error" size="small" />;
-    }
-    return <Chip label="Ativo" color="success" size="small" />;
   };
 
   const renderCupomDetails = (cupom) => (
@@ -199,7 +203,7 @@ const CupomValidationPage = () => {
           </IconButton>
           {selectedCupom && renderCupomDetails(selectedCupom)}
           <Box sx={{ mt: 4, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', gap: 2 }}>
-            <Button variant="contained" color="success" onClick={handleValidate} disabled={loading || selectedCupom?.status !== 'pending'} fullWidth>
+            <Button variant="contained" color="success" onClick={handleValidate} disabled={loading || selectedCupom?.status !== 'active'} fullWidth>
               Validar Cupom
             </Button>
             <Button variant="outlined" color="error" onClick={handleDelete} disabled={loading} fullWidth>

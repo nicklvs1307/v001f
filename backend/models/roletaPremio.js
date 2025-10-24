@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     recompensaId: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
     },
     roletaId: {
       type: DataTypes.UUID,

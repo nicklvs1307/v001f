@@ -130,6 +130,7 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
       message = message.replace('{{cupom}}', novoCupom.codigo);
 
       console.log(`[RoletaController] Mensagem final: "${message}"`);
+      await new Promise(resolve => setTimeout(resolve, 3000)); // Adicionando atraso de 3 segundos
       await whatsappService.sendTenantMessage(tenantId, cliente.phone, message);
       console.log(`[RoletaController] Chamada para sendTenantMessage concluída.`);
     }

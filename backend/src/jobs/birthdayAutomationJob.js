@@ -68,7 +68,7 @@ const birthdayAutomationJob = cron.schedule('0 9 * * *', async () => { // Execut
           message = message.replace(/{{recompensa}}/g, rewardName);
           message = message.replace(/{{cupom}}/g, cupomCode);
 
-          await whatsappService.sendTextMessage(config.tenantId, client.phone, message);
+          await whatsappService.sendTenantMessage(config.tenantId, client.phone, message);
           console.log(`Mensagem de aniversário enviada para ${client.name} (${client.phone}) do tenant ${config.tenantId}`);
         }
       }

@@ -91,8 +91,8 @@ const automationService = {
     const numbersArray = phoneNumbers.split(',').map(num => num.trim()).filter(num => num);
 
     for (const number of numbersArray) {
-          await whatsappService.sendSystemMessage(number, message);
-          console.log(`Relatório de teste enviado para ${number}`);
+          await whatsappService.sendTenantMessage(tenantId, number, message);
+          console.log(`Relatório de teste enviado para ${number} do tenant ${tenantId}`);
     }
     return { message: 'Relatório de teste enviado com sucesso!' };
   },

@@ -1,17 +1,17 @@
 const cron = require('node-cron');
 const { format } = require('date-fns');
 const whatsappService = require('../services/whatsappService');
-const whatsappConfigRepository = require('../repositories/whatsappConfigRepository'); // Importar o novo repositório
-const tenantRepository = require('../repositories/tenantRepository'); // Manter para buscar o nome do tenant
-const resultRepository = require('../repositories/resultRepository');
+const whatsappConfigRepository = require('../repositories/whatsappConfigRepository');
+const tenantRepository = require('../repositories/tenantRepository');
+const dashboardRepository = require('../repositories/dashboardRepository'); // Changed from resultRepository
 
-const schedule = '0 8 * * *'; // Todos os dias às 8:00
+const schedule = '0 8 * * *'; // Every day at 8:00 AM
 
 const dailyReportTask = cron.schedule(schedule, async () => {
   console.log('Executando a tarefa de relatório diário...');
 
   try {
-    // 1. Buscar todas as configurações do WhatsApp que têm o relatório diário ativado.
+    // 1. Find all WhatsApp configurations with daily report enabled.
     const configsToReport = await whatsappConfigRepository.findAllWithDailyReportEnabled();
 
     if (!configsToReport || configsToReport.length === 0) {
@@ -21,41 +21,43 @@ const dailyReportTask = cron.schedule(schedule, async () => {
 
     console.log(`Encontradas ${configsToReport.length} configurações para receber relatórios.`);
 
-    // 2. Para cada configuração, gerar o relatório e enviar.
+    // 2. For each configuration, generate and send the report.
     for (const config of configsToReport) {
       console.log(`Gerando relatório para o tenantId: ${config.tenantId}`);
-      
-      // Precisamos do nome do tenant para a mensagem
+
       const tenant = await tenantRepository.getTenantById(config.tenantId);
       if (!tenant) {
         console.warn(`Tenant ${config.tenantId} não encontrado para a configuração de relatório.`);
         continue;
       }
 
-      const stats = await resultRepository.getDailyStats(config.tenantId);
+      // Use dashboardRepository.getSummary to get the data, like in the test
+      const summary = await dashboardRepository.getSummary(config.tenantId);
+      const report = summary.nps;
+      const totalResponses = summary.totalResponses;
+      const totalNpsResponses = report.total;
+
+      const promotersPercentage = totalNpsResponses > 0 ? ((report.promoters / totalNpsResponses) * 100).toFixed(1) : 0;
+      const neutralsPercentage = totalNpsResponses > 0 ? ((report.neutrals / totalNpsResponses) * 100).toFixed(1) : 0;
+      const detractorsPercentage = totalNpsResponses > 0 ? ((report.detractors / totalNpsResponses) * 100).toFixed(1) : 0;
       
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
       const formattedDate = format(yesterday, 'dd/MM/yyyy');
 
-      const message = `
-*Resumo Diário - ${tenant.name}*
-_${formattedDate}_
+      // Standardized message format from the test
+      const message = `*Relatório Diário de NPS - ${tenant.name}*\n_${formattedDate}_\n\n` +
+                      `*NPS:* ${report.score}\n` +
+                      `*Promotores:* ${report.promoters} (${promotersPercentage}%)\n` +
+                      `*Neutros:* ${report.neutrals} (${neutralsPercentage}%)\n` +
+                      `*Detratores:* ${report.detractors} (${detractorsPercentage}%)\n` +
+                      `*Total de Respostas:* ${totalResponses}\n\n` +
+                      `_Este é um relatório automático do sistema Feedeliza._`;
 
-Olá! Aqui está o resumo de ontem:
-
-- *Total de Respostas NPS:* ${stats.totalResponses}
-- *Promotores (9-10):* ${stats.promoters}
-- *Neutros (7-8):* ${stats.neutrals}
-- *Detratores (0-6):* ${stats.detractors}
-
-_Este é um relatório automático do sistema Feedeliza._
-      `.trim();
-
-      // Envia para cada número configurado
+      // Send to each configured number using sendTenantMessage
       const phoneNumbers = config.reportPhoneNumbers.split(',').map(p => p.trim()).filter(p => p);
       for (const phoneNumber of phoneNumbers) {
-        await whatsappService.sendSystemMessage(phoneNumber, message);
+        await whatsappService.sendTenantMessage(config.tenantId, phoneNumber, message);
         console.log(`Relatório para "${tenant.name}" enviado para ${phoneNumber}.`);
       }
     }

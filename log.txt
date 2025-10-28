@@ -1,60 +1,31 @@
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] Forced reflow while executing JavaScript took 33ms
-[Violation] Forced reflow while executing JavaScript took 31ms
-[Violation] Forced reflow while executing JavaScript took 69ms
-react-word-cloud.es.js:123 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'length')
-    at M.j.start (react-word-cloud.es.js:123:121)
-    at S.current.e (react-word-cloud.es.js:471:12)
-    at new Promise (<anonymous>)
-    at react-word-cloud.es.js:418:10
-    at react-word-cloud.es.js:1021:7
-    at rl (react-dom.production.min.js:243:332)
-    at wc (react-dom.production.min.js:285:111)
-    at lc (react-dom.production.min.js:272:185)
-    at Vo (react-dom.production.min.js:127:105)
-    at react-dom.production.min.js:282:470
-M.j.start @ react-word-cloud.es.js:123
-S.current.e @ react-word-cloud.es.js:471
-(anônimo) @ react-word-cloud.es.js:418
-(anônimo) @ react-word-cloud.es.js:1021
-rl @ react-dom.production.min.js:243
-wc @ react-dom.production.min.js:285
-lc @ react-dom.production.min.js:272
-Vo @ react-dom.production.min.js:127
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-main.9c85b300.js:2 [Violation] 'click' handler took 276ms
-main.9c85b300.js:2 [Violation] 'click' handler took 180ms
-main.9c85b300.js:2 [Violation] 'click' handler took 410ms
-react-word-cloud.es.js:123 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'length')
-    at M.j.start (react-word-cloud.es.js:123:121)
-    at S.current.e (react-word-cloud.es.js:471:12)
-    at new Promise (<anonymous>)
-    at react-word-cloud.es.js:418:10
-    at react-word-cloud.es.js:1021:7
-    at rl (react-dom.production.min.js:243:332)
-    at wc (react-dom.production.min.js:285:111)
-    at lc (react-dom.production.min.js:272:185)
-    at Vo (react-dom.production.min.js:127:105)
-    at react-dom.production.min.js:282:470
-M.j.start @ react-word-cloud.es.js:123
-S.current.e @ react-word-cloud.es.js:471
-(anônimo) @ react-word-cloud.es.js:418
-(anônimo) @ react-word-cloud.es.js:1021
-rl @ react-dom.production.min.js:243
-wc @ react-dom.production.min.js:285
-lc @ react-dom.production.min.js:272
-Vo @ react-dom.production.min.js:127
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
+{
+    "apiKey": "9df82dcbee60ce08f6ca93aa4024ca6c",
+    "id": "65ac6605-5a62-4b01-ab35-977add68e912",
+    "url": "https://evolution2.towersfy.com/",
+    "instanceName": null,
+    "instanceStatus": "not_created",
+    "tenantId": "eb629ea8-7d69-47a1-b1f1-f9dcb33475f4",
+    "sendPrizeMessage": false,
+    "prizeMessageTemplate": "Parabéns, {{cliente}}! Você ganhou um prêmio: {{premio}}. Use o cupom {{cupom}} para resgatar.",
+    "dailyReportEnabled": false,
+    "reportPhoneNumbers": null,
+    "birthdayAutomationEnabled": false,
+    "birthdayMessageTemplate": "Feliz aniversário, {{cliente}}! Ganhe {{recompensa}} com o cupom {{cupom}}.",
+    "birthdayDaysBefore": 0,
+    "birthdayRewardType": null,
+    "birthdayRewardId": null,
+    "birthdayCouponValidityDays": 30,
+    "createdAt": "2025-10-14T15:22:21.409Z",
+    "updatedAt": "2025-10-28T20:13:51.156Z",
+    "status": "not_created"
+}
+
+
+URL da solicitação
+https://apiloyalfood.towersfy.com/api/whatsapp-config/instance
+Método da solicitação
+GET
+Código de status
+200 OK
+Endereço remoto
+95.217.16.

@@ -1,31 +1,9 @@
-{
-    "apiKey": "9df82dcbee60ce08f6ca93aa4024ca6c",
-    "id": "65ac6605-5a62-4b01-ab35-977add68e912",
-    "url": "https://evolution2.towersfy.com/",
-    "instanceName": null,
-    "instanceStatus": "not_created",
-    "tenantId": "eb629ea8-7d69-47a1-b1f1-f9dcb33475f4",
-    "sendPrizeMessage": false,
-    "prizeMessageTemplate": "Parabéns, {{cliente}}! Você ganhou um prêmio: {{premio}}. Use o cupom {{cupom}} para resgatar.",
-    "dailyReportEnabled": false,
-    "reportPhoneNumbers": null,
-    "birthdayAutomationEnabled": false,
-    "birthdayMessageTemplate": "Feliz aniversário, {{cliente}}! Ganhe {{recompensa}} com o cupom {{cupom}}.",
-    "birthdayDaysBefore": 0,
-    "birthdayRewardType": null,
-    "birthdayRewardId": null,
-    "birthdayCouponValidityDays": 30,
-    "createdAt": "2025-10-14T15:22:21.409Z",
-    "updatedAt": "2025-10-28T20:13:51.156Z",
-    "status": "not_created"
-}
+Relatório Diário de NPS
 
+NPS: undefined
+Promotores: undefined (undefined%)
+Neutros: undefined (undefined%)
+Detratores: undefined (undefined%)
+Total de Respostas: 72
 
-URL da solicitação
-https://apiloyalfood.towersfy.com/api/whatsapp-config/instance
-Método da solicitação
-GET
-Código de status
-200 OK
-Endereço remoto
-95.217.16.
+Este é um teste do relatório diário de NPS.

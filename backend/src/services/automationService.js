@@ -71,20 +71,28 @@ const automationService = {
   },
 
   sendDailyReportTest: async (tenantId, phoneNumbers) => {
-    const report = await dashboardRepository.getSummary(tenantId);
+    const summary = await dashboardRepository.getSummary(tenantId);
+    const report = summary.nps;
+    const totalResponses = summary.totalResponses;
+    const totalNpsResponses = report.total;
+
+    const promotersPercentage = totalNpsResponses > 0 ? ((report.promoters / totalNpsResponses) * 100).toFixed(1) : 0;
+    const neutralsPercentage = totalNpsResponses > 0 ? ((report.neutrals / totalNpsResponses) * 100).toFixed(1) : 0;
+    const detractorsPercentage = totalNpsResponses > 0 ? ((report.detractors / totalNpsResponses) * 100).toFixed(1) : 0;
+
     const message = `*Relatório Diário de NPS*\n\n` +
-                    `*NPS:* ${report.npsScore}\n` +
-                    `*Promotores:* ${report.promoters} (${report.promotersPercentage}%)\n` +
-                    `*Neutros:* ${report.neutrals} (${report.neutralsPercentage}%)\n` +
-                    `*Detratores:* ${report.detractors} (${report.detractorsPercentage}%)\n` +
-                    `*Total de Respostas:* ${report.totalResponses}\n\n` +
+                    `*NPS:* ${report.score}\n` +
+                    `*Promotores:* ${report.promoters} (${promotersPercentage}%)\n` +
+                    `*Neutros:* ${report.neutrals} (${neutralsPercentage}%)\n` +
+                    `*Detratores:* ${report.detractors} (${detractorsPercentage}%)\n` +
+                    `*Total de Respostas:* ${totalResponses}\n\n` +
                     `_Este é um teste do relatório diário de NPS._`;
 
     const numbersArray = phoneNumbers.split(',').map(num => num.trim()).filter(num => num);
 
     for (const number of numbersArray) {
-          await whatsappService.sendTenantMessage(tenantId, number, message);
-          console.log(`Relatório de teste enviado para ${number} do tenant ${tenantId}`);
+          await whatsappService.sendSystemMessage(number, message);
+          console.log(`Relatório de teste enviado para ${number}`);
     }
     return { message: 'Relatório de teste enviado com sucesso!' };
   },

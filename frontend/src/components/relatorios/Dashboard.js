@@ -111,7 +111,7 @@ const Dashboard = ({ data }) => {
       <Grid item xs={12} md={6}>
         <Card title="Nuvem de Palavras">
           {wordCloudData && wordCloudData.length > 0 ? (
-            <Box sx={{ height: 300, width: '100%' }}>
+            <ResponsiveContainer width="100%" height={300}>
               <WordCloud
                   words={wordCloudData}
                   options={{
@@ -123,7 +123,7 @@ const Dashboard = ({ data }) => {
                       rotationAngles: [-60, 0, 60],
                   }}
               />
-            </Box>
+            </ResponsiveContainer>
           ) : <Typography>Nenhuma palavra para exibir.</Typography>}
         </Card>
       </Grid>

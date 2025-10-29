@@ -1,9 +1,22 @@
-*Relatorio Diario Voltaki*
-
-Aqui está o resumo da experiência dos seus clientes no dia 28/10/2025!
-📊 Total de respostas: 1 (⬇ -1 respostas em relação 27/10/2025)
-🟢 Número de Promotores: 1
-🟡 Número de Neutros: 0
-🔴 Número de Detratores: 0
-
-🔗 Para acessar o sistema, visite https://plataforma.falae.app/relatorio/diario?date=2025-10-28 
+main.c1f1979f.js:2 [Violation] 'click' handler took 154ms
+main.c1f1979f.js:2 [Violation] 'message' handler took 156ms
+main.c1f1979f.js:2 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
+b @ main.c1f1979f.js:2
+Ks @ main.c1f1979f.js:2
+xc @ main.c1f1979f.js:2
+bc @ main.c1f1979f.js:2
+vc @ main.c1f1979f.js:2
+gc @ main.c1f1979f.js:2
+oc @ main.c1f1979f.js:2
+w @ main.c1f1979f.js:2
+O @ main.c1f1979f.js:2
+main.c1f1979f.js:2 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
+b @ main.c1f1979f.js:2
+Ks @ main.c1f1979f.js:2
+xc @ main.c1f1979f.js:2
+bc @ main.c1f1979f.js:2
+vc @ main.c1f1979f.js:2
+gc @ main.c1f1979f.js:2
+oc @ main.c1f1979f.js:2
+w @ main.c1f1979f.js:2
+O @ main.c1f1979f.js:2

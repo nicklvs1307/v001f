@@ -40,7 +40,10 @@ const ResultsOverviewPage = () => {
             if (startDate) params.startDate = startDate;
             if (endDate) params.endDate = endDate;
             
+            console.time('getMainDashboard API call');
             const resultData = await resultService.getMainDashboard(params);
+            console.timeEnd('getMainDashboard API call');
+
             console.log('Dashboard data from API:', resultData);
             setData(resultData);
         } catch (err) {

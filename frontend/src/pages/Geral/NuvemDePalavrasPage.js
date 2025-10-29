@@ -42,9 +42,9 @@ const NuvemDePalavrasPage = () => {
     const wordCloudOptions = {
         rotations: 2,
         rotationAngles: [-90, 0],
-        fontSizes: [20, 100],
+        fontSizes: [40, 120],
         fontWeight: 'bold',
-        padding: 1,
+        padding: 10,
     };
 
     return (

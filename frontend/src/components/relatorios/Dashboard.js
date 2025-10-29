@@ -117,8 +117,8 @@ const Dashboard = ({ data }) => {
                   options={{
                       fontFamily: "Verdana",
                       fontWeight: "bold",
-                      fontSizes: [30, 100],
-                      padding: 5,
+                      fontSizes: [40, 120],
+                      padding: 10,
                       rotations: 2,
                       rotationAngles: [-60, 0, 60],
                   }}

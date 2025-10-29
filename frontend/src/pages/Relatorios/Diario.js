@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom'; // Import useLocation
 import { Typography, Paper, Box, Grid, CircularProgress, TextField } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -6,19 +7,33 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { format } from 'date-fns';
 import { useAuth } from '../../context/AuthContext';
 import resultService from '../../services/resultService';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import Dashboard from '../../components/relatorios/Dashboard';
 
-
-
 const RelatorioDiario = () => {
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    // Set initial date to null, so we can see if it comes from URL
+    const [selectedDate, setSelectedDate] = useState(null); 
     const [reportData, setReportData] = useState(null);
     const [loading, setLoading] = useState(false);
     const { user } = useAuth();
+    const location = useLocation();
 
+    // This effect runs only once on component mount to set the initial date.
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const dateParam = queryParams.get('date');
+        if (dateParam) {
+            // Add T00:00:00 to prevent timezone issues where it might become the previous day
+            setSelectedDate(new Date(`${dateParam}T00:00:00`));
+        } else {
+            // If no date in URL, default to today
+            setSelectedDate(new Date());
+        }
+    }, [location.search]); // Depend on location.search
+
+    // This effect runs whenever selectedDate or user changes.
     useEffect(() => {
         const fetchDailyReport = async () => {
+            // Ensure we don't run the fetch if the date hasn't been set yet
             if (!user || !user.tenantId || !selectedDate) return;
 
             setLoading(true);
@@ -41,8 +56,6 @@ const RelatorioDiario = () => {
         fetchDailyReport();
     }, [selectedDate, user]);
 
-
-
     return (
         <Paper sx={{ p: 2 }}>
             <Typography variant="h4" gutterBottom>Relatório Diário</Typography>
@@ -53,6 +66,7 @@ const RelatorioDiario = () => {
                         value={selectedDate}
                         onChange={(newValue) => setSelectedDate(newValue)}
                         renderInput={(params) => <TextField {...params} />}
+                        disabled={!selectedDate} // Disable until initial date is set
                     />
                 </LocalizationProvider>
             </Box>

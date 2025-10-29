@@ -1,9 +1,9 @@
-Relatório Diário de NPS
+*Relatorio Diario Voltaki*
 
-NPS: undefined
-Promotores: undefined (undefined%)
-Neutros: undefined (undefined%)
-Detratores: undefined (undefined%)
-Total de Respostas: 72
+Aqui está o resumo da experiência dos seus clientes no dia 28/10/2025!
+📊 Total de respostas: 1 (⬇ -1 respostas em relação 27/10/2025)
+🟢 Número de Promotores: 1
+🟡 Número de Neutros: 0
+🔴 Número de Detratores: 0
 
-Este é um teste do relatório diário de NPS.
+🔗 Para acessar o sistema, visite https://plataforma.falae.app/relatorio/diario?date=2025-10-28 

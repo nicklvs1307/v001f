@@ -31,28 +31,40 @@ const dailyReportTask = cron.schedule(schedule, async () => {
         continue;
       }
 
-      // Use dashboardRepository.getSummary to get the data, like in the test
-      const summary = await dashboardRepository.getSummary(config.tenantId);
-      const report = summary.nps;
-      const totalResponses = summary.totalResponses;
-      const totalNpsResponses = report.total;
-
-      const promotersPercentage = totalNpsResponses > 0 ? ((report.promoters / totalNpsResponses) * 100).toFixed(1) : 0;
-      const neutralsPercentage = totalNpsResponses > 0 ? ((report.neutrals / totalNpsResponses) * 100).toFixed(1) : 0;
-      const detractorsPercentage = totalNpsResponses > 0 ? ((report.detractors / totalNpsResponses) * 100).toFixed(1) : 0;
-      
+      // Define date ranges for yesterday and the day before
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
-      const formattedDate = format(yesterday, 'dd/MM/yyyy');
+      const startOfYesterday = new Date(new Date(yesterday).setHours(0, 0, 0, 0));
+      const endOfYesterday = new Date(new Date(yesterday).setHours(23, 59, 59, 999));
 
-      // Standardized message format from the test
-      const message = `*Relatório Diário de NPS - ${tenant.name}*\n_${formattedDate}_\n\n` +
-                      `*NPS:* ${report.score}\n` +
-                      `*Promotores:* ${report.promoters} (${promotersPercentage}%)\n` +
-                      `*Neutros:* ${report.neutrals} (${neutralsPercentage}%)\n` +
-                      `*Detratores:* ${report.detractors} (${detractorsPercentage}%)\n` +
-                      `*Total de Respostas:* ${totalResponses}\n\n` +
-                      `_Este é um relatório automático do sistema Feedeliza._`;
+      const twoDaysAgo = new Date();
+      twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+      const startOfTwoDaysAgo = new Date(new Date(twoDaysAgo).setHours(0, 0, 0, 0));
+      const endOfTwoDaysAgo = new Date(new Date(twoDaysAgo).setHours(23, 59, 59, 999));
+
+      // Fetch summaries for both days
+      const yesterdaySummary = await dashboardRepository.getSummary(config.tenantId, startOfYesterday, endOfYesterday);
+      const twoDaysAgoSummary = await dashboardRepository.getSummary(config.tenantId, startOfTwoDaysAgo, endOfTwoDaysAgo);
+
+      // Calculate difference
+      const diff = yesterdaySummary.totalResponses - twoDaysAgoSummary.totalResponses;
+      const diffArrow = diff > 0 ? '⬆' : diff < 0 ? '⬇' : '➖';
+      const diffText = `(${diffArrow} ${diff} respostas em relação ${format(twoDaysAgo, 'dd/MM/yyyy')})`;
+
+      // Format dates for the message
+      const formattedDate = format(yesterday, 'dd/MM/yyyy');
+      const isoDate = format(yesterday, 'yyyy-MM-dd');
+      const baseUrl = process.env.FRONTEND_URL || 'https://loyalfood.towersfy.com';
+      const reportUrl = `${baseUrl}/relatorios/diario?date=${isoDate}`;
+
+      // Construct the new message
+      const message = `*Relatorio Diario ${tenant.name}*\n\n` +
+                      `Aqui está o resumo da experiência dos seus clientes no dia ${formattedDate}!\n` +
+                      `📊 Total de respostas: ${yesterdaySummary.totalResponses} ${diffText}\n` +
+                      `🟢 Número de Promotores: ${yesterdaySummary.nps.promoters}\n` +
+                      `🟡 Número de Neutros: ${yesterdaySummary.nps.neutrals}\n` +
+                      `🔴 Número de Detratores: ${yesterdaySummary.nps.detractors}\n\n` +
+                      `🔗 Para acessar o sistema, visite ${reportUrl}`;
 
       // Send to each configured number using sendTenantMessage
       const phoneNumbers = config.reportPhoneNumbers.split(',').map(p => p.trim()).filter(p => p);

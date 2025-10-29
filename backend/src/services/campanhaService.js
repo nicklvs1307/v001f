@@ -155,7 +155,7 @@ class CampanhaService {
     console.log(`[Campanha] Enviando ${clients.length} mensagens simples para a campanha ${campanha.id}.`);
     for (const client of clients) {
       if (client && client.phone) {
-        let personalizedMessage = campanha.mensagem.replace(/{{nome_cliente}}/g, client.name);
+        let personalizedMessage = campanha.mensagem.replace(/{{nome_cliente}}/g, client.name.split(' ')[0]);
         try {
           await this.whatsappService.sendTenantMessage(campanha.tenantId, client.phone, personalizedMessage);
           if (delay > 0) {
@@ -175,7 +175,7 @@ class CampanhaService {
     for (const reward of rewards) {
       const client = clientMap.get(reward.clienteId);
       if (client && client.phone) {
-        let personalizedMessage = campanha.mensagem.replace(/{{nome_cliente}}/g, client.name);
+        let personalizedMessage = campanha.mensagem.replace(/{{nome_cliente}}/g, client.name.split(' ')[0]);
         let rewardCode = '';
 
         if (campanha.rewardType === 'RECOMPENSA') {

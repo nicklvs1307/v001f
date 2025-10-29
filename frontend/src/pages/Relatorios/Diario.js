@@ -36,6 +36,7 @@ const RelatorioDiario = () => {
             // Ensure we don't run the fetch if the date hasn't been set yet
             if (!user || !user.tenantId || !selectedDate) return;
 
+            console.log('Fetching report for date:', selectedDate);
             setLoading(true);
             try {
                 const formattedDate = format(selectedDate, 'yyyy-MM-dd');
@@ -44,6 +45,7 @@ const RelatorioDiario = () => {
                     startDate: formattedDate,
                     endDate: formattedDate,
                 });
+                console.log('Report data from API:', data);
                 setReportData(data);
             } catch (error) {
                 console.error("Erro ao buscar relatório diário:", error);

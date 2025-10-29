@@ -41,6 +41,7 @@ const ResultsOverviewPage = () => {
             if (endDate) params.endDate = endDate;
             
             const resultData = await resultService.getMainDashboard(params);
+            console.log('Dashboard data from API:', resultData);
             setData(resultData);
         } catch (err) {
             setError(err.message || 'Falha ao carregar os resultados.');

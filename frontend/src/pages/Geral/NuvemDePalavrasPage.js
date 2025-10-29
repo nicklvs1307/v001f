@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     Box,
     Typography,
@@ -10,6 +10,7 @@ import {
     Grid
 } from '@mui/material';
 import { WordCloud } from '@isoterik/react-word-cloud';
+import { ResponsiveContainer } from 'recharts';
 import dashboardService from '../../services/dashboardService';
 import { startOfMonth, endOfMonth, format } from 'date-fns';
 
@@ -19,25 +20,6 @@ const NuvemDePalavrasPage = () => {
     const [error, setError] = useState(null);
     const [startDate, setStartDate] = useState(format(startOfMonth(new Date()), 'yyyy-MM-dd'));
     const [endDate, setEndDate] = useState(format(endOfMonth(new Date()), 'yyyy-MM-dd'));
-    
-    const containerRef = useRef(null);
-    const [size, setSize] = useState([1, 1]); // Inicializa com um tamanho mínimo para evitar NaN
-
-    useEffect(() => {
-        const currentContainer = containerRef.current;
-        if (currentContainer) {
-            // Define o tamanho inicial com base no contêiner
-            setSize([currentContainer.offsetWidth, currentContainer.offsetHeight]);
-
-            const observer = new ResizeObserver(() => {
-                if (containerRef.current && containerRef.current.offsetWidth > 0 && containerRef.current.offsetHeight > 0) {
-                    setSize([containerRef.current.offsetWidth, containerRef.current.offsetHeight]);
-                }
-            });
-            observer.observe(currentContainer);
-            return () => observer.disconnect();
-        }
-    }, []);
 
     const fetchWordCloudData = useCallback(async () => {
         try {
@@ -93,19 +75,20 @@ const NuvemDePalavrasPage = () => {
             </Grid>
 
             <Card>
-                <CardContent ref={containerRef} sx={{ height: 500 }}>
+                <CardContent sx={{ height: 500 }}>
                     {loading ? (
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                             <CircularProgress />
                         </Box>
                     ) : error ? (
                         <Typography color="error">{error}</Typography>
-                    ) : Array.isArray(words) && words.length > 0 && size[0] > 0 && size[1] > 0 ? (
-                        <WordCloud 
-                            data={words} 
-                            options={wordCloudOptions} 
-                            size={size} 
-                        />
+                    ) : Array.isArray(words) && words.length > 0 ? (
+                        <ResponsiveContainer width="100%" height="100%">
+                            <WordCloud 
+                                words={words} 
+                                options={wordCloudOptions}
+                            />
+                        </ResponsiveContainer>
                     ) : (
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                             <Typography>Nenhuma palavra encontrada para o período selecionado.</Typography>

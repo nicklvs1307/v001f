@@ -1,19 +1,13 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import useClients from '../../hooks/useClients';
-import ClientModal from './ClientModal';
-import SendMessageModal from './SendMessageModal';
-import ConfirmationDialog from '../layout/ConfirmationDialog';
-import ImportClientsModal from './ImportClientsModal'; // Import the new modal
 import { 
     Box, Typography, CircularProgress, Alert, Button, IconButton, 
     Grid, Card, CardActionArea, CardContent, CardActions, Avatar, 
-    TextField, Tooltip, TablePagination
+    TextField, Tooltip, TablePagination, Menu, MenuItem
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit'; 
 import DeleteIcon from '@mui/icons-material/Delete'; 
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import EventIcon from '@mui/icons-material/Event';
+import MoreVertIcon from '@mui/icons-material/MoreVert'; // Import MoreVertIcon
 import { formatDateForDisplay } from '../../utils/dateUtils';
 
 const ClientList = () => {
@@ -30,6 +24,7 @@ const ClientList = () => {
     const [isImportModalOpen, setIsImportModalOpen] = useState(false); // State for the import modal
     const [selectedClient, setSelectedClient] = useState(null);
     const [formError, setFormError] = useState('');
+    const [anchorEl, setAnchorEl] = useState(null); // State for the menu anchor
 
     const handleOpenModal = (client = null) => {
         setSelectedClient(client);
@@ -55,6 +50,7 @@ const ClientList = () => {
 
     const handleOpenImportModal = () => {
         setIsImportModalOpen(true);
+        handleMenuClose(); // Close the menu after opening the modal
     };
 
     const handleCloseImportModal = () => {
@@ -69,6 +65,14 @@ const ClientList = () => {
     const handleCloseMessageModal = () => {
         setSelectedClient(null);
         setIsMessageModalOpen(false);
+    };
+
+    const handleMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
     };
 
     const handleCardClick = (id) => {
@@ -118,8 +122,28 @@ const ClientList = () => {
                     onChange={handleFilterChange}
                     sx={{ width: '40%' }}
                 />
-                <Button variant="contained" onClick={() => handleOpenModal()}>Adicionar Novo Cliente</Button>
-                <Button variant="contained" onClick={handleOpenImportModal} sx={{ ml: 2 }}>Importar Clientes</Button>
+                <Box>
+                    <Button variant="contained" onClick={() => handleOpenModal()}>Adicionar Novo Cliente</Button>
+                    <IconButton
+                        aria-label="mais opções"
+                        aria-controls="client-options-menu"
+                        aria-haspopup="true"
+                        onClick={handleMenuOpen}
+                        color="inherit"
+                        sx={{ ml: 1 }}
+                    >
+                        <MoreVertIcon />
+                    </IconButton>
+                    <Menu
+                        id="client-options-menu"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={Boolean(anchorEl)}
+                        onClose={handleMenuClose}
+                    >
+                        <MenuItem onClick={handleOpenImportModal}>Importar Clientes</MenuItem>
+                    </Menu>
+                </Box>
             </Box>
             {error && <Alert severity="error">{error}</Alert>}
 
@@ -214,3 +238,4 @@ const ClientList = () => {
 };
 
 export default ClientList;
+

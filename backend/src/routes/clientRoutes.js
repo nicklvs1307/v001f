@@ -25,7 +25,7 @@ const upload = multer({
 const birthDateValidator = check("birthDate", "Data de nascimento inválida")
   .optional({ checkFalsy: true })
   .customSanitizer(value => {
-    if (!value) return null;
+    if (!value || value === '') return null;
     // Verifica se o formato é DD/MM/YYYY e converte para YYYY-MM-DD
     const parts = value.split('/');
     if (parts.length === 3 && parts[2].length === 4) {

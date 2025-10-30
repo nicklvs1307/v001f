@@ -51,7 +51,14 @@ const submitSurveyWithClient = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Dados insuficientes para submeter a pesquisa.");
   }
 
-  const existingClient = await clientRepository.findClientByPhone(client.phone);
+  // Obter o tenantId a partir do surveyId
+  const survey = await publicSurveyRepository.getPublicSurveyById(surveyId);
+  if (!survey) {
+    throw new ApiError(404, "Pesquisa não encontrada.");
+  }
+  const tenantId = survey.tenantId;
+
+  const existingClient = await clientRepository.findClientByPhone(client.phone, tenantId);
   if (!existingClient) {
     throw new ApiError(404, "Cliente não encontrado com o telefone fornecido.");
   }

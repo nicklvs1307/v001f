@@ -48,9 +48,9 @@ const useClients = () => {
         debouncedFetchClients(page, rowsPerPage, orderBy, order, filterText);
     }, [page, rowsPerPage, orderBy, order, filterText, debouncedFetchClients]);
 
-    useEffect(() => {
-        fetchClients();
-    }, [fetchClients]);
+    const fetchClients = useCallback(() => {
+        debouncedFetchClients(page, rowsPerPage, orderBy, order, filterText);
+    }, [page, rowsPerPage, orderBy, order, filterText, debouncedFetchClients]);
 
     const createClient = async (clientData) => {
         try {

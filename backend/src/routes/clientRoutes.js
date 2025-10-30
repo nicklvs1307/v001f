@@ -26,13 +26,16 @@ const birthDateValidator = check("birthDate", "Data de nascimento inválida")
   .optional({ checkFalsy: true })
   .customSanitizer(value => {
     if (!value || value === '') return null;
-    // Verifica se o formato é DD/MM/YYYY e converte para YYYY-MM-DD
     const parts = value.split('/');
     if (parts.length === 3 && parts[2].length === 4) {
-      return `${parts[2]}-${parts[1]}-${parts[0]}`;
+      const date = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+      if (!isNaN(date.getTime())) {
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+      }
     }
-    return value; // Retorna o valor original se não estiver no formato esperado
+    return null;
   })
+  .if(check('birthDate').notEmpty())
   .isISO8601()
   .withMessage('A data de nascimento deve estar no formato DD/MM/AAAA.');
 

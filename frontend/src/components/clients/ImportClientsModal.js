@@ -1,6 +1,23 @@
 import React, { useState } from 'react';
-import { Modal, Box, Typography, Button, CircularProgress, Alert } from '@mui/material';
+import { 
+    Modal, Box, Typography, Button, CircularProgress, Alert, 
+    IconButton, Paper, Tooltip 
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import apiAuthenticated from '../../services/apiAuthenticated';
+
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+});
 
 const ImportClientsModal = ({ open, onClose }) => {
     const [file, setFile] = useState(null);
@@ -49,42 +66,51 @@ const ImportClientsModal = ({ open, onClose }) => {
 
     return (
         <Modal open={open} onClose={handleClose}>
-            <Box sx={{ ...style, width: 400 }}>
-                <Typography variant="h6" component="h2">Importar Clientes Saipos</Typography>
+            <Paper sx={style}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                    <Typography variant="h6" component="h2">Importar Clientes Saipos</Typography>
+                    <IconButton onClick={handleClose}>X</IconButton>
+                </Box>
                 <Typography sx={{ mt: 2 }}>
                     Selecione o arquivo .xlsx para importar os clientes.
                 </Typography>
-                <input
-                    type="file"
-                    accept=".xlsx"
-                    onChange={handleFileChange}
-                    style={{ marginTop: '16px' }}
-                />
+                
+                <Box sx={{ my: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Button
+                        component="label"
+                        role={undefined}
+                        variant="contained"
+                        tabIndex={-1}
+                        startIcon={<CloudUploadIcon />}
+                    >
+                        Selecionar Arquivo
+                        <VisuallyHiddenInput type="file" accept=".xlsx" onChange={handleFileChange} />
+                    </Button>
+                    {file && <Typography sx={{ mt: 1 }}>{file.name}</Typography>}
+                </Box>
+
                 {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+                
                 {importResult && (
                     <Alert severity="success" sx={{ mt: 2 }}>
                         <p>Importação concluída!</p>
                         <p>Clientes importados: {importResult.importedCount}</p>
                         <p>Clientes ignorados (duplicados): {importResult.skippedCount}</p>
                         {importResult.errors && importResult.errors.length > 0 && (
-                            <div>
-                                <p>Erros:</p>
-                                <ul>
-                                    {importResult.errors.map((err, index) => (
-                                        <li key={index}>{JSON.stringify(err.row)} - {err.error}</li>
-                                    ))}
-                                </ul>
-                            </div>
+                            <Tooltip title={importResult.errors.map((err, index) => `${JSON.stringify(err.row)} - ${err.error}`).join(', ')}>
+                                <p>Erros: {importResult.errors.length}</p>
+                            </Tooltip>
                         )}
                     </Alert>
                 )}
-                <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+
+                <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
                     <Button onClick={handleClose} sx={{ mr: 1 }}>Cancelar</Button>
-                    <Button onClick={handleImport} variant="contained" disabled={importing}>
+                    <Button onClick={handleImport} variant="contained" disabled={importing || !file}>
                         {importing ? <CircularProgress size={24} /> : 'Importar'}
                     </Button>
                 </Box>
-            </Box>
+            </Paper>
         </Modal>
     );
 };
@@ -94,10 +120,13 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
+    width: '90%',
+    maxWidth: 500,
     bgcolor: 'background.paper',
-    border: '2px solid #000',
+    borderRadius: '8px',
     boxShadow: 24,
     p: 4,
 };
 
 export default ImportClientsModal;
+

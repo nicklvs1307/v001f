@@ -1,6 +1,19 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import clientService from '../services/clientService';
+
+// Utility debounce function
+const debounce = (func, delay) => {
+    let timeoutId;
+    return (...args) => {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+        timeoutId = setTimeout(() => {
+            func(...args);
+        }, delay);
+    };
+};
 
 const useClients = () => {
     const [clients, setClients] = useState([]);
@@ -13,20 +26,27 @@ const useClients = () => {
     const [order, setOrder] = useState('asc');
     const [filterText, setFilterText] = useState('');
 
-    const fetchClients = useCallback(async () => {
-        try {
-            setLoading(true);
-            const pageNumber = isNaN(page) ? 0 : page;
-            const { clients: fetchedClients, total: fetchedTotal } = await clientService.getAllClients(pageNumber, rowsPerPage, orderBy, order, filterText);
-            setClients(fetchedClients);
-            setTotalClients(fetchedTotal);
-            setError(null);
-        } catch (err) {
-            setError(err.message || 'Falha ao buscar clientes.');
-        } finally {
-            setLoading(false);
-        }
-    }, [page, rowsPerPage, orderBy, order, filterText]);
+    const debouncedFetchClients = useCallback(
+        debounce(async (page, rowsPerPage, orderBy, order, filterText) => {
+            try {
+                setLoading(true);
+                const pageNumber = isNaN(page) ? 0 : page;
+                const { clients: fetchedClients, total: fetchedTotal } = await clientService.getAllClients(pageNumber, rowsPerPage, orderBy, order, filterText);
+                setClients(fetchedClients);
+                setTotalClients(fetchedTotal);
+                setError(null);
+            } catch (err) {
+                setError(err.message || 'Falha ao buscar clientes.');
+            } finally {
+                setLoading(false);
+            }
+        }, 500), // 500ms debounce delay
+        []
+    );
+
+    useEffect(() => {
+        debouncedFetchClients(page, rowsPerPage, orderBy, order, filterText);
+    }, [page, rowsPerPage, orderBy, order, filterText, debouncedFetchClients]);
 
     useEffect(() => {
         fetchClients();
@@ -35,7 +55,7 @@ const useClients = () => {
     const createClient = async (clientData) => {
         try {
             const newClient = await clientService.createClient(clientData);
-            fetchClients(); // Re-fetch to get the latest data
+            debouncedFetchClients(page, rowsPerPage, orderBy, order, filterText); // Re-fetch to get the latest data
             return newClient;
         } catch (err) {
             throw new Error(err.message || 'Falha ao criar cliente.');
@@ -45,7 +65,7 @@ const useClients = () => {
     const updateClient = async (id, clientData) => {
         try {
             const updatedClient = await clientService.updateClient(id, clientData);
-            fetchClients(); // Re-fetch to get the latest data
+            debouncedFetchClients(page, rowsPerPage, orderBy, order, filterText); // Re-fetch to get the latest data
             return updatedClient;
         } catch (err) {
             throw new Error(err.message || 'Falha ao atualizar cliente.');
@@ -55,7 +75,7 @@ const useClients = () => {
     const deleteClient = async (id) => {
         try {
             await clientService.deleteClient(id);
-            fetchClients(); // Re-fetch to get the latest data
+            debouncedFetchClients(page, rowsPerPage, orderBy, order, filterText); // Re-fetch to get the latest data
         } catch (err) {
             throw new Error(err.message || 'Falha ao deletar cliente.');
         }

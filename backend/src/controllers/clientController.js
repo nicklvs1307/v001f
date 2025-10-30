@@ -261,15 +261,21 @@ exports.sendMessageToClient = asyncHandler(async (req, res) => {
 });
 
 exports.importClients = asyncHandler(async (req, res) => {
+  console.log("Recebida requisição de importação de clientes.");
   if (!req.file) {
+    console.log("Nenhum arquivo enviado.");
     throw new ApiError(400, "Nenhum arquivo enviado.");
   }
+
+  console.log("Arquivo recebido:", req.file.originalname);
 
   const tenantId = req.user.tenantId;
   const workbook = xlsx.read(req.file.buffer, { type: "buffer" });
   const sheetName = workbook.SheetNames[0];
   const worksheet = workbook.Sheets[sheetName];
   const data = xlsx.utils.sheet_to_json(worksheet);
+
+  console.log("Dados extraídos da planilha:", data);
 
   let importedCount = 0;
   let skippedCount = 0;
@@ -278,27 +284,34 @@ exports.importClients = asyncHandler(async (req, res) => {
   for (const row of data) {
     const { NOME: name, TELEFONE: phone, "DATA DE NASCIMENTO": birthDate } = row;
 
+    console.log(`Processando linha: ${name}, ${phone}`);
+
     if (!phone) {
       errors.push({ row, error: "Número de telefone ausente." });
       skippedCount++;
+      console.log(`Linha ignorada (sem telefone): ${name}`);
       continue;
     }
 
     const existingClient = await clientRepository.findClientByPhone(phone);
     if (existingClient) {
       skippedCount++;
+      console.log(`Linha ignorada (cliente duplicado): ${name}`);
       continue;
     }
 
     try {
       await clientRepository.createClient({ name, phone, birthDate, tenantId });
       importedCount++;
+      console.log(`Cliente importado: ${name}`);
     } catch (error) {
       errors.push({ row, error: error.message });
       skippedCount++;
+      console.log(`Erro ao importar linha: ${name}, ${error.message}`);
     }
   }
 
+  console.log("Importação concluída.");
   res.status(200).json({
     message: "Importação concluída.",
     importedCount,

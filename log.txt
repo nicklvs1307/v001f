@@ -1,52 +1,6 @@
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'click' handler levou <N> ms
-[Violation] 'click' handler levou <N> ms
-[Violation] 'click' handler levou <N> ms
-[Violation] 'click' handler levou <N> ms
-[Violation] 'click' handler levou <N> ms
-[Violation] 'click' handler levou <N> ms
-[Violation] Forced reflow while executing JavaScript took 31ms
-react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-dom.production.min.js:24 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
-b @ react-dom.production.min.js:24
-Ks @ react-dom.production.min.js:230
-xc @ react-dom.production.min.js:280
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
-react-word-cloud.es.js:123 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'length')
-    at M.j.start (react-word-cloud.es.js:123:121)
-    at S.current.e (react-word-cloud.es.js:471:12)
-    at new Promise (<anonymous>)
-    at react-word-cloud.es.js:418:10
-    at react-word-cloud.es.js:1021:7
-    at rl (react-dom.production.min.js:243:332)
-    at wc (react-dom.production.min.js:285:111)
-    at react-dom.production.min.js:281:391
-    at w (scheduler.production.min.js:13:203)
-    at MessagePort.O (scheduler.production.min.js:14:128)
-M.j.start @ react-word-cloud.es.js:123
-S.current.e @ react-word-cloud.es.js:471
-(anônimo) @ react-word-cloud.es.js:418
-(anônimo) @ react-word-cloud.es.js:1021
-rl @ react-dom.production.min.js:243
-wc @ react-dom.production.min.js:285
-(anônimo) @ react-dom.production.min.js:281
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
+root@Server:~/loyalfood/v001f# docker build --build-arg REACT_APP_API_URL=https://apiloyalfood.towersfy.com -t loyalfood-frontend:latest ./
+[+] Building 0.1s (1/1) FINISHED                                                     docker:default
+ => [internal] load build definition from Dockerfile                                           0.0s
+ => => transferring dockerfile: 2B                                                             0.0s
+ERROR: failed to build: failed to solve: failed to read dockerfile: open Dockerfile: no such file or directory
+root@Server:~/loyalfood/v001f#

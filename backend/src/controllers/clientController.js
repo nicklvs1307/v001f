@@ -23,7 +23,7 @@ exports.publicRegisterClient = asyncHandler(async (req, res) => {
   try {
     const tenantId = await publicSurveyRepository.findTenantIdBySession(respondentSessionId);
     if (!tenantId) {
-      throw new ApiError(404, "Sessão de pesquisa não encontrada ou inválida.");
+      throw new ApiError(403, "Tenant ID não encontrado para a sessão de pesquisa. Acesso negado.");
     }
 
     // Verificar unicidade de Email e Telefone antes de qualquer outra coisa
@@ -302,21 +302,26 @@ exports.importClients = asyncHandler(async (req, res) => {
       continue;
     }
 
-    const existingClient = await clientRepository.findClientByPhone(phone, tenantId);
-    if (existingClient) {
-      skippedCount++;
-      console.log(`Linha ignorada (cliente duplicado): ${name}`);
-      continue;
-    }
+    let clientData = { name, phone, birthDate, tenantId };
 
     try {
-      await clientRepository.createClient({ name, phone, birthDate, tenantId });
-      importedCount++;
-      console.log(`Cliente importado: ${name}`);
+      const existingClient = await clientRepository.findClientByPhone(phone, tenantId);
+
+      if (existingClient) {
+        // Se o cliente existe, atualiza os dados (nome e birthDate)
+        await clientRepository.updateClient(existingClient.id, { name, birthDate }, tenantId);
+        importedCount++; // Considerar como importado/atualizado
+        console.log(`Cliente atualizado: ${name}`);
+      } else {
+        // Se não existe, cria um novo
+        await clientRepository.createClient(clientData);
+        importedCount++;
+        console.log(`Cliente importado: ${name}`);
+      }
     } catch (error) {
       errors.push({ row, error: error.message });
       skippedCount++;
-      console.log(`Erro ao importar linha: ${name}, ${error.message}`);
+      console.log(`Erro ao importar/atualizar linha: ${name}, ${error.message}`);
     }
   }
 

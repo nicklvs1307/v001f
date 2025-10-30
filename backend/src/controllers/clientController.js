@@ -293,7 +293,7 @@ exports.importClients = asyncHandler(async (req, res) => {
       continue;
     }
 
-    const existingClient = await clientRepository.findClientByPhone(phone);
+    const existingClient = await clientRepository.findClientByPhone(phone, tenantId);
     if (existingClient) {
       skippedCount++;
       console.log(`Linha ignorada (cliente duplicado): ${name}`);

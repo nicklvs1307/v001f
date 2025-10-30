@@ -169,8 +169,8 @@ class ClientRepository {
     return Client.findOne({ where: { email } });
   }
 
-  async findClientByPhone(phone) {
-    return Client.findOne({ where: { phone } });
+  async findClientByPhone(phone, tenantId) {
+    return Client.findOne({ where: { phone, tenantId } });
   }
 
   async findAndCountAllByTenant(tenantId, page, limit, orderBy, order, filter) {

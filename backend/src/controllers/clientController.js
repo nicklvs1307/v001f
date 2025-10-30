@@ -290,7 +290,12 @@ exports.importClients = asyncHandler(async (req, res) => {
   const errors = [];
 
   for (const row of data) {
-    const { NOME: name, TELEFONE: phone, "DATA DE NASCIMENTO": birthDate } = row;
+    let { Nome: name, Telefone: phone, "Data Aniversário": birthDate } = row;
+
+    // Tratar birthDate vazio como null para evitar erros de validação
+    if (birthDate === '') {
+      birthDate = null;
+    }
 
     console.log(`Processando linha: ${name}, ${phone}`);
 

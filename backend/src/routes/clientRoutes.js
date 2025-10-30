@@ -4,6 +4,22 @@ const { check } = require("express-validator");
 const { getClientDetails, ...clientController } = require('../controllers/clientController');
 const { protect, authorize } = require('../middlewares/authMiddleware');
 const validate = require("../middlewares/validationMiddleware");
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    const allowedExtensions = [".xlsx", ".csv"];
+    const fileExtension = path.extname(file.originalname).toLowerCase();
+    if (allowedExtensions.includes(fileExtension)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Invalid file type. Only .xlsx and .csv are allowed."));
+    }
+  },
+});
 
 // Validador reutilizável para data de nascimento
 const birthDateValidator = check("birthDate", "Data de nascimento inválida")
@@ -107,15 +123,23 @@ router.route('/:id')
 
 // Rota para enviar mensagem de WhatsApp
 router.post(
-  '/:id/send-message',
+  "/:id/send-message",
   protect,
-  authorize(['Admin']),
+  authorize(["Admin"]),
   [
     check("id", "ID do cliente inválido").isUUID(),
     check("message", "A mensagem é obrigatória").not().isEmpty(),
   ],
   validate,
   clientController.sendMessageToClient
+);
+
+router.post(
+  "/import",
+  protect,
+  authorize(["Admin"]),
+  upload.single("file"),
+  clientController.importClients
 );
 
 module.exports = router;

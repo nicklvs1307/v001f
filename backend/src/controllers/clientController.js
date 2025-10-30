@@ -5,6 +5,7 @@ const { sequelize } = require("../database");
 const ApiError = require("../errors/ApiError");
 
 const whatsappService = require("../services/whatsappService");
+const xlsx = require("xlsx");
 
 // @desc    Criar ou atualizar um cliente (público)
 // @access  Public
@@ -257,4 +258,51 @@ exports.sendMessageToClient = asyncHandler(async (req, res) => {
   await whatsappService.sendTenantMessage(tenantId, client.phone, message);
 
   res.status(200).json({ message: "Mensagem enviada com sucesso!" });
+});
+
+exports.importClients = asyncHandler(async (req, res) => {
+  if (!req.file) {
+    throw new ApiError(400, "Nenhum arquivo enviado.");
+  }
+
+  const tenantId = req.user.tenantId;
+  const workbook = xlsx.read(req.file.buffer, { type: "buffer" });
+  const sheetName = workbook.SheetNames[0];
+  const worksheet = workbook.Sheets[sheetName];
+  const data = xlsx.utils.sheet_to_json(worksheet);
+
+  let importedCount = 0;
+  let skippedCount = 0;
+  const errors = [];
+
+  for (const row of data) {
+    const { NOME: name, TELEFONE: phone, "DATA DE NASCIMENTO": birthDate } = row;
+
+    if (!phone) {
+      errors.push({ row, error: "Número de telefone ausente." });
+      skippedCount++;
+      continue;
+    }
+
+    const existingClient = await clientRepository.findClientByPhone(phone);
+    if (existingClient) {
+      skippedCount++;
+      continue;
+    }
+
+    try {
+      await clientRepository.createClient({ name, phone, birthDate, tenantId });
+      importedCount++;
+    } catch (error) {
+      errors.push({ row, error: error.message });
+      skippedCount++;
+    }
+  }
+
+  res.status(200).json({
+    message: "Importação concluída.",
+    importedCount,
+    skippedCount,
+    errors,
+  });
 });

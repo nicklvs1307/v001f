@@ -4,6 +4,7 @@ import useClients from '../../hooks/useClients';
 import ClientModal from './ClientModal';
 import SendMessageModal from './SendMessageModal';
 import ConfirmationDialog from '../layout/ConfirmationDialog';
+import ImportClientsModal from './ImportClientsModal'; // Import the new modal
 import { 
     Box, Typography, CircularProgress, Alert, Button, IconButton, 
     Grid, Card, CardActionArea, CardContent, CardActions, Avatar, 
@@ -26,6 +27,7 @@ const ClientList = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+    const [isImportModalOpen, setIsImportModalOpen] = useState(false); // State for the import modal
     const [selectedClient, setSelectedClient] = useState(null);
     const [formError, setFormError] = useState('');
 
@@ -49,6 +51,14 @@ const ClientList = () => {
     const handleCloseConfirm = () => {
         setSelectedClient(null);
         setIsConfirmOpen(false);
+    };
+
+    const handleOpenImportModal = () => {
+        setIsImportModalOpen(true);
+    };
+
+    const handleCloseImportModal = () => {
+        setIsImportModalOpen(false);
     };
 
     const handleOpenMessageModal = (client) => {
@@ -109,6 +119,7 @@ const ClientList = () => {
                     sx={{ width: '40%' }}
                 />
                 <Button variant="contained" onClick={() => handleOpenModal()}>Adicionar Novo Cliente</Button>
+                <Button variant="contained" onClick={handleOpenImportModal} sx={{ ml: 2 }}>Importar Clientes</Button>
             </Box>
             {error && <Alert severity="error">{error}</Alert>}
 
@@ -192,6 +203,11 @@ const ClientList = () => {
                 onConfirm={handleClientDelete}
                 title="Confirmar Deleção"
                 description={`Tem certeza que deseja deletar o cliente "${selectedClient?.name}"?`}
+            />
+
+            <ImportClientsModal
+                open={isImportModalOpen}
+                onClose={handleCloseImportModal}
             />
         </Box>
     );

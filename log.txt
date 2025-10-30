@@ -3,4 +3,15 @@
     "code": "HTTP_500",
     "message": "WHERE parameter \"tenantId\" has invalid \"undefined\" value",
     "details": "Error: WHERE parameter \"tenantId\" has invalid \"undefined\" value\n    at /usr/src/app/src/controllers/clientController.js:92:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
+
+URL da solicitação
+https://apiloyalfood.towersfy.com/api/clients/register
+Método da solicitação
+POST
+Código de status
+500 Internal Server Error
+Endereço remoto
+95.217.16.187:443
+
+
 }

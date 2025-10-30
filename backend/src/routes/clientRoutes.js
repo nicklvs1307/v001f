@@ -6,6 +6,7 @@ const { protect, authorize } = require('../middlewares/authMiddleware');
 const validate = require("../middlewares/validationMiddleware");
 const multer = require("multer");
 const path = require("path");
+const { sanitizeBirthDate } = require("../utils/dateUtils");
 
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -25,17 +26,10 @@ const upload = multer({
 const birthDateValidator = check("birthDate", "Data de nascimento inválida")
   .optional({ checkFalsy: true })
   .customSanitizer(value => {
-    if (!value) return null;
-    // Verifica se o formato é DD/MM/YYYY e converte para YYYY-MM-DD
-    const parts = value.split('/');
-    if (parts.length === 3 && parts[2].length === 4) {
-      return `${parts[2]}-${parts[1]}-${parts[0]}`;
-    }
-    return value; // Retorna o valor original se não estiver no formato esperado
+    return sanitizeBirthDate(value);
   })
   .isISO8601()
-  .withMessage('A data de nascimento deve estar no formato DD/MM/AAAA.')
-  .toDate();
+  .withMessage('A data de nascimento deve estar no formato DD/MM/AAAA.');
 
 // Rota pública para auto-cadastro de cliente após pesquisa
 router.post(

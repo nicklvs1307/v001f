@@ -6,6 +6,7 @@ const ApiError = require("../errors/ApiError");
 
 const whatsappService = require("../services/whatsappService");
 const xlsx = require("xlsx");
+const { sanitizeBirthDate } = require("../utils/dateUtils");
 
 // @desc    Criar ou atualizar um cliente (público)
 // @access  Public
@@ -98,6 +99,10 @@ exports.publicRegisterClient = asyncHandler(async (req, res) => {
 exports.createClient = asyncHandler(async (req, res) => {
   const { name, email, phone, birthDate } = req.body;
   const tenantId = req.user.tenantId; // Associa o cliente ao tenant do usuário logado
+
+  if (!tenantId) {
+    throw new ApiError(403, "Tenant ID não encontrado no token do usuário. Acesso negado.");
+  }
 
   if (!name) {
     throw new ApiError(400, "O nome do cliente é obrigatório.");

@@ -1,3 +1,10 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useClients from '../../hooks/useClients';
+import ClientModal from './ClientModal';
+import SendMessageModal from './SendMessageModal';
+import ConfirmationDialog from '../layout/ConfirmationDialog';
+import ImportClientsModal from './ImportClientsModal';
 import { 
     Box, Typography, CircularProgress, Alert, Button, IconButton, 
     Grid, Card, CardActionArea, CardContent, CardActions, Avatar, 

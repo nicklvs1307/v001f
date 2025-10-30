@@ -4,8 +4,6 @@ Método da solicitação
 POST
 Código de status
 500 Internal Server Error
-Endereço remoto
-95.217.16.187:443
 {
     "status": "error",
     "code": "HTTP_500",

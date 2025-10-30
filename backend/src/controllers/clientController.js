@@ -17,6 +17,18 @@ exports.publicRegisterClient = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Nome e ID da sessão de resposta são obrigatórios.");
   }
 
+  // Tratamento para birthDate
+  let parsedBirthDate = null;
+  if (birthDate) {
+    const date = new Date(birthDate);
+    if (!isNaN(date.getTime())) {
+      parsedBirthDate = date;
+    } else {
+      // Se a data for inválida, lançar um erro ou definir como null
+      throw new ApiError(400, "Formato de data de nascimento inválido.");
+    }
+  }
+
   const transaction = await sequelize.transaction();
 
   try {
@@ -47,7 +59,7 @@ exports.publicRegisterClient = asyncHandler(async (req, res) => {
       // Se encontrou o cliente anônimo, atualiza com os dados do formulário
       const updatedClient = await clientRepository.updateClient(
         client.id,
-        { name, email, phone, birthDate },
+        { name, email, phone, birthDate: parsedBirthDate },
         tenantId,
         { transaction }
       );
@@ -69,7 +81,7 @@ exports.publicRegisterClient = asyncHandler(async (req, res) => {
 
     // Se não encontrou nenhum cliente pela sessão, cria um novo
     const newClient = await clientRepository.createClient(
-      { name, email, phone, birthDate, tenantId, respondentSessionId },
+      { name, email, phone, birthDate: parsedBirthDate, tenantId, respondentSessionId },
       { transaction }
     );
 
@@ -295,6 +307,26 @@ exports.importClients = asyncHandler(async (req, res) => {
     // Tratar birthDate vazio como null para evitar erros de validação
     if (birthDate === '') {
       birthDate = null;
+    } else if (typeof birthDate === 'number') {
+      // Se for um número, assume que é um número de série do Excel e converte para data
+      // Excel epoch é 1899-12-30, JavaScript epoch é 1970-01-01
+      // 25569 é o número de dias entre as duas épocas
+      const excelDate = Math.floor(birthDate); // Remove a parte da hora se houver
+      const date = new Date((excelDate - 25569) * 86400 * 1000);
+      // Verifica se a data é válida
+      if (isNaN(date.getTime())) {
+        birthDate = null;
+      } else {
+        birthDate = date;
+      }
+    } else if (typeof birthDate === 'string') {
+      // Tenta parsear a string como data
+      const date = new Date(birthDate);
+      if (isNaN(date.getTime())) {
+        birthDate = null;
+      } else {
+        birthDate = date;
+      }
     }
 
     console.log(`Processando linha: ${name}, ${phone}`);

@@ -1,29 +1,6 @@
- => ERROR [build 6/6] RUN npm run build                                                      172.5s
-------
- > [build 6/6] RUN npm run build:
-0.755
-0.755 > frontend@0.1.0 build
-0.755 > react-scripts build
-0.755
-4.719 Creating an optimized production build...
-172.2 Failed to compile.
-172.2
-172.2 [eslint]
-172.2 src/hooks/useClients.js
-172.2   Line 52:9:   'fetchClients' is not defined  no-undef
-172.2   Line 53:9:   'fetchClients' is not defined  no-undef
-172.2   Line 114:9:  'fetchClients' is not defined  no-undef
-172.2
-172.2 Search for the keywords to learn more about each error.
-172.2
-172.2
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+{
+    "status": "error",
+    "code": "HTTP_500",
+    "message": "WHERE parameter \"tenantId\" has invalid \"undefined\" value",
+    "details": "Error: WHERE parameter \"tenantId\" has invalid \"undefined\" value\n    at /usr/src/app/src/controllers/clientController.js:92:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
+}

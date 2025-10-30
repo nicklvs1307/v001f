@@ -270,6 +270,10 @@ exports.importClients = asyncHandler(async (req, res) => {
   console.log("Arquivo recebido:", req.file.originalname);
 
   const tenantId = req.user.tenantId;
+  if (!tenantId) {
+    throw new ApiError(403, "Tenant ID não encontrado no token do usuário. Acesso negado.");
+  }
+
   const workbook = xlsx.read(req.file.buffer, { type: "buffer" });
   const sheetName = workbook.SheetNames[0];
   const worksheet = workbook.Sheets[sheetName];

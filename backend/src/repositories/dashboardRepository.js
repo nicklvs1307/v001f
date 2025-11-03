@@ -6,20 +6,22 @@ const { fn, col, literal } = Sequelize;
 
 const dashboardRepository = {
     getSummary: async (tenantId = null, startDate = null, endDate = null) => {
-        const whereClause = tenantId ? { tenantId } : {};
         const dateFilter = {};
         if (startDate) dateFilter[Op.gte] = startDate;
         if (endDate) dateFilter[Op.lte] = endDate;
-
-        if (Object.keys(dateFilter).length > 0) {
-            whereClause.createdAt = dateFilter;
+    
+        const ratingResponsesWhere = {
+            ratingValue: { [Op.ne]: null }
+        };
+        if (tenantId) {
+            ratingResponsesWhere.tenantId = tenantId;
         }
-
+        if (Object.keys(dateFilter).length > 0) {
+            ratingResponsesWhere.createdAt = dateFilter;
+        }
+    
         const ratingResponses = await Resposta.findAll({
-            where: {
-                ...whereClause,
-                ratingValue: { [Op.ne]: null }
-            },
+            where: ratingResponsesWhere,
             include: [{
                 model: Pergunta,
                 as: 'pergunta',
@@ -30,27 +32,36 @@ const dashboardRepository = {
                 required: true
             }],
         });
-
+    
         const npsResponses = ratingResponses.filter(r => r.pergunta.type === 'rating_0_10');
         const csatResponses = ratingResponses.filter(r => r.pergunta.type === 'rating_1_5');
-
+    
         const npsResult = ratingService.calculateNPS(npsResponses);
         const csatResult = ratingService.calculateCSAT(csatResponses);
-
-        const totalResponses = await Resposta.count({ where: { ...whereClause, respondentSessionId: { [Op.ne]: null } }, distinct: true, col: 'respondentSessionId' });
+    
+        const totalResponsesWhere = {
+            respondentSessionId: { [Op.ne]: null }
+        };
+        if (tenantId) {
+            totalResponsesWhere.tenantId = tenantId;
+        }
+        if (Object.keys(dateFilter).length > 0) {
+            totalResponsesWhere.createdAt = dateFilter;
+        }
+        const totalResponses = await Resposta.count({ where: totalResponsesWhere, distinct: true, col: 'respondentSessionId' });
         
         const clientWhereClause = tenantId ? { tenantId } : {};
         if (Object.keys(dateFilter).length > 0) {
             clientWhereClause.createdAt = dateFilter;
         }
         const totalUsers = await Client.count({ where: clientWhereClause });
-
+    
         const couponsGeneratedWhere = tenantId ? { tenantId } : {};
         if (Object.keys(dateFilter).length > 0) {
             couponsGeneratedWhere.createdAt = dateFilter;
         }
         const couponsGenerated = await Cupom.count({ where: couponsGeneratedWhere });
-
+    
         const couponsUsedWhere = { status: 'used' };
         if (tenantId) {
             couponsUsedWhere.tenantId = tenantId;
@@ -59,7 +70,7 @@ const dashboardRepository = {
             couponsUsedWhere.updatedAt = dateFilter;
         }
         const couponsUsed = await Cupom.count({ where: couponsUsedWhere });
-
+    
         return {
             nps: {
                 score: npsResult.npsScore,

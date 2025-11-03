@@ -38,7 +38,12 @@ const dashboardRepository = {
         const csatResult = ratingService.calculateCSAT(csatResponses);
 
         const totalResponses = await Resposta.count({ where: { ...whereClause, respondentSessionId: { [Op.ne]: null } }, distinct: true, col: 'respondentSessionId' });
-        const totalUsers = await Client.count({ where: { ...whereClause } });
+        
+        const clientWhereClause = tenantId ? { tenantId } : {};
+        if (Object.keys(dateFilter).length > 0) {
+            clientWhereClause.createdAt = dateFilter;
+        }
+        const totalUsers = await Client.count({ where: clientWhereClause });
 
         const couponsGeneratedWhere = tenantId ? { tenantId } : {};
         if (Object.keys(dateFilter).length > 0) {

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import {
     Box,
@@ -7,7 +6,8 @@ import {
     CardContent,
     CircularProgress,
     TextField,
-    Grid
+    Grid,
+    Container
 } from '@mui/material';
 import { WordCloud } from '@isoterik/react-word-cloud';
 import { ResponsiveContainer } from 'recharts';
@@ -42,14 +42,21 @@ const NuvemDePalavrasPage = () => {
     const wordCloudOptions = {
         rotations: 2,
         rotationAngles: [-90, 0],
-        fontSizes: [40, 120],
+        fontSizes: [60, 180], // Aumentado para melhor visibilidade
         fontWeight: 'bold',
         padding: 10,
     };
 
     return (
-        <Box>
-            <Typography variant="h4" gutterBottom>Nuvem de Palavras</Typography>
+        <Container maxWidth="lg">
+            <Box sx={{ my: 4 }}>
+                <Typography variant="h4" component="h1" gutterBottom>
+                    Nuvem de Palavras
+                </Typography>
+                <Typography variant="subtitle1" gutterBottom>
+                    Visualize as palavras mais frequentes nos feedbacks dos seus clientes.
+                </Typography>
+            </Box>
             
             <Grid container spacing={2} sx={{ mb: 3 }}>
                 <Grid item xs={12} sm={6}>
@@ -75,7 +82,7 @@ const NuvemDePalavrasPage = () => {
             </Grid>
 
             <Card>
-                <CardContent sx={{ height: 500 }}>
+                <CardContent sx={{ height: 500, display: 'flex', justifyContent: 'center', alignItems: 'center' }}> {/* Centralizado */}
                     {loading ? (
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                             <CircularProgress />
@@ -96,7 +103,7 @@ const NuvemDePalavrasPage = () => {
                     )}
                 </CardContent>
             </Card>
-        </Box>
+        </Container>
     );
 };
 

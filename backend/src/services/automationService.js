@@ -71,7 +71,12 @@ const automationService = {
   },
 
   sendDailyReportTest: async (tenantId, phoneNumbers) => {
-    const summary = await dashboardRepository.getSummary(tenantId);
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const startOfYesterday = new Date(new Date(yesterday).setHours(0, 0, 0, 0));
+    const endOfYesterday = new Date(new Date(yesterday).setHours(23, 59, 59, 999));
+
+    const summary = await dashboardRepository.getSummary(tenantId, startOfYesterday, endOfYesterday);
     const report = summary.nps;
     const totalResponses = summary.totalResponses;
     const totalNpsResponses = report.total;

@@ -6,7 +6,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const RootBox = styled(Box)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
+  background: 'linear-gradient(135deg, #FF8C00 0%, #000000 100%)',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -32,7 +32,7 @@ const LoginContainer = styled(Box)(({ theme }) => ({
 
 const WelcomeSection = styled(Box)(({ theme }) => ({
   flex: 1,
-  background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
+  background: 'linear-gradient(135deg, #FF8C00 0%, #000000 100%)',
   color: 'white',
   padding: theme.spacing(5),
   display: 'flex',
@@ -40,6 +40,9 @@ const WelcomeSection = styled(Box)(({ theme }) => ({
   justifyContent: 'center',
   position: 'relative',
   overflow: 'hidden',
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
+  },
   '&::before': {
     content: '""',
     position: 'absolute',

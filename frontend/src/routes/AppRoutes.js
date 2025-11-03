@@ -5,6 +5,7 @@ import PrivateRoute from './PrivateRoute';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import PublicLayout from '../components/layout/PublicLayout'; // Importar PublicLayout
 import LoginPage from '../pages/LoginPage';
+import LandingPage from '../pages/LandingPage'; // Importar a nova LandingPage
 import PublicSurveyPage from '../pages/PublicSurveyPage';
 import ClientRegistrationPage from '../pages/ClientRegistrationPage';
 import RoulettePage from '../pages/RoulettePage';
@@ -70,6 +71,7 @@ const AppRoutes = () => {
     }>
       <Routes>
         {/* Rotas Públicas */}
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/pesquisa/:tenantId/:pesquisaId" element={<PublicSurveyPage />} />
         <Route path="/identificacao-pesquisa/:tenantId/:pesquisaId" element={<SurveyIdentifyPage />} />
@@ -84,7 +86,7 @@ const AppRoutes = () => {
 
         {/* Rotas Privadas */}
         <Route element={<PrivateRoute />}>
-          <Route path="/" element={<DashboardLayout />}>
+          <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<DashboardPage />} />
             <Route path="usuarios" element={<UsersPage />} />
             <Route path="cargos" element={<RolesPage />} />
@@ -138,7 +140,7 @@ const AppRoutes = () => {
         </Route>
 
         {/* Catch-all para rotas não encontradas */}
-        <Route path="*" element={<Navigate to="/login" />} />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Suspense>
   );

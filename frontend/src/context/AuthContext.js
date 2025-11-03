@@ -36,6 +36,7 @@ export const AuthProvider = ({ children }) => {
                 apiAuthenticated.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 try {
                     const userData = await authService.verifyToken(); // authService usará a instância autenticada
+                    console.log("Dados do usuário recebidos:", userData); // Log para inspecionar a resposta
                     setUser(userData);
                 } catch (error) {
                     console.error("Falha na verificação do token:", error.response ? error.response.data : error.message); // Log do erro

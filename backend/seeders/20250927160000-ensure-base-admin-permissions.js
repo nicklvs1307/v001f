@@ -1,5 +1,7 @@
 'use strict';
 
+const { v4: uuidv4 } = require('uuid');
+
 // Lista de permissões essenciais para o papel de Admin
 const adminPermissions = [
   // Dashboard
@@ -37,11 +39,14 @@ const adminPermissions = [
   { module: 'recompensas', action: 'create', description: 'Criar recompensas' },
   { module: 'recompensas', action: 'read', description: 'Visualizar recompensas' },
   { module: 'recompensas', action: 'update', description: 'Atualizar recompensas' },
-  { module: 'recompensas', action: 'delete', description: 'Deletar recompensas' }, // Corrigido para recompensas
+  { module: 'recompensas', action: 'delete', description: 'Deletar recompensas' },
 
   // Cupons
   { module: 'cupons', action: 'read', description: 'Visualizar cupons' },
   { module: 'cupons', action: 'validate', description: 'Validar cupons' },
+
+  // Resultados
+  { module: 'results', action: 'read', description: 'Visualizar resultados consolidados' },
 ];
 
 module.exports = {
@@ -73,7 +78,7 @@ module.exports = {
 
         let permissionId;
         if (!permission || permission.length === 0) {
-          const newPermissionId = require('uuid').v4();
+          const newPermissionId = uuidv4(); // CORRIGIDO
           await queryInterface.bulkInsert('permissoes', [
             {
               id: newPermissionId,

@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }) => {
         const checkUser = async () => {
             const token = localStorage.getItem('userToken');
             if (token) {
+                apiAuthenticated.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 try {
                     const userData = await authService.verifyToken(); // authService usará a instância autenticada
                     setUser(userData);

@@ -1,28 +1,26 @@
- => ERROR [build 6/6] RUN npm run build                                                      170.9s
-------
- > [build 6/6] RUN npm run build:
-0.722
-0.722 > frontend@0.1.0 build
-0.722 > react-scripts build
-0.722
-4.391 Creating an optimized production build...
-169.4 Failed to compile.
-169.4
-169.4 [eslint]
-169.4 src/context/AuthContext.js
-169.4   Line 51:46:  'login' is not defined        no-undef
-169.4   Line 51:70:  'refreshUser' is not defined  no-undef
-169.4
-169.4 Search for the keywords to learn more about each error.
-169.4
-169.4
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+AuthContext.js:71 AuthContext - User: null Loading: true
+AuthContext.js:71 AuthContext - User: {userId: 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5', tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd', role: 'Admin', name: 'Lucas', profilePictureUrl: null, …} Loading: false
+AuthContext.js:71 AuthContext - User: {userId: 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5', tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd', role: 'Admin', name: 'Lucas', profilePictureUrl: null, …} Loading: false
+PrivateRoute.js:8 PrivateRoute - User: {userId: 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5', tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd', role: 'Admin', name: 'Lucas', profilePictureUrl: null, …} Loading: false
+PrivateRoute.js:8 PrivateRoute - User: {userId: 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5', tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd', role: 'Admin', name: 'Lucas', profilePictureUrl: null, …} Loading: false
+AuthContext.js:71 AuthContext - User: {userId: 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5', tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd', role: 'Admin', name: 'Lucas', profilePictureUrl: null, …} Loading: false
+PrivateRoute.js:8 PrivateRoute - User: {userId: 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5', tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd', role: 'Admin', name: 'Lucas', profilePictureUrl: null, …} Loading: false
+main.41af3f2f.js:2 [Violation] 'message' handler took 179ms
+AuthContext.js:71 AuthContext - User: {userId: 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5', tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd', role: 'Admin', name: 'Lucas', profilePictureUrl: null, …} Loading: false
+AuthContext.js:71 AuthContext - User: {userId: 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5', tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd', role: 'Admin', name: 'Lucas', profilePictureUrl: null, …} Loading: false
+AuthContext.js:71 AuthContext - User: {userId: 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5', tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd', role: 'Admin', name: 'Lucas', profilePictureUrl: null, …} Loading: false
+AuthContext.js:71 AuthContext - User: {userId: 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5', tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd', role: 'Admin', name: 'Lucas', profilePictureUrl: null, …} Loading: false
+
+
+{
+    "userId": "bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5",
+    "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd",
+    "role": "Admin",
+    "name": "Lucas",
+    "profilePictureUrl": null,
+    "tenantName": "Roma Pizzaria & Chopperiaaa",
+    "iat": 1762208634,
+    "exp": 1762813434,
+    "primaryColor": "#313131",
+    "secondaryColor": "#8e2306"
+}

@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const logout = useCallback(() => {
+        console.log("Logout acionado!");
         localStorage.removeItem('userToken');
         delete apiAuthenticated.defaults.headers.common['Authorization'];
         setUser(null);
@@ -67,8 +68,6 @@ export const AuthProvider = ({ children }) => {
             logout();
         }
     }, [logout]);
-
-    console.log('AuthContext - User:', user, 'Loading:', loading);
 
     return (
         <AuthContext.Provider value={{ user, login, logout, loading, refreshUser }}>

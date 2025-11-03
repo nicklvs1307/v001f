@@ -1,15 +1,23 @@
-🎨 Paleta Estratégica Voltaki
-Tipo	Cor	HEX	Função / Psicologia
-Primária (Brand)	🔴 Vermelho Voltaki	#FC4C35	Cor principal da marca. Transmite energia, urgência e ação — perfeita pra botões principais e destaques.
-Secundária (Complementar suave)	🟢 Verde-azulado	#1EBFAE	Complementar equilibrada. Passa confiança e frescor, ideal pra áreas secundárias e elementos de interface (links, ícones, gráficos).
-Apoio (Contraste frio)	🔵 Azul escuro / marinho	#1B2432	Fundo escuro sofisticado. Dá profundidade e realça o vermelho. Excelente pra header, dashboard e seções de destaque.
-Neutro claro (base)	⚪ Cinza gelo	#F6F7F9	Fundo principal de telas, leve e limpo. Dá espaço pro conteúdo respirar.
-Texto principal	⚫ Cinza carvão	#2B2B2B	Ótimo contraste em fundos claros. Evita o preto puro (melhor pra leitura prolongada).
-Destaque de sucesso / confirmação	🟩 Verde limão suave	#B7E66F	Usa em confirmações de ação (“check-in realizado”, “cupom ativado”). Gera sensação positiva.
-Alerta / erro	🟠 Laranja queimado	#E86B42	Próxima da cor primária, mas um tom mais escuro pra alertas sem perder coerência.
-💡 Estrutura sugerida de uso no site / sistema
-Área	Fundo	Texto	Botão / Ação	Hover
-Header / Navbar	#1B2432	#FFFFFF	#FC4C35	#E6452F
-Seções principais	#F6F7F9	#2B2B2B	#FC4C35	#1EBFAE
-Dashboard / Cards	#FFFFFF	#2B2B2B	Ícones #FC4C35	Sombras suaves rgba(0,0,0,0.1)
-Rodapé	#1B2432	#FFFFFF	Links #1EBFAE	#17A396
+main.be5b4433.js:sourcemap:2 TypeError: ye is not a function
+    at main.be5b4433.js:sourcemap:2:679256
+    at Object.useMemo (main.be5b4433.js:sourcemap:2:398397)
+    at t.useMemo (main.be5b4433.js:sourcemap:2:35568)
+    at Yo (main.be5b4433.js:sourcemap:2:679119)
+    at gi (main.be5b4433.js:sourcemap:2:392031)
+    at Sl (main.be5b4433.js:sourcemap:2:451672)
+    at bc (main.be5b4433.js:sourcemap:2:440780)
+    at vc (main.be5b4433.js:sourcemap:2:440708)
+    at gc (main.be5b4433.js:sourcemap:2:440571)
+    at ac (main.be5b4433.js:sourcemap:2:437351)
+ds @ main.be5b4433.js:sourcemap:2
+main.be5b4433.js:sourcemap:2 Uncaught TypeError: ye is not a function
+    at main.be5b4433.js:sourcemap:2:679256
+    at Object.useMemo (main.be5b4433.js:sourcemap:2:398397)
+    at t.useMemo (main.be5b4433.js:sourcemap:2:35568)
+    at Yo (main.be5b4433.js:sourcemap:2:679119)
+    at gi (main.be5b4433.js:sourcemap:2:392031)
+    at Sl (main.be5b4433.js:sourcemap:2:451672)
+    at bc (main.be5b4433.js:sourcemap:2:440780)
+    at vc (main.be5b4433.js:sourcemap:2:440708)
+    at gc (main.be5b4433.js:sourcemap:2:440571)
+    at ac (main.be5b4433.js:sourcemap:2:437351)

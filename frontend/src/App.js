@@ -1,36 +1,20 @@
-import React, { useContext, useMemo } from 'react';
+import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import AuthContext, { AuthProvider } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from '@mui/material/styles';
-import getDynamicTheme from './theme'; // Importar a função getDynamicTheme
+import theme from './theme'; // Importar o objeto de tema
 import AppRoutes from './routes/AppRoutes'; // Importar o novo componente de rotas
 
 function App() {
   return (
     <Router>
       <AuthProvider>
-        <ThemeWrapper>
+        <ThemeProvider theme={theme}>
           <AppRoutes /> {/* Usar o componente AppRoutes */}
-        </ThemeWrapper>
+        </ThemeProvider>
       </AuthProvider>
     </Router>
   );
 }
 
-function ThemeWrapper({ children }) {
-  const { user } = useContext(AuthContext);
-  const dynamicTheme = useMemo(() => {
-    const primaryColor = user?.primaryColor || '#4e73df';
-    const secondaryColor = user?.secondaryColor || '#6f42c1';
-    return getDynamicTheme(primaryColor, secondaryColor);
-  }, [user?.primaryColor, user?.secondaryColor]);
-
-  return (
-    <ThemeProvider theme={dynamicTheme}>
-      {children}
-    </ThemeProvider>
-  );
-}
-
 export default App;
-

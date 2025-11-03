@@ -140,7 +140,7 @@ const AppRoutes = () => {
         </Route>
 
         {/* Catch-all para rotas não encontradas */}
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Suspense>
   );

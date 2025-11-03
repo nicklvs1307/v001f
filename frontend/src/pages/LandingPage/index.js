@@ -30,7 +30,7 @@ const Header = () => {
 
   const drawer = (
     <Box
-      sx={{ width: 250 }}
+      sx={{ width: 250, backgroundColor: 'dark.main', height: '100%' }}
       role="presentation"
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
@@ -38,7 +38,7 @@ const Header = () => {
       <List>
         {navLinks.map((link) => (
           <ListItem key={link.text} disablePadding>
-            <ListItemButton component="a" href={link.href}>
+            <ListItemButton component="a" href={link.href} sx={{ color: 'white' }}>
               <ListItemText primary={link.text} />
             </ListItemButton>
           </ListItem>
@@ -51,10 +51,8 @@ const Header = () => {
     <AppBar 
       position="fixed" 
       sx={{ 
-        background: 'rgba(255, 255, 255, 0.85)', 
-        backdropFilter: 'blur(10px)', 
-        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.17)',
-        color: 'text.primary'
+        backgroundColor: 'dark.main',
+        color: 'white'
       }}
     >
       <Container>
@@ -122,12 +120,10 @@ const HeroSection = () => (
         <Grid item xs={12} md={6}>
           <Typography 
             component="h1" 
+            color="text.primary"
             sx={{ 
               fontWeight: 800, 
               letterSpacing: '-0.02em', 
-              background: 'linear-gradient(135deg, #327DFA, #FA4D32)', 
-              WebkitBackgroundClip: 'text', 
-              WebkitTextFillColor: 'transparent',
               fontSize: { xs: '2.8rem', sm: '3.5rem', md: '4rem' }
             }}
           >
@@ -136,7 +132,7 @@ const HeroSection = () => (
           <Typography variant="h6" color="text.secondary" sx={{ my: { xs: 3, md: 4 }, maxWidth: { xs: '100%', md: '90%' } }}>
             Com o Feedeliza, você cria um programa de fidelidade e pesquisas de satisfação em minutos, aumenta a recorrência e transforma seu restaurante em um sucesso.
           </Typography>
-          <Button component="a" href="#funcionalidades" variant="outlined" color="primary" size="large" sx={{ borderRadius: '50px', fontWeight: 700, px: 4, py: 1.5 }}>
+          <Button component="a" href="#funcionalidades" variant="contained" color="primary" size="large" sx={{ borderRadius: '50px', fontWeight: 700, px: 4, py: 1.5 }}>
             Descubra Como
           </Button>
         </Grid>
@@ -158,7 +154,7 @@ const features = [
 const FeaturesSection = () => (
   <Box id="funcionalidades" sx={{ py: { xs: 8, md: 12 }, backgroundColor: 'background.default' }}>
     <Container>
-      <Typography variant="h3" component="h2" sx={{ textAlign: 'center', mb: { xs: 6, md: 8 }, fontWeight: 700, fontSize: { xs: '2.2rem', md: '3rem' } }}>
+      <Typography variant="h3" component="h2" color="text.primary" sx={{ textAlign: 'center', mb: { xs: 6, md: 8 }, fontWeight: 700, fontSize: { xs: '2.2rem', md: '3rem' } }}>
         Funcionalidades Poderosas para o seu Restaurante
       </Typography>
       <Grid container spacing={4}>
@@ -166,7 +162,7 @@ const FeaturesSection = () => (
           <Grid item xs={12} sm={6} md={4} key={index}>
             <Paper elevation={3} sx={{ p: { xs: 3, md: 4 }, textAlign: 'center', borderRadius: '16px', transition: 'all 0.3s', '&:hover': { transform: 'translateY(-10px)', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }, height: '100%' }}>
               <Box sx={{ color: 'primary.main', fontSize: '3rem', mb: 2 }}>{feature.icon}</Box>
-              <Typography variant="h6" component="h3" sx={{ fontWeight: 700, mb: 1 }}>{feature.title}</Typography>
+              <Typography variant="h6" component="h3" color="text.primary" sx={{ fontWeight: 700, mb: 1 }}>{feature.title}</Typography>
               <Typography color="text.secondary">{feature.description}</Typography>
             </Paper>
           </Grid>
@@ -199,15 +195,15 @@ const testimonials = [
 ];
 
 const TestimonialsSection = () => (
-  <Box id="depoimentos" sx={{ py: { xs: 8, md: 12 } }}>
+  <Box id="depoimentos" sx={{ py: { xs: 8, md: 12 }, backgroundColor: 'background.paper' }}>
     <Container>
-      <Typography variant="h3" component="h2" sx={{ textAlign: 'center', mb: { xs: 6, md: 8 }, fontWeight: 700, fontSize: { xs: '2.2rem', md: '3rem' } }}>
+      <Typography variant="h3" component="h2" color="text.primary" sx={{ textAlign: 'center', mb: { xs: 6, md: 8 }, fontWeight: 700, fontSize: { xs: '2.2rem', md: '3rem' } }}>
         O que nossos clientes dizem
       </Typography>
       <Grid container spacing={4}>
         {testimonials.map((testimonial, index) => (
           <Grid item xs={12} md={4} key={index}>
-            <Paper elevation={3} sx={{ p: 4, borderRadius: '16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <Paper elevation={0} sx={{ p: 4, borderRadius: '16px', display: 'flex', flexDirection: 'column', height: '100%', backgroundColor: 'background.default' }}>
               <Typography variant="body1" sx={{ fontStyle: 'italic', mb: 2, flexGrow: 1 }}>"{testimonial.text}"</Typography>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <img src={testimonial.avatar} alt={testimonial.author} style={{ width: 60, height: 60, borderRadius: '50%', marginRight: '15px' }} />
@@ -234,22 +230,22 @@ const pricingTiers = [
 const PricingSection = () => (
   <Box id="precos" sx={{ py: { xs: 8, md: 12 }, backgroundColor: 'background.default' }}>
     <Container>
-      <Typography variant="h3" component="h2" sx={{ textAlign: 'center', mb: { xs: 6, md: 8 }, fontWeight: 700, fontSize: { xs: '2.2rem', md: '3rem' } }}>Planos e Preços</Typography>
+      <Typography variant="h3" component="h2" color="text.primary" sx={{ textAlign: 'center', mb: { xs: 6, md: 8 }, fontWeight: 700, fontSize: { xs: '2.2rem', md: '3rem' } }}>Planos e Preços</Typography>
       <Grid container spacing={4} alignItems="flex-end">
         {pricingTiers.map((tier) => (
           <Grid item key={tier.title} xs={12} md={4}>
-            <Paper elevation={tier.recommended ? 8 : 3} sx={{ p: 4, borderRadius: '16px', border: tier.recommended ? '2px solid' : 'none', borderColor: 'primary.main', transform: tier.recommended ? 'scale(1.05)' : 'none', transition: 'all 0.3s' }}>
+            <Paper elevation={tier.recommended ? 8 : 3} sx={{ p: 4, borderRadius: '16px', border: tier.recommended ? '2px solid' : '1px solid #e0e0e0', borderColor: 'primary.main', transition: 'all 0.3s' }}>
               {tier.recommended && <Typography sx={{ background: 'primary.main', color: 'white', p: '4px 8px', borderRadius: '8px', display: 'inline-block', mb: 2, fontSize: '0.8rem', fontWeight: 'bold' }}>MAIS POPULAR</Typography>}
-              <Typography variant="h5" component="h3" sx={{ fontWeight: 'bold' }}>{tier.title}</Typography>
+              <Typography variant="h5" component="h3" color="text.primary" sx={{ fontWeight: 'bold' }}>{tier.title}</Typography>
               <Typography color="text.secondary" sx={{ mb: 2 }}>{tier.description}</Typography>
               <Box sx={{ display: 'flex', alignItems: 'baseline', my: 2 }}>
-                <Typography variant="h3" component="p" sx={{ fontWeight: 'bold' }}>R${tier.price}</Typography>
+                <Typography variant="h3" component="p" color="text.primary" sx={{ fontWeight: 'bold' }}>R${tier.price}</Typography>
                 <Typography variant="h6" color="text.secondary">/mês</Typography>
               </Box>
               <ul style={{ listStyle: 'none', padding: 0, margin: '20px 0' }}>
                 {tier.features.map((feature) => (
                   <Typography component="li" key={feature} sx={{ mb: 1, display: 'flex', alignItems: 'center' }}>
-                    <FaCheck style={{ color: '#C3FA32', marginRight: '8px' }} /> {feature}
+                    <FaCheck style={{ color: '#B7E66F', marginRight: '8px' }} /> {feature}
                   </Typography>
                 ))}
               </ul>
@@ -264,21 +260,21 @@ const PricingSection = () => (
 
 // Seção de Contato
 const ContactSection = () => (
-  <Box id="contato" sx={{ py: { xs: 8, md: 12 }, background: 'linear-gradient(135deg, #FA4D32 0%, #327DFA 100%)', color: 'white' }}>
+  <Box id="contato" sx={{ py: { xs: 8, md: 12 }, backgroundColor: 'dark.main', color: 'white' }}>
     <Container>
       <Typography variant="h3" component="h2" sx={{ textAlign: 'center', mb: { xs: 6, md: 8 }, fontWeight: 700, fontSize: { xs: '2.2rem', md: '3rem' } }}>Entre em Contato</Typography>
       <Grid container spacing={6} alignItems="center">
         <Grid item xs={12} md={6}>
           <Typography variant="h5" sx={{ fontWeight: 600 }}>Ficou com alguma dúvida?</Typography>
-          <Typography sx={{ my: 2, color: 'rgba(255, 255, 255, 0.8)' }}>Preencha o formulário ao lado e nossa equipe entrará em contato o mais breve possível para uma demonstração completa da plataforma.</Typography>
+          <Typography sx={{ my: 2, color: 'rgba(255, 255, 255, 0.7)' }}>Preencha o formulário ao lado e nossa equipe entrará em contato o mais breve possível para uma demonstração completa da plataforma.</Typography>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: { xs: 3, md: 4 }, borderRadius: '16px', background: 'rgba(255,255,255,0.9)' }}>
+          <Paper sx={{ p: { xs: 3, md: 4 }, borderRadius: '16px' }}>
             <Grid container spacing={2}>
-              <Grid item xs={12}><TextField fullWidth label="Nome" variant="filled" /></Grid>
-              <Grid item xs={12}><TextField fullWidth label="E-mail" variant="filled" /></Grid>
-              <Grid item xs={12}><TextField fullWidth label="Telefone" variant="filled" /></Grid>
-              <Grid item xs={12}><TextField fullWidth label="Mensagem" multiline rows={4} variant="filled" /></Grid>
+              <Grid item xs={12}><TextField fullWidth label="Nome" variant="outlined" /></Grid>
+              <Grid item xs={12}><TextField fullWidth label="E-mail" variant="outlined" /></Grid>
+              <Grid item xs={12}><TextField fullWidth label="Telefone" variant="outlined" /></Grid>
+              <Grid item xs={12}><TextField fullWidth label="Mensagem" multiline rows={4} variant="outlined" /></Grid>
               <Grid item xs={12}><Button fullWidth variant="contained" color="primary" size="large">Enviar Mensagem</Button></Grid>
             </Grid>
           </Paper>
@@ -290,23 +286,23 @@ const ContactSection = () => (
 
 // Rodapé
 const Footer = () => (
-  <Box sx={{ backgroundColor: 'grey.900', color: 'white', py: { xs: 6, md: 8 } }}>
+  <Box sx={{ backgroundColor: 'dark.main', color: 'white', py: { xs: 6, md: 8 } }}>
     <Container>
       <Grid container spacing={4}>
         <Grid item xs={12} md={4}>
-          <img src="/logo.png" alt="Feedeliza Logo" style={{ height: '40px', marginBottom: '20px', filter: 'brightness(0) invert(1)' }} />
+          <img src="/logo.png" alt="Feedeliza Logo" style={{ height: '40px', marginBottom: '20px' }} />
           <Typography sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>A solução premium para restaurantes que desejam transformar clientes em fãs e aumentar suas vendas.</Typography>
         </Grid>
         <Grid item xs={6} md={2}>
           <Typography variant="h6" sx={{ mb: 2 }}>Links</Typography>
-          <Link href="#funcionalidades" color="inherit" display="block" sx={{ mb: 1, textDecoration: 'none', color: 'rgba(255, 255, 255, 0.7)', '&:hover': { color: 'white' } }}>Funcionalidades</Link>
-          <Link href="#depoimentos" color="inherit" display="block" sx={{ mb: 1, textDecoration: 'none', color: 'rgba(255, 255, 255, 0.7)', '&:hover': { color: 'white' } }}>Depoimentos</Link>
-          <Link href="#precos" color="inherit" display="block" sx={{ mb: 1, textDecoration: 'none', color: 'rgba(255, 255, 255, 0.7)', '&:hover': { color: 'white' } }}>Preços</Link>
+          <Link href="#funcionalidades" color="inherit" display="block" sx={{ mb: 1, textDecoration: 'none', color: 'secondary.main', '&:hover': { color: '#17A396' } }}>Funcionalidades</Link>
+          <Link href="#depoimentos" color="inherit" display="block" sx={{ mb: 1, textDecoration: 'none', color: 'secondary.main', '&:hover': { color: '#17A396' } }}>Depoimentos</Link>
+          <Link href="#precos" color="inherit" display="block" sx={{ mb: 1, textDecoration: 'none', color: 'secondary.main', '&:hover': { color: '#17A396' } }}>Preços</Link>
         </Grid>
         <Grid item xs={6} md={2}>
           <Typography variant="h6" sx={{ mb: 2 }}>Legal</Typography>
-          <Link href="#" color="inherit" display="block" sx={{ mb: 1, textDecoration: 'none', color: 'rgba(255, 255, 255, 0.7)', '&:hover': { color: 'white' } }}>Termos de Uso</Link>
-          <Link href="#" color="inherit" display="block" sx={{ mb: 1, textDecoration: 'none', color: 'rgba(255, 255, 255, 0.7)', '&:hover': { color: 'white' } }}>Política de Privacidade</Link>
+          <Link href="#" color="inherit" display="block" sx={{ mb: 1, textDecoration: 'none', color: 'secondary.main', '&:hover': { color: '#17A396' } }}>Termos de Uso</Link>
+          <Link href="#" color="inherit" display="block" sx={{ mb: 1, textDecoration: 'none', color: 'secondary.main', '&:hover': { color: '#17A396' } }}>Política de Privacidade</Link>
         </Grid>
         <Grid item xs={12} md={4}>
           <Typography variant="h6" sx={{ mb: 2 }}>Social</Typography>

@@ -1,147 +1,73 @@
 import { createTheme } from '@mui/material/styles';
 
-const getDynamicTheme = (primaryColor = '#FA4D32', secondaryColor = '#327DFA') => createTheme({
+const theme = createTheme({
   palette: {
     primary: {
-      main: primaryColor,
+      main: '#FC4C35',
+      contrastText: '#FFFFFF',
     },
     secondary: {
-      main: secondaryColor,
+      main: '#1EBFAE',
+      contrastText: '#FFFFFF',
     },
     success: {
-      main: '#C3FA32', // --success
+      main: '#B7E66F',
     },
-    info: {
-      main: '#36b9cc', // --info
-    },
-    warning: {
-      main: '#f6c23e', // --warning
-    },
-    danger: {
-      main: '#e74a3b', // --danger
-    },
-    light: {
-      main: '#f8f9fc', // --light
+    error: {
+      main: '#E86B42',
     },
     dark: {
-      main: '#5a5c69', // --dark
+      main: '#1B2432',
     },
     background: {
-      default: '#f8f9fc', // body background
+      default: '#F6F7F9',
+      paper: '#FFFFFF',
     },
-    gender: {
-      masculino: '#36b9cc',
-      feminino: '#f6c23e',
-      outro: '#5a5c69'
+    text: {
+      primary: '#2B2B2B',
+      secondary: '#64748b',
     },
   },
   typography: {
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
   },
   components: {
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          border: 'none',
-          borderRadius: '10px',
-          boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-          marginBottom: '20px',
-          transition: 'all 0.3s',
-          '&:hover': {
-            boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
-          },
-        },
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          borderRadius: '10px',
-          boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-          transition: 'all 0.3s',
-          '&:hover': {
-            boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
-          },
-        },
-      },
-    },
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: 'white',
-          color: '#5a5c69', // Cor do texto do header
-          borderBottom: '1px solid #e3e6f0',
-          boxShadow: 'none',
+          backgroundColor: '#1B2432',
+          color: '#FFFFFF',
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: '50px',
+          textTransform: 'none',
+          fontWeight: 700,
+        },
+        containedPrimary: {
+          '&:hover': {
+            backgroundColor: '#E6452F',
+          },
+        },
+        containedSecondary: {
+          '&:hover': {
+            backgroundColor: '#17A396',
+          },
         },
       },
     },
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          background: 'linear-gradient(180deg, #000000 0%, #434343 100%)',
+          background: '#1B2432',
           color: 'white',
-          '&::-webkit-scrollbar': {
-            width: '8px',
-          },
-          '&::-webkit-scrollbar-track': {
-            background: 'rgba(0, 0, 0, 0.1)',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            background: 'rgba(255, 255, 255, 0.5)',
-            borderRadius: '4px',
-          },
-          '&::-webkit-scrollbar-thumb:hover': {
-            background: 'rgba(255, 255, 255, 0.7)',
-          },
         },
       },
-    },
-    MuiListItemButton: {
-      styleOverrides: {
-        root: {
-          color: 'rgba(255, 255, 255, 0.8)',
-          '&:hover': {
-            color: 'white',
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          },
-          '&.Mui-selected': {
-            color: 'white',
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            '&:hover': {
-              backgroundColor: 'rgba(255, 255, 255, 0.15)',
-            },
-          },
-        },
-      },
-    },
-    MuiListItemIcon: {
-      styleOverrides: {
-        root: {
-          color: 'inherit', // Garante que o ícone herde a cor do ListItemButton
-        },
-      },
-    },
-    MuiButton: {
-      variants: [
-        {
-          props: { className: 'btn-checkin' },
-          style: {
-            background: 'linear-gradient(45deg, #4e73df, #6f42c1)',
-            color: 'white',
-            fontWeight: 'bold',
-            padding: '15px 30px',
-            borderRadius: '50px',
-            border: 'none',
-            fontSize: '1.2rem',
-            '&:hover': {
-              background: 'linear-gradient(45deg, #4e73df, #6f42c1)', // Manter o gradiente no hover
-              opacity: 0.9,
-            },
-          },
-        },
-      ],
     },
   },
 });
 
-export default getDynamicTheme;
+export default theme;

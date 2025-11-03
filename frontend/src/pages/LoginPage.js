@@ -31,16 +31,16 @@ const LoginPage = () => {
 
     return (
         <LoginLayout>
-            <Typography variant="h5" component="h2" gutterBottom sx={{ textAlign: 'center', color: '#333', fontWeight: 600 }}>
+            <Typography variant="h5" component="h2" gutterBottom sx={{ textAlign: 'center', color: 'text.primary', fontWeight: 600 }}>
                 Fazer Login
             </Typography>
-            <Typography variant="body2" paragraph sx={{ textAlign: 'center', color: '#777', mb: 4 }}>
+            <Typography variant="body2" paragraph sx={{ textAlign: 'center', color: 'text.secondary', mb: 4 }}>
                 Entre com suas credenciais para acessar sua conta
             </Typography>
             
             <form onSubmit={handleSubmit}>
                 <Box sx={{ mb: 3 }}>
-                    <Typography variant="body2" component="label" htmlFor="email" sx={{ display: 'block', mb: 1, color: '#555', fontWeight: 500 }}>
+                    <Typography variant="body2" component="label" htmlFor="email" sx={{ display: 'block', mb: 1, color: 'text.primary', fontWeight: 500 }}>
                         E-mail
                     </Typography>
                     <TextField
@@ -54,23 +54,19 @@ const LoginPage = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         InputProps={{
                             startAdornment: (
-                                <EmailIcon sx={{ color: '#777', mr: 1 }} />
+                                <EmailIcon color="action" sx={{ mr: 1 }} />
                             ),
                         }}
                         sx={{
                             '& .MuiOutlinedInput-root': {
                                 borderRadius: '10px',
-                                paddingLeft: '0px',
-                            },
-                            '& .MuiInputBase-input': {
-                                padding: '15px 15px 15px 0px',
                             },
                         }}
                     />
                 </Box>
                 
                 <Box sx={{ mb: 3 }}>
-                    <Typography variant="body2" component="label" htmlFor="password" sx={{ display: 'block', mb: 1, color: '#555', fontWeight: 500 }}>
+                    <Typography variant="body2" component="label" htmlFor="password" sx={{ display: 'block', mb: 1, color: 'text.primary', fontWeight: 500 }}>
                         Senha
                     </Typography>
                     <TextField
@@ -85,16 +81,12 @@ const LoginPage = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         InputProps={{
                             startAdornment: (
-                                <LockIcon sx={{ color: '#777', mr: 1 }} />
+                                <LockIcon color="action" sx={{ mr: 1 }} />
                             ),
                         }}
                         sx={{
                             '& .MuiOutlinedInput-root': {
                                 borderRadius: '10px',
-                                paddingLeft: '0px',
-                            },
-                            '& .MuiInputBase-input': {
-                                padding: '15px 15px 15px 0px',
                             },
                         }}
                     />
@@ -102,11 +94,11 @@ const LoginPage = () => {
                 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, fontSize: '14px' }}>
                     <FormControlLabel
-                        control={<Checkbox id="remember" />}
+                        control={<Checkbox id="remember" color="primary" />}
                         label="Lembrar-me"
-                        sx={{ '.MuiFormControlLabel-label': { fontSize: '14px', color: '#555' } }}
+                        sx={{ '.MuiFormControlLabel-label': { fontSize: '14px', color: 'text.secondary' } }}
                     />
-                    <MuiLink href="#" variant="body2" sx={{ color: '#6a11cb', textDecoration: 'none', fontWeight: 500, '&:hover': { textDecoration: 'underline' } }}>
+                    <MuiLink href="#" variant="body2" color="secondary" sx={{ textDecoration: 'none', fontWeight: 500, '&:hover': { textDecoration: 'underline' } }}>
                         Esqueceu a senha?
                     </MuiLink>
                 </Box>
@@ -115,20 +107,15 @@ const LoginPage = () => {
                     type="submit"
                     fullWidth
                     variant="contained"
+                    color="primary"
                     disabled={loading}
                     sx={{
                         padding: '15px',
-                        background: 'linear-gradient(135deg, #FA4D32 0%, #327DFA 100%)',
-                        color: 'white',
                         borderRadius: '10px',
                         fontSize: '16px',
                         fontWeight: 600,
                         textTransform: 'none',
                         mb: 3,
-                        '&:hover': {
-                            transform: 'translateY(-2px)',
-                            boxShadow: '0 5px 15px rgba(250, 77, 50, 0.4)',
-                        },
                     }}
                 >
                     {loading ? 'Entrando...' : 'Entrar'}

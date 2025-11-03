@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
         // Adiciona o token aos headers da instância autenticada para futuras requisições
         apiAuthenticated.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         setUser(decodedUser);
-        navigate('/'); // Redireciona para a página principal após o login
+        navigate('/dashboard'); // Redireciona para a página principal após o login
     } catch (error) {
         // O erro da chamada da API será propagado para quem chamou (LoginPage)
         throw error;

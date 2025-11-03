@@ -118,7 +118,7 @@ const LoginPage = () => {
                     disabled={loading}
                     sx={{
                         padding: '15px',
-                        background: 'linear-gradient(135deg, #FF8C00 0%, #000000 100%)',
+                        background: 'linear-gradient(135deg, #FA4D32 0%, #327DFA 100%)',
                         color: 'white',
                         borderRadius: '10px',
                         fontSize: '16px',
@@ -127,7 +127,7 @@ const LoginPage = () => {
                         mb: 3,
                         '&:hover': {
                             transform: 'translateY(-2px)',
-                            boxShadow: '0 5px 15px rgba(255, 140, 0, 0.4)',
+                            boxShadow: '0 5px 15px rgba(250, 77, 50, 0.4)',
                         },
                     }}
                 >

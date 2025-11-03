@@ -125,7 +125,7 @@ const HeroSection = () => (
             sx={{ 
               fontWeight: 800, 
               letterSpacing: '-0.02em', 
-              background: 'linear-gradient(135deg, #5a5c69, #4e73df)', 
+              background: 'linear-gradient(135deg, #327DFA, #FA4D32)', 
               WebkitBackgroundClip: 'text', 
               WebkitTextFillColor: 'transparent',
               fontSize: { xs: '2.8rem', sm: '3.5rem', md: '4rem' }
@@ -249,7 +249,7 @@ const PricingSection = () => (
               <ul style={{ listStyle: 'none', padding: 0, margin: '20px 0' }}>
                 {tier.features.map((feature) => (
                   <Typography component="li" key={feature} sx={{ mb: 1, display: 'flex', alignItems: 'center' }}>
-                    <FaCheck style={{ color: '#1cc88a', marginRight: '8px' }} /> {feature}
+                    <FaCheck style={{ color: '#C3FA32', marginRight: '8px' }} /> {feature}
                   </Typography>
                 ))}
               </ul>
@@ -264,7 +264,7 @@ const PricingSection = () => (
 
 // Seção de Contato
 const ContactSection = () => (
-  <Box id="contato" sx={{ py: { xs: 8, md: 12 }, background: 'linear-gradient(135deg, #4e73df 0%, #6f42c1 100%)', color: 'white' }}>
+  <Box id="contato" sx={{ py: { xs: 8, md: 12 }, background: 'linear-gradient(135deg, #FA4D32 0%, #327DFA 100%)', color: 'white' }}>
     <Container>
       <Typography variant="h3" component="h2" sx={{ textAlign: 'center', mb: { xs: 6, md: 8 }, fontWeight: 700, fontSize: { xs: '2.2rem', md: '3rem' } }}>Entre em Contato</Typography>
       <Grid container spacing={6} alignItems="center">

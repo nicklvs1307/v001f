@@ -92,11 +92,3 @@ exports.verifyToken = asyncHandler(async (req, res) => {
   // Apenas retornamos os dados do usuário para o frontend.
   res.json(req.user);
 });
-
-// Função para verificar o token
-exports.verifyToken = asyncHandler(async (req, res) => {
-  // O middleware de autenticação já validou o token e anexou os dados do usuário a req.user
-  // Se chegamos aqui, o token é válido.
-  // Apenas retornamos os dados do usuário para o frontend.
-  res.json(req.user);
-});

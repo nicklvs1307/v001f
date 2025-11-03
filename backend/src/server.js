@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 console.log('Server.js is being executed!');
 
 process.on('unhandledRejection', (reason, promise) => {

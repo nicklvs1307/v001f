@@ -45,6 +45,29 @@ export const AuthProvider = ({ children }) => {
         checkUser();
     }, [logout]);
 
+    const login = async (credentials) => {
+        try {
+            const { token } = await authService.login(credentials);
+            const decodedUser = jwtDecode(token);
+            localStorage.setItem('userToken', token);
+            apiAuthenticated.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            setUser(decodedUser);
+            navigate('/dashboard');
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    const refreshUser = useCallback(async () => {
+        try {
+            const userData = await authService.verifyToken();
+            setUser(userData);
+        } catch (error) {
+            console.error("Falha ao atualizar os dados do usuário", error);
+            logout();
+        }
+    }, [logout]);
+
     console.log('AuthContext - User:', user, 'Loading:', loading);
 
     return (

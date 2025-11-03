@@ -6,6 +6,8 @@ const { fn, col, literal } = Sequelize;
 
 const dashboardRepository = {
     getSummary: async (tenantId = null, startDate = null, endDate = null) => {
+        console.log('getSummary called with:', { tenantId, startDate, endDate });
+
         const dateFilter = {};
         if (startDate) dateFilter[Op.gte] = startDate;
         if (endDate) dateFilter[Op.lte] = endDate;
@@ -19,6 +21,7 @@ const dashboardRepository = {
         if (Object.keys(dateFilter).length > 0) {
             ratingResponsesWhere.createdAt = dateFilter;
         }
+        console.log('ratingResponsesWhere:', JSON.stringify(ratingResponsesWhere, null, 2));
     
         const ratingResponses = await Resposta.findAll({
             where: ratingResponsesWhere,
@@ -48,18 +51,21 @@ const dashboardRepository = {
         if (Object.keys(dateFilter).length > 0) {
             totalResponsesWhere.createdAt = dateFilter;
         }
+        console.log('totalResponsesWhere:', JSON.stringify(totalResponsesWhere, null, 2));
         const totalResponses = await Resposta.count({ where: totalResponsesWhere, distinct: true, col: 'respondentSessionId' });
         
         const clientWhereClause = tenantId ? { tenantId } : {};
         if (Object.keys(dateFilter).length > 0) {
             clientWhereClause.createdAt = dateFilter;
         }
+        console.log('clientWhereClause:', JSON.stringify(clientWhereClause, null, 2));
         const totalUsers = await Client.count({ where: clientWhereClause });
     
         const couponsGeneratedWhere = tenantId ? { tenantId } : {};
         if (Object.keys(dateFilter).length > 0) {
             couponsGeneratedWhere.createdAt = dateFilter;
         }
+        console.log('couponsGeneratedWhere:', JSON.stringify(couponsGeneratedWhere, null, 2));
         const couponsGenerated = await Cupom.count({ where: couponsGeneratedWhere });
     
         const couponsUsedWhere = { status: 'used' };
@@ -69,6 +75,7 @@ const dashboardRepository = {
         if (Object.keys(dateFilter).length > 0) {
             couponsUsedWhere.updatedAt = dateFilter;
         }
+        console.log('couponsUsedWhere:', JSON.stringify(couponsUsedWhere, null, 2));
         const couponsUsed = await Cupom.count({ where: couponsUsedWhere });
     
         return {

@@ -45,30 +45,7 @@ export const AuthProvider = ({ children }) => {
         checkUser();
     }, [logout]);
 
-    const login = async (credentials) => {
-    try {
-        const { token } = await authService.login(credentials);
-        const decodedUser = jwtDecode(token);
-        localStorage.setItem('userToken', token);
-        // Adiciona o token aos headers da instância autenticada para futuras requisições
-        apiAuthenticated.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        setUser(decodedUser);
-        navigate('/dashboard'); // Redireciona para a página principal após o login
-    } catch (error) {
-        // O erro da chamada da API será propagado para quem chamou (LoginPage)
-        throw error;
-    }
-};
-
-    const refreshUser = useCallback(async () => {
-        try {
-            const userData = await authService.verifyToken();
-            setUser(userData);
-        } catch (error) {
-            console.error("Falha ao atualizar os dados do usuário", error);
-            logout(); // Desloga se a atualização falhar
-        }
-    }, [logout]);
+    console.log('AuthContext - User:', user, 'Loading:', loading);
 
     return (
         <AuthContext.Provider value={{ user, login, logout, loading, refreshUser }}>

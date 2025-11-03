@@ -7,32 +7,55 @@ Agendador de relatório diário iniciado. A tarefa será executada todos os dias
 Agendador de lembrete de cupons iniciado. A tarefa será executada todos os dias às 9:00.
 [Auth Middleware] Request: POST /api/auth/verify-token
 Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-[Auth Middleware] Request: GET /api/automations
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
 [Auth Middleware] Request: GET /api/recompensas
-[Auth Middleware] Request: GET /api/roletas
 Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
 Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
 [Authorize Debug] User Role: Admin, Required: recompensas:read
 [Authorize Debug] Role ID: ce609d07-d83f-4002-a892-e17c91b767d3, Module: recompensas, Action: read
-Executing (default): SELECT "id", "tenantId", "type", "isEnabled", "daysBefore", "message", "createdAt", "updatedAt" FROM "whatsapp_templates" AS "WhatsappTemplate" WHERE "WhatsappTemplate"."type" = 'COUPON_REMINDER' AND "WhatsappTemplate"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[Authorize Debug] User Role: Admin, Required: roletas:read
-[Authorize Debug] Role ID: ce609d07-d83f-4002-a892-e17c91b767d3, Module: roletas, Action: read
 Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'recompensas' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
-Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'roletas' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
 [Authorize Debug] Has Permission Result: true
 Executing (default): SELECT "id", "tenantId", "name", "description", "pointsRequired", "type", "value", "imageUrl", "active", "createdAt", "updatedAt" FROM "recompensas" AS "Recompensa" WHERE "Recompensa"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' ORDER BY "Recompensa"."name" ASC;
+[Auth Middleware] Request: GET /api/automations
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+Executing (default): SELECT "id", "tenantId", "type", "isEnabled", "daysBefore", "message", "createdAt", "updatedAt" FROM "whatsapp_templates" AS "WhatsappTemplate" WHERE "WhatsappTemplate"."type" = 'COUPON_REMINDER' AND "WhatsappTemplate"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[Auth Middleware] Request: GET /api/roletas
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+[Authorize Debug] User Role: Admin, Required: roletas:read
+[Authorize Debug] Role ID: ce609d07-d83f-4002-a892-e17c91b767d3, Module: roletas, Action: read
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'roletas' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
 [Authorize Debug] Has Permission Result: true
 Executing (default): SELECT "id", "tenantId", "nome", "descricao", "active", "createdAt", "updatedAt" FROM "roletas" AS "Roleta" WHERE "Roleta"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
 [Auth Middleware] Request: POST /api/automations/daily-report/test
 Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+getSummary called with: {
+  tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd',
+  startDate: 2025-11-02T00:00:00.000Z,
+  endDate: 2025-11-02T23:59:59.999Z
+}
+ratingResponsesWhere: {
+  "ratingValue": {},
+  "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd"
+}
 Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+totalResponsesWhere: {
+  "respondentSessionId": {},
+  "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd"
+}
 Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."respondentSessionId" IS NOT NULL AND "Resposta"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+clientWhereClause: {
+  "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd"
+}
 Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+couponsGeneratedWhere: {
+  "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd"
+}
 Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+couponsUsedWhere: {
+  "status": "used",
+  "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd"
+}
 Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
 Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
 [WhatsApp Service] Enviando mensagem de tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd. Número original: 5535998374007
@@ -42,7 +65,7 @@ Mensagem do tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd enviada para 55359983740
   key: {
     remoteJid: '553598374007@s.whatsapp.net',
     fromMe: true,
-    id: '3EB0F51A878BF89A126D1A45EE72997FB2B6B53F'
+    id: '3EB0CA0BB4168E5A4BAF51D70C01BABAF9E66711'
   },
   pushName: '',
   status: 'PENDING',
@@ -62,7 +85,7 @@ Mensagem do tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd enviada para 55359983740
   },
   contextInfo: null,
   messageType: 'conversation',
-  messageTimestamp: 1762171155,
+  messageTimestamp: 1762171608,
   instanceId: '14b4ebb7-03bc-4edc-9807-252aade516ae',
   source: 'unknown'
 }

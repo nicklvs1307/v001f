@@ -15,7 +15,6 @@ const PrivateRoute = () => {
     }
 
     if (!user) {
-        console.log('PrivateRoute: User not found, redirecting to login.');
         return <Navigate to="/login" />;
     }
 

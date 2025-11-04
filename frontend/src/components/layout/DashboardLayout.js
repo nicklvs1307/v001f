@@ -83,44 +83,44 @@ const DashboardLayout = () => {
         {
             text: 'Super Admin', icon: <SettingsIcon />, roles: [ROLES.SUPER_ADMIN],
             children: [
-                { text: 'Tenants', path: '/locatarios', roles: [ROLES.SUPER_ADMIN] },
-                { text: 'WhatsApp', path: '/config-whatsapp', roles: [ROLES.SUPER_ADMIN] },
+                { text: 'Tenants', path: '/dashboard/locatarios', roles: [ROLES.SUPER_ADMIN] },
+                { text: 'WhatsApp', path: '/dashboard/config-whatsapp', roles: [ROLES.SUPER_ADMIN] },
             ],
         },
         {
             text: 'Atendentes', icon: <PeopleIcon />, roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
             children: [
-                { text: 'Listar Atendentes', path: '/atendentes', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Painel', path: '/atendentes-dashboard', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Metas', path: '/metas-atendentes', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], badge: 'NOVO' },
+                { text: 'Listar Atendentes', path: '/dashboard/atendentes', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Painel', path: '/dashboard/atendentes-dashboard', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Metas', path: '/dashboard/metas-atendentes', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], badge: 'NOVO' },
             ],
         },
         {
             text: 'Clientes', icon: <PeopleIcon />, roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
             children: [
-                { text: 'Painel', path: '/clientes/dashboard', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Gestão de Clientes', path: '/clientes', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Aniversariantes', path: '/clientes/birthdays', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Painel', path: '/dashboard/clientes/dashboard', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Gestão de Clientes', path: '/dashboard/clientes', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Aniversariantes', path: '/dashboard/clientes/birthdays', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
             ],
         },
         {
             text: 'Pesquisas', icon: <AssignmentIcon />, roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
             children: [
-                { text: 'Listar Pesquisas', path: '/pesquisas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Criar Nova Pesquisa', path: '/pesquisas/create', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Critérios', path: '/criterios', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Listar Pesquisas', path: '/dashboard/pesquisas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Criar Nova Pesquisa', path: '/dashboard/pesquisas/create', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Critérios', path: '/dashboard/criterios', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
             ],
         },
-        { text: 'Resultados', icon: <BarChartIcon />, path: '/resultados', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+        { text: 'Resultados', icon: <BarChartIcon />, path: '/dashboard/resultados', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
         {
             text: 'Relatórios',
             icon: <AssessmentIcon />,
             badge: 'NOVO',
             roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
             children: [
-                { text: 'Diário', path: '/relatorios/diario', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Semanal', path: '/relatorios/semanal', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Mensal', path: '/relatorios/mensal', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Diário', path: '/dashboard/relatorios/diario', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Semanal', path: '/dashboard/relatorios/semanal', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Mensal', path: '/dashboard/relatorios/mensal', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
             ],
         },
         {
@@ -128,12 +128,12 @@ const DashboardLayout = () => {
             icon: <BarChartIcon />,
             roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
             children: [
-                { text: 'Satisfação', path: '/geral/satisfacao', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Resumo do mês', path: '/geral/resumo', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Comparativo de pesquisa', path: '/geral/comparativo', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Evolução', path: '/geral/evolucao', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Benchmarking', path: '/geral/benchmarking', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Nuvem de palavras', path: '/geral/nuvem-de-palavras', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Satisfação', path: '/dashboard/geral/satisfacao', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Resumo do mês', path: '/dashboard/geral/resumo', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Comparativo de pesquisa', path: '/dashboard/geral/comparativo', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Evolução', path: '/dashboard/geral/evolucao', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Benchmarking', path: '/dashboard/geral/benchmarking', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Nuvem de palavras', path: '/dashboard/geral/nuvem-de-palavras', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
             ],
         },
         {
@@ -141,28 +141,28 @@ const DashboardLayout = () => {
                         icon: <WhatsAppIcon />,
                         badge: 'NOVO',            roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], // Only for tenant admins
             children: [
-                { text: 'Conexão', path: '/whatsapp-connect', roles: [ROLES.ADMIN] },
-                { text: 'Campanhas', path: '/cupons/campanhas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], badge: 'PRO' },
-                { text: 'Automações', path: '/whatsapp/automations', roles: [ROLES.ADMIN], badge: 'PRO' },
+                { text: 'Conexão', path: '/dashboard/whatsapp-connect', roles: [ROLES.ADMIN] },
+                { text: 'Campanhas', path: '/dashboard/cupons/campanhas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], badge: 'PRO' },
+                { text: 'Automações', path: '/dashboard/whatsapp/automations', roles: [ROLES.ADMIN], badge: 'PRO' },
             ],
         },
-        { text: 'Recompensas', icon: <SettingsIcon />, path: '/recompensas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-        { text: 'Reputação', icon: <PeopleIcon />, path: '/reputacao', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+        { text: 'Recompensas', icon: <SettingsIcon />, path: '/dashboard/recompensas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+        { text: 'Reputação', icon: <PeopleIcon />, path: '/dashboard/reputacao', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
         {
             text: 'Cupons', icon: <AssignmentIcon />, roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
             children: [
-                { text: 'Painel', path: '/cupons/dashboard', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Gestão de Cupons', path: '/cupons', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Painel', path: '/dashboard/cupons/dashboard', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Gestão de Cupons', path: '/dashboard/cupons', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
                 { text: 'Validação', path: '/validar-cupom', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
             ],
         },
         {
             text: 'Configurações', icon: <SettingsIcon />, roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
             children: [
-                { text: 'Usuários do Sistema', path: '/usuarios', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Perfil', path: '/profile', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.GERENTE, ROLES.GARCOM] },
-                { text: 'Empresa', path: '/config', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Roletas', path: '/roletas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Usuários do Sistema', path: '/dashboard/usuarios', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Perfil', path: '/dashboard/profile', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.GERENTE, ROLES.GARCOM] },
+                { text: 'Empresa', path: '/dashboard/config', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Roletas', path: '/dashboard/roletas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
             ],
         },
     ], [user?.role]);

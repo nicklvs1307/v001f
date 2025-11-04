@@ -6,8 +6,6 @@ import AuthContext from '../context/AuthContext';
 const PrivateRoute = () => {
     const { user, loading } = useContext(AuthContext);
 
-    console.log('PrivateRoute - user:', user, 'loading:', loading);
-
     if (loading) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>

@@ -25,6 +25,7 @@ export const AuthProvider = ({ children }) => {
     }, [navigate]);
 
     useEffect(() => {
+        console.log('AuthContext useEffect running');
         // Configura o observador de logout assim que o componente monta
         setupAuthObserver(logout);
 

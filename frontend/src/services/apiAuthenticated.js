@@ -30,7 +30,6 @@ apiAuthenticated.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-      console.log('Authentication error:', error.response);
       if (logoutObserver) {
         logoutObserver(); // Chama a função de logout registrada
       }

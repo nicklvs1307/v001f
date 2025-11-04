@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
                     const userData = await authService.verifyToken(); // authService usará a instância autenticada
                     setUser(userData);
                 } catch (error) {
-                    logout();
+                    console.error("Failed to verify token:", error);
                 } finally {
                     setLoading(false);
                 }

@@ -78,7 +78,7 @@ module.exports = {
 
         let permissionId;
         if (!permission || permission.length === 0) {
-          const newPermissionId = uuidv4(); // CORRIGIDO
+          const newPermissionId = uuidv4();
           await queryInterface.bulkInsert('permissoes', [
             {
               id: newPermissionId,

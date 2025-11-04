@@ -11,3 +11,22 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1B2432; /* Cor de fundo do Drawer */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FC4C35; /* Cor primária */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #E6452F; /* Variação mais escura da cor primária */
+}

@@ -31,7 +31,6 @@ export const AuthProvider = ({ children }) => {
         const checkUser = async () => {
             const token = localStorage.getItem('userToken');
             if (token) {
-                apiAuthenticated.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 try {
                     const userData = await authService.verifyToken(); // authService usará a instância autenticada
                     setUser(userData);
@@ -51,7 +50,6 @@ export const AuthProvider = ({ children }) => {
         try {
             const { token } = await authService.login(credentials);
             localStorage.setItem('userToken', token);
-            apiAuthenticated.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const userData = await authService.verifyToken();
             setUser(userData);
             navigate('/dashboard');

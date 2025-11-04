@@ -15,7 +15,19 @@ const app = express();
 const path = require('path'); // Importar o módulo path
 
 // Middlewares
-app.use(cors());
+const corsOptions = {
+  origin: (origin, callback) => {
+    const allowedOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [];
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Servir arquivos estáticos da pasta 'uploads'

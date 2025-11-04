@@ -7,7 +7,7 @@ x-environment: &environment
   # IMPORTANTE: Substitua 'postgres' pelo nome do serviço do seu container Postgres
   DB_HOST: postgres
   DB_PORT: 5432
-  DB_DATABASE: voltaki
+  DB_DATABASE: loyalfood
   DB_USER: postgres
   DB_PASSWORD_FILE: /run/secrets/db_password
   JWT_SECRET_FILE: /run/secrets/jwt_secret

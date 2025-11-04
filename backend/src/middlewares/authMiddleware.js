@@ -15,16 +15,16 @@ const protect = async (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, config.jwtSecret);
 
-    req.user = decoded;
+    // Buscar o usuário no banco de dados para garantir que os dados estão atualizados
+    const { Usuario } = require("../../models");
+    const user = await Usuario.findByPk(decoded.userId);
 
-    if (req.user.tenantId) {
-      const { Tenant } = require("../../models");
-      const tenant = await Tenant.findByPk(req.user.tenantId);
-      if (tenant) {
-        req.user.primaryColor = tenant.primaryColor;
-        req.user.secondaryColor = tenant.secondaryColor;
-      }
+    if (!user) {
+      throw new ApiError(401, "Usuário do token não encontrado.");
     }
+
+    // Anexar o objeto de usuário do Sequelize à requisição
+    req.user = user;
 
     next();
   } catch (error) {

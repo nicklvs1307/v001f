@@ -168,10 +168,10 @@ const DashboardLayout = () => {
     ], [user?.role]);
 
     const filteredMenuItems = useMemo(() => {
-        if (!user?.role) return [];
+        if (!user?.role?.name) return [];
         return menuItems.filter(item =>
-            item.roles.includes(user.role) ||
-            (item.children && item.children.some(child => child.roles.includes(user.role)))
+            item.roles.includes(user.role.name) ||
+            (item.children && item.children.some(child => child.roles.includes(user.role.name)))
         );
     }, [menuItems, user?.role]);
 
@@ -242,7 +242,7 @@ const DashboardLayout = () => {
                         {item.children && (
                             <Collapse in={drawerOpen && openSubMenu[item.text]} timeout="auto" unmountOnExit>
                                 <List component="div" disablePadding>
-                                    {item.children.filter(child => child.roles.includes(user?.role)).map((child) => (
+                                    {item.children.filter(child => child.roles.includes(user?.role?.name)).map((child) => (
                                         <ListItemButton 
                                             key={child.text} 
                                             sx={{ pl: 4 }} 

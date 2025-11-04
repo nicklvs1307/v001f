@@ -79,7 +79,7 @@ const DashboardLayout = () => {
     };
 
     const menuItems = useMemo(() => [
-        { text: 'Dashboard', icon: <DashboardIcon />, path: '/', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+        { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
         {
             text: 'Super Admin', icon: <SettingsIcon />, roles: [ROLES.SUPER_ADMIN],
             children: [

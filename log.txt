@@ -1,9 +1,31 @@
+Sequelize CLI [Node: 18.20.8, CLI: 6.6.3, ORM: 6.37.7]
+
+Loaded configuration file "src/config/sequelize-config.js".
+Using environment "production".
+== 20250922-create-super-admin-and-admin: migrating =======
+Seeder de Super Admin e Admin executado com sucesso!
+== 20250922-create-super-admin-and-admin: migrated (0.461s)
+
+== 20250922-populate-admin-data: migrating =======
+Seeder de dados de exemplo aprimorado executado com sucesso!
+== 20250922-populate-admin-data: migrated (0.027s)
+
+== 20250924200000-add-recompensas-permissions-to-admin: migrating =======
+== 20250924200000-add-recompensas-permissions-to-admin: migrated (0.022s)
+
+== 20250925100000-populate-survey-templates: migrating =======
+== 20250925100000-populate-survey-templates: migrated (0.004s)
+
+== 20250926150000-add-atendente-permissions-to-admin: migrating =======
+Nenhuma nova permissão de atendente para adicionar ao cargo Admin.
+== 20250926150000-add-atendente-permissions-to-admin: migrated (0.004s)
+
+== 20250927130000-add-cupom-validate-permission-to-admin: migrating =======
+== 20250927130000-add-cupom-validate-permission-to-admin: migrated (0.003s)
+
+== 20250927150000-add-roleta-permissions-to-admin: migrating =======
+== 20250927150000-add-roleta-permissions-to-admin: migrated (0.008s)
+
 == 20250927160000-ensure-base-admin-permissions: migrating =======
 
 ERROR: Unexpected end of input
-
-npm notice
-npm notice New major version of npm available! 10.8.2 -> 11.6.2
-npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.2
-npm notice To update run: npm install -g npm@11.6.2
-npm notice

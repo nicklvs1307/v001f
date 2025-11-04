@@ -96,4 +96,21 @@ module.exports = {
 
         // 2. Verificar se a associação existe, se não, criar.
         const existingLink = await queryInterface.sequelize.query(
-          `SELECT \
+          `SELECT "roleId" FROM role_permissoes WHERE "roleId" = :roleId AND "permissaoId" = :permissaoId`,
+          {
+            replacements: { roleId: adminRoleId, permissaoId: permissionId },
+            type: Sequelize.QueryTypes.SELECT,
+            transaction
+          }
+        );
+
+        if (!existingLink || existingLink.length === 0) {
+          await queryInterface.bulkInsert('role_permissoes', [
+            {
+              roleId: adminRoleId,
+              permissaoId: permissionId,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+          ], { transaction });
+        }

@@ -46,10 +46,13 @@ const authorize = (requiredPermissionOrRoles) => {
     try {
       // Adicionar verificação defensiva para req.user
       if (!req.user || !req.user.role) {
+        console.log('[AUTHZ_FAIL]', { error: 'req.user or req.user.role is missing', user: req.user });
         return res.status(403).json({ message: "Acesso não autorizado: Informações do usuário ausentes." });
       }
 
       const userRoleName = req.user.role ? req.user.role.name : null;
+      console.log('[AUTHZ_INFO]', { userRoleName });
+
       if (!userRoleName) {
         return res
           .status(403)
@@ -58,15 +61,17 @@ const authorize = (requiredPermissionOrRoles) => {
 
       // Se o usuário for Super Admin, ele tem acesso total
       if (userRoleName === 'Super Admin') {
+        console.log('[AUTHZ_PASS]', 'User is Super Admin');
         return next();
       }
 
       // Se requiredPermissionOrRoles for um array, significa que estamos verificando por papéis específicos
       if (Array.isArray(requiredPermissionOrRoles)) {
         if (requiredPermissionOrRoles.includes(userRoleName)) {
+          console.log('[AUTHZ_PASS]', `User role ${userRoleName} is in the required list.`);
           return next(); // Usuário tem um dos papéis necessários
         } else {
-          console.log(`Authorization failed for user role: ${userRoleName}, required roles: ${requiredPermissionOrRoles.join(', ')}`);
+          console.log(`[AUTHZ_FAIL] User role: ${userRoleName}, required roles: ${requiredPermissionOrRoles.join(', ')}`);
           return res.status(403).json({ message: "Você não tem permissão para acessar este recurso." });
         }
       }
@@ -74,6 +79,7 @@ const authorize = (requiredPermissionOrRoles) => {
       // 1. Encontrar o ID do papel (role) usando o modelo Role
       const role = await Role.findOne({ where: { name: userRoleName } });
       if (!role) {
+        console.log('[AUTHZ_FAIL]', `Role with name ${userRoleName} not found in DB.`);
         return res
           .status(403)
           .json({ message: "Papel do usuário não encontrado no sistema." });
@@ -82,11 +88,9 @@ const authorize = (requiredPermissionOrRoles) => {
 
       // 2. Separar o módulo e a ação da permissão requerida (ex: 'surveys:create')
       const [module, action] = requiredPermissionOrRoles.split(":");
+      console.log('[AUTHZ_INFO]', { requiredPermission: requiredPermissionOrRoles, roleId, module, action });
 
       // 3. Verificar se o papel do usuário tem a permissão necessária
-      console.log(`[Authorize Debug] User Role: ${userRoleName}, Required: ${requiredPermissionOrRoles}`);
-      console.log(`[Authorize Debug] Role ID: ${roleId}, Module: ${module}, Action: ${action}`);
-
       const hasPermission = await RolePermissao.findOne({
         where: { roleId: roleId },
         include: [{
@@ -97,20 +101,20 @@ const authorize = (requiredPermissionOrRoles) => {
         }]
       });
 
-      console.log(`[Authorize Debug] Has Permission Result: ${!!hasPermission}`);
+      console.log('[AUTHZ_RESULT]', { hasPermission: !!hasPermission });
 
       if (hasPermission) {
         // O usuário tem a permissão, pode prosseguir
         next();
       } else {
-        console.log(`Authorization failed for user role: ${userRoleName}, required permission: ${requiredPermissionOrRoles}`);
+        console.log(`[AUTHZ_FAIL] Permission check failed for role ${userRoleName} and permission ${requiredPermissionOrRoles}`);
         // O usuário não tem a permissão
         return res
           .status(403)
           .json({ message: "Você não tem permissão para executar esta ação." });
       }
     } catch (error) {
-      console.error(error);
+      console.error('[AUTHZ_ERROR]', error);
       res
         .status(500)
         .json({ message: "Erro no servidor ao verificar permissões." });

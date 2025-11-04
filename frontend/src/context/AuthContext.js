@@ -50,10 +50,10 @@ export const AuthProvider = ({ children }) => {
     const login = async (credentials) => {
         try {
             const { token } = await authService.login(credentials);
-            const decodedUser = jwtDecode(token);
             localStorage.setItem('userToken', token);
             apiAuthenticated.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            setUser(decodedUser);
+            const userData = await authService.verifyToken();
+            setUser(userData);
             navigate('/dashboard');
         } catch (error) {
             throw error;

@@ -8,7 +8,7 @@ export const setupAuthObserver = (logoutHandler) => {
 
 // Crie uma nova instância do Axios para requisições autenticadas
 const apiAuthenticated = axios.create({
-  baseURL: 'https://apiloyalfood.towersfy.com/api',
+  baseURL: `${process.env.REACT_APP_API_URL || ''}/api`,
 });
 
 // Adicionar um interceptor de requisição para incluir o token JWT

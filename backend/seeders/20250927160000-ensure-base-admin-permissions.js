@@ -114,3 +114,20 @@ module.exports = {
             },
           ], { transaction });
         }
+      }
+
+      await transaction.commit();
+      console.log('Permissões base do Admin garantidas com sucesso.');
+    } catch (error) {
+      await transaction.rollback();
+      console.error('Erro ao garantir as permissões base do Admin:', error);
+      throw error;
+    }
+  },
+
+  down: async (queryInterface, Sequelize) => {
+    // Opcional: O down pode remover as permissões ou fazer nada.
+    // Por segurança, é melhor não remover permissões automaticamente.
+    console.log('O downgrade do seeder de permissões base não remove as permissões automaticamente.');
+  }
+};

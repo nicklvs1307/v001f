@@ -16,8 +16,13 @@ const protect = async (req, res, next) => {
     const decoded = jwt.verify(token, config.jwtSecret);
 
     // Buscar o usuário no banco de dados para garantir que os dados estão atualizados
-    const { Usuario } = require("../../models");
-    const user = await Usuario.findByPk(decoded.userId);
+    const { Usuario, Role, Tenant } = require("../../models");
+    const user = await Usuario.findByPk(decoded.userId, {
+      include: [
+        { model: Role, as: 'role' },
+        { model: Tenant, as: 'tenant' }
+      ]
+    });
 
     if (!user) {
       throw new ApiError(401, "Usuário do token não encontrado.");
@@ -44,7 +49,7 @@ const authorize = (requiredPermissionOrRoles) => {
         return res.status(403).json({ message: "Acesso não autorizado: Informações do usuário ausentes." });
       }
 
-      const userRoleName = req.user.role;
+      const userRoleName = req.user.role ? req.user.role.name : null;
       if (!userRoleName) {
         return res
           .status(403)

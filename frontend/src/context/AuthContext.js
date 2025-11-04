@@ -18,6 +18,8 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const logout = useCallback(() => {
+        console.log('Logout function called!');
+        debugger;
         localStorage.removeItem('userToken');
         delete apiAuthenticated.defaults.headers.common['Authorization'];
         setUser(null);

@@ -38,6 +38,11 @@ const config = {
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     redirectUri: process.env.GOOGLE_REDIRECT_URI,
   },
+  webPush: {
+    contactEmail: process.env.VAPID_CONTACT_EMAIL,
+    publicKey: process.env.VAPID_PUBLIC_KEY,
+    privateKey: process.env.VAPID_PRIVATE_KEY,
+  },
 };
 
 module.exports = config;

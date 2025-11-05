@@ -5,7 +5,18 @@ import './i18n';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { NotificationProvider } from './context/NotificationContext';
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      })
+      .catch(error => {
+        console.log('ServiceWorker registration failed: ', error);
+      });
+  });
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

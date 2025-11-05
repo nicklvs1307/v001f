@@ -52,6 +52,17 @@ exports.createUser = asyncHandler(async (req, res) => {
     passwordHash,
   );
 
+  // --- NOTIFICATION ---
+  const io = req.app.get('io');
+  const notificationService = require('../services/NotificationService');
+  await notificationService.createNotification(io, {
+    type: 'NEW_USER',
+    message: `Novo usuário criado: ${name}`,
+    tenantId: targetTenantId,
+    userId: req.user.id
+  });
+  // --- END NOTIFICATION ---
+
   res.status(201).json({
     message: "Usuário criado com sucesso!",
     user: newUser,

@@ -100,6 +100,17 @@ const cupomController = {
       throw new ApiError(500, 'Falha ao atualizar status do cupom.');
     }
 
+    // --- NOTIFICATION ---
+    const io = req.app.get('io');
+    const notificationService = require('../services/NotificationService');
+    await notificationService.createNotification(io, {
+        type: 'COUPON_USED',
+        message: `Cupom "${cupom.codigo}" utilizado.`,
+        tenantId: cupom.tenantId,
+        userId: req.user.id
+    });
+    // --- END NOTIFICATION ---
+
     res.status(200).json({ message: 'Cupom validado com sucesso!', cupom: updatedCupom });
   }),
 

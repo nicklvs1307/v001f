@@ -94,7 +94,7 @@ const getPublicSurveyById = async (id) => {
   return formattedSurvey;
 };
 
-const submitSurveyResponses = async (surveyId, responses, respondentSessionId, clienteId, atendenteId) => {
+const submitSurveyResponses = async (surveyId, responses, respondentSessionId, clienteId, atendenteId, io) => {
   const transaction = await sequelize.transaction();
   try {
     const survey = await Pesquisa.findByPk(surveyId, {
@@ -173,6 +173,17 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
 
     await transaction.commit();
 
+    // --- NOTIFICATION for new survey response ---
+    if (io) {
+        const notificationService = require('../services/NotificationService');
+        notificationService.createNotification(io, {
+            type: 'SURVEY_RESPONSE',
+            message: `Nova resposta para a pesquisa "${survey.title}".`,
+            tenantId: survey.tenantId,
+            userId: null // Client action
+        });
+    }
+
     // Lógica para notificação de detratores
     (async () => {
       try {
@@ -197,6 +208,18 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
               pesquisa: { title: survey.title },
             };
             await whatsappService.sendInstanteDetractorMessage(tenant, detractorResponse);
+
+            // --- DETRACTOR NOTIFICATION ---
+            if (io) {
+                const notificationService = require('../services/NotificationService');
+                notificationService.createNotification(io, {
+                    type: 'DETRACTOR_RESPONSE',
+                    message: `Resposta de detrator na pesquisa "${survey.title}".`,
+                    tenantId: survey.tenantId,
+                    userId: null
+                });
+            }
+
             // Considerar notificar apenas uma vez por submissão para evitar spam
             break; // Para o loop após encontrar o primeiro detrator
           }

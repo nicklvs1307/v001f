@@ -37,11 +37,19 @@ import { ThemeContext } from '../../context/ThemeContext';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { ROLES } from '../../constants/roles';
+import { useNotifications } from '../../context/NotificationsContext';
+import { Badge, Popover } from '@mui/material';
 
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import NotificationPanel from './NotificationPanel';
 
 const drawerWidth = 250;
 const collapsedDrawerWidth = 60;
+
+import { useNotifications } from '../../context/NotificationsContext';
+import { Badge, Popover } from '@mui/material';
+
+import NotificationPanel from './NotificationPanel';
 
 const DashboardLayout = () => {
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -51,8 +59,18 @@ const DashboardLayout = () => {
     const location = useLocation();
     const { user, logout } = useContext(AuthContext);
     const { mode, toggleTheme } = useContext(ThemeContext);
+    const { notifications, unreadCount, markAsRead } = useNotifications();
     const [anchorEl, setAnchorEl] = useState(null);
+    const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
     const [pageTitle, setPageTitle] = useState('Dashboard');
+
+    const handleNotificationClick = (event) => {
+        setNotificationAnchorEl(event.currentTarget);
+    };
+
+    const handleNotificationClose = () => {
+        setNotificationAnchorEl(null);
+    };
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -348,9 +366,26 @@ const DashboardLayout = () => {
                         <IconButton color="inherit" onClick={toggleTheme}>
                             {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
                         </IconButton>
-                        <IconButton color="inherit">
-                            <NotificationsIcon />
+                        <IconButton color="inherit" onClick={handleNotificationClick}>
+                            <Badge badgeContent={unreadCount} color="error">
+                                <NotificationsIcon />
+                            </Badge>
                         </IconButton>
+                        <Popover
+                            open={Boolean(notificationAnchorEl)}
+                            anchorEl={notificationAnchorEl}
+                            onClose={handleNotificationClose}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'right',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                        >
+                            <NotificationPanel notifications={notifications} onMarkAsRead={markAsRead} />
+                        </Popover>
                         <Button
                             color="inherit"
                             onClick={handleMenu}

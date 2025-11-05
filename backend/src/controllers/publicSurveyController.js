@@ -39,7 +39,8 @@ const submitSurveyResponses = asyncHandler(async (req, res) => {
     respostas,
     respondentSessionId,
     null, // clienteId é nulo inicialmente
-    atendenteId
+    atendenteId,
+    req.app.get('io')
   );
   res.status(201).json(result);
 });
@@ -70,7 +71,8 @@ const submitSurveyWithClient = asyncHandler(async (req, res) => {
     respostas,
     respondentSessionId,
     existingClient.id,
-    atendenteId
+    atendenteId,
+    req.app.get('io')
   );
 
   res.status(201).json({

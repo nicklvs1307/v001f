@@ -19,7 +19,7 @@ const LoginContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   width: '1000px',
   height: '600px',
-  background: 'rgba(255, 255, 255, 0.95)',
+  background: 'rgba(255, 255, 255, 0.85)',
   borderRadius: theme.shape.borderRadius * 3,
   boxShadow: theme.shadows[5],
   overflow: 'hidden',

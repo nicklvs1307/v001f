@@ -152,7 +152,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
         }
 
         try {
-            const finalAnswers = Object.values(answers).filter(a => a.perguntaId !== 'attendant-question');
+            const finalAnswers = Object.values(answers).filter(a => a.perguntaId !== 'attendant-question' && a.valor !== null);
             const submissionData = { respostas: finalAnswers, atendenteId: selectedAtendente };
             const response = await publicSurveyService.submitSurveyResponses(pesquisaId, submissionData.respostas, submissionData.atendenteId);
             

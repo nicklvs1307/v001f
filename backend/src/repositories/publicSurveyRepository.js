@@ -191,13 +191,12 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
     await transaction.commit();
     console.log("submitSurveyResponses: Transaction committed");
 
-    // Lógica para notificação de detratores
+    // Lógica para notificação de detratores via WhatsApp
     (async () => {
       try {
-        console.log("submitSurveyResponses: Checking for detractor responses");
+        console.log("submitSurveyResponses: Checking for detractor responses for WhatsApp");
         const tenant = await Tenant.findByPk(survey.tenantId);
         if (!tenant || !tenant.reportPhoneNumber) {
-          console.log("submitSurveyResponses: No report phone number for tenant, skipping detractor notification");
           return;
         }
 
@@ -212,18 +211,13 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
           }
 
           if (isDetractor) {
-            console.log("submitSurveyResponses: Detractor response found, sending notification");
-            const detractorResponse = {
-              ...res,
-              pesquisa: { title: survey.title },
-            };
+            const detractorResponse = { ...res, pesquisa: { title: survey.title } };
             await whatsappService.sendInstanteDetractorMessage(tenant, detractorResponse);
-
             break; 
           }
         }
       } catch (error) {
-        console.error('submitSurveyResponses: Error sending detractor notification:', error);
+        console.error('submitSurveyResponses: Error sending WhatsApp detractor notification:', error);
       }
     })();
 

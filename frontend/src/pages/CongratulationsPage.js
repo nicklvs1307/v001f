@@ -5,7 +5,7 @@ import { keyframes } from '@mui/system';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import ReactConfetti from 'react-confetti';
 import useWindowSize from '../hooks/useWindowSize'; // Assuming a hook for window size exists
-import getDynamicTheme from '../theme';
+import getDynamicTheme from '../getDynamicTheme';
 import publicSurveyService from '../services/publicSurveyService';
 
 const floatAnimation = keyframes`

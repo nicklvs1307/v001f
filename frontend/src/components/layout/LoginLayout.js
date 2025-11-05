@@ -5,8 +5,8 @@ import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
-const RootBox = styled(Box)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #FF8C00 0%, #000000 100%)',
+background: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://i.ibb.co/0R7Qz4bP/blurry-dining-tables.jpg) no-repeat center center fixed`,
+  backgroundSize: 'cover',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -16,10 +16,10 @@ const RootBox = styled(Box)(({ theme }) => ({
 
 const LoginContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
-  width: '900px',
-  height: '550px',
-  background: 'white',
-  borderRadius: theme.shape.borderRadius * 2.5,
+  width: '1000px',
+  height: '600px',
+  background: 'rgba(255, 255, 255, 0.95)',
+  borderRadius: theme.shape.borderRadius * 3,
   boxShadow: theme.shadows[5],
   overflow: 'hidden',
   [theme.breakpoints.down('md')]: {
@@ -32,38 +32,18 @@ const LoginContainer = styled(Box)(({ theme }) => ({
 
 const WelcomeSection = styled(Box)(({ theme }) => ({
   flex: 1,
-  background: 'linear-gradient(135deg, #FF8C00 0%, #000000 100%)',
+  background: 'transparent',
   color: 'white',
-  padding: theme.spacing(5),
+  padding: theme.spacing(6),
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
   position: 'relative',
   overflow: 'hidden',
+  textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
   [theme.breakpoints.down('md')]: {
     display: 'none',
-  },
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    width: '200px',
-    height: '200px',
-    background: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: '50%',
-    top: '-50px',
-    left: '-50px',
-  },
-  '&::after': {
-    content: '""',
-    position: 'absolute',
-    width: '300px',
-    height: '300px',
-    background: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: '50%',
-    bottom: '-100px',
-    right: '-100px',
-  },
-}));
+  },}));
 
 const WelcomeContent = styled(Box)({
   zIndex: 1,
@@ -72,7 +52,7 @@ const WelcomeContent = styled(Box)({
 
 const LoginSection = styled(Box)(({ theme }) => ({
   flex: 1,
-  padding: theme.spacing(5),
+  padding: theme.spacing(6),
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',

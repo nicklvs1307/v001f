@@ -29,7 +29,7 @@ apiAuthenticated.interceptors.request.use(
 apiAuthenticated.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+    if (error.response && error.response.status === 401) {
       if (logoutObserver) {
         logoutObserver(); // Chama a função de logout registrada
       }

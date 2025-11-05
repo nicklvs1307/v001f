@@ -269,7 +269,6 @@ const DashboardPage = () => {
                         title="Promotores (NPS)"
                         value={summary?.nps?.promoters}
                         percentage={summary?.nps?.total > 0 ? ((summary?.nps?.promoters / summary?.nps?.total) * 100).toFixed(1) : 0}
-                        borderColor={theme.palette.success.main}
                         onClick={() => handleCardClick('promotores', 'Detalhes de Promotores (NPS)')}
                     />
                 </Grid>
@@ -280,8 +279,17 @@ const DashboardPage = () => {
                         title="Detratores (NPS)"
                         value={summary?.nps?.detractors}
                         percentage={summary?.nps?.total > 0 ? ((summary?.nps?.detractors / summary?.nps?.total) * 100).toFixed(1) : 0}
-                        borderColor={theme.palette.error.main}
                         onClick={() => handleCardClick('detratores', 'Detalhes de Detratores (NPS)')}
+                    />
+                </Grid>
+
+                {/* Neutros */}
+                <Grid item xs={12} md={6} lg={3}>
+                    <MetricCard
+                        title="Neutros (NPS)"
+                        value={summary?.nps?.neutrals}
+                        percentage={summary?.nps?.total > 0 ? ((summary?.nps?.neutrals / summary?.nps?.total) * 100).toFixed(1) : 0}
+                        onClick={() => handleCardClick('neutros', 'Detalhes de Neutros (NPS)')}
                     />
                 </Grid>
 
@@ -291,7 +299,6 @@ const DashboardPage = () => {
                         title="Satisfeitos (CSAT)"
                         value={summary?.csat?.satisfied}
                         percentage={summary?.csat?.total > 0 ? ((summary?.csat?.satisfied / summary?.csat?.total) * 100).toFixed(1) : 0}
-                        borderColor={theme.palette.success.main}
                         onClick={() => handleCardClick('satisfeitos', 'Detalhes de Satisfeitos (CSAT)')}
                     />
                 </Grid>
@@ -302,7 +309,6 @@ const DashboardPage = () => {
                         title="Insatisfeitos (CSAT)"
                         value={summary?.csat?.unsatisfied}
                         percentage={summary?.csat?.total > 0 ? ((summary?.csat?.unsatisfied / summary?.csat?.total) * 100).toFixed(1) : 0}
-                        borderColor={theme.palette.error.main}
                         onClick={() => handleCardClick('insatisfeitos', 'Detalhes de Insatisfeitos (CSAT)')}
                     />
                 </Grid>
@@ -314,7 +320,6 @@ const DashboardPage = () => {
                         value={summary?.registrations}
                         percentage={summary?.registrationsConversion}
                         arrow="up"
-                        borderColor={theme.palette.info.main}
                         onClick={() => handleCardClick('Cadastros')}
                     >
                         <Typography variant="caption" color="text.secondary">conversão</Typography>
@@ -324,7 +329,6 @@ const DashboardPage = () => {
                     <MetricCard
                         title="Ambresários no Mês"
                         value={summary?.ambassadorsMonth}
-                        borderColor={theme.palette.secondary.main}
                         onClick={() => handleCardClick('Ambresários no Mês')}
                     />
                 </Grid>
@@ -332,7 +336,6 @@ const DashboardPage = () => {
                     <MetricCard
                         title="Cupons Gerados"
                         value={summary?.couponsGenerated}
-                        borderColor={theme.palette.primary.main}
                         onClick={() => handleCardClick('Cupons Gerados')}
                     >
                         <Typography variant="caption" color="text.secondary">{summary?.couponsGeneratedPeriod}</Typography>
@@ -344,7 +347,6 @@ const DashboardPage = () => {
                         value={summary?.couponsUsed}
                         percentage={summary?.couponsUsedConversion}
                         arrow="down"
-                        borderColor={theme.palette.error.main}
                         onClick={() => handleCardClick('Cupons Utilizados')}
                     >
                         <Typography variant="caption" color="text.secondary">conversão</Typography>

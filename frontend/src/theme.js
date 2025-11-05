@@ -67,6 +67,13 @@ const theme = createTheme({
         },
       },
     },
+    MuiListItemIcon: {
+      styleOverrides: {
+        root: {
+          color: 'white',
+        },
+      },
+    },
   },
 });
 

@@ -250,7 +250,7 @@ const WhatsappConnectPage = () => {
       return <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>;
     }
 
-    if (!config || user?.role !== 'Admin') {
+    if (!config || user?.role?.name !== 'Admin') {
         return <Alert severity="error">Você não tem permissão para ver esta página ou a configuração inicial não foi encontrada.</Alert>;
     }
 

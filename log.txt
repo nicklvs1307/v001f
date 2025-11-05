@@ -1,24 +1,35 @@
-main.d6142c6b.js:sourcemap:2 AuthContext useEffect running
-main.d6142c6b.js:sourcemap:2 Error: useNotification must be used within an NotificationProvider
-    at a (main.d6142c6b.js:sourcemap:2:457145)
-    at ge (530.68cd50ae.chunk.js:sourcemap:1:7500)
-    at gi (main.d6142c6b.js:sourcemap:2:384873)
-    at js (main.d6142c6b.js:sourcemap:2:399095)
-    at Sl (main.d6142c6b.js:sourcemap:2:445183)
-    at bc (main.d6142c6b.js:sourcemap:2:433622)
-    at vc (main.d6142c6b.js:sourcemap:2:433550)
-    at gc (main.d6142c6b.js:sourcemap:2:433413)
-    at ac (main.d6142c6b.js:sourcemap:2:430193)
-    at oc (main.d6142c6b.js:sourcemap:2:428744)
-ds @ main.d6142c6b.js:sourcemap:2
-main.d6142c6b.js:sourcemap:2 Uncaught Error: useNotification must be used within an NotificationProvider
-    at a (main.d6142c6b.js:sourcemap:2:457145)
-    at ge (530.68cd50ae.chunk.js:sourcemap:1:7500)
-    at gi (main.d6142c6b.js:sourcemap:2:384873)
-    at js (main.d6142c6b.js:sourcemap:2:399095)
-    at Sl (main.d6142c6b.js:sourcemap:2:445183)
-    at bc (main.d6142c6b.js:sourcemap:2:433622)
-    at vc (main.d6142c6b.js:sourcemap:2:433550)
-    at gc (main.d6142c6b.js:sourcemap:2:433413)
-    at ac (main.d6142c6b.js:sourcemap:2:430193)
-    at oc (main.d6142c6b.js:sourcemap:2:428744)
+AuthContext.js:28 AuthContext useEffect running
+react-dom.production.min.js:188 TypeError: e.toLowerCase is not a function
+    at L (AtendenteList.js:101:31)
+    at gi (react-dom.production.min.js:160:137)
+    at Es (react-dom.production.min.js:196:258)
+    at Sl (react-dom.production.min.js:291:88)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+    at oc (react-dom.production.min.js:267:429)
+    at w (scheduler.production.min.js:13:203)
+ds @ react-dom.production.min.js:188
+react-dom.production.min.js:282 Uncaught TypeError: e.toLowerCase is not a function
+    at L (AtendenteList.js:101:31)
+    at gi (react-dom.production.min.js:160:137)
+    at Es (react-dom.production.min.js:196:258)
+    at Sl (react-dom.production.min.js:291:88)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+    at oc (react-dom.production.min.js:267:429)
+    at w (scheduler.production.min.js:13:203)
+L @ AtendenteList.js:101
+gi @ react-dom.production.min.js:160
+Es @ react-dom.production.min.js:196
+Sl @ react-dom.production.min.js:291
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+ac @ react-dom.production.min.js:270
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14

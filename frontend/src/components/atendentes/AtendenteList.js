@@ -98,7 +98,7 @@ const AtendenteList = () => {
         <Box sx={{ mt: 4 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                 <Typography variant="h4" component="h1">Atendentes</Typography>
-                {(user?.role?.toLowerCase() === 'super admin' || user?.role?.toLowerCase() === 'admin') && (
+                {(user?.role?.name?.toLowerCase() === 'super admin' || user?.role?.name?.toLowerCase() === 'admin') && (
                     <Button
                         variant="contained"
                         color="primary"

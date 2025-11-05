@@ -47,7 +47,7 @@ const PublicSurveyPage = () => {
         publicSurveyService.getPublicSurveyById(pesquisaId)
             .then(data => {
                 setSurveyData(data);
-                const theme = getDynamicTheme(data.primaryColor, data.secondaryColor);
+                const theme = getDynamicTheme({ primaryColor: data.primaryColor, secondaryColor: data.secondaryColor });
                 setDynamicTheme(theme);
             })
             .catch(err => setError(err.message || 'Ocorreu um erro ao carregar a pesquisa.'))

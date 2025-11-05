@@ -153,7 +153,7 @@ const DashboardLayout = () => {
             children: [
                 { text: 'Painel', path: '/dashboard/cupons/dashboard', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
                 { text: 'Gestão de Cupons', path: '/dashboard/cupons', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Validação', path: '/validar-cupom', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Validação', path: '/dashboard/validar-cupom', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
             ],
         },
         {

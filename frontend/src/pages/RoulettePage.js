@@ -209,10 +209,10 @@ const RoulettePageComponent = ({ survey, tenant, roletaConfig, isSpinning, winni
   const segColors = [
     theme.palette.primary.main,
     theme.palette.secondary.main,
-    theme.palette.primary.main,
-    theme.palette.secondary.main,
-    theme.palette.primary.main,
-    theme.palette.secondary.main,
+    theme.palette.primary.light || theme.palette.primary.main,
+    theme.palette.secondary.light || theme.palette.secondary.main,
+    theme.palette.primary.dark || theme.palette.primary.main,
+    theme.palette.secondary.dark || theme.palette.secondary.main,
   ];
   const buttonNextStyle = { background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, color: 'white', borderRadius: '50px', padding: '12px 25px', fontWeight: 600, '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 5px 15px rgba(0, 0, 0, 0.1)' } };
 

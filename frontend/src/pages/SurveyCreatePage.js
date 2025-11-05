@@ -4,12 +4,12 @@ import SurveyForm from '../components/surveys/SurveyForm';
 import TemplateSelection from '../components/surveys/TemplateSelection';
 import surveyService from '../services/surveyService';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSnackbar } from '../context/SnackbarContext'; // Import useNotification
+import { useNotification } from '../context/NotificationContext';
 
 const SurveyCreatePage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { showSnackbar } = useSnackbar(); // Get showNotification
+  const { showNotification } = useNotification();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null); // Keep local error for now, might be used by SurveyForm
@@ -35,7 +35,7 @@ const SurveyCreatePage = () => {
           setInitialData(cleanedSurvey);
           setFormStep('fillForm');
         })
-        .catch(err => showSnackbar(err.message || 'Erro ao carregar pesquisa para edição.', 'error')) // Use showNotification
+        .catch(err => showNotification(err.message || 'Erro ao carregar pesquisa para edição.', 'error')) // Use showNotification
         .finally(() => setLoading(false));
     }
   }, [id]);
@@ -67,10 +67,10 @@ const SurveyCreatePage = () => {
         await surveyService.createSurvey(surveyData);
       }
       setSuccess(true);
-      showSnackbar(`Pesquisa ${id ? 'atualizada' : 'criada'} com sucesso!`, 'success'); // Add success notification
+      showNotification(`Pesquisa ${id ? 'atualizada' : 'criada'} com sucesso!`, 'success'); // Add success notification
       setTimeout(() => navigate('/pesquisas'), 2000);
     } catch (err) {
-      showSnackbar(err.message || `Erro ao ${id ? 'atualizar' : 'criar'} pesquisa.`, 'error'); // Use showNotification
+      showNotification(err.message || `Erro ao ${id ? 'atualizar' : 'criar'} pesquisa.`, 'error'); // Use showNotification
     } finally {
       setLoading(false);
     }

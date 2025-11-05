@@ -32,14 +32,14 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Link } from '@mui/ma
 import surveyService from '../services/surveyService';
 import AuthContext from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { useSnackbar } from '../context/SnackbarContext'; // Import useNotification
+import { useNotification } from '../context/NotificationContext';
 
 const SurveyListPage = () => {
     const theme = useTheme();
     const { user } = useContext(AuthContext);
     const tenantId = user?.role === 'Super Admin' ? null : user?.tenantId;
     const navigate = useNavigate();
-    const { showSnackbar } = useSnackbar(); // Get showNotification
+    const { showNotification } = useNotification();
 
     const [anchorEl, setAnchorEl] = useState(null);
     const openFilterMenu = Boolean(anchorEl);
@@ -76,11 +76,11 @@ const SurveyListPage = () => {
     const handleCopyLink = (link) => {
         navigator.clipboard.writeText(link)
             .then(() => {
-                showSnackbar('Link copiado para a área de transferência!', 'success'); // Use global notification
+                showNotification('Link copiado para a área de transferência!', 'success'); // Use global notification
             })
             .catch(err => {
                 console.error('Erro ao copiar o link:', err);
-                showSnackbar('Falha ao copiar o link.', 'error'); // Use global notification
+                showNotification('Falha ao copiar o link.', 'error'); // Use global notification
             });
     };
 
@@ -93,7 +93,7 @@ const SurveyListPage = () => {
             const qrCodeResponse = await surveyService.generateQrCode(publicUrl);
             setQrCodeDataUrl(qrCodeResponse.qrCode);
         } catch (err) {
-            showSnackbar('Falha ao gerar o QR Code.', 'error'); // Use global notification
+            showNotification('Falha ao gerar o QR Code.', 'error'); // Use global notification
             console.error('Erro ao gerar QR Code:', err);
         } finally {
             setQrCodeLoading(false);
@@ -127,7 +127,7 @@ const SurveyListPage = () => {
             setSurveyStats(stats);
             setSurveys(surveysList);
         } catch (err) {
-            showSnackbar(err.message || 'Falha ao carregar os dados das pesquisas.', 'error'); // Use global notification
+            showNotification(err.message || 'Falha ao carregar os dados das pesquisas.', 'error'); // Use global notification
             setError(err.message || 'Falha ao carregar os dados das pesquisas.'); // Keep local error for now
         } finally {
             setLoading(false);
@@ -143,9 +143,9 @@ const SurveyListPage = () => {
             try {
                 await surveyService.deleteSurvey(id);
                 fetchSurveyData();
-                showSnackbar('Pesquisa deletada com sucesso!', 'success'); // Show success notification
+                showNotification('Pesquisa deletada com sucesso!', 'success'); // Show success notification
             } catch (err) {
-                showSnackbar(err.message || 'Falha ao excluir a pesquisa.', 'error'); // Use global notification
+                showNotification(err.message || 'Falha ao excluir a pesquisa.', 'error'); // Use global notification
                 setError(err.message || 'Falha ao excluir a pesquisa.'); // Keep local error for now
             }
         }

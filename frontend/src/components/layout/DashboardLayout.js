@@ -16,7 +16,9 @@ import {
     Collapse,
     Menu,
     MenuItem,
+    Fab,
 } from '@mui/material';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import MenuIcon from '@mui/icons-material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
@@ -31,6 +33,9 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import StarsIcon from '@mui/icons-material/Stars'; // New import
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
+import { ThemeContext } from '../../context/ThemeContext';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { ROLES } from '../../constants/roles';
 
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
@@ -45,6 +50,7 @@ const DashboardLayout = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { user, logout } = useContext(AuthContext);
+    const { mode, toggleTheme } = useContext(ThemeContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const [pageTitle, setPageTitle] = useState('Dashboard');
 
@@ -295,6 +301,10 @@ const DashboardLayout = () => {
         </div>
     );
 
+    const handleSupportClick = () => {
+        window.location.href = 'mailto:suporte@feedeliza.com.br';
+    };
+
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -335,6 +345,9 @@ const DashboardLayout = () => {
                         </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <IconButton color="inherit" onClick={toggleTheme}>
+                            {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+                        </IconButton>
                         <IconButton color="inherit">
                             <NotificationsIcon />
                         </IconButton>
@@ -441,6 +454,18 @@ const DashboardLayout = () => {
                 <Toolbar /> 
                 <Outlet /> 
             </Box>
+            <Fab
+                color="primary"
+                aria-label="support"
+                sx={{
+                    position: 'fixed',
+                    bottom: 16,
+                    right: 16,
+                }}
+                onClick={handleSupportClick}
+            >
+                <SupportAgentIcon />
+            </Fab>
         </Box>
     );
 };

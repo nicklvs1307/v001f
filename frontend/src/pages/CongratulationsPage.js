@@ -38,7 +38,7 @@ const CongratulationsPage = () => {
             publicSurveyService.getPublicTenantById(tenantId)
                 .then(tenantData => {
                     setTenant(tenantData);
-                    const theme = getDynamicTheme(tenantData.primaryColor, tenantData.secondaryColor);
+                    const theme = getDynamicTheme({ primaryColor: tenantData.primaryColor, secondaryColor: tenantData.secondaryColor });
                     setDynamicTheme(theme);
                 })
                 .catch(err => setError('Não foi possível carregar o tema da empresa.'))
@@ -96,8 +96,8 @@ const CongratulationsComponent = ({ premio, cupom, tenant }) => {
                 </Box>
                 <Box sx={{ padding: { xs: '20px', sm: '30px', md: '40px' }, position: 'relative', zIndex: 2 }}>
                     
-                    <Paper elevation={3} sx={{ background: `linear-gradient(45deg, ${theme.palette.background.default}, ${theme.palette.grey[100]})`, borderRadius: '15px', padding: { xs: '20px', sm: '30px' }, margin: '30px 0', border: `2px dashed ${theme.palette.warning.main}`, position: 'relative', animation: `${floatAnimation} 3s ease-in-out infinite` }}>
-                        <Typography variant="h6" sx={{ fontSize: { xs: '1.2rem', sm: '1.8rem' }, color: theme.palette.danger.main, marginBottom: '15px' }}>Sua Recompensa:</Typography>
+                    <Paper elevation={3} sx={{ background: `linear-gradient(45deg, ${theme.palette.background.default}, ${theme.palette.grey[100]})`, borderRadius: '15px', padding: { xs: '20px', sm: '30px' }, margin: '30px 0', border: `2px dashed ${theme.palette.error.main}`, position: 'relative', animation: `${floatAnimation} 3s ease-in-out infinite` }}>
+                        <Typography variant="h6" sx={{ fontSize: { xs: '1.2rem', sm: '1.8rem' }, color: theme.palette.error.main, marginBottom: '15px' }}>Sua Recompensa:</Typography>
                         <Typography><strong>Nome:</strong> {premio.nome}</Typography>
                         <Typography><strong>Descrição:</strong> {premio.descricao}</Typography>
                         <Box sx={{ fontSize: { xs: '1.5rem', sm: '2.5rem' }, fontWeight: 'bold', background: 'white', padding: { xs: '10px', sm: '15px' }, borderRadius: '10px', margin: '20px auto', letterSpacing: '2px', color: theme.palette.primary.main, border: `2px solid ${theme.palette.primary.main}`, display: 'inline-block', wordBreak: 'break-all' }}>
@@ -105,11 +105,11 @@ const CongratulationsComponent = ({ premio, cupom, tenant }) => {
                         </Box>
                         <Typography>Use este código em sua próxima visita para resgatar sua recompensa.</Typography>
                     </Paper>
-                    <Box sx={{ backgroundColor: theme.palette.augmentColor({ color: { main: theme.palette.warning.main } }).light, padding: '15px', borderRadius: '10px', margin: '20px 0', border: `1px solid ${theme.palette.warning.main}` }}>
+                    <Box sx={{ backgroundColor: '#ffebee', padding: '15px', borderRadius: '10px', margin: '20px 0', border: `1px solid ${theme.palette.error.main}` }}>
                         <Typography><strong>Validade:</strong> Este cupom é válido até <strong>{formattedValidity}</strong>.</Typography>
                     </Box>
                 </Box>
-                <Box sx={{ padding: '20px', backgroundColor: theme.palette.light.main, color: theme.palette.dark.main, fontSize: { xs: '0.8rem', sm: '0.9rem' } }}>
+                <Box sx={{ padding: '20px', backgroundColor: theme.palette.grey[100], color: theme.palette.dark.main, fontSize: { xs: '0.8rem', sm: '0.9rem' } }}>
                     
                     <Typography variant="inherit">Oferta válida apenas para o destinatário deste e-mail. Não acumulativo com outras promoções.</Typography>
                 </Box>

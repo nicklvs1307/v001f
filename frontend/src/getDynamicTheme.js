@@ -1,34 +1,64 @@
 import { createTheme } from '@mui/material/styles';
 
-const getDynamicTheme = (primaryColor, secondaryColor) => {
-  return createTheme({
-    palette: {
-      primary: {
-        main: primaryColor || '#FC4C35',
-        contrastText: '#FFFFFF',
-      },
-      secondary: {
-        main: secondaryColor || '#1EBFAE',
-        contrastText: '#FFFFFF',
-      },
-      success: {
-        main: '#B7E66F',
-      },
-      error: {
-        main: '#E86B42',
-      },
-      dark: {
-        main: '#1B2432',
-      },
-      background: {
-        default: '#F6F7F9',
-        paper: '#FFFFFF',
-      },
-      text: {
-        primary: '#2B2B2B',
-        secondary: '#64748b',
-      },
+const getDynamicTheme = ({ mode = 'light', primaryColor = '#FC4C35', secondaryColor = '#1EBFAE' }) => {
+  const lightPalette = {
+    primary: {
+      main: primaryColor,
+      contrastText: '#FFFFFF',
     },
+    secondary: {
+      main: secondaryColor,
+      contrastText: '#FFFFFF',
+    },
+    success: {
+      main: '#B7E66F',
+    },
+    error: {
+      main: '#E86B42',
+    },
+    dark: {
+      main: '#1B2432',
+    },
+    background: {
+      default: '#F6F7F9',
+      paper: '#FFFFFF',
+    },
+    text: {
+      primary: '#2B2B2B',
+      secondary: '#64748b',
+    },
+  };
+
+  const darkPalette = {
+    primary: {
+      main: primaryColor,
+      contrastText: '#FFFFFF',
+    },
+    secondary: {
+      main: secondaryColor,
+      contrastText: '#FFFFFF',
+    },
+    success: {
+      main: '#B7E66F',
+    },
+    error: {
+      main: '#E86B42',
+    },
+    dark: {
+      main: '#FFFFFF',
+    },
+    background: {
+      default: '#121212',
+      paper: '#1E1E1E',
+    },
+    text: {
+      primary: '#FFFFFF',
+      secondary: '#A8A8A8',
+    },
+  };
+
+  return createTheme({
+    palette: mode === 'dark' ? darkPalette : lightPalette,
     typography: {
       fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
     },
@@ -36,7 +66,7 @@ const getDynamicTheme = (primaryColor, secondaryColor) => {
       MuiAppBar: {
         styleOverrides: {
           root: {
-            backgroundColor: '#1B2432',
+            backgroundColor: mode === 'dark' ? '#1E1E1E' : '#1B2432',
             color: '#FFFFFF',
           },
         },
@@ -63,7 +93,7 @@ const getDynamicTheme = (primaryColor, secondaryColor) => {
       MuiDrawer: {
         styleOverrides: {
           paper: {
-            background: '#1B2432',
+            background: mode === 'dark' ? '#1E1E1E' : '#1B2432',
             color: 'white',
           },
         },

@@ -11,7 +11,7 @@ import Dashboard from '../../components/relatorios/Dashboard';
 
 const RelatorioDiario = () => {
     // Set initial date to null, so we can see if it comes from URL
-    const [selectedDate, setSelectedDate] = useState(null); 
+    const [selectedDate, setSelectedDate] = useState(new Date()); 
     const [reportData, setReportData] = useState(null);
     const [loading, setLoading] = useState(false);
     const { user } = useAuth();
@@ -24,9 +24,6 @@ const RelatorioDiario = () => {
         if (dateParam) {
             // Add T00:00:00 to prevent timezone issues where it might become the previous day
             setSelectedDate(new Date(`${dateParam}T00:00:00`));
-        } else {
-            // If no date in URL, default to today
-            setSelectedDate(new Date());
         }
     }, [location.search]); // Depend on location.search
 
@@ -68,7 +65,7 @@ const RelatorioDiario = () => {
                         value={selectedDate}
                         onChange={(newValue) => setSelectedDate(newValue)}
                         renderInput={(params) => <TextField {...params} />}
-                        disabled={!selectedDate} // Disable until initial date is set
+                        
                     />
                 </LocalizationProvider>
             </Box>

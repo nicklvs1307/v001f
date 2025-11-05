@@ -1,4 +1,14 @@
-PrivateRoute.js:9 PrivateRoute - user: null loading: true
 AuthContext.js:28 AuthContext useEffect running
-PrivateRoute.js:9 PrivateRoute - user: {id: 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5', tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd', roleId: 'ce609d07-d83f-4002-a892-e17c91b767d3', name: 'Lucas', email: 'rafael1@towersfy.com', …} loading: false
-PrivateRoute.js:9 PrivateRoute - user: {id: 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5', tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd', roleId: 'ce609d07-d83f-4002-a892-e17c91b767d3', name: 'Lucas', email: 'rafael1@towersfy.com', …} loading: false
+/default-avatar.png:1  Failed to load resource: the server responded with a status of 404 ()
+CouponsPage.js:81 Erro ao buscar recompensas: TypeError: F.A.getAllRecompensas is not a function
+    at oe (CouponsPage.js:78:44)
+    at CouponsPage.js:61:5
+    at rl (react-dom.production.min.js:243:332)
+    at wc (react-dom.production.min.js:285:111)
+    at lc (react-dom.production.min.js:272:185)
+    at Vo (react-dom.production.min.js:127:105)
+    at react-dom.production.min.js:282:470
+    at Ac (react-dom.production.min.js:280:398)
+    at oc (react-dom.production.min.js:269:269)
+    at w (scheduler.production.min.js:13:203)
+oe @ CouponsPage.js:81

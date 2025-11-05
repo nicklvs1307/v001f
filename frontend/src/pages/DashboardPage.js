@@ -43,6 +43,19 @@ import dashboardService from '../services/dashboardService';
 import DetailsModal from '../components/Dashboard/DetailsModal';
 import AttendantDetailsModal from '../components/Dashboard/AttendantDetailsModal';
 
+import { keyframes } from '@mui/system';
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
 const DashboardPage = () => {
     const { user } = useContext(AuthContext);
     const theme = useTheme();
@@ -145,18 +158,20 @@ const DashboardPage = () => {
         setAttendantModalError('');
     };
 
-    const MetricCard = ({ title, value, percentage, arrow, bgColor, borderColor, children, onClick }) => (
+    const MetricCard = ({ title, value, percentage, arrow, color, children, onClick }) => (
         <Paper elevation={2} sx={{
             p: 2,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
             height: '100%',
-            borderLeft: `4px solid ${borderColor || theme.palette.primary.main}`,
-            backgroundColor: bgColor || 'white',
+            borderLeft: `4px solid ${color || theme.palette.primary.main}`,
+            backgroundColor: 'white',
             cursor: onClick ? 'pointer' : 'default',
+            transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
             '&:hover': {
-                backgroundColor: onClick ? theme.palette.action.hover : 'white',
+                transform: onClick ? 'scale(1.02)' : 'none',
+                boxShadow: onClick ? theme.shadows[4] : theme.shadows[2],
             }
         }}
         onClick={onClick}
@@ -240,7 +255,7 @@ const DashboardPage = () => {
 
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 {/* Card NPS Score */}
-                <Grid item xs={12} md={6} lg={3}>
+                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <Paper elevation={2} sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
                         <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
                             NPS Geral
@@ -252,7 +267,7 @@ const DashboardPage = () => {
                 </Grid>
 
                 {/* Card CSAT Score */}
-                <Grid item xs={12} md={6} lg={3}>
+                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <Paper elevation={2} sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
                         <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
                             Média de Satisfação
@@ -264,57 +279,62 @@ const DashboardPage = () => {
                 </Grid>
 
                 {/* Promotores */}
-                <Grid item xs={12} md={6} lg={3}>
+                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <MetricCard
                         title="Promotores (NPS)"
                         value={summary?.nps?.promoters}
                         percentage={summary?.nps?.total > 0 ? ((summary?.nps?.promoters / summary?.nps?.total) * 100).toFixed(1) : 0}
+                        color={theme.palette.success.main}
                         onClick={() => handleCardClick('promotores', 'Detalhes de Promotores (NPS)')}
                     />
                 </Grid>
 
                 {/* Detratores */}
-                <Grid item xs={12} md={6} lg={3}>
+                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <MetricCard
                         title="Detratores (NPS)"
                         value={summary?.nps?.detractors}
                         percentage={summary?.nps?.total > 0 ? ((summary?.nps?.detractors / summary?.nps?.total) * 100).toFixed(1) : 0}
+                        color={theme.palette.error.main}
                         onClick={() => handleCardClick('detratores', 'Detalhes de Detratores (NPS)')}
                     />
                 </Grid>
 
                 {/* Neutros */}
-                <Grid item xs={12} md={6} lg={3}>
+                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <MetricCard
                         title="Neutros (NPS)"
                         value={summary?.nps?.neutrals}
                         percentage={summary?.nps?.total > 0 ? ((summary?.nps?.neutrals / summary?.nps?.total) * 100).toFixed(1) : 0}
+                        color={theme.palette.secondary.main}
                         onClick={() => handleCardClick('neutros', 'Detalhes de Neutros (NPS)')}
                     />
                 </Grid>
 
                 {/* Satisfeitos (CSAT) */}
-                <Grid item xs={12} md={6} lg={3}>
+                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <MetricCard
                         title="Satisfeitos (CSAT)"
                         value={summary?.csat?.satisfied}
                         percentage={summary?.csat?.total > 0 ? ((summary?.csat?.satisfied / summary?.csat?.total) * 100).toFixed(1) : 0}
+                        color={theme.palette.success.main}
                         onClick={() => handleCardClick('satisfeitos', 'Detalhes de Satisfeitos (CSAT)')}
                     />
                 </Grid>
 
                 {/* Insatisfeitos (CSAT) */}
-                <Grid item xs={12} md={6} lg={3}>
+                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <MetricCard
                         title="Insatisfeitos (CSAT)"
                         value={summary?.csat?.unsatisfied}
                         percentage={summary?.csat?.total > 0 ? ((summary?.csat?.unsatisfied / summary?.csat?.total) * 100).toFixed(1) : 0}
+                        color={theme.palette.error.main}
                         onClick={() => handleCardClick('insatisfeitos', 'Detalhes de Insatisfeitos (CSAT)')}
                     />
                 </Grid>
 
                 {/* Outras Métricas */}
-                <Grid item xs={12} md={6} lg={3}>
+                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <MetricCard
                         title="Cadastros"
                         value={summary?.registrations}
@@ -325,14 +345,14 @@ const DashboardPage = () => {
                         <Typography variant="caption" color="text.secondary">conversão</Typography>
                     </MetricCard>
                 </Grid>
-                <Grid item xs={12} md={6} lg={3}>
+                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <MetricCard
                         title="Ambresários no Mês"
                         value={summary?.ambassadorsMonth}
                         onClick={() => handleCardClick('Ambresários no Mês')}
                     />
                 </Grid>
-                <Grid item xs={12} md={6} lg={3}>
+                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <MetricCard
                         title="Cupons Gerados"
                         value={summary?.couponsGenerated}
@@ -341,7 +361,7 @@ const DashboardPage = () => {
                         <Typography variant="caption" color="text.secondary">{summary?.couponsGeneratedPeriod}</Typography>
                     </MetricCard>
                 </Grid>
-                <Grid item xs={12} md={6} lg={3}>
+                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <MetricCard
                         title="Cupons Utilizados"
                         value={summary?.couponsUsed}
@@ -374,7 +394,7 @@ const DashboardPage = () => {
 
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 {/* Gráfico de Respostas dos Últimos 7 dias */}
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <Paper elevation={2} sx={{ p: 2, height: 400 }}>
                         <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
                             Últimos 7 dias
@@ -384,19 +404,25 @@ const DashboardPage = () => {
                         </Typography>
                         <ResponsiveContainer width="100%" height={280}>
                             <BarChart data={responseChart}>
+                                <defs>
+                                    <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor={theme.palette.primary.main} stopOpacity={0.8}/>
+                                        <stop offset="95%" stopColor={theme.palette.primary.main} stopOpacity={0}/>
+                                    </linearGradient>
+                                </defs>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="name" />
                                 <YAxis />
                                 <Tooltip />
                                 <Legend />
-                                <Bar dataKey="Respostas" fill={theme.palette.primary.main} />
+                                <Bar dataKey="Respostas" fill="url(#colorUv)" />
                             </BarChart>
                         </ResponsiveContainer>
                     </Paper>
                 </Grid>
 
                 {/* Performance dos Atendentes */}
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <Paper elevation={2} sx={{ p: 2, height: 400, display: 'flex', flexDirection: 'column' }}>
                         <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
                             Performance dos Atendentes
@@ -459,7 +485,7 @@ const DashboardPage = () => {
 
             <Grid container spacing={3} sx={{ mb: 4 }}>
                 {/* NPS por Critério */}
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <Paper elevation={2} sx={{ p: 2, height: 400, display: 'flex', flexDirection: 'column' }}>
                         <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
                             NPS por Critério

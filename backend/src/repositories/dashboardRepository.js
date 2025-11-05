@@ -41,10 +41,16 @@ const dashboardRepository = {
         const csatResponses = ratingResponses.filter(r => r.pergunta.type === 'rating_1_5');
     
         const npsResult = ratingService.calculateNPS(npsResponses);
-        const csatResult = ratingService.calculateCSAT(csatResponses);
-    
-        const totalResponsesWhere = {
-            respondentSessionId: { [Op.ne]: null }
+                const csatResult = ratingService.calculateCSAT(csatResponses);
+        
+                const currentMonth = new Date().getMonth();
+                const currentYear = new Date().getFullYear();
+                const ambassadorsMonth = npsResponses.filter(r => {
+                    const responseDate = new Date(r.createdAt);
+                    return responseDate.getMonth() === currentMonth && responseDate.getFullYear() === currentYear && r.ratingValue >= 9;
+                }).length;
+        
+                const totalResponsesWhere = {            respondentSessionId: { [Op.ne]: null }
         };
         if (tenantId) {
             totalResponsesWhere.tenantId = tenantId;
@@ -98,6 +104,8 @@ const dashboardRepository = {
             couponsUsedConversion: couponsGenerated > 0 ? parseFloat(((couponsUsed / couponsGenerated) * 100).toFixed(2)) : 0,
             totalResponses,
             totalUsers,
+            ambassadorsMonth,
+            couponsGeneratedPeriod: startDate && endDate ? `de ${new Date(startDate).toLocaleDateString('pt-BR')} até ${new Date(endDate).toLocaleDateString('pt-BR')}` : 'Desde o início',
         };
     },
 

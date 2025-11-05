@@ -32,6 +32,7 @@ import StarsIcon from '@mui/icons-material/Stars'; // New import
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 import { ROLES } from '../../constants/roles';
+import SupportSpeedDial from '../../components/common/SupportSpeedDial';
 
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 
@@ -429,6 +430,7 @@ const DashboardLayout = () => {
             >
                 <Toolbar /> 
                 <Outlet /> 
+                <SupportSpeedDial />
             </Box>
         </Box>
     );

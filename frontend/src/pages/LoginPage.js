@@ -3,7 +3,7 @@ import AuthContext from '../context/AuthContext';
 import LoginLayout from '../components/layout/LoginLayout'; // Importar o novo componente de layout
 
 // Importar componentes do Material-UI
-import { Box, Typography, TextField, Button, FormControlLabel, Checkbox, Link as MuiLink } from '@mui/material';
+import { Box, Typography, TextField, Button, FormControlLabel, Checkbox, Link as MuiLink, useTheme } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import { useNotification } from '../context/NotificationContext'; // Import useNotification
@@ -14,6 +14,7 @@ const LoginPage = () => {
     const [loading, setLoading] = useState(false);
     const { login } = useContext(AuthContext);
     const { showNotification } = useNotification(); // Get showNotification
+    const theme = useTheme();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -31,10 +32,10 @@ const LoginPage = () => {
 
     return (
         <LoginLayout>
-            <Typography variant="h5" component="h2" gutterBottom sx={{ textAlign: 'center', color: 'text.primary', fontWeight: 600 }}>
+            <Typography variant="h5" component="h2" gutterBottom sx={{ textAlign: 'center', color: theme.palette.dark.main, fontWeight: 600 }}>
                 Fazer Login
             </Typography>
-            <Typography variant="body2" paragraph sx={{ textAlign: 'center', color: 'text.secondary', mb: 4 }}>
+            <Typography variant="body2" paragraph sx={{ textAlign: 'center', color: theme.palette.dark.main, mb: 4 }}>
                 Entre com suas credenciais para acessar sua conta
             </Typography>
             

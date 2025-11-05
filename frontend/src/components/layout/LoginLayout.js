@@ -5,6 +5,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
+const RootBox = styled(Box)(({ theme }) => ({
 background: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://i.ibb.co/0R7Qz4bP/blurry-dining-tables.jpg) no-repeat center center fixed`,
   backgroundSize: 'cover',
   display: 'flex',

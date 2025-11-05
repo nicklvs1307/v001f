@@ -201,15 +201,24 @@ const DashboardLayout = () => {
             <Box sx={{ p: 2, textAlign: 'center' }}>
                 <img src="/logo.png" alt="Logo" style={{ maxHeight: '50px', width: 'auto' }} />
             </Box>
-            <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
+            <Divider sx={{ borderColor: 'rgba(0, 0, 0, 0.12)' }} />
             <List>
                 {filteredMenuItems.map((item) => (
                     <React.Fragment key={item.text}>
                         <ListItemButton 
                             onClick={() => item.children ? handleSubMenuClick(item.text) : navigate(item.path)}
-                            selected={!item.children && location.pathname === item.path}
+                            sx={{
+                            '&.Mui-selected': {
+                                backgroundColor: 'primary.main',
+                                color: 'white',
+                                '& .MuiListItemIcon-root': {
+                                    color: 'white',
+                                },
+                            },
+                        }}
+                        selected={!item.children && location.pathname === item.path}
                         >
-                            <ListItemIcon>
+                            <ListItemIcon sx={{ color: 'text.secondary' }}>
                                 {item.icon}
                             </ListItemIcon>
                             <ListItemText
@@ -245,7 +254,7 @@ const DashboardLayout = () => {
                                     {item.children.filter(child => child.roles.includes(user?.role?.name)).map((child) => (
                                         <ListItemButton 
                                             key={child.text} 
-                                            sx={{ pl: 4 }} 
+                                            sx={{ pl: 4, '&.Mui-selected': { backgroundColor: 'primary.light', color: 'primary.contrastText' } }} 
                                             onClick={() => navigate(child.path)}
                                             selected={location.pathname === child.path}
                                         >
@@ -294,8 +303,10 @@ const DashboardLayout = () => {
                 sx={{
                     width: { sm: drawerOpen ? `calc(100% - ${drawerWidth}px)` : `calc(100% - ${collapsedDrawerWidth}px)` },
                     ml: { sm: drawerOpen ? `${drawerWidth}px` : `${collapsedDrawerWidth}px` },
-                    borderBottom: '1px solid #e3e6f0',
-                    boxShadow: 'none',
+                    backgroundColor: 'white',
+                    color: 'text.primary',
+                    borderBottom: '1px solid #e0e0e0',
+                    boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.05)',
                 }}
             >
                 <Toolbar sx={{ justifyContent: 'space-between' }}>
@@ -389,7 +400,7 @@ const DashboardLayout = () => {
                     }}
                     sx={{
                         display: { xs: 'block', sm: 'none' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, backgroundColor: 'white' },
                     }}
                 >
                     {drawer}
@@ -401,6 +412,7 @@ const DashboardLayout = () => {
                         '& .MuiDrawer-paper': {
                             boxSizing: 'border-box',
                             width: drawerOpen ? drawerWidth : collapsedDrawerWidth,
+                            backgroundColor: 'white',
                             transition: (theme) => theme.transitions.create('width', {
                                 easing: theme.transitions.easing.sharp,
                                 duration: theme.transitions.duration.enteringScreen,

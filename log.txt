@@ -1,11 +1,9 @@
-AuthContext.js:28 AuthContext useEffect running
-ClientIdentificationPage.js:34 Erro ao buscar tenant: TypeError: be is not a function
-    at ClientIdentificationPage.js:31:35
-(anônimo) @ ClientIdentificationPage.js:34
-await in (anônimo)
-(anônimo) @ ClientIdentificationPage.js:44
-rl @ react-dom.production.min.js:243
-wc @ react-dom.production.min.js:285
-(anônimo) @ react-dom.production.min.js:281
-w @ scheduler.production.min.js:13
-O @ scheduler.production.min.js:14
+🎨 Paleta Estratégica Voltaki
+Tipo	Cor	HEX	Função / Psicologia
+Primária (Brand)	🔴 Vermelho Voltaki	#FC4C35	Cor principal da marca. Transmite energia, urgência e ação — perfeita pra botões principais e destaques.
+Secundária (Complementar suave)	🟢 Verde-azulado	#1EBFAE	Complementar equilibrada. Passa confiança e frescor, ideal pra áreas secundárias e elementos de interface (links, ícones, gráficos).
+Apoio (Contraste frio)	🔵 Azul escuro / marinho	#1B2432	Fundo escuro sofisticado. Dá profundidade e realça o vermelho. Excelente pra header, dashboard e seções de destaque.
+Neutro claro (base)	⚪ Cinza gelo	#F6F7F9	Fundo principal de telas, leve e limpo. Dá espaço pro conteúdo respirar.
+Texto principal	⚫ Cinza carvão	#2B2B2B	Ótimo contraste em fundos claros. Evita o preto puro (melhor pra leitura prolongada).
+Destaque de sucesso / confirmação	🟩 Verde limão suave	#B7E66F	Usa em confirmações de ação (“check-in realizado”, “cupom ativado”). Gera sensação positiva.
+Alerta / erro	🟠 Laranja queimado	#E86B42	Próxima da cor primária, mas um tom mais escuro pra alertas sem perder coerência.

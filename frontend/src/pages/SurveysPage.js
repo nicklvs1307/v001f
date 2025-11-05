@@ -220,7 +220,7 @@ const SurveyListPage = () => {
                         <Button 
                             variant="contained" 
                             color="primary" 
-                            onClick={() => navigate('/pesquisas/create')} // Changed from /surveys/new
+                            onClick={() => navigate('/dashboard/pesquisas/create')} // Changed from /surveys/new
                         >
                             <AddIcon sx={{ mr: 1 }} /> Nova Pesquisa
                         </Button>
@@ -353,7 +353,7 @@ const SurveyListPage = () => {
                                     variant="outlined" 
                                     size="small" 
                                     sx={{ mr: 1 }} 
-                                    onClick={() => navigate(`/pesquisas/results/${survey.id}`)}
+                                    onClick={() => navigate(`/dashboard/pesquisas/results/${survey.id}`)}
                                 >
                                     <BarChartIcon fontSize="small" sx={{ mr: 0.5 }} /> Resultados
                                 </Button>
@@ -361,7 +361,7 @@ const SurveyListPage = () => {
                                     variant="outlined" 
                                     size="small" 
                                     sx={{ mr: 1 }} 
-                                    onClick={() => navigate(`/pesquisas/edit/${survey.id}`)}
+                                    onClick={() => navigate(`/dashboard/pesquisas/edit/${survey.id}`)}
                                 >
                                     <EditIcon fontSize="small" sx={{ mr: 0.5 }} /> Editar
                                 </Button>

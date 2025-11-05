@@ -6,7 +6,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const RootBox = styled(Box)(({ theme }) => ({
-background: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://i.ibb.co/0R7Qz4bP/blurry-dining-tables.jpg) no-repeat center center fixed`,
+background: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(https://i.ibb.co/0R7Qz4bP/blurry-dining-tables.jpg) no-repeat center center fixed`,
   backgroundSize: 'cover',
   display: 'flex',
   justifyContent: 'center',
@@ -17,8 +17,8 @@ background: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https:
 
 const LoginContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
-  width: '1000px',
-  height: '600px',
+  width: '900px',
+  height: '550px',
   background: 'rgba(255, 255, 255, 0.85)',
   borderRadius: theme.shape.borderRadius * 3,
   boxShadow: theme.shadows[5],
@@ -70,7 +70,7 @@ const LoginLayout = ({ children }) => {
               src={'/logo.png'}
               alt="Logo"
               sx={{
-                width: '180px',
+                width: '150px',
                 height: 'auto',
                 display: 'block',
                 margin: '0 auto 20px',

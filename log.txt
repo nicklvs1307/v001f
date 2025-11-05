@@ -1,22 +1,15 @@
-AuthContext.js:28 AuthContext useEffect running
-publicSurveyService.js:41  POST https://apivoltaki.towersfy.com/api/public/surveys/87d63f62-4bb9-43e5-ab76-9eb004d4d2bb/responses 500 (Internal Server Error)
-(anônimo) @ xhr.js:198
-xhr @ xhr.js:15
-ht @ dispatchRequest.js:51
-_request @ Axios.js:185
-request @ Axios.js:40
-(anônimo) @ Axios.js:224
-(anônimo) @ bind.js:5
-submitSurveyResponses @ publicSurveyService.js:41
-onClick @ PublicSurveyPage.js:157
-ze @ react-dom.production.min.js:54
-We @ react-dom.production.min.js:54
-(anônimo) @ react-dom.production.min.js:55
-Fr @ react-dom.production.min.js:105
-Dr @ react-dom.production.min.js:106
-(anônimo) @ react-dom.production.min.js:117
-cc @ react-dom.production.min.js:273
-Me @ react-dom.production.min.js:52
-qr @ react-dom.production.min.js:109
-Gt @ react-dom.production.min.js:74
-Ht @ react-dom.production.min.js:73
+URL da solicitação
+https://apivoltaki.towersfy.com/api/surveys
+Método da solicitação
+POST
+Código de status
+500 Internal Server Error
+Endereço remoto
+95.217.16.187:443
+
+{
+    "status": "error",
+    "code": "HTTP_500",
+    "message": "notNull Violation: Pesquisa.creatorId cannot be null",
+    "details": "SequelizeValidationError: notNull Violation: Pesquisa.creatorId cannot be null\n    at InstanceValidator._validate (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:50:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async InstanceValidator._validateAndRunHooks (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:60:7)\n    at async InstanceValidator.validate (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:54:12)\n    at async Pesquisa.save (/usr/src/app/node_modules/sequelize/lib/model.js:2426:7)\n    at async Pesquisa.create (/usr/src/app/node_modules/sequelize/lib/model.js:1362:12)\n    at async Object.createSurvey (/usr/src/app/src/repositories/surveyRepository.js:27:23)\n    at async Object.createSurvey (/usr/src/app/src/services/surveyService.js:22:18)\n    at async /usr/src/app/src/controllers/surveyController.js:8:18"
+}

@@ -10,7 +10,7 @@ const xlsx = require("xlsx");
 // @desc    Criar ou atualizar um cliente (público)
 // @access  Public
 exports.publicRegisterClient = asyncHandler(async (req, res) => {
-  const { name, email, phone, birthDate, respondentSessionId } = req.body;
+  const { name, email, phone, birthDate, respondentSessionId, gender } = req.body;
 
   // Validações básicas
   if (!name || !respondentSessionId) {
@@ -59,7 +59,7 @@ exports.publicRegisterClient = asyncHandler(async (req, res) => {
       // Se encontrou o cliente anônimo, atualiza com os dados do formulário
       const updatedClient = await clientRepository.updateClient(
         client.id,
-        { name, email, phone, birthDate: parsedBirthDate },
+        { name, email, phone, birthDate: parsedBirthDate, gender },
         tenantId,
         { transaction }
       );
@@ -81,7 +81,7 @@ exports.publicRegisterClient = asyncHandler(async (req, res) => {
 
     // Se não encontrou nenhum cliente pela sessão, cria um novo
     const newClient = await clientRepository.createClient(
-      { name, email, phone, birthDate: parsedBirthDate, tenantId, respondentSessionId },
+      { name, email, phone, birthDate: parsedBirthDate, tenantId, respondentSessionId, gender },
       { transaction }
     );
 

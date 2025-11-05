@@ -110,9 +110,9 @@ const LoginPage = () => {
                     color="primary"
                     disabled={loading}
                     sx={{
-                        padding: '15px',
+                        padding: '12px',
                         borderRadius: '10px',
-                        fontSize: '16px',
+                        fontSize: '14px',
                         fontWeight: 600,
                         textTransform: 'none',
                         mb: 3,

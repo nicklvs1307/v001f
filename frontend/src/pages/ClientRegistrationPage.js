@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Typography, Box, CircularProgress, Alert, Paper } from '@mui/material';
+import { TextField, Button, Typography, Box, CircularProgress, Alert, Paper, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import clientService from '../services/clientService';
 import publicSurveyService from '../services/publicSurveyService';
@@ -65,7 +65,7 @@ const RegistrationFormComponent = ({ tenant }) => {
     const navigate = useNavigate();
     const theme = useTheme(); // Now uses the correct, dynamic theme
 
-    const [clientData, setClientData] = useState({ name: '', email: '', phone: '', birthDate: '' });
+    const [clientData, setClientData] = useState({ name: '', email: '', phone: '', birthDate: '', gender: '' });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -191,6 +191,21 @@ const RegistrationFormComponent = ({ tenant }) => {
                     <TextField margin="normal" fullWidth id="email" label="Endereço de Email (Opcional)" name="email" autoComplete="email" value={clientData.email} onChange={handleChange} />
                     <TextField margin="normal" required fullWidth id="phone" label="Telefone (com DDD)" name="phone" autoComplete="tel" value={clientData.phone} onChange={handlePhoneChange} inputMode="numeric" />
                     <TextField margin="normal" required fullWidth id="birthDate" label="Data de Nascimento" name="birthDate" type="text" placeholder="DD/MM/AAAA" value={clientData.birthDate} onChange={handleDateChange} inputMode="numeric" />
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel id="gender-label">Gênero</InputLabel>
+                        <Select
+                            labelId="gender-label"
+                            id="gender"
+                            name="gender"
+                            value={clientData.gender}
+                            label="Gênero"
+                            onChange={handleChange}
+                        >
+                            <MenuItem value="Masculino">Masculino</MenuItem>
+                            <MenuItem value="Feminino">Feminino</MenuItem>
+                            <MenuItem value="Prefiro não responder">Prefiro não responder</MenuItem>
+                        </Select>
+                    </FormControl>
                     <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, ...buttonStyle }} disabled={loading}>
                         {loading ? <CircularProgress size={24} color="inherit" /> : 'Cadastrar e Girar a Roleta'}
                     </Button>

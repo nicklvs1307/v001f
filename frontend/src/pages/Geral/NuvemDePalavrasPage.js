@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {
+import { 
     Box,
     Typography,
     Card,
@@ -7,9 +7,9 @@ import {
     CircularProgress,
     TextField,
     Grid,
-    Container
-} from '@mui/material';
-import { WordCloud } from '@isoterik/react-word-cloud';
+    Container,
+    useTheme
+} from '@mui/material';import { WordCloud } from '@isoterik/react-word-cloud';
 import { ResponsiveContainer } from 'recharts';
 import dashboardService from '../../services/dashboardService';
 import { startOfMonth, endOfMonth, format } from 'date-fns';
@@ -20,6 +20,8 @@ const NuvemDePalavrasPage = () => {
     const [error, setError] = useState(null);
     const [startDate, setStartDate] = useState(format(startOfMonth(new Date()), 'yyyy-MM-dd'));
     const [endDate, setEndDate] = useState(format(endOfMonth(new Date()), 'yyyy-MM-dd'));
+
+    const theme = useTheme();
 
     const fetchWordCloudData = useCallback(async () => {
         try {
@@ -40,8 +42,9 @@ const NuvemDePalavrasPage = () => {
     }, [fetchWordCloudData]);
 
     const wordCloudOptions = {
-        rotations: 2,
-        rotationAngles: [-90, 0],
+        colors: [theme.palette.primary.main, theme.palette.dark.main],
+        rotations: 1,
+        rotationAngles: [0, 0],
         fontSizes: [60, 180], // Aumentado para melhor visibilidade
         fontWeight: 'bold',
         padding: 10,

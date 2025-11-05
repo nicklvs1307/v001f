@@ -22,7 +22,7 @@ const createSurvey = async (surveyData, requestingUser) => {
   const survey = await surveyRepository.createSurvey({
     ...surveyData,
     tenantId: targetTenantId,
-    creatorId: requestingUser.userId,
+    creatorId: requestingUser.id,
   });
 
   return survey;

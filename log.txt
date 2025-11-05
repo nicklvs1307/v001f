@@ -1,23 +1,24 @@
- => ERROR [build 6/6] RUN npm run build                                                 20.2s
-------
- > [build 6/6] RUN npm run build:
-0.924
-0.924 > frontend@0.1.0 build
-0.924 > react-scripts build
-0.924
-4.782 Creating an optimized production build...
-20.06 Failed to compile.
-20.06
-20.06 Module not found: Error: Can't resolve '../../context/NotificationsContext' in '/app/src/components/layout'
-20.06
-20.06
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+main.d6142c6b.js:sourcemap:2 AuthContext useEffect running
+main.d6142c6b.js:sourcemap:2 Error: useNotification must be used within an NotificationProvider
+    at a (main.d6142c6b.js:sourcemap:2:457145)
+    at ge (530.68cd50ae.chunk.js:sourcemap:1:7500)
+    at gi (main.d6142c6b.js:sourcemap:2:384873)
+    at js (main.d6142c6b.js:sourcemap:2:399095)
+    at Sl (main.d6142c6b.js:sourcemap:2:445183)
+    at bc (main.d6142c6b.js:sourcemap:2:433622)
+    at vc (main.d6142c6b.js:sourcemap:2:433550)
+    at gc (main.d6142c6b.js:sourcemap:2:433413)
+    at ac (main.d6142c6b.js:sourcemap:2:430193)
+    at oc (main.d6142c6b.js:sourcemap:2:428744)
+ds @ main.d6142c6b.js:sourcemap:2
+main.d6142c6b.js:sourcemap:2 Uncaught Error: useNotification must be used within an NotificationProvider
+    at a (main.d6142c6b.js:sourcemap:2:457145)
+    at ge (530.68cd50ae.chunk.js:sourcemap:1:7500)
+    at gi (main.d6142c6b.js:sourcemap:2:384873)
+    at js (main.d6142c6b.js:sourcemap:2:399095)
+    at Sl (main.d6142c6b.js:sourcemap:2:445183)
+    at bc (main.d6142c6b.js:sourcemap:2:433622)
+    at vc (main.d6142c6b.js:sourcemap:2:433550)
+    at gc (main.d6142c6b.js:sourcemap:2:433413)
+    at ac (main.d6142c6b.js:sourcemap:2:430193)
+    at oc (main.d6142c6b.js:sourcemap:2:428744)

@@ -1,50 +1,4 @@
-AuthContext.js:28 AuthContext useEffect running
-apivoltaki.towersfy.com/api/public/surveys/87d63f62-4bb9-43e5-ab76-9eb004d4d2bb/responses:1  Failed to load resource: the server responded with a status of 500 ()
-publicSurveyService.js:41  POST https://apivoltaki.towersfy.com/api/public/surveys/87d63f62-4bb9-43e5-ab76-9eb004d4d2bb/responses 500 (Internal Server Error)
-(anônimo) @ xhr.js:198
-xhr @ xhr.js:15
-ht @ dispatchRequest.js:51
-_request @ Axios.js:185
-request @ Axios.js:40
-(anônimo) @ Axios.js:224
-(anônimo) @ bind.js:5
-submitSurveyResponses @ publicSurveyService.js:41
-onClick @ PublicSurveyPage.js:157
-ze @ react-dom.production.min.js:54
-We @ react-dom.production.min.js:54
-(anônimo) @ react-dom.production.min.js:55
-Fr @ react-dom.production.min.js:105
-Dr @ react-dom.production.min.js:106
-(anônimo) @ react-dom.production.min.js:117
-cc @ react-dom.production.min.js:273
-Me @ react-dom.production.min.js:52
-qr @ react-dom.production.min.js:109
-Gt @ react-dom.production.min.js:74
-Ht @ react-dom.production.min.js:73
-publicSurveyService.js:41  POST https://apivoltaki.towersfy.com/api/public/surveys/87d63f62-4bb9-43e5-ab76-9eb004d4d2bb/responses 500 (Internal Server Error)
-(anônimo) @ xhr.js:198
-xhr @ xhr.js:15
-ht @ dispatchRequest.js:51
-_request @ Axios.js:185
-request @ Axios.js:40
-(anônimo) @ Axios.js:224
-(anônimo) @ bind.js:5
-submitSurveyResponses @ publicSurveyService.js:41
-onClick @ PublicSurveyPage.js:157
-ze @ react-dom.production.min.js:54
-We @ react-dom.production.min.js:54
-(anônimo) @ react-dom.production.min.js:55
-Fr @ react-dom.production.min.js:105
-Dr @ react-dom.production.min.js:106
-(anônimo) @ react-dom.production.min.js:117
-cc @ react-dom.production.min.js:273
-Me @ react-dom.production.min.js:52
-qr @ react-dom.production.min.js:109
-Gt @ react-dom.production.min.js:74
-Ht @ react-dom.production.min.js:73
-
-
-RL da solicitação
+URL da solicitação
 https://apivoltaki.towersfy.com/api/public/surveys/87d63f62-4bb9-43e5-ab76-9eb004d4d2bb/responses
 Método da solicitação
 POST
@@ -56,6 +10,6 @@ Endereço remoto
 {
     "status": "error",
     "code": "HTTP_500",
-    "message": "Transaction cannot be rolled back because it has been finished with state: commit",
-    "details": "Error: Transaction cannot be rolled back because it has been finished with state: commit\n    at Transaction.rollback (/usr/src/app/node_modules/sequelize/lib/transaction.js:59:13)\n    at Object.submitSurveyResponses (/usr/src/app/src/repositories/publicSurveyRepository.js:257:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async /usr/src/app/src/controllers/publicSurveyController.js:37:18"
+    "message": "Cannot find module '../services/NotificationService'\nRequire stack:\n- /usr/src/app/src/repositories/publicSurveyRepository.js\n- /usr/src/app/src/controllers/publicSurveyController.js\n- /usr/src/app/src/routes/publicSurveyRoutes.js\n- /usr/src/app/src/routes/index.js\n- /usr/src/app/src/server.js",
+    "details": "Error: Cannot find module '../services/NotificationService'\nRequire stack:\n- /usr/src/app/src/repositories/publicSurveyRepository.js\n- /usr/src/app/src/controllers/publicSurveyController.js\n- /usr/src/app/src/routes/publicSurveyRoutes.js\n- /usr/src/app/src/routes/index.js\n- /usr/src/app/src/server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)\n    at Module._load (node:internal/modules/cjs/loader:981:27)\n    at Module.require (node:internal/modules/cjs/loader:1231:19)\n    at require (node:internal/modules/helpers:177:18)\n    at Object.submitSurveyResponses (/usr/src/app/src/repositories/publicSurveyRepository.js:197:37)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async /usr/src/app/src/controllers/publicSurveyController.js:37:18"
 }

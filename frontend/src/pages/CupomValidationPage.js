@@ -89,6 +89,7 @@ const CupomValidationPage = () => {
   const handleCloseModal = () => {
     setOpenModal(false);
     setSelectedCupom(null);
+    setError('');
   };
 
   const getStatusChip = (cupom) => {
@@ -178,9 +179,7 @@ const CupomValidationPage = () => {
         </Box>
       </Paper>
 
-      {error && (
-        <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>
-      )}
+
 
       <Modal
         open={openModal}
@@ -202,6 +201,9 @@ const CupomValidationPage = () => {
             <Close />
           </IconButton>
           {selectedCupom && renderCupomDetails(selectedCupom)}
+          {error && (
+            <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>
+          )}
           <Box sx={{ mt: 4, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', gap: 2 }}>
             <Button variant="contained" color="success" onClick={handleValidate} disabled={loading || selectedCupom?.status !== 'active'} fullWidth>
               Validar Cupom

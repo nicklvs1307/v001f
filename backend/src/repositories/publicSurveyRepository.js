@@ -191,18 +191,6 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
     await transaction.commit();
     console.log("submitSurveyResponses: Transaction committed");
 
-    // --- NOTIFICATION for new survey response ---
-    if (io) {
-        console.log("submitSurveyResponses: Sending real-time notification for new survey response");
-        const notificationService = require('../services/NotificationService');
-        notificationService.createNotification(io, {
-            type: 'SURVEY_RESPONSE',
-            message: `Nova resposta para a pesquisa "${survey.title}".`,
-            tenantId: survey.tenantId,
-            userId: null // Client action
-        });
-    }
-
     // Lógica para notificação de detratores
     (async () => {
       try {
@@ -231,17 +219,6 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
             };
             await whatsappService.sendInstanteDetractorMessage(tenant, detractorResponse);
 
-            // --- DETRACTOR NOTIFICATION ---
-            if (io) {
-                console.log("submitSurveyResponses: Sending real-time notification for detractor response");
-                const notificationService = require('../services/NotificationService');
-                notificationService.createNotification(io, {
-                    type: 'DETRACTOR_RESPONSE',
-                    message: `Resposta de detrator na pesquisa "${survey.title}".`,
-                    tenantId: survey.tenantId,
-                    userId: null
-                });
-            }
             break; 
           }
         }

@@ -95,7 +95,13 @@ const getPublicSurveyById = async (id) => {
 };
 
 const submitSurveyResponses = async (surveyId, responses, respondentSessionId, clienteId, atendenteId, io) => {
+  console.log("submitSurveyResponses: Starting submission process");
+  console.log(`submitSurveyResponses: surveyId=${surveyId}, respondentSessionId=${respondentSessionId}, clienteId=${clienteId}, atendenteId=${atendenteId}`);
+  console.log("submitSurveyResponses: responses:", JSON.stringify(responses, null, 2));
+
   const transaction = await sequelize.transaction();
+  console.log("submitSurveyResponses: Transaction started");
+
   try {
     const survey = await Pesquisa.findByPk(surveyId, {
       attributes: ['isOpen', 'tenantId', 'askForAttendant', 'title'],
@@ -108,24 +114,33 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
     });
 
     if (!survey) {
+      console.error("submitSurveyResponses: Survey not found");
       throw new ApiError(404, "Pesquisa não encontrada.");
     }
+    console.log("submitSurveyResponses: Survey found:", survey.title);
 
     if (!survey.isOpen) {
+      console.error("submitSurveyResponses: Survey is not open");
       throw new ApiError(403, "Esta pesquisa não está aberta para novas respostas.");
     }
+    console.log("submitSurveyResponses: Survey is open");
 
     const questionsMap = new Map(survey.perguntas.map(q => [q.id, q]));
+    console.log("submitSurveyResponses: Questions map created");
 
     const finalAtendenteId = atendenteId === '' ? null : atendenteId;
+    console.log("submitSurveyResponses: finalAtendenteId=", finalAtendenteId);
 
     const responsesToCreate = [];
     for (const res of responses) {
+      console.log("submitSurveyResponses: Processing response:", JSON.stringify(res, null, 2));
       const question = questionsMap.get(res.perguntaId);
 
       if (!question) {
+        console.error(`submitSurveyResponses: Question with ID ${res.perguntaId} not found`);
         throw new ApiError(400, `Pergunta com ID ${res.perguntaId} não encontrada na pesquisa.`);
       }
+      console.log("submitSurveyResponses: Question found:", question.text);
 
       // Mapeamento do valor da resposta para o campo correto no banco de dados
       const responseData = {
@@ -142,10 +157,8 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
         case 'rating_1_5':
         case 'rating_0_10':
           responseData.ratingValue = res.valor;
-          // O comentário já foi adicionado acima
           break;
         case 'free_text':
-          // Para texto livre, a resposta principal também vai para textValue
           responseData.textValue = res.valor;
           break;
         case 'multiple_choice':
@@ -158,23 +171,29 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
           }
           break;
         default:
-          // Ignorar tipos de pergunta desconhecidos ou lançar um erro
+          console.log(`submitSurveyResponses: Unknown question type ${question.type}, skipping`);
           continue;
       }
       
       if (question.required && (res.valor === undefined || res.valor === null || res.valor === '')) {
+        console.error(`submitSurveyResponses: Required question "${question.text}" is missing a value`);
         throw new ApiError(400, `A pergunta "${question.text}" é obrigatória.`);
       }
 
       responsesToCreate.push(responseData);
+      console.log("submitSurveyResponses: Response data prepared:", JSON.stringify(responseData, null, 2));
     }
 
+    console.log("submitSurveyResponses: Preparing to bulk create responses:", JSON.stringify(responsesToCreate, null, 2));
     await Resposta.bulkCreate(responsesToCreate, { transaction });
+    console.log("submitSurveyResponses: Bulk create successful");
 
     await transaction.commit();
+    console.log("submitSurveyResponses: Transaction committed");
 
     // --- NOTIFICATION for new survey response ---
     if (io) {
+        console.log("submitSurveyResponses: Sending real-time notification for new survey response");
         const notificationService = require('../services/NotificationService');
         notificationService.createNotification(io, {
             type: 'SURVEY_RESPONSE',
@@ -187,9 +206,11 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
     // Lógica para notificação de detratores
     (async () => {
       try {
+        console.log("submitSurveyResponses: Checking for detractor responses");
         const tenant = await Tenant.findByPk(survey.tenantId);
         if (!tenant || !tenant.reportPhoneNumber) {
-          return; // Não há número para reportar
+          console.log("submitSurveyResponses: No report phone number for tenant, skipping detractor notification");
+          return;
         }
 
         for (const res of responsesToCreate) {
@@ -203,6 +224,7 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
           }
 
           if (isDetractor) {
+            console.log("submitSurveyResponses: Detractor response found, sending notification");
             const detractorResponse = {
               ...res,
               pesquisa: { title: survey.title },
@@ -211,6 +233,7 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
 
             // --- DETRACTOR NOTIFICATION ---
             if (io) {
+                console.log("submitSurveyResponses: Sending real-time notification for detractor response");
                 const notificationService = require('../services/NotificationService');
                 notificationService.createNotification(io, {
                     type: 'DETRACTOR_RESPONSE',
@@ -219,19 +242,20 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
                     userId: null
                 });
             }
-
-            // Considerar notificar apenas uma vez por submissão para evitar spam
-            break; // Para o loop após encontrar o primeiro detrator
+            break; 
           }
         }
       } catch (error) {
-        console.error('Erro ao enviar notificação de detrator:', error);
+        console.error('submitSurveyResponses: Error sending detractor notification:', error);
       }
     })();
 
+    console.log("submitSurveyResponses: Submission process finished successfully");
     return { respondentSessionId: respondentSessionId };
   } catch (error) {
+    console.error('submitSurveyResponses: An error occurred. Rolling back transaction.', error);
     await transaction.rollback();
+    console.log("submitSurveyResponses: Transaction rolled back");
     throw error;
   }
 };

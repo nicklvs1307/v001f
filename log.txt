@@ -1,16 +1,16 @@
- => ERROR [build 6/6] RUN npm run build                                                       15.3s
+ => ERROR [build 6/6] RUN npm run build
 ------
  > [build 6/6] RUN npm run build:
-0.623
-0.623 > frontend@0.1.0 build
-0.623 > react-scripts build
-0.623
-3.519 Creating an optimized production build...
-15.17 Failed to compile.
-15.17
-15.17 Module not found: Error: Can't resolve '../context/NotificationContext' in '/app/src/pages'
-15.17
-15.18
+0.557
+0.557 > frontend@0.1.0 build
+0.557 > react-scripts build
+0.557
+2.787 Creating an optimized production build...
+8.693 Failed to compile.
+8.693
+8.694 Module not found: Error: Can't resolve '../services/socket' in '/app/src/context'
+8.694
+8.694
 ------
 Dockerfile:14
 --------------------
@@ -20,4 +20,5 @@ Dockerfile:14
   15 |
   16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
 --------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete s
+fully: exit code: 1

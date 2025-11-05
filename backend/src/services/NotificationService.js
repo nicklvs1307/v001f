@@ -46,11 +46,26 @@ class NotificationService {
   }
 
   async getNotifications(userId, tenantId) {
-    // TODO: Implement method to get notifications for a user
+    return Notification.findAll({
+      where: { tenantId },
+      order: [['createdAt', 'DESC']],
+      limit: 50
+    });
   }
 
-  async markAsRead(notificationId) {
-    // TODO: Implement method to mark a notification as read
+  async markAsRead(notificationId, userId) {
+    const notification = await Notification.findOne({
+      where: { id: notificationId, userId }
+    });
+
+    if (!notification) {
+      throw new Error('Notification not found');
+    }
+
+    notification.read = true;
+    await notification.save();
+
+    return notification;
   }
 }
 

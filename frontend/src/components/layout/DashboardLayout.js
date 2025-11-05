@@ -46,11 +46,6 @@ import NotificationPanel from './NotificationPanel';
 const drawerWidth = 250;
 const collapsedDrawerWidth = 60;
 
-import { useNotifications } from '../../context/NotificationsContext';
-import { Badge, Popover } from '@mui/material';
-
-import NotificationPanel from './NotificationPanel';
-
 const DashboardLayout = () => {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [drawerOpen, setDrawerOpen] = useState(true); // New state for permanent drawer

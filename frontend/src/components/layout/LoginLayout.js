@@ -17,9 +17,9 @@ background: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https:
 
 const LoginContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
-  width: '1000px',
-  height: '600px',
-  background: 'rgba(255, 255, 255, 0.95)',
+  width: '980px',
+  height: '580px',
+  background: 'linear-gradient(to right, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.95))',
   borderRadius: theme.shape.borderRadius * 3,
   boxShadow: theme.shadows[5],
   overflow: 'hidden',
@@ -41,7 +41,7 @@ const WelcomeSection = styled(Box)(({ theme }) => ({
   justifyContent: 'center',
   position: 'relative',
   overflow: 'hidden',
-  textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
+  textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
   [theme.breakpoints.down('md')]: {
     display: 'none',
   },}));

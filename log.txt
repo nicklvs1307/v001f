@@ -1,27 +1,23 @@
-AuthContext.js:28 AuthContext useEffect running
-SurveyIdentifyPage.js:15 Fetching tenant data...
-SurveyIdentifyPage.js:18 Tenant data loaded: Object
-SurveyIdentifyPage.js:29 handleRegister called
-react-dom.production.min.js:188 TypeError: Cannot read properties of undefined (reading 'main')
-    at Ur (CongratulationsPage.js:100:126)
-    at gi (react-dom.production.min.js:160:137)
-    at Sl (react-dom.production.min.js:289:337)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at oc (react-dom.production.min.js:267:429)
-    at w (scheduler.production.min.js:13:203)
-    at MessagePort.O (scheduler.production.min.js:14:128)
-ds @ react-dom.production.min.js:188
-react-dom.production.min.js:282 Uncaught TypeError: Cannot read properties of undefined (reading 'main')
-    at Ur (CongratulationsPage.js:100:126)
-    at gi (react-dom.production.min.js:160:137)
-    at Sl (react-dom.production.min.js:289:337)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at oc (react-dom.production.min.js:267:429)
-    at w (scheduler.production.min.js:13:203)
-    at MessagePort.O (scheduler.production.min.js:14:128)
+ => ERROR [build 6/6] RUN npm run build                                                       16.8s
+------
+ > [build 6/6] RUN npm run build:
+0.799
+0.799 > frontend@0.1.0 build
+0.799 > react-scripts build
+0.799
+4.512 Creating an optimized production build...
+16.62 Failed to compile.
+16.62
+16.62 Module not found: Error: Can't resolve 'socket.io-client' in '/app/src/services'
+16.62
+16.62
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

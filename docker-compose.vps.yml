@@ -14,6 +14,9 @@ x-environment: &environment
   JWT_EXPIRES_IN: 7d
   FRONTEND_URL: https://voltaki.towersfy.com
   BACKEND_URL: https://apivoltaki.towersfy.com
+  VAPID_CONTACT_EMAIL: seu-email@exemplo.com
+  VAPID_PUBLIC_KEY: BIWmxF52uOzY4QPfpxli5pjH4TEZx1yqf6gvNnCn9_ZXL5fbGO_c5Sk9Csa2S51PL66tW-TLNxWIJxQBpxTPS84
+  VAPID_PRIVATE_KEY: 8gpZjystdPV-Zod5WwxsfPkei_YaLs1CUg-DZe7k_RM
 
 
 services:

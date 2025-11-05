@@ -13,7 +13,7 @@ import {
   Card,
   CardContent
 } from '@mui/material';
-import { useNotification } from '../context/NotificationContext';
+import { useSnackbar } from '../context/SnackbarContext';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import SaveIcon from '@mui/icons-material/Save';
 import AuthContext from '../context/AuthContext';
@@ -30,7 +30,7 @@ const ProfilePage = () => {
     const [profilePictureUploadLoading, setProfilePictureUploadLoading] = useState(false);
     const [profilePictureUploadSuccess, setProfilePictureUploadSuccess] = useState(false);
 
-    const { showNotification } = useNotification();
+    const { showSnackbar } = useSnackbar();
 
     const fileInputRef = useRef(null);
 
@@ -49,11 +49,11 @@ const ProfilePage = () => {
 
     const handleProfilePictureUpload = async () => {
         if (!profilePictureFile) {
-            showNotification('Por favor, selecione um arquivo para upload.', 'warning');
+            showSnackbar('Por favor, selecione um arquivo para upload.', 'warning');
             return;
         }
         if (!user?.id) {
-            showNotification('ID do Usuário não disponível para upload.', 'error');
+            showSnackbar('ID do Usuário não disponível para upload.', 'error');
             return;
         }
 
@@ -67,7 +67,7 @@ const ProfilePage = () => {
             setProfilePictureUploadSuccess(true);
             setProfilePictureFile(null);
         } catch (err) {
-            showNotification(err.message || 'Erro ao fazer upload da foto de perfil.', 'error');
+            showSnackbar(err.message || 'Erro ao fazer upload da foto de perfil.', 'error');
             console.error('Erro ao fazer upload da foto de perfil:', err);
         } finally {
             setProfilePictureUploadLoading(false);
@@ -88,7 +88,7 @@ const ProfilePage = () => {
             updateUser({ ...user, ...updatedUserData.user });
             setSuccess(true);
         } catch (err) {
-            showNotification(err.message || 'Falha ao atualizar o perfil.', 'error');
+            showSnackbar(err.message || 'Falha ao atualizar o perfil.', 'error');
         } finally {
             setLoading(false);
         }

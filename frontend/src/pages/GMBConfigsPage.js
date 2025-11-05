@@ -19,7 +19,7 @@ import {
   Avatar,
   InputAdornment,
 } from '@mui/material';
-import { useNotification } from '../context/NotificationContext';
+import { useSnackbar } from '../context/SnackbarContext';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import SaveIcon from '@mui/icons-material/Save';
 import configService from '../services/configService';
@@ -48,7 +48,7 @@ const ConfigPage = () => {
       const [logoUploadLoading, setLogoUploadLoading] = useState(false); // Adicionado estado de carregamento de upload
       const [logoUploadSuccess, setLogoUploadSuccess] = useState(false);
 
-      const { showNotification } = useNotification(); // Usar o hook useNotification
+      const { showSnackbar } = useSnackbar(); // Usar o hook useNotification
 
   const fileInputRef = useRef(null);
 
@@ -63,7 +63,7 @@ const ConfigPage = () => {
           secondaryColor: data.secondaryColor || '#dc004e',
         });
       } catch (err) {
-        showNotification('Erro ao carregar configurações.', 'error');
+        showSnackbar('Erro ao carregar configurações.', 'error');
         console.error('Erro ao carregar configurações:', err);
       } finally {
         setLoading(false);
@@ -90,11 +90,11 @@ const ConfigPage = () => {
     const tenantIdForUpload = config?.id;
 
     if (!logoFile) {
-        showNotification('Por favor, selecione um arquivo para upload.', 'warning');
+        showSnackbar('Por favor, selecione um arquivo para upload.', 'warning');
         return;
     }
     if (!tenantIdForUpload) {
-        showNotification('ID do Tenant não disponível para upload.', 'error');
+        showSnackbar('ID do Tenant não disponível para upload.', 'error');
         return;
     }
 
@@ -109,7 +109,7 @@ const ConfigPage = () => {
       setLogoFile(null); // Limpar o arquivo selecionado após o upload
       if (refreshUser) await refreshUser(); // Atualiza o contexto global do usuário
     } catch (err) {
-        showNotification(err.message || 'Erro ao fazer upload da logo.', 'error');
+        showSnackbar(err.message || 'Erro ao fazer upload da logo.', 'error');
         console.error('Erro ao fazer upload da logo:', err);
     } finally {
       setLogoUploadLoading(false);
@@ -126,7 +126,7 @@ const ConfigPage = () => {
       setSuccess(true);
       if (refreshUser) await refreshUser(); // Atualiza o contexto global do usuário
     } catch (err) {
-                showNotification(err.message || 'Erro ao salvar configurações.', 'error');
+                showSnackbar(err.message || 'Erro ao salvar configurações.', 'error');
                 console.error('Erro ao salvar configurações:', err);    } finally {
       setLoading(false);
     }

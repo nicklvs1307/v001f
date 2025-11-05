@@ -1,16 +1,16 @@
- => ERROR [build 6/6] RUN npm run build                                                       16.8s
+ => ERROR [build 6/6] RUN npm run build                                                       15.3s
 ------
  > [build 6/6] RUN npm run build:
-0.799
-0.799 > frontend@0.1.0 build
-0.799 > react-scripts build
-0.799
-4.512 Creating an optimized production build...
-16.62 Failed to compile.
-16.62
-16.62 Module not found: Error: Can't resolve 'socket.io-client' in '/app/src/services'
-16.62
-16.62
+0.623
+0.623 > frontend@0.1.0 build
+0.623 > react-scripts build
+0.623
+3.519 Creating an optimized production build...
+15.17 Failed to compile.
+15.17
+15.17 Module not found: Error: Can't resolve '../context/NotificationContext' in '/app/src/pages'
+15.17
+15.18
 ------
 Dockerfile:14
 --------------------

@@ -1,14 +1,11 @@
 AuthContext.js:28 AuthContext useEffect running
-/default-avatar.png:1  Failed to load resource: the server responded with a status of 404 ()
-CouponsPage.js:81 Erro ao buscar recompensas: TypeError: F.A.getAllRecompensas is not a function
-    at oe (CouponsPage.js:78:44)
-    at CouponsPage.js:61:5
-    at rl (react-dom.production.min.js:243:332)
-    at wc (react-dom.production.min.js:285:111)
-    at lc (react-dom.production.min.js:272:185)
-    at Vo (react-dom.production.min.js:127:105)
-    at react-dom.production.min.js:282:470
-    at Ac (react-dom.production.min.js:280:398)
-    at oc (react-dom.production.min.js:269:269)
-    at w (scheduler.production.min.js:13:203)
-oe @ CouponsPage.js:81
+ClientIdentificationPage.js:34 Erro ao buscar tenant: TypeError: be is not a function
+    at ClientIdentificationPage.js:31:35
+(anônimo) @ ClientIdentificationPage.js:34
+await in (anônimo)
+(anônimo) @ ClientIdentificationPage.js:44
+rl @ react-dom.production.min.js:243
+wc @ react-dom.production.min.js:285
+(anônimo) @ react-dom.production.min.js:281
+w @ scheduler.production.min.js:13
+O @ scheduler.production.min.js:14

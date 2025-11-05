@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import publicSurveyService from '../services/publicSurveyService';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
-import getDynamicTheme from '../theme';
+import getDynamicTheme from '../getDynamicTheme';
 
 // Wrapper Component: Fetches data and provides theme
 const ClientIdentificationPage = () => {

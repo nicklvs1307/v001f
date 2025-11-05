@@ -6,7 +6,7 @@ import publicSurveyService from '../services/publicSurveyService';
 import publicRoletaService from '../services/publicRoletaService';
 import roletaSpinService from '../services/roletaSpinService';
 import SpinTheWheel from '../components/roleta/SpinTheWheel';
-import getDynamicTheme from '../theme';
+import getDynamicTheme from '../getDynamicTheme';
 
 const RoulettePage = ({ spinData }) => {
   const { tenantId, pesquisaId, clientId } = useParams();

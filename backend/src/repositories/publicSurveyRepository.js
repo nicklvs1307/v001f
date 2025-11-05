@@ -254,8 +254,10 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
     return { respondentSessionId: respondentSessionId };
   } catch (error) {
     console.error('submitSurveyResponses: An error occurred. Rolling back transaction.', error);
-    await transaction.rollback();
-    console.log("submitSurveyResponses: Transaction rolled back");
+    if (transaction && !transaction.finished) {
+      await transaction.rollback();
+      console.log("submitSurveyResponses: Transaction rolled back");
+    }
     throw error;
   }
 };

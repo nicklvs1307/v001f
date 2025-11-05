@@ -76,7 +76,7 @@ const CupomListPage = () => {
   const fetchRecompensas = async () => {
     try {
       const data = await recompensaService.getAll();
-      setRecompensas(data);
+      setRecompensas(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Erro ao buscar recompensas:', err);
     }

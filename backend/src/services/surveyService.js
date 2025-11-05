@@ -68,7 +68,7 @@ const deleteSurvey = async (surveyId, requestingUser) => {
   if (
     requestingUser.role !== "Super Admin" &&
     (existingSurvey.tenantId !== requestingUser.tenantId ||
-      existingSurvey.creatorId !== requestingUser.userId)
+      existingSurvey.creatorId !== requestingUser.id)
   ) {
     throw new ApiError(
       403,

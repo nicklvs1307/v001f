@@ -3,7 +3,7 @@ import useAtendentes from '../../hooks/useAtendentes';
 import AuthContext from '../../context/AuthContext';
 import AtendenteModal from './AtendenteModal';
 import ConfirmationDialog from '../layout/ConfirmationDialog';
-import { useSnackbar } from '../../context/SnackbarContext';
+import { useNotification } from '../../context/NotificationContext';
 import { 
     Box, 
     Typography, 
@@ -26,7 +26,7 @@ import AddIcon from '@mui/icons-material/Add';
 const AtendenteList = () => {
     const { user } = useContext(AuthContext);
     const { atendentes, loading, error, createAtendente, updateAtendente, deleteAtendente } = useAtendentes();
-    const { showSnackbar } = useSnackbar();
+    const { showNotification } = useNotification();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [selectedAtendente, setSelectedAtendente] = useState(null);
@@ -60,7 +60,7 @@ const AtendenteList = () => {
     const handleAtendenteCreate = async (atendenteData) => {
         try {
             await createAtendente(atendenteData);
-            showSnackbar('Atendente criado com sucesso!', 'success');
+            showNotification('Atendente criado com sucesso!', 'success');
             handleCloseModal();
         } catch (err) {
             setFormError(err.message);
@@ -71,7 +71,7 @@ const AtendenteList = () => {
     const handleAtendenteUpdate = async (atendenteData) => {
         try {
             await updateAtendente(selectedAtendente.id, atendenteData);
-            showSnackbar('Atendente atualizado com sucesso!', 'success');
+            showNotification('Atendente atualizado com sucesso!', 'success');
             handleCloseModal();
         } catch (err) {
             setFormError(err.message);
@@ -82,10 +82,11 @@ const AtendenteList = () => {
     const handleAtendenteDelete = async () => {
         try {
             await deleteAtendente(selectedAtendente.id);
-            showSnackbar('Atendente deletado com sucesso!', 'success');
+            showNotification('Atendente deletado com sucesso!', 'success');
             handleCloseConfirm();
         } catch (err) {
-showSnackbar(err.message, 'error');
+            showNotification(err.message, 'error');
+            console.error(err);
         }
     };
 

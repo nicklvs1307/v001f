@@ -16,9 +16,7 @@ import {
     Collapse,
     Menu,
     MenuItem,
-    Fab,
 } from '@mui/material';
-import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import MenuIcon from '@mui/icons-material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
@@ -33,20 +31,12 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import StarsIcon from '@mui/icons-material/Stars'; // New import
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
-import { ThemeContext } from '../../context/ThemeContext';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { ROLES } from '../../constants/roles';
-import { useNotifications } from '../../context/NotificationsContext';
-import { Badge, Popover } from '@mui/material';
 
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import NotificationPanel from './NotificationPanel';
 
 const drawerWidth = 250;
 const collapsedDrawerWidth = 60;
-
-
 
 const DashboardLayout = () => {
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -55,19 +45,8 @@ const DashboardLayout = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { user, logout } = useContext(AuthContext);
-    const { mode, toggleTheme } = useContext(ThemeContext);
-    const { notifications, unreadCount, markAsRead } = useNotifications();
     const [anchorEl, setAnchorEl] = useState(null);
-    const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
     const [pageTitle, setPageTitle] = useState('Dashboard');
-
-    const handleNotificationClick = (event) => {
-        setNotificationAnchorEl(event.currentTarget);
-    };
-
-    const handleNotificationClose = () => {
-        setNotificationAnchorEl(null);
-    };
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -222,24 +201,15 @@ const DashboardLayout = () => {
             <Box sx={{ p: 2, textAlign: 'center' }}>
                 <img src="/logo.png" alt="Logo" style={{ maxHeight: '50px', width: 'auto' }} />
             </Box>
-            <Divider sx={{ borderColor: 'rgba(0, 0, 0, 0.12)' }} />
+            <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
             <List>
                 {filteredMenuItems.map((item) => (
                     <React.Fragment key={item.text}>
-                        <ListItemButton 
+                        <ListItemButton
                             onClick={() => item.children ? handleSubMenuClick(item.text) : navigate(item.path)}
-                            sx={{
-                            '&.Mui-selected': {
-                                backgroundColor: 'primary.main',
-                                color: 'white',
-                                '& .MuiListItemIcon-root': {
-                                    color: 'white',
-                                },
-                            },
-                        }}
-                        selected={!item.children && location.pathname === item.path}
+                            selected={!item.children && location.pathname === item.path}
                         >
-                            <ListItemIcon sx={{ color: 'text.secondary' }}>
+                            <ListItemIcon>
                                 {item.icon}
                             </ListItemIcon>
                             <ListItemText
@@ -273,9 +243,9 @@ const DashboardLayout = () => {
                             <Collapse in={drawerOpen && openSubMenu[item.text]} timeout="auto" unmountOnExit>
                                 <List component="div" disablePadding>
                                     {item.children.filter(child => child.roles.includes(user?.role?.name)).map((child) => (
-                                        <ListItemButton 
-                                            key={child.text} 
-                                            sx={{ pl: 4, '&.Mui-selected': { backgroundColor: 'primary.light', color: 'primary.contrastText' } }} 
+                                        <ListItemButton
+                                            key={child.text}
+                                            sx={{ pl: 4 }}
                                             onClick={() => navigate(child.path)}
                                             selected={location.pathname === child.path}
                                         >
@@ -305,7 +275,8 @@ const DashboardLayout = () => {
                                                                                             </Box>
                                                                                         }
                                                                                         sx={{ opacity: drawerOpen ? 1 : 0, transition: 'opacity 0.3s ease-in-out' }} // Hide text when collapsed
-                                                                                    />                                        </ListItemButton>
+                                                                                    />
+                                        </ListItemButton>
                                     ))}
                                 </List>
                             </Collapse>
@@ -316,10 +287,6 @@ const DashboardLayout = () => {
         </div>
     );
 
-    const handleSupportClick = () => {
-        window.location.href = 'mailto:suporte@feedeliza.com.br';
-    };
-
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -328,10 +295,8 @@ const DashboardLayout = () => {
                 sx={{
                     width: { sm: drawerOpen ? `calc(100% - ${drawerWidth}px)` : `calc(100% - ${collapsedDrawerWidth}px)` },
                     ml: { sm: drawerOpen ? `${drawerWidth}px` : `${collapsedDrawerWidth}px` },
-                    backgroundColor: 'white',
-                    color: 'text.primary',
-                    borderBottom: '1px solid #e0e0e0',
-                    boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.05)',
+                    borderBottom: '1px solid #e3e6f0',
+                    boxShadow: 'none',
                 }}
             >
                 <Toolbar sx={{ justifyContent: 'space-between' }}>
@@ -360,29 +325,9 @@ const DashboardLayout = () => {
                         </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <IconButton color="inherit" onClick={toggleTheme}>
-                            {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+                        <IconButton color="inherit">
+                            <NotificationsIcon />
                         </IconButton>
-                        <IconButton color="inherit" onClick={handleNotificationClick}>
-                            <Badge badgeContent={unreadCount} color="error">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
-                        <Popover
-                            open={Boolean(notificationAnchorEl)}
-                            anchorEl={notificationAnchorEl}
-                            onClose={handleNotificationClose}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'right',
-                            }}
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                        >
-                            <NotificationPanel notifications={notifications} onMarkAsRead={markAsRead} />
-                        </Popover>
                         <Button
                             color="inherit"
                             onClick={handleMenu}
@@ -445,7 +390,7 @@ const DashboardLayout = () => {
                     }}
                     sx={{
                         display: { xs: 'block', sm: 'none' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, backgroundColor: 'white' },
+                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
                     }}
                 >
                     {drawer}
@@ -457,7 +402,6 @@ const DashboardLayout = () => {
                         '& .MuiDrawer-paper': {
                             boxSizing: 'border-box',
                             width: drawerOpen ? drawerWidth : collapsedDrawerWidth,
-                            backgroundColor: 'white',
                             transition: (theme) => theme.transitions.create('width', {
                                 easing: theme.transitions.easing.sharp,
                                 duration: theme.transitions.duration.enteringScreen,
@@ -486,18 +430,6 @@ const DashboardLayout = () => {
                 <Toolbar /> 
                 <Outlet /> 
             </Box>
-            <Fab
-                color="primary"
-                aria-label="support"
-                sx={{
-                    position: 'fixed',
-                    bottom: 16,
-                    right: 16,
-                }}
-                onClick={handleSupportClick}
-            >
-                <SupportAgentIcon />
-            </Fab>
         </Box>
     );
 };

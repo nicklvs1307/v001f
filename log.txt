@@ -1,18 +1,16 @@
- => ERROR [build 6/6] RUN npm run build                                                164.3s
+ => ERROR [build 6/6] RUN npm run build                                                 20.2s
 ------
  > [build 6/6] RUN npm run build:
-0.582
-0.582 > frontend@0.1.0 build
-0.582 > react-scripts build
-0.582
-2.664 Creating an optimized production build...
-162.8 Failed to compile.
-162.8
-162.8 [eslint]
-162.8 src/components/layout/DashboardLayout.js
-162.8 Syntax error: Identifier 'useNotifications' has already been declared. (49:9) (49:9)
-162.8
-162.8
+0.924
+0.924 > frontend@0.1.0 build
+0.924 > react-scripts build
+0.924
+4.782 Creating an optimized production build...
+20.06 Failed to compile.
+20.06
+20.06 Module not found: Error: Can't resolve '../../context/NotificationsContext' in '/app/src/components/layout'
+20.06
+20.06
 ------
 Dockerfile:14
 --------------------

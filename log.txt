@@ -1,16 +1,16 @@
- => ERROR [build 6/6] RUN npm run build
+ => ERROR [build 6/6] RUN npm run build                                                  6.7s
 ------
  > [build 6/6] RUN npm run build:
-0.557
-0.557 > frontend@0.1.0 build
-0.557 > react-scripts build
-0.557
-2.787 Creating an optimized production build...
-8.693 Failed to compile.
-8.693
-8.694 Module not found: Error: Can't resolve '../services/socket' in '/app/src/context'
-8.694
-8.694
+0.586
+0.586 > frontend@0.1.0 build
+0.586 > react-scripts build
+0.586
+4.196 Creating an optimized production build...
+6.618 Failed to compile.
+6.618
+6.620 Module not found: Error: Can't resolve './context/SocketContext' in '/app/src'
+6.620
+6.620
 ------
 Dockerfile:14
 --------------------
@@ -20,5 +20,4 @@ Dockerfile:14
   15 |
   16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
 --------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete s
-fully: exit code: 1
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

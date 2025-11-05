@@ -109,17 +109,6 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
 
   const novoCupom = await cupomRepository.create(cupomData);
 
-  // --- NOTIFICATION ---
-  const io = req.app.get('io');
-  const notificationService = require('../services/NotificationService');
-  await notificationService.createNotification(io, {
-    type: 'ROULETTE_SPIN',
-    message: `Cliente ${cliente.name} girou a roleta e ganhou ${premioGanhador.nome}`,
-    tenantId: tenantId,
-    userId: null
-  });
-  // --- END NOTIFICATION ---
-
   // Envio da mensagem de WhatsApp se a automação estiver ativa
   try {
     console.log(`[RoletaController] Verificando se deve enviar mensagem de prêmio para o tenant ${tenantId}.`);

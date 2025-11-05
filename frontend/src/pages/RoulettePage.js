@@ -206,6 +206,14 @@ const RoulettePage = ({ spinData }) => {
 
 const RoulettePageComponent = ({ survey, tenant, roletaConfig, isSpinning, winningIndex, handleSpin, handleAnimationComplete, spinResult }) => {
   const theme = useTheme();
+  const segColors = [
+    theme.palette.primary.main,
+    theme.palette.secondary.main,
+    theme.palette.primary.main,
+    theme.palette.secondary.main,
+    theme.palette.primary.main,
+    theme.palette.secondary.main,
+  ];
   const buttonNextStyle = { background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, color: 'white', borderRadius: '50px', padding: '12px 25px', fontWeight: 600, '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 5px 15px rgba(0, 0, 0, 0.1)' } };
 
   return (
@@ -235,7 +243,7 @@ const RoulettePageComponent = ({ survey, tenant, roletaConfig, isSpinning, winni
             <Box sx={{ my: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <SpinTheWheel
                 items={roletaConfig.items || []}
-                segColors={['#FFD700', '#FF6347', '#3CB371', '#6A5ACD', '#FF8C00', '#4682B4']}
+                segColors={segColors}
                 winningIndex={winningIndex}
                 onAnimationComplete={handleAnimationComplete}
               />

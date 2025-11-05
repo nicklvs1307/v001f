@@ -1,6 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useSocket } from './SocketContext';
-import notificationService from '../services/notificationService';
 
 const NotificationsContext = createContext();
 
@@ -13,34 +12,29 @@ export const NotificationsProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  const fetchNotifications = useCallback(async () => {
-    try {
-      const data = await notificationService.getNotifications();
-      setNotifications(data);
-      setUnreadCount(data.filter(n => !n.read).length);
-    } catch (error) {
-      console.error("Failed to fetch notifications", error);
-    }
-  }, []);
-
   useEffect(() => {
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       navigator.serviceWorker.ready.then(registration => {
         registration.pushManager.getSubscription().then(subscription => {
           if (subscription === null) {
+            // We are not subscribed, so ask for permission
             Notification.requestPermission().then(permission => {
               if (permission === 'granted') {
+                // Subscribe
                 const vapidPublicKey = process.env.REACT_APP_VAPID_PUBLIC_KEY;
                 registration.pushManager.subscribe({
                   userVisibleOnly: true,
                   applicationServerKey: vapidPublicKey
                 }).then(newSubscription => {
-                  notificationService.subscribeToPush(newSubscription);
+                  // TODO: Send subscription to the backend
+                  console.log('New push subscription:', newSubscription);
                 });
               }
             });
           } else {
-            notificationService.subscribeToPush(subscription);
+            // We are already subscribed
+            // TODO: Send subscription to the backend to ensure it's up to date
+            console.log('Existing push subscription:', subscription);
           }
         });
       });
@@ -48,19 +42,12 @@ export const NotificationsProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    fetchNotifications();
+    // TODO: Fetch initial notifications from the API
 
     const onNewNotification = (notification) => {
       setNotifications((prev) => [notification, ...prev]);
       setUnreadCount((prev) => prev + 1);
-      if (navigator.serviceWorker && 'showNotification' in ServiceWorkerRegistration.prototype) {
-        navigator.serviceWorker.ready.then(registration => {
-          registration.showNotification('Nova Notificação', {
-            body: notification.message,
-            icon: '/logo192.png'
-          });
-        });
-      }
+      // TODO: Show push notification
     };
 
     socket.on('new_notification', onNewNotification);
@@ -68,18 +55,14 @@ export const NotificationsProvider = ({ children }) => {
     return () => {
       socket.off('new_notification', onNewNotification);
     };
-  }, [socket, fetchNotifications]);
+  }, [socket]);
 
-  const markAsRead = async (notificationId) => {
-    try {
-      await notificationService.markAsRead(notificationId);
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n))
-      );
-      setUnreadCount((prev) => (prev > 0 ? prev - 1 : 0));
-    } catch (error) {
-      console.error("Failed to mark notification as read", error);
-    }
+  const markAsRead = (notificationId) => {
+    // TODO: Call API to mark notification as read
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n))
+    );
+    setUnreadCount((prev) => (prev > 0 ? prev - 1 : 0));
   };
 
   const value = {

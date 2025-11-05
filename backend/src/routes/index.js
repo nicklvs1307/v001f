@@ -30,7 +30,6 @@ const whatsappWebhookRoutes = require('./whatsappWebhookRoutes');
 const roletaAdminRoutes = require('./roletaAdminRoutes');
 const automationRoutes = require('./automationRoutes');
 const pushRoutes = require('./pushRoutes');
-const notificationRoutes = require('./notificationRoutes');
 
 module.exports = (router) => {
   // Rota para Health Check do Docker
@@ -66,5 +65,4 @@ module.exports = (router) => {
   router.use('/roletas', roletaAdminRoutes);
   router.use('/automations', automationRoutes);
   router.use('/push', pushRoutes);
-  router.use('/notifications', notificationRoutes);
 };

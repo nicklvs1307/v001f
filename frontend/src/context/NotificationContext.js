@@ -1,14 +1,14 @@
 import React, { createContext, useState, useContext, useCallback } from 'react';
 import { Snackbar, Alert } from '@mui/material';
 
-const SnackbarContext = createContext(null);
+const NotificationContext = createContext(null);
 
-export const SnackbarProvider = ({ children }) => {
+export const NotificationProvider = ({ children }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('error'); // Default to error
 
-  const showSnackbar = useCallback((message, severity = 'error') => {
+  const showNotification = useCallback((message, severity = 'error') => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
     setSnackbarOpen(true);
@@ -22,7 +22,7 @@ export const SnackbarProvider = ({ children }) => {
   };
 
   return (
-    <SnackbarContext.Provider value={{ showSnackbar }}>
+    <NotificationContext.Provider value={{ showNotification }}>
       {children}
       <Snackbar
         open={snackbarOpen}
@@ -34,14 +34,14 @@ export const SnackbarProvider = ({ children }) => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-    </SnackbarContext.Provider>
+    </NotificationContext.Provider>
   );
 };
 
-export const useSnackbar = () => {
-  const context = useContext(SnackbarContext);
+export const useNotification = () => {
+  const context = useContext(NotificationContext);
   if (!context) {
-    throw new Error('useSnackbar must be used within an SnackbarProvider');
+    throw new Error('useNotification must be used within an NotificationProvider');
   }
   return context;
 };

@@ -20,24 +20,3 @@ Me @ react-dom.production.min.js:52
 qr @ react-dom.production.min.js:109
 Gt @ react-dom.production.min.js:74
 Ht @ react-dom.production.min.js:73
-publicSurveyService.js:41  POST https://apivoltaki.towersfy.com/api/public/surveys/87d63f62-4bb9-43e5-ab76-9eb004d4d2bb/responses 500 (Internal Server Error)
-(anônimo) @ xhr.js:198
-xhr @ xhr.js:15
-ht @ dispatchRequest.js:51
-_request @ Axios.js:185
-request @ Axios.js:40
-(anônimo) @ Axios.js:224
-(anônimo) @ bind.js:5
-submitSurveyResponses @ publicSurveyService.js:41
-onClick @ PublicSurveyPage.js:157
-ze @ react-dom.production.min.js:54
-We @ react-dom.production.min.js:54
-(anônimo) @ react-dom.production.min.js:55
-Fr @ react-dom.production.min.js:105
-Dr @ react-dom.production.min.js:106
-(anônimo) @ react-dom.production.min.js:117
-cc @ react-dom.production.min.js:273
-Me @ react-dom.production.min.js:52
-qr @ react-dom.production.min.js:109
-Gt @ react-dom.production.min.js:74
-Ht @ react-dom.production.min.js:73

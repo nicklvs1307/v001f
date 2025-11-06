@@ -154,7 +154,7 @@ const CampaignFormPage = () => {
       } else {
         await campanhaService.create(campaign);
       }
-      navigate('/cupons/campanhas');
+      navigate('/dashboard/cupons/campanhas');
     } catch (err) {
       dispatch({ type: 'FETCH_ERROR', payload: err.response?.data?.message || 'Erro ao salvar campanha.' });
     }
@@ -260,7 +260,7 @@ const CampaignFormPage = () => {
           <Grid item xs={12}>
             {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
             <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-              <Button onClick={() => navigate('/cupons/campanhas')} sx={{ mr: 2 }}>
+              <Button onClick={() => navigate('/dashboard/cupons/campanhas')} sx={{ mr: 2 }}>
                 Cancelar
               </Button>
               <Button type="submit" variant="contained" disabled={!isFormValid()}>

@@ -71,9 +71,11 @@ const startServer = async () => {
     const dailyReportJob = require('./jobs/dailyReportJob');
     const couponReminderJob = require('./jobs/couponReminderJob');
     const birthdayAutomationJob = require('./jobs/birthdayAutomationJob');
+    const couponExpirationJob = require('./jobs/couponExpirationJob');
     dailyReportJob.start();
     couponReminderJob.start();
     birthdayAutomationJob.start();
+    couponExpirationJob.start();
   });
 };
 

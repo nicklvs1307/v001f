@@ -148,7 +148,7 @@ const CampaignsPage = () => {
         variant="contained"
         startIcon={<AddIcon />}
         sx={{ mt: 2 }}
-        onClick={() => navigate('/cupons/campanhas/nova')}
+        onClick={() => navigate('/dashboard/cupons/campanhas/nova')}
       >
         Criar Nova Campanha
       </Button>
@@ -162,7 +162,7 @@ const CampaignsPage = () => {
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={() => navigate('/cupons/campanhas/nova')}
+          onClick={() => navigate('/dashboard/cupons/campanhas/nova')}
         >
           Nova Campanha
         </Button>
@@ -176,7 +176,7 @@ const CampaignsPage = () => {
             {campaigns.map((campaign) => (
               <Grid item xs={12} sm={6} md={4} key={campaign.id}>
                 <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                  <CardActionArea onClick={() => navigate(`/cupons/campanhas/detalhes/${campaign.id}`)} sx={{ flexGrow: 1 }}>
+                  <CardActionArea onClick={() => navigate(`/dashboard/cupons/campanhas/detalhes/${campaign.id}`)} sx={{ flexGrow: 1 }}>
                     <CardContent>
                       <Typography variant="h6" component="div" noWrap title={campaign.nome}>
                         {campaign.nome}
@@ -205,7 +205,7 @@ const CampaignsPage = () => {
                     <Tooltip title="Editar Campanha">
                       <IconButton
                         color="info"
-                        onClick={() => navigate(`/cupons/campanhas/editar/${campaign.id}`)}
+                        onClick={() => navigate(`/dashboard/cupons/campanhas/editar/${campaign.id}`)}
                       >
                         <EditIcon />
                       </IconButton>

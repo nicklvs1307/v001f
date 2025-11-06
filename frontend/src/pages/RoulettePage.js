@@ -108,7 +108,7 @@ const RoulettePage = ({ spinData }) => {
 
       
 
-                  const theme = getDynamicTheme(actualTenant?.primaryColor, actualTenant?.secondaryColor);
+                  const theme = getDynamicTheme({ primaryColor: actualTenant?.primaryColor, secondaryColor: actualTenant?.secondaryColor });
 
       
 

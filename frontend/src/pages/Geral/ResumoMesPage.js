@@ -3,8 +3,7 @@ import {
     Box,
     Typography,
     Grid,
-    Card,
-    CardContent,
+    Paper,
     CircularProgress,
     TextField
 } from '@mui/material';
@@ -25,6 +24,25 @@ import {
 } from 'recharts';
 import dashboardService from '../../services/dashboardService';
 import { startOfMonth, endOfMonth, format } from 'date-fns';
+import StatCard from '../../components/common/StatCard';
+import { FaChartLine, FaChartBar, FaChartPie, FaUsers } from 'react-icons/fa';
+
+const CHART_COLORS = {
+    primary: '#8884d8',
+    secondary: '#82ca9d',
+    accent: '#ffc658',
+    pie: ['#0088FE', '#FFBB28', '#00C49F', '#FF8042'],
+};
+
+const ChartContainer = ({ title, icon, children }) => (
+    <Paper elevation={3} sx={{ p: 3, borderRadius: '16px', height: '100%', boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Box sx={{ fontSize: 24, color: 'primary.main', mr: 1 }}>{icon}</Box>
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{title}</Typography>
+        </Box>
+        {children}
+    </Paper>
+);
 
 const ResumoMesPage = () => {
     const [summary, setSummary] = useState(null);
@@ -51,140 +69,120 @@ const ResumoMesPage = () => {
         fetchSummary();
     }, [fetchSummary]);
 
-    const PIE_COLORS = ['#0088FE', '#FFBB28'];
-
     if (loading) {
-        return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}><CircularProgress /></Box>;
+        return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}><CircularProgress size={60} /></Box>;
     }
 
     if (error) {
-        return <Typography color="error">{error}</Typography>;
+        return <Typography color="error" align="center" variant="h6">{error}</Typography>;
     }
 
     return (
-        <Box>
-            <Typography variant="h4" gutterBottom>Resumo do Mês</Typography>
-            
-            <Grid container spacing={2} sx={{ mb: 3 }}>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        label="Data de Início"
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                    />
+        <Box sx={{ p: 3, backgroundColor: '#f4f6f8', minHeight: '100vh' }}>
+            <Paper elevation={2} sx={{ p: 3, mb: 3, borderRadius: '16px' }}>
+                <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+                    Resumo do Mês
+                </Typography>
+                <Grid container spacing={2} alignItems="center">
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Data de Início"
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            InputLabelProps={{ shrink: true }}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Data de Fim"
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            InputLabelProps={{ shrink: true }}
+                            fullWidth
+                        />
+                    </Grid>
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        label="Data de Fim"
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                    />
-                </Grid>
-            </Grid>
+            </Paper>
 
             {summary && (
                 <Grid container spacing={3}>
-                    {/* Daily NPS Distribution */}
+                    <Grid item xs={12} md={8}>
+                        <ChartContainer title="NPS Diário e Acumulado" icon={<FaChartLine />}>
+                            <ResponsiveContainer width="100%" height={400}>
+                                <LineChart data={summary.dailyNps}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="date" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Line type="monotone" dataKey="nps" name="NPS Diário" stroke={CHART_COLORS.primary} />
+                                    <Line type="monotone" dataKey="accumulatedNps" name="NPS Acumulado" stroke={CHART_COLORS.secondary} />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </ChartContainer>
+                    </Grid>
+
+                    <Grid item xs={12} md={4}>
+                        <StatCard title="Total de Respostas" value={summary.totalResponses} icon={<FaUsers />} />
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                        <ChartContainer title="Horário de Pico das Respostas" icon={<FaChartBar />}>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <BarChart data={summary.peakHours}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="hour" label={{ value: 'Hora do dia', position: 'insideBottom', offset: -5 }} />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Bar dataKey="count" name="Respostas" fill={CHART_COLORS.accent} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </ChartContainer>
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                        <ChartContainer title="Distribuição por Dia da Semana" icon={<FaChartBar />}>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <BarChart data={summary.weekdayDistribution}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="day" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Bar dataKey="count" name="Respostas" fill={CHART_COLORS.secondary} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </ChartContainer>
+                    </Grid>
+
                     <Grid item xs={12}>
-                        <Card>
-                            <CardContent>
-                                <Typography variant="h6">NPS Diário e Acumulado</Typography>
-                                <ResponsiveContainer width="100%" height={400}>
-                                    <LineChart data={summary.dailyNps}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="date" />
-                                        <YAxis />
-                                        <Tooltip />
-                                        <Legend />
-                                        <Line type="monotone" dataKey="nps" name="NPS Diário" stroke="#8884d8" />
-                                        <Line type="monotone" dataKey="accumulatedNps" name="NPS Acumulado" stroke="#82ca9d" />
-                                    </LineChart>
-                                </ResponsiveContainer>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-
-                    {/* Peak Hours */}
-                    <Grid item xs={12} md={6}>
-                        <Card>
-                            <CardContent>
-                                <Typography variant="h6">Horário de Pico das Respostas</Typography>
-                                <ResponsiveContainer width="100%" height={300}>
-                                    <BarChart data={summary.peakHours}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="hour" label={{ value: 'Hora do dia', position: 'insideBottom', offset: -5 }} />
-                                        <YAxis />
-                                        <Tooltip />
-                                        <Bar dataKey="count" name="Respostas" fill="#8884d8" />
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-
-                    {/* Weekday Distribution */}
-                    <Grid item xs={12} md={6}>
-                        <Card>
-                            <CardContent>
-                                <Typography variant="h6">Distribuição por Dia da Semana</Typography>
-                                <ResponsiveContainer width="100%" height={300}>
-                                    <BarChart data={summary.weekdayDistribution}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="day" />
-                                        <YAxis />
-                                        <Tooltip />
-                                        <Bar dataKey="count" name="Respostas" fill="#82ca9d" />
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-
-                    {/* Total Responses */}
-                    <Grid item xs={12} sm={6}>
-                        <Card>
-                            <CardContent>
-                                <Typography variant="h6">Total de Respostas no Período</Typography>
-                                <Typography variant="h3">{summary.totalResponses}</Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-
-                    {/* Client Proportion */}
-                    <Grid item xs={12} sm={6}>
-                        <Card>
-                            <CardContent>
-                                <Typography variant="h6">Proporção de Clientes</Typography>
-                                <ResponsiveContainer width="100%" height={200}>
-                                    <PieChart>
-                                        <Pie
-                                            data={[
-                                                { name: 'Com Cadastro', value: summary.clientProportion.registered },
-                                                { name: 'Sem Cadastro', value: summary.clientProportion.unregistered }
-                                            ]}
-                                            dataKey="value"
-                                            nameKey="name"
-                                            cx="50%"
-                                            cy="50%"
-                                            outerRadius={80}
-                                            fill="#8884d8"
-                                            label
-                                        >
-                                            <Cell key={`cell-0`} fill={PIE_COLORS[0]} />
-                                            <Cell key={`cell-1`} fill={PIE_COLORS[1]} />
-                                        </Pie>
-                                        <Tooltip />
-                                        <Legend />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </CardContent>
-                        </Card>
+                        <ChartContainer title="Proporção de Clientes" icon={<FaChartPie />}>
+                            <ResponsiveContainer width="100%" height={250}>
+                                <PieChart>
+                                    <Pie
+                                        data={[
+                                            { name: 'Com Cadastro', value: summary.clientProportion.registered },
+                                            { name: 'Sem Cadastro', value: summary.clientProportion.unregistered }
+                                        ]}
+                                        dataKey="value"
+                                        nameKey="name"
+                                        cx="50%"
+                                        cy="50%"
+                                        outerRadius={100}
+                                        fill={CHART_COLORS.primary}
+                                        label
+                                    >
+                                        {CHART_COLORS.pie.map((color, index) => (
+                                            <Cell key={`cell-${index}`} fill={color} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip />
+                                    <Legend />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </ChartContainer>
                     </Grid>
                 </Grid>
             )}

@@ -1,15 +1,14 @@
 URL da solicitação
-https://apivoltaki.towersfy.com/api/roleta/spin/87d63f62-4bb9-43e5-ab76-9eb004d4d2bb/2a49c544-a9dd-4220-952c-2bc57aefe4cb
+https://apivoltaki.towersfy.com/api/cupons/validate
 Método da solicitação
 POST
 Código de status
 500 Internal Server Error
 Endereço remoto
 95.217.16.187:443
-
 {
     "status": "error",
     "code": "HTTP_500",
-    "message": "Cannot find module '../services/NotificationService'\nRequire stack:\n- /usr/src/app/src/controllers/roletaController.js\n- /usr/src/app/src/routes/roletaRoutes.js\n- /usr/src/app/src/routes/index.js\n- /usr/src/app/src/server.js",
-    "details": "Error: Cannot find module '../services/NotificationService'\nRequire stack:\n- /usr/src/app/src/controllers/roletaController.js\n- /usr/src/app/src/routes/roletaRoutes.js\n- /usr/src/app/src/routes/index.js\n- /usr/src/app/src/server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)\n    at Module._load (node:internal/modules/cjs/loader:981:27)\n    at Module.require (node:internal/modules/cjs/loader:1231:19)\n    at require (node:internal/modules/helpers:177:18)\n    at /usr/src/app/src/controllers/roletaController.js:114:31\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
+    "message": "Cannot find module '../services/NotificationService'\nRequire stack:\n- /usr/src/app/src/controllers/cupomController.js\n- /usr/src/app/src/routes/cupomRoutes.js\n- /usr/src/app/src/routes/index.js\n- /usr/src/app/src/server.js",
+    "details": "Error: Cannot find module '../services/NotificationService'\nRequire stack:\n- /usr/src/app/src/controllers/cupomController.js\n- /usr/src/app/src/routes/cupomRoutes.js\n- /usr/src/app/src/routes/index.js\n- /usr/src/app/src/server.js\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)\n    at Module._load (node:internal/modules/cjs/loader:981:27)\n    at Module.require (node:internal/modules/cjs/loader:1231:19)\n    at require (node:internal/modules/helpers:177:18)\n    at /usr/src/app/src/controllers/cupomController.js:105:33\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
 }

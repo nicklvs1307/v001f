@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Box, Paper, Grid, CircularProgress, TextField } from '@mui/material';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Typography, Box, Grid, CircularProgress, TextField, Paper } from '@mui/material';
 import resultService from '../../services/resultService';
 import { useAuth } from '../../context/AuthContext';
 import { format, startOfMonth, endOfMonth } from 'date-fns';
+import ChartCard from '../../components/charts/ChartCard';
 
 const NPS_COLORS = ['#4CAF50', '#FFC107', '#F44336']; // Promoters, Neutrals, Detractors
-const CSAT_COLORS = ['#4CAF50', '#FFC107', '#F44336']; // Satisfied, Neutral, Unsatisfied
+const CSAT_COLORS = ['#2196F3', '#FFC107', '#F44336']; // Satisfied, Neutral, Unsatisfied
 
 const SatisfacaoPage = () => {
     const [data, setData] = useState(null);
@@ -17,11 +17,13 @@ const SatisfacaoPage = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             try {
                 const response = await resultService.getMainDashboard({ tenantId: user.tenantId, startDate, endDate });
                 setData(response);
             } catch (error) {
                 console.error("Error fetching data", error);
+                setData(null); // Clear data on error
             } finally {
                 setLoading(false);
             }
@@ -32,169 +34,95 @@ const SatisfacaoPage = () => {
         }
     }, [user, startDate, endDate]);
 
-    if (loading) {
-        return <CircularProgress />;
-    }
+    const renderCustomizedLabel = ({ percent }) => {
+        return `${(percent * 100).toFixed(0)}%`;
+    };
 
-    if (!data) {
-        return <Typography>Não foi possível carregar os dados.</Typography>;
-    }
-
-    const npsData = data.nps ? [
+    const npsData = data?.nps ? [
         { name: 'Promotores', value: data.nps.promoters },
         { name: 'Neutros', value: data.nps.passives },
         { name: 'Detratores', value: data.nps.detractors },
     ] : [];
 
-    const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-        const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
-        const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
-
-        return (
-            <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-                {`${(percent * 100).toFixed(0)}%`}
-            </text>
-        );
-    };
-
     return (
-        <Box>
-            <Typography variant="h4" gutterBottom>
-                Painel de Satisfação
-            </Typography>
-            
-            <Grid container spacing={2} sx={{ mb: 3 }}>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        label="Data de Início"
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        label="Data de Fim"
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                    />
-                </Grid>
-            </Grid>
-
-            <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
-                    <Paper elevation={3} sx={{ p: 2 }}>
-                        <Typography variant="h6" align="center">NPS Geral</Typography>
-                        <Typography variant="h2" align="center">{data.nps?.score || 0}</Typography>
-                        <ResponsiveContainer width="100%" height={300}>
-                            <PieChart>
-                                <Pie
-                                    data={npsData}
-                                    cx="50%"
-                                    cy="50%"
-                                    labelLine={false}
-                                    outerRadius={120}
-                                    innerRadius={80}
-                                    fill="#8884d8"
-                                    dataKey="value"
-                                    isAnimationActive={true}
-                                    label={renderCustomizedLabel}
-                                >
-                                    {npsData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={NPS_COLORS[index % NPS_COLORS.length]} />
-                                    ))}
-                                </Pie>
-                                <Tooltip />
-                                <Legend />
-                            </PieChart>
-                        </ResponsiveContainer>
-                    </Paper>
-                </Grid>
-
-                {data.criteriaScores && data.criteriaScores.map((criterion, index) => (
-                    <Grid item xs={12} md={6} key={index}>
-                        <Paper elevation={3} sx={{ p: 2 }}>
-                            <Typography variant="h6" align="center">{criterion.criterion}</Typography>
-                            {criterion.scoreType === 'NPS' && (
-                                <>
-                                    <Typography variant="h2" align="center">{criterion.score || 0}</Typography>
-                                    <ResponsiveContainer width="100%" height={300}>
-                                        <PieChart>
-                                            <Pie
-                                                data={[
-                                                    { name: 'Promotores', value: criterion.promoters },
-                                                    { name: 'Neutros', value: criterion.neutrals },
-                                                    { name: 'Detratores', value: criterion.detractors },
-                                                ]}
-                                                cx="50%"
-                                                cy="50%"
-                                                labelLine={false}
-                                                outerRadius={120}
-                                                innerRadius={80}
-                                                fill="#8884d8"
-                                                dataKey="value"
-                                                isAnimationActive={true}
-                                                label={renderCustomizedLabel}
-                                            >
-                                                {[
-                                                    { name: 'Promotores', value: criterion.promoters },
-                                                    { name: 'Neutros', value: criterion.neutrals },
-                                                    { name: 'Detratores', value: criterion.detractors },
-                                                ].map((entry, idx) => (
-                                                    <Cell key={`cell-${idx}`} fill={NPS_COLORS[idx % NPS_COLORS.length]} />
-                                                ))}
-                                            </Pie>
-                                            <Tooltip />
-                                            <Legend />
-                                        </PieChart>
-                                    </ResponsiveContainer>
-                                </>
-                            )}
-                            {criterion.scoreType === 'CSAT' && (
-                                <>
-                                    <Typography variant="h2" align="center">{criterion.satisfactionRate || 0}%</Typography>
-                                    <ResponsiveContainer width="100%" height={300}>
-                                        <PieChart>
-                                            <Pie
-                                                data={[
-                                                    { name: 'Satisfeitos', value: criterion.satisfied },
-                                                    { name: 'Neutros', value: criterion.neutral },
-                                                    { name: 'Insatisfeitos', value: criterion.unsatisfied },
-                                                ]}
-                                                cx="50%"
-                                                cy="50%"
-                                                labelLine={false}
-                                                outerRadius={120}
-                                                innerRadius={80}
-                                                fill="#8884d8"
-                                                dataKey="value"
-                                                isAnimationActive={true}
-                                                label={renderCustomizedLabel}
-                                            >
-                                                {[
-                                                    { name: 'Satisfeitos', value: criterion.satisfied },
-                                                    { name: 'Neutros', value: criterion.neutral },
-                                                    { name: 'Insatisfeitos', value: criterion.unsatisfied },
-                                                ].map((entry, idx) => (
-                                                    <Cell key={`cell-${idx}`} fill={CSAT_COLORS[idx % CSAT_COLORS.length]} />
-                                                ))}
-                                            </Pie>
-                                            <Tooltip />
-                                            <Legend />
-                                        </PieChart>
-                                    </ResponsiveContainer>
-                                </>
-                            )}
-                        </Paper>
+        <Box sx={{ p: 3, backgroundColor: '#f4f6f8', minHeight: '100vh' }}>
+            <Paper elevation={2} sx={{ p: 3, mb: 3, borderRadius: '16px' }}>
+                <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+                    Painel de Satisfação
+                </Typography>
+                <Grid container spacing={2} alignItems="center">
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Data de Início"
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            InputLabelProps={{ shrink: true }}
+                            fullWidth
+                        />
                     </Grid>
-                ))}
-            </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Data de Fim"
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            InputLabelProps={{ shrink: true }}
+                            fullWidth
+                        />
+                    </Grid>
+                </Grid>
+            </Paper>
+
+            {loading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+                    <CircularProgress size={60} />
+                </Box>
+            ) : !data ? (
+                <Typography variant="h6" align="center" sx={{ mt: 4 }}>
+                    Não foi possível carregar os dados. Tente novamente mais tarde.
+                </Typography>
+            ) : (
+                <Grid container spacing={3}>
+                    <Grid item xs={12} md={6}>
+                        <ChartCard
+                            title="NPS Geral"
+                            score={data.nps?.score || 0}
+                            data={npsData}
+                            colors={NPS_COLORS}
+                            loading={loading}
+                            renderCustomizedLabel={renderCustomizedLabel}
+                        />
+                    </Grid>
+
+                    {data.criteriaScores && data.criteriaScores.map((criterion, index) => {
+                        const chartData = criterion.scoreType === 'NPS' ? [
+                            { name: 'Promotores', value: criterion.promoters },
+                            { name: 'Neutros', value: criterion.neutrals },
+                            { name: 'Detratores', value: criterion.detractors },
+                        ] : [
+                            { name: 'Satisfeitos', value: criterion.satisfied },
+                            { name: 'Neutros', value: criterion.neutral },
+                            { name: 'Insatisfeitos', value: criterion.unsatisfied },
+                        ];
+
+                        const score = criterion.scoreType === 'NPS' ? criterion.score || 0 : `${criterion.satisfactionRate || 0}%`;
+
+                        return (
+                            <Grid item xs={12} md={6} key={index}>
+                                <ChartCard
+                                    title={criterion.criterion}
+                                    score={score}
+                                    data={chartData}
+                                    colors={criterion.scoreType === 'NPS' ? NPS_COLORS : CSAT_COLORS}
+                                    loading={loading}
+                                    renderCustomizedLabel={renderCustomizedLabel}
+                                />
+                            </Grid>
+                        );
+                    })}
+                </Grid>
+            )}
         </Box>
     );
 };

@@ -20,7 +20,7 @@ const ClientRegistrationPage = () => {
                 try {
                     const tenantData = await publicSurveyService.getPublicTenantById(tenantId);
                     setTenant(tenantData);
-                    const theme = getDynamicTheme(tenantData.primaryColor, tenantData.secondaryColor);
+                    const theme = getDynamicTheme({ primaryColor: tenantData.primaryColor, secondaryColor: tenantData.secondaryColor });
                     setDynamicTheme(theme);
                 } catch (error) {
                     console.error("Erro ao buscar tenant:", error);

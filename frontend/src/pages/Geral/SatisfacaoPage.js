@@ -17,6 +17,10 @@ const SatisfacaoPage = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            if (!user || !user.tenantId) {
+                setLoading(false);
+                return;
+            }
             setLoading(true);
             try {
                 const response = await resultService.getMainDashboard({ tenantId: user.tenantId, startDate, endDate });
@@ -29,20 +33,16 @@ const SatisfacaoPage = () => {
             }
         };
 
-        if (user && user.tenantId) {
-            fetchData();
-        }
+        fetchData();
     }, [user, startDate, endDate]);
-
-    const renderCustomizedLabel = ({ percent }) => {
-        return `${(percent * 100).toFixed(0)}%`;
-    };
 
     const npsData = data?.nps ? [
         { name: 'Promotores', value: data.nps.promoters },
         { name: 'Neutros', value: data.nps.passives },
         { name: 'Detratores', value: data.nps.detractors },
     ] : [];
+
+    const hasData = npsData.some(item => item.value > 0) || (data?.criteriaScores && data.criteriaScores.length > 0 && data.criteriaScores.some(c => c.satisfied > 0 || c.neutral > 0 || c.unsatisfied > 0 || c.promoters > 0 || c.neutrals > 0 || c.detractors > 0));
 
     return (
         <Box sx={{ p: 3, backgroundColor: '#f4f6f8', minHeight: '100vh' }}>
@@ -82,18 +82,23 @@ const SatisfacaoPage = () => {
                 <Typography variant="h6" align="center" sx={{ mt: 4 }}>
                     Não foi possível carregar os dados. Tente novamente mais tarde.
                 </Typography>
+            ) : !hasData ? (
+                <Typography variant="h6" align="center" sx={{ mt: 4 }}>
+                    Não há dados de satisfação para o período selecionado.
+                </Typography>
             ) : (
                 <Grid container spacing={3}>
-                    <Grid item xs={12} md={6}>
-                        <ChartCard
-                            title="NPS Geral"
-                            score={data.nps?.score || 0}
-                            data={npsData}
-                            colors={NPS_COLORS}
-                            loading={loading}
-                            renderCustomizedLabel={renderCustomizedLabel}
-                        />
-                    </Grid>
+                    {npsData.some(item => item.value > 0) && (
+                        <Grid item xs={12} md={6}>
+                            <ChartCard
+                                title="NPS Geral"
+                                score={data.nps?.score || 0}
+                                data={npsData}
+                                colors={NPS_COLORS}
+                                loading={loading}
+                            />
+                        </Grid>
+                    )}
 
                     {data.criteriaScores && data.criteriaScores.map((criterion, index) => {
                         const chartData = criterion.scoreType === 'NPS' ? [
@@ -106,6 +111,8 @@ const SatisfacaoPage = () => {
                             { name: 'Insatisfeitos', value: criterion.unsatisfied },
                         ];
 
+                        if (!chartData.some(item => item.value > 0)) return null;
+
                         const score = criterion.scoreType === 'NPS' ? criterion.score || 0 : `${criterion.satisfactionRate || 0}%`;
 
                         return (
@@ -116,7 +123,6 @@ const SatisfacaoPage = () => {
                                     data={chartData}
                                     colors={criterion.scoreType === 'NPS' ? NPS_COLORS : CSAT_COLORS}
                                     loading={loading}
-                                    renderCustomizedLabel={renderCustomizedLabel}
                                 />
                             </Grid>
                         );

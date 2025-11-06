@@ -39,36 +39,36 @@ const ComparativoPesquisaPage = () => {
         fetchSurveys();
     }, []);
 
-    const fetchComparisonData = useCallback(async () => {
-        if (selectedSurveyIds.length === 0 || !user?.tenantId) {
-            setComparisonData(null);
-            return;
-        }
-
-        setLoadingComparison(true);
-        try {
-            const promises = selectedSurveyIds.map(surveyId => 
-                resultService.getMainDashboard({ tenantId: user.tenantId, surveyId })
-            );
-            const results = await Promise.all(promises);
-            
-            const newComparisonData = selectedSurveyIds.reduce((acc, surveyId, index) => {
-                acc[surveyId] = results[index];
-                return acc;
-            }, {});
-
-            setComparisonData(newComparisonData);
-        } catch (error) {
-            console.error("Error fetching comparison data", error);
-            setComparisonData(null);
-        } finally {
-            setLoadingComparison(false);
-        }
-    }, [selectedSurveyIds, user?.tenantId]);
-
     useEffect(() => {
+        const fetchComparisonData = async () => {
+            if (selectedSurveyIds.length < 2 || !user?.tenantId) {
+                setComparisonData(null);
+                return;
+            }
+
+            setLoadingComparison(true);
+            try {
+                const promises = selectedSurveyIds.map(surveyId => 
+                    resultService.getMainDashboard({ tenantId: user.tenantId, surveyId })
+                );
+                const results = await Promise.all(promises);
+                
+                const newComparisonData = selectedSurveyIds.reduce((acc, surveyId, index) => {
+                    acc[surveyId] = results[index];
+                    return acc;
+                }, {});
+
+                setComparisonData(newComparisonData);
+            } catch (error) {
+                console.error("Error fetching comparison data", error);
+                setComparisonData(null);
+            } finally {
+                setLoadingComparison(false);
+            }
+        };
+        
         fetchComparisonData();
-    }, [fetchComparisonData]);
+    }, [selectedSurveyIds, user?.tenantId]);
 
     const handleSurveyChange = (event) => {
         const { target: { value } } = event;
@@ -76,7 +76,7 @@ const ComparativoPesquisaPage = () => {
     };
 
     const getChartData = () => {
-        if (!comparisonData) return { nps: [], pnd: [] };
+        if (!comparisonData) return { nps: [], pnd: [], criteria: [] };
 
         const nps = selectedSurveyIds.map(id => {
             const survey = surveys.find(s => s.id === id);
@@ -98,10 +98,38 @@ const ComparativoPesquisaPage = () => {
             };
         });
 
-        return { nps, pnd };
+        const criteriaMap = new Map();
+        for (const surveyId of selectedSurveyIds) {
+            const surveyData = comparisonData[surveyId];
+            const survey = surveys.find(s => s.id === surveyId);
+            if (surveyData && surveyData.criteriaScores) {
+                for (const criterion of surveyData.criteriaScores) {
+                    if (!criteriaMap.has(criterion.criterion)) {
+                        criteriaMap.set(criterion.criterion, []);
+                    }
+                    const score = criterion.scoreType === 'NPS' ? criterion.score : criterion.satisfactionRate;
+                    criteriaMap.get(criterion.criterion).push({
+                        name: survey.name,
+                        score: score || 0,
+                    });
+                }
+            }
+        }
+
+        const criteria = [];
+        for (const [criterion, scores] of criteriaMap.entries()) {
+            if (scores.length === selectedSurveyIds.length) {
+                criteria.push({
+                    criterion,
+                    scores,
+                });
+            }
+        }
+
+        return { nps, pnd, criteria };
     };
 
-    const { nps: npsComparisonData, pnd: promoterNeutroDetractorComparisonData } = getChartData();
+    const { nps: npsComparisonData, pnd: promoterNeutroDetractorComparisonData, criteria: criteriaComparison } = getChartData();
 
     return (
         <Box sx={{ p: 3, backgroundColor: '#f4f6f8', minHeight: '100vh' }}>
@@ -121,7 +149,7 @@ const ComparativoPesquisaPage = () => {
                             renderValue={(selected) => (
                                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                     {selected.map((id) => (
-                                        <Chip key={id} label={surveys.find(s => s.id === id)?.name || `ID: ${id}`} />
+                                        <Chip key={id} label={surveys.find(s => s.id === id)?.name || `ID: ${id}`} color="primary" variant="outlined" />
                                     ))}
                                 </Box>
                             )}
@@ -174,6 +202,22 @@ const ComparativoPesquisaPage = () => {
                             </ResponsiveContainer>
                         </ChartContainer>
                     </Grid>
+                    {criteriaComparison.map(({ criterion, scores }) => (
+                        <Grid item xs={12} md={6} key={criterion}>
+                            <ChartContainer title={`Comparativo - ${criterion}`} icon={<FaChartBar />}>
+                                <ResponsiveContainer width="100%" height={400}>
+                                    <BarChart data={scores}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="name" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Legend />
+                                        <Bar dataKey="score" name="Pontuação" fill="#82ca9d" />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </ChartContainer>
+                        </Grid>
+                    ))}
                 </Grid>
             )}
         </Box>

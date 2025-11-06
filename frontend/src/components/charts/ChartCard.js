@@ -3,7 +3,7 @@ import React from 'react';
 import { Paper, Typography, Box, CircularProgress } from '@mui/material';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const ChartCard = ({ title, score, scoreLabel, data, colors, loading, renderCustomizedLabel }) => {
+const ChartCard = ({ title, score, scoreLabel, data, colors, loading }) => {
     const hasData = data && data.some(item => item.value > 0);
 
     return (
@@ -32,7 +32,6 @@ const ChartCard = ({ title, score, scoreLabel, data, colors, loading, renderCust
                                             fill="#8884d8"
                                             dataKey="value"
                                             isAnimationActive={true}
-                                            label={renderCustomizedLabel}
                                         >
                                             {data.map((entry, index) => (
                                                 <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />

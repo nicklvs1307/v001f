@@ -145,7 +145,7 @@ const RoletasPage = () => {
                   <TableCell>{roleta.descricao}</TableCell>
                   <TableCell>{roleta.active ? 'Ativa' : 'Inativa'}</TableCell>
                   <TableCell align="right">
-                    <Button component={RouterLink} to={`/roletas/${roleta.id}/premios`}>
+                    <Button component={RouterLink} to={`/dashboard/roletas/${roleta.id}/premios`}>
                       Prêmios
                     </Button>
                     <IconButton color="primary" onClick={() => handleOpenForm(roleta)}>

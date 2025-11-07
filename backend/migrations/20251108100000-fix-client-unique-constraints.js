@@ -19,7 +19,7 @@ module.exports = {
       }
 
       // Adicionar os novos índices de unicidade compostos com condição `where` para não incluir nulos
-      await queryInterface.createIndex('clients', ['tenantId', 'email'], {
+      await queryInterface.addIndex('clients', ['tenantId', 'email'], {
         unique: true,
         name: 'unique_tenant_email',
         where: {
@@ -30,7 +30,7 @@ module.exports = {
         transaction
       });
       
-      await queryInterface.createIndex('clients', ['tenantId', 'phone'], {
+      await queryInterface.addIndex('clients', ['tenantId', 'phone'], {
         unique: true,
         name: 'unique_tenant_phone',
         where: {

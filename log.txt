@@ -1,3 +1,105 @@
+submitSurveyResponses: Response data prepared: {
+  "pesquisaId": "87d63f62-4bb9-43e5-ab76-9eb004d4d2bb",
+  "perguntaId": "2ffb181f-141b-472d-9abd-3c51595c7f29",
+  "respondentSessionId": "82728bf0-1fbb-4b01-a3fb-b9166c63c863",
+  "clienteId": null,
+  "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd",
+  "atendenteId": "2a4fd6a3-c581-401d-ba65-9225b56cd850",
+  "textValue": null,
+  "ratingValue": 5
+}
+submitSurveyResponses: Processing response: {
+  "perguntaId": "5f7acf91-90d6-44cd-963f-6f81effd5e1a",
+  "tipo": "rating_1_5",
+  "valor": 5,
+  "comentario": ""
+}
+submitSurveyResponses: Question found: A pizza chegou quentinha e na consistência certa?
+submitSurveyResponses: Response data prepared: {
+  "pesquisaId": "87d63f62-4bb9-43e5-ab76-9eb004d4d2bb",
+  "perguntaId": "5f7acf91-90d6-44cd-963f-6f81effd5e1a",
+  "respondentSessionId": "82728bf0-1fbb-4b01-a3fb-b9166c63c863",
+  "clienteId": null,
+  "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd",
+  "atendenteId": "2a4fd6a3-c581-401d-ba65-9225b56cd850",
+  "textValue": null,
+  "ratingValue": 5
+}
+submitSurveyResponses: Processing response: {
+  "perguntaId": "d5938446-234d-40c3-967c-050cb336aa06",
+  "tipo": "rating_0_10",
+  "valor": 10,
+  "comentario": ""
+}
+submitSurveyResponses: Question found: De 0 a 10, qual a chance de você nos recomendar como a melhor pizzaria da cidade?
+submitSurveyResponses: Response data prepared: {
+  "pesquisaId": "87d63f62-4bb9-43e5-ab76-9eb004d4d2bb",
+  "perguntaId": "d5938446-234d-40c3-967c-050cb336aa06",
+  "respondentSessionId": "82728bf0-1fbb-4b01-a3fb-b9166c63c863",
+  "clienteId": null,
+  "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd",
+  "atendenteId": "2a4fd6a3-c581-401d-ba65-9225b56cd850",
+  "textValue": null,
+  "ratingValue": 10
+}
+submitSurveyResponses: Preparing to bulk create responses: [
+  {
+    "pesquisaId": "87d63f62-4bb9-43e5-ab76-9eb004d4d2bb",
+    "perguntaId": "cc2c724c-3580-4f94-ab87-5822e4497770",
+    "respondentSessionId": "82728bf0-1fbb-4b01-a3fb-b9166c63c863",
+    "clienteId": null,
+    "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd",
+    "atendenteId": "2a4fd6a3-c581-401d-ba65-9225b56cd850",
+    "textValue": null,
+    "ratingValue": 5
+  },
+  {
+    "pesquisaId": "87d63f62-4bb9-43e5-ab76-9eb004d4d2bb",
+    "perguntaId": "2ffb181f-141b-472d-9abd-3c51595c7f29",
+    "respondentSessionId": "82728bf0-1fbb-4b01-a3fb-b9166c63c863",
+    "clienteId": null,
+    "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd",
+    "atendenteId": "2a4fd6a3-c581-401d-ba65-9225b56cd850",
+    "textValue": null,
+    "ratingValue": 5
+  },
+  {
+    "pesquisaId": "87d63f62-4bb9-43e5-ab76-9eb004d4d2bb",
+    "perguntaId": "5f7acf91-90d6-44cd-963f-6f81effd5e1a",
+    "respondentSessionId": "82728bf0-1fbb-4b01-a3fb-b9166c63c863",
+    "clienteId": null,
+    "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd",
+    "atendenteId": "2a4fd6a3-c581-401d-ba65-9225b56cd850",
+    "textValue": null,
+    "ratingValue": 5
+  },
+  {
+    "pesquisaId": "87d63f62-4bb9-43e5-ab76-9eb004d4d2bb",
+    "perguntaId": "d5938446-234d-40c3-967c-050cb336aa06",
+    "respondentSessionId": "82728bf0-1fbb-4b01-a3fb-b9166c63c863",
+    "clienteId": null,
+    "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd",
+    "atendenteId": "2a4fd6a3-c581-401d-ba65-9225b56cd850",
+    "textValue": null,
+    "ratingValue": 10
+  }
+]
+Executing (f5ec8ff2-f31a-4dfd-a7d1-7adf4afc82c1): INSERT INTO "respostas" ("id","perguntaId","pesquisaId","tenantId","atendenteId","respondentSessionId","ratingValue","textValue","createdAt","updatedAt") VALUES ('ba7984eb-8c89-4cfc-8ae2-43407f5c6aca','cc2c724c-3580-4f94-ab87-5822e4497770','87d63f62-4bb9-43e5-ab76-9eb004d4d2bb','3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd','2a4fd6a3-c581-401d-ba65-9225b56cd850','82728bf0-1fbb-4b01-a3fb-b9166c63c863',5,NULL,'2025-11-07 20:21:34.117 +00:00','2025-11-07 20:21:34.117 +00:00'),('bddd4c05-d31e-404f-a0c4-cbca848ee043','2ffb181f-141b-472d-9abd-3c51595c7f29','87d63f62-4bb9-43e5-ab76-9eb004d4d2bb','3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd','2a4fd6a3-c581-401d-ba65-9225b56cd850','82728bf0-1fbb-4b01-a3fb-b9166c63c863',5,NULL,'2025-11-07 20:21:34.117 +00:00','2025-11-07 20:21:34.117 +00:00'),('ab762554-ead5-4bd8-b4e2-41ec45f15d4d','5f7acf91-90d6-44cd-963f-6f81effd5e1a','87d63f62-4bb9-43e5-ab76-9eb004d4d2bb','3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd','2a4fd6a3-c581-401d-ba65-9225b56cd850','82728bf0-1fbb-4b01-a3fb-b9166c63c863',5,NULL,'2025-11-07 20:21:34.117 +00:00','2025-11-07 20:21:34.117 +00:00'),('db16b0a5-d583-4a32-ba52-6e03dde1c15c','d5938446-234d-40c3-967c-050cb336aa06','87d63f62-4bb9-43e5-ab76-9eb004d4d2bb','3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd','2a4fd6a3-c581-401d-ba65-9225b56cd850','82728bf0-1fbb-4b01-a3fb-b9166c63c863',10,NULL,'2025-11-07 20:21:34.117 +00:00','2025-11-07 20:21:34.117 +00:00') RETURNING "id","perguntaId","pesquisaId","tenantId","atendenteId","respondentSessionId","ratingValue","textValue","selectedOption","createdAt","updatedAt";
+submitSurveyResponses: Bulk create successful
+submitSurveyResponses: Transaction committed
+submitSurveyResponses: All rating questions have max score. Checking for GMB link.
+Executing (default): SELECT "gmb_link" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+submitSurveyResponses: GMB link found: https://search.google.com/local/writereview?placeid=ChIJcfyzAL_Hy5QR4eCg9WAT1LM
+submitSurveyResponses: Checking for detractor responses for WhatsApp
+submitSurveyResponses: Submission process finished successfully
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "gmb_link", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "name", "logoUrl", "primaryColor", "secondaryColor", "description" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "name", "logoUrl", "primaryColor", "secondaryColor", "description" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "name", "logoUrl", "primaryColor", "secondaryColor", "description" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+[Auth Middleware] Request: POST /api/auth/verify-token
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
+
+
 URL da solicitação
 https://apivoltaki.towersfy.com/api/clients/register
 Método da solicitação
@@ -9,7 +111,22 @@ Endereço remoto
 
 {
     "status": "error",
-    "code": "HTTP_400",
-    "message": "Nome e ID da sessão de resposta são obrigatórios.",
-    "details": "Error: Nome e ID da sessão de resposta são obrigatórios.\n    at /usr/src/app/src/controllers/clientController.js:17:11\n    at asyncUtilWrap (/usr/src/app/node_modules/express-async-handler/index.js:3:20)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at validate (/usr/src/app/src/middlewares/validationMiddleware.js:9:3)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at middleware (/usr/src/app/node_modules/express-validator/lib/middlewares/check.js:16:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
+    "code": [
+        {
+            "type": "field",
+            "value": null,
+            "msg": "ID da sessão de resposta é obrigatório",
+            "path": "respondentSessionId",
+            "location": "body"
+        },
+        {
+            "type": "field",
+            "value": null,
+            "msg": "ID da sessão de resposta é obrigatório",
+            "path": "respondentSessionId",
+            "location": "body"
+        }
+    ],
+    "message": "Erros de validação",
+    "details": "Error: Erros de validação\n    at validate (/usr/src/app/src/middlewares/validationMiddleware.js:7:11)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at middleware (/usr/src/app/node_modules/express-validator/lib/middlewares/check.js:16:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
 }

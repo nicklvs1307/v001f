@@ -98,6 +98,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
     const [atendenteError, setAtendenteError] = useState(null); // Added attendant error state
     const [gmbModalOpen, setGmbModalOpen] = useState(false);
     const [gmbLink, setGmbLink] = useState('');
+    const [submissionResponse, setSubmissionResponse] = useState(null);
 
     useEffect(() => {
         const initialAnswers = {};
@@ -177,6 +178,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
             const finalAnswers = Object.values(answers).filter(a => a.perguntaId !== 'attendant-question' && a.valor !== null);
             const submissionData = { respostas: finalAnswers, atendenteId: selectedAtendente };
             const response = await publicSurveyService.submitSurveyResponses(pesquisaId, submissionData.respostas, submissionData.atendenteId);
+            setSubmissionResponse(response); // Salva a resposta completa no estado
 
             if (response && response.gmb_link) {
                 setGmbLink(response.gmb_link);
@@ -297,8 +299,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
                 keepMounted
                 onClose={() => {
                     setGmbModalOpen(false);
-                    // Navega para a próxima página após fechar o modal
-                    handleNavigation({ respondentSessionId: sessionStorage.getItem('surveyState') ? JSON.parse(sessionStorage.getItem('surveyState')).respondentSessionId : null });
+                    handleNavigation(submissionResponse);
                 }}
                 aria-describedby="gmb-review-dialog-slide-description"
                 maxWidth="sm"
@@ -311,12 +312,12 @@ const SurveyComponent = ({ survey, tenantId }) => {
                 <DialogActions>
                     <Button onClick={() => {
                         setGmbModalOpen(false);
-                        handleNavigation({ respondentSessionId: sessionStorage.getItem('surveyState') ? JSON.parse(sessionStorage.getItem('surveyState')).respondentSessionId : null });
+                        handleNavigation(submissionResponse);
                     }}>Pular</Button>
                     <Button onClick={() => {
                         window.open(gmbLink, '_blank');
                         setGmbModalOpen(false);
-                        handleNavigation({ respondentSessionId: sessionStorage.getItem('surveyState') ? JSON.parse(sessionStorage.getItem('surveyState')).respondentSessionId : null });
+                        handleNavigation(submissionResponse);
                     }} autoFocus>Avaliar Agora</Button>
                 </DialogActions>
             </Dialog>

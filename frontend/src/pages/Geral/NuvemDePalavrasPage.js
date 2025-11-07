@@ -51,7 +51,7 @@ const NuvemDePalavrasPage = () => {
         rotations: 1,
         rotationAngles: [0, 0],
         fontWeight: 'bold',
-        padding: 10,
+        padding: 2,
         fontSizes: [20, 120],
     }), [theme]);
 

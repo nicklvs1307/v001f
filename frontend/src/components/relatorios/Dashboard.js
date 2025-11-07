@@ -1,181 +1,247 @@
 import React from 'react';
-import { Paper, Grid, Typography, Box, useTheme } from '@mui/material';
+import { 
+    Paper, Grid, Typography, Box, useTheme, Card, CardContent, CardHeader,
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Avatar
+} from '@mui/material';
 import {
-  ComposedChart,
-  Line,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Area,
+    ComposedChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, Area
 } from 'recharts';
 import { WordCloud } from '@isoterik/react-word-cloud';
 
-const NPS_COLORS = ['#2ECC71', '#F1C40F', '#E74C3C']; // Promoters, Neutrals, Detractors
+// Importando ícones
+import { TrendingUp, BarChart as BarChartIcon, People, Star, Cloud, CheckCircle, DonutLarge } from '@mui/icons-material';
 
-const Card = ({ title, children }) => (
-    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%', borderRadius: 2, boxShadow: 3 }}>
-        <Typography variant="h6" gutterBottom component="div">{title}</Typography>
-        {children}
-    </Paper>
+const NPS_COLORS = ['#2ECC71', '#F1C40F', '#E74C3C']; // Promoters, Neutrals, Detractors
+const CSAT_COLORS = ['#2ECC71', '#F1C40F', '#E74C3C']; // Satisfied, Neutral, Unsatisfied
+
+const StatCard = ({ title, icon, children }) => (
+    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: 4, boxShadow: '0 4px 12px 0 rgba(0,0,0,0.07)' }}>
+        <CardHeader
+            avatar={<Avatar sx={{ bgcolor: 'primary.main' }}>{icon}</Avatar>}
+            title={<Typography variant="h6">{title}</Typography>}
+        />
+        <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            {children}
+        </CardContent>
+    </Card>
+);
+
+const NoData = () => (
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', minHeight: 150 }}>
+        <Typography variant="body2" color="text.secondary">
+            Dados não disponíveis.
+        </Typography>
+    </Box>
 );
 
 const Dashboard = ({ data }) => {
-  const theme = useTheme();
+    const theme = useTheme();
 
-  if (!data) {
-    return <Typography>Nenhum dado disponível para o período selecionado.</Typography>;
-  }
+    if (!data) {
+        return <Typography>Nenhum dado disponível para o período selecionado.</Typography>;
+    }
 
-  // Correctly destructure the data from the API response
-  const { summary, npsTrend, wordCloudData, criteriaScores, attendantsPerformance, conversionChart } = data;
+    const { summary, npsTrend, wordCloudData, criteriaScores, attendantsPerformance, conversionChart } = data;
 
-  const nps = summary?.nps;
-  const totalResponses = summary?.totalResponses;
-  const csat = summary?.csat;
+    const nps = summary?.nps;
+    const totalResponses = summary?.totalResponses;
+    const csat = summary?.csat;
 
-  const npsPieData = nps ? [
-    { name: 'Promotores', value: nps.promoters },
-    { name: 'Neutros', value: nps.neutrals },
-    { name: 'Detratores', value: nps.detractors },
-  ] : [];
+    const npsPieData = nps ? [
+        { name: 'Promotores', value: nps.promoters },
+        { name: 'Neutros', value: nps.neutrals },
+        { name: 'Detratores', value: nps.detractors },
+    ] : [];
 
-  const csatPieData = csat ? [
-    { name: 'Satisfeitos', value: csat.satisfied },
-    { name: 'Neutros', value: csat.neutral },
-    { name: 'Insatisfeitos', value: csat.unsatisfied },
-  ] : [];
+    const csatPieData = csat ? [
+        { name: 'Satisfeitos', value: csat.satisfied },
+        { name: 'Neutros', value: csat.neutral },
+        { name: 'Insatisfeitos', value: csat.unsatisfied },
+    ] : [];
 
-  return (
-    <Grid container spacing={3}>
-      {/* NPS Score */}
-      <Grid item xs={12} md={4}>
-        <Card title="NPS Geral">
-          <Typography variant="h2" component="div" sx={{ flexGrow: 1, textAlign: 'center', mt: 2 }}>{nps?.score ?? 'N/A'}</Typography>
-          <ResponsiveContainer width="100%" height={150}>
-            <PieChart>
-              <Pie data={npsPieData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={40} outerRadius={60} fill="#8884d8" paddingAngle={5}>
-                {npsPieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={NPS_COLORS[index % NPS_COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </Card>
-      </Grid>
+    return (
+        <Grid container spacing={3}>
+            {/* NPS Score */}
+            <Grid item xs={12} sm={6} md={4}>
+                <StatCard title="NPS Geral" icon={<TrendingUp />}>
+                    {nps && nps.score !== null ? (
+                        <>
+                            <Typography variant="h2" component="div" sx={{ textAlign: 'center', fontWeight: 'bold', color: 'primary.dark' }}>
+                                {nps.score}
+                            </Typography>
+                            <ResponsiveContainer width="100%" height={150}>
+                                <PieChart>
+                                    <Pie data={npsPieData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={40} outerRadius={60} fill="#8884d8" paddingAngle={5}>
+                                        {npsPieData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={NPS_COLORS[index % NPS_COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip />
+                                    <Legend wrapperStyle={{ fontSize: '14px' }} />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </>
+                    ) : <NoData />}
+                </StatCard>
+            </Grid>
 
-      {/* Total Responses */}
-      <Grid item xs={12} md={4}>
-        <Card title="Total de Respostas">
-            <Typography variant="h2" component="div" sx={{ flexGrow: 1, textAlign: 'center', mt: 4 }}>{totalResponses ?? 'N/A'}</Typography>
-        </Card>
-      </Grid>
-      
-      {/* CSAT Score */}
-      <Grid item xs={12} md={4}>
-        <Card title="CSAT Geral">
-            <Typography variant="h2" component="div" sx={{ flexGrow: 1, textAlign: 'center', mt: 2 }}>{csat?.satisfactionRate ?? 'N/A'}%</Typography>
-            <Typography variant="body2" component="div" sx={{ textAlign: 'center' }}>Média: {csat?.averageScore ?? 'N/A'}</Typography>
-        </Card>
-      </Grid>
+            {/* Total Responses */}
+            <Grid item xs={12} sm={6} md={4}>
+                <StatCard title="Total de Respostas" icon={<BarChartIcon />}>
+                    <Typography variant="h2" component="div" sx={{ textAlign: 'center', fontWeight: 'bold', color: 'primary.dark' }}>
+                        {totalResponses ?? '0'}
+                    </Typography>
+                </StatCard>
+            </Grid>
+            
+            {/* CSAT Score */}
+            <Grid item xs={12} sm={6} md={4}>
+                <StatCard title="CSAT Geral" icon={<Star />}>
+                    {csat && csat.satisfactionRate !== null ? (
+                        <>
+                            <Typography variant="h2" component="div" sx={{ textAlign: 'center', fontWeight: 'bold', color: 'primary.dark' }}>
+                                {csat.satisfactionRate}%
+                            </Typography>
+                            <Typography variant="body1" component="div" sx={{ textAlign: 'center', color: 'text.secondary' }}>
+                                Média: {csat.averageScore}
+                            </Typography>
+                             <ResponsiveContainer width="100%" height={150}>
+                                <PieChart>
+                                    <Pie data={csatPieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={60} fill="#8884d8" paddingAngle={5}>
+                                        {csatPieData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={CSAT_COLORS[index % CSAT_COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip />
+                                    <Legend wrapperStyle={{ fontSize: '14px' }} />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </>
+                    ) : <NoData />}
+                </StatCard>
+            </Grid>
 
-      {/* NPS Trend */}
-      <Grid item xs={12}>
-        <Card title="Tendência do NPS">
-          {npsTrend && npsTrend.length > 0 ? (
-            <ResponsiveContainer width="100%" height={300}>
-              <ComposedChart data={npsTrend}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="period" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Area type="monotone" dataKey="nps" fill={theme.palette.primary.light} stroke={theme.palette.primary.main} />
-                <Line type="monotone" dataKey="nps" stroke={theme.palette.primary.dark} strokeWidth={2} activeDot={{ r: 8 }} />
-              </ComposedChart>
-            </ResponsiveContainer>
-          ) : <Typography>Dados de tendência indisponíveis.</Typography>}
-        </Card>
-      </Grid>
+            {/* NPS Trend */}
+            <Grid item xs={12}>
+                <StatCard title="Tendência do NPS" icon={<TrendingUp />}>
+                    {npsTrend && npsTrend.length > 0 ? (
+                        <ResponsiveContainer width="100%" height={300}>
+                            <ComposedChart data={npsTrend}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="period" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Area type="monotone" dataKey="nps" fill={theme.palette.primary.light} stroke={theme.palette.primary.main} />
+                                <Line type="monotone" dataKey="nps" stroke={theme.palette.primary.dark} strokeWidth={2} activeDot={{ r: 8 }} />
+                            </ComposedChart>
+                        </ResponsiveContainer>
+                    ) : <NoData />}
+                </StatCard>
+            </Grid>
 
-      {/* Word Cloud */}
-      <Grid item xs={12} md={6}>
-        <Card title="Nuvem de Palavras">
-          {wordCloudData && wordCloudData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={300}>
-              <WordCloud
-                  words={wordCloudData}
-                  options={{
-                      fontFamily: "Verdana",
-                      fontWeight: "bold",
-                      fontSizes: [40, 120],
-                      padding: 10,
-                      rotations: 2,
-                      rotationAngles: [-60, 0, 60],
-                  }}
-              />
-            </ResponsiveContainer>
-          ) : <Typography>Nenhuma palavra para exibir.</Typography>}
-        </Card>
-      </Grid>
+            {/* Word Cloud */}
+            <Grid item xs={12} md={6}>
+                <StatCard title="Nuvem de Palavras" icon={<Cloud />}>
+                    {wordCloudData && wordCloudData.length > 0 ? (
+                        <Box sx={{ height: 300, width: '100%' }}>
+                            <WordCloud
+                                words={wordCloudData}
+                                options={{
+                                    fontFamily: theme.typography.fontFamily,
+                                    fontWeight: "bold",
+                                    fontSizes: [20, 80],
+                                    padding: 5,
+                                    rotations: 2,
+                                    rotationAngles: [-45, 45],
+                                    colors: [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.primary.light, theme.palette.secondary.light],
+                                }}
+                            />
+                        </Box>
+                    ) : <NoData />}
+                </StatCard>
+            </Grid>
 
-      {/* Criteria Comparison */}
-      <Grid item xs={12} md={6}>
-        <Card title="Satisfação por Critério">
-          {criteriaScores && criteriaScores.length > 0 ? (
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={criteriaScores} layout="vertical" margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" />
-                <YAxis type="category" dataKey="criterion" width={80} />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="promoters" stackId="a" fill="#2ECC71" name="Promotores" />
-                <Bar dataKey="neutrals" stackId="a" fill="#F1C40F" name="Neutros" />
-                <Bar dataKey="detractors" stackId="a" fill="#E74C3C" name="Detratores" />
-              </BarChart>
-            </ResponsiveContainer>
-          ) : <Typography>Dados de critérios indisponíveis.</Typography>}
-        </Card>
-      </Grid>
+            {/* Criteria Comparison */}
+            <Grid item xs={12} md={6}>
+                <StatCard title="Satisfação por Critério" icon={<CheckCircle />}>
+                    {criteriaScores && criteriaScores.length > 0 ? (
+                        <ResponsiveContainer width="100%" height={300}>
+                            <BarChart data={criteriaScores} layout="vertical" margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis type="number" />
+                                <YAxis type="category" dataKey="criterion" width={80} tick={{ fontSize: 12 }} />
+                                <Tooltip />
+                                <Legend />
+                                <Bar dataKey="promoters" stackId="a" fill="#2ECC71" name="Promotores" />
+                                <Bar dataKey="neutrals" stackId="a" fill="#F1C40F" name="Neutros" />
+                                <Bar dataKey="detractors" stackId="a" fill="#E74C3C" name="Detratores" />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    ) : <NoData />}
+                </StatCard>
+            </Grid>
 
-      {/* Attendants Leaderboard */}
-      <Grid item xs={12}>
-        <Card title="Ranking de Atendentes">
-          {attendantsPerformance && attendantsPerformance.length > 0 ? (
-            <table style={{ width: '100%', marginTop: '1rem', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr style={{ borderBottom: '1px solid #ddd' }}>
-                  <th style={{ padding: '8px', textAlign: 'left' }}>Atendente</th>
-                  <th style={{ padding: '8px', textAlign: 'left' }}>NPS</th>
-                  <th style={{ padding: '8px', textAlign: 'left' }}>Respostas</th>
-                </tr>
-              </thead>
-              <tbody>
-                {attendantsPerformance.map((attendant, index) => (
-                  <tr key={index} style={{ borderBottom: '1px solid #ddd' }}>
-                    <td style={{ padding: '8px' }}>{attendant.name}</td>
-                    <td style={{ padding: '8px' }}>{attendant.currentNPS ?? 'N/A'}</td>
-                    <td style={{ padding: '8px' }}>{attendant.responses}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : <Typography>Nenhum dado de atendente disponível.</Typography>}
-        </Card>
-      </Grid>
+            {/* Conversion Chart */}
+            <Grid item xs={12} md={6}>
+                <StatCard title="Conversão de Pesquisa" icon={<DonutLarge />}>
+                    {conversionChart && conversionChart.total > 0 ? (
+                         <ResponsiveContainer width="100%" height={300}>
+                            <PieChart>
+                                <Pie
+                                    data={[
+                                        { name: 'Completaram', value: conversionChart.completed },
+                                        { name: 'Abandonaram', value: conversionChart.abandoned },
+                                    ]}
+                                    dataKey="value"
+                                    nameKey="name"
+                                    cx="50%"
+                                    cy="50%"
+                                    outerRadius={100}
+                                    fill={theme.palette.primary.main}
+                                    label
+                                >
+                                    <Cell fill={theme.palette.success.main} />
+                                    <Cell fill={theme.palette.error.main} />
+                                </Pie>
+                                <Tooltip />
+                                <Legend />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    ) : <NoData />}
+                </StatCard>
+            </Grid>
 
-    </Grid>
-  );
+            {/* Attendants Leaderboard */}
+            <Grid item xs={12} md={6}>
+                <StatCard title="Ranking de Atendentes" icon={<People />}>
+                    {attendantsPerformance && attendantsPerformance.length > 0 ? (
+                        <TableContainer>
+                            <Table stickyHeader size="small">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Atendente</TableCell>
+                                        <TableCell align="right">NPS</TableCell>
+                                        <TableCell align="right">Respostas</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {attendantsPerformance.map((attendant, index) => (
+                                        <TableRow key={index} hover>
+                                            <TableCell component="th" scope="row">{attendant.name}</TableCell>
+                                            <TableCell align="right">{attendant.currentNPS ?? 'N/A'}</TableCell>
+                                            <TableCell align="right">{attendant.responses}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    ) : <NoData />}
+                </StatCard>
+            </Grid>
+
+        </Grid>
+    );
 };
 
 export default Dashboard;

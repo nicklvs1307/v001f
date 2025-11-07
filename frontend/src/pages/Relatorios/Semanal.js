@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Paper, Box, Grid, CircularProgress, TextField } from '@mui/material';
+import { Typography, Paper, Box, CircularProgress, TextField } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { format, startOfWeek, endOfWeek } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import { useAuth } from '../../context/AuthContext';
 import resultService from '../../services/resultService';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import Dashboard from '../../components/relatorios/Dashboard';
-
-
 
 const RelatorioSemanal = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -23,8 +21,8 @@ const RelatorioSemanal = () => {
 
             setLoading(true);
             try {
-                const start = startOfWeek(selectedDate, { weekStartsOn: 0 }); // Domingo como início da semana
-                const end = endOfWeek(selectedDate, { weekStartsOn: 0 });
+                const start = startOfWeek(selectedDate, { weekStartsOn: 1 }); // Segunda-feira como início da semana
+                const end = endOfWeek(selectedDate, { weekStartsOn: 1 });
 
                 const formattedStartDate = format(start, 'yyyy-MM-dd');
                 const formattedEndDate = format(end, 'yyyy-MM-dd');
@@ -46,24 +44,25 @@ const RelatorioSemanal = () => {
         fetchWeeklyReport();
     }, [selectedDate, user]);
 
-
-
     return (
-        <Paper sx={{ p: 2 }}>
+        <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 3 }}>
             <Typography variant="h4" gutterBottom>Relatório Semanal</Typography>
             <Box mb={3}>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
                     <DatePicker
                         label="Selecione uma data na semana"
                         value={selectedDate}
                         onChange={(newValue) => setSelectedDate(newValue)}
+                        inputFormat="dd/MM/yyyy"
                         renderInput={(params) => <TextField {...params} />}
                     />
                 </LocalizationProvider>
             </Box>
 
             {loading ? (
-                <CircularProgress />
+                <Box sx={{ display: 'flex', justifyContent: 'center', my: 5 }}>
+                    <CircularProgress />
+                </Box>
             ) : (
                 <Dashboard data={reportData} />
             )}

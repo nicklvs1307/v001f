@@ -165,8 +165,8 @@ class ClientRepository {
     return Client.destroy({ where: { id, tenantId } });
   }
 
-  async findClientByEmail(email, options = {}) {
-    return Client.findOne({ where: { email }, ...options });
+  async findClientByEmail(email, tenantId, options = {}) {
+    return Client.findOne({ where: { email, tenantId }, ...options });
   }
 
   async findClientByPhone(phone, tenantId, options = {}) {

@@ -1,6 +1,6 @@
 'use strict';
 const {
-  Model
+  Model, Op
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Client extends Model {
@@ -34,12 +34,10 @@ module.exports = (sequelize, DataTypes) => {
     email: {
       type: DataTypes.STRING,
       allowNull: true,
-      unique: true,
     },
     phone: {
       type: DataTypes.STRING,
       allowNull: true,
-      unique: true,
     },
     birthDate: {
       type: DataTypes.DATE,
@@ -60,7 +58,29 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'clients',
     timestamps: true,
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    indexes: [
+      {
+        unique: true,
+        fields: ['tenantId', 'email'],
+        name: 'unique_tenant_email',
+        where: {
+          email: {
+            [Op.ne]: null,
+          },
+        },
+      },
+      {
+        unique: true,
+        fields: ['tenantId', 'phone'],
+        name: 'unique_tenant_phone',
+        where: {
+          phone: {
+            [Op.ne]: null,
+          },
+        },
+      },
+    ]
   });
   return Client;
 };

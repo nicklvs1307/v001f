@@ -34,7 +34,7 @@ exports.publicRegisterClient = asyncHandler(async (req, res) => {
 
     // Verificar unicidade de Email e Telefone antes de qualquer outra coisa
     if (email) {
-      const existingClientByEmail = await clientRepository.findClientByEmail(email, { transaction });
+      const existingClientByEmail = await clientRepository.findClientByEmail(email, tenantId, { transaction });
       if (existingClientByEmail) {
         throw new ApiError(409, "Email já existe.");
       }
@@ -112,6 +112,21 @@ exports.createClient = asyncHandler(async (req, res) => {
 
   if (!name) {
     throw new ApiError(400, "O nome do cliente é obrigatório.");
+  }
+
+  // Verificar unicidade de Email e Telefone
+  if (email) {
+    const existingClientByEmail = await clientRepository.findClientByEmail(email, tenantId);
+    if (existingClientByEmail) {
+      throw new ApiError(409, "Email já existe.");
+    }
+  }
+
+  if (phone) {
+    const existingClientByPhone = await clientRepository.findClientByPhone(phone, tenantId);
+    if (existingClientByPhone) {
+      throw new ApiError(409, "WhatsApp já existe.");
+    }
   }
 
   const newClient = await clientRepository.createClient({ name, email, phone, birthDate, tenantId });
@@ -201,6 +216,21 @@ exports.updateClient = asyncHandler(async (req, res) => {
 
   if (!name) {
     throw new ApiError(400, "O nome do cliente é obrigatório.");
+  }
+
+  // Verificar unicidade de Email e Telefone
+  if (email) {
+    const existingClient = await clientRepository.findClientByEmail(email, tenantId);
+    if (existingClient && existingClient.id !== id) {
+      throw new ApiError(409, "Email já existe.");
+    }
+  }
+
+  if (phone) {
+    const existingClient = await clientRepository.findClientByPhone(phone, tenantId);
+    if (existingClient && existingClient.id !== id) {
+      throw new ApiError(409, "WhatsApp já existe.");
+    }
   }
 
   const updatedClient = await clientRepository.updateClient(id, { name, email, phone, birthDate }, tenantId);

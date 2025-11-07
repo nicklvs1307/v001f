@@ -1,9 +1,27 @@
-$ npx sequelize-cli db:migrate
-
-Sequelize CLI [Node: 18.20.8, CLI: 6.6.3, ORM: 6.37.7]
-
-Loaded configuration file "src/config/sequelize-config.js".
-Using environment "production".
-== 20251107135914-add-gmb-link-to-tenants: migrating =======
-
-ERROR: relation "public.Tenants" does not exist
+ => ERROR [build 6/6] RUN npm run build                                                      176.2s
+------
+ > [build 6/6] RUN npm run build:
+1.043
+1.043 > frontend@0.1.0 build
+1.043 > react-scripts build
+1.043
+5.059 Creating an optimized production build...
+175.9 Failed to compile.
+175.9
+175.9 [eslint]
+175.9 src/pages/PublicSurveyPage.js
+175.9   Line 310:18:  'DialogActions' is not defined  react/jsx-no-undef
+175.9
+175.9 Search for the keywords to learn more about each error.
+175.9
+175.9
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

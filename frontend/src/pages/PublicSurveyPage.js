@@ -22,6 +22,7 @@ import {
     DialogContent,
     DialogTitle,
     Slide,
+    DialogActions,
 } from '@mui/material';
 import { Star, StarBorder } from '@mui/icons-material';
 import publicSurveyService from '../services/publicSurveyService';

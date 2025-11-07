@@ -15,4 +15,4 @@ TypeError: CampanhaService is not a constructor
     at Object.<anonymous> (/usr/src/app/src/services/campanhaService.js:5:30)
     at Module._compile (node:internal/modules/cjs/loader:1364:14)
     at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
-Node.js v18.20.8
+Node.js v18.20.8    

@@ -1,37 +1,29 @@
-
 const cron = require('node-cron');
-const { Campanha } = require('../../models');
-const CampanhaService = require('../services/campanhaService');
-const campanhaRepository = require('../repositories/campanhaRepository');
-const clientRepository = require('../repositories/clientRepository');
-const cupomRepository = require('../repositories/cupomRepository');
-const roletaSpinRepository = require('../repositories/roletaSpinRepository');
-const whatsappService = require('../services/whatsappService');
-
-// Instanciando o CampanhaService com suas dependências
-const campanhaService = new CampanhaService(
-  campanhaRepository,
-  clientRepository,
-  cupomRepository,
-  roletaSpinRepository,
-  whatsappService
-);
 
 const scheduledJobs = new Map();
 
-function scheduleCampaign(campaign) {
-  if (!campaign.startDate || campaign.status !== 'draft') {
+function scheduleCampaign(campaign, processFunction) {
+  if (!campaign.startDate || campaign.status !== 'scheduled') {
     return;
   }
 
+  // Cancelar job antigo se existir
+  if (scheduledJobs.has(campaign.id)) {
+    scheduledJobs.get(campaign.id).stop();
+    scheduledJobs.delete(campaign.id);
+  }
+
   const cronTime = new Date(campaign.startDate);
+
+  // Não agendar tarefas no passado
+  if (cronTime < new Date()) {
+    console.log(`[Scheduler] Campanha ${campaign.id} não agendada pois a data de início já passou.`);
+    return;
+  }
+
   const job = cron.schedule(cronTime, () => {
     console.log(`[Scheduler] Executando campanha agendada: ${campaign.id}`);
-    campanhaService._processCampaign(campaign.id, campaign.tenantId)
-      .catch(err => {
-        console.error(`[Scheduler] Erro ao processar campanha ${campaign.id}:`, err);
-        campanhaRepository.update(campaign.id, { status: 'failed' }, campaign.tenantId);
-      });
+    processFunction(campaign.id, campaign.tenantId);
     scheduledJobs.delete(campaign.id);
   });
 
@@ -39,22 +31,15 @@ function scheduleCampaign(campaign) {
   console.log(`[Scheduler] Campanha ${campaign.id} agendada para ${cronTime}`);
 }
 
-async function initScheduledJobs() {
-  console.log('[Scheduler] Inicializando jobs agendados...');
-  const scheduledCampaigns = await Campanha.findAll({
-    where: {
-      status: 'draft',
-      startDate: { [Op.ne]: null },
-    },
-  });
-
-  for (const campaign of scheduledCampaigns) {
-    scheduleCampaign(campaign);
+function cancelCampaign(campaignId) {
+  if (scheduledJobs.has(campaignId)) {
+    scheduledJobs.get(campaignId).stop();
+    scheduledJobs.delete(campaignId);
+    console.log(`[Scheduler] Agendamento da campanha ${campaignId} cancelado.`);
   }
-  console.log(`[Scheduler] ${scheduledCampaigns.length} campanhas reagendadas.`);
 }
 
 module.exports = {
   scheduleCampaign,
-  initScheduledJobs,
+  cancelCampaign,
 };

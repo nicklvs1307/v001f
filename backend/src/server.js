@@ -72,12 +72,28 @@ const startServer = async () => {
     const couponReminderJob = require('./jobs/couponReminderJob');
     const birthdayAutomationJob = require('./jobs/birthdayAutomationJob');
     const couponExpirationJob = require('./jobs/couponExpirationJob');
-    const { initScheduledJobs } = require('./jobs/campaignScheduler');
+    
     dailyReportJob.start();
     couponReminderJob.start();
     birthdayAutomationJob.start();
     couponExpirationJob.start();
-    initScheduledJobs();
+
+    // Instanciar dependências e inicializar agendamentos de campanha
+    const CampanhaService = require('./services/campanhaService');
+    const campanhaRepository = require('./repositories/campanhaRepository');
+    const clientRepository = require('./repositories/clientRepository');
+    const cupomRepository = require('./repositories/cupomRepository');
+    const roletaSpinRepository = require('./repositories/roletaSpinRepository');
+    const whatsappService = require('./services/whatsappService');
+
+    const campanhaServiceInstance = new CampanhaService(
+      campanhaRepository,
+      clientRepository,
+      cupomRepository,
+      roletaSpinRepository,
+      whatsappService
+    );
+    campanhaServiceInstance.initScheduledCampaigns();
   });
 };
 

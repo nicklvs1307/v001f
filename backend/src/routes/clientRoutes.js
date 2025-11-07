@@ -47,7 +47,7 @@ router.post(
     check("email", "Email do cliente inválido").optional().isEmail(),
     check("phone", "Telefone do cliente é obrigatório").not().isEmpty(),
     birthDateValidator, // Usa o validador reutilizável
-    check("respondentSessionId", "ID da sessão do respondente inválido").optional().isUUID(),
+    check("respondentSessionId", "ID da sessão do respondente inválido").optional({ nullable: true }).isUUID(),
   ],
   validate,
   clientController.publicRegisterClient
@@ -69,7 +69,7 @@ router.route('/')
       check("email", "Email do cliente inválido").optional().isEmail(),
       check("phone", "Telefone do cliente é obrigatório").not().isEmpty(),
       birthDateValidator, // Usa o validador reutilizável
-      check("respondentSessionId", "ID da sessão do respondente inválido").optional().isUUID(),
+      check("respondentSessionId", "ID da sessão do respondente inválido").optional({ nullable: true }).isUUID(),
     ],
     validate,
     clientController.createClient
@@ -108,7 +108,7 @@ router.route('/:id')
       check("email", "Email do cliente inválido").optional().isEmail(),
       check("phone", "Telefone do cliente deve ser uma string não vazia").optional().not().isEmpty(),
       birthDateValidator, // Usa o validador reutilizável
-      check("respondentSessionId", "ID da sessão do respondente inválido").optional().isUUID(),
+      check("respondentSessionId", "ID da sessão do respondente inválido").optional({ nullable: true }).isUUID(),
     ],
     validate,
     clientController.updateClient

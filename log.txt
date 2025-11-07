@@ -1,9 +1,23 @@
-$ npx sequelize-cli db:migrate
+URL da solicitação
+https://apivoltaki.towersfy.com/api/clients/register
+Método da solicitação
+POST
+Código de status
+400 Bad Request
+Endereço remoto
+95.217.16.187:443
 
-Sequelize CLI [Node: 18.20.8, CLI: 6.6.3, ORM: 6.37.7]
-
-Loaded configuration file "src/config/sequelize-config.js".
-Using environment "production".
-== 20251107181154-alter-campanhas-for-randomization: migrating =======
-
-ERROR: Table campanhas doesn't have the column messageDelaySeconds
+{
+    "status": "error",
+    "code": [
+        {
+            "type": "field",
+            "value": null,
+            "msg": "ID da sessão do respondente inválido",
+            "path": "respondentSessionId",
+            "location": "body"
+        }
+    ],
+    "message": "Erros de validação",
+    "details": "Error: Erros de validação\n    at validate (/usr/src/app/src/middlewares/validationMiddleware.js:7:11)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at middleware (/usr/src/app/node_modules/express-validator/lib/middlewares/check.js:16:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
+}

@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Campanha.belongsTo(models.Tenant, { foreignKey: 'tenantId', as: 'tenant' });
       Campanha.belongsTo(models.Recompensa, { foreignKey: 'recompensaId', as: 'recompensa' });
-      Campanha.belongsTo(models.Roleta, { foreignKey: 'roletaId', as: 'roleta' }); // Nova associação
+      Campanha.belongsTo(models.Roleta, { foreignKey: 'roletaId', as: 'roleta' });
       Campanha.hasMany(models.Cupom, { foreignKey: 'campanhaId', as: 'cupons' });
     }
   }
@@ -26,20 +26,20 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      mensagens: {
-        type: DataTypes.JSON,
+      mensagem: {
+        type: DataTypes.TEXT,
         allowNull: false,
       },
-      rewardType: { // Novo campo
+      rewardType: {
         type: DataTypes.STRING,
         allowNull: false,
         defaultValue: 'RECOMPENSA',
       },
-      recompensaId: { // Alterado para ser nulo
+      recompensaId: {
         type: DataTypes.UUID,
         allowNull: true,
       },
-      roletaId: { // Novo campo
+      roletaId: {
         type: DataTypes.UUID,
         allowNull: true,
       },
@@ -65,12 +65,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      minMessageDelaySeconds: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0,
-      },
-      maxMessageDelaySeconds: {
+      messageDelaySeconds: {
         type: DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
     Box,
     Typography,
@@ -9,10 +9,12 @@ import {
     Grid,
     Container,
     useTheme
-} from '@mui/material';import { WordCloud } from '@isoterik/react-word-cloud';
+} from '@mui/material';
+import { WordCloud } from '@isoterik/react-word-cloud';
 import { ResponsiveContainer } from 'recharts';
 import dashboardService from '../../services/dashboardService';
 import { startOfMonth, endOfMonth, format } from 'date-fns';
+import useDebounce from '../../hooks/useDebounce';
 
 const NuvemDePalavrasPage = () => {
     const [words, setWords] = useState([]);
@@ -21,12 +23,15 @@ const NuvemDePalavrasPage = () => {
     const [startDate, setStartDate] = useState(format(startOfMonth(new Date()), 'yyyy-MM-dd'));
     const [endDate, setEndDate] = useState(format(endOfMonth(new Date()), 'yyyy-MM-dd'));
 
+    const debouncedStartDate = useDebounce(startDate, 500);
+    const debouncedEndDate = useDebounce(endDate, 500);
+
     const theme = useTheme();
 
     const fetchWordCloudData = useCallback(async () => {
         try {
             setLoading(true);
-            const data = await dashboardService.getWordCloudData({ startDate, endDate });
+            const data = await dashboardService.getWordCloudData({ startDate: debouncedStartDate, endDate: debouncedEndDate });
             setWords(Array.isArray(data) ? data : []);
             setError(null);
         } catch (err) {
@@ -35,20 +40,20 @@ const NuvemDePalavrasPage = () => {
         } finally {
             setLoading(false);
         }
-    }, [startDate, endDate]);
+    }, [debouncedStartDate, debouncedEndDate]);
 
     useEffect(() => {
         fetchWordCloudData();
     }, [fetchWordCloudData]);
 
-    const wordCloudOptions = {
+    const wordCloudOptions = useMemo(() => ({
         colors: [theme.palette.primary.main, theme.palette.dark.main],
         rotations: 1,
         rotationAngles: [0, 0],
-        fontSizes: [60, 180], // Aumentado para melhor visibilidade
         fontWeight: 'bold',
         padding: 10,
-    };
+        fontSizes: [20, 120],
+    }), [theme]);
 
     return (
         <Container maxWidth="lg">
@@ -85,7 +90,7 @@ const NuvemDePalavrasPage = () => {
             </Grid>
 
             <Card>
-                <CardContent sx={{ height: 500, display: 'flex', justifyContent: 'center', alignItems: 'center' }}> {/* Centralizado */}
+                <CardContent sx={{ height: 500, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     {loading ? (
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                             <CircularProgress />

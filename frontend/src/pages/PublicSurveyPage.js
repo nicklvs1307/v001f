@@ -300,17 +300,24 @@ const SurveyComponent = ({ survey, tenantId }) => {
                     handleNavigation({ respondentSessionId: sessionStorage.getItem('surveyState') ? JSON.parse(sessionStorage.getItem('surveyState')).respondentSessionId : null });
                 }}
                 aria-describedby="gmb-review-dialog-slide-description"
-                maxWidth="md"
+                maxWidth="sm"
                 fullWidth
             >
-                <DialogTitle>{"Deixe sua avaliação no Google!"}</DialogTitle>
+                <DialogTitle>{"Sua opinião é muito importante!"}</DialogTitle>
                 <DialogContent>
-                    <iframe
-                        src={gmbLink}
-                        style={{ width: '100%', height: '70vh', border: 'none' }}
-                        title="Avaliação Google Meu Negócio"
-                    ></iframe>
+                    <Typography>Para nos ajudar a melhorar ainda mais, por favor, deixe uma avaliação no Google. Você será redirecionado para a página de avaliação.</Typography>
                 </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => {
+                        setGmbModalOpen(false);
+                        handleNavigation({ respondentSessionId: sessionStorage.getItem('surveyState') ? JSON.parse(sessionStorage.getItem('surveyState')).respondentSessionId : null });
+                    }}>Pular</Button>
+                    <Button onClick={() => {
+                        window.open(gmbLink, '_blank');
+                        setGmbModalOpen(false);
+                        handleNavigation({ respondentSessionId: sessionStorage.getItem('surveyState') ? JSON.parse(sessionStorage.getItem('surveyState')).respondentSessionId : null });
+                    }} autoFocus>Avaliar Agora</Button>
+                </DialogActions>
             </Dialog>
         </Box>
     );

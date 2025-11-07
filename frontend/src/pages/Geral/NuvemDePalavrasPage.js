@@ -47,12 +47,14 @@ const NuvemDePalavrasPage = () => {
     }, [fetchWordCloudData]);
 
     const wordCloudOptions = useMemo(() => ({
-        colors: [theme.palette.primary.main, theme.palette.dark.main],
+        colors: [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.dark.main],
         rotations: 2,
         rotationAngles: [0, 90],
         fontWeight: 'bold',
         padding: 0,
         fontSizes: [10, 80],
+        fontFamily: theme.typography.fontFamily,
+        spiral: 'rectangular',
         enableOptimizations: true,
     }), [theme]);
 

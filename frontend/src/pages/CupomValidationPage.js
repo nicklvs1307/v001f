@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Container,
   Typography,
@@ -9,212 +10,226 @@ import {
   CircularProgress,
   Alert,
   Grid,
-  Icon,
   Chip,
   Divider,
-  Modal,
-  useTheme,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   IconButton,
+  Slide,
 } from '@mui/material';
-import { CheckCircleOutline, ErrorOutline, ConfirmationNumber, Redeem, Event, Person, Today, AccessTime, Close } from '@mui/icons-material';
+import {
+  CheckCircleOutline,
+  ErrorOutline,
+  ConfirmationNumber,
+  Redeem,
+  Event,
+  Person,
+  Today,
+  AccessTime,
+  Close,
+  Search,
+  QrCodeScanner
+} from '@mui/icons-material';
 import cupomService from '../services/cupomService';
 import { format } from 'date-fns';
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: { xs: '90%', sm: 500 },
-  bgcolor: 'background.paper',
-  borderRadius: 2,
-  boxShadow: 24,
-  p: 4,
-};
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const CupomValidationPage = () => {
-  const [codigo, setCodigo] = useState('');
+  const { cupomId } = useParams();
+  const [codigo, setCodigo] = useState(cupomId || '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [selectedCupom, setSelectedCupom] = useState(null);
-  const [openModal, setOpenModal] = useState(false);
-  const theme = useTheme();
+  const [cupom, setCupom] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [validationSuccess, setValidationSuccess] = useState(false);
+
+  useEffect(() => {
+    if (cupomId) {
+      handleSearch();
+    }
+  }, [cupomId]);
 
   const handleSearch = async () => {
+    if (!codigo) return;
     setLoading(true);
     setError('');
-    setSelectedCupom(null);
+    setCupom(null);
+    setValidationSuccess(false);
     try {
       const result = await cupomService.getCupomByCodigo(codigo);
-      setSelectedCupom(result);
-      setOpenModal(true);
+      setCupom(result);
+      setIsModalOpen(true);
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || 'Erro ao buscar cupom.';
-      setError(errorMessage);
+      setError(err.response?.data?.message || 'Cupom não encontrado ou inválido.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleValidate = async () => {
+    if (!cupom) return;
     setLoading(true);
     setError('');
     try {
-      await cupomService.validateCupom(selectedCupom.codigo);
-      setOpenModal(false);
-      alert('Cupom validado com sucesso!');
+      await cupomService.validateCupom(cupom.codigo);
+      setValidationSuccess(true);
+      // Update cupom status locally for immediate feedback
+      setCupom({ ...cupom, status: 'used', dataUtilizacao: new Date().toISOString() });
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || 'Erro ao validar cupom.';
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDelete = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      await cupomService.deleteCupom(selectedCupom.id);
-      setOpenModal(false);
-      alert('Cupom deletado com sucesso!');
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || 'Erro ao deletar cupom.';
-      setError(errorMessage);
+      setError(err.response?.data?.message || 'Erro ao validar cupom.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleCloseModal = () => {
-    setOpenModal(false);
-    setSelectedCupom(null);
-    setError('');
+    setIsModalOpen(false);
+    // Delay state reset to allow for closing animation
+    setTimeout(() => {
+        setCupom(null);
+        setError('');
+        setValidationSuccess(false);
+        setCodigo('');
+    }, 300);
   };
 
-  const getStatusChip = (cupom) => {
-    switch (cupom.status) {
-      case 'active':
-        return <Chip label="Ativo" color="success" size="small" />;
-      case 'pending':
-        return <Chip label="Pendente" color="info" size="small" />;
-      case 'used':
-        return <Chip label="Utilizado" color="warning" size="small" />;
-      case 'expired':
-        return <Chip label="Expirado" color="error" size="small" />;
-      default:
-        return <Chip label={cupom.status} size="small" />;
-    }
+  const getStatusChip = (status) => {
+    const statusMap = {
+      active: { label: 'Ativo', color: 'success' },
+      pending: { label: 'Pendente', color: 'info' },
+      used: { label: 'Utilizado', color: 'warning' },
+      expired: { label: 'Expirado', color: 'error' },
+    };
+    const { label, color } = statusMap[status] || { label: status, color: 'default' };
+    return <Chip label={label} color={color} size="small" sx={{ fontWeight: 'bold' }} />;
   };
 
-  const renderCupomDetails = (cupom) => (
-    <Box>
-      <Typography variant="h5" component="h2" gutterBottom sx={{ display: 'flex', alignItems: 'center', color: 'primary.main' }}>
-        <ConfirmationNumber sx={{ mr: 1 }} /> Detalhes do Cupom
-      </Typography>
-      <Divider sx={{ my: 2 }} />
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Typography variant="h6" component="h3" color="text.primary">{cupom.recompensa?.name}</Typography>
-          <Typography variant="body2" color="text.secondary">{cupom.recompensa?.description}</Typography>
-        </Grid>
-        <Grid item xs={12}><Divider /></Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body2" color="text.secondary">Código do Cupom</Typography>
-          <Typography variant="h6" component="p" fontWeight="bold">{cupom.codigo}</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body2" color="text.secondary">Status</Typography>
-          {getStatusChip(cupom)}
-        </Grid>
-        <Grid item xs={12}><Divider /></Grid>
-        <Grid item xs={12}>
-          <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}><Person sx={{ mr: 1 }} /> Cliente</Typography>
-          <Typography variant="body1">{cupom.cliente?.name || 'Não identificado'}</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}><Today sx={{ mr: 1 }} /> Gerado em</Typography>
-          <Typography variant="body1">{format(new Date(cupom.dataGeracao), 'dd/MM/yyyy HH:mm')}</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}><Event sx={{ mr: 1 }} /> Válido até</Typography>
-          <Typography variant="body1">{format(new Date(cupom.dataValidade), 'dd/MM/yyyy')}</Typography>
-        </Grid>
-        {cupom.status === 'used' && cupom.dataUtilizacao && (
-          <Grid item xs={12} sm={6}>
-            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}><AccessTime sx={{ mr: 1 }} /> Utilizado em</Typography>
-            <Typography variant="body1">{format(new Date(cupom.dataUtilizacao), 'dd/MM/yyyy HH:mm')}</Typography>
-          </Grid>
+  const renderCupomDetails = () => (
+    <DialogContent dividers>
+        {validationSuccess ? (
+            <Box sx={{ textAlign: 'center', py: 4 }}>
+                <CheckCircleOutline color="success" sx={{ fontSize: 80, mb: 2 }} />
+                <Typography variant="h5" gutterBottom>Cupom Validado com Sucesso!</Typography>
+                <Typography color="text.secondary">O cupom *{cupom.codigo}* foi marcado como utilizado.</Typography>
+            </Box>
+        ) : (
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <Typography variant="h6" component="h3" color="text.primary">{cupom.recompensa?.name}</Typography>
+                    <Typography variant="body2" color="text.secondary">{cupom.recompensa?.description}</Typography>
+                </Grid>
+                <Grid item xs={12}><Divider /></Grid>
+                <Grid item xs={12} sm={6}>
+                    <Typography variant="body2" color="text.secondary">Código</Typography>
+                    <Typography variant="h6" component="p" fontWeight="bold">{cupom.codigo}</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <Typography variant="body2" color="text.secondary">Status</Typography>
+                    {getStatusChip(cupom.status)}
+                </Grid>
+                <Grid item xs={12}><Divider /></Grid>
+                <Grid item xs={12}>
+                    <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}><Person sx={{ mr: 1 }} /> Cliente</Typography>
+                    <Typography variant="body1">{cupom.cliente?.name || 'Não identificado'}</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}><Today sx={{ mr: 1 }} /> Gerado em</Typography>
+                    <Typography variant="body1">{format(new Date(cupom.dataGeracao), 'dd/MM/yyyy HH:mm')}</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}><Event sx={{ mr: 1 }} /> Válido até</Typography>
+                    <Typography variant="body1">{format(new Date(cupom.dataValidade), 'dd/MM/yyyy')}</Typography>
+                </Grid>
+                {cupom.status === 'used' && cupom.dataUtilizacao && (
+                    <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}><AccessTime sx={{ mr: 1 }} /> Utilizado em</Typography>
+                        <Typography variant="body1">{format(new Date(cupom.dataUtilizacao), 'dd/MM/yyyy HH:mm')}</Typography>
+                    </Grid>
+                )}
+            </Grid>
         )}
-      </Grid>
-    </Box>
+        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+    </DialogContent>
   );
 
   return (
-    <Container maxWidth="sm" sx={{ mt: { xs: 4, sm: 8 }, mb: 4 }}>
-      <Paper elevation={4} sx={{ p: { xs: 2, sm: 4 }, borderRadius: 2, textAlign: 'center' }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Validação de Cupom
-        </Typography>
-        <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 4 }}>
-          Insira o código do cupom para verificar sua validade e detalhes.
-        </Typography>
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <TextField
-            label="Código do Cupom"
+    <Box sx={{ p: 3, backgroundColor: '#f4f6f8', minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
+      <Container maxWidth="md">
+        <Paper elevation={4} sx={{ p: { xs: 3, sm: 5 }, borderRadius: '16px', textAlign: 'center', boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.1)' }}>
+            <ConfirmationNumber color="primary" sx={{ fontSize: 60, mb: 2 }} />
+            <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
+                Validação de Cupom
+            </Typography>
+            <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 4 }}>
+                Insira o código do cupom para verificar sua validade e detalhes.
+            </Typography>
+            <Box 
+                component="form" 
+                onSubmit={(e) => { e.preventDefault(); handleSearch(); }}
+                sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, maxWidth: 600, mx: 'auto' }}
+            >
+                <TextField
+                    label="Código do Cupom"
+                    fullWidth
+                    variant="outlined"
+                    value={codigo}
+                    onChange={(e) => setCodigo(e.target.value)}
+                    autoFocus
+                />
+                <Button
+                    type="submit"
+                    variant="contained"
+                    size="large"
+                    onClick={handleSearch}
+                    disabled={loading || !codigo}
+                    startIcon={<Search />}
+                    sx={{ py: 1.5, px: 4, whiteSpace: 'nowrap' }}
+                >
+                    {loading ? <CircularProgress size={24} color="inherit" /> : 'Buscar'}
+                </Button>
+            </Box>
+            {error && !isModalOpen && <Alert severity="error" sx={{ mt: 3, textAlign: 'left' }}>{error}</Alert>}
+        </Paper>
+
+        <Dialog
+            open={isModalOpen}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={handleCloseModal}
+            maxWidth="sm"
             fullWidth
-            variant="outlined"
-            value={codigo}
-            onChange={(e) => setCodigo(e.target.value)}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSearch}
-            disabled={loading || !codigo}
-            sx={{ py: 1.5, px: 4, whiteWhiteSpace: 'nowrap' }}
-          >
-            {loading ? <CircularProgress size={24} color="inherit" /> : 'Buscar'}
-          </Button>
-        </Box>
-      </Paper>
-
-
-
-      <Modal
-        open={openModal}
-        onClose={handleCloseModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <IconButton
-            aria-label="close"
-            onClick={handleCloseModal}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <Close />
-          </IconButton>
-          {selectedCupom && renderCupomDetails(selectedCupom)}
-          {error && (
-            <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>
-          )}
-          <Box sx={{ mt: 4, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', gap: 2 }}>
-            <Button variant="contained" color="success" onClick={handleValidate} disabled={loading || selectedCupom?.status !== 'active'} fullWidth>
-              Validar Cupom
-            </Button>
-            <Button variant="outlined" color="error" onClick={handleDelete} disabled={loading} fullWidth>
-              Excluir Cupom
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
-    </Container>
+        >
+            <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                {validationSuccess ? "Sucesso" : "Detalhes do Cupom"}
+                <IconButton aria-label="close" onClick={handleCloseModal}>
+                    <Close />
+                </IconButton>
+            </DialogTitle>
+            {cupom && renderCupomDetails()}
+            <DialogActions sx={{ p: 2 }}>
+                {validationSuccess ? (
+                    <Button onClick={handleCloseModal} variant="contained" fullWidth>Fechar</Button>
+                ) : (
+                    <Button 
+                        onClick={handleValidate} 
+                        variant="contained" 
+                        color="success" 
+                        disabled={loading || cupom?.status !== 'active'}
+                        startIcon={<Redeem />}
+                        fullWidth
+                    >
+                        {loading ? <CircularProgress size={24} /> : 'Validar Cupom'}
+                    </Button>
+                )}
+            </DialogActions>
+        </Dialog>
+      </Container>
+    </Box>
   );
 };
 

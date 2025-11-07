@@ -1,21 +1,17 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Paper, Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 
 const NpsByDayOfWeekChart = ({ data }) => {
     const theme = useTheme();
 
     if (!data || data.length === 0) {
-        return (
-            <Paper sx={{ p: 2, height: 300, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Typography>Nenhum dado de NPS por dia da semana disponível.</Typography>
-            </Paper>
-        );
+        return null; // The parent component will handle the "no data" message for the section
     }
 
     return (
-        <Paper sx={{ p: 2, height: 300 }}>
-            <Typography variant="h6" gutterBottom>NPS por Dia da Semana</Typography>
+        <Box sx={{ height: 300 }}>
+            <Typography variant="subtitle1" gutterBottom>NPS por Dia da Semana</Typography>
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                     data={data.map(item => ({ ...item, nps: Number(item.nps) || 0 }))}
@@ -31,10 +27,10 @@ const NpsByDayOfWeekChart = ({ data }) => {
                     <YAxis domain={[-100, 100]} />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="nps" name="NPS" fill={theme.palette.primary.main} />
+                    <Bar dataKey="nps" name="NPS" fill={theme.palette.secondary.main} />
                 </BarChart>
             </ResponsiveContainer>
-        </Paper>
+        </Box>
     );
 };
 

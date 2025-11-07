@@ -1,19 +1,15 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Box, Typography, Paper } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 const NpsTrendChart = ({ data }) => {
     if (!data || data.length === 0) {
-        return (
-            <Paper sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 300 }}>
-                <Typography>Não há dados de tendência de NPS para exibir.</Typography>
-            </Paper>
-        );
+        return null; // The parent component will handle the "no data" message for the section
     }
 
     return (
         <Box sx={{ height: 300 }}>
-            <Typography variant="h6" gutterBottom>Evolução do NPS (Diário)</Typography>
+            <Typography variant="subtitle1" gutterBottom>Evolução do NPS (Diário)</Typography>
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart
                     data={data}

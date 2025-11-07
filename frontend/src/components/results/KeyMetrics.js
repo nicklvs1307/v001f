@@ -1,64 +1,74 @@
 import React from 'react';
-import { Grid, Card, CardContent, Typography, Box } from '@mui/material';
-import { ArrowUpward, ArrowDownward, TrendingFlat } from '@mui/icons-material';
+import { Grid, Paper, Typography, Box, Skeleton } from '@mui/material';
+import { 
+    TrendingUp, 
+    ThumbsUpDown, 
+    SentimentVerySatisfied, 
+    SentimentNeutral, 
+    SentimentVeryDissatisfied, 
+    PersonAdd, 
+    ConfirmationNumber, 
+    CheckCircle 
+} from '@mui/icons-material';
 
-const MetricCard = ({ title, value, change, positive }) => {
-    const ChangeIcon = change > 0 ? ArrowUpward : (change < 0 ? ArrowDownward : TrendingFlat);
-    const changeColor = change > 0 ? 'success.main' : (change < 0 ? 'error.main' : 'text.secondary');
-
+const MetricCard = ({ title, value, icon, loading }) => {
     return (
-        <Card sx={{ height: '100%' }}>
-            <CardContent>
-                <Typography variant="h6" color="text.secondary" gutterBottom>
+        <Paper 
+            elevation={2} 
+            sx={{
+                p: 3,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                height: '100%',
+                borderRadius: '16px',
+                boxShadow: '0 4px 12px 0 rgba(0,0,0,0.05)'
+            }}
+        >
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <Typography variant="subtitle1" color="text.secondary">
                     {title}
                 </Typography>
-                <Typography variant="h4" component="div" fontWeight="bold">
-                    {value}
-                </Typography>
-                {change !== undefined && (
-                    <Box sx={{ display: 'flex', alignItems: 'center', color: changeColor }}>
-                        <ChangeIcon sx={{ fontSize: '1rem', mr: 0.5 }} />
-                        <Typography variant="body2" component="span">
-                            {change}%
-                        </Typography>
-                    </Box>
+                <Box sx={{ color: 'primary.main' }}>
+                    {icon}
+                </Box>
+            </Box>
+            <Box>
+                {loading ? (
+                    <Skeleton variant="text" width="60%" height={40} />
+                ) : (
+                    <Typography variant="h4" component="div" fontWeight="bold">
+                        {value ?? 0}
+                    </Typography>
                 )}
-            </CardContent>
-        </Card>
+            </Box>
+        </Paper>
     );
 };
 
-const KeyMetrics = ({ data }) => {
-    if (!data) {
-        return null;
+const KeyMetrics = ({ data, loading }) => {
+    const metrics = [
+        { title: "NPS Geral", value: data?.npsScore, icon: <TrendingUp /> },
+        { title: "Total de Respostas", value: data?.totalResponses, icon: <ThumbsUpDown /> },
+        { title: "Promotores", value: data?.promoters, icon: <SentimentVerySatisfied /> },
+        { title: "Neutros", value: data?.neutrals, icon: <SentimentNeutral /> },
+        { title: "Detratores", value: data?.detractors, icon: <SentimentVeryDissatisfied /> },
+        { title: "Cadastros", value: data?.registrations, icon: <PersonAdd /> },
+        { title: "Cupons Gerados", value: data?.couponsGenerated, icon: <ConfirmationNumber /> },
+        { title: "Cupons Utilizados", value: data?.couponsUsed, icon: <CheckCircle /> },
+    ];
+
+    if (!data && !loading) {
+        return null; // Don't render anything if there's no data and it's not loading
     }
 
     return (
         <Grid container spacing={3}>
-            <Grid item xs={12} sm={6} md={3}>
-                <MetricCard title="NPS Geral" value={data.npsScore} />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-                <MetricCard title="Total de Respostas" value={data.totalResponses} />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-                <MetricCard title="Promotores" value={data.promoters} />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-                <MetricCard title="Neutros" value={data.neutrals} />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-                <MetricCard title="Detratores" value={data.detractors} />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-                <MetricCard title="Cadastros" value={data.registrations} />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-                <MetricCard title="Cupons Gerados" value={data.couponsGenerated} />
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-                <MetricCard title="Cupons Utilizados" value={data.couponsUsed} />
-            </Grid>
+            {metrics.map((metric, index) => (
+                <Grid item xs={12} sm={6} md={3} key={index}>
+                    <MetricCard {...metric} loading={loading} />
+                </Grid>
+            ))}
         </Grid>
     );
 };

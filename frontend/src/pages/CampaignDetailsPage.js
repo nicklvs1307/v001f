@@ -123,10 +123,10 @@ const CampaignDetailsPage = () => {
         </Paper>
 
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
-          <Button variant="outlined" onClick={() => navigate('/cupons/campanhas')} sx={{ mr: 2 }}>
+          <Button variant="outlined" onClick={() => navigate('/dashboard/cupons/campanhas')} sx={{ mr: 2 }}>
             Voltar para Campanhas
           </Button>
-          <Button variant="contained" onClick={() => navigate(`/cupons/campanhas/editar/${campaign.id}`)}>
+          <Button variant="contained" onClick={() => navigate(`/dashboard/cupons/campanhas/editar/${campaign.id}`)}>
             Editar Campanha
           </Button>
         </Box>

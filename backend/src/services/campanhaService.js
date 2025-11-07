@@ -11,18 +11,18 @@ class CampanhaService {
     this.whatsappService = whatsappService;
   }
 
-  // async initScheduledCampaigns() {
-  //   console.log('[CampanhaService] Inicializando campanhas agendadas...');
-  //   const scheduledCampaigns = await this.campanhaRepository.findAllWhere({
-  //     status: 'scheduled',
-  //     startDate: { [Op.ne]: null },
-  //   });
+  async initScheduledCampaigns() {
+    console.log('[CampanhaService] Inicializando campanhas agendadas...');
+    const scheduledCampaigns = await this.campanhaRepository.findAllWhere({
+      status: 'scheduled',
+      startDate: { [Op.ne]: null },
+    });
 
-  //   for (const campaign of scheduledCampaigns) {
-  //     scheduleCampaign(campaign, this._processCampaign.bind(this));
-  //   }
-  //   console.log(`[CampanhaService] ${scheduledCampaigns.length} campanhas reagendadas.`);
-  // }
+    for (const campaign of scheduledCampaigns) {
+      scheduleCampaign(campaign, this._processCampaign.bind(this));
+    }
+    console.log(`[CampanhaService] ${scheduledCampaigns.length} campanhas reagendadas.`);
+  }
 
   async create(data) {
     return this.campanhaRepository.create(data);
@@ -37,21 +37,40 @@ class CampanhaService {
   }
 
   async update(id, data, tenantId) {
-    return this.campanhaRepository.update(id, data, tenantId);
+    const updatedCampaign = await this.campanhaRepository.update(id, data, tenantId);
+    const campaign = await this.getById(id, tenantId);
+    
+    // Se a campanha for agendada, reagende-a
+    if (campaign.status === 'scheduled' && campaign.startDate) {
+      scheduleCampaign(campaign, this._processCampaign.bind(this));
+    } else {
+      // Se foi alterada para um status não agendado, cancele qualquer job existente
+      cancelCampaign(id);
+    }
+    
+    return updatedCampaign;
   }
 
   async delete(id, tenantId) {
-    // cancelCampaign(id); // Adicionar se houver lógica de agendamento
+    cancelCampaign(id);
     return this.campanhaRepository.delete(id, tenantId);
   }
 
   async scheduleProcessing(id, tenantId) {
-    // Lógica de agendamento removida temporariamente
     const campanha = await this.getById(id, tenantId);
     if (['processing', 'sent'].includes(campanha.status)) {
-      throw ApiError.badRequest('Esta campanha já foi processada.');
+      throw ApiError.badRequest('Esta campanha já foi processada ou está em processamento.');
     }
 
+    // Se a data de início existe e está no futuro, agenda a campanha.
+    if (campanha.startDate && new Date(campanha.startDate) > new Date()) {
+      await this.campanhaRepository.update(id, { status: 'scheduled' }, tenantId);
+      const updatedCampanha = await this.getById(id, tenantId); // Pega os dados atualizados
+      scheduleCampaign(updatedCampanha, this._processCampaign.bind(this));
+      return { message: `Campanha agendada para ${new Date(campanha.startDate).toLocaleString()}` };
+    }
+
+    // Caso contrário, processa imediatamente.
     this._processCampaign(id, tenantId).catch(err => {
         console.error(`[Campanha] Falha crítica no processamento da campanha ${id}:`, err);
         this.campanhaRepository.update(id, { status: 'failed' }, tenantId);
@@ -61,7 +80,7 @@ class CampanhaService {
   }
   
   async cancelScheduling(id, tenantId) {
-    // Lógica de cancelamento removida temporariamente
+    cancelCampaign(id);
     return this.campanhaRepository.update(id, { status: 'draft' }, tenantId);
   }
 
@@ -75,7 +94,10 @@ class CampanhaService {
       rewardCode = `${roletaBaseUrl}/roleta/spin/[TOKEN_TESTE]`
     }
 
-    const personalizedMessage = this._buildPersonalizedMessage(campanha.mensagem, fakeClient, {
+    // Usa a primeira mensagem para o teste para ser previsível
+    const messageTemplate = campanha.mensagens[0] || '';
+
+    const personalizedMessage = this._buildPersonalizedMessage(messageTemplate, fakeClient, {
       codigo: rewardCode,
       dataValidade: campanha.dataValidade,
       nomeRecompensa: campanha.recompensa ? campanha.recompensa.nome : '[RECOMPENSA_TESTE]',
@@ -139,15 +161,21 @@ class CampanhaService {
     // ... (lógica existente)
   }
 
+  _getRandomDelay(min, max) {
+    if (min === 0 && max === 0) return 0;
+    return (Math.floor(Math.random() * (max - min + 1)) + min) * 1000;
+  }
+
   async _sendSimpleMessages(campanha, clients) {
-    const delay = (campanha.messageDelaySeconds || 0) * 1000;
     for (const client of clients) {
       if (client && client.phone) {
-        const personalizedMessage = this._buildPersonalizedMessage(campanha.mensagem, client, {
+        const messageTemplate = campanha.mensagens[Math.floor(Math.random() * campanha.mensagens.length)];
+        const personalizedMessage = this._buildPersonalizedMessage(messageTemplate, client, {
           nomeCampanha: campanha.nome,
         });
         try {
           await this.whatsappService.sendTenantMessage(campanha.tenantId, client.phone, personalizedMessage);
+          const delay = this._getRandomDelay(campanha.minMessageDelaySeconds, campanha.maxMessageDelaySeconds);
           if (delay > 0) await new Promise(resolve => setTimeout(resolve, delay));
         } catch (err) {
           console.error(`[Campanha] Falha ao enviar mensagem para ${client.phone}:`, err.message);
@@ -158,17 +186,18 @@ class CampanhaService {
 
   async _sendRewardMessages(campanha, clients, rewards) {
     const clientMap = new Map(clients.map(c => [c.id, c]));
-    const delay = (campanha.messageDelaySeconds || 0) * 1000;
 
     for (const reward of rewards) {
       const client = clientMap.get(reward.clienteId);
       if (client && client.phone) {
+        const messageTemplate = campanha.mensagens[Math.floor(Math.random() * campanha.mensagens.length)];
         // ... (lógica de recompensa)
-        const personalizedMessage = this._buildPersonalizedMessage(campanha.mensagem, client, {
+        const personalizedMessage = this._buildPersonalizedMessage(messageTemplate, client, {
             // ...
         });
         try {
           await this.whatsappService.sendTenantMessage(campanha.tenantId, client.phone, personalizedMessage);
+          const delay = this._getRandomDelay(campanha.minMessageDelaySeconds, campanha.maxMessageDelaySeconds);
           if (delay > 0) await new Promise(resolve => setTimeout(resolve, delay));
         } catch (err) {
           console.error(`[Campanha] Falha ao enviar mensagem para ${client.phone}:`, err.message);

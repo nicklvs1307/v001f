@@ -93,7 +93,7 @@ const startServer = async () => {
       roletaSpinRepository,
       whatsappService
     );
-    // campanhaServiceInstance.initScheduledCampaigns(); // Comentado temporariamente
+    campanhaServiceInstance.initScheduledCampaigns();
   });
 };
 

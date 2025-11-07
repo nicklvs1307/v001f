@@ -26,8 +26,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      mensagem: {
-        type: DataTypes.TEXT,
+      mensagens: {
+        type: DataTypes.JSON,
         allowNull: false,
       },
       rewardType: {
@@ -65,7 +65,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      messageDelaySeconds: {
+      minMessageDelaySeconds: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0,
+      },
+      maxMessageDelaySeconds: {
         type: DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0,

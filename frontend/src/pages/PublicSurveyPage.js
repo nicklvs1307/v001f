@@ -18,6 +18,10 @@ import {
     Select,
     MenuItem,
     FormHelperText, // Adicionado FormHelperText
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    Slide,
 } from '@mui/material';
 import { Star, StarBorder } from '@mui/icons-material';
 import publicSurveyService from '../services/publicSurveyService';
@@ -73,6 +77,10 @@ const PublicSurveyPage = () => {
     );
 };
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
 // Componente de UI que usa o tema fornecido
 const SurveyComponent = ({ survey, tenantId }) => {
     const { pesquisaId } = useParams();
@@ -87,6 +95,8 @@ const SurveyComponent = ({ survey, tenantId }) => {
     const [submitLoading, setSubmitLoading] = useState(false);
     const [submitError, setSubmitError] = useState(null);
     const [atendenteError, setAtendenteError] = useState(null); // Added attendant error state
+    const [gmbModalOpen, setGmbModalOpen] = useState(false);
+    const [gmbLink, setGmbLink] = useState('');
 
     useEffect(() => {
         const initialAnswers = {};
@@ -139,12 +149,23 @@ const SurveyComponent = ({ survey, tenantId }) => {
         }
     };
 
+    const handleNavigation = (response) => {
+        const storedPhone = localStorage.getItem('clientPhone');
+        const surveyState = { respondentSessionId: response.respondentSessionId, answers: Object.values(answers).filter(a => a.perguntaId !== 'attendant-question' && a.valor !== null), tenantId: tenantId, atendenteId: selectedAtendente };
+        sessionStorage.setItem('surveyState', JSON.stringify(surveyState));
+
+        if (storedPhone) {
+            navigate(`/confirmar-cliente/${pesquisaId}`);
+        } else {
+            navigate(`/identificacao-pesquisa/${tenantId}/${pesquisaId}`);
+        }
+    };
+
     const handleSubmit = async () => {
         setSubmitLoading(true);
-        setSubmitError(null); // Clear previous submission errors
-        setAtendenteError(null); // Clear previous attendant errors
+        setSubmitError(null);
+        setAtendenteError(null);
 
-        // Frontend validation for attendant
         if (survey.askForAttendant && !selectedAtendente) {
             setAtendenteError('O nome do atendente é obrigatório.');
             setSubmitLoading(false);
@@ -155,29 +176,26 @@ const SurveyComponent = ({ survey, tenantId }) => {
             const finalAnswers = Object.values(answers).filter(a => a.perguntaId !== 'attendant-question' && a.valor !== null);
             const submissionData = { respostas: finalAnswers, atendenteId: selectedAtendente };
             const response = await publicSurveyService.submitSurveyResponses(pesquisaId, submissionData.respostas, submissionData.atendenteId);
-            
-            const storedPhone = localStorage.getItem('clientPhone');
-            const surveyState = { respondentSessionId: response.respondentSessionId, answers: finalAnswers, tenantId: tenantId, atendenteId: selectedAtendente };
-            sessionStorage.setItem('surveyState', JSON.stringify(surveyState));
 
-            if (storedPhone) {
-                navigate(`/confirmar-cliente/${pesquisaId}`);
+            if (response && response.gmb_link) {
+                setGmbLink(response.gmb_link);
+                setGmbModalOpen(true);
+                // A navegação ocorrerá após o fechamento do modal
             } else {
-                navigate(`/identificacao-pesquisa/${tenantId}/${pesquisaId}`);
+                handleNavigation(response);
             }
         } catch (err) {
-            // Check if it's a validation error from the backend
             if (err.response && err.response.data && err.response.data.errors && Array.isArray(err.response.data.errors)) {
                 const attendantBackendError = err.response.data.errors.find(e => e.msg === 'O nome do atendente é obrigatório.');
                 if (attendantBackendError) {
                     setAtendenteError(attendantBackendError.msg);
                 } else {
-                    // Display other backend validation errors
                     setSubmitError(err.response.data.errors.map(e => e.msg).join(', ') || 'Ocorreu um erro de validação.');
                 }
             } else {
                 setSubmitError(err.message || 'Ocorreu um erro ao enviar suas respostas.');
             }
+        } finally {
             setSubmitLoading(false);
         }
     };
@@ -272,6 +290,28 @@ const SurveyComponent = ({ survey, tenantId }) => {
                     </Box>
                 </Paper>
             </Container>
+            <Dialog
+                open={gmbModalOpen}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={() => {
+                    setGmbModalOpen(false);
+                    // Navega para a próxima página após fechar o modal
+                    handleNavigation({ respondentSessionId: sessionStorage.getItem('surveyState') ? JSON.parse(sessionStorage.getItem('surveyState')).respondentSessionId : null });
+                }}
+                aria-describedby="gmb-review-dialog-slide-description"
+                maxWidth="md"
+                fullWidth
+            >
+                <DialogTitle>{"Deixe sua avaliação no Google!"}</DialogTitle>
+                <DialogContent>
+                    <iframe
+                        src={gmbLink}
+                        style={{ width: '100%', height: '70vh', border: 'none' }}
+                        title="Avaliação Google Meu Negócio"
+                    ></iframe>
+                </DialogContent>
+            </Dialog>
         </Box>
     );
 };

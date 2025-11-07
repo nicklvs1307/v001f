@@ -191,6 +191,36 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
     await transaction.commit();
     console.log("submitSurveyResponses: Transaction committed");
 
+    // Lógica para verificar nota máxima e retornar link do GMB
+    let gmb_link = null;
+    try {
+      const ratingQuestions = survey.perguntas.filter(p => p.type === 'rating_1_5' || p.type === 'rating_0_10');
+      const allMaxScore = ratingQuestions.every(q => {
+        const response = responses.find(r => r.perguntaId === q.id);
+        if (!response) return false; // Se não houver resposta para uma pergunta de nota, não é nota máxima
+
+        if (q.type === 'rating_1_5') {
+          return response.valor === 5;
+        }
+        if (q.type === 'rating_0_10') {
+          return response.valor === 10;
+        }
+        return false;
+      });
+
+      if (ratingQuestions.length > 0 && allMaxScore) {
+        console.log("submitSurveyResponses: All rating questions have max score. Checking for GMB link.");
+        const tenant = await Tenant.findByPk(survey.tenantId, { attributes: ['gmb_link'] });
+        if (tenant && tenant.gmb_link) {
+          gmb_link = tenant.gmb_link;
+          console.log("submitSurveyResponses: GMB link found:", gmb_link);
+        }
+      }
+    } catch (error) {
+      console.error('submitSurveyResponses: Error checking for max score or fetching GMB link:', error);
+      // Não quebrar a execução principal se essa lógica falhar
+    }
+
     // Lógica para notificação de detratores via WhatsApp
     (async () => {
       try {
@@ -222,7 +252,7 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
     })();
 
     console.log("submitSurveyResponses: Submission process finished successfully");
-    return { respondentSessionId: respondentSessionId };
+    return { respondentSessionId: respondentSessionId, gmb_link: gmb_link };
   } catch (error) {
     console.error('submitSurveyResponses: An error occurred. Rolling back transaction.', error);
     if (transaction && !transaction.finished) {

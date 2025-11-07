@@ -64,6 +64,10 @@ module.exports = (sequelize, DataTypes) => {
     reportPhoneNumber: {
       type: DataTypes.STRING,
       allowNull: true
+    },
+    gmb_link: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   }, {
     sequelize,

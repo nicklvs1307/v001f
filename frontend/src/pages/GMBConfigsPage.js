@@ -38,6 +38,7 @@ const ConfigPage = () => {
         restaurantEmail: '',
         restaurantWebsite: '',
         logoUrl: '',
+        gmb_link: '', // Adicionar gmb_link ao estado
       });
       const [loading, setLoading] = useState(true);
       const [saving, setSaving] = useState(false);
@@ -254,21 +255,35 @@ const ConfigPage = () => {
                       margin="normal"
                     />
                     <TextField
-                      label="CNPJ"
-                      name="cnpj"
-                      value={config.cnpj}
+                      label="Link do Google Meu Negócio"
+                      name="gmb_link"
+                      value={config.gmb_link}
                       onChange={handleChange}
                       fullWidth
                       margin="normal"
                     />
-                    <TextField
-                      label="Inscrição Estadual"
-                      name="inscricaoEstadual"
-                      value={config.inscricaoEstadual}
-                      onChange={handleChange}
-                      fullWidth
-                      margin="normal"
-                    />
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          label="CNPJ"
+                          name="cnpj"
+                          value={config.cnpj}
+                          onChange={handleChange}
+                          fullWidth
+                          margin="normal"
+                        />
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          label="Inscrição Estadual"
+                          name="inscricaoEstadual"
+                          value={config.inscricaoEstadual}
+                          onChange={handleChange}
+                          fullWidth
+                          margin="normal"
+                        />
+                      </Grid>
+                    </Grid>
                     <TextField
                       label="Descrição"
                       name="description"

@@ -137,8 +137,8 @@ class ClientRepository {
     });
   }
 
-  async getClientByRespondentSessionId(respondentSessionId) {
-    return Client.findOne({ where: { respondentSessionId } });
+  async getClientByRespondentSessionId(respondentSessionId, options = {}) {
+    return Client.findOne({ where: { respondentSessionId }, ...options });
   }
 
   async createClient(clientData, options = {}) {

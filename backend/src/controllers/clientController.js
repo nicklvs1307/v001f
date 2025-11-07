@@ -48,7 +48,7 @@ exports.publicRegisterClient = asyncHandler(async (req, res) => {
     }
 
     // Tenta encontrar o cliente anônimo criado na etapa anterior
-    let client = await clientRepository.getClientByRespondentSessionId(respondentSessionId);
+    let client = await clientRepository.getClientByRespondentSessionId(respondentSessionId, { transaction });
 
     if (client && client.name.startsWith('Cliente Anônimo')) {
       // Se encontrou o cliente anônimo, atualiza com os dados do formulário

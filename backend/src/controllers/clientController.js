@@ -12,11 +12,6 @@ const xlsx = require("xlsx");
 exports.publicRegisterClient = asyncHandler(async (req, res) => {
   const { name, email, phone, birthDate, respondentSessionId, gender } = req.body;
 
-  // Validações básicas
-  if (!name || !respondentSessionId) {
-    throw new ApiError(400, "Nome e ID da sessão de resposta são obrigatórios.");
-  }
-
   // Tratamento para birthDate
   let parsedBirthDate = null;
   if (birthDate) {

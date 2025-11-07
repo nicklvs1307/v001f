@@ -47,7 +47,7 @@ router.post(
     check("email", "Email do cliente inválido").optional().isEmail(),
     check("phone", "Telefone do cliente é obrigatório").not().isEmpty(),
     birthDateValidator, // Usa o validador reutilizável
-    check("respondentSessionId", "ID da sessão do respondente inválido").optional({ nullable: true }).isUUID(),
+    check("respondentSessionId", "ID da sessão de resposta é obrigatório").not().isEmpty().isUUID(),
   ],
   validate,
   clientController.publicRegisterClient

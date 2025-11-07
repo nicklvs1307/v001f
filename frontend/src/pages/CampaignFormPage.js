@@ -15,8 +15,11 @@ import {
   Radio,
   RadioGroup,
   MenuItem,
-  FormLabel
+  FormLabel,
+  Tabs,
+  Tab
 } from '@mui/material';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import campanhaService from '../services/campanhaService';
 import recompensaService from '../services/recompensaService';
 import roletaService from '../services/roletaService';
@@ -31,11 +34,14 @@ const initialState = {
     roletaId: null,
     messageDelaySeconds: 0,
     rewardType: 'none',
+    startDate: null,
+    endDate: null,
   },
   recompensas: [],
   roletas: [],
   loading: true,
   error: '',
+  activeTab: 0,
 };
 
 function campaignFormReducer(state, action) {
@@ -57,6 +63,11 @@ function campaignFormReducer(state, action) {
         ...state,
         campaign: { ...state.campaign, [action.payload.field]: action.payload.value },
       };
+    case 'DATE_CHANGE':
+      return {
+        ...state,
+        campaign: { ...state.campaign, [action.payload.field]: action.payload.value },
+      };
     case 'REWARD_TYPE_CHANGE':
       const newType = action.payload;
       const newCampaignState = { ...state.campaign, rewardType: newType };
@@ -69,6 +80,8 @@ function campaignFormReducer(state, action) {
         newCampaignState.recompensaId = null;
       }
       return { ...state, campaign: newCampaignState };
+    case 'TAB_CHANGE':
+      return { ...state, activeTab: action.payload };
     default:
       return state;
   }
@@ -78,7 +91,7 @@ const CampaignFormPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [state, dispatch] = useReducer(campaignFormReducer, initialState);
-  const { campaign, recompensas, roletas, loading, error } = state;
+  const { campaign, recompensas, roletas, loading, error, activeTab } = state;
 
   useEffect(() => {
     let isMounted = true;
@@ -130,12 +143,20 @@ const CampaignFormPage = () => {
     dispatch({ type: 'FIELD_CHANGE', payload: { field, value: event.target.value } });
   };
 
+  const handleDateChange = (field, value) => {
+    dispatch({ type: 'DATE_CHANGE', payload: { field, value } });
+  };
+
   const handleSegmentChange = (value) => {
     dispatch({ type: 'FIELD_CHANGE', payload: { field: 'criterioSelecao', value: { type: value } } });
   };
 
   const handleRewardTypeChange = (event) => {
     dispatch({ type: 'REWARD_TYPE_CHANGE', payload: event.target.value });
+  };
+
+  const handleTabChange = (event, newValue) => {
+    dispatch({ type: 'TAB_CHANGE', payload: newValue });
   };
 
   const isFormValid = useCallback(() => {
@@ -170,105 +191,140 @@ const CampaignFormPage = () => {
         {id ? 'Editar Campanha' : 'Nova Campanha'}
       </Typography>
       <form onSubmit={handleSubmit}>
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={7}>
-            <Paper sx={{ p: 3, height: '100%' }}>
-              <Typography variant="h6" gutterBottom>Dados da Campanha</Typography>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Nome da Campanha"
-                value={campaign.nome}
-                onChange={handleFieldChange('nome')}
-                required
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Atraso entre Mensagens (segundos)"
-                type="number"
-                value={campaign.messageDelaySeconds}
-                onChange={handleFieldChange('messageDelaySeconds')}
-                inputProps={{ min: 0 }}
-                helperText="Defina um atraso em segundos entre o envio de cada mensagem de WhatsApp para evitar bloqueios."
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Corpo da Mensagem"
-                value={campaign.mensagem}
-                onChange={handleFieldChange('mensagem')}
-                multiline
-                rows={4}
-                helperText="Variáveis disponíveis: {{nome_cliente}}, {{codigo_premio}}"
-                required
-              />
-            </Paper>
-          </Grid>
+        <Paper sx={{ p: 3, mb: 3 }}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+            <Tabs value={activeTab} onChange={handleTabChange} aria-label="abas do formulário de campanha">
+              <Tab label="Conteúdo" />
+              <Tab label="Público e Recompensa" />
+              <Tab label="Agendamento" />
+            </Tabs>
+          </Box>
 
-          <Grid item xs={12} md={5}>
-            <Paper sx={{ p: 3, height: '100%' }}>
-              <Typography variant="h6" gutterBottom>Recompensa</Typography>
-              <FormControl component="fieldset" fullWidth margin="normal">
-                <FormLabel component="legend">Tipo de Prêmio</FormLabel>
-                <RadioGroup row name="rewardType" value={campaign.rewardType} onChange={handleRewardTypeChange}>
-                  <FormControlLabel value="none" control={<Radio />} label="Nenhum" />
-                  <FormControlLabel value="recompensa" control={<Radio />} label="Recompensa" />
-                  <FormControlLabel value="roleta" control={<Radio />} label="Roleta" />
-                </RadioGroup>
-              </FormControl>
-
-              {campaign.rewardType === 'recompensa' && (
+          {/* Aba de Conteúdo */}
+          {activeTab === 0 && (
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
                 <TextField
-                  select
                   fullWidth
                   margin="normal"
-                  label="Selecione a Recompensa"
-                  name="recompensaId"
-                  value={campaign.recompensaId || ''}
-                  onChange={handleFieldChange('recompensaId')}
+                  label="Nome da Campanha"
+                  value={campaign.nome}
+                  onChange={handleFieldChange('nome')}
                   required
-                >
-                  {recompensas.map(r => <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>)}
-                </TextField>
-              )}
-
-              {campaign.rewardType === 'roleta' && (
+                />
+              </Grid>
+              <Grid item xs={12}>
                 <TextField
-                  select
                   fullWidth
                   margin="normal"
-                  label="Selecione a Roleta"
-                  name="roletaId"
-                  value={campaign.roletaId || ''}
-                  onChange={handleFieldChange('roletaId')}
+                  label="Corpo da Mensagem"
+                  value={campaign.mensagem}
+                  onChange={handleFieldChange('mensagem')}
+                  multiline
+                  rows={6}
+                  helperText="Variáveis: {{nome_cliente}}, {{codigo_premio}}, {{data_validade}}, {{nome_recompensa}}, {{nome_campanha}}"
                   required
-                >
-                  {roletas.map(r => <MenuItem key={r.id} value={r.id}>{r.nome}</MenuItem>)}
-                </TextField>
-              )}
-            </Paper>
-          </Grid>
+                />
+              </Grid>
+            </Grid>
+          )}
 
-          <Grid item xs={12}>
-            <ClientSegmentSelector
-              selectedValue={campaign.criterioSelecao?.type}
-              onChange={handleSegmentChange}
-            />
-          </Grid>
+          {/* Aba de Público e Recompensa */}
+          {activeTab === 1 && (
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <ClientSegmentSelector
+                  selectedValue={campaign.criterioSelecao?.type}
+                  onChange={handleSegmentChange}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl component="fieldset" fullWidth margin="normal">
+                  <FormLabel component="legend">Tipo de Prêmio</FormLabel>
+                  <RadioGroup row name="rewardType" value={campaign.rewardType} onChange={handleRewardTypeChange}>
+                    <FormControlLabel value="none" control={<Radio />} label="Nenhum" />
+                    <FormControlLabel value="recompensa" control={<Radio />} label="Recompensa" />
+                    <FormControlLabel value="roleta" control={<Radio />} label="Roleta" />
+                  </RadioGroup>
+                </FormControl>
 
-          <Grid item xs={12}>
-            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-            <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-              <Button onClick={() => navigate('/dashboard/cupons/campanhas')} sx={{ mr: 2 }}>
-                Cancelar
-              </Button>
-              <Button type="submit" variant="contained" disabled={!isFormValid()}>
-                Salvar Campanha
-              </Button>
-            </Box>
-          </Grid>
-        </Grid>
+                {campaign.rewardType === 'recompensa' && (
+                  <TextField
+                    select
+                    fullWidth
+                    margin="normal"
+                    label="Selecione a Recompensa"
+                    name="recompensaId"
+                    value={campaign.recompensaId || ''}
+                    onChange={handleFieldChange('recompensaId')}
+                    required
+                  >
+                    {recompensas.map(r => <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>)}
+                  </TextField>
+                )}
+
+                {campaign.rewardType === 'roleta' && (
+                  <TextField
+                    select
+                    fullWidth
+                    margin="normal"
+                    label="Selecione a Roleta"
+                    name="roletaId"
+                    value={campaign.roletaId || ''}
+                    onChange={handleFieldChange('roletaId')}
+                    required
+                  >
+                    {roletas.map(r => <MenuItem key={r.id} value={r.id}>{r.nome}</MenuItem>)}
+                  </TextField>
+                )}
+              </Grid>
+            </Grid>
+          )}
+
+          {/* Aba de Agendamento */}
+          {activeTab === 2 && (
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <DateTimePicker
+                  label="Data de Início (Opcional)"
+                  value={campaign.startDate ? new Date(campaign.startDate) : null}
+                  onChange={(newValue) => handleDateChange('startDate', newValue)}
+                  renderInput={(params) => <TextField {...params} fullWidth margin="normal" helperText="Deixe em branco para enviar imediatamente após salvar." />}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                 <DateTimePicker
+                  label="Data de Fim (Opcional)"
+                  value={campaign.endDate ? new Date(campaign.endDate) : null}
+                  onChange={(newValue) => handleDateChange('endDate', newValue)}
+                  renderInput={(params) => <TextField {...params} fullWidth margin="normal" helperText="Data de validade para cupons e roletas." />}
+                />
+              </Grid>
+               <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Atraso entre Mensagens (segundos)"
+                  type="number"
+                  value={campaign.messageDelaySeconds}
+                  onChange={handleFieldChange('messageDelaySeconds')}
+                  inputProps={{ min: 0 }}
+                  helperText="Defina um atraso em segundos entre o envio de cada mensagem de WhatsApp para evitar bloqueios."
+                />
+              </Grid>
+            </Grid>
+          )}
+        </Paper>
+
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+          <Button onClick={() => navigate('/dashboard/cupons/campanhas')} sx={{ mr: 2 }}>
+            Cancelar
+          </Button>
+          <Button type="submit" variant="contained" disabled={!isFormValid()}>
+            {id ? 'Atualizar Campanha' : 'Salvar Campanha'}
+          </Button>
+        </Box>
       </form>
     </Container>
   );

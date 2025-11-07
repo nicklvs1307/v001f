@@ -10,7 +10,16 @@ import {
   Grid,
   Button,
   Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+  IconButton,
+  Tooltip
 } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
 import campanhaService from '../services/campanhaService';
 import AuthContext from '../context/AuthContext';
 
@@ -21,6 +30,8 @@ const CampaignDetailsPage = () => {
   const [campaign, setCampaign] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [testDialogOpen, setTestDialogOpen] = useState(false);
+  const [testPhoneNumber, setTestPhoneNumber] = useState('');
 
   useEffect(() => {
     const fetchCampaignDetails = async () => {
@@ -41,9 +52,32 @@ const CampaignDetailsPage = () => {
     }
   }, [id, user]);
 
+  const handleOpenTestDialog = () => {
+    setTestDialogOpen(true);
+  };
+
+  const handleCloseTestDialog = () => {
+    setTestDialogOpen(false);
+    setTestPhoneNumber('');
+  };
+
+  const handleSendTest = async () => {
+    if (!testPhoneNumber) return;
+    try {
+      await campanhaService.sendTest(id, { testPhoneNumber });
+      // Idealmente, mostrar uma notificação de sucesso
+    } catch (err) {
+      setError(`Falha ao enviar teste da campanha.`);
+      console.error(err);
+    } finally {
+      handleCloseTestDialog();
+    }
+  };
+
   const getStatusChip = (status) => {
     const statusMap = {
       draft: { label: 'Rascunho', color: 'default' },
+      scheduled: { label: 'Agendada', color: 'info' },
       processing: { label: 'Processando', color: 'warning' },
       sent: { label: 'Enviada', color: 'success' },
       failed: { label: 'Falhou', color: 'error' },
@@ -109,6 +143,18 @@ const CampaignDetailsPage = () => {
               <Typography variant="h6">Atraso de Mensagem:</Typography>
               <Typography>{campaign.messageDelaySeconds} segundos</Typography>
             </Grid>
+            {campaign.startDate && (
+              <Grid item xs={12} sm={6}>
+                <Typography variant="h6">Data de Início:</Typography>
+                <Typography>{new Date(campaign.startDate).toLocaleString()}</Typography>
+              </Grid>
+            )}
+            {campaign.endDate && (
+              <Grid item xs={12} sm={6}>
+                <Typography variant="h6">Data de Fim:</Typography>
+                <Typography>{new Date(campaign.endDate).toLocaleString()}</Typography>
+              </Grid>
+            )}
             <Grid item xs={12}>
               <Typography variant="h6">Criada em:</Typography>
               <Typography>{new Date(campaign.createdAt).toLocaleString()}</Typography>
@@ -122,7 +168,12 @@ const CampaignDetailsPage = () => {
           </Grid>
         </Paper>
 
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mt: 3 }}>
+          <Tooltip title="Enviar Teste">
+            <IconButton color="secondary" onClick={handleOpenTestDialog} sx={{ mr: 2 }}>
+              <SendIcon />
+            </IconButton>
+          </Tooltip>
           <Button variant="outlined" onClick={() => navigate('/dashboard/cupons/campanhas')} sx={{ mr: 2 }}>
             Voltar para Campanhas
           </Button>
@@ -131,6 +182,32 @@ const CampaignDetailsPage = () => {
           </Button>
         </Box>
       </Box>
+
+      {/* Test Send Dialog */}
+      <Dialog open={testDialogOpen} onClose={handleCloseTestDialog}>
+        <DialogTitle>Enviar Campanha de Teste</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Digite o número de WhatsApp para o qual deseja enviar a mensagem de teste da campanha "{campaign?.nome}".
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="testPhoneNumber"
+            label="Número do WhatsApp"
+            type="tel"
+            fullWidth
+            variant="standard"
+            value={testPhoneNumber}
+            onChange={(e) => setTestPhoneNumber(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseTestDialog}>Cancelar</Button>
+          <Button onClick={handleSendTest} disabled={!testPhoneNumber}>Enviar Teste</Button>
+        </DialogActions>
+      </Dialog>
+
     </Container>
   );
 };

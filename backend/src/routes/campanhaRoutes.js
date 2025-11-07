@@ -17,4 +17,7 @@ router.delete('/:id', (req, res, next) => campanhaController.delete(req, res, ne
 // Rota específica para iniciar o processamento
 router.post('/:id/process', (req, res, next) => campanhaController.process(req, res, next));
 
+// Rota para enviar um teste da campanha
+router.post('/:id/test', (req, res, next) => campanhaController.sendTest(req, res, next));
+
 module.exports = router;

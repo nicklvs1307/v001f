@@ -1,32 +1,27 @@
 const { Op, Sequelize } = require('sequelize');
 const ApiError = require('../errors/ApiError');
-const { Cupom, RoletaSpin } = require('../../models');
+const { Cupom, RoletaSpin, Recompensa } = require('../../models');
 const crypto = require('crypto');
+const { scheduleCampaign } = require('../jobs/campaignScheduler');
 
 class CampanhaService {
   constructor(campanhaRepository, clientRepository, cupomRepository, roletaSpinRepository, whatsappService) {
     this.campanhaRepository = campanhaRepository;
     this.clientRepository = clientRepository;
     this.cupomRepository = cupomRepository;
-    this.roletaSpinRepository = roletaSpinRepository; // Injetar novo repositório
+    this.roletaSpinRepository = roletaSpinRepository;
     this.whatsappService = whatsappService;
   }
 
-  // Métodos CRUD (sem alterações)
   async create(data) {
-    // Garante que dataValidade seja definida para evitar erros de notNull.
-    // Prioriza endDate se existir, que é a nova abordagem de agendamento.
     if (data.endDate && !data.dataValidade) {
       data.dataValidade = data.endDate;
     }
-
-    // Se ainda assim dataValidade não estiver definida, cria um fallback para 30 dias.
     if (!data.dataValidade) {
       const defaultValidade = new Date();
       defaultValidade.setDate(defaultValidade.getDate() + 30);
       data.dataValidade = defaultValidade;
     }
-
     return this.campanhaRepository.create(data);
   }
 
@@ -35,50 +30,88 @@ class CampanhaService {
   }
 
   async getById(id, tenantId) {
-    return this.campanhaRepository.findById(id, tenantId);
+    return this.campanhaRepository.findById(id, tenantId, { include: ['recompensa'] });
   }
 
   async update(id, data, tenantId) {
-    console.log(`[CampanhaService] Updating campaign ${id} with data:`, data);
     return this.campanhaRepository.update(id, data, tenantId);
   }
 
   async delete(id, tenantId) {
-    // ... (lógica existente)
+    // Implementar a lógica de exclusão, se necessário
   }
 
-  // --- LÓGICA DE PROCESSAMENTO ---
-
   async scheduleProcessing(id, tenantId) {
-    const campanha = await this.campanhaRepository.findById(id, tenantId);
-    if (campanha.status !== 'draft') {
-      throw ApiError.badRequest('Esta campanha já foi ou está sendo processada.');
+    const campanha = await this.getById(id, tenantId);
+    if (['processing', 'sent', 'scheduled'].includes(campanha.status)) {
+      throw ApiError.badRequest('Esta campanha já foi processada ou agendada.');
+    }
+
+    if (campanha.startDate && new Date(campanha.startDate) > new Date()) {
+      scheduleCampaign(campanha);
+      await this.campanhaRepository.update(id, { status: 'scheduled' }, tenantId);
+      return { message: 'Campanha agendada com sucesso.' };
     }
 
     await this.campanhaRepository.update(id, { status: 'processing' }, tenantId);
+    this._processCampaign(id, tenantId).catch(err => {
+      console.error(`[Campanha] Falha crítica no processamento da campanha ${id}:`, err);
+      this.campanhaRepository.update(id, { status: 'failed' }, tenantId);
+    });
 
-    setTimeout(() => {
-      this._processCampaign(id, tenantId).catch(err => {
-        console.error(`[Campanha] Falha crítica no processamento da campanha ${id}:`, err);
-        this.campanhaRepository.update(id, { status: 'failed' }, tenantId);
-      });
-    }, 0);
+    return { message: 'Campanha enviada para processamento imediato.' };
+  }
 
-    return { message: 'Campanha agendada para processamento.' };
+  async sendTest(id, tenantId, testPhoneNumber) {
+    const campanha = await this.getById(id, tenantId);
+    const fakeClient = { name: 'Cliente Teste', phone: testPhoneNumber };
+    let rewardCode = '[CODIGO_TESTE]';
+
+    if (campanha.rewardType === 'ROLETA') {
+      const roletaBaseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      rewardCode = `${roletaBaseUrl}/roleta/spin/[TOKEN_TESTE]`
+    }
+
+    const personalizedMessage = this._buildPersonalizedMessage(campanha.mensagem, fakeClient, {
+      codigo: rewardCode,
+      dataValidade: campanha.dataValidade,
+      nomeRecompensa: campanha.recompensa ? campanha.recompensa.nome : '[RECOMPENSA_TESTE]',
+      nomeCampanha: campanha.nome,
+    });
+
+    await this.whatsappService.sendTenantMessage(tenantId, testPhoneNumber, personalizedMessage);
+    return { message: `Mensagem de teste enviada para ${testPhoneNumber}` };
+  }
+
+  _buildPersonalizedMessage(template, client, rewardData = {}) {
+    let message = template.replace(/{{nome_cliente}}/g, client.name.split(' ')[0]);
+    
+    if (rewardData.codigo) {
+      message = message.replace(/{{codigo_premio}}/g, rewardData.codigo);
+    }
+    if (rewardData.dataValidade) {
+      const formattedDate = new Date(rewardData.dataValidade).toLocaleDateString('pt-BR');
+      message = message.replace(/{{data_validade}}/g, formattedDate);
+    }
+    if (rewardData.nomeRecompensa) {
+      message = message.replace(/{{nome_recompensa}}/g, rewardData.nomeRecompensa);
+    }
+    if (rewardData.nomeCampanha) {
+      message = message.replace(/{{nome_campanha}}/g, rewardData.nomeCampanha);
+    }
+
+    return message;
   }
 
   async _processCampaign(campaignId, tenantId) {
     console.log(`[Campanha] Iniciando processamento para campanha ${campaignId}`);
-    const campanha = await this.campanhaRepository.findById(campaignId, tenantId);
-    campanha.rewardType = campanha.rewardType.toUpperCase();
+    const campanha = await this.getById(campaignId, tenantId);
 
     if (campanha.rewardType === 'RECOMPENSA' && !campanha.recompensaId) {
-      console.error(`[Campanha] Falha no processamento da campanha ${campaignId}: Campanha de recompensa não tem uma recompensa associada.`);
-      await this.campanhaRepository.update(campaignId, { status: 'failed' }, tenantId);
-      return;
+      throw new Error('Campanha de recompensa não tem uma recompensa associada.');
     }
 
-    const clients = await this._selectClients(campanha.criterioSelecao.type, tenantId);
+    const clients = await this._selectClients(campanha.criterioSelecao, tenantId);
     if (!clients || clients.length === 0) {
       console.log(`[Campanha] Nenhum cliente encontrado para os critérios da campanha ${campaignId}.`);
       await this.campanhaRepository.update(campaignId, { status: 'sent' }, tenantId);
@@ -97,33 +130,21 @@ class CampanhaService {
   }
 
   async _selectClients(criterio, tenantId) {
-    switch (criterio) {
-      case 'todos':
-        return this.clientRepository.findByTenant(tenantId);
-      case 'aniversariantes':
-        const currentMonth = new Date().getMonth() + 1;
-        return this.clientRepository.findByBirthMonth(currentMonth, tenantId);
-      case 'novatos':
-        return this.clientRepository.findNovatos(tenantId);
-      case 'fieis':
-        return this.clientRepository.findFieis(tenantId);
-      case 'super_cliente':
-        return this.clientRepository.findSuperClientes(tenantId);
-      case 'inativos':
-        return this.clientRepository.findInativos(tenantId);
-      case 'curiosos':
-        return this.clientRepository.findCuriosos(tenantId);
-      default:
-        return [];
+    switch (criterio.type) {
+      case 'all': return this.clientRepository.findByTenant(tenantId);
+      case 'birthday':
+        const month = criterio.month || new Date().getMonth() + 1;
+        return this.clientRepository.findByBirthMonth(month, tenantId);
+      case 'specific': return this.clientRepository.findByIds(criterio.clientIds, tenantId);
+      // Adicionar outros casos aqui
+      default: return [];
     }
   }
 
   async _generateRewards(campanha, clients) {
-    if (campanha.rewardType === 'RECOMPENSA') {
-      if (!campanha.recompensaId) {
-        return []; 
-      }
-      const cuponsParaCriar = clients.map(client => ({
+    const rewardType = campanha.rewardType.toUpperCase();
+    if (rewardType === 'RECOMPENSA') {
+      return this.cupomRepository.bulkCreate(clients.map(client => ({
         tenantId: campanha.tenantId,
         recompensaId: campanha.recompensaId,
         campanhaId: campanha.id,
@@ -132,37 +153,33 @@ class CampanhaService {
         dataGeracao: new Date(),
         dataValidade: campanha.dataValidade,
         status: 'active',
-      }));
-      return this.cupomRepository.bulkCreate(cuponsParaCriar);
-    } else if (campanha.rewardType === 'ROLETA') {
-      const spinsParaCriar = clients.map(client => ({
+      })));
+    } else if (rewardType === 'ROLETA') {
+      return this.roletaSpinRepository.bulkCreate(clients.map(client => ({
         tenantId: campanha.tenantId,
         roletaId: campanha.roletaId,
         clienteId: client.id,
         campanhaId: campanha.id,
         token: crypto.randomBytes(16).toString('hex'),
         status: 'PENDING',
-        expiresAt: campanha.dataValidade, 
-      }));
-      return this.roletaSpinRepository.bulkCreate(spinsParaCriar);
+        expiresAt: campanha.dataValidade,
+      })));
     }
-
     return [];
   }
 
   async _sendSimpleMessages(campanha, clients) {
-    const delay = campanha.messageDelaySeconds * 1000;
-    console.log(`[Campanha] Enviando ${clients.length} mensagens simples para a campanha ${campanha.id}.`);
+    const delay = (campanha.messageDelaySeconds || 0) * 1000;
     for (const client of clients) {
       if (client && client.phone) {
-        let personalizedMessage = campanha.mensagem.replace(/{{nome_cliente}}/g, client.name.split(' ')[0]);
+        const personalizedMessage = this._buildPersonalizedMessage(campanha.mensagem, client, {
+          nomeCampanha: campanha.nome,
+        });
         try {
           await this.whatsappService.sendTenantMessage(campanha.tenantId, client.phone, personalizedMessage);
-          if (delay > 0) {
-            await new Promise(resolve => setTimeout(resolve, delay));
-          }
+          if (delay > 0) await new Promise(resolve => setTimeout(resolve, delay));
         } catch (err) {
-          console.error(`[Campanha] Falha ao enviar mensagem para ${client.phone} na campanha ${campanha.id}:`, err.message);
+          console.error(`[Campanha] Falha ao enviar mensagem para ${client.phone}:`, err.message);
         }
       }
     }
@@ -170,32 +187,32 @@ class CampanhaService {
 
   async _sendRewardMessages(campanha, clients, rewards) {
     const clientMap = new Map(clients.map(c => [c.id, c]));
-    const delay = campanha.messageDelaySeconds * 1000; // Convertendo segundos para milissegundos
+    const delay = (campanha.messageDelaySeconds || 0) * 1000;
 
     for (const reward of rewards) {
       const client = clientMap.get(reward.clienteId);
       if (client && client.phone) {
-        let personalizedMessage = campanha.mensagem.replace(/{{nome_cliente}}/g, client.name.split(' ')[0]);
+        const rewardType = campanha.rewardType.toUpperCase();
         let rewardCode = '';
-
-        if (campanha.rewardType === 'RECOMPENSA') {
+        if (rewardType === 'RECOMPENSA') {
           rewardCode = reward.codigo;
-          personalizedMessage = personalizedMessage.replace(/{{codigo_premio}}/g, rewardCode);
-        } else if (campanha.rewardType === 'ROLETA') {
-          // Assumindo que a URL base da roleta virá das configurações do tenant ou .env
+        } else if (rewardType === 'ROLETA') {
           const roletaBaseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
           rewardCode = `${roletaBaseUrl}/roleta/spin/${reward.token}`;
-          personalizedMessage = personalizedMessage.replace(/{{codigo_premio}}/g, rewardCode);
         }
+
+        const personalizedMessage = this._buildPersonalizedMessage(campanha.mensagem, client, {
+          codigo: rewardCode,
+          dataValidade: campanha.dataValidade,
+          nomeRecompensa: campanha.recompensa ? campanha.recompensa.nome : '',
+          nomeCampanha: campanha.nome,
+        });
 
         try {
           await this.whatsappService.sendTenantMessage(campanha.tenantId, client.phone, personalizedMessage);
-          if (delay > 0) {
-            await new Promise(resolve => setTimeout(resolve, delay));
-          }
+          if (delay > 0) await new Promise(resolve => setTimeout(resolve, delay));
         } catch (err) {
-          console.error(`[Campanha] Falha ao enviar mensagem para ${client.phone} na campanha ${campanha.id}:`, err.message);
-          // Continuar o processo mesmo que uma mensagem falhe
+          console.error(`[Campanha] Falha ao enviar mensagem para ${client.phone}:`, err.message);
         }
       }
     }

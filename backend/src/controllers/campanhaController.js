@@ -78,6 +78,18 @@ class CampanhaController {
       next(error);
     }
   }
+
+  async sendTest(req, res, next) {
+    try {
+      const { tenantId } = req.user;
+      const { id } = req.params;
+      const { testPhoneNumber } = req.body;
+      const result = await campanhaService.sendTest(id, tenantId, testPhoneNumber);
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = CampanhaController;

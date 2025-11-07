@@ -26,8 +26,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      mensagem: {
-        type: DataTypes.TEXT,
+      mensagens: {
+        type: DataTypes.JSON,
         allowNull: false,
       },
       rewardType: { // Novo campo
@@ -53,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
         comment: 'Ex: { "type": "all" } ou { "type": "specific", "clientIds": [...] } ou { "type": "birthday", "month": 9 }'
       },
       status: {
-        type: DataTypes.ENUM('draft', 'processing', 'sent', 'failed'),
+        type: DataTypes.ENUM('draft', 'processing', 'sent', 'failed', 'scheduled'),
         defaultValue: 'draft',
         allowNull: false,
       },
@@ -65,7 +65,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      messageDelaySeconds: {
+      minMessageDelaySeconds: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0,
+      },
+      maxMessageDelaySeconds: {
         type: DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0,

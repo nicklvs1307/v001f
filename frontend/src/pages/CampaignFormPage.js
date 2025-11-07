@@ -17,8 +17,11 @@ import {
   MenuItem,
   FormLabel,
   Tabs,
-  Tab
+  Tab,
+  IconButton
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import campanhaService from '../services/campanhaService';
 import recompensaService from '../services/recompensaService';
@@ -28,11 +31,12 @@ import ClientSegmentSelector from '../components/campaigns/ClientSegmentSelector
 const initialState = {
   campaign: {
     nome: '',
-    mensagem: '',
+    mensagens: [''], // Agora é um array de strings
     criterioSelecao: { type: 'todos' },
     recompensaId: null,
     roletaId: null,
-    messageDelaySeconds: 0,
+    minMessageDelaySeconds: 0,
+    maxMessageDelaySeconds: 0,
     rewardType: 'none',
     startDate: null,
     endDate: null,
@@ -67,6 +71,24 @@ function campaignFormReducer(state, action) {
       return {
         ...state,
         campaign: { ...state.campaign, [action.payload.field]: action.payload.value },
+      };
+    case 'MESSAGE_CHANGE':
+      const newMessages = [...state.campaign.mensagens];
+      newMessages[action.payload.index] = action.payload.value;
+      return {
+        ...state,
+        campaign: { ...state.campaign, mensagens: newMessages },
+      };
+    case 'ADD_MESSAGE':
+      return {
+        ...state,
+        campaign: { ...state.campaign, mensagens: [...state.campaign.mensagens, ''] },
+      };
+    case 'REMOVE_MESSAGE':
+      const filteredMessages = state.campaign.mensagens.filter((_, i) => i !== action.payload);
+      return {
+        ...state,
+        campaign: { ...state.campaign, mensagens: filteredMessages.length > 0 ? filteredMessages : [''] },
       };
     case 'REWARD_TYPE_CHANGE':
       const newType = action.payload;
@@ -107,6 +129,13 @@ const CampaignFormPage = () => {
         if (id) {
           const response = await campanhaService.getById(id);
           campaignData = response.data;
+          // Garantir que mensagens seja um array
+          if (typeof campaignData.mensagens === 'string') {
+            campaignData.mensagens = [campaignData.mensagens];
+          } else if (!Array.isArray(campaignData.mensagens) || campaignData.mensagens.length === 0) {
+            campaignData.mensagens = [''];
+          }
+
           if (campaignData.recompensaId) {
             campaignData.rewardType = 'recompensa';
           } else if (campaignData.roletaId) {
@@ -147,6 +176,18 @@ const CampaignFormPage = () => {
     dispatch({ type: 'DATE_CHANGE', payload: { field, value } });
   };
 
+  const handleMessageChange = (index) => (event) => {
+    dispatch({ type: 'MESSAGE_CHANGE', payload: { index, value: event.target.value } });
+  };
+
+  const handleAddMessage = () => {
+    dispatch({ type: 'ADD_MESSAGE' });
+  };
+
+  const handleRemoveMessage = (index) => () => {
+    dispatch({ type: 'REMOVE_MESSAGE', payload: index });
+  };
+
   const handleSegmentChange = (value) => {
     dispatch({ type: 'FIELD_CHANGE', payload: { field: 'criterioSelecao', value: { type: value } } });
   };
@@ -160,13 +201,13 @@ const CampaignFormPage = () => {
   };
 
   const isFormValid = useCallback(() => {
-    return campaign.nome && campaign.mensagem && (campaign.rewardType === 'none' || (campaign.rewardType === 'recompensa' && campaign.recompensaId) || (campaign.rewardType === 'roleta' && campaign.roletaId));
+    return campaign.nome && campaign.mensagens.every(msg => msg.trim() !== '') && (campaign.rewardType === 'none' || (campaign.rewardType === 'recompensa' && campaign.recompensaId) || (campaign.rewardType === 'roleta' && campaign.roletaId));
   }, [campaign]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isFormValid()) {
-        dispatch({ type: 'FETCH_ERROR', payload: 'Preencha todos os campos obrigatórios.' });
+        dispatch({ type: 'FETCH_ERROR', payload: 'Preencha todos os campos obrigatórios e forneça pelo menos uma variação de mensagem.' });
         return;
     }
     try {
@@ -214,17 +255,34 @@ const CampaignFormPage = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  margin="normal"
-                  label="Corpo da Mensagem"
-                  value={campaign.mensagem}
-                  onChange={handleFieldChange('mensagem')}
-                  multiline
-                  rows={6}
-                  helperText="Variáveis: {{nome_cliente}}, {{codigo_premio}}, {{data_validade}}, {{nome_recompensa}}, {{nome_campanha}}"
-                  required
-                />
+                <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>Variações de Mensagem</Typography>
+                {campaign.mensagens.map((msg, index) => (
+                  <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <TextField
+                      fullWidth
+                      label={`Mensagem ${index + 1}`}
+                      value={msg}
+                      onChange={handleMessageChange(index)}
+                      multiline
+                      rows={4}
+                      helperText="Variáveis: {{nome_cliente}}, {{codigo_premio}}, {{data_validade}}, {{nome_recompensa}}, {{nome_campanha}}"
+                      required
+                    />
+                    {campaign.mensagens.length > 1 && (
+                      <IconButton onClick={handleRemoveMessage(index)} color="error" sx={{ ml: 1 }}>
+                        <RemoveIcon />
+                      </IconButton>
+                    )}
+                  </Box>
+                ))}
+                <Button
+                  startIcon={<AddIcon />}
+                  onClick={handleAddMessage}
+                  variant="outlined"
+                  sx={{ mt: 1 }}
+                >
+                  Adicionar Variação de Mensagem
+                </Button>
               </Grid>
             </Grid>
           )}
@@ -300,16 +358,28 @@ const CampaignFormPage = () => {
                   renderInput={(params) => <TextField {...params} fullWidth margin="normal" helperText="Data de validade para cupons e roletas." />}
                 />
               </Grid>
-               <Grid item xs={12}>
+               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
                   margin="normal"
-                  label="Atraso entre Mensagens (segundos)"
+                  label="Atraso Mínimo entre Mensagens (segundos)"
                   type="number"
-                  value={campaign.messageDelaySeconds}
-                  onChange={handleFieldChange('messageDelaySeconds')}
+                  value={campaign.minMessageDelaySeconds}
+                  onChange={handleFieldChange('minMessageDelaySeconds')}
                   inputProps={{ min: 0 }}
-                  helperText="Defina um atraso em segundos entre o envio de cada mensagem de WhatsApp para evitar bloqueios."
+                  helperText="Atraso mínimo em segundos entre o envio de cada mensagem."
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Atraso Máximo entre Mensagens (segundos)"
+                  type="number"
+                  value={campaign.maxMessageDelaySeconds}
+                  onChange={handleFieldChange('maxMessageDelaySeconds')}
+                  inputProps={{ min: 0 }}
+                  helperText="Atraso máximo em segundos entre o envio de cada mensagem."
                 />
               </Grid>
             </Grid>

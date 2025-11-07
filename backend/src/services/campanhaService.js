@@ -72,7 +72,8 @@ class CampanhaService {
       rewardCode = `${roletaBaseUrl}/roleta/spin/[TOKEN_TESTE]`
     }
 
-    const personalizedMessage = this._buildPersonalizedMessage(campanha.mensagem, fakeClient, {
+    const selectedMessage = this._getRandomMessage(campanha.mensagens);
+    const personalizedMessage = this._buildPersonalizedMessage(selectedMessage, fakeClient, {
       codigo: rewardCode,
       dataValidade: campanha.dataValidade,
       nomeRecompensa: campanha.recompensa ? campanha.recompensa.nome : '[RECOMPENSA_TESTE]',
@@ -81,6 +82,18 @@ class CampanhaService {
 
     await this.whatsappService.sendTenantMessage(tenantId, testPhoneNumber, personalizedMessage);
     return { message: `Mensagem de teste enviada para ${testPhoneNumber}` };
+  }
+
+  _getRandomDelay(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  _getRandomMessage(messages) {
+    if (!messages || messages.length === 0) {
+      return '';
+    }
+    const randomIndex = Math.floor(Math.random() * messages.length);
+    return messages[randomIndex];
   }
 
   _buildPersonalizedMessage(template, client, rewardData = {}) {
@@ -169,15 +182,16 @@ class CampanhaService {
   }
 
   async _sendSimpleMessages(campanha, clients) {
-    const delay = (campanha.messageDelaySeconds || 0) * 1000;
     for (const client of clients) {
       if (client && client.phone) {
-        const personalizedMessage = this._buildPersonalizedMessage(campanha.mensagem, client, {
+        const selectedMessage = this._getRandomMessage(campanha.mensagens);
+        const personalizedMessage = this._buildPersonalizedMessage(selectedMessage, client, {
           nomeCampanha: campanha.nome,
         });
         try {
           await this.whatsappService.sendTenantMessage(campanha.tenantId, client.phone, personalizedMessage);
-          if (delay > 0) await new Promise(resolve => setTimeout(resolve, delay));
+          const delay = this._getRandomDelay(campanha.minMessageDelaySeconds || 0, campanha.maxMessageDelaySeconds || 0);
+          if (delay > 0) await new Promise(resolve => setTimeout(resolve, delay * 1000));
         } catch (err) {
           console.error(`[Campanha] Falha ao enviar mensagem para ${client.phone}:`, err.message);
         }
@@ -187,7 +201,6 @@ class CampanhaService {
 
   async _sendRewardMessages(campanha, clients, rewards) {
     const clientMap = new Map(clients.map(c => [c.id, c]));
-    const delay = (campanha.messageDelaySeconds || 0) * 1000;
 
     for (const reward of rewards) {
       const client = clientMap.get(reward.clienteId);
@@ -201,7 +214,8 @@ class CampanhaService {
           rewardCode = `${roletaBaseUrl}/roleta/spin/${reward.token}`;
         }
 
-        const personalizedMessage = this._buildPersonalizedMessage(campanha.mensagem, client, {
+        const selectedMessage = this._getRandomMessage(campanha.mensagens);
+        const personalizedMessage = this._buildPersonalizedMessage(selectedMessage, client, {
           codigo: rewardCode,
           dataValidade: campanha.dataValidade,
           nomeRecompensa: campanha.recompensa ? campanha.recompensa.nome : '',
@@ -210,7 +224,8 @@ class CampanhaService {
 
         try {
           await this.whatsappService.sendTenantMessage(campanha.tenantId, client.phone, personalizedMessage);
-          if (delay > 0) await new Promise(resolve => setTimeout(resolve, delay));
+          const delay = this._getRandomDelay(campanha.minMessageDelaySeconds || 0, campanha.maxMessageDelaySeconds || 0);
+          if (delay > 0) await new Promise(resolve => setTimeout(resolve, delay * 1000));
         } catch (err) {
           console.error(`[Campanha] Falha ao enviar mensagem para ${client.phone}:`, err.message);
         }

@@ -48,11 +48,12 @@ const NuvemDePalavrasPage = () => {
 
     const wordCloudOptions = useMemo(() => ({
         colors: [theme.palette.primary.main, theme.palette.dark.main],
-        rotations: 1,
-        rotationAngles: [0, 0],
+        rotations: 2,
+        rotationAngles: [0, 90],
         fontWeight: 'bold',
-        padding: 2,
-        fontSizes: [20, 120],
+        padding: 0,
+        fontSizes: [10, 80],
+        enableOptimizations: true,
     }), [theme]);
 
     return (

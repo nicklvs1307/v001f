@@ -34,14 +34,14 @@ exports.publicRegisterClient = asyncHandler(async (req, res) => {
 
     // Verificar unicidade de Email e Telefone antes de qualquer outra coisa
     if (email) {
-      const existingClientByEmail = await clientRepository.findClientByEmail(email);
+      const existingClientByEmail = await clientRepository.findClientByEmail(email, { transaction });
       if (existingClientByEmail) {
         throw new ApiError(409, "Email já existe.");
       }
     }
 
     if (phone) {
-      const existingClientByPhone = await clientRepository.findClientByPhone(phone, tenantId);
+      const existingClientByPhone = await clientRepository.findClientByPhone(phone, tenantId, { transaction });
       if (existingClientByPhone) {
         throw new ApiError(409, "WhatsApp já existe.");
       }

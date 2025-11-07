@@ -165,12 +165,12 @@ class ClientRepository {
     return Client.destroy({ where: { id, tenantId } });
   }
 
-  async findClientByEmail(email) {
-    return Client.findOne({ where: { email } });
+  async findClientByEmail(email, options = {}) {
+    return Client.findOne({ where: { email }, ...options });
   }
 
-  async findClientByPhone(phone, tenantId) {
-    return Client.findOne({ where: { phone, tenantId } });
+  async findClientByPhone(phone, tenantId, options = {}) {
+    return Client.findOne({ where: { phone, tenantId }, ...options });
   }
 
   async findAndCountAllByTenant(tenantId, page, limit, orderBy, order, filter) {

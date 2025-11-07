@@ -10,6 +10,10 @@ class CampanhaRepository {
     return Campanha.findAll({ where: { tenantId } });
   }
 
+  async findAllWhere(whereClause) {
+    return Campanha.findAll({ where: whereClause });
+  }
+
   async findById(id, tenantId) {
     const campanha = await Campanha.findOne({ where: { id, tenantId } });
     if (!campanha) {

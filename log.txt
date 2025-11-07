@@ -1,9 +1,24 @@
-$ npx sequelize-cli db:migrate
-
-Sequelize CLI [Node: 18.20.8, CLI: 6.6.3, ORM: 6.37.7]
-
-Loaded configuration file "src/config/sequelize-config.js".
-Using environment "production".
-== 20251107181154-alter-campanhas-for-randomization: migrating =======
-
-ERROR: column "mensagem" cannot be cast automatically to type json
+Postgres is up - executing command
+Server.js is being executed!
+API_KEY_ENCRYPTION_KEY is not defined in .env. Please set it for security.
+Conexão com o banco de dados estabelecida com sucesso (Sequelize).
+Server is running on port 5000
+Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
+Agendador de lembrete de cupons iniciado. A tarefa será executada todos os dias às 9:00.
+Agendador de expiração de cupons iniciado. A tarefa será executada todo dia à meia-noite.
+[CampanhaService] Inicializando campanhas agendadas...
+Unhandled Rejection at: Promise {
+  <rejected> TypeError: this.campanhaRepository.findAllWhere is not a function
+      at CampanhaService.initScheduledCampaigns (/usr/src/app/src/services/campanhaService.js:16:62)
+      at Server.<anonymous> (/usr/src/app/src/server.js:96:29)
+      at Object.onceWrapper (node:events:631:28)
+      at Server.emit (node:events:529:35)
+      at emitListeningNT (node:net:1851:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:81:21)
+} reason: TypeError: this.campanhaRepository.findAllWhere is not a function
+    at CampanhaService.initScheduledCampaigns (/usr/src/app/src/services/campanhaService.js:16:62)
+    at Server.<anonymous> (/usr/src/app/src/server.js:96:29)
+    at Object.onceWrapper (node:events:631:28)
+    at Server.emit (node:events:529:35)
+    at emitListeningNT (node:net:1851:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:81:21)

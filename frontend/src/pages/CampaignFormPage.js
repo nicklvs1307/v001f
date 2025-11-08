@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useCallback, useState } from 'react';
+import React, { useEffect, useReducer, useCallback, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   TextField,
@@ -19,11 +19,17 @@ import {
   Tabs,
   Tab,
   IconButton,
-  styled
+  styled,
+  ToggleButtonGroup,
+  ToggleButton,
+  Tooltip
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import FormatBoldIcon from '@mui/icons-material/FormatBold';
+import FormatItalicIcon from '@mui/icons-material/FormatItalic';
+import FormatStrikethroughIcon from '@mui/icons-material/FormatStrikethrough';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import campanhaService from '../services/campanhaService';
 import recompensaService from '../services/recompensaService';
@@ -144,6 +150,48 @@ const CampaignFormPage = () => {
   const [state, dispatch] = useReducer(campaignFormReducer, initialState);
   const { campaign, recompensas, roletas, loading, error, activeTab, mediaPreview } = state;
   const [activeMessageTab, setActiveMessageTab] = useState(0);
+  const textInputRef = useRef(null);
+
+  const handleFormat = (formatChar) => {
+    const input = textInputRef.current;
+    if (!input) return;
+
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    const currentText = campaign.mensagens[activeMessageTab];
+    
+    if (start === end) return; // Não faz nada se nenhum texto for selecionado
+
+    const newText = 
+      currentText.substring(0, start) +
+      formatChar + currentText.substring(start, end) + formatChar +
+      currentText.substring(end);
+
+    dispatch({ type: 'MESSAGE_CHANGE', payload: { index: activeMessageTab, value: newText } });
+  };
+
+  const handleInsertVariable = (variable) => {
+    const input = textInputRef.current;
+    if (!input) return;
+
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    const currentText = campaign.mensagens[activeMessageTab] || '';
+
+    const newText = 
+      currentText.substring(0, start) +
+      variable +
+      currentText.substring(end);
+
+    dispatch({ type: 'MESSAGE_CHANGE', payload: { index: activeMessageTab, value: newText } });
+    
+    // Foca no input após a inserção
+    setTimeout(() => {
+      input.focus();
+      const newCursorPosition = start + variable.length;
+      input.setSelectionRange(newCursorPosition, newCursorPosition);
+    }, 0);
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -259,7 +307,8 @@ const CampaignFormPage = () => {
     try {
       if (id) {
         await campanhaService.update(id, formData);
-      } else {
+      }
+      else {
         await campanhaService.create(formData);
       }
       navigate('/dashboard/cupons/campanhas');
@@ -313,6 +362,34 @@ const CampaignFormPage = () => {
                 </Box>
 
                 <Box sx={{ pt: 2 }}>
+                  <Paper variant="outlined" sx={{ p: 1, mb: 1, display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
+                    <Typography variant="subtitle2" sx={{ mr: 1 }}>Formatar:</Typography>
+                    <ToggleButtonGroup size="small" aria-label="text formatting">
+                      <Tooltip title="Negrito (*texto*)">
+                        <ToggleButton value="bold" aria-label="bold" onClick={() => handleFormat('*')}>
+                          <FormatBoldIcon />
+                        </ToggleButton>
+                      </Tooltip>
+                      <Tooltip title="Itálico (_texto_)">
+                        <ToggleButton value="italic" aria-label="italic" onClick={() => handleFormat('_')}>
+                          <FormatItalicIcon />
+                        </ToggleButton>
+                      </Tooltip>
+                      <Tooltip title="Riscado (~texto~)">
+                        <ToggleButton value="strikethrough" aria-label="strikethrough" onClick={() => handleFormat('~')}>
+                          <FormatStrikethroughIcon />
+                        </ToggleButton>
+                      </Tooltip>
+                    </ToggleButtonGroup>
+                  </Paper>
+                   <Paper variant="outlined" sx={{ p: 1, mb: 1, display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
+                    <Typography variant="subtitle2" sx={{ mr: 1 }}>Variáveis:</Typography>
+                    <Button size="small" variant="outlined" onClick={() => handleInsertVariable('{{nome_cliente}}')}>Nome</Button>
+                    <Button size="small" variant="outlined" onClick={() => handleInsertVariable('{{codigo_premio}}')}>Prêmio</Button>
+                    <Button size="small" variant="outlined" onClick={() => handleInsertVariable('{{data_validade}}')}>Validade</Button>
+                    <Button size="small" variant="outlined" onClick={() => handleInsertVariable('{{nome_recompensa}}')}>Recompensa</Button>
+                    <Button size="small" variant="outlined" onClick={() => handleInsertVariable('{{nome_campanha}}')}>Campanha</Button>
+                  </Paper>
                   <TextField
                     fullWidth
                     label={`Texto da Mensagem ${activeMessageTab + 1}`}
@@ -320,8 +397,8 @@ const CampaignFormPage = () => {
                     onChange={handleMessageChange(activeMessageTab)}
                     multiline
                     rows={8}
-                    helperText="Variáveis: {{nome_cliente}}, {{codigo_premio}}, {{data_validade}}, {{nome_recompensa}}, {{nome_campanha}}"
                     required
+                    inputRef={textInputRef}
                   />
                   {campaign.mensagens.length > 1 && (
                     <Button onClick={handleRemoveMessage(activeMessageTab)} color="error" startIcon={<RemoveIcon />} sx={{ mt: 1 }}>

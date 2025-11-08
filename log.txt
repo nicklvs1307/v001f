@@ -5,9 +5,11 @@ POST
 Código de status
 500 Internal Server Error
 Endereço remoto
+95.217.16.187:443
+
 {
     "status": "error",
     "code": "HTTP_500",
-    "message": "notNull Violation: Campanha.dataValidade cannot be null",
-    "details": "SequelizeValidationError: notNull Violation: Campanha.dataValidade cannot be null\n    at InstanceValidator._validate (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:50:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async InstanceValidator._validateAndRunHooks (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:60:7)\n    at async InstanceValidator.validate (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:54:12)\n    at async Campanha.save (/usr/src/app/node_modules/sequelize/lib/model.js:2426:7)\n    at async Campanha.create (/usr/src/app/node_modules/sequelize/lib/model.js:1362:12)\n    at async CampanhaController.create (/usr/src/app/src/controllers/campanhaController.js:55:24)"
+    "message": "invalid input syntax for type timestamp with time zone: \"Invalid date\"",
+    "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.insert (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:308:21)\n    at async Campanha.save (/usr/src/app/node_modules/sequelize/lib/model.js:2490:35)\n    at async Campanha.create (/usr/src/app/node_modules/sequelize/lib/model.js:1362:12)\n    at async CampanhaController.create (/usr/src/app/src/controllers/campanhaController.js:55:24)"
 }

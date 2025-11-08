@@ -14,7 +14,9 @@ const RelatorioDiario = () => {
     const [selectedDate, setSelectedDate] = useState(new Date()); 
     const [reportData, setReportData] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { tenantId } = user || {};
+    const { user } = useAuth();
+    const tenantId = user?.tenantId;
+    const location = useLocation();
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);

@@ -1,12 +1,35 @@
-$ npx sequelize-cli db:migrate
-
-Sequelize CLI [Node: 18.20.8, CLI: 6.6.3, ORM: 6.37.7]
-
-Loaded configuration file "src/config/sequelize-config.js".
-Using environment "production".
-== 20251108100000-fix-client-unique-constraints: migrating =======
-Error in migration up: TypeError: queryInterface.createIndex is not a function
-    at Object.up (/usr/src/app/migrations/20251108100000-fix-client-unique-constraints.js:22:28)
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-
-ERROR: queryInterface.createIndex is not a function
+ => ERROR [build 6/6] RUN npm run build                                                      175.7s
+------
+ > [build 6/6] RUN npm run build:
+0.805
+0.805 > frontend@0.1.0 build
+0.805 > react-scripts build
+0.805
+4.598 Creating an optimized production build...
+175.4 Failed to compile.
+175.4
+175.4 [eslint]
+175.4 src/pages/Relatorios/Diario.js
+175.4   Line 17:26:  'user' is not defined         no-undef
+175.4   Line 20:49:  Unexpected use of 'location'  no-restricted-globals
+175.4   Line 25:9:   Unexpected use of 'location'  no-restricted-globals
+175.4
+175.4 src/pages/Relatorios/Mensal.js
+175.4   Line 16:26:  'user' is not defined  no-undef
+175.4
+175.4 src/pages/Relatorios/Semanal.js
+175.4   Line 16:26:  'user' is not defined  no-undef
+175.4
+175.4 Search for the keywords to learn more about each error.
+175.4
+175.4
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

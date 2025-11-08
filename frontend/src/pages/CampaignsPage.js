@@ -9,7 +9,6 @@ import {
   Card,
   CardContent,
   CardActions,
-  CardActionArea,
   Chip,
   IconButton,
   Dialog,
@@ -19,7 +18,8 @@ import {
   DialogTitle,
   Skeleton,
   Tooltip,
-  TextField
+  TextField,
+  Container
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -31,6 +31,15 @@ import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 import campanhaService from '../services/campanhaService';
 import AuthContext from '../context/AuthContext';
+
+const statusStyles = {
+  draft: { label: 'Rascunho', color: 'grey.500' },
+  scheduled: { label: 'Agendada', color: 'info.main' },
+  processing: { label: 'Processando', color: 'warning.main' },
+  sent: { label: 'Enviada', color: 'success.main' },
+  failed: { label: 'Falhou', color: 'error.main' },
+  default: { label: 'Desconhecido', color: 'grey.300' },
+};
 
 const CampaignsPage = () => {
   const [campaigns, setCampaigns] = useState([]);
@@ -52,7 +61,6 @@ const CampaignsPage = () => {
         setCampaigns(response.data);
       } catch (err) {
         setError('Falha ao carregar campanhas. Tente novamente mais tarde.');
-        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -93,7 +101,6 @@ const CampaignsPage = () => {
       setCampaigns(campaigns.map(c => c.id === campaignToAction.id ? { ...c, status: 'processing' } : c));
     } catch (err) {
       setError(`Falha ao iniciar a campanha "${campaignToAction.nome}".`);
-      console.error(err);
     } finally {
       handleCloseDialogs();
     }
@@ -106,7 +113,6 @@ const CampaignsPage = () => {
       setCampaigns(campaigns.filter(c => c.id !== campaignToAction.id));
     } catch (err) {
       setError(`Falha ao deletar a campanha "${campaignToAction.nome}".`);
-      console.error(err);
     } finally {
       handleCloseDialogs();
     }
@@ -116,50 +122,41 @@ const CampaignsPage = () => {
     if (!campaignToAction || !testPhoneNumber) return;
     try {
       await campanhaService.sendTest(campaignToAction.id, { testPhoneNumber });
-      // Idealmente, mostrar uma notificação de sucesso
     } catch (err) {
       setError(`Falha ao enviar teste da campanha "${campaignToAction.nome}".`);
-      console.error(err);
     } finally {
       handleCloseDialogs();
     }
   };
 
-  const getStatusChip = (status) => {
-    const statusMap = {
-      draft: { label: 'Rascunho', color: 'default' },
-      scheduled: { label: 'Agendada', color: 'info' },
-      processing: { label: 'Processando', color: 'warning' },
-      sent: { label: 'Enviada', color: 'success' },
-      failed: { label: 'Falhou', color: 'error' },
-    };
-    const { label, color } = statusMap[status] || { label: 'Desconhecido', color: 'default' };
-    return <Chip label={label} color={color} size="small" />;
-  };
+  const getStatusInfo = (status) => statusStyles[status] || statusStyles.default;
 
-  const getCampaignType = (criterio) => {
-    const type = criterio?.type || 'all'; // Default to 'all' if not specified
+  const getCampaignTypeIcon = (criterio) => {
+    const type = criterio?.type || 'all';
     if (type === 'birthday') {
-      return <Box sx={{ display: 'flex', alignItems: 'center' }}><CakeIcon sx={{ mr: 1, color: 'secondary.main' }} /> Aniversariantes</Box>;
+      return <CakeIcon sx={{ mr: 1, color: 'secondary.main' }} />;
     }
-    return <Box sx={{ display: 'flex', alignItems: 'center' }}><GroupIcon sx={{ mr: 1, color: 'primary.main' }} /> Disparo em Massa</Box>;
+    return <GroupIcon sx={{ mr: 1, color: 'primary.main' }} />;
   };
 
   const renderSkeletons = () => (
     <Grid container spacing={3}>
       {Array.from(new Array(3)).map((_, index) => (
         <Grid item xs={12} sm={6} md={4} key={index}>
-          <Card>
-            <CardContent>
-              <Skeleton variant="text" width="60%" />
-              <Skeleton variant="text" width="40%" />
-              <Skeleton variant="rectangular" height={20} width="30%" sx={{ mt: 1 }} />
-            </CardContent>
-            <CardActions sx={{ justifyContent: 'flex-end' }}>
-              <Skeleton variant="circular" width={40} height={40} />
-              <Skeleton variant="circular" width={40} height={40} />
-              <Skeleton variant="circular" width={40} height={40} />
-            </CardActions>
+          <Card sx={{ display: 'flex' }}>
+            <Box sx={{ width: 5, backgroundColor: 'grey.300' }} />
+            <Box sx={{ flex: 1 }}>
+              <CardContent>
+                <Skeleton variant="text" width="80%" height={30} />
+                <Skeleton variant="text" width="50%" />
+                <Skeleton variant="text" width="60%" sx={{ mt: 1 }} />
+              </CardContent>
+              <CardActions sx={{ justifyContent: 'flex-end' }}>
+                <Skeleton variant="circular" width={32} height={32} />
+                <Skeleton variant="circular" width={32} height={32} />
+                <Skeleton variant="circular" width={32} height={32} />
+              </CardActions>
+            </Box>
           </Card>
         </Grid>
       ))}
@@ -167,21 +164,21 @@ const CampaignsPage = () => {
   );
 
   const renderEmptyState = () => (
-    <Box sx={{ textAlign: 'center', py: 10 }}>
-      <Typography variant="h6" color="text.secondary">Nenhuma campanha encontrada.</Typography>
+    <Paper sx={{ textAlign: 'center', py: 10, backgroundColor: 'grey.50' }}>
+      <Typography variant="h5" color="text.secondary">Nenhuma campanha criada ainda.</Typography>
+      <Typography color="text.secondary" sx={{ mt: 1, mb: 2 }}>Comece a engajar seus clientes agora mesmo.</Typography>
       <Button
         variant="contained"
         startIcon={<AddIcon />}
-        sx={{ mt: 2 }}
         onClick={() => navigate('/dashboard/cupons/campanhas/nova')}
       >
-        Criar Nova Campanha
+        Criar Primeira Campanha
       </Button>
-    </Box>
+    </Paper>
   );
 
   return (
-    <Box>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
         <Typography variant="h4" component="h1">Campanhas de WhatsApp</Typography>
         <Button
@@ -198,129 +195,100 @@ const CampaignsPage = () => {
       {loading ? renderSkeletons() : (
         campaigns.length > 0 ? (
           <Grid container spacing={3}>
-            {campaigns.map((campaign) => (
-              <Grid item xs={12} sm={6} md={4} key={campaign.id}>
-                <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                  <CardActionArea onClick={() => navigate(`/dashboard/cupons/campanhas/detalhes/${campaign.id}`)} sx={{ flexGrow: 1 }}>
-                    <CardContent>
-                      <Typography variant="h6" component="div" noWrap title={campaign.nome}>
-                        {campaign.nome}
-                      </Typography>
-                      <Box sx={{ my: 1 }}>
-                        {getCampaignType(campaign.criterioSelecao)}
-                      </Box>
-                      {getStatusChip(campaign.status)}
-                      <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>
-                        Criada em: {new Date(campaign.createdAt).toLocaleDateString()}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                  <CardActions sx={{ justifyContent: 'flex-end', pt: 0 }}>
-                     <Tooltip title="Enviar Teste">
-                      <IconButton
-                        color="secondary"
-                        onClick={() => handleOpenTestDialog(campaign)}
-                      >
-                        <SendIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Iniciar Envio">
-                      <span>
-                        <IconButton
-                          color="primary"
-                          onClick={() => handleOpenProcessDialog(campaign)}
-                          disabled={!['draft', 'failed'].includes(campaign.status)}
-                        >
-                          <PlayArrowIcon />
-                        </IconButton>
-                      </span>
-                    </Tooltip>
-                    <Tooltip title="Editar Campanha">
-                      <IconButton
-                        color="info"
-                        onClick={() => navigate(`/dashboard/cupons/campanhas/editar/${campaign.id}`)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Deletar Campanha">
-                      <IconButton
-                        color="error"
-                        onClick={() => handleOpenDeleteDialog(campaign)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
+            {campaigns.map((campaign) => {
+              const statusInfo = getStatusInfo(campaign.status);
+              return (
+                <Grid item xs={12} sm={6} md={4} key={campaign.id}>
+                  <Card
+                    sx={{
+                      display: 'flex',
+                      height: '100%',
+                      transition: 'box-shadow 0.3s, transform 0.3s',
+                      '&:hover': {
+                        boxShadow: 6,
+                        transform: 'translateY(-4px)',
+                      },
+                    }}
+                  >
+                    <Box sx={{ width: 5, backgroundColor: statusInfo.color, flexShrink: 0 }} />
+                    <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                      <CardContent sx={{ flexGrow: 1, cursor: 'pointer' }} onClick={() => navigate(`/dashboard/cupons/campanhas/detalhes/${campaign.id}`)}>
+                        <Typography variant="h6" component="div" noWrap title={campaign.nome}>
+                          {campaign.nome}
+                        </Typography>
+                        <Chip label={statusInfo.label} size="small" sx={{ backgroundColor: statusInfo.color, color: '#fff', my: 1 }} />
+                        <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary', mt: 1 }}>
+                          {getCampaignTypeIcon(campaign.criterioSelecao)}
+                          <Typography variant="body2">
+                            {campaign.criterioSelecao?.type === 'birthday' ? 'Aniversariantes' : 'Disparo em Massa'}
+                          </Typography>
+                        </Box>
+                        <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 1.5 }}>
+                          Criada em: {new Date(campaign.createdAt).toLocaleDateString()}
+                        </Typography>
+                      </CardContent>
+                      <CardActions sx={{ justifyContent: 'flex-end', pt: 0 }}>
+                        <Tooltip title="Enviar Teste">
+                          <IconButton size="small" color="secondary" onClick={() => handleOpenTestDialog(campaign)}>
+                            <SendIcon />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Iniciar Envio">
+                          <span>
+                            <IconButton size="small" color="primary" onClick={() => handleOpenProcessDialog(campaign)} disabled={!['draft', 'failed'].includes(campaign.status)}>
+                              <PlayArrowIcon />
+                            </IconButton>
+                          </span>
+                        </Tooltip>
+                        <Tooltip title="Editar">
+                          <IconButton size="small" onClick={() => navigate(`/dashboard/cupons/campanhas/editar/${campaign.id}`)}>
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Deletar">
+                          <IconButton size="small" color="error" onClick={() => handleOpenDeleteDialog(campaign)}>
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </CardActions>
+                    </Box>
+                  </Card>
+                </Grid>
+              );
+            })}
           </Grid>
         ) : renderEmptyState()
       )}
 
-      {/* Process Confirmation Dialog */}
+      {/* Dialogs */}
       <Dialog open={confirmProcessOpen} onClose={handleCloseDialogs}>
         <DialogTitle>Confirmar Início da Campanha</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Você tem certeza que deseja iniciar a campanha "{campaignToAction?.nome}"?
-            <br />
-            Esta ação não pode ser desfeita.
-          </DialogContentText>
-        </DialogContent>
+        <DialogContent><DialogContentText>Tem certeza que deseja iniciar a campanha "{campaignToAction?.nome}"?</DialogContentText></DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialogs}>Cancelar</Button>
-          <Button onClick={handleProcessCampaign} color="primary" autoFocus>
-            Confirmar e Enviar
-          </Button>
+          <Button onClick={handleProcessCampaign} color="primary">Confirmar</Button>
         </DialogActions>
       </Dialog>
-
-      {/* Delete Confirmation Dialog */}
       <Dialog open={confirmDeleteOpen} onClose={handleCloseDialogs}>
         <DialogTitle>Confirmar Exclusão</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Você tem certeza que deseja excluir a campanha "{campaignToAction?.nome}"?
-            <br />
-            Esta ação é irreversível.
-          </DialogContentText>
-        </DialogContent>
+        <DialogContent><DialogContentText>Tem certeza que deseja excluir a campanha "{campaignToAction?.nome}"?</DialogContentText></DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialogs}>Cancelar</Button>
-          <Button onClick={handleDeleteCampaign} color="error" autoFocus>
-            Excluir
-          </Button>
+          <Button onClick={handleDeleteCampaign} color="error">Excluir</Button>
         </DialogActions>
       </Dialog>
-
-      {/* Test Send Dialog */}
       <Dialog open={testDialogOpen} onClose={handleCloseDialogs}>
-        <DialogTitle>Enviar Campanha de Teste</DialogTitle>
+        <DialogTitle>Enviar Teste da Campanha</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Digite o número de WhatsApp para o qual deseja enviar a mensagem de teste da campanha "{campaignToAction?.nome}".
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="testPhoneNumber"
-            label="Número do WhatsApp"
-            type="tel"
-            fullWidth
-            variant="standard"
-            value={testPhoneNumber}
-            onChange={(e) => setTestPhoneNumber(e.target.value)}
-          />
+          <DialogContentText>Digite o número do WhatsApp para enviar um teste da campanha "{campaignToAction?.nome}".</DialogContentText>
+          <TextField autoFocus margin="dense" label="Número do WhatsApp" type="tel" fullWidth variant="standard" value={testPhoneNumber} onChange={(e) => setTestPhoneNumber(e.target.value)} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialogs}>Cancelar</Button>
-          <Button onClick={handleSendTest} disabled={!testPhoneNumber}>Enviar Teste</Button>
+          <Button onClick={handleSendTest} disabled={!testPhoneNumber}>Enviar</Button>
         </DialogActions>
       </Dialog>
-
-    </Box>
+    </Container>
   );
 };
 

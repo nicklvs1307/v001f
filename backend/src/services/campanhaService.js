@@ -91,7 +91,7 @@ class CampanhaService {
 
     if (campanha.rewardType === 'ROLETA') {
       const roletaBaseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-      rewardCode = `${roletaBaseUrl}/roleta/spin/[TOKEN_TESTE]`
+      rewardCode = `${roletaBaseUrl}/roleta/spin/[TOKEN_TESTE]`;
     }
 
     // Usa a primeira mensagem para o teste para ser previsível
@@ -104,7 +104,12 @@ class CampanhaService {
       nomeCampanha: campanha.nome,
     });
 
-    await this.whatsappService.sendTenantMessage(tenantId, testPhoneNumber, personalizedMessage);
+    if (campanha.mediaUrl) {
+      await this.whatsappService.sendTenantMediaMessage(tenantId, testPhoneNumber, campanha.mediaUrl, personalizedMessage);
+    } else {
+      await this.whatsappService.sendTenantMessage(tenantId, testPhoneNumber, personalizedMessage);
+    }
+
     return { message: `Mensagem de teste enviada para ${testPhoneNumber}` };
   }
 
@@ -174,7 +179,11 @@ class CampanhaService {
           nomeCampanha: campanha.nome,
         });
         try {
-          await this.whatsappService.sendTenantMessage(campanha.tenantId, client.phone, personalizedMessage);
+          if (campanha.mediaUrl) {
+            await this.whatsappService.sendTenantMediaMessage(campanha.tenantId, client.phone, campanha.mediaUrl, personalizedMessage);
+          } else {
+            await this.whatsappService.sendTenantMessage(campanha.tenantId, client.phone, personalizedMessage);
+          }
           const delay = this._getRandomDelay(campanha.minMessageDelaySeconds, campanha.maxMessageDelaySeconds);
           if (delay > 0) await new Promise(resolve => setTimeout(resolve, delay));
         } catch (err) {
@@ -191,12 +200,28 @@ class CampanhaService {
       const client = clientMap.get(reward.clienteId);
       if (client && client.phone) {
         const messageTemplate = campanha.mensagens[Math.floor(Math.random() * campanha.mensagens.length)];
-        // ... (lógica de recompensa)
+        
+        let rewardCode;
+        if (campanha.rewardType === 'RECOMPENSA' && reward.codigo) {
+          rewardCode = reward.codigo;
+        } else if (campanha.rewardType === 'ROLETA' && reward.token) {
+          const roletaBaseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+          rewardCode = `${roletaBaseUrl}/roleta/spin/${reward.token}`;
+        }
+
         const personalizedMessage = this._buildPersonalizedMessage(messageTemplate, client, {
-            // ...
+          codigo: rewardCode,
+          dataValidade: campanha.dataValidade,
+          nomeRecompensa: campanha.recompensa ? campanha.recompensa.nome : '',
+          nomeCampanha: campanha.nome,
         });
+
         try {
-          await this.whatsappService.sendTenantMessage(campanha.tenantId, client.phone, personalizedMessage);
+          if (campanha.mediaUrl) {
+            await this.whatsappService.sendTenantMediaMessage(campanha.tenantId, client.phone, campanha.mediaUrl, personalizedMessage);
+          } else {
+            await this.whatsappService.sendTenantMessage(campanha.tenantId, client.phone, personalizedMessage);
+          }
           const delay = this._getRandomDelay(campanha.minMessageDelaySeconds, campanha.maxMessageDelaySeconds);
           if (delay > 0) await new Promise(resolve => setTimeout(resolve, delay));
         } catch (err) {

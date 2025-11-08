@@ -18,7 +18,11 @@ class CampanhaController {
   async create(req, res, next) {
     try {
       const { tenantId } = req.user;
-      const campanha = await campanhaService.create({ ...req.body, tenantId });
+      let mediaUrl = null;
+      if (req.file) {
+        mediaUrl = `/uploads/campaigns/${req.file.filename}`;
+      }
+      const campanha = await campanhaService.create({ ...req.body, tenantId, mediaUrl });
       res.status(201).json(campanha);
     } catch (error) {
       next(error);

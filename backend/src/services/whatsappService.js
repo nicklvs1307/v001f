@@ -105,6 +105,63 @@ const sendTenantMessage = async (tenantId, number, message) => {
   }
 };
 
+const sendTenantMediaMessage = async (tenantId, number, mediaUrl, caption) => {
+  const config = await WhatsappConfig.findOne({ where: { tenantId } });
+
+  if (!config || !config.url || !config.apiKey || !config.instanceName) {
+    throw new Error('A configuração do WhatsApp para esta loja não foi encontrada ou está incompleta.');
+  }
+  if (config.instanceStatus !== 'connected') {
+    throw new Error('A instância do WhatsApp desta loja não está conectada.');
+  }
+
+  console.log(`[WhatsApp Service] Enviando mensagem com mídia de tenant ${tenantId}. Número original: ${number}`);
+  let digitsOnly = String(number).replace(/\D/g, '');
+
+  if (digitsOnly.startsWith('55')) {
+    digitsOnly = digitsOnly.substring(2);
+  }
+
+  if (digitsOnly.length === 11) {
+    const ddd = parseInt(digitsOnly.substring(0, 2), 10);
+    if (ddd >= 29 && digitsOnly.substring(2, 3) === '9') {
+      console.log(`[WhatsApp Service] DDD ${ddd} >= 29, removendo nono dígito.`);
+      digitsOnly = digitsOnly.substring(0, 2) + digitsOnly.substring(3);
+    }
+  }
+
+  const normalizedNumber = '55' + digitsOnly;
+  const finalNumber = `${normalizedNumber}@s.whatsapp.net`;
+  console.log(`[WhatsApp Service] Número final para API (tenant): ${finalNumber}`);
+
+  const fullMediaUrl = `${process.env.BACKEND_URL}${mediaUrl}`;
+
+  try {
+    const response = await axios.post(`${config.url}/message/sendMedia/${config.instanceName}`, {
+      number: finalNumber,
+      mediaMessage: {
+        media: fullMediaUrl,
+        caption: caption,
+        mediatype: 'image',
+      },
+      options: { delay: 1200, presence: 'composing' }
+    }, {
+      headers: { 'Content-Type': 'application/json', 'apikey': config.apiKey },
+    });
+
+    console.log(`Mensagem com mídia do tenant ${tenantId} enviada para ${number}:`, response.data);
+    return response.data;
+  } catch (error) {
+    console.error(`[WhatsApp Service] Falha ao enviar mensagem com mídia para o tenant ${tenantId}. Número: ${number}.`);
+    if (error.response) {
+      console.error('[WhatsApp Service] Erro detalhado da API:', JSON.stringify(error.response.data, null, 2));
+    } else {
+      console.error('[WhatsApp Service] Erro sem resposta da API:', error.message);
+    }
+    throw error;
+  }
+};
+
 
 const sendInstanteDetractorMessage = async (tenant, detractorResponse) => {
     if (!tenant.reportPhoneNumber) {
@@ -309,6 +366,7 @@ const deleteInstance = async (tenantId) => {
 module.exports = {
   sendSystemMessage,
   sendTenantMessage,
+  sendTenantMediaMessage,
   sendInstanteDetractorMessage,
   getInstanceStatus,
   getConnectionInfo,

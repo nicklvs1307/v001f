@@ -18,7 +18,8 @@ import {
   FormLabel,
   Tabs,
   Tab,
-  IconButton
+  IconButton,
+  Input
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -31,7 +32,7 @@ import ClientSegmentSelector from '../components/campaigns/ClientSegmentSelector
 const initialState = {
   campaign: {
     nome: '',
-    mensagens: [''], // Agora é um array de strings
+    mensagens: [''],
     criterioSelecao: { type: 'todos' },
     recompensaId: null,
     roletaId: null,
@@ -40,7 +41,9 @@ const initialState = {
     rewardType: 'none',
     startDate: null,
     endDate: null,
+    media: null, // Para o arquivo da imagem
   },
+  mediaPreview: null, // Para a pré-visualização da imagem
   recompensas: [],
   roletas: [],
   loading: true,
@@ -53,12 +56,14 @@ function campaignFormReducer(state, action) {
     case 'FETCH_START':
       return { ...state, loading: true, error: '' };
     case 'FETCH_SUCCESS':
+      const campaignData = action.payload.campaign || {};
       return {
         ...state,
         loading: false,
         recompensas: action.payload.recompensas,
         roletas: action.payload.roletas,
-        campaign: { ...state.campaign, ...action.payload.campaign },
+        campaign: { ...state.campaign, ...campaignData },
+        mediaPreview: campaignData.mediaUrl ? `${process.env.REACT_APP_API_URL}${campaignData.mediaUrl}` : null,
       };
     case 'FETCH_ERROR':
       return { ...state, loading: false, error: action.payload };
@@ -66,6 +71,12 @@ function campaignFormReducer(state, action) {
       return {
         ...state,
         campaign: { ...state.campaign, [action.payload.field]: action.payload.value },
+      };
+    case 'FILE_CHANGE':
+      return {
+        ...state,
+        campaign: { ...state.campaign, media: action.payload.file },
+        mediaPreview: action.payload.preview,
       };
     case 'DATE_CHANGE':
       return {
@@ -113,7 +124,7 @@ const CampaignFormPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [state, dispatch] = useReducer(campaignFormReducer, initialState);
-  const { campaign, recompensas, roletas, loading, error, activeTab } = state;
+  const { campaign, recompensas, roletas, loading, error, activeTab, mediaPreview } = state;
 
   useEffect(() => {
     let isMounted = true;
@@ -129,7 +140,6 @@ const CampaignFormPage = () => {
         if (id) {
           const response = await campanhaService.getById(id);
           campaignData = response.data;
-          // Garantir que mensagens seja um array
           if (typeof campaignData.mensagens === 'string') {
             campaignData.mensagens = [campaignData.mensagens];
           } else if (!Array.isArray(campaignData.mensagens) || campaignData.mensagens.length === 0) {
@@ -172,6 +182,17 @@ const CampaignFormPage = () => {
     dispatch({ type: 'FIELD_CHANGE', payload: { field, value: event.target.value } });
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        dispatch({ type: 'FILE_CHANGE', payload: { file, preview: reader.result } });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleDateChange = (field, value) => {
     dispatch({ type: 'DATE_CHANGE', payload: { field, value } });
   };
@@ -207,14 +228,28 @@ const CampaignFormPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isFormValid()) {
-        dispatch({ type: 'FETCH_ERROR', payload: 'Preencha todos os campos obrigatórios e forneça pelo menos uma variação de mensagem.' });
-        return;
+      dispatch({ type: 'FETCH_ERROR', payload: 'Preencha todos os campos obrigatórios e forneça pelo menos uma variação de mensagem.' });
+      return;
     }
+
+    const formData = new FormData();
+    Object.keys(campaign).forEach(key => {
+      if (key === 'media' && campaign.media) {
+        formData.append('media', campaign.media);
+      } else if (campaign[key] !== null && campaign[key] !== undefined) {
+        if (typeof campaign[key] === 'object' && key !== 'media') {
+          formData.append(key, JSON.stringify(campaign[key]));
+        } else {
+          formData.append(key, campaign[key]);
+        }
+      }
+    });
+
     try {
       if (id) {
-        await campanhaService.update(id, campaign);
+        await campanhaService.update(id, formData);
       } else {
-        await campanhaService.create(campaign);
+        await campanhaService.create(formData);
       }
       navigate('/dashboard/cupons/campanhas');
     } catch (err) {
@@ -241,7 +276,6 @@ const CampaignFormPage = () => {
             </Tabs>
           </Box>
 
-          {/* Aba de Conteúdo */}
           {activeTab === 0 && (
             <Grid container spacing={3}>
               <Grid item xs={12}>
@@ -253,6 +287,21 @@ const CampaignFormPage = () => {
                   onChange={handleFieldChange('nome')}
                   required
                 />
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="h6" gutterBottom>Imagem da Campanha (Opcional)</Typography>
+                <Input
+                  type="file"
+                  onChange={handleFileChange}
+                  inputProps={{ accept: 'image/*' }}
+                  sx={{ mb: 2 }}
+                />
+                {mediaPreview && (
+                  <Box sx={{ mt: 2, mb: 2 }}>
+                    <Typography variant="subtitle1">Pré-visualização:</Typography>
+                    <img src={mediaPreview} alt="Preview" style={{ maxHeight: '200px', maxWidth: '100%', borderRadius: '8px' }} />
+                  </Box>
+                )}
               </Grid>
               <Grid item xs={12}>
                 <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>Variações de Mensagem</Typography>
@@ -287,7 +336,6 @@ const CampaignFormPage = () => {
             </Grid>
           )}
 
-          {/* Aba de Público e Recompensa */}
           {activeTab === 1 && (
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
@@ -339,7 +387,6 @@ const CampaignFormPage = () => {
             </Grid>
           )}
 
-          {/* Aba de Agendamento */}
           {activeTab === 2 && (
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>

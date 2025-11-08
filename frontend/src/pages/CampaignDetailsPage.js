@@ -17,9 +17,25 @@ import {
   DialogTitle,
   TextField,
   IconButton,
-  Tooltip
+  Tooltip,
+  Card,
+  CardContent,
+  CardMedia,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Divider
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import EditIcon from '@mui/icons-material/Edit';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import PeopleIcon from '@mui/icons-material/People';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import MessageIcon from '@mui/icons-material/Message';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import EventIcon from '@mui/icons-material/Event';
 import campanhaService from '../services/campanhaService';
 import AuthContext from '../context/AuthContext';
 
@@ -41,7 +57,6 @@ const CampaignDetailsPage = () => {
         setCampaign(response.data);
       } catch (err) {
         setError('Falha ao carregar detalhes da campanha. Tente novamente.');
-        console.error(err);
       } finally {
         setLoading(false);
       }
@@ -52,10 +67,7 @@ const CampaignDetailsPage = () => {
     }
   }, [id, user]);
 
-  const handleOpenTestDialog = () => {
-    setTestDialogOpen(true);
-  };
-
+  const handleOpenTestDialog = () => setTestDialogOpen(true);
   const handleCloseTestDialog = () => {
     setTestDialogOpen(false);
     setTestPhoneNumber('');
@@ -65,10 +77,9 @@ const CampaignDetailsPage = () => {
     if (!testPhoneNumber) return;
     try {
       await campanhaService.sendTest(id, { testPhoneNumber });
-      // Idealmente, mostrar uma notificação de sucesso
+      // Adicionar notificação de sucesso
     } catch (err) {
-      setError(`Falha ao enviar teste da campanha.`);
-      console.error(err);
+      setError('Falha ao enviar teste da campanha.');
     } finally {
       handleCloseTestDialog();
     }
@@ -83,117 +94,119 @@ const CampaignDetailsPage = () => {
       failed: { label: 'Falhou', color: 'error' },
     };
     const { label, color } = statusMap[status] || { label: 'Desconhecido', color: 'default' };
-    return <Chip label={label} color={color} size="small" />;
+    return <Chip label={label} color={color} />;
   };
 
-  if (loading) {
-    return <CircularProgress />;
-  }
+  if (loading) return <CircularProgress />;
+  if (error) return <Alert severity="error">{error}</Alert>;
+  if (!campaign) return <Alert severity="info">Campanha não encontrada.</Alert>;
 
-  if (error) {
-    return <Alert severity="error">{error}</Alert>;
-  }
-
-  if (!campaign) {
-    return <Alert severity="info">Campanha não encontrada.</Alert>;
-  }
+  const imageUrl = campaign.mediaUrl ? `${process.env.REACT_APP_API_URL}${campaign.mediaUrl}` : null;
 
   return (
-    <Container maxWidth="md">
-      <Box sx={{ my: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Detalhes da Campanha: {campaign.nome}
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+        <IconButton onClick={() => navigate('/dashboard/cupons/campanhas')} sx={{ mr: 1 }}>
+          <ArrowBackIcon />
+        </IconButton>
+        <Typography variant="h4" component="h1">
+          {campaign.nome}
         </Typography>
-
-        <Paper sx={{ p: 3, mb: 3 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="h6">Nome:</Typography>
-              <Typography>{campaign.nome}</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6">Mensagem:</Typography>
-              <Typography sx={{ whiteSpace: 'pre-wrap' }}>{campaign.mensagem}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6">Status:</Typography>
-              {getStatusChip(campaign.status)}
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6">Tipo de Recompensa:</Typography>
-              <Typography>{campaign.rewardType}</Typography>
-            </Grid>
-            {campaign.recompensa && (
-              <Grid item xs={12} sm={6}>
-                <Typography variant="h6">Recompensa:</Typography>
-                <Typography>{campaign.recompensa.nome}</Typography>
-              </Grid>
-            )}
-            {campaign.roleta && (
-              <Grid item xs={12} sm={6}>
-                <Typography variant="h6">Roleta:</Typography>
-                <Typography>{campaign.roleta.nome}</Typography>
-              </Grid>
-            )}
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6">Critério de Seleção:</Typography>
-              <Typography>{campaign.criterioSelecao.type || 'Não especificado'}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Typography variant="h6">Atraso de Mensagem:</Typography>
-              <Typography>{campaign.messageDelaySeconds} segundos</Typography>
-            </Grid>
-            {campaign.startDate && (
-              <Grid item xs={12} sm={6}>
-                <Typography variant="h6">Data de Início:</Typography>
-                <Typography>{new Date(campaign.startDate).toLocaleString()}</Typography>
-              </Grid>
-            )}
-            {campaign.endDate && (
-              <Grid item xs={12} sm={6}>
-                <Typography variant="h6">Data de Fim:</Typography>
-                <Typography>{new Date(campaign.endDate).toLocaleString()}</Typography>
-              </Grid>
-            )}
-            <Grid item xs={12}>
-              <Typography variant="h6">Criada em:</Typography>
-              <Typography>{new Date(campaign.createdAt).toLocaleString()}</Typography>
-            </Grid>
-            {campaign.updatedAt && (
-              <Grid item xs={12}>
-                <Typography variant="h6">Última Atualização:</Typography>
-                <Typography>{new Date(campaign.updatedAt).toLocaleString()}</Typography>
-              </Grid>
-            )}
-          </Grid>
-        </Paper>
-
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mt: 3 }}>
-          <Tooltip title="Enviar Teste">
-            <IconButton color="secondary" onClick={handleOpenTestDialog} sx={{ mr: 2 }}>
-              <SendIcon />
-            </IconButton>
-          </Tooltip>
-          <Button variant="outlined" onClick={() => navigate('/dashboard/cupons/campanhas')} sx={{ mr: 2 }}>
-            Voltar para Campanhas
-          </Button>
-          <Button variant="contained" onClick={() => navigate(`/dashboard/cupons/campanhas/editar/${campaign.id}`)}>
-            Editar Campanha
-          </Button>
-        </Box>
       </Box>
+
+      <Grid container spacing={4}>
+        {/* Coluna da Esquerda */}
+        <Grid item xs={12} md={7}>
+          <Card>
+            {imageUrl && (
+              <CardMedia
+                component="img"
+                height="300"
+                image={imageUrl}
+                alt={`Imagem da campanha ${campaign.nome}`}
+                sx={{ objectFit: 'contain', p: 1, backgroundColor: '#f5f5f5' }}
+              />
+            )}
+            <CardContent>
+              <Typography variant="h6" gutterBottom>Variações de Mensagem</Typography>
+              {campaign.mensagens.map((msg, index) => (
+                <Paper key={index} variant="outlined" sx={{ p: 2, mb: 2, whiteSpace: 'pre-wrap', backgroundColor: '#fafafa' }}>
+                  <Typography variant="body2">{msg}</Typography>
+                </Paper>
+              ))}
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Coluna da Direita */}
+        <Grid item xs={12} md={5}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>Status</Typography>
+                  {getStatusChip(campaign.status)}
+                  <Divider sx={{ my: 2 }} />
+                  <List dense>
+                    <ListItem>
+                      <ListItemIcon><EventIcon /></ListItemIcon>
+                      <ListItemText primary="Criada em" secondary={new Date(campaign.createdAt).toLocaleString()} />
+                    </ListItem>
+                    {campaign.startDate && (
+                      <ListItem>
+                        <ListItemIcon><ScheduleIcon /></ListItemIcon>
+                        <ListItemText primary="Início agendado" secondary={new Date(campaign.startDate).toLocaleString()} />
+                      </ListItem>
+                    )}
+                    {campaign.endDate && (
+                      <ListItem>
+                        <ListItemIcon><EventIcon color="error" /></ListItemIcon>
+                        <ListItemText primary="Data de validade" secondary={new Date(campaign.endDate).toLocaleString()} />
+                      </ListItem>
+                    )}
+                  </List>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>Ações</Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                    <Button
+                      variant="contained"
+                      startIcon={<EditIcon />}
+                      onClick={() => navigate(`/dashboard/cupons/campanhas/editar/${campaign.id}`)}
+                    >
+                      Editar Campanha
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      startIcon={<SendIcon />}
+                      onClick={handleOpenTestDialog}
+                    >
+                      Enviar Teste
+                    </Button>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
 
       {/* Test Send Dialog */}
       <Dialog open={testDialogOpen} onClose={handleCloseTestDialog}>
         <DialogTitle>Enviar Campanha de Teste</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Digite o número de WhatsApp para o qual deseja enviar a mensagem de teste da campanha "{campaign?.nome}".
+            Digite o número de WhatsApp para enviar um teste da campanha "{campaign?.nome}".
           </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
-            id="testPhoneNumber"
             label="Número do WhatsApp"
             type="tel"
             fullWidth
@@ -204,10 +217,9 @@ const CampaignDetailsPage = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseTestDialog}>Cancelar</Button>
-          <Button onClick={handleSendTest} disabled={!testPhoneNumber}>Enviar Teste</Button>
+          <Button onClick={handleSendTest} disabled={!testPhoneNumber}>Enviar</Button>
         </DialogActions>
       </Dialog>
-
     </Container>
   );
 };

@@ -1,27 +1,14 @@
- => ERROR [build 6/6] RUN npm run build                                                      168.3s
-------
- > [build 6/6] RUN npm run build:
-0.706
-0.706 > frontend@0.1.0 build
-0.706 > react-scripts build
-0.706
-4.285 Creating an optimized production build...
-168.0 Failed to compile.
-168.0
-168.0 [eslint]
-168.0 src/pages/CampaignsPage.js
-168.0   Line 167:6:  'Paper' is not defined  react/jsx-no-undef
-168.0
-168.0 Search for the keywords to learn more about each error.
-168.0
-168.0
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+URL da solicitação
+https://apivoltaki.towersfy.com/api/campanhas
+Método da solicitação
+POST
+Código de status
+500 Internal Server Error
+Endereço remoto
+95.217.16.187:443
+{
+    "status": "error",
+    "code": "HTTP_500",
+    "message": "ENOENT: no such file or directory, open '/usr/src/app/uploads/campaigns/unknown-1762609997279.png'",
+    "details": "Error: ENOENT: no such file or directory, open '/usr/src/app/uploads/campaigns/unknown-1762609997279.png'"
+}

@@ -1,17 +1,19 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const ApiError = require('../errors/ApiError');
 
 const createMulterConfig = (destinationFolder, fieldName) => {
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      // Usar path.join para construir um caminho absoluto e robusto
       const absolutePath = path.join(__dirname, '..', '..', 'uploads', destinationFolder);
+      // Garante que o diretório de destino exista
+      fs.mkdirSync(absolutePath, { recursive: true });
       cb(null, absolutePath);
     },
     filename: (req, file, cb) => {
-      // req.params.id pode não estar disponível em todas as rotas, usar um fallback ou garantir que esteja presente
-      const id = req.params.id || 'unknown';
+      // Usa req.params.id para updates ou um ID de tenant/usuário para creates
+      const id = req.params.id || req.user?.tenantId || 'unidentified';
       const generatedFilename = `${id}-${Date.now()}${path.extname(file.originalname)}`;
       cb(null, generatedFilename);
     },
@@ -28,7 +30,6 @@ const createMulterConfig = (destinationFolder, fieldName) => {
       if (mimetype && extname) {
         return cb(null, true);
       } else {
-        // Usar ApiError para consistência
         cb(new ApiError(400, 'Apenas imagens (jpeg, jpg, png, gif) são permitidas!'));
       }
     },
@@ -38,3 +39,4 @@ const createMulterConfig = (destinationFolder, fieldName) => {
 };
 
 module.exports = createMulterConfig;
+

@@ -31,6 +31,7 @@ import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatStrikethroughIcon from '@mui/icons-material/FormatStrikethrough';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { format } from 'date-fns';
 import campanhaService from '../services/campanhaService';
 import recompensaService from '../services/recompensaService';
 import roletaService from '../services/roletaService';
@@ -295,6 +296,9 @@ const CampaignFormPage = () => {
       const value = campaign[key];
       if (key === 'media' && value) {
         formData.append('media', value);
+      } else if (['dataValidade', 'startDate'].includes(key) && value instanceof Date && !isNaN(value.getTime())) {
+        // Format the Date object to the required string format
+        formData.append(key, format(value, 'dd-MM-yyyy HH:mm'));
       } else if (value !== null && value !== undefined) {
         if (typeof value === 'object' && key !== 'media') {
           formData.append(key, JSON.stringify(value));

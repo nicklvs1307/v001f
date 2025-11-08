@@ -1,3 +1,5 @@
+const { parse } = require('date-fns');
+const ApiError = require('../errors/ApiError');
 const campanhaRepository = require('../repositories/campanhaRepository');
 const clientRepository = require('../repositories/clientRepository');
 const cupomRepository = require('../repositories/cupomRepository');
@@ -26,11 +28,28 @@ class CampanhaController {
       data.criterioSelecao = JSON.parse(data.criterioSelecao);
     }
 
-    // Handle nullish or invalid dates
-    ['startDate', 'endDate', 'dataValidade'].forEach(dateField => {
+    // Handle dates
+    const dateFormat = 'dd-MM-yyyy HH:mm';
+    const { dataValidade, startDate, endDate } = data;
+
+    const parsedDataValidade = dataValidade ? parse(dataValidade, dateFormat, new Date()) : null;
+
+    if (!parsedDataValidade || isNaN(parsedDataValidade.getTime())) {
+      throw new ApiError(400, `A data de validade é obrigatória e deve estar no formato ${dateFormat}.`);
+    }
+    data.dataValidade = parsedDataValidade;
+
+    ['startDate', 'endDate'].forEach(dateField => {
       const dateValue = data[dateField];
-      if (dateValue === 'null' || dateValue === 'undefined' || dateValue === '' || new Date(dateValue).toString() === 'Invalid Date') {
+      if (!dateValue) {
         data[dateField] = null;
+        return;
+      }
+      const parsedDate = parse(dateValue, dateFormat, new Date());
+      if (isNaN(parsedDate.getTime())) {
+        data[dateField] = null;
+      } else {
+        data[dateField] = parsedDate;
       }
     });
     

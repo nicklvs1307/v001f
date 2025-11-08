@@ -13,11 +13,11 @@ const RelatorioMensal = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [reportData, setReportData] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { user } = useAuth();
+    const { tenantId } = user || {};
 
     useEffect(() => {
         const fetchMonthlyReport = async () => {
-            if (!user || !user.tenantId || !selectedDate) return;
+            if (!tenantId || !selectedDate) return;
 
             setLoading(true);
             try {
@@ -28,7 +28,7 @@ const RelatorioMensal = () => {
                 const formattedEndDate = format(end, 'yyyy-MM-dd');
 
                 const data = await resultService.getMainDashboard({
-                    tenantId: user.tenantId,
+                    tenantId: tenantId,
                     startDate: formattedStartDate,
                     endDate: formattedEndDate,
                 });
@@ -42,7 +42,7 @@ const RelatorioMensal = () => {
         };
 
         fetchMonthlyReport();
-    }, [selectedDate, user]);
+    }, [selectedDate, tenantId]);
 
     return (
         <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 3 }}>

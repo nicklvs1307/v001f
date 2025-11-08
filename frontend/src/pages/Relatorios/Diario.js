@@ -14,8 +14,7 @@ const RelatorioDiario = () => {
     const [selectedDate, setSelectedDate] = useState(new Date()); 
     const [reportData, setReportData] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { user } = useAuth();
-    const location = useLocation();
+    const { tenantId } = user || {};
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
@@ -27,13 +26,13 @@ const RelatorioDiario = () => {
 
     useEffect(() => {
         const fetchDailyReport = async () => {
-            if (!user || !user.tenantId || !selectedDate) return;
+            if (!tenantId || !selectedDate) return;
 
             setLoading(true);
             try {
                 const formattedDate = format(selectedDate, 'yyyy-MM-dd');
                 const data = await resultService.getMainDashboard({
-                    tenantId: user.tenantId,
+                    tenantId: tenantId,
                     startDate: formattedDate,
                     endDate: formattedDate,
                 });
@@ -47,7 +46,7 @@ const RelatorioDiario = () => {
         };
 
         fetchDailyReport();
-    }, [selectedDate, user]);
+    }, [selectedDate, tenantId]);
 
     return (
         <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 3 }}>

@@ -6,16 +6,12 @@ class CampanhaRepository {
     return Campanha.create(data);
   }
 
-  async findAll(tenantId) {
-    return Campanha.findAll({ where: { tenantId } });
-  }
-
-  async findAllWhere(whereClause) {
+  async findAll(whereClause = {}) {
     return Campanha.findAll({ where: whereClause });
   }
 
-  async findById(id, tenantId) {
-    const campanha = await Campanha.findOne({ where: { id, tenantId } });
+  async findById(id, tenantId, options = {}) {
+    const campanha = await Campanha.findOne({ where: { id, tenantId }, ...options });
     if (!campanha) {
       throw ApiError.notFound('Campanha não encontrada.');
     }

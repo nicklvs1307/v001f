@@ -22,4 +22,7 @@ router.post('/:id/process', (req, res, next) => campanhaController.process(req, 
 // Rota para enviar um teste da campanha
 router.post('/:id/test', (req, res, next) => campanhaController.sendTest(req, res, next));
 
+// Rota para obter os logs de uma campanha
+router.get('/:id/logs', (req, res, next) => campanhaController.getLogs(req, res, next));
+
 module.exports = router;

@@ -20,7 +20,11 @@ import {
   Tooltip,
   TextField,
   Container,
-  Paper
+  Paper,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -51,6 +55,7 @@ const CampaignsPage = () => {
   const [testDialogOpen, setTestDialogOpen] = useState(false);
   const [campaignToAction, setCampaignToAction] = useState(null);
   const [testPhoneNumber, setTestPhoneNumber] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all'); // Novo estado para o filtro de status
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
@@ -58,7 +63,7 @@ const CampaignsPage = () => {
     const fetchCampaigns = async () => {
       setLoading(true);
       try {
-        const response = await campanhaService.getAll(user.tenantId);
+        const response = await campanhaService.getAll(user.tenantId, statusFilter === 'all' ? null : statusFilter);
         setCampaigns(response.data);
       } catch (err) {
         setError('Falha ao carregar campanhas. Tente novamente mais tarde.');
@@ -70,7 +75,7 @@ const CampaignsPage = () => {
     if (user?.tenantId) {
       fetchCampaigns();
     }
-  }, [user]);
+  }, [user, statusFilter]); // Adiciona statusFilter como dependência
 
   const handleOpenProcessDialog = (campaign) => {
     setCampaignToAction(campaign);
@@ -182,13 +187,31 @@ const CampaignsPage = () => {
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
         <Typography variant="h4" component="h1">Campanhas de WhatsApp</Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => navigate('/dashboard/cupons/campanhas/nova')}
-        >
-          Nova Campanha
-        </Button>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <FormControl sx={{ minWidth: 180 }} size="small">
+            <InputLabel id="status-filter-label">Filtrar por Status</InputLabel>
+            <Select
+              labelId="status-filter-label"
+              value={statusFilter}
+              label="Filtrar por Status"
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <MenuItem value="all">Todos</MenuItem>
+              <MenuItem value="draft">Rascunho</MenuItem>
+              <MenuItem value="scheduled">Agendada</MenuItem>
+              <MenuItem value="processing">Processando</MenuItem>
+              <MenuItem value="sent">Enviada</MenuItem>
+              <MenuItem value="failed">Falhou</MenuItem>
+            </Select>
+          </FormControl>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => navigate('/dashboard/cupons/campanhas/nova')}
+          >
+            Nova Campanha
+          </Button>
+        </Box>
       </Box>
 
       {error && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError('')}>{error}</Alert>}

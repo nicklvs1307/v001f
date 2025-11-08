@@ -1,6 +1,7 @@
 const { Op } = require('sequelize');
 const ApiError = require('../errors/ApiError');
 const { scheduleCampaign, cancelCampaign } = require('../jobs/campaignScheduler');
+const { CampanhaLog, Client } = require('../../models'); // Importar o modelo CampanhaLog e Client
 
 class CampanhaService {
   constructor(campanhaRepository, clientRepository, cupomRepository, roletaSpinRepository, whatsappService) {
@@ -28,8 +29,12 @@ class CampanhaService {
     return this.campanhaRepository.create(data);
   }
 
-  async getAll(tenantId) {
-    return this.campanhaRepository.findAll(tenantId);
+  async getAll(tenantId, statusFilter = null) {
+    const whereClause = { tenantId };
+    if (statusFilter) {
+      whereClause.status = statusFilter;
+    }
+    return this.campanhaRepository.findAll(whereClause);
   }
 
   async getById(id, tenantId) {
@@ -178,6 +183,8 @@ class CampanhaService {
         const personalizedMessage = this._buildPersonalizedMessage(messageTemplate, client, {
           nomeCampanha: campanha.nome,
         });
+        let logStatus = 'sent';
+        let errorMessage = null;
         try {
           if (campanha.mediaUrl) {
             await this.whatsappService.sendTenantMediaMessage(campanha.tenantId, client.phone, campanha.mediaUrl, personalizedMessage);
@@ -188,6 +195,15 @@ class CampanhaService {
           if (delay > 0) await new Promise(resolve => setTimeout(resolve, delay));
         } catch (err) {
           console.error(`[Campanha] Falha ao enviar mensagem para ${client.phone}:`, err.message);
+          logStatus = 'failed';
+          errorMessage = err.message;
+        } finally {
+          await CampanhaLog.create({
+            campanhaId: campanha.id,
+            clienteId: client.id,
+            status: logStatus,
+            errorMessage: errorMessage,
+          });
         }
       }
     }
@@ -216,6 +232,8 @@ class CampanhaService {
           nomeCampanha: campanha.nome,
         });
 
+        let logStatus = 'sent';
+        let errorMessage = null;
         try {
           if (campanha.mediaUrl) {
             await this.whatsappService.sendTenantMediaMessage(campanha.tenantId, client.phone, campanha.mediaUrl, personalizedMessage);
@@ -226,9 +244,30 @@ class CampanhaService {
           if (delay > 0) await new Promise(resolve => setTimeout(resolve, delay));
         } catch (err) {
           console.error(`[Campanha] Falha ao enviar mensagem para ${client.phone}:`, err.message);
+          logStatus = 'failed';
+          errorMessage = err.message;
+        } finally {
+          await CampanhaLog.create({
+            campanhaId: campanha.id,
+            clienteId: client.id,
+            status: logStatus,
+            errorMessage: errorMessage,
+          });
         }
       }
     }
+  }
+
+  async getCampaignLogs(campaignId) {
+    return CampanhaLog.findAll({
+      where: { campanhaId },
+      include: [{
+        model: Client,
+        as: 'client',
+        attributes: ['id', 'name', 'phone'],
+      }],
+      order: [['sentAt', 'DESC']],
+    });
   }
 }
 

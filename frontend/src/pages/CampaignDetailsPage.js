@@ -25,7 +25,13 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  Divider
+  Divider,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import EditIcon from '@mui/icons-material/Edit';
@@ -33,6 +39,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import PeopleIcon from '@mui/icons-material/People';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ErrorIcon from '@mui/icons-material/Error';
 import MessageIcon from '@mui/icons-material/Message';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import EventIcon from '@mui/icons-material/Event';
@@ -44,7 +51,9 @@ const CampaignDetailsPage = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const [campaign, setCampaign] = useState(null);
+  const [campaignLogs, setCampaignLogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [logsLoading, setLogsLoading] = useState(true);
   const [error, setError] = useState('');
   const [testDialogOpen, setTestDialogOpen] = useState(false);
   const [testPhoneNumber, setTestPhoneNumber] = useState('');
@@ -62,8 +71,22 @@ const CampaignDetailsPage = () => {
       }
     };
 
+    const fetchCampaignLogs = async () => {
+      setLogsLoading(true);
+      try {
+        const response = await campanhaService.getLogs(id);
+        setCampaignLogs(response.data);
+      } catch (err) {
+        console.error("Erro ao buscar logs da campanha:", err);
+        // Não define erro global para não bloquear a página se só os logs falharem
+      } finally {
+        setLogsLoading(false);
+      }
+    };
+
     if (user?.tenantId && id) {
       fetchCampaignDetails();
+      fetchCampaignLogs();
     }
   }, [id, user]);
 
@@ -97,11 +120,27 @@ const CampaignDetailsPage = () => {
     return <Chip label={label} color={color} />;
   };
 
+  const getLogStatusChip = (status) => {
+    const statusMap = {
+      sent: { label: 'Enviado', color: 'success' },
+      failed: { label: 'Falhou', color: 'error' },
+      skipped: { label: 'Ignorado', color: 'default' },
+    };
+    const { label, color } = statusMap[status] || { label: 'Desconhecido', color: 'default' };
+    return <Chip label={label} color={color} size="small" />;
+  };
+
   if (loading) return <CircularProgress />;
   if (error) return <Alert severity="error">{error}</Alert>;
   if (!campaign) return <Alert severity="info">Campanha não encontrada.</Alert>;
 
   const imageUrl = campaign.mediaUrl ? `${process.env.REACT_APP_API_URL}${campaign.mediaUrl}` : null;
+
+  // Calcular estatísticas dos logs
+  const totalLogs = campaignLogs.length;
+  const sentLogs = campaignLogs.filter(log => log.status === 'sent').length;
+  const failedLogs = campaignLogs.filter(log => log.status === 'failed').length;
+  const skippedLogs = campaignLogs.filter(log => log.status === 'skipped').length;
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -115,9 +154,9 @@ const CampaignDetailsPage = () => {
       </Box>
 
       <Grid container spacing={4}>
-        {/* Coluna da Esquerda */}
+        {/* Coluna da Esquerda: Detalhes da Campanha */}
         <Grid item xs={12} md={7}>
-          <Card>
+          <Card sx={{ mb: 3 }}>
             {imageUrl && (
               <CardMedia
                 component="img"
@@ -136,15 +175,58 @@ const CampaignDetailsPage = () => {
               ))}
             </CardContent>
           </Card>
+
+          {/* Tabela de Logs Detalhados */}
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>Logs de Envio</Typography>
+              {logsLoading ? (
+                <CircularProgress size={24} />
+              ) : totalLogs === 0 ? (
+                <Typography variant="body2" color="text.secondary">Nenhum log de envio encontrado para esta campanha.</Typography>
+              ) : (
+                <TableContainer component={Paper} variant="outlined">
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Cliente</TableCell>
+                        <TableCell>Telefone</TableCell>
+                        <TableCell>Status</TableCell>
+                        <TableCell>Erro</TableCell>
+                        <TableCell>Data/Hora</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {campaignLogs.map((log) => (
+                        <TableRow key={log.id}>
+                          <TableCell>{log.client?.name || 'N/A'}</TableCell>
+                          <TableCell>{log.client?.phone || 'N/A'}</TableCell>
+                          <TableCell>{getLogStatusChip(log.status)}</TableCell>
+                          <TableCell>
+                            <Tooltip title={log.errorMessage || 'Sem erro'}>
+                              <Typography variant="body2" noWrap sx={{ maxWidth: '150px' }}>
+                                {log.errorMessage || '-'}
+                              </Typography>
+                            </Tooltip>
+                          </TableCell>
+                          <TableCell>{new Date(log.sentAt).toLocaleString()}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              )}
+            </CardContent>
+          </Card>
         </Grid>
 
-        {/* Coluna da Direita */}
+        {/* Coluna da Direita: Status, Estatísticas e Ações */}
         <Grid item xs={12} md={5}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Card>
                 <CardContent>
-                  <Typography variant="h6" gutterBottom>Status</Typography>
+                  <Typography variant="h6" gutterBottom>Status da Campanha</Typography>
                   {getStatusChip(campaign.status)}
                   <Divider sx={{ my: 2 }} />
                   <List dense>
@@ -158,13 +240,43 @@ const CampaignDetailsPage = () => {
                         <ListItemText primary="Início agendado" secondary={new Date(campaign.startDate).toLocaleString()} />
                       </ListItem>
                     )}
-                    {campaign.endDate && (
+                    {campaign.dataValidade && (
                       <ListItem>
                         <ListItemIcon><EventIcon color="error" /></ListItemIcon>
-                        <ListItemText primary="Data de validade" secondary={new Date(campaign.endDate).toLocaleString()} />
+                        <ListItemText primary="Data de Validade" secondary={new Date(campaign.dataValidade).toLocaleString()} />
                       </ListItem>
                     )}
                   </List>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>Estatísticas de Envio</Typography>
+                  {logsLoading ? (
+                    <CircularProgress size={20} />
+                  ) : (
+                    <List dense>
+                      <ListItem>
+                        <ListItemIcon><PeopleIcon /></ListItemIcon>
+                        <ListItemText primary="Total de Clientes Tentados" secondary={totalLogs} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemIcon><CheckCircleIcon color="success" /></ListItemIcon>
+                        <ListItemText primary="Mensagens Enviadas" secondary={sentLogs} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemIcon><ErrorIcon color="error" /></ListItemIcon>
+                        <ListItemText primary="Mensagens com Falha" secondary={failedLogs} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemIcon><MessageIcon color="disabled" /></ListItemIcon>
+                        <ListItemText primary="Mensagens Ignoradas" secondary={skippedLogs} />
+                      </ListItem>
+                    </List>
+                  )}
                 </CardContent>
               </Card>
             </Grid>

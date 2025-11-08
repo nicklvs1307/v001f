@@ -62,7 +62,8 @@ class CampanhaController {
   async getAll(req, res, next) {
     try {
       const { tenantId } = req.user;
-      const campanhas = await campanhaService.getAll(tenantId);
+      const { status } = req.query; // Captura o parâmetro de status da query
+      const campanhas = await campanhaService.getAll(tenantId, status);
       res.status(200).json(campanhas);
     } catch (error) {
       next(error);
@@ -121,6 +122,16 @@ class CampanhaController {
       const { testPhoneNumber } = req.body;
       const result = await campanhaService.sendTest(id, tenantId, testPhoneNumber);
       res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getLogs(req, res, next) {
+    try {
+      const { id } = req.params;
+      const logs = await campanhaService.getCampaignLogs(id);
+      res.status(200).json(logs);
     } catch (error) {
       next(error);
     }

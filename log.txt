@@ -1,6 +1,41 @@
+URL da solicitação
+https://apivoltaki.towersfy.com/api/campanhas/62218125-a119-456d-97de-98e52cc93709/test
+Método da solicitação
+POST
+Código de status
+500 Internal Server Error
+
 {
     "status": "error",
-    "code": "HTTP_400",
-    "message": "A data de validade é obrigatória e deve estar no formato dd-MM-yyyy HH:mm.",
-    "details": "Error: A data de validade é obrigatória e deve estar no formato dd-MM-yyyy HH:mm.\n    at CampanhaController._prepareCampaignData (/usr/src/app/src/controllers/campanhaController.js:38:13)\n    at CampanhaController.create (/usr/src/app/src/controllers/campanhaController.js:74:33)\n    at /usr/src/app/src/routes/campanhaRoutes.js:13:65\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at done (/usr/src/app/node_modules/multer/lib/make-middleware.js:59:7)\n    at indicateDone (/usr/src/app/node_modules/multer/lib/make-middleware.js:63:68)\n    at /usr/src/app/node_modules/multer/lib/make-middleware.js:176:11\n    at WriteStream.<anonymous> (/usr/src/app/node_modules/multer/storage/disk.js:43:9)\n    at WriteStream.emit (node:events:529:35)"
+    "code": "HTTP_500",
+    "message": "Request failed with status code 400",
+    "details": "AxiosError: Request failed with status code 400\n    at settle (/usr/src/app/node_modules/axios/dist/node/axios.cjs:2097:12)\n    at IncomingMessage.handleStreamEnd (/usr/src/app/node_modules/axios/dist/node/axios.cjs:3305:11)\n    at IncomingMessage.emit (node:events:529:35)\n    at endReadableNT (node:internal/streams/readable:1400:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)\n    at Axios.request (/usr/src/app/node_modules/axios/dist/node/axios.cjs:4483:41)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Object.sendTenantMediaMessage (/usr/src/app/src/services/whatsappService.js:140:22)\n    at async CampanhaService.sendTest (/usr/src/app/src/services/campanhaService.js:113:7)\n    at async CampanhaController.sendTest (/usr/src/app/src/controllers/campanhaController.js:143:22)"
 }
+
+
+
+
+curl --location 'https://sub.domain.com (Domain of your API)/message/sendMedia/instance (Instance name)' \
+--data '{
+    "number": "559999999999 (Recipient number with Country Code)",
+    "mediatype": "image", 
+    "mimetype": "image/png",
+    "caption": "Teste de caption",
+    "media": "https://s3.amazonaws.com/atendai/company-3708fcdf-954b-48f8-91ff-25babaccac67/1712605171932.jpeg", 
+    "fileName": "Imagem.png"
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+}'

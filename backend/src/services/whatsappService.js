@@ -135,16 +135,18 @@ const sendTenantMediaMessage = async (tenantId, number, mediaUrl, caption) => {
   console.log(`[WhatsApp Service] Número final para API (tenant): ${finalNumber}`);
 
   const fullMediaUrl = `${process.env.BACKEND_URL}${mediaUrl}`;
+  const extension = mediaUrl.split('.').pop().toLowerCase();
+  const mimetype = `image/${extension === 'jpg' ? 'jpeg' : extension}`;
+  const fileName = mediaUrl.split('/').pop();
 
   try {
     const response = await axios.post(`${config.url}/message/sendMedia/${config.instanceName}`, {
       number: finalNumber,
-      mediaMessage: {
-        media: fullMediaUrl,
-        caption: caption,
-        mediatype: 'image',
-      },
-      options: { delay: 1200, presence: 'composing' }
+      caption: caption,
+      media: fullMediaUrl,
+      mediatype: 'image',
+      mimetype: mimetype,
+      fileName: fileName,
     }, {
       headers: { 'Content-Type': 'application/json', 'apikey': config.apiKey },
     });

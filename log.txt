@@ -1,28 +1,20 @@
- => ERROR [build 6/6] RUN npm run build                                                      175.7s
+ => ERROR [build 6/6] RUN npm run build                                                      168.3s
 ------
  > [build 6/6] RUN npm run build:
-0.805
-0.805 > frontend@0.1.0 build
-0.805 > react-scripts build
-0.805
-4.598 Creating an optimized production build...
-175.4 Failed to compile.
-175.4
-175.4 [eslint]
-175.4 src/pages/Relatorios/Diario.js
-175.4   Line 17:26:  'user' is not defined         no-undef
-175.4   Line 20:49:  Unexpected use of 'location'  no-restricted-globals
-175.4   Line 25:9:   Unexpected use of 'location'  no-restricted-globals
-175.4
-175.4 src/pages/Relatorios/Mensal.js
-175.4   Line 16:26:  'user' is not defined  no-undef
-175.4
-175.4 src/pages/Relatorios/Semanal.js
-175.4   Line 16:26:  'user' is not defined  no-undef
-175.4
-175.4 Search for the keywords to learn more about each error.
-175.4
-175.4
+0.706
+0.706 > frontend@0.1.0 build
+0.706 > react-scripts build
+0.706
+4.285 Creating an optimized production build...
+168.0 Failed to compile.
+168.0
+168.0 [eslint]
+168.0 src/pages/CampaignsPage.js
+168.0   Line 167:6:  'Paper' is not defined  react/jsx-no-undef
+168.0
+168.0 Search for the keywords to learn more about each error.
+168.0
+168.0
 ------
 Dockerfile:14
 --------------------

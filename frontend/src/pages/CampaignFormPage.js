@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useCallback } from 'react';
+import React, { useEffect, useReducer, useCallback, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   TextField,
@@ -19,15 +19,17 @@ import {
   Tabs,
   Tab,
   IconButton,
-  Input
+  styled
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import campanhaService from '../services/campanhaService';
 import recompensaService from '../services/recompensaService';
 import roletaService from '../services/roletaService';
 import ClientSegmentSelector from '../components/campaigns/ClientSegmentSelector';
+import WhatsappPreview from '../components/WhatsappPreview';
 
 const initialState = {
   campaign: {
@@ -40,10 +42,10 @@ const initialState = {
     maxMessageDelaySeconds: 0,
     rewardType: 'none',
     startDate: null,
-    endDate: null,
-    media: null, // Para o arquivo da imagem
+    dataValidade: null,
+    media: null,
   },
-  mediaPreview: null, // Para a pré-visualização da imagem
+  mediaPreview: null,
   recompensas: [],
   roletas: [],
   loading: true,
@@ -56,14 +58,18 @@ function campaignFormReducer(state, action) {
     case 'FETCH_START':
       return { ...state, loading: true, error: '' };
     case 'FETCH_SUCCESS':
-      const campaignData = action.payload.campaign || {};
+      const fetchedCampaign = action.payload.campaign || {};
+      // Garante que mensagens seja sempre um array com pelo menos um item
+      if (!Array.isArray(fetchedCampaign.mensagens) || fetchedCampaign.mensagens.length === 0) {
+        fetchedCampaign.mensagens = [''];
+      }
       return {
         ...state,
         loading: false,
         recompensas: action.payload.recompensas,
         roletas: action.payload.roletas,
-        campaign: { ...state.campaign, ...campaignData },
-        mediaPreview: campaignData.mediaUrl ? `${process.env.REACT_APP_API_URL}${campaignData.mediaUrl}` : null,
+        campaign: { ...initialState.campaign, ...fetchedCampaign },
+        mediaPreview: fetchedCampaign.mediaUrl ? `${process.env.REACT_APP_API_URL}${fetchedCampaign.mediaUrl}` : null,
       };
     case 'FETCH_ERROR':
       return { ...state, loading: false, error: action.payload };
@@ -120,11 +126,24 @@ function campaignFormReducer(state, action) {
   }
 }
 
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
+
 const CampaignFormPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [state, dispatch] = useReducer(campaignFormReducer, initialState);
   const { campaign, recompensas, roletas, loading, error, activeTab, mediaPreview } = state;
+  const [activeMessageTab, setActiveMessageTab] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
@@ -140,12 +159,6 @@ const CampaignFormPage = () => {
         if (id) {
           const response = await campanhaService.getById(id);
           campaignData = response.data;
-          if (typeof campaignData.mensagens === 'string') {
-            campaignData.mensagens = [campaignData.mensagens];
-          } else if (!Array.isArray(campaignData.mensagens) || campaignData.mensagens.length === 0) {
-            campaignData.mensagens = [''];
-          }
-
           if (campaignData.recompensaId) {
             campaignData.rewardType = 'recompensa';
           } else if (campaignData.roletaId) {
@@ -173,9 +186,7 @@ const CampaignFormPage = () => {
     };
     fetchData();
 
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, [id]);
 
   const handleFieldChange = (field) => (event) => {
@@ -203,18 +214,13 @@ const CampaignFormPage = () => {
 
   const handleAddMessage = () => {
     dispatch({ type: 'ADD_MESSAGE' });
+    setActiveMessageTab(campaign.mensagens.length);
   };
 
   const handleRemoveMessage = (index) => () => {
+    if (campaign.mensagens.length <= 1) return;
     dispatch({ type: 'REMOVE_MESSAGE', payload: index });
-  };
-
-  const handleSegmentChange = (value) => {
-    dispatch({ type: 'FIELD_CHANGE', payload: { field: 'criterioSelecao', value: { type: value } } });
-  };
-
-  const handleRewardTypeChange = (event) => {
-    dispatch({ type: 'REWARD_TYPE_CHANGE', payload: event.target.value });
+    setActiveMessageTab(prev => Math.max(0, prev - 1));
   };
 
   const handleTabChange = (event, newValue) => {
@@ -222,25 +228,30 @@ const CampaignFormPage = () => {
   };
 
   const isFormValid = useCallback(() => {
-    return campaign.nome && campaign.mensagens.every(msg => msg.trim() !== '') && (campaign.rewardType === 'none' || (campaign.rewardType === 'recompensa' && campaign.recompensaId) || (campaign.rewardType === 'roleta' && campaign.roletaId));
+    const hasReward = campaign.rewardType === 'none' || (campaign.rewardType === 'recompensa' && campaign.recompensaId) || (campaign.rewardType === 'roleta' && campaign.roletaId);
+    return campaign.nome && campaign.mensagens.every(msg => msg.trim() !== '') && campaign.dataValidade && hasReward;
   }, [campaign]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isFormValid()) {
-      dispatch({ type: 'FETCH_ERROR', payload: 'Preencha todos os campos obrigatórios e forneça pelo menos uma variação de mensagem.' });
+      dispatch({ type: 'FETCH_ERROR', payload: 'Preencha todos os campos obrigatórios (Nome, Mensagem e Data de Validade).' });
       return;
     }
 
     const formData = new FormData();
+    // Limpa o erro antes de submeter
+    dispatch({ type: 'FETCH_ERROR', payload: '' });
+
     Object.keys(campaign).forEach(key => {
-      if (key === 'media' && campaign.media) {
-        formData.append('media', campaign.media);
-      } else if (campaign[key] !== null && campaign[key] !== undefined) {
-        if (typeof campaign[key] === 'object' && key !== 'media') {
-          formData.append(key, JSON.stringify(campaign[key]));
+      const value = campaign[key];
+      if (key === 'media' && value) {
+        formData.append('media', value);
+      } else if (value !== null && value !== undefined) {
+        if (typeof value === 'object' && key !== 'media') {
+          formData.append(key, JSON.stringify(value));
         } else {
-          formData.append(key, campaign[key]);
+          formData.append(key, value);
         }
       }
     });
@@ -257,12 +268,10 @@ const CampaignFormPage = () => {
     }
   };
 
-  if (loading) {
-    return <CircularProgress />;
-  }
+  if (loading) return <CircularProgress />;
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="xl">
       <Typography variant="h4" component="h1" gutterBottom sx={{ mt: 4, mb: 4 }}>
         {id ? 'Editar Campanha' : 'Nova Campanha'}
       </Typography>
@@ -270,15 +279,16 @@ const CampaignFormPage = () => {
         <Paper sx={{ p: 3, mb: 3 }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
             <Tabs value={activeTab} onChange={handleTabChange} aria-label="abas do formulário de campanha">
-              <Tab label="Conteúdo" />
-              <Tab label="Público e Recompensa" />
-              <Tab label="Agendamento" />
+              <Tab label="1. Conteúdo e Visualização" />
+              <Tab label="2. Público e Recompensa" />
+              <Tab label="3. Agendamento e Envio" />
             </Tabs>
           </Box>
 
           {activeTab === 0 && (
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
+            <Grid container spacing={4}>
+              <Grid item xs={12} md={7}>
+                <Typography variant="h6" gutterBottom>Editor da Campanha</Typography>
                 <TextField
                   fullWidth
                   margin="normal"
@@ -287,51 +297,48 @@ const CampaignFormPage = () => {
                   onChange={handleFieldChange('nome')}
                   required
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="h6" gutterBottom>Imagem da Campanha (Opcional)</Typography>
-                <Input
-                  type="file"
-                  onChange={handleFileChange}
-                  inputProps={{ accept: 'image/*' }}
-                  sx={{ mb: 2 }}
-                />
-                {mediaPreview && (
-                  <Box sx={{ mt: 2, mb: 2 }}>
-                    <Typography variant="subtitle1">Pré-visualização:</Typography>
-                    <img src={mediaPreview} alt="Preview" style={{ maxHeight: '200px', maxWidth: '100%', borderRadius: '8px' }} />
-                  </Box>
-                )}
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>Variações de Mensagem</Typography>
-                {campaign.mensagens.map((msg, index) => (
-                  <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <TextField
-                      fullWidth
-                      label={`Mensagem ${index + 1}`}
-                      value={msg}
-                      onChange={handleMessageChange(index)}
-                      multiline
-                      rows={4}
-                      helperText="Variáveis: {{nome_cliente}}, {{codigo_premio}}, {{data_validade}}, {{nome_recompensa}}, {{nome_campanha}}"
-                      required
-                    />
-                    {campaign.mensagens.length > 1 && (
-                      <IconButton onClick={handleRemoveMessage(index)} color="error" sx={{ ml: 1 }}>
-                        <RemoveIcon />
-                      </IconButton>
-                    )}
-                  </Box>
-                ))}
-                <Button
-                  startIcon={<AddIcon />}
-                  onClick={handleAddMessage}
-                  variant="outlined"
-                  sx={{ mt: 1 }}
-                >
-                  Adicionar Variação de Mensagem
+                
+                <Button component="label" variant="outlined" startIcon={<PhotoCamera />} sx={{ mt: 2, mb: 2 }}>
+                  {mediaPreview ? 'Trocar Imagem' : 'Adicionar Imagem'}
+                  <VisuallyHiddenInput type="file" onChange={handleFileChange} accept="image/*" />
                 </Button>
+
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                  <Tabs value={activeMessageTab} onChange={(e, newValue) => setActiveMessageTab(newValue)} aria-label="abas de variações de mensagem">
+                    {campaign.mensagens.map((_, index) => (
+                      <Tab key={index} label={`Variação ${index + 1}`} />
+                    ))}
+                    <IconButton onClick={handleAddMessage} size="small" sx={{ ml: 1 }}><AddIcon /></IconButton>
+                  </Tabs>
+                </Box>
+
+                <Box sx={{ pt: 2 }}>
+                  <TextField
+                    fullWidth
+                    label={`Texto da Mensagem ${activeMessageTab + 1}`}
+                    value={campaign.mensagens[activeMessageTab]}
+                    onChange={handleMessageChange(activeMessageTab)}
+                    multiline
+                    rows={8}
+                    helperText="Variáveis: {{nome_cliente}}, {{codigo_premio}}, {{data_validade}}, {{nome_recompensa}}, {{nome_campanha}}"
+                    required
+                  />
+                  {campaign.mensagens.length > 1 && (
+                    <Button onClick={handleRemoveMessage(activeMessageTab)} color="error" startIcon={<RemoveIcon />} sx={{ mt: 1 }}>
+                      Remover Variação
+                    </Button>
+                  )}
+                </Box>
+              </Grid>
+              
+              <Grid item xs={12} md={5}>
+                <Typography variant="h6" gutterBottom align="center">Pré-visualização</Typography>
+                <Box sx={{ position: 'sticky', top: '80px' }}>
+                  <WhatsappPreview
+                    message={campaign.mensagens[activeMessageTab]}
+                    imagePreview={mediaPreview}
+                  />
+                </Box>
               </Grid>
             </Grid>
           )}
@@ -341,13 +348,13 @@ const CampaignFormPage = () => {
               <Grid item xs={12} md={6}>
                 <ClientSegmentSelector
                   selectedValue={campaign.criterioSelecao?.type}
-                  onChange={handleSegmentChange}
+                  onChange={(value) => dispatch({ type: 'FIELD_CHANGE', payload: { field: 'criterioSelecao', value: { type: value } } })}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
                 <FormControl component="fieldset" fullWidth margin="normal">
                   <FormLabel component="legend">Tipo de Prêmio</FormLabel>
-                  <RadioGroup row name="rewardType" value={campaign.rewardType} onChange={handleRewardTypeChange}>
+                  <RadioGroup row name="rewardType" value={campaign.rewardType} onChange={(e) => dispatch({ type: 'REWARD_TYPE_CHANGE', payload: e.target.value })}>
                     <FormControlLabel value="none" control={<Radio />} label="Nenhum" />
                     <FormControlLabel value="recompensa" control={<Radio />} label="Recompensa" />
                     <FormControlLabel value="roleta" control={<Radio />} label="Roleta" />
@@ -363,7 +370,7 @@ const CampaignFormPage = () => {
                     name="recompensaId"
                     value={campaign.recompensaId || ''}
                     onChange={handleFieldChange('recompensaId')}
-                    required
+                    required={campaign.rewardType === 'recompensa'}
                   >
                     {recompensas.map(r => <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>)}
                   </TextField>
@@ -378,7 +385,7 @@ const CampaignFormPage = () => {
                     name="roletaId"
                     value={campaign.roletaId || ''}
                     onChange={handleFieldChange('roletaId')}
-                    required
+                    required={campaign.rewardType === 'roleta'}
                   >
                     {roletas.map(r => <MenuItem key={r.id} value={r.id}>{r.nome}</MenuItem>)}
                   </TextField>
@@ -391,42 +398,42 @@ const CampaignFormPage = () => {
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <DateTimePicker
-                  label="Data de Início (Opcional)"
-                  value={campaign.startDate ? new Date(campaign.startDate) : null}
-                  onChange={(newValue) => handleDateChange('startDate', newValue)}
-                  renderInput={(params) => <TextField {...params} fullWidth margin="normal" helperText="Deixe em branco para enviar imediatamente após salvar." />}
+                  label="Data de Validade"
+                  value={campaign.dataValidade ? new Date(campaign.dataValidade) : null}
+                  onChange={(newValue) => handleDateChange('dataValidade', newValue)}
+                  renderInput={(params) => <TextField {...params} fullWidth margin="normal" required helperText="Data de validade para cupons e roletas." />}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
-                 <DateTimePicker
-                  label="Data de Fim (Opcional)"
-                  value={campaign.endDate ? new Date(campaign.endDate) : null}
-                  onChange={(newValue) => handleDateChange('endDate', newValue)}
-                  renderInput={(params) => <TextField {...params} fullWidth margin="normal" helperText="Data de validade para cupons e roletas." />}
+                <DateTimePicker
+                  label="Data de Início do Envio (Opcional)"
+                  value={campaign.startDate ? new Date(campaign.startDate) : null}
+                  onChange={(newValue) => handleDateChange('startDate', newValue)}
+                  renderInput={(params) => <TextField {...params} fullWidth margin="normal" helperText="Deixe em branco para processar o envio imediatamente." />}
                 />
               </Grid>
                <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
                   margin="normal"
-                  label="Atraso Mínimo entre Mensagens (segundos)"
+                  label="Atraso Mínimo (segundos)"
                   type="number"
                   value={campaign.minMessageDelaySeconds}
                   onChange={handleFieldChange('minMessageDelaySeconds')}
                   inputProps={{ min: 0 }}
-                  helperText="Atraso mínimo em segundos entre o envio de cada mensagem."
+                  helperText="Atraso mínimo entre o envio de cada mensagem."
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
                   margin="normal"
-                  label="Atraso Máximo entre Mensagens (segundos)"
+                  label="Atraso Máximo (segundos)"
                   type="number"
                   value={campaign.maxMessageDelaySeconds}
                   onChange={handleFieldChange('maxMessageDelaySeconds')}
                   inputProps={{ min: 0 }}
-                  helperText="Atraso máximo em segundos entre o envio de cada mensagem."
+                  helperText="Atraso máximo entre o envio de cada mensagem."
                 />
               </Grid>
             </Grid>

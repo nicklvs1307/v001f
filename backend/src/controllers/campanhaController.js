@@ -26,9 +26,10 @@ class CampanhaController {
       data.criterioSelecao = JSON.parse(data.criterioSelecao);
     }
 
-    // Handle nullish dates - FormData pode enviar 'null' ou 'undefined' como strings
+    // Handle nullish or invalid dates
     ['startDate', 'endDate', 'dataValidade'].forEach(dateField => {
-      if (data[dateField] === 'null' || data[dateField] === 'undefined' || data[dateField] === '') {
+      const dateValue = data[dateField];
+      if (dateValue === 'null' || dateValue === 'undefined' || dateValue === '' || new Date(dateValue).toString() === 'Invalid Date') {
         data[dateField] = null;
       }
     });

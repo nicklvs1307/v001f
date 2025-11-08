@@ -4,11 +4,9 @@ Método da solicitação
 POST
 Código de status
 500 Internal Server Error
-Endereço remoto
-95.217.16.187:443
 {
     "status": "error",
     "code": "HTTP_500",
-    "message": "ENOENT: no such file or directory, open '/usr/src/app/uploads/campaigns/unknown-1762609997279.png'",
-    "details": "Error: ENOENT: no such file or directory, open '/usr/src/app/uploads/campaigns/unknown-1762609997279.png'"
+    "message": "notNull Violation: Campanha.dataValidade cannot be null",
+    "details": "SequelizeValidationError: notNull Violation: Campanha.dataValidade cannot be null\n    at InstanceValidator._validate (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:50:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async InstanceValidator._validateAndRunHooks (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:60:7)\n    at async InstanceValidator.validate (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:54:12)\n    at async Campanha.save (/usr/src/app/node_modules/sequelize/lib/model.js:2426:7)\n    at async Campanha.create (/usr/src/app/node_modules/sequelize/lib/model.js:1362:12)\n    at async CampanhaController.create (/usr/src/app/src/controllers/campanhaController.js:25:24)"
 }

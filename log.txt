@@ -1,27 +1,30 @@
-URL da solicitação
-https://apivoltaki.towersfy.com/api/dashboard/main
-Método da solicitação
-GET
-Código de status
-500 Internal Server Erro
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "dashboardRepository.getMainDashboard is not a function",
-    "details": "TypeError: dashboardRepository.getMainDashboard is not a function\n    at /usr/src/app/src/controllers/dashboardController.js:81:57\n    at asyncUtilWrap (/usr/src/app/node_modules/express-async-handler/index.js:3:20)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at /usr/src/app/src/middlewares/authMiddleware.js:99:9\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
-}
-
-URL da solicitação
-https://apivoltaki.towersfy.com/api/dashboard/main?tenantId=3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd&startDate=2025-10-09&endDate=2025-11-08
-Método da solicitação
-GET
-Código de status
-500 Internal Server Error
-Endereço remoto
-
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "dashboardRepository.getMainDashboard is not a function",
-    "details": "TypeError: dashboardRepository.getMainDashboard is not a function\n    at /usr/src/app/src/controllers/dashboardController.js:81:57\n    at asyncUtilWrap (/usr/src/app/node_modules/express-async-handler/index.js:3:20)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at /usr/src/app/src/middlewares/authMiddleware.js:99:9\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
-}
+ => ERROR [build 6/6] RUN npm run build                                                      179.1s
+------
+ > [build 6/6] RUN npm run build:
+0.887
+0.887 > frontend@0.1.0 build
+0.887 > react-scripts build
+0.887
+4.282 Creating an optimized production build...
+178.6 Failed to compile.
+178.6
+178.6 [eslint]
+178.6 src/pages/SenderConnectPage.js
+178.6   Line 114:10:  'Divider' is not defined  react/jsx-no-undef
+178.6
+178.6 src/routes/AppRoutes.js
+178.6   Line 147:61:  'NuvemDePalavrasPage' is not defined  react/jsx-no-undef
+178.6
+178.6 Search for the keywords to learn more about each error.
+178.6
+178.6
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

@@ -60,6 +60,7 @@ const ResumoMesPage = React.lazy(() => import('../pages/Geral/ResumoMesPage'));
 const ComparativoPesquisaPage = React.lazy(() => import('../pages/Geral/ComparativoPesquisaPage'));
 const EvolucaoPage = React.lazy(() => import('../pages/Geral/EvolucaoPage'));
 const BenchmarkingPage = React.lazy(() => import('../pages/Geral/BenchmarkingPage'));
+const NuvemDePalavrasPage = React.lazy(() => import('../pages/Geral/NuvemDePalavrasPage'));
 const SenderPoolPage = React.lazy(() => import('../pages/SenderPoolPage'));
 const SenderConnectPage = React.lazy(() => import('../pages/SenderConnectPage'));
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Container, Typography, Box, Button, CircularProgress,
-  Alert, Paper, Chip, Stack, IconButton
+  Alert, Paper, Chip, Stack, IconButton, Divider
 } from '@mui/material';
 import senderPoolService from '../services/senderPoolService';
 import QRCode from 'react-qr-code';

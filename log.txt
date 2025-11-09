@@ -1,18 +1,16 @@
- => ERROR [build 6/6] RUN npm run build                                                      22.9s
+ => ERROR [build 6/6] RUN npm run build                                                      12.2s
 ------
  > [build 6/6] RUN npm run build:
-0.765
-0.765 > frontend@0.1.0 build
-0.765 > react-scripts build
-0.765
-4.231 Creating an optimized production build...
-22.69 Failed to compile.
-22.69
-22.69 [eslint]
-22.69 src/App.js
-22.69 Syntax error: Expected corresponding JSX closing tag for <LocalizationProvider>. (20:14) (20:14)
-22.69
-22.69
+0.773
+0.773 > frontend@0.1.0 build
+0.773 > react-scripts build
+0.773
+4.213 Creating an optimized production build...
+12.04 Failed to compile.
+12.04
+12.04 Module not found: Error: Can't resolve 'socket.io-client' in '/app/src/context'
+12.04
+12.04
 ------
 Dockerfile:14
 --------------------

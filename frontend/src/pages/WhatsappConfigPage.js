@@ -129,7 +129,7 @@ const WhatsappConfigPage = () => {
     }
 
     // Esta página agora é apenas para o Super Admin
-    if (user?.role !== 'Super Admin') {
+    if (user?.role?.name !== 'Super Admin') {
         return (
             <Container>
                 <Alert severity="error" sx={{ mt: 3 }}>Acesso não autorizado.</Alert>

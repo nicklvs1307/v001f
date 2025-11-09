@@ -63,6 +63,8 @@ const BenchmarkingPage = React.lazy(() => import('../pages/Geral/BenchmarkingPag
 const NuvemDePalavrasPage = React.lazy(() => import('../pages/Geral/NuvemDePalavrasPage'));
 const SenderPoolPage = React.lazy(() => import('../pages/SenderPoolPage'));
 const SenderConnectPage = React.lazy(() => import('../pages/SenderConnectPage'));
+const SystemReportsPage = React.lazy(() => import('../pages/SystemReportsPage'));
+const TenantReportsPage = React.lazy(() => import('../pages/TenantReportsPage'));
 
 
 const AppRoutes = () => {
@@ -96,6 +98,8 @@ const AppRoutes = () => {
             <Route path="whatsapp-config" element={<WhatsappConfigPage />} />
             <Route path="sender-pool" element={<SenderPoolPage />} />
             <Route path="senders/:id/connect" element={<SenderConnectPage />} />
+            <Route path="reports/system-overview" element={<SystemReportsPage />} />
+            <Route path="reports/tenant-reports" element={<TenantReportsPage />} />
           </Route>
 
           {/* Painel Principal do Tenant */}

@@ -79,9 +79,9 @@ const TenantList = () => {
     const fetchTenants = async () => {
         try {
             setLoading(true);
-            const data = await tenantService.getAllTenants();
-            console.log("Dados retornados por getAllTenants:", data);
-            setTenants(data);
+            const response = await tenantService.getAllTenants();
+            console.log("Dados retornados por getAllTenants:", response.data);
+            setTenants(response.data);
             // setError(''); // Removed
         } catch (err) {
             showNotification(err.message || 'Falha ao buscar tenants.', 'error'); // Show error notification

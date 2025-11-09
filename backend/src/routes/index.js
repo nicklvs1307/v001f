@@ -32,6 +32,7 @@ const automationRoutes = require('./automationRoutes');
 
 // Super Admin Routes
 const senderRoutes = require('./superadmin/senderRoutes');
+const reportRoutes = require('./superadmin/reportRoutes');
 
 module.exports = (router) => {
   // Rota para Health Check do Docker
@@ -41,6 +42,7 @@ module.exports = (router) => {
 
   // Super Admin Routes
   router.use('/superadmin/senders', senderRoutes);
+  router.use('/superadmin/reports', reportRoutes);
 
   router.use('/auth', authRoutes);
   router.use('/users', userRoutes);

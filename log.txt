@@ -1,30 +1,12 @@
- => ERROR [build 6/6] RUN npm run build                                                      179.1s
-------
- > [build 6/6] RUN npm run build:
-0.887
-0.887 > frontend@0.1.0 build
-0.887 > react-scripts build
-0.887
-4.282 Creating an optimized production build...
-178.6 Failed to compile.
-178.6
-178.6 [eslint]
-178.6 src/pages/SenderConnectPage.js
-178.6   Line 114:10:  'Divider' is not defined  react/jsx-no-undef
-178.6
-178.6 src/routes/AppRoutes.js
-178.6   Line 147:61:  'NuvemDePalavrasPage' is not defined  react/jsx-no-undef
-178.6
-178.6 Search for the keywords to learn more about each error.
-178.6
-178.6
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+URL da solicitação
+https://apivoltaki.towersfy.com/api/superadmin/senders
+Método da solicitação
+GET
+Código de status
+401 Unauthorized
+{
+    "status": "error",
+    "code": "HTTP_401",
+    "message": "Token inválido ou expirado. Acesso não autorizado.",
+    "details": "Error: Token inválido ou expirado. Acesso não autorizado.\n    at protect (/usr/src/app/src/middlewares/authMiddleware.js:38:23)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/usr/src/app/node_modules/express/lib/router/index.js:328:13)\n    at /usr/src/app/node_modules/express/lib/router/index.js:286:9\n    at Function.process_params (/usr/src/app/node_modules/express/lib/router/index.js:346:12)\n    at next (/usr/src/app/node_modules/express/lib/router/index.js:280:10)\n    at Function.handle (/usr/src/app/node_modules/express/lib/router/index.js:175:3)\n    at router (/usr/src/app/node_modules/express/lib/router/index.js:47:12)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/usr/src/app/node_modules/express/lib/router/index.js:328:13)"
+}

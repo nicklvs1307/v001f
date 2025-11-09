@@ -29,6 +29,8 @@ import { ROLES } from '../../constants/roles';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import DnsIcon from '@mui/icons-material/Dns';
 
+import AssessmentIcon from '@mui/icons-material/Assessment'; // Importar o ícone de relatórios
+
 const drawerWidth = 250;
 
 const SuperAdminLayout = () => {
@@ -65,6 +67,13 @@ const SuperAdminLayout = () => {
         { text: 'Tenants', icon: <PeopleIcon />, path: '/superadmin/tenants', roles: [ROLES.SUPER_ADMIN] },
         { text: 'Configurações WhatsApp', icon: <WhatsAppIcon />, path: '/superadmin/whatsapp-config', roles: [ROLES.SUPER_ADMIN] },
         { text: 'Pool de Disparo', icon: <DnsIcon />, path: '/superadmin/sender-pool', roles: [ROLES.SUPER_ADMIN] },
+        {
+            text: 'Relatórios', icon: <AssessmentIcon />, roles: [ROLES.SUPER_ADMIN],
+            children: [
+                { text: 'Visão Geral do Sistema', path: '/superadmin/reports/system-overview', roles: [ROLES.SUPER_ADMIN] },
+                { text: 'Relatórios por Restaurante', path: '/superadmin/reports/tenant-reports', roles: [ROLES.SUPER_ADMIN] },
+            ],
+        },
     ], []);
 
     const getPageTitle = () => {

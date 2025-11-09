@@ -65,6 +65,7 @@ const SenderPoolPage = React.lazy(() => import('../pages/SenderPoolPage'));
 const SenderConnectPage = React.lazy(() => import('../pages/SenderConnectPage'));
 const SystemReportsPage = React.lazy(() => import('../pages/SystemReportsPage'));
 const TenantReportsPage = React.lazy(() => import('../pages/TenantReportsPage'));
+const SuperAdminDashboardPage = React.lazy(() => import('../pages/SuperAdminDashboardPage'));
 
 
 const AppRoutes = () => {
@@ -93,7 +94,8 @@ const AppRoutes = () => {
         <Route element={<PrivateRoute />}>
           {/* Painel do Super Admin */}
           <Route path="/superadmin" element={<SuperAdminLayout />}>
-            <Route index element={<Navigate to="tenants" />} />
+            <Route index element={<SuperAdminDashboardPage />} />
+            <Route path="dashboard" element={<SuperAdminDashboardPage />} />
             <Route path="tenants" element={<TenantsPage />} />
             <Route path="whatsapp-config" element={<WhatsappConfigPage />} />
             <Route path="sender-pool" element={<SenderPoolPage />} />

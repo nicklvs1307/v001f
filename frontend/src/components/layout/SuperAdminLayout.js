@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useMemo } from 'react';
+import React, { useState, useContext, useMemo } from 'react';
 import {
     AppBar,
     Toolbar,
@@ -14,12 +14,12 @@ import {
     Divider,
     Button,
     Menu,
-    MenuItem,
+    MenuItem as MuiMenuItem,
+    Collapse,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
-import SettingsIcon from '@mui/icons-material/Settings';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import StarsIcon from '@mui/icons-material/Stars';
@@ -28,8 +28,9 @@ import AuthContext from '../../context/AuthContext';
 import { ROLES } from '../../constants/roles';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import DnsIcon from '@mui/icons-material/Dns';
-
-import AssessmentIcon from '@mui/icons-material/Assessment'; // Importar o ícone de relatórios
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 
 const drawerWidth = 250;
 
@@ -39,6 +40,7 @@ const SuperAdminLayout = () => {
     const location = useLocation();
     const { user, logout } = useContext(AuthContext);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [openReports, setOpenReports] = useState(false);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -58,27 +60,45 @@ const SuperAdminLayout = () => {
     };
 
     const handleProfile = () => {
-        navigate('/dashboard/profile'); // Navigate to the normal dashboard profile
+        navigate('/dashboard/profile');
         handleClose();
     };
 
+    const handleReportsClick = () => {
+        setOpenReports(!openReports);
+    };
+
     const menuItems = useMemo(() => [
-        { text: 'Voltar ao Dashboard', icon: <DashboardIcon />, path: '/dashboard', roles: [ROLES.SUPER_ADMIN] },
+        { text: 'Dashboard', icon: <DashboardIcon />, path: '/superadmin/dashboard', roles: [ROLES.SUPER_ADMIN] },
         { text: 'Tenants', icon: <PeopleIcon />, path: '/superadmin/tenants', roles: [ROLES.SUPER_ADMIN] },
         { text: 'Configurações WhatsApp', icon: <WhatsAppIcon />, path: '/superadmin/whatsapp-config', roles: [ROLES.SUPER_ADMIN] },
         { text: 'Pool de Disparo', icon: <DnsIcon />, path: '/superadmin/sender-pool', roles: [ROLES.SUPER_ADMIN] },
         {
             text: 'Relatórios', icon: <AssessmentIcon />, roles: [ROLES.SUPER_ADMIN],
+            onClick: handleReportsClick,
+            open: openReports,
             children: [
                 { text: 'Visão Geral do Sistema', path: '/superadmin/reports/system-overview', roles: [ROLES.SUPER_ADMIN] },
                 { text: 'Relatórios por Restaurante', path: '/superadmin/reports/tenant-reports', roles: [ROLES.SUPER_ADMIN] },
             ],
         },
-    ], []);
+        { text: 'Voltar ao App', icon: <StarsIcon />, path: '/dashboard', roles: [ROLES.SUPER_ADMIN] },
+    ], [openReports]);
 
     const getPageTitle = () => {
-        const currentItem = menuItems.find(item => item.path === location.pathname);
-        return currentItem ? currentItem.text : 'Painel Super Admin';
+        for (const item of menuItems) {
+            if (item.path === location.pathname) {
+                return item.text;
+            }
+            if (item.children) {
+                for (const child of item.children) {
+                    if (child.path === location.pathname) {
+                        return child.text;
+                    }
+                }
+            }
+        }
+        return 'Painel Super Admin';
     };
 
     const drawer = (
@@ -89,22 +109,39 @@ const SuperAdminLayout = () => {
             <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
             <List>
                 {menuItems.map((item) => (
-                    <ListItemButton
-                        key={item.text}
-                        onClick={() => navigate(item.path)}
-                        selected={location.pathname === item.path}
-                    >
-                        <ListItemIcon sx={{ color: 'white' }}>
-                            {item.icon}
-                        </ListItemIcon>
-                        <ListItemText primary={item.text} />
-                    </ListItemButton>
+                    <React.Fragment key={item.text}>
+                        <ListItemButton
+                            onClick={item.children ? item.onClick : () => navigate(item.path)}
+                            selected={!item.children && location.pathname === item.path}
+                        >
+                            <ListItemIcon sx={{ color: 'white' }}>
+                                {item.icon}
+                            </ListItemIcon>
+                            <ListItemText primary={item.text} />
+                            {item.children ? (item.open ? <ExpandLess /> : <ExpandMore />) : null}
+                        </ListItemButton>
+                        {item.children && (
+                            <Collapse in={item.open} timeout="auto" unmountOnExit>
+                                <List component="div" disablePadding>
+                                    {item.children.map((child) => (
+                                        <ListItemButton
+                                            key={child.text}
+                                            sx={{ pl: 4 }}
+                                            onClick={() => navigate(child.path)}
+                                            selected={location.pathname === child.path}
+                                        >
+                                            <ListItemText primary={child.text} />
+                                        </ListItemButton>
+                                    ))}
+                                </List>
+                            </Collapse>
+                        )}
+                    </React.Fragment>
                 ))}
             </List>
         </div>
     );
 
-    // Basic protection, assuming PrivateRoute handles the main role check
     if (user?.role?.name !== ROLES.SUPER_ADMIN) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -167,8 +204,8 @@ const SuperAdminLayout = () => {
                             open={Boolean(anchorEl)}
                             onClose={handleClose}
                         >
-                            <MenuItem onClick={handleProfile}>Ver Perfil</MenuItem>
-                            <MenuItem onClick={handleLogout}>Sair</MenuItem>
+                            <MuiMenuItem onClick={handleProfile}>Ver Perfil</MuiMenuItem>
+                            <MuiMenuItem onClick={handleLogout}>Sair</MuiMenuItem>
                         </Menu>
                     </Box>
                 </Toolbar>

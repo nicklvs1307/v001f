@@ -17,8 +17,7 @@ function App() {
             <NotificationProvider>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <AppRoutes /> {/* Usar o componente AppRoutes */}
-              </a
-              >
+              </LocalizationProvider>
             </NotificationProvider>
           </CustomThemeProvider>
         </SocketProvider>

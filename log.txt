@@ -1,17 +1,18 @@
- => ERROR [build 6/6] RUN npm run build                                                       12.7s
+ => ERROR [build 6/6] RUN npm run build                                                      22.9s
 ------
  > [build 6/6] RUN npm run build:
-0.553
-0.553 > frontend@0.1.0 build
-0.553 > react-scripts build
-0.553
-2.890 Creating an optimized production build...
-12.48 Failed to compile.
-12.48
-12.49 Module not found: Error: Can't resolve '../components/superadmin/SenderFormModal' in '/app/sr
-/pages'
-12.49
-12.49
+0.765
+0.765 > frontend@0.1.0 build
+0.765 > react-scripts build
+0.765
+4.231 Creating an optimized production build...
+22.69 Failed to compile.
+22.69
+22.69 [eslint]
+22.69 src/App.js
+22.69 Syntax error: Expected corresponding JSX closing tag for <LocalizationProvider>. (20:14) (20:14)
+22.69
+22.69
 ------
 Dockerfile:14
 --------------------
@@ -21,5 +22,4 @@ Dockerfile:14
   15 |
   16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
 --------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete succes
-fully: exit code: 1
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

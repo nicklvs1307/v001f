@@ -381,7 +381,11 @@ const createSenderRemoteInstance = async (sender) => {
 };
 
 const getSenderQrCodeForConnect = async (sender) => {
-  await createSenderRemoteInstance(sender);
+  const createResult = await createSenderRemoteInstance(sender);
+  if (createResult && createResult.status === 'success' && createResult.code === 'INSTANCE_EXISTS') {
+    // If instance already exists, we don't need to get a new QR code, just return empty
+    return { qrCode: '' };
+  }
   try {
     const response = await axios.get(`${sender.apiUrl}/instance/connect/${sender.instanceName}`, { headers: { 'apikey': sender.apiKey } });
     return response.data;

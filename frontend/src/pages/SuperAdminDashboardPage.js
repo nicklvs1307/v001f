@@ -12,7 +12,7 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { People, Store, Assessment } from '@mui/icons-material';
 import StatCard from '../components/StatCard';
-import reportService from '../services/reportService'; // Assuming you have a service to fetch the data
+import reportService from '../services/reportService';
 
 const SuperAdminDashboardPage = () => {
   const [dashboardData, setDashboardData] = useState(null);
@@ -24,33 +24,10 @@ const SuperAdminDashboardPage = () => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-        // TODO: Uncomment when the backend endpoint is ready
-        // const data = await reportService.getSuperAdminDashboard();
-        // setDashboardData(data);
-
-        // Mock data for now
-        const mockData = {
-          totalTenants: 15,
-          totalUsers: 250,
-          totalSurveys: 80,
-          tenantsByPlan: [
-            { name: 'Básico', value: 8 },
-            { name: 'Pro', value: 5 },
-            { name: 'Enterprise', value: 2 },
-          ],
-          userGrowth: [
-            { name: 'Jan', value: 20 },
-            { name: 'Fev', value: 45 },
-            { name: 'Mar', value: 60 },
-            { name: 'Abr', value: 80 },
-            { name: 'Mai', value: 110 },
-            { name: 'Jun', value: 150 },
-          ],
-        };
-        setDashboardData(mockData);
-
+        const response = await reportService.getSuperAdminDashboard();
+        setDashboardData(response.data);
       } catch (err) {
-        setError(err.message || 'Failed to load dashboard data.');
+        setError(err.response?.data?.message || 'Failed to load dashboard data.');
       } finally {
         setLoading(false);
       }

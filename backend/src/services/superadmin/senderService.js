@@ -29,7 +29,7 @@ class SenderService {
   async createSender(data) {
     // Aqui você pode adicionar a lógica para criar a instância remotamente também, se necessário
     const newSender = await whatsappSenderRepository.create(data);
-    await whatsappService.createSenderInstance(newSender);
+    await whatsappService.createSenderRemoteInstance(newSender);
     return newSender;
   }
 

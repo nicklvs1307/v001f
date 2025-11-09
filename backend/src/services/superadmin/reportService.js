@@ -25,7 +25,7 @@ class ReportService {
     });
 
     const tenantReports = await Promise.all(tenants.map(async (tenant) => {
-      const activeClients = await Client.count({ where: { tenantId: tenant.id, status: 'active' } });
+      const activeClients = await Client.count({ where: { tenantId: tenant.id } });
       const activeCampaigns = await Campanha.count({ where: { tenantId: tenant.id, status: { [Op.in]: ['processing', 'scheduled'] } } });
       const totalSurveys = await Pesquisa.count({ where: { tenantId: tenant.id } });
 

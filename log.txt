@@ -1,23 +1,26 @@
- => ERROR [build 6/6] RUN npm run build                                                      12.2s
-------
- > [build 6/6] RUN npm run build:
-0.773
-0.773 > frontend@0.1.0 build
-0.773 > react-scripts build
-0.773
-4.213 Creating an optimized production build...
-12.04 Failed to compile.
-12.04
-12.04 Module not found: Error: Can't resolve 'socket.io-client' in '/app/src/context'
-12.04
-12.04
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+URL da solicitação
+https://apivoltaki.towersfy.com/api/superadmin/reports/tenant-reports
+Método da solicitação
+GET
+Código de status
+500 Internal Server Error
+{
+    "status": "error",
+    "code": "HTTP_500",
+    "message": "column Client.status does not exist",
+    "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.rawSelect (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:434:18)\n    at async Client.aggregate (/usr/src/app/node_modules/sequelize/lib/model.js:1277:19)\n    at async Client.count (/usr/src/app/node_modules/sequelize/lib/model.js:1306:20)\n    at async /usr/src/app/src/services/superadmin/reportService.js:28:29\n    at async Promise.all (index 0)\n    at async ReportService.getTenantReports (/usr/src/app/src/services/superadmin/reportService.js:27:27)\n    at async getTenantReports (/usr/src/app/src/controllers/superadmin/reportController.js:16:23)"
+}
+
+URL da solicitação
+https://apivoltaki.towersfy.com/api/superadmin/senders
+Método da solicitação
+POST
+Código de status
+500 Internal Server Error
+
+{
+    "status": "error",
+    "code": "HTTP_500",
+    "message": "notNull Violation: WhatsappSender.apiUrl cannot be null,\nnotNull Violation: WhatsappSender.apiKey cannot be null",
+    "details": "SequelizeValidationError: notNull Violation: WhatsappSender.apiUrl cannot be null,\nnotNull Violation: WhatsappSender.apiKey cannot be null\n    at InstanceValidator._validate (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:50:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async InstanceValidator._validateAndRunHooks (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:60:7)\n    at async InstanceValidator.validate (/usr/src/app/node_modules/sequelize/lib/instance-validator.js:54:12)\n    at async WhatsappSender.save (/usr/src/app/node_modules/sequelize/lib/model.js:2426:7)\n    at async WhatsappSender.create (/usr/src/app/node_modules/sequelize/lib/model.js:1362:12)\n    at async SenderService.createSender (/usr/src/app/src/services/superadmin/senderService.js:31:23)\n    at async create (/usr/src/app/src/controllers/superadmin/senderController.js:26:25)"
+}

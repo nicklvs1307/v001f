@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {
   Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField,
-  Grid, FormControl, InputLabel, Select, MenuItem
+  Grid,
 } from '@mui/material';
 
 const SenderFormModal = ({ open, onClose, onSave, sender }) => {
   const [formData, setFormData] = useState({
     name: '',
+    apiUrl: '',
+    apiKey: '',
     instanceName: '',
     priority: 1,
     dailyLimit: 100,
@@ -16,6 +18,8 @@ const SenderFormModal = ({ open, onClose, onSave, sender }) => {
     if (sender) {
       setFormData({
         name: sender.name || '',
+        apiUrl: sender.apiUrl || '',
+        apiKey: sender.apiKey || '',
         instanceName: sender.instanceName || '',
         priority: sender.priority || 1,
         dailyLimit: sender.dailyLimit || 100,
@@ -23,6 +27,8 @@ const SenderFormModal = ({ open, onClose, onSave, sender }) => {
     } else {
       setFormData({
         name: '',
+        apiUrl: '',
+        apiKey: '',
         instanceName: '',
         priority: 1,
         dailyLimit: 100,
@@ -51,6 +57,28 @@ const SenderFormModal = ({ open, onClose, onSave, sender }) => {
               value={formData.name}
               onChange={handleChange}
               fullWidth
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="URL da API"
+              name="apiUrl"
+              value={formData.apiUrl}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="API Key"
+              name="apiKey"
+              type="password"
+              value={formData.apiKey}
+              onChange={handleChange}
+              fullWidth
+              required
             />
           </Grid>
           <Grid item xs={12}>
@@ -60,6 +88,7 @@ const SenderFormModal = ({ open, onClose, onSave, sender }) => {
               value={formData.instanceName}
               onChange={handleChange}
               fullWidth
+              required
             />
           </Grid>
           <Grid item xs={12} sm={6}>

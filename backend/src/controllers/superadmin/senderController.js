@@ -1,9 +1,10 @@
 const senderService = require('../../services/superadmin/senderService');
+const { getSocketIO } = require('../../socket');
 
 class SenderController {
   async getAll(req, res, next) {
     try {
-      const senders = await senderService.getAllSenders();
+      const senders = await senderService.getAllSendersWithStatus();
       res.status(200).json(senders);
     } catch (error) {
       next(error);
@@ -49,22 +50,35 @@ class SenderController {
     }
   }
 
-  async getInstanceStatus(req, res, next) {
-    try {
-      const { id } = req.params;
-      const status = await senderService.getSenderStatus(id);
-      res.status(200).json({ status });
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async getQrCode(req, res, next) {
     try {
       const { id } = req.params;
       const qrCodeData = await senderService.getSenderQrCode(id);
       res.status(200).json(qrCodeData);
     } catch (error) {
+      next(error);
+    }
+  }
+
+  async handleWebhook(req, res, next) {
+    try {
+      const { instance, event, data } = req.body;
+      console.log(`[Webhook] Received event '${event}' for instance '${instance}'`);
+
+      if (event === 'connection.update') {
+        const newStatus = data.state === 'CONNECTED' ? 'connected' : 'disconnected';
+        const updatedSender = await senderService.updateSenderStatusByInstance(instance, newStatus);
+
+        if (updatedSender) {
+          const io = getSocketIO();
+          console.log(`[Socket.IO] Emitting sender:update for sender ${updatedSender.id}`);
+          io.emit('sender:update', updatedSender);
+        }
+      }
+      
+      res.sendStatus(200);
+    } catch (error) {
+      console.error('[Webhook] Error:', error);
       next(error);
     }
   }

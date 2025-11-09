@@ -51,7 +51,8 @@ app.use("/api", apiRouter); // Use o router como middleware
 
 const http = require('http');
 const server = http.createServer(app);
-const io = require('./socket')(server);
+const { initSocket } = require('./socket');
+const io = initSocket(server);
 
 app.set('io', io);
 
@@ -72,11 +73,13 @@ const startServer = async () => {
     const couponReminderJob = require('./jobs/couponReminderJob');
     const birthdayAutomationJob = require('./jobs/birthdayAutomationJob');
     const couponExpirationJob = require('./jobs/couponExpirationJob');
+    const resetSenderCountsJob = require('./jobs/resetSenderCountsJob');
     
     dailyReportJob.start();
     couponReminderJob.start();
     birthdayAutomationJob.start();
     couponExpirationJob.start();
+    resetSenderCountsJob.start();
 
     // Instanciar dependências e inicializar agendamentos de campanha
     const CampanhaService = require('./services/campanhaService');

@@ -11,6 +11,12 @@ class WhatsappSenderRepository {
     return WhatsappSender.findByPk(id);
   }
 
+  async findByInstanceName(instanceName) {
+    return WhatsappSender.findOne({
+      where: { instanceName },
+    });
+  }
+
   async create(data) {
     return WhatsappSender.create(data);
   }

@@ -1,28 +1,36 @@
-import React, { createContext, useContext, useEffect } from 'react';
-import { socket } from '../services/socket';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import io from 'socket.io-client';
 import AuthContext from './AuthContext';
 
-const SocketContext = createContext();
-
-export const useSocket = () => {
-  return useContext(SocketContext);
-};
+export const SocketContext = createContext(null);
 
 export const SocketProvider = ({ children }) => {
-  const { user } = useContext(AuthContext);
+  const [socket, setSocket] = useState(null);
+  const { token } = useContext(AuthContext);
 
   useEffect(() => {
-    if (user) {
-      socket.auth = { token: user.token };
-      socket.connect();
-    } else {
-      socket.disconnect();
-    }
+    if (token) {
+      const newSocket = io(process.env.REACT_APP_API_URL || 'http://localhost:3001', {
+        auth: {
+          token,
+        },
+      });
 
-    return () => {
-      socket.disconnect();
-    };
-  }, [user]);
+      newSocket.on('connect', () => {
+        console.log('Socket.IO connected');
+      });
+
+      newSocket.on('disconnect', () => {
+        console.log('Socket.IO disconnected');
+      });
+
+      setSocket(newSocket);
+
+      return () => {
+        newSocket.disconnect();
+      };
+    }
+  }, [token]);
 
   return (
     <SocketContext.Provider value={socket}>

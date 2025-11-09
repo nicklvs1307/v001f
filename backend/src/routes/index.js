@@ -29,11 +29,18 @@ const roletaRoutes = require('./roletaRoutes');
 const whatsappWebhookRoutes = require('./whatsappWebhookRoutes');
 const roletaAdminRoutes = require('./roletaAdminRoutes');
 const automationRoutes = require('./automationRoutes');
+
+// Super Admin Routes
+const senderRoutes = require('./superadmin/senderRoutes');
+
 module.exports = (router) => {
   // Rota para Health Check do Docker
   router.get('/health', (_req, res) => {
     res.status(200).send('OK');
   });
+
+  // Super Admin Routes
+  router.use('/superadmin/senders', senderRoutes);
 
   router.use('/auth', authRoutes);
   router.use('/users', userRoutes);

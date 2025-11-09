@@ -3,9 +3,10 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { CircularProgress, Box } from '@mui/material';
 import PrivateRoute from './PrivateRoute';
 import DashboardLayout from '../components/layout/DashboardLayout';
-import PublicLayout from '../components/layout/PublicLayout'; // Importar PublicLayout
+import SuperAdminLayout from '../components/layout/SuperAdminLayout'; // Importar SuperAdminLayout
+import PublicLayout from '../components/layout/PublicLayout';
 import LoginPage from '../pages/LoginPage';
-import LandingPage from '../pages/LandingPage'; // Importar a nova LandingPage
+import LandingPage from '../pages/LandingPage';
 import PublicSurveyPage from '../pages/PublicSurveyPage';
 import ClientRegistrationPage from '../pages/ClientRegistrationPage';
 import RoulettePage from '../pages/RoulettePage';
@@ -37,9 +38,9 @@ const AttendantGoalsPage = React.lazy(() => import('../pages/AttendantGoalsPage'
 const GMBConfigsPage = React.lazy(() => import('../pages/GMBConfigsPage'));
 const GMBReviewsPage = React.lazy(() => import('../pages/GMBReviewsPage'));
 const RoulettePrizesPage = React.lazy(() => import('../pages/RoulettePrizesPage'));
-const RoletasPage = React.lazy(() => import('../pages/RoletasPage')); // Adicionar a nova página
+const RoletasPage = React.lazy(() => import('../pages/RoletasPage'));
 const WhatsappConfigPage = React.lazy(() => import('../pages/WhatsappConfigPage'));
-const WhatsappConnectPage = React.lazy(() => import('../pages/WhatsappConnectPage')); // Importar a nova página
+const WhatsappConnectPage = React.lazy(() => import('../pages/WhatsappConnectPage'));
 const AtendenteDashboardPage = React.lazy(() => import('../pages/AtendenteDashboardPage'));
 const CupomDashboardPage = React.lazy(() => import('../pages/CupomDashboardPage'));
 const ProfilePage = React.lazy(() => import('../pages/ProfilePage'));
@@ -59,7 +60,8 @@ const ResumoMesPage = React.lazy(() => import('../pages/Geral/ResumoMesPage'));
 const ComparativoPesquisaPage = React.lazy(() => import('../pages/Geral/ComparativoPesquisaPage'));
 const EvolucaoPage = React.lazy(() => import('../pages/Geral/EvolucaoPage'));
 const BenchmarkingPage = React.lazy(() => import('../pages/Geral/BenchmarkingPage'));
-const NuvemDePalavrasPage = React.lazy(() => import('../pages/Geral/NuvemDePalavrasPage'));
+const SenderPoolPage = React.lazy(() => import('../pages/SenderPoolPage'));
+const SenderConnectPage = React.lazy(() => import('../pages/SenderConnectPage'));
 
 
 const AppRoutes = () => {
@@ -86,15 +88,25 @@ const AppRoutes = () => {
 
         {/* Rotas Privadas */}
         <Route element={<PrivateRoute />}>
+          {/* Painel do Super Admin */}
+          <Route path="/superadmin" element={<SuperAdminLayout />}>
+            <Route index element={<Navigate to="tenants" />} />
+            <Route path="tenants" element={<TenantsPage />} />
+            <Route path="whatsapp-config" element={<WhatsappConfigPage />} />
+            <Route path="sender-pool" element={<SenderPoolPage />} />
+            <Route path="senders/:id/connect" element={<SenderConnectPage />} />
+          </Route>
+
+          {/* Painel Principal do Tenant */}
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<DashboardPage />} />
             <Route path="usuarios" element={<UsersPage />} />
             <Route path="cargos" element={<RolesPage />} />
-            <Route path="locatarios" element={<TenantsPage />} />
+            {/* <Route path="locatarios" element={<TenantsPage />} /> */} {/* Movido para superadmin */}
             <Route path="pesquisas" element={<SurveysPage />} />
             <Route path="pesquisas/create" element={<SurveyCreatePage />} />
-            <Route path="pesquisas/edit/:id" element={<SurveyCreatePage />} /> {/* Rota de Edição */}
-            <Route path="pesquisas/results/:id" element={<SurveyResultsPage />} /> {/* Rota de Resultados */}
+            <Route path="pesquisas/edit/:id" element={<SurveyCreatePage />} />
+            <Route path="pesquisas/results/:id" element={<SurveyResultsPage />} />
             <Route path="templates-pesquisa" element={<SurveyTemplatesPage />} />
             <Route path="perguntas" element={<QuestionsPage />} />
             <Route path="criterios" element={<CriteriosPage />} />
@@ -119,17 +131,14 @@ const AppRoutes = () => {
             <Route path="reviews-gmb" element={<GMBReviewsPage />} />
             <Route path="roletas" element={<RoletasPage />} />
             <Route path="roletas/:roletaId/premios" element={<RoulettePrizesPage />} />
-            <Route path="config-whatsapp" element={<WhatsappConfigPage />} />
-            <Route path="whatsapp-connect" element={<WhatsappConnectPage />} /> {/* Adicionar a nova rota */}
+            {/* <Route path="config-whatsapp" element={<WhatsappConfigPage />} /> */} {/* Movido para superadmin */}
+            <Route path="whatsapp-connect" element={<WhatsappConnectPage />} />
             <Route path="whatsapp/automations" element={<AutomationsPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="config" element={<GMBConfigsPage />} />
-            {/* Novas Rotas de Relatórios */}
             <Route path="relatorios/diario" element={<RelatorioDiario />} />
             <Route path="relatorios/semanal" element={<RelatorioSemanal />} />
             <Route path="relatorios/mensal" element={<RelatorioMensal />} />
-
-            {/* Novas Rotas de Geral */}
             <Route path="geral/satisfacao" element={<SatisfacaoPage />} />
             <Route path="geral/resumo" element={<ResumoMesPage />} />
             <Route path="geral/comparativo" element={<ComparativoPesquisaPage />} />

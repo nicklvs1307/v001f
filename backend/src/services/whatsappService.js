@@ -7,30 +7,30 @@ dotenv.config();
 
 const { SYSTEM_WHATSAPP_URL, SYSTEM_WHATSAPP_API_KEY, SYSTEM_WHATSAPP_INSTANCE } = process.env;
 
+// Helper function to normalize phone numbers
+const normalizeNumber = (number) => {
+  let digitsOnly = String(number).replace(/\D/g, '');
+  if (digitsOnly.length > 11 && digitsOnly.startsWith('55')) {
+    digitsOnly = digitsOnly.substring(2);
+  }
+  // This logic for removing the 9th digit might need review for broader cases
+  if (digitsOnly.length === 11) {
+    const ddd = parseInt(digitsOnly.substring(0, 2), 10);
+    if (ddd >= 11 && ddd <= 28) { // Common DDDs that have the 9th digit
+      // It's generally safer to keep the 9th digit for mobile numbers
+    }
+  }
+  return `55${digitsOnly}@s.whatsapp.net`;
+};
+
+
 const sendSystemMessage = async (number, message) => {
   if (!SYSTEM_WHATSAPP_URL || !SYSTEM_WHATSAPP_API_KEY || !SYSTEM_WHATSAPP_INSTANCE) {
     console.error('Variáveis de ambiente do WhatsApp do sistema não configuradas.');
     throw new Error('WhatsApp do sistema não configurado.');
   }
-
-  console.log(`[WhatsApp Service] Enviando mensagem de sistema. Número original: ${number}`);
-  let digitsOnly = String(number).replace(/\D/g, '');
-
-  if (digitsOnly.startsWith('55')) {
-    digitsOnly = digitsOnly.substring(2);
-  }
-
-  if (digitsOnly.length === 11) {
-    const ddd = parseInt(digitsOnly.substring(0, 2), 10);
-    if (ddd >= 29 && digitsOnly.substring(2, 3) === '9') {
-      console.log(`[WhatsApp Service] DDD ${ddd} >= 29, removendo nono dígito.`);
-      digitsOnly = digitsOnly.substring(0, 2) + digitsOnly.substring(3);
-    }
-  }
-
-  const normalizedNumber = '55' + digitsOnly;
-  const finalNumber = `${normalizedNumber}@s.whatsapp.net`;
-  console.log(`[WhatsApp Service] Número final para API (sistema): ${finalNumber}`);
+  const finalNumber = normalizeNumber(number);
+  console.log(`[WhatsApp Service] Enviando mensagem de sistema para: ${finalNumber}`);
 
   try {
     const response = await axios.post(`${SYSTEM_WHATSAPP_URL}/message/sendText/${SYSTEM_WHATSAPP_INSTANCE}`, {
@@ -40,7 +40,6 @@ const sendSystemMessage = async (number, message) => {
     }, {
       headers: { 'Content-Type': 'application/json', 'apikey': SYSTEM_WHATSAPP_API_KEY },
     });
-
     console.log(`Mensagem de sistema enviada para ${finalNumber}:`, response.data);
     return response.data;
   } catch (error) {
@@ -63,25 +62,8 @@ const sendTenantMessage = async (tenantId, number, message) => {
   if (config.instanceStatus !== 'connected') {
     throw new Error('A instância do WhatsApp desta loja não está conectada.');
   }
-
-  console.log(`[WhatsApp Service] Enviando mensagem de tenant ${tenantId}. Número original: ${number}`);
-  let digitsOnly = String(number).replace(/\D/g, '');
-
-  if (digitsOnly.startsWith('55')) {
-    digitsOnly = digitsOnly.substring(2);
-  }
-
-  if (digitsOnly.length === 11) {
-    const ddd = parseInt(digitsOnly.substring(0, 2), 10);
-    if (ddd >= 29 && digitsOnly.substring(2, 3) === '9') {
-      console.log(`[WhatsApp Service] DDD ${ddd} >= 29, removendo nono dígito.`);
-      digitsOnly = digitsOnly.substring(0, 2) + digitsOnly.substring(3);
-    }
-  }
-
-  const normalizedNumber = '55' + digitsOnly;
-  const finalNumber = `${normalizedNumber}@s.whatsapp.net`;
-  console.log(`[WhatsApp Service] Número final para API (tenant): ${finalNumber}`);
+  const finalNumber = normalizeNumber(number);
+  console.log(`[WhatsApp Service] Enviando mensagem de tenant ${tenantId} para: ${finalNumber}`);
 
   try {
     const response = await axios.post(`${config.url}/message/sendText/${config.instanceName}`, {
@@ -91,7 +73,6 @@ const sendTenantMessage = async (tenantId, number, message) => {
     }, {
       headers: { 'Content-Type': 'application/json', 'apikey': config.apiKey },
     });
-
     console.log(`Mensagem do tenant ${tenantId} enviada para ${number}:`, response.data);
     return response.data;
   } catch (error) {
@@ -114,25 +95,8 @@ const sendTenantMediaMessage = async (tenantId, number, mediaUrl, caption) => {
   if (config.instanceStatus !== 'connected') {
     throw new Error('A instância do WhatsApp desta loja não está conectada.');
   }
-
-  console.log(`[WhatsApp Service] Enviando mensagem com mídia de tenant ${tenantId}. Número original: ${number}`);
-  let digitsOnly = String(number).replace(/\D/g, '');
-
-  if (digitsOnly.startsWith('55')) {
-    digitsOnly = digitsOnly.substring(2);
-  }
-
-  if (digitsOnly.length === 11) {
-    const ddd = parseInt(digitsOnly.substring(0, 2), 10);
-    if (ddd >= 29 && digitsOnly.substring(2, 3) === '9') {
-      console.log(`[WhatsApp Service] DDD ${ddd} >= 29, removendo nono dígito.`);
-      digitsOnly = digitsOnly.substring(0, 2) + digitsOnly.substring(3);
-    }
-  }
-
-  const normalizedNumber = '55' + digitsOnly;
-  const finalNumber = `${normalizedNumber}@s.whatsapp.net`;
-  console.log(`[WhatsApp Service] Número final para API (tenant): ${finalNumber}`);
+  const finalNumber = normalizeNumber(number);
+  console.log(`[WhatsApp Service] Enviando mensagem com mídia de tenant ${tenantId} para: ${finalNumber}`);
 
   const fullMediaUrl = `${process.env.BACKEND_URL}${mediaUrl}`;
   const extension = mediaUrl.split('.').pop().toLowerCase();
@@ -143,14 +107,10 @@ const sendTenantMediaMessage = async (tenantId, number, mediaUrl, caption) => {
     const response = await axios.post(`${config.url}/message/sendMedia/${config.instanceName}`, {
       number: finalNumber,
       caption: caption,
-      media: fullMediaUrl,
-      mediatype: 'image',
-      mimetype: mimetype,
-      fileName: fileName,
+      media: { url: fullMediaUrl },
     }, {
       headers: { 'Content-Type': 'application/json', 'apikey': config.apiKey },
     });
-
     console.log(`Mensagem com mídia do tenant ${tenantId} enviada para ${number}:`, response.data);
     return response.data;
   } catch (error) {
@@ -164,25 +124,71 @@ const sendTenantMediaMessage = async (tenantId, number, mediaUrl, caption) => {
   }
 };
 
+// --- NEW METHODS FOR CAMPAIGN SENDER POOL ---
+
+const sendCampaignMessage = async (sender, number, message, delay = 1200) => {
+  const finalNumber = normalizeNumber(number);
+  console.log(`[WhatsApp Service] Enviando mensagem de CAMPANHA com disparador ${sender.name} para: ${finalNumber}`);
+
+  try {
+    const response = await axios.post(`${sender.apiUrl}/message/sendText/${sender.instanceName}`, {
+      number: finalNumber,
+      text: message,
+      options: { delay, presence: 'composing' }
+    }, {
+      headers: { 'Content-Type': 'application/json', 'apikey': sender.apiKey },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`[WhatsApp Service] Falha ao enviar mensagem de CAMPANHA com disparador ${sender.name}.`);
+    if (error.response) {
+      console.error('[WhatsApp Service] Erro detalhado da API:', JSON.stringify(error.response.data, null, 2));
+    } else {
+      console.error('[WhatsApp Service] Erro sem resposta da API:', error.message);
+    }
+    throw error; // Re-throw to be handled by campaignService
+  }
+};
+
+const sendCampaignMediaMessage = async (sender, number, mediaUrl, caption, delay = 1200) => {
+  const finalNumber = normalizeNumber(number);
+  console.log(`[WhatsApp Service] Enviando mensagem de CAMPANHA com mídia com disparador ${sender.name} para: ${finalNumber}`);
+
+  const fullMediaUrl = `${process.env.BACKEND_URL}${mediaUrl}`;
+
+  try {
+    const response = await axios.post(`${sender.apiUrl}/message/sendMedia/${sender.instanceName}`, {
+      number: finalNumber,
+      caption: caption,
+      media: { url: fullMediaUrl },
+    }, {
+      headers: { 'Content-Type': 'application/json', 'apikey': sender.apiKey },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`[WhatsApp Service] Falha ao enviar mensagem de CAMPANHA com mídia com disparador ${sender.name}.`);
+    if (error.response) {
+      console.error('[WhatsApp Service] Erro detalhado da API:', JSON.stringify(error.response.data, null, 2));
+    } else {
+      console.error('[WhatsApp Service] Erro sem resposta da API:', error.message);
+    }
+    throw error; // Re-throw to be handled by campaignService
+  }
+};
+
 
 const sendInstanteDetractorMessage = async (tenant, detractorResponse) => {
     if (!tenant.reportPhoneNumber) {
         return;
     }
-
     const message = `
 *Alerta de Detrator!* 😡
-
 Um cliente deu uma nota baixa em uma de suas pesquisas.
-
 - *Pesquisa:* ${detractorResponse.pesquisa.title}
 - *Nota:* ${detractorResponse.ratingValue}
 - *Comentário:* ${detractorResponse.textValue || 'Nenhum comentário.'}
-
 _Recomendamos entrar em contato com o cliente o mais rápido possível._
     `.trim();
-
-    // Continua usando o sendSystemMessage, o que está correto para esta função.
     await sendSystemMessage(tenant.reportPhoneNumber, message);
 };
 
@@ -193,15 +199,12 @@ const getAxiosConfig = (config) => ({
 
 const handleAxiosError = (error, tenantId, instanceName, isStatusCheck = false) => {
   console.error(`[WhatsappService] Error for tenant ${tenantId} (instance: ${instanceName}):`, error.message);
-
   if (error.response) {
     const { status, data } = error.response;
     console.error(`[WhatsappService] Response data:`, data);
-
     if (isStatusCheck && status === 404) {
       return { status: 'not_created', message: 'A instância existe localmente, mas não foi criada na API do WhatsApp.' };
     }
-
     if (status === 401) {
       return { status: 'error', code: `HTTP_${status}`, message: 'Falha na autenticação com a API do WhatsApp. Verifique a API Key.' };
     }
@@ -210,11 +213,9 @@ const handleAxiosError = (error, tenantId, instanceName, isStatusCheck = false) 
     }
     const errorMessage = (data && data.message) ? data.message : 'Erro desconhecido da API do WhatsApp.';
     return { status: 'error', code: `HTTP_${status}`, message: `A API do WhatsApp retornou um erro: ${errorMessage}` };
-
   } else if (error.request) {
     console.error(`[WhatsappService] No response received for request.`);
     return { status: 'error', code: 'NO_RESPONSE', message: 'Não foi possível conectar à API do WhatsApp. Verifique a Base URL e a conectividade da rede.' };
-
   } else {
     console.error(`[WhatsappService] Axios setup error:`, error.message);
     if (error.code === 'ENOTFOUND') {
@@ -227,39 +228,25 @@ const handleAxiosError = (error, tenantId, instanceName, isStatusCheck = false) 
 const getInstanceStatus = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
   if (!config || !config.instanceName) return 'not_created';
-
   try {
     const response = await axios.get(`${config.url}/instance/connectionState/${config.instanceName}`, getAxiosConfig(config));
-    console.log(`[DEBUG] Evolution API connectionState response for ${config.instanceName}:`, response.data);
     const newStatus = (response.data.instance.state === 'CONNECTED' || response.data.instance.state === 'open') ? 'connected' : 'disconnected';
-    console.log(`[DEBUG] Interpreted newStatus for ${config.instanceName}:`, newStatus);
-
     if (config.instanceStatus !== newStatus) {
-      console.log(`[DEBUG] Updating instanceStatus for ${config.instanceName} from ${config.instanceStatus} to ${newStatus}`);
       await config.update({ instanceStatus: newStatus });
-    } else {
-      console.log(`[DEBUG] instanceStatus for ${config.instanceName} is already ${newStatus}. No update needed.`);
     }
-
-    // Retorna apenas a string de status
     return newStatus;
-
   } catch (error) {
     const errorStatus = handleAxiosError(error, tenantId, config.instanceName, true);
-
-    // Se a instância não foi encontrada na API, atualiza o banco de dados local
     if (errorStatus.status === 'not_created') {
       await config.update({ instanceStatus: 'not_created', instanceName: null });
     }
-
-    return errorStatus.status; // ex: 'not_created'
+    return errorStatus.status;
   }
 };
 
 const getConnectionInfo = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
   if (!config || !config.instanceName) return { error: 'unconfigured' };
-
   try {
     const response = await axios.get(`${config.url}/instance/fetchInstance/${config.instanceName}`, getAxiosConfig(config));
     return response.data;
@@ -273,32 +260,23 @@ const createRemoteInstance = async (tenantId) => {
   if (!config || !config.url || !config.apiKey) {
     throw new Error('URL ou API Key do WhatsApp não configuradas para este tenant.');
   }
-
   if (!config.instanceName) {
     const tenant = await Tenant.findByPk(tenantId);
     const newInstanceName = tenant.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
     await config.update({ instanceName: newInstanceName });
-    await config.reload(); // Recarrega para garantir que temos o instanceName
+    await config.reload();
   }
-
   try {
     const response = await axios.post(
       `${config.url}/instance/create`,
-      { 
-        instanceName: config.instanceName,
-        integration: 'WHATSAPP-BAILEYS' // Adiciona o tipo de integração
-      },
+      { instanceName: config.instanceName, integration: 'WHATSAPP-BAILEYS' },
       getAxiosConfig(config)
     );
     return response.data;
   } catch (error) {
     const apiResponse = error.response?.data?.response;
     const apiMessage = Array.isArray(apiResponse?.message) ? apiResponse.message[0] : '';
-
-    // Trata tanto o erro 403 de nome em uso quanto o erro antigo de instância já existente
-    if ((error.response?.status === 403 && apiMessage.includes('is already in use')) || 
-        (error.response?.data?.message === 'Instance already exists')) {
-      console.log(`[WhatsappService] Instância '${config.instanceName}' já existe. Continuando...`);
+    if ((error.response?.status === 403 && apiMessage.includes('is already in use')) || (error.response?.data?.message === 'Instance already exists')) {
       return { status: 'success', code: 'INSTANCE_EXISTS', message: 'Instância já existe.' };
     }
     return handleAxiosError(error, tenantId, config.instanceName);
@@ -306,12 +284,10 @@ const createRemoteInstance = async (tenantId) => {
 };
 
 const getQrCodeForConnect = async (tenantId) => {
-  // Garante que a instância exista antes de tentar conectar
   const createResult = await createRemoteInstance(tenantId);
   if (createResult && createResult.status === 'error' && createResult.code !== 'INSTANCE_EXISTS') {
     return createResult;
   }
-
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
   try {
     const response = await axios.get(`${config.url}/instance/connect/${config.instanceName}`, getAxiosConfig(config));
@@ -324,7 +300,6 @@ const getQrCodeForConnect = async (tenantId) => {
 const restartInstance = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
   if (!config || !config.instanceName) return { message: "Instância não configurada." };
-
   try {
     const response = await axios.put(`${config.url}/instance/restart/${config.instanceName}`, {}, getAxiosConfig(config));
     return response.data;
@@ -336,7 +311,6 @@ const restartInstance = async (tenantId) => {
 const logoutInstance = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
   if (!config || !config.instanceName) return { message: "Instância já desconectada ou não configurada." };
-
   try {
     const response = await axios.delete(`${config.url}/instance/logout/${config.instanceName}`, getAxiosConfig(config));
     return response.data;
@@ -350,14 +324,12 @@ const deleteInstance = async (tenantId) => {
   if (!config || !config.instanceName) {
     return { message: "Instância já removida ou não configurada." };
   }
-
   try {
     await axios.delete(`${config.url}/instance/delete/${config.instanceName}`, getAxiosConfig(config));
     await whatsappConfigRepository.deleteByTenantId(tenantId);
     return { message: "Instância deletada com sucesso." };
   } catch (error) {
     if (error.response && error.response.status === 404) {
-      console.log(`Instância ${config.instanceName} não encontrada na Evolution API. Deletando do banco de dados local.`);
       await whatsappConfigRepository.deleteByTenantId(tenantId);
       return { message: "Instância não encontrada na API do WhatsApp, removida do sistema." };
     }
@@ -365,16 +337,76 @@ const deleteInstance = async (tenantId) => {
   }
 };
 
+// --- NEW METHODS FOR SENDER POOL INSTANCE MANAGEMENT ---
+
+const getSenderInstanceStatus = async (sender) => {
+  if (!sender || !sender.instanceName) return 'not_created';
+  try {
+    const response = await axios.get(`${sender.apiUrl}/instance/connectionState/${sender.instanceName}`, { headers: { 'apikey': sender.apiKey } });
+    const newStatus = (response.data.instance.state === 'CONNECTED' || response.data.instance.state === 'open') ? 'active' : 'disconnected';
+    if (sender.status !== newStatus) {
+      await sender.update({ status: newStatus });
+    }
+    return newStatus;
+  } catch (error) {
+    // Using a generic error handler as we don't have a tenantId
+    console.error(`[WhatsappService] Error getting status for sender ${sender.name}:`, error.message);
+    if (sender.status !== 'disconnected') {
+        await sender.update({ status: 'disconnected' });
+    }
+    return 'disconnected';
+  }
+};
+
+const createSenderRemoteInstance = async (sender) => {
+  if (!sender || !sender.apiUrl || !sender.apiKey || !sender.instanceName) {
+    throw new Error('Dados do disparador incompletos para criar instância remota.');
+  }
+  try {
+    await axios.post(
+      `${sender.apiUrl}/instance/create`,
+      { instanceName: sender.instanceName, integration: 'WHATSAPP-BAILEYS' },
+      { headers: { 'apikey': sender.apiKey } }
+    );
+    return { status: 'success', message: 'Instância criada ou já existente.' };
+  } catch (error) {
+    const apiResponse = error.response?.data?.response;
+    const apiMessage = Array.isArray(apiResponse?.message) ? apiResponse.message[0] : '';
+    if ((error.response?.status === 403 && apiMessage.includes('is already in use')) || (error.response?.data?.message === 'Instance already exists')) {
+      return { status: 'success', code: 'INSTANCE_EXISTS', message: 'Instância já existe.' };
+    }
+    console.error(`[WhatsappService] Error creating remote instance for sender ${sender.name}:`, error.message);
+    throw error;
+  }
+};
+
+const getSenderQrCodeForConnect = async (sender) => {
+  await createSenderRemoteInstance(sender);
+  try {
+    const response = await axios.get(`${sender.apiUrl}/instance/connect/${sender.instanceName}`, { headers: { 'apikey': sender.apiKey } });
+    return response.data;
+  } catch (error) {
+    console.error(`[WhatsappService] Error getting QR code for sender ${sender.name}:`, error.message);
+    throw error;
+  }
+};
+
+
 module.exports = {
   sendSystemMessage,
   sendTenantMessage,
   sendTenantMediaMessage,
+  sendCampaignMessage, // Export new method
+  sendCampaignMediaMessage, // Export new method
   sendInstanteDetractorMessage,
   getInstanceStatus,
   getConnectionInfo,
-  createRemoteInstance, // <-- Adicionada
-  getQrCodeForConnect,  // <-- Renomeada
+  createRemoteInstance,
+  getQrCodeForConnect,
   restartInstance,
   logoutInstance,
   deleteInstance,
+  getSenderInstanceStatus,    // Export new method
+  createSenderRemoteInstance, // Export new method
+  getSenderQrCodeForConnect,  // Export new method
 };

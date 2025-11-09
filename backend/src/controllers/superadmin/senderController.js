@@ -1,0 +1,73 @@
+const senderService = require('../../services/superadmin/senderService');
+
+class SenderController {
+  async getAll(req, res, next) {
+    try {
+      const senders = await senderService.getAllSenders();
+      res.status(200).json(senders);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getById(req, res, next) {
+    try {
+      const { id } = req.params;
+      const sender = await senderService.getSenderById(id);
+      res.status(200).json(sender);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async create(req, res, next) {
+    try {
+      const newSender = await senderService.createSender(req.body);
+      res.status(201).json(newSender);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async update(req, res, next) {
+    try {
+      const { id } = req.params;
+      const updatedSender = await senderService.updateSender(id, req.body);
+      res.status(200).json(updatedSender);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async delete(req, res, next) {
+    try {
+      const { id } = req.params;
+      await senderService.deleteSender(id);
+      res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getInstanceStatus(req, res, next) {
+    try {
+      const { id } = req.params;
+      const status = await senderService.getSenderStatus(id);
+      res.status(200).json({ status });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getQrCode(req, res, next) {
+    try {
+      const { id } = req.params;
+      const qrCodeData = await senderService.getSenderQrCode(id);
+      res.status(200).json(qrCodeData);
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+
+module.exports = new SenderController();

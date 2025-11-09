@@ -1,7 +1,8 @@
 const { Op } = require('sequelize');
 const ApiError = require('../errors/ApiError');
 const { scheduleCampaign, cancelCampaign } = require('../jobs/campaignScheduler');
-const { CampanhaLog, Client } = require('../../models'); // Importar o modelo CampanhaLog e Client
+const { CampanhaLog, Client } = require('../../models');
+const senderPoolService = require('./senderPoolService'); // Import the new service
 
 class CampanhaService {
   constructor(campanhaRepository, clientRepository, cupomRepository, roletaSpinRepository, whatsappService) {
@@ -45,11 +46,9 @@ class CampanhaService {
     const updatedCampaign = await this.campanhaRepository.update(id, data, tenantId);
     const campaign = await this.getById(id, tenantId);
     
-    // Se a campanha for agendada, reagende-a
     if (campaign.status === 'scheduled' && campaign.startDate) {
       scheduleCampaign(campaign, this._processCampaign.bind(this));
     } else {
-      // Se foi alterada para um status não agendado, cancele qualquer job existente
       cancelCampaign(id);
     }
     
@@ -67,15 +66,13 @@ class CampanhaService {
       throw ApiError.badRequest('Esta campanha já foi processada ou está em processamento.');
     }
 
-    // Se a data de início existe e está no futuro, agenda a campanha.
     if (campanha.startDate && new Date(campanha.startDate) > new Date()) {
       await this.campanhaRepository.update(id, { status: 'scheduled' }, tenantId);
-      const updatedCampanha = await this.getById(id, tenantId); // Pega os dados atualizados
+      const updatedCampanha = await this.getById(id, tenantId);
       scheduleCampaign(updatedCampanha, this._processCampaign.bind(this));
       return { message: `Campanha agendada para ${new Date(campanha.startDate).toLocaleString()}` };
     }
 
-    // Caso contrário, processa imediatamente.
     this._processCampaign(id, tenantId).catch(err => {
         console.error(`[Campanha] Falha crítica no processamento da campanha ${id}:`, err);
         this.campanhaRepository.update(id, { status: 'failed' }, tenantId);
@@ -89,6 +86,7 @@ class CampanhaService {
     return this.campanhaRepository.update(id, { status: 'draft' }, tenantId);
   }
 
+  // Test sends will still use the tenant's connection for simplicity
   async sendTest(id, tenantId, testPhoneNumber) {
     const campanha = await this.getById(id, tenantId);
     const fakeClient = { name: 'Cliente Teste', phone: testPhoneNumber };
@@ -99,9 +97,7 @@ class CampanhaService {
       rewardCode = `${roletaBaseUrl}/roleta/spin/[TOKEN_TESTE]`;
     }
 
-    // Usa a primeira mensagem para o teste para ser previsível
     const messageTemplate = campanha.mensagens[0] || '';
-
     const personalizedMessage = this._buildPersonalizedMessage(messageTemplate, fakeClient, {
       codigo: rewardCode,
       dataValidade: campanha.dataValidade,
@@ -120,21 +116,13 @@ class CampanhaService {
 
   _buildPersonalizedMessage(template, client, rewardData = {}) {
     let message = template.replace(/{{nome_cliente}}/g, client.name.split(' ')[0]);
-    
-    if (rewardData.codigo) {
-      message = message.replace(/{{codigo_premio}}/g, rewardData.codigo);
-    }
+    if (rewardData.codigo) message = message.replace(/{{codigo_premio}}/g, rewardData.codigo);
     if (rewardData.dataValidade) {
       const formattedDate = new Date(rewardData.dataValidade).toLocaleDateString('pt-BR');
       message = message.replace(/{{data_validade}}/g, formattedDate);
     }
-    if (rewardData.nomeRecompensa) {
-      message = message.replace(/{{nome_recompensa}}/g, rewardData.nomeRecompensa);
-    }
-    if (rewardData.nomeCampanha) {
-      message = message.replace(/{{nome_campanha}}/g, rewardData.nomeCampanha);
-    }
-
+    if (rewardData.nomeRecompensa) message = message.replace(/{{nome_recompensa}}/g, rewardData.nomeRecompensa);
+    if (rewardData.nomeCampanha) message = message.replace(/{{nome_campanha}}/g, rewardData.nomeCampanha);
     return message;
   }
 
@@ -164,16 +152,47 @@ class CampanhaService {
   }
 
   async _selectClients(criterio, tenantId) {
-    // ... (lógica existente)
+    // ... (existing logic)
   }
 
   async _generateRewards(campanha, clients) {
-    // ... (lógica existente)
+    // ... (existing logic)
   }
 
   _getRandomDelay(min, max) {
     if (min === 0 && max === 0) return 0;
     return (Math.floor(Math.random() * (max - min + 1)) + min) * 1000;
+  }
+
+  async _sendMessageWithPool(campanha, client, personalizedMessage, maxRetries = 2) {
+    let attempts = 0;
+    while (attempts < maxRetries) {
+      let sender;
+      try {
+        sender = await senderPoolService.getAvailableSender();
+        const delay = this._getRandomDelay(campanha.minMessageDelaySeconds, campanha.maxMessageDelaySeconds);
+
+        if (campanha.mediaUrl) {
+          await this.whatsappService.sendCampaignMediaMessage(sender, client.phone, campanha.mediaUrl, personalizedMessage, delay);
+        } else {
+          await this.whatsappService.sendCampaignMessage(sender, client.phone, personalizedMessage, delay);
+        }
+        
+        await senderPoolService.recordSuccessfulSend(sender.id);
+        return { status: 'sent', errorMessage: null }; // Success
+      } catch (err) {
+        attempts++;
+        console.error(`[Campanha] Tentativa ${attempts} falhou para ${client.phone} com disparador ${sender?.name || 'N/A'}. Erro: ${err.message}`);
+        if (sender) {
+          await senderPoolService.reportFailedSender(sender.id, 'blocked');
+        }
+        if (attempts >= maxRetries) {
+          return { status: 'failed', errorMessage: err.message }; // Final failure
+        }
+        // Wait a bit before retrying with a new sender
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+    }
   }
 
   async _sendSimpleMessages(campanha, clients) {
@@ -183,28 +202,15 @@ class CampanhaService {
         const personalizedMessage = this._buildPersonalizedMessage(messageTemplate, client, {
           nomeCampanha: campanha.nome,
         });
-        let logStatus = 'sent';
-        let errorMessage = null;
-        try {
-          if (campanha.mediaUrl) {
-            await this.whatsappService.sendTenantMediaMessage(campanha.tenantId, client.phone, campanha.mediaUrl, personalizedMessage);
-          } else {
-            await this.whatsappService.sendTenantMessage(campanha.tenantId, client.phone, personalizedMessage);
-          }
-          const delay = this._getRandomDelay(campanha.minMessageDelaySeconds, campanha.maxMessageDelaySeconds);
-          if (delay > 0) await new Promise(resolve => setTimeout(resolve, delay));
-        } catch (err) {
-          console.error(`[Campanha] Falha ao enviar mensagem para ${client.phone}:`, err.message);
-          logStatus = 'failed';
-          errorMessage = err.message;
-        } finally {
-          await CampanhaLog.create({
-            campanhaId: campanha.id,
-            clienteId: client.id,
-            status: logStatus,
-            errorMessage: errorMessage,
-          });
-        }
+        
+        const { status, errorMessage } = await this._sendMessageWithPool(campanha, client, personalizedMessage);
+
+        await CampanhaLog.create({
+          campanhaId: campanha.id,
+          clienteId: client.id,
+          status: status,
+          errorMessage: errorMessage,
+        });
       }
     }
   }
@@ -232,28 +238,14 @@ class CampanhaService {
           nomeCampanha: campanha.nome,
         });
 
-        let logStatus = 'sent';
-        let errorMessage = null;
-        try {
-          if (campanha.mediaUrl) {
-            await this.whatsappService.sendTenantMediaMessage(campanha.tenantId, client.phone, campanha.mediaUrl, personalizedMessage);
-          } else {
-            await this.whatsappService.sendTenantMessage(campanha.tenantId, client.phone, personalizedMessage);
-          }
-          const delay = this._getRandomDelay(campanha.minMessageDelaySeconds, campanha.maxMessageDelaySeconds);
-          if (delay > 0) await new Promise(resolve => setTimeout(resolve, delay));
-        } catch (err) {
-          console.error(`[Campanha] Falha ao enviar mensagem para ${client.phone}:`, err.message);
-          logStatus = 'failed';
-          errorMessage = err.message;
-        } finally {
-          await CampanhaLog.create({
-            campanhaId: campanha.id,
-            clienteId: client.id,
-            status: logStatus,
-            errorMessage: errorMessage,
-          });
-        }
+        const { status, errorMessage } = await this._sendMessageWithPool(campanha, client, personalizedMessage);
+
+        await CampanhaLog.create({
+          campanhaId: campanha.id,
+          clienteId: client.id,
+          status: status,
+          errorMessage: errorMessage,
+        });
       }
     }
   }

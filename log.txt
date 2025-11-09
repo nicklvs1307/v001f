@@ -1,17 +1,17 @@
- => ERROR [build 6/6] RUN npm run build                                                       13.9s
+ => ERROR [build 6/6] RUN npm run build                                                       12.7s
 ------
  > [build 6/6] RUN npm run build:
-0.837
-0.837 > frontend@0.1.0 build
-0.837 > react-scripts build
-0.837
-4.390 Creating an optimized production build...
-13.78 Failed to compile.
-13.78
-13.78 Module not found: Error: You attempted to import ../../components/SuperAdmin/StatCard which falls outside of the project src/ directory. Relative imports outside of src/ are not supported.
-13.78 You can either move it inside src/, or add a symlink to it from project's node_modules/.
-13.78
-13.78
+0.553
+0.553 > frontend@0.1.0 build
+0.553 > react-scripts build
+0.553
+2.890 Creating an optimized production build...
+12.48 Failed to compile.
+12.48
+12.49 Module not found: Error: Can't resolve '../components/superadmin/SenderFormModal' in '/app/sr
+/pages'
+12.49
+12.49
 ------
 Dockerfile:14
 --------------------
@@ -21,4 +21,5 @@ Dockerfile:14
   15 |
   16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
 --------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete succes
+fully: exit code: 1

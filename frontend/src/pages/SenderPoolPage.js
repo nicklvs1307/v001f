@@ -10,7 +10,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LinkIcon from '@mui/icons-material/Link';
 import senderPoolService from '../services/senderPoolService';
-import SenderFormModal from '../components/superadmin/SenderFormModal'; // Import the modal
+import SenderFormModal from '../components/SenderFormModal'; // Import the modal
 
 const statusColors = {
   active: 'success',

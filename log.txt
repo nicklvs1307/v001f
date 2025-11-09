@@ -1,12 +1,24 @@
-URL da solicitação
-https://apivoltaki.towersfy.com/api/superadmin/senders
-Método da solicitação
-GET
-Código de status
-401 Unauthorized
-{
-    "status": "error",
-    "code": "HTTP_401",
-    "message": "Token inválido ou expirado. Acesso não autorizado.",
-    "details": "Error: Token inválido ou expirado. Acesso não autorizado.\n    at protect (/usr/src/app/src/middlewares/authMiddleware.js:38:23)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/usr/src/app/node_modules/express/lib/router/index.js:328:13)\n    at /usr/src/app/node_modules/express/lib/router/index.js:286:9\n    at Function.process_params (/usr/src/app/node_modules/express/lib/router/index.js:346:12)\n    at next (/usr/src/app/node_modules/express/lib/router/index.js:280:10)\n    at Function.handle (/usr/src/app/node_modules/express/lib/router/index.js:175:3)\n    at router (/usr/src/app/node_modules/express/lib/router/index.js:47:12)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at trim_prefix (/usr/src/app/node_modules/express/lib/router/index.js:328:13)"
-}
+ => ERROR [build 6/6] RUN npm run build                                                       13.9s
+------
+ > [build 6/6] RUN npm run build:
+0.837
+0.837 > frontend@0.1.0 build
+0.837 > react-scripts build
+0.837
+4.390 Creating an optimized production build...
+13.78 Failed to compile.
+13.78
+13.78 Module not found: Error: You attempted to import ../../components/SuperAdmin/StatCard which falls outside of the project src/ directory. Relative imports outside of src/ are not supported.
+13.78 You can either move it inside src/, or add a symlink to it from project's node_modules/.
+13.78
+13.78
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

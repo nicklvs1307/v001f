@@ -14,6 +14,8 @@ x-environment: &environment
   JWT_EXPIRES_IN: 7d
   FRONTEND_URL: https://voltaki.towersfy.com
   BACKEND_URL: https://apivoltaki.towersfy.com
+  OPENAI_API_KEY_FILE: /run/secrets/openai_api_key
+  API_KEY_ENCRYPTION_KEY_FILE: /run/secrets/api_key_encryption_key
 
 
 services:
@@ -32,6 +34,8 @@ services:
     secrets:
       - db_password
       - jwt_secret
+      - openai_api_key
+      - api_key_encryption_key
     deploy:
       replicas: 1
       restart_policy:
@@ -80,4 +84,8 @@ secrets:
   db_password:
     external: true
   jwt_secret:
+    external: true
+  openai_api_key:
+    external: true
+  api_key_encryption_key:
     external: true

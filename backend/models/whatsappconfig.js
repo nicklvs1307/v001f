@@ -3,17 +3,10 @@ const {
   Model
 } = require('sequelize');
 const crypto = require('crypto');
-const dotenv = require('dotenv');
+const { readSecret } = require('../src/config');
 
-dotenv.config();
-
-const ENCRYPTION_KEY = process.env.API_KEY_ENCRYPTION_KEY; // Must be 256 bits (32 characters)
+const ENCRYPTION_KEY = readSecret('API_KEY_ENCRYPTION_KEY'); // Must be 256 bits (32 characters)
 const IV_LENGTH = 16; // For AES, this is always 16
-
-if (!ENCRYPTION_KEY) {
-  console.error('API_KEY_ENCRYPTION_KEY is not defined in .env. Please set it for security.');
-  // Em um ambiente de produção, você pode querer lançar um erro ou sair do processo.
-}
 
 function encrypt(text) {
   if (!ENCRYPTION_KEY) return text; // Retorna texto simples se a chave não estiver definida (apenas para desenvolvimento/teste)

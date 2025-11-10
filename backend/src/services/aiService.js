@@ -1,8 +1,9 @@
 const OpenAI = require('openai');
 const ApiError = require('../errors/ApiError');
+const { readSecret } = require('../config');
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: readSecret('OPENAI_API_KEY'),
 });
 
 const AI_MODEL = 'gpt-3.5-turbo'; // Or a newer model if available/preferred
@@ -15,9 +16,10 @@ class AiService {
    * @returns {Promise<string>} A spintax string, e.g., "{Variation 1|Variation 2|Variation 3}"
    */
   async generateMessageVariations(baseMessage, numVariations = 3) {
-    if (!process.env.OPENAI_API_KEY) {
-      throw new ApiError(500, 'A chave da API da OpenAI não está configurada no servidor.');
-    }
+    // A verificação da chave da API é feita dentro de readSecret, então esta linha pode ser removida.
+    // if (!process.env.OPENAI_API_KEY) {
+    //   throw new ApiError(500, 'A chave da API da OpenAI não está configurada no servidor.');
+    // }
 
     const systemPrompt = `
       Você é um especialista em marketing para restaurantes e seu trabalho é criar mensagens de WhatsApp curtas, amigáveis e eficazes.

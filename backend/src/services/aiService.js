@@ -67,6 +67,46 @@ class AiService {
       throw new ApiError(502, 'Falha ao se comunicar com o serviço de IA.');
     }
   }
+
+  /**
+   * Generates a response for the help chatbot.
+   * @param {Array<object>} messages - The conversation history, e.g., [{ role: 'user', content: 'Hello' }]
+   * @returns {Promise<string>} The bot's response message.
+   */
+  async getChatCompletion(messages) {
+    const systemPrompt = `
+      Você é o "FeedelizaBot", um assistente virtual para o sistema de fidelização e marketing "Feedeliza".
+      Sua única função é responder a perguntas sobre como usar o sistema Feedeliza, suas funcionalidades, e solucionar dúvidas comuns dos usuários.
+      Seja claro, amigável e direto ao ponto.
+      Se o usuário perguntar sobre qualquer outro assunto não relacionado ao Feedeliza, recuse educadamente a resposta e reforce seu propósito.
+      Exemplo de recusa: "Desculpe, eu sou um assistente focado no sistema Feedeliza e não posso ajudar com outros assuntos."
+      Não invente funcionalidades que não existem.
+    `;
+
+    try {
+      const response = await openai.chat.completions.create({
+        model: AI_MODEL,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...messages, // Spread the incoming messages array
+        ],
+        temperature: 0.5,
+        max_tokens: 500,
+        n: 1,
+      });
+
+      const content = response.choices[0]?.message?.content;
+      if (!content) {
+        throw new Error('A resposta da IA estava vazia.');
+      }
+
+      return content;
+
+    } catch (error) {
+      console.error('OpenAI API Error:', error);
+      throw new ApiError(502, 'Falha ao se comunicar com o serviço de IA para o chat.');
+    }
+  }
 }
 
 module.exports = new AiService();

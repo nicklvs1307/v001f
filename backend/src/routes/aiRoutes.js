@@ -8,5 +8,6 @@ const router = express.Router();
 router.use(protect);
 
 router.post('/generate-variations', aiController.generateVariations);
+router.post('/chat', aiController.chat);
 
 module.exports = router;

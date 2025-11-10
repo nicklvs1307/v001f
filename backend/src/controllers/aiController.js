@@ -14,6 +14,18 @@ class AiController {
 
     res.status(200).json({ spintax: spintaxResult });
   });
+
+  chat = asyncHandler(async (req, res) => {
+    const { messages } = req.body;
+
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      throw new ApiError(400, 'O histórico de mensagens é obrigatório e deve ser um array.');
+    }
+
+    const botResponse = await aiService.getChatCompletion(messages);
+
+    res.status(200).json({ response: botResponse });
+  });
 }
 
 module.exports = new AiController();

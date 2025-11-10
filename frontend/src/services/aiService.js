@@ -15,6 +15,18 @@ const aiService = {
       throw error;
     }
   },
+
+  getChatCompletion: async (messages) => {
+    try {
+      const response = await apiAuthenticated.post(`${AI_API_BASE_URL}/chat`, {
+        messages,
+      });
+      return response.data.response;
+    } catch (error) {
+      console.error('Error getting AI chat completion:', error);
+      throw error;
+    }
+  },
 };
 
 export default aiService;

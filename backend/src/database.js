@@ -1,5 +1,5 @@
 const { Sequelize } = require("sequelize");
-const { config } = require("./config"); // Importa a configuração consolidada
+const config = require("./config"); // Importa a configuração consolidada
 
 // Validação para garantir que a configuração do banco de dados foi carregada
 if (!config.db || !config.db.database) {

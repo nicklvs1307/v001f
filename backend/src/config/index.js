@@ -45,8 +45,5 @@ const config = {
   },
 };
 
-module.exports = {
-  config,
-  readSecret,
-};
+module.exports = config;
 

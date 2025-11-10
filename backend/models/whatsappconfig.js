@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 const crypto = require('crypto');
-const { readSecret } = require('../src/config');
+const { readSecret } = require('../src/utils/secretReader');
 
 const ENCRYPTION_KEY = readSecret('API_KEY_ENCRYPTION_KEY'); // Must be 256 bits (32 characters)
 const IV_LENGTH = 16; // For AES, this is always 16

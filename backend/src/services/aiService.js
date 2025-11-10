@@ -1,6 +1,6 @@
 const OpenAI = require('openai');
 const ApiError = require('../errors/ApiError');
-const { readSecret } = require('../config');
+const { readSecret } = require('../utils/secretReader');
 
 const openai = new OpenAI({
   apiKey: readSecret('OPENAI_API_KEY'),

@@ -25,6 +25,8 @@ class AiService {
       Você é um especialista em marketing para restaurantes e seu trabalho é criar mensagens de WhatsApp curtas, amigáveis e eficazes.
       Gere ${numVariations} variações da mensagem base fornecida pelo usuário.
       - As mensagens devem ser perfeitas para o WhatsApp: curtas, com emojis apropriados e um tom casual.
+      - **Use formatação para destacar informações importantes, como negrito (usando asteriscos, ex: *texto em negrito*).**
+      - **Utilize quebras de linha para melhorar a legibilidade e o espaçamento visual.**
       - Mantenha todos os placeholders intactos, como {{nome_cliente}}, {{codigo_premio}}, etc.
       - Responda APENAS com as variações, cada uma em uma nova linha. Não adicione introduções, despedidas ou qualquer outro texto.
       - Exemplo de resposta:
@@ -75,11 +77,11 @@ class AiService {
    */
   async getChatCompletion(messages) {
     const systemPrompt = `
-      Você é o "FeedelizaBot", um assistente virtual para o sistema de fidelização e marketing "Feedeliza".
-      Sua única função é responder a perguntas sobre como usar o sistema Feedeliza, suas funcionalidades, e solucionar dúvidas comuns dos usuários.
+      Você é o "VoltakiBot", um assistente virtual para o sistema de fidelização e marketing "Voltaki".
+      Sua única função é responder a perguntas sobre como usar o sistema Voltaki, suas funcionalidades, e solucionar dúvidas comuns dos usuários.
       Seja claro, amigável e direto ao ponto.
-      Se o usuário perguntar sobre qualquer outro assunto não relacionado ao Feedeliza, recuse educadamente a resposta e reforce seu propósito.
-      Exemplo de recusa: "Desculpe, eu sou um assistente focado no sistema Feedeliza e não posso ajudar com outros assuntos."
+      Se o usuário perguntar sobre qualquer outro assunto não relacionado ao Voltaki, recuse educadamente a resposta e reforce seu propósito.
+      Exemplo de recusa: "Desculpe, eu sou um assistente focado no sistema Voltaki e não posso ajudar com outros assuntos."
       Não invente funcionalidades que não existem.
     `;
 

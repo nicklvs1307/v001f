@@ -29,12 +29,12 @@ import {
   DialogContentText,
   DialogActions
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatStrikethroughIcon from '@mui/icons-material/FormatStrikethrough';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { format } from 'date-fns';
 import campanhaService from '../services/campanhaService';
@@ -432,7 +432,23 @@ const CampaignFormPage = () => {
                     <Button size="small" variant="outlined" onClick={() => handleInsertVariable('{{data_validade}}')}>Validade</Button>
                     <Button size="small" variant="outlined" onClick={() => handleInsertVariable('{{nome_recompensa}}')}>Recompensa</Button>
                     <Button size="small" variant="outlined" onClick={() => handleInsertVariable('{{nome_campanha}}')}>Campanha</Button>
-                    <Button size="small" variant="contained" startIcon={<AddIcon />} onClick={handleOpenAiDialog} sx={{ ml: 2 }}>Gerar com IA</Button>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      startIcon={<AutoAwesomeIcon />} // Changed icon
+                      onClick={handleOpenAiDialog}
+                      sx={{
+                        ml: 2,
+                        bgcolor: 'secondary.main', // Use a secondary color for distinction
+                        '&:hover': {
+                          bgcolor: 'secondary.dark',
+                          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Subtle shadow on hover
+                        },
+                        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)', // Default subtle shadow
+                      }}
+                    >
+                      Gerar com IA
+                    </Button>
                   </Paper>
                   <TextField
                     fullWidth

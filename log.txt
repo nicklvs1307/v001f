@@ -1,71 +1,25 @@
-https://voltaki.towersfy.com/dashboard/cupons/campanhas/detalhes/fe0c4314-cc3f-47c2-9b55-b3ce1227098a
-
-
-Relatório da campanha não disponível.
-
-RL da solicitação
-https://apivoltaki.towersfy.com/api/campanhas/fe0c4314-cc3f-47c2-9b55-b3ce1227098a
-Método da solicitação
-GET
-Código de status
-200 OK
-{
-    "id": "fe0c4314-cc3f-47c2-9b55-b3ce1227098a",
-    "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd",
-    "nome": "pesquisa",
-    "mensagens": [
-        "sdsdsdsdsds"
-    ],
-    "rewardType": "none",
-    "recompensaId": null,
-    "roletaId": null,
-    "dataValidade": "2025-11-20T21:02:12.237Z",
-    "criterioSelecao": {
-        "type": "todos"
-    },
-    "status": "sent",
-    "startDate": null,
-    "endDate": null,
-    "minMessageDelaySeconds": 1,
-    "maxMessageDelaySeconds": 0,
-    "mediaUrl": null,
-    "createdAt": "2025-10-21T21:02:12.237Z",
-    "updatedAt": "2025-10-21T21:02:17.154Z",
-    "recompensa": null
-}
-
-Postgres is up - executing command
-Server.js is being executed!
-Conexão com o banco de dados estabelecida com sucesso (Sequelize).
-Server is running on port 5000
-Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
-Agendador de lembrete de cupons iniciado. A tarefa será executada todos os dias às 9:00.
-Agendador de expiração de cupons iniciado. A tarefa será executada todo dia à meia-noite.
-[SenderMonitorJob] Job de monitoramento de disparadores inicializado para rodar a cada 5 minutos.
-[WarmingUpProgressJob] Job de progressão de aquecimento inicializado para rodar diariamente à 1h.
-[CampaignMonitorJob] Job de monitoramento de campanhas inicializado para rodar a cada 10 minutos.
-[CampanhaService] Inicializando campanhas agendadas...
-Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'scheduled' AND "Campanha"."startDate" IS NOT NULL;
-[CampanhaService] 0 campanhas reagendadas.
-[Auth Middleware] Request: GET /api/campanhas?tenantId=3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
-Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
-[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
-Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
-Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
-[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
-[SENDER_MONITOR] Verificando 1 disparador(es) inativo(s).
-[SENDER_MONITOR] Verificação de status concluída.
-[Auth Middleware] Request: POST /api/auth/verify-token
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
-[Auth Middleware] Request: GET /api/campanhas?tenantId=3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
-Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-[Auth Middleware] Request: GET /api/campanhas/fe0c4314-cc3f-47c2-9b55-b3ce1227098a
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
-Executing (default): SELECT "Campanha"."id", "Campanha"."tenantId", "Campanha"."nome", "Campanha"."mensagens", "Campanha"."rewardType", "Campanha"."recompensaId", "Campanha"."roletaId", "Campanha"."dataValidade", "Campanha"."criterioSelecao", "Campanha"."status", "Campanha"."startDate", "Campanha"."endDate", "Campanha"."minMessageDelaySeconds", "Campanha"."maxMessageDelaySeconds", "Campanha"."mediaUrl", "Campanha"."createdAt", "Campanha"."updatedAt", "recompensa"."id" AS "recompensa.id", "recompensa"."tenantId" AS "recompensa.tenantId", "recompensa"."name" AS "recompensa.name", "recompensa"."description" AS "recompensa.description", "recompensa"."pointsRequired" AS "recompensa.pointsRequired", "recompensa"."type" AS "recompensa.type", "recompensa"."value" AS "recompensa.value", "recompensa"."imageUrl" AS "recompensa.imageUrl", "recompensa"."active" AS "recompensa.active", "recompensa"."createdAt" AS "recompensa.createdAt", "recompensa"."updatedAt" AS "recompensa.updatedAt" FROM "campanhas" AS "Campanha" LEFT OUTER JOIN "recompensas" AS "recompensa" ON "Campanha"."recompensaId" = "recompensa"."id" WHERE "Campanha"."id" = 'fe0c4314-cc3f-47c2-9b55-b3ce1227098a' AND "Campanha"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
-Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
-[SENDER_MONITOR] Verificando 1 disparador(es) inativo(s).
-[SENDER_MONITOR] Verificação de status concluída.
+ => ERROR [build 6/6] RUN npm run build                                                      195.5s
+------
+ > [build 6/6] RUN npm run build:
+0.918
+0.918 > frontend@0.1.0 build
+0.918 > react-scripts build
+0.918
+4.898 Creating an optimized production build...
+194.1 Failed to compile.
+194.1
+194.1 [eslint]
+194.1 src/pages/WhatsappConnectPage.js
+194.1 Syntax error: Identifier 'React' has already been declared. (162:7) (162:7)
+194.1
+194.1
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

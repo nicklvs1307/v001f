@@ -25,4 +25,10 @@ router.post('/:id/test', (req, res, next) => campanhaController.sendTest(req, re
 // Rota para obter os logs de uma campanha
 router.get('/:id/logs', (req, res, next) => campanhaController.getLogs(req, res, next));
 
+// Rota para obter os resultados do teste A/B de uma campanha
+router.get('/:id/ab-results', (req, res, next) => campanhaController.getAbTestResults(req, res, next));
+
+// Rota para obter um relatório consolidado da campanha
+router.get('/:id/report', (req, res, next) => campanhaController.getCampaignReport(req, res, next));
+
 module.exports = router;

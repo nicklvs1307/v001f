@@ -156,6 +156,26 @@ class CampanhaController {
       next(error);
     }
   }
+
+  async getAbTestResults(req, res, next) {
+    try {
+      const { id } = req.params;
+      const results = await campanhaService.getAbTestResults(id);
+      res.status(200).json(results);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getCampaignReport(req, res, next) {
+    try {
+      const { id } = req.params;
+      const report = await campanhaService.getCampaignReport(id);
+      res.status(200).json(report);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = CampanhaController;

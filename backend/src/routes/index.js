@@ -29,6 +29,7 @@ const roletaRoutes = require('./roletaRoutes');
 const whatsappWebhookRoutes = require('./whatsappWebhookRoutes');
 const roletaAdminRoutes = require('./roletaAdminRoutes');
 const automationRoutes = require('./automationRoutes');
+const aiRoutes = require('./aiRoutes'); // Import the new AI routes
 
 // Super Admin Routes
 const senderRoutes = require('./superadmin/senderRoutes');
@@ -71,4 +72,5 @@ module.exports = (router) => {
   router.use('/campanhas', campanhaRoutes);
   router.use('/roletas', roletaAdminRoutes);
   router.use('/automations', automationRoutes);
+  router.use('/ai', aiRoutes); // Register AI routes
 };

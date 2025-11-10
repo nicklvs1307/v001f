@@ -3,6 +3,7 @@ const cupomRepository = require('../repositories/cupomRepository');
 const recompensaRepository = require('../repositories/recompensaRepository');
 const ApiError = require('../errors/ApiError');
 const { v4: uuidv4 } = require('uuid');
+const { CampanhaLog } = require('../../models');
 
 const cupomController = {
   generateCupom: asyncHandler(async (req, res) => {
@@ -98,6 +99,25 @@ const cupomController = {
 
     if (!updatedCupom) {
       throw new ApiError(500, 'Falha ao atualizar status do cupom.');
+    }
+
+    // Track conversion for A/B testing
+    if (updatedCupom.campanhaId && updatedCupom.clienteId) {
+      try {
+        const logEntry = await CampanhaLog.findOne({
+          where: {
+            campanhaId: updatedCupom.campanhaId,
+            clienteId: updatedCupom.clienteId,
+          },
+        });
+
+        if (logEntry && !logEntry.convertedAt) {
+          await logEntry.update({ convertedAt: new Date() });
+        }
+      } catch (error) {
+        // Log the error but don't fail the request, as the coupon validation was successful.
+        console.error('[Conversion Tracking] Failed to update CampanhaLog:', error);
+      }
     }
 
     // --- NOTIFICATION ---

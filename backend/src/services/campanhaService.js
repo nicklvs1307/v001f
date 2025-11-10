@@ -1,7 +1,7 @@
 const { Op } = require('sequelize');
 const ApiError = require('../errors/ApiError');
 const { scheduleCampaign, cancelCampaign } = require('../jobs/campaignScheduler');
-const { CampanhaLog, Client } = require('../../models');
+const { CampanhaLog, Client, sequelize } = require('../../models');
 const senderPoolService = require('./senderPoolService'); // Import the new service
 const { spin } = require('cnc-spintax'); // Import spintax library
 
@@ -255,9 +255,15 @@ class CampanhaService {
   }
 
   async _sendSimpleMessages(campanha, clients) {
-    for (const client of clients) {
+    const numVariants = campanha.mensagens.length;
+
+    for (let i = 0; i < clients.length; i++) {
+      const client = clients[i];
       if (client && client.phone) {
-        const messageTemplate = campanha.mensagens[Math.floor(Math.random() * campanha.mensagens.length)];
+        const variantIndex = i % numVariants;
+        const messageTemplate = campanha.mensagens[variantIndex];
+        const variantIdentifier = String.fromCharCode(65 + variantIndex); // A, B, C...
+
         const personalizedMessage = this._buildPersonalizedMessage(messageTemplate, client, {
           nomeCampanha: campanha.nome,
         });
@@ -269,6 +275,7 @@ class CampanhaService {
           clienteId: client.id,
           status: status,
           errorMessage: errorMessage,
+          variant: variantIdentifier,
         });
       }
     }
@@ -276,11 +283,15 @@ class CampanhaService {
 
   async _sendRewardMessages(campanha, clients, rewards) {
     const clientMap = new Map(clients.map(c => [c.id, c]));
+    const numVariants = campanha.mensagens.length;
 
-    for (const reward of rewards) {
+    for (let i = 0; i < rewards.length; i++) {
+      const reward = rewards[i];
       const client = clientMap.get(reward.clienteId);
       if (client && client.phone) {
-        const messageTemplate = campanha.mensagens[Math.floor(Math.random() * campanha.mensagens.length)];
+        const variantIndex = i % numVariants;
+        const messageTemplate = campanha.mensagens[variantIndex];
+        const variantIdentifier = String.fromCharCode(65 + variantIndex); // A, B, C...
         
         let rewardCode;
         if (campanha.rewardType === 'RECOMPENSA' && reward.codigo) {
@@ -304,6 +315,7 @@ class CampanhaService {
           clienteId: client.id,
           status: status,
           errorMessage: errorMessage,
+          variant: variantIdentifier,
         });
       }
     }
@@ -319,6 +331,82 @@ class CampanhaService {
       }],
       order: [['sentAt', 'DESC']],
     });
+  }
+
+  async getAbTestResults(campaignId) {
+    const results = await CampanhaLog.findAll({
+      where: { campanhaId },
+      attributes: [
+        'variant',
+        [sequelize.fn('COUNT', sequelize.col('id')), 'recipients'],
+        [sequelize.fn('COUNT', sequelize.col('convertedAt')), 'conversions'],
+      ],
+      group: ['variant'],
+      raw: true,
+    });
+
+    if (!results || results.length === 0) {
+      return {
+        summary: {
+          totalRecipients: 0,
+          totalConversions: 0,
+          totalConversionRate: 0,
+        },
+        variants: [],
+      };
+    }
+
+    const variantsWithRate = results.map(row => {
+      const recipients = parseInt(row.recipients, 10);
+      const conversions = parseInt(row.conversions, 10);
+      const conversionRate = recipients > 0 ? (conversions / recipients) * 100 : 0;
+      return {
+        ...row,
+        recipients,
+        conversions,
+        conversionRate: parseFloat(conversionRate.toFixed(2)),
+      };
+    });
+
+    const totalRecipients = variantsWithRate.reduce((sum, v) => sum + v.recipients, 0);
+    const totalConversions = variantsWithRate.reduce((sum, v) => sum + v.conversions, 0);
+    const totalConversionRate = totalRecipients > 0 ? (totalConversions / totalRecipients) * 100 : 0;
+
+    return {
+      summary: {
+        totalRecipients,
+        totalConversions,
+        totalConversionRate: parseFloat(totalConversionRate.toFixed(2)),
+      },
+      variants: variantsWithRate,
+    };
+  }
+
+  async getCampaignReport(campaignId) {
+    // 1. Get A/B test results (which includes conversion summary)
+    const abTestResults = await this.getAbTestResults(campaignId);
+
+    // 2. Get delivery status summary
+    const deliveryStatus = await CampanhaLog.findAll({
+      where: { campanhaId },
+      attributes: [
+        'status',
+        [sequelize.fn('COUNT', sequelize.col('status')), 'count'],
+      ],
+      group: ['status'],
+      raw: true,
+    });
+
+    const deliverySummary = deliveryStatus.reduce((acc, row) => {
+      acc[row.status] = parseInt(row.count, 10);
+      return acc;
+    }, { sent: 0, failed: 0, skipped: 0 });
+
+    // 3. Combine into a single report object
+    return {
+      abTest: abTestResults,
+      delivery: deliverySummary,
+    };
   }
 }
 

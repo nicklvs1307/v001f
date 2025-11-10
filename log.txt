@@ -1,20 +1,20 @@
- => ERROR [build 6/6] RUN npm run build                                                      193.4s
+ => ERROR [build 6/6] RUN npm run build                                                      198.0s
 ------
  > [build 6/6] RUN npm run build:
-0.760
-0.760 > frontend@0.1.0 build
-0.760 > react-scripts build
-0.760
-4.653 Creating an optimized production build...
-193.0 Failed to compile.
-193.0
-193.0 [eslint]
-193.0 src/pages/CampaignFormPage.js
-193.0   Line 403:89:  'AddIcon' is not defined  react/jsx-no-undef
-193.0
-193.0 Search for the keywords to learn more about each error.
-193.0
-193.0
+0.890
+0.890 > frontend@0.1.0 build
+0.890 > react-scripts build
+0.890
+5.095 Creating an optimized production build...
+197.6 Failed to compile.
+197.6
+197.6 [eslint]
+197.6 src/pages/CampaignFormPage.js
+197.6   Line 403:89:  'AddIcon' is not defined  react/jsx-no-undef
+197.6
+197.6 Search for the keywords to learn more about each error.
+197.6
+197.6
 ------
 Dockerfile:14
 --------------------

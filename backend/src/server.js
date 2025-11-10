@@ -74,12 +74,18 @@ const startServer = async () => {
     const birthdayAutomationJob = require('./jobs/birthdayAutomationJob');
     const couponExpirationJob = require('./jobs/couponExpirationJob');
     const resetSenderCountsJob = require('./jobs/resetSenderCountsJob');
+    const { initSenderMonitorJob } = require('./jobs/senderMonitorJob');
+    const { initWarmingUpProgressJob } = require('./jobs/warmingUpProgressJob');
+    const { initCampaignMonitorJob } = require('./jobs/campaignMonitorJob');
     
     dailyReportJob.start();
     couponReminderJob.start();
     birthdayAutomationJob.start();
     couponExpirationJob.start();
     resetSenderCountsJob.start();
+    initSenderMonitorJob();
+    initWarmingUpProgressJob();
+    initCampaignMonitorJob();
 
     // Instanciar dependências e inicializar agendamentos de campanha
     const CampanhaService = require('./services/campanhaService');

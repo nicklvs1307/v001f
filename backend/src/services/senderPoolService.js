@@ -1,15 +1,36 @@
 const { WhatsappSender, sequelize } = require('../../models');
 const { Op } = require('sequelize');
 
+const WARMING_UP_CASE_STATEMENT = `
+  CASE "warmingUpDay"
+    WHEN 1 THEN 0.10
+    WHEN 2 THEN 0.20
+    WHEN 3 THEN 0.35
+    WHEN 4 THEN 0.50
+    WHEN 5 THEN 0.65
+    WHEN 6 THEN 0.80
+    WHEN 7 THEN 1.00
+    ELSE 0
+  END
+`;
+
 class SenderPoolService {
   async getAvailableSender() {
     return sequelize.transaction(async (t) => {
       const sender = await WhatsappSender.findOne({
         where: {
-          status: 'active',
-          messagesSentToday: {
-            [Op.lt]: sequelize.col('dailyLimit'),
-          },
+          [Op.or]: [
+            {
+              status: 'active',
+              messagesSentToday: { [Op.lt]: sequelize.col('dailyLimit') }
+            },
+            {
+              status: 'warming_up',
+              [Op.and]: [
+                sequelize.literal(`"messagesSentToday" < CEILING("dailyLimit" * ${WARMING_UP_CASE_STATEMENT})`)
+              ]
+            }
+          ]
         },
         order: [
           ['priority', 'ASC'],
@@ -43,7 +64,7 @@ class SenderPoolService {
 
   async reportFailedSender(senderId, errorType = 'disconnected') {
     const sender = await WhatsappSender.findByPk(senderId);
-    if (sender && sender.status === 'active') {
+    if (sender && ['active', 'warming_up'].includes(sender.status)) {
       await sender.update({ status: errorType });
     }
   }

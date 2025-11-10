@@ -54,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
         comment: 'Ex: { "type": "all" } ou { "type": "specific", "clientIds": [...] } ou { "type": "birthday", "month": 9 }'
       },
       status: {
-        type: DataTypes.ENUM('draft', 'processing', 'sent', 'failed', 'scheduled'),
+        type: DataTypes.ENUM('draft', 'processing', 'sent', 'failed', 'scheduled', 'paused'),
         defaultValue: 'draft',
         allowNull: false,
       },

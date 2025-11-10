@@ -1,5 +1,5 @@
 URL da solicitação
-https://apivoltaki.towersfy.com/api/superadmin/senders
+https://apivoltaki.towersfy.com/api/campanhas/a2961325-91c3-4f4c-8580-078e20fa68dd/test
 Método da solicitação
 POST
 Código de status
@@ -7,11 +7,21 @@ Código de status
 {
     "status": "error",
     "code": "HTTP_500",
-    "message": "whatsappService.createSenderInstance is not a function",
-    "details": "TypeError: whatsappService.createSenderInstance is not a function\n    at SenderService.createSender (/usr/src/app/src/services/superadmin/senderService.js:32:27)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async create (/usr/src/app/src/controllers/superadmin/senderController.js:26:25)"
-}{
+    "message": "Request failed with status code 400",
+    "details": "AxiosError: Request failed with status code 400\n    at settle (/usr/src/app/node_modules/axios/dist/node/axios.cjs:2097:12)\n    at IncomingMessage.handleStreamEnd (/usr/src/app/node_modules/axios/dist/node/axios.cjs:3305:11)\n    at IncomingMessage.emit (node:events:529:35)\n    at endReadableNT (node:internal/streams/readable:1400:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)\n    at Axios.request (/usr/src/app/node_modules/axios/dist/node/axios.cjs:4483:41)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Object.sendTenantMediaMessage (/usr/src/app/src/services/whatsappService.js:107:22)\n    at async CampanhaService.sendTest (/usr/src/app/src/services/campanhaService.js:109:7)\n    at async CampanhaController.sendTest (/usr/src/app/src/controllers/campanhaController.js:143:22)"
+}
+
+
+----
+URL da solicitação
+https://apivoltaki.towersfy.com/api/superadmin/senders/be0d1e12-e398-4deb-98c7-874e1eca1173
+Método da solicitação
+DELETE
+Código de status
+500 Internal Server Error
+{
     "status": "error",
     "code": "HTTP_500",
-    "message": "whatsappService.createSenderInstance is not a function",
-    "details": "TypeError: whatsappService.createSenderInstance is not a function\n    at SenderService.createSender (/usr/src/app/src/services/superadmin/senderService.js:32:27)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async create (/usr/src/app/src/controllers/superadmin/senderController.js:26:25)"
+    "message": "whatsappService.deleteSenderInstance is not a function",
+    "details": "TypeError: whatsappService.deleteSenderInstance is not a function\n    at SenderService.deleteSender (/usr/src/app/src/services/superadmin/senderService.js:43:27)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async delete (/usr/src/app/src/controllers/superadmin/senderController.js:46:7)"
 }

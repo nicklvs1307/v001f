@@ -107,7 +107,11 @@ const sendTenantMediaMessage = async (tenantId, number, mediaUrl, caption) => {
     const response = await axios.post(`${config.url}/message/sendMedia/${config.instanceName}`, {
       number: finalNumber,
       caption: caption,
-      media: { url: fullMediaUrl },
+      media: {
+        url: fullMediaUrl,
+        mimetype,
+        filename: fileName,
+      },
     }, {
       headers: { 'Content-Type': 'application/json', 'apikey': config.apiKey },
     });
@@ -155,12 +159,19 @@ const sendCampaignMediaMessage = async (sender, number, mediaUrl, caption, delay
   console.log(`[WhatsApp Service] Enviando mensagem de CAMPANHA com mídia com disparador ${sender.name} para: ${finalNumber}`);
 
   const fullMediaUrl = `${process.env.BACKEND_URL}${mediaUrl}`;
+  const extension = mediaUrl.split('.').pop().toLowerCase();
+  const mimetype = `image/${extension === 'jpg' ? 'jpeg' : extension}`;
+  const fileName = mediaUrl.split('/').pop();
 
   try {
     const response = await axios.post(`${sender.apiUrl}/message/sendMedia/${sender.instanceName}`, {
       number: finalNumber,
       caption: caption,
-      media: { url: fullMediaUrl },
+      media: {
+        url: fullMediaUrl,
+        mimetype,
+        filename: fileName,
+      },
     }, {
       headers: { 'Content-Type': 'application/json', 'apikey': sender.apiKey },
     });
@@ -395,6 +406,21 @@ const getSenderQrCodeForConnect = async (sender) => {
   }
 };
 
+const deleteSenderInstance = async (sender) => {
+  if (!sender || !sender.instanceName) {
+    return { message: "Instância do disparador já removida ou não configurada." };
+  }
+  try {
+    await axios.delete(`${sender.apiUrl}/instance/delete/${sender.instanceName}`, { headers: { 'apikey': sender.apiKey } });
+    return { message: "Instância do disparador deletada com sucesso." };
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      return { message: "Instância do disparador não encontrada na API do WhatsApp, pode ser removida do sistema." };
+    }
+    throw error;
+  }
+};
+
 
 module.exports = {
   sendSystemMessage,
@@ -413,4 +439,5 @@ module.exports = {
   getSenderInstanceStatus,    // Export new method
   createSenderRemoteInstance, // Export new method
   getSenderQrCodeForConnect,  // Export new method
+  deleteSenderInstance,
 };

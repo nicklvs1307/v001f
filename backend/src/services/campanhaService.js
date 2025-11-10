@@ -3,6 +3,19 @@ const ApiError = require('../errors/ApiError');
 const { scheduleCampaign, cancelCampaign } = require('../jobs/campaignScheduler');
 const { CampanhaLog, Client } = require('../../models');
 const senderPoolService = require('./senderPoolService'); // Import the new service
+const { spin } = require('cnc-spintax'); // Import spintax library
+
+// Campaign Auto-Pause Control
+const campaignFailureTracker = {}; // In-memory tracker for campaign failures
+const FAILURE_WINDOW_SECONDS = 60;
+const FAILURE_THRESHOLD = 5;
+
+class PauseCampaignError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'PauseCampaignError';
+  }
+}
 
 class CampanhaService {
   constructor(campanhaRepository, clientRepository, cupomRepository, roletaSpinRepository, whatsappService) {
@@ -115,7 +128,8 @@ class CampanhaService {
   }
 
   _buildPersonalizedMessage(template, client, rewardData = {}) {
-    let message = template.replace(/{{nome_cliente}}/g, client.name.split(' ')[0]);
+    let message = spin(template); // Process spintax first
+    message = message.replace(/{{nome_cliente}}/g, client.name.split(' ')[0]);
     if (rewardData.codigo) message = message.replace(/{{codigo_premio}}/g, rewardData.codigo);
     if (rewardData.dataValidade) {
       const formattedDate = new Date(rewardData.dataValidade).toLocaleDateString('pt-BR');
@@ -127,27 +141,44 @@ class CampanhaService {
   }
 
   async _processCampaign(campaignId, tenantId) {
+    // Initialize failure tracker for this campaign run
+    campaignFailureTracker[campaignId] = [];
+
     try {
-        await this.campanhaRepository.update(campaignId, { status: 'processing' }, tenantId);
-        const campanha = await this.getById(campaignId, tenantId);
+      await this.campanhaRepository.update(campaignId, { status: 'processing' }, tenantId);
+      const campanha = await this.getById(campaignId, tenantId);
 
-        const clients = await this._selectClients(campanha.criterioSelecao, tenantId);
-        if (!clients || clients.length === 0) {
-            await this.campanhaRepository.update(campaignId, { status: 'sent' }, tenantId);
-            return;
-        }
-
-        if (campanha.rewardType === 'NONE') {
-            await this._sendSimpleMessages(campanha, clients);
-        } else {
-            const rewards = await this._generateRewards(campanha, clients);
-            await this._sendRewardMessages(campanha, clients, rewards);
-        }
-
+      const clients = await this._selectClients(campanha.criterioSelecao, tenantId);
+      if (!clients || clients.length === 0) {
         await this.campanhaRepository.update(campaignId, { status: 'sent' }, tenantId);
+        return;
+      }
+
+      try {
+        if (campanha.rewardType === 'NONE') {
+          await this._sendSimpleMessages(campanha, clients);
+        } else {
+          const rewards = await this._generateRewards(campanha, clients);
+          await this._sendRewardMessages(campanha, clients, rewards);
+        }
+        // If the loop completes without being paused, mark as sent
+        await this.campanhaRepository.update(campaignId, { status: 'sent' }, tenantId);
+
+      } catch (err) {
+        if (err instanceof PauseCampaignError) {
+          console.log(`[Campanha] Campanha ${campaignId} pausada devido a muitas falhas.`);
+          // The status is already set to 'paused' by the function that throws this
+        } else {
+          // Re-throw other unexpected errors to be caught by the outer block
+          throw err;
+        }
+      }
     } catch (err) {
-        console.error(`[Campanha] Falha no processamento da campanha ${campaignId}:`, err);
-        this.campanhaRepository.update(campaignId, { status: 'failed' }, tenantId).catch(console.error);
+      console.error(`[Campanha] Falha no processamento da campanha ${campaignId}:`, err);
+      this.campanhaRepository.update(campaignId, { status: 'failed' }, tenantId).catch(console.error);
+    } finally {
+      // Clean up the tracker for this campaign
+      delete campaignFailureTracker[campaignId];
     }
   }
 
@@ -162,6 +193,27 @@ class CampanhaService {
   _getRandomDelay(min, max) {
     if (min === 0 && max === 0) return 0;
     return (Math.floor(Math.random() * (max - min + 1)) + min) * 1000;
+  }
+
+  async _pauseCampaign(campaignId, tenantId) {
+    await this.campanhaRepository.update(campaignId, { status: 'paused' }, tenantId);
+    cancelCampaign(campaignId); // Cancel any future schedule for this campaign
+  }
+
+  async _checkAndTriggerPause(campaignId, tenantId) {
+    const failureTimestamps = campaignFailureTracker[campaignId] || [];
+    const now = Date.now();
+    
+    // Keep only failures within the defined window
+    const recentFailures = failureTimestamps.filter(
+      timestamp => (now - timestamp) / 1000 <= FAILURE_WINDOW_SECONDS
+    );
+    campaignFailureTracker[campaignId] = recentFailures;
+
+    if (recentFailures.length >= FAILURE_THRESHOLD) {
+      await this._pauseCampaign(campaignId, tenantId);
+      throw new PauseCampaignError(`Campaign ${campaignId} paused due to high failure rate.`);
+    }
   }
 
   async _sendMessageWithPool(campanha, client, personalizedMessage, maxRetries = 2) {
@@ -184,9 +236,16 @@ class CampanhaService {
         attempts++;
         console.error(`[Campanha] Tentativa ${attempts} falhou para ${client.phone} com disparador ${sender?.name || 'N/A'}. Erro: ${err.message}`);
         if (sender) {
+          // TODO: Implement more granular error checking to decide between 'resting' and 'blocked'
           await senderPoolService.reportFailedSender(sender.id, 'blocked');
         }
+
         if (attempts >= maxRetries) {
+          // Record final failure
+          if (campaignFailureTracker[campanha.id]) {
+            campaignFailureTracker[campanha.id].push(Date.now());
+            await this._checkAndTriggerPause(campanha.id, campanha.tenantId);
+          }
           return { status: 'failed', errorMessage: err.message }; // Final failure
         }
         // Wait a bit before retrying with a new sender

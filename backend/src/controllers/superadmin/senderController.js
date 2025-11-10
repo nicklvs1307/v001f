@@ -66,7 +66,7 @@ class SenderController {
       console.log(`[Webhook] Received event '${event}' for instance '${instance}'`);
 
       if (event === 'connection.update') {
-        const newStatus = data.state === 'CONNECTED' ? 'connected' : 'disconnected';
+        const newStatus = data.state === 'CONNECTED' ? 'active' : 'disconnected';
         const updatedSender = await senderService.updateSenderStatusByInstance(instance, newStatus);
 
         if (updatedSender) {

@@ -278,9 +278,22 @@ const createRemoteInstance = async (tenantId) => {
     await config.reload();
   }
   try {
+    const webhookUrl = `${process.env.BACKEND_URL}/whatsapp-webhook/webhook`;
+    const payload = {
+      instanceName: config.instanceName,
+      integration: 'WHATSAPP-BAILEYS',
+      webhook: webhookUrl,
+      events: [
+        "QRCODE_UPDATED",
+        "CONNECTION_UPDATE",
+        "MESSAGES_UPSERT",
+        "MESSAGES_UPDATE"
+      ],
+    };
+
     const response = await axios.post(
       `${config.url}/instance/create`,
-      { instanceName: config.instanceName, integration: 'WHATSAPP-BAILEYS' },
+      payload,
       getAxiosConfig(config)
     );
     return response.data;
@@ -394,9 +407,23 @@ const createSenderRemoteInstance = async (sender) => {
   }
   console.log(`[WhatsappService] createSenderRemoteInstance: sender.apiUrl = ${sender.apiUrl}`);
   try {
+    const webhookUrl = `${process.env.BACKEND_URL}/superadmin/senders/webhook`;
+    const payload = {
+      instanceName: sender.instanceName,
+      integration: 'WHATSAPP-BAILEYS',
+      webhook: webhookUrl,
+      events: [
+        "QRCODE_UPDATED",
+        "CONNECTION_UPDATE",
+      ],
+      headers: {
+        'x-api-key': process.env.WHATSAPP_API_KEY
+      }
+    };
+
     await axios.post(
       `${sender.apiUrl}/instance/create`,
-      { instanceName: sender.instanceName, integration: 'WHATSAPP-BAILEYS' },
+      payload,
       { headers: { 'apikey': sender.apiKey } }
     );
     return { status: 'success', message: 'Instância criada ou já existente.' };

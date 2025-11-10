@@ -22,7 +22,12 @@ import {
   styled,
   ToggleButtonGroup,
   ToggleButton,
-  Tooltip
+  Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -37,6 +42,7 @@ import recompensaService from '../services/recompensaService';
 import roletaService from '../services/roletaService';
 import ClientSegmentSelector from '../components/campaigns/ClientSegmentSelector';
 import WhatsappPreview from '../components/WhatsappPreview';
+import aiService from '../services/aiService'; // Import the new AI service
 
 const initialState = {
   campaign: {
@@ -153,6 +159,13 @@ const CampaignFormPage = () => {
   const [activeMessageTab, setActiveMessageTab] = useState(0);
   const textInputRef = useRef(null);
 
+  // State for AI Generation Dialog
+  const [showAiDialog, setShowAiDialog] = useState(false);
+  const [aiBaseMessage, setAiBaseMessage] = useState('');
+  const [aiNumVariations, setAiNumVariations] = useState(3);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState('');
+
   const handleFormat = (formatChar) => {
     const input = textInputRef.current;
     if (!input) return;
@@ -192,6 +205,32 @@ const CampaignFormPage = () => {
       const newCursorPosition = start + variable.length;
       input.setSelectionRange(newCursorPosition, newCursorPosition);
     }, 0);
+  };
+
+  const handleOpenAiDialog = () => {
+    setAiBaseMessage(campaign.mensagens[activeMessageTab]); // Pre-fill with current message
+    setAiNumVariations(3);
+    setAiError('');
+    setShowAiDialog(true);
+  };
+
+  const handleCloseAiDialog = () => {
+    setShowAiDialog(false);
+    setAiLoading(false);
+  };
+
+  const handleGenerateWithAi = async () => {
+    setAiLoading(true);
+    setAiError('');
+    try {
+      const spintaxResult = await aiService.generateMessageVariations(aiBaseMessage, aiNumVariations);
+      dispatch({ type: 'MESSAGE_CHANGE', payload: { index: activeMessageTab, value: spintaxResult } });
+      handleCloseAiDialog();
+    } catch (err) {
+      setAiError(err.response?.data?.message || 'Falha ao gerar variações com IA.');
+    } finally {
+      setAiLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -393,6 +432,7 @@ const CampaignFormPage = () => {
                     <Button size="small" variant="outlined" onClick={() => handleInsertVariable('{{data_validade}}')}>Validade</Button>
                     <Button size="small" variant="outlined" onClick={() => handleInsertVariable('{{nome_recompensa}}')}>Recompensa</Button>
                     <Button size="small" variant="outlined" onClick={() => handleInsertVariable('{{nome_campanha}}')}>Campanha</Button>
+                    <Button size="small" variant="contained" startIcon={<AddIcon />} onClick={handleOpenAiDialog} sx={{ ml: 2 }}>Gerar com IA</Button>
                   </Paper>
                   <TextField
                     fullWidth
@@ -531,6 +571,46 @@ const CampaignFormPage = () => {
           </Button>
         </Box>
       </form>
+
+      {/* AI Generation Dialog */}
+      <Dialog open={showAiDialog} onClose={handleCloseAiDialog} fullWidth maxWidth="sm">
+        <DialogTitle>Gerar Variações de Mensagem com IA</DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ mb: 2 }}>
+            Descreva a ideia principal da sua mensagem ou cole um rascunho. A IA irá gerar variações para você.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Ideia Base da Mensagem"
+            type="text"
+            fullWidth
+            multiline
+            rows={4}
+            value={aiBaseMessage}
+            onChange={(e) => setAiBaseMessage(e.target.value)}
+            variant="outlined"
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            margin="dense"
+            label="Número de Variações"
+            type="number"
+            fullWidth
+            value={aiNumVariations}
+            onChange={(e) => setAiNumVariations(Math.max(1, parseInt(e.target.value, 10) || 1))}
+            inputProps={{ min: 1, max: 5 }} // Limit to a reasonable number
+            variant="outlined"
+          />
+          {aiError && <Alert severity="error" sx={{ mt: 2 }}>{aiError}</Alert>}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAiDialog} disabled={aiLoading}>Cancelar</Button>
+          <Button onClick={handleGenerateWithAi} disabled={aiLoading || !aiBaseMessage.trim()} variant="contained">
+            {aiLoading ? <CircularProgress size={24} /> : 'Gerar Variações'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

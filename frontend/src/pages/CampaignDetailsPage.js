@@ -33,6 +33,7 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import SendIcon from '@mui/icons-material/Send';
 import EditIcon from '@mui/icons-material/Edit';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -52,8 +53,10 @@ const CampaignDetailsPage = () => {
   const { user } = useContext(AuthContext);
   const [campaign, setCampaign] = useState(null);
   const [campaignLogs, setCampaignLogs] = useState([]);
+  const [campaignReport, setCampaignReport] = useState(null); // New state for the report
   const [loading, setLoading] = useState(true);
   const [logsLoading, setLogsLoading] = useState(true);
+  const [reportLoading, setReportLoading] = useState(true); // New loading state
   const [error, setError] = useState('');
   const [testDialogOpen, setTestDialogOpen] = useState(false);
   const [testPhoneNumber, setTestPhoneNumber] = useState('');
@@ -84,9 +87,23 @@ const CampaignDetailsPage = () => {
       }
     };
 
+    const fetchCampaignReport = async () => {
+      setReportLoading(true);
+      try {
+        const response = await campanhaService.getCampaignReport(id);
+        setCampaignReport(response.data);
+      } catch (err) {
+        console.error("Erro ao buscar relatório da campanha:", err);
+        // Não define erro global para não bloquear a página se só o relatório falhar
+      } finally {
+        setReportLoading(false);
+      }
+    };
+
     if (user?.tenantId && id) {
       fetchCampaignDetails();
       fetchCampaignLogs();
+      fetchCampaignReport(); // Fetch the new report data
     }
   }, [id, user]);
 
@@ -130,17 +147,18 @@ const CampaignDetailsPage = () => {
     return <Chip label={label} color={color} size="small" />;
   };
 
-  if (loading) return <CircularProgress />;
+  if (loading || reportLoading) return <CircularProgress />;
   if (error) return <Alert severity="error">{error}</Alert>;
-  if (!campaign) return <Alert severity="info">Campanha não encontrada.</Alert>;
+  if (!campaign || !campaignReport) return <Alert severity="info">Campanha não encontrada ou relatório não disponível.</Alert>;
 
   const imageUrl = campaign.mediaUrl ? `${process.env.REACT_APP_API_URL}${campaign.mediaUrl}` : null;
 
-  // Calcular estatísticas dos logs
-  const totalLogs = campaignLogs.length;
-  const sentLogs = campaignLogs.filter(log => log.status === 'sent').length;
-  const failedLogs = campaignLogs.filter(log => log.status === 'failed').length;
-  const skippedLogs = campaignLogs.filter(log => log.status === 'skipped').length;
+  // Usar estatísticas do relatório
+  const totalRecipients = campaignReport.abTest.summary.totalRecipients;
+  const sentCount = campaignReport.delivery.sent || 0;
+  const failedCount = campaignReport.delivery.failed || 0;
+  const skippedCount = campaignReport.delivery.skipped || 0;
+  const overallConversionRate = campaignReport.abTest.summary.totalConversionRate;
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -255,31 +273,75 @@ const CampaignDetailsPage = () => {
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>Estatísticas de Envio</Typography>
-                  {logsLoading ? (
-                    <CircularProgress size={20} />
-                  ) : (
-                    <List dense>
-                      <ListItem>
-                        <ListItemIcon><PeopleIcon /></ListItemIcon>
-                        <ListItemText primary="Total de Clientes Tentados" secondary={totalLogs} />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon><CheckCircleIcon color="success" /></ListItemIcon>
-                        <ListItemText primary="Mensagens Enviadas" secondary={sentLogs} />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon><ErrorIcon color="error" /></ListItemIcon>
-                        <ListItemText primary="Mensagens com Falha" secondary={failedLogs} />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemIcon><MessageIcon color="disabled" /></ListItemIcon>
-                        <ListItemText primary="Mensagens Ignoradas" secondary={skippedLogs} />
-                      </ListItem>
-                    </List>
-                  )}
+                  <List dense>
+                    <ListItem>
+                      <ListItemIcon><PeopleIcon /></ListItemIcon>
+                      <ListItemText primary="Total de Destinatários" secondary={totalRecipients} />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemIcon><CheckCircleIcon color="success" /></ListItemIcon>
+                      <ListItemText primary="Mensagens Enviadas" secondary={sentCount} />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemIcon><ErrorIcon color="error" /></ListItemIcon>
+                      <ListItemText primary="Mensagens com Falha" secondary={failedCount} />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemIcon><MessageIcon color="disabled" /></ListItemIcon>
+                      <ListItemText primary="Mensagens Ignoradas" secondary={skippedCount} />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemIcon><BarChartIcon color="primary" /></ListItemIcon>
+                      <ListItemText primary="Taxa de Conversão Geral" secondary={`${overallConversionRate}%`} />
+                    </ListItem>
+                  </List>
                 </CardContent>
               </Card>
             </Grid>
+
+            {campaignReport.abTest.variants.length > 1 && (
+              <Grid item xs={12}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>Resultados do Teste A/B</Typography>
+                    <TableContainer component={Paper} variant="outlined" sx={{ mb: 2 }}>
+                      <Table size="small">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Variante</TableCell>
+                            <TableCell align="right">Destinatários</TableCell>
+                            <TableCell align="right">Conversões</TableCell>
+                            <TableCell align="right">Taxa de Conversão</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {campaignReport.abTest.variants.map((variant) => (
+                            <TableRow key={variant.variant}>
+                              <TableCell>{variant.variant}</TableCell>
+                              <TableCell align="right">{variant.recipients}</TableCell>
+                              <TableCell align="right">{variant.conversions}</TableCell>
+                              <TableCell align="right">{`${variant.conversionRate}%`}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    
+                    <Typography variant="subtitle1" gutterBottom>Comparativo de Conversão</Typography>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <BarChart data={campaignReport.abTest.variants}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="variant" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="conversionRate" name="Taxa de Conversão (%)" fill="#8884d8" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+              </Grid>
+            )}
 
             <Grid item xs={12}>
               <Card>

@@ -1,11 +1,11 @@
-import axios from 'axios';
+import apiAuthenticated from './apiAuthenticated';
 
-const AI_API_BASE_URL = '/api/ai'; // Matches the backend route
+const AI_API_BASE_URL = '/ai'; // Matches the backend route
 
 const aiService = {
   generateMessageVariations: async (baseMessage, numVariations) => {
     try {
-      const response = await axios.post(`${AI_API_BASE_URL}/generate-variations`, {
+      const response = await apiAuthenticated.post(`${AI_API_BASE_URL}/generate-variations`, {
         baseMessage,
         numVariations,
       });

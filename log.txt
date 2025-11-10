@@ -2,28 +2,25 @@ Postgres is up - executing command
 Server.js is being executed!
 Conexão com o banco de dados estabelecida com sucesso (Sequelize).
 Server is running on port 5000
-node:internal/modules/cjs/loader:1143
-
-  throw err;
-  ^
-Error: Cannot find module 'node-schedule'
-Require stack:
-- /usr/src/app/src/jobs/senderMonitorJob.js
-- /usr/src/app/src/server.js
-    at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
-    at Module._load (node:internal/modules/cjs/loader:981:27)
-    at Module.require (node:internal/modules/cjs/loader:1231:19)
-    at require (node:internal/modules/helpers:177:18)
-    at Object.<anonymous> (/usr/src/app/src/jobs/senderMonitorJob.js:1:18)
-    at Module._compile (node:internal/modules/cjs/loader:1364:14)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
-    at Module.load (node:internal/modules/cjs/loader:1203:32)
-    at Module._load (node:internal/modules/cjs/loader:1019:12)
-    at Module.require (node:internal/modules/cjs/loader:1231:19) {
-  code: 'MODULE_NOT_FOUND',
-  requireStack: [
-    '/usr/src/app/src/jobs/senderMonitorJob.js',
-    '/usr/src/app/src/server.js'
-  ]
-}
-Node.js v18.20.8
+Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
+Agendador de lembrete de cupons iniciado. A tarefa será executada todos os dias às 9:00.
+Agendador de expiração de cupons iniciado. A tarefa será executada todo dia à meia-noite.
+[SenderMonitorJob] Job de monitoramento de disparadores inicializado para rodar a cada 5 minutos.
+[WarmingUpProgressJob] Job de progressão de aquecimento inicializado para rodar diariamente à 1h.
+[CampaignMonitorJob] Job de monitoramento de campanhas inicializado para rodar a cada 10 minutos.
+[CampanhaService] Inicializando campanhas agendadas...
+Unhandled Rejection at: Promise {
+  <rejected> TypeError: this.campanhaRepository.findAllWhere is not a function
+      at CampanhaService.initScheduledCampaigns (/usr/src/app/src/services/campanhaService.js:31:62)
+      at Server.<anonymous> (/usr/src/app/src/server.js:105:29)
+      at Object.onceWrapper (node:events:631:28)
+      at Server.emit (node:events:529:35)
+      at emitListeningNT (node:net:1851:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:81:21)
+} reason: TypeError: this.campanhaRepository.findAllWhere is not a function
+    at CampanhaService.initScheduledCampaigns (/usr/src/app/src/services/campanhaService.js:31:62)
+    at Server.<anonymous> (/usr/src/app/src/server.js:105:29)
+    at Object.onceWrapper (node:events:631:28)
+    at Server.emit (node:events:529:35)
+    at emitListeningNT (node:net:1851:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:81:21)

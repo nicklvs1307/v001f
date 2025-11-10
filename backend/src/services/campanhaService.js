@@ -28,7 +28,7 @@ class CampanhaService {
 
   async initScheduledCampaigns() {
     console.log('[CampanhaService] Inicializando campanhas agendadas...');
-    const scheduledCampaigns = await this.campanhaRepository.findAllWhere({
+    const scheduledCampaigns = await this.campanhaRepository.findAll({
       status: 'scheduled',
       startDate: { [Op.ne]: null },
     });

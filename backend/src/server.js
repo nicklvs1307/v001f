@@ -8,7 +8,7 @@ process.on('unhandledRejection', (reason, promise) => {
 
 const express = require("express");
 const cors = require("cors");
-const config = require("./config");
+const { config } = require("./config");
 const { connectDB } = require("./database"); // Importa a função connectDB
 
 const app = express();

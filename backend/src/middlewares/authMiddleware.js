@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const config = require("../config");
+const { config } = require("../config");
 const ApiError = require("../errors/ApiError"); // Importar ApiError
 const { Role, Permissao, RolePermissao } = require("../../models"); // Importa os modelos do Sequelize
 

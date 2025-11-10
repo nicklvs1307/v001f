@@ -17,7 +17,7 @@ import {
   DialogTitle,
   TextField,
   IconButton,
-  Tooltip,
+  Tooltip as MuiTooltip, // Renamed to avoid conflict with recharts Tooltip
   Card,
   CardContent,
   CardMedia,
@@ -221,11 +221,11 @@ const CampaignDetailsPage = () => {
                           <TableCell>{log.client?.phone || 'N/A'}</TableCell>
                           <TableCell>{getLogStatusChip(log.status)}</TableCell>
                           <TableCell>
-                            <Tooltip title={log.errorMessage || 'Sem erro'}>
+                            <MuiTooltip title={log.errorMessage || 'Sem erro'}>
                               <Typography variant="body2" noWrap sx={{ maxWidth: '150px' }}>
                                 {log.errorMessage || '-'}
                               </Typography>
-                            </Tooltip>
+                            </MuiTooltip>
                           </TableCell>
                           <TableCell>{new Date(log.sentAt).toLocaleString()}</TableCell>
                         </TableRow>

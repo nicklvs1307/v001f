@@ -373,6 +373,7 @@ const createSenderRemoteInstance = async (sender) => {
   if (!sender || !sender.apiUrl || !sender.apiKey || !sender.instanceName) {
     throw new Error('Dados do disparador incompletos para criar instância remota.');
   }
+  console.log(`[WhatsappService] createSenderRemoteInstance: sender.apiUrl = ${sender.apiUrl}`);
   try {
     await axios.post(
       `${sender.apiUrl}/instance/create`,
@@ -394,8 +395,13 @@ const createSenderRemoteInstance = async (sender) => {
 const getSenderQrCodeForConnect = async (sender) => {
   const createResult = await createSenderRemoteInstance(sender);
   if (createResult && createResult.status === 'success' && createResult.code === 'INSTANCE_EXISTS') {
-    // If instance already exists, we don't need to get a new QR code, just return empty
-    return { qrCode: '' };
+    // If instance already exists, check its connection status
+    const currentStatus = await getSenderInstanceStatus(sender);
+    if (currentStatus === 'active') {
+      // If already active, no QR code needed
+      return { qrCode: '' };
+    }
+    // If not active, proceed to get QR code
   }
   try {
     const response = await axios.get(`${sender.apiUrl}/instance/connect/${sender.instanceName}`, { headers: { 'apikey': sender.apiKey } });
@@ -410,6 +416,7 @@ const deleteSenderInstance = async (sender) => {
   if (!sender || !sender.instanceName) {
     return { message: "Instância do disparador já removida ou não configurada." };
   }
+  console.log(`[WhatsappService] deleteSenderInstance: sender.apiUrl = ${sender.apiUrl}`);
   try {
     await axios.delete(`${sender.apiUrl}/instance/delete/${sender.instanceName}`, { headers: { 'apikey': sender.apiKey } });
     return { message: "Instância do disparador deletada com sucesso." };

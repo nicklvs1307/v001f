@@ -1,27 +1,8 @@
- => ERROR [build 6/6] RUN npm run build                                                      198.0s
-------
- > [build 6/6] RUN npm run build:
-0.890
-0.890 > frontend@0.1.0 build
-0.890 > react-scripts build
-0.890
-5.095 Creating an optimized production build...
-197.6 Failed to compile.
-197.6
-197.6 [eslint]
-197.6 src/pages/CampaignFormPage.js
-197.6   Line 403:89:  'AddIcon' is not defined  react/jsx-no-undef
-197.6
-197.6 Search for the keywords to learn more about each error.
-197.6
-197.6
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+URL da solicitação
+https://apivoltaki.towersfy.com/api/superadmin/senders/887355cf-5d94-4cac-a810-a1cf00162cc8/connect
+Método da solicitação
+GET
+Código de status
+304 Not Modified
+Endereço remoto
+{"qrCode":""}

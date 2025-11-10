@@ -149,7 +149,8 @@ const CampaignDetailsPage = () => {
 
   if (loading || reportLoading) return <CircularProgress />;
   if (error) return <Alert severity="error">{error}</Alert>;
-  if (!campaign || !campaignReport) return <Alert severity="info">Campanha não encontrada ou relatório não disponível.</Alert>;
+    if (!campaign) return <Alert severity="info">Campanha não encontrada.</Alert>;
+  if (!campaignReport) return <Alert severity="info">Relatório da campanha não disponível.</Alert>;
 
   const imageUrl = campaign.mediaUrl ? `${process.env.REACT_APP_API_URL}${campaign.mediaUrl}` : null;
 

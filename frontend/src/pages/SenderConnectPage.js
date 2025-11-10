@@ -5,7 +5,6 @@ import {
   Alert, Paper, Chip, Stack, IconButton, Divider
 } from '@mui/material';
 import senderPoolService from '../services/senderPoolService';
-import QRCode from 'react-qr-code';
 import { Wifi, WifiOff, QrCodeScanner, ArrowBack, Refresh } from '@mui/icons-material';
 
 const SenderConnectPage = () => {
@@ -14,7 +13,7 @@ const SenderConnectPage = () => {
   const [sender, setSender] = useState(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
-  const [qrCode, setQrCode] = useState('');
+  const [qrCodeImg, setQrCodeImg] = useState('');
   const [isPolling, setIsPolling] = useState(false);
   const [error, setError] = useState('');
   const isMounted = useRef(true);
@@ -32,7 +31,7 @@ const SenderConnectPage = () => {
       if (isMounted.current) {
         setSender(response.data);
         if (response.data.status === 'active') {
-          setQrCode('');
+          setQrCodeImg('');
           setIsPolling(false);
         }
       }
@@ -68,12 +67,17 @@ const SenderConnectPage = () => {
     if (!isMounted.current) return;
     setActionLoading(true);
     setError('');
-    setQrCode('');
+    setQrCodeImg('');
     setIsPolling(true);
     try {
       const response = await senderPoolService.getSenderQrCode(id);
       if (isMounted.current) {
-        setQrCode(response.data.code);
+        if (response.data.base64) {
+          setQrCodeImg(response.data.base64);
+        } else {
+          setError('Não foi possível obter o QR Code. Tente novamente.');
+          setIsPolling(false);
+        }
       }
     } catch (err) {
       if (isMounted.current) {
@@ -122,11 +126,11 @@ const SenderConnectPage = () => {
             Gerar QR Code para Conectar
           </Button>
         )}
-        {qrCode && !isConnected && (
+        {qrCodeImg && !isConnected && (
           <Box sx={{ mt: 3, p: 2, textAlign: 'center', backgroundColor: '#f5f5f5', borderRadius: 2 }}>
             <Typography variant="h6" gutterBottom>Escaneie para Conectar</Typography>
             <Box sx={{ p: 1, background: 'white', borderRadius: '8px', display: 'inline-block' }}>
-              <QRCode value={qrCode} size={256} />
+              <img src={qrCodeImg} alt="QR Code para conexão do WhatsApp" style={{ maxWidth: '100%', height: 'auto' }} />
             </Box>
             <Typography variant="caption" display="block" mt={2}>A página será atualizada automaticamente após a conexão.</Typography>
           </Box>

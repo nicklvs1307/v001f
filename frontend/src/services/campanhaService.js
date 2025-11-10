@@ -9,6 +9,8 @@ const campanhaService = {
   delete: (id) => apiAuthenticated.delete(`/campanhas/${id}`),
   process: (id) => apiAuthenticated.post(`/campanhas/${id}/process`),
   sendTest: (id, data) => apiAuthenticated.post(`/campanhas/${id}/test`, data),
+  getLogs: (id) => apiAuthenticated.get(`/campanhas/${id}/logs`),
+  getCampaignReport: (id) => apiAuthenticated.get(`/campanhas/${id}/report`),
 };
 
 export default campanhaService;

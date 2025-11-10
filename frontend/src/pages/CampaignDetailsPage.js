@@ -159,6 +159,7 @@ const CampaignDetailsPage = () => {
   const failedCount = campaignReport.delivery.failed || 0;
   const skippedCount = campaignReport.delivery.skipped || 0;
   const overallConversionRate = campaignReport.abTest.summary.totalConversionRate;
+  const totalLogs = campaignLogs.length;
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>

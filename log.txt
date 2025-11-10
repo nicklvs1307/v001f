@@ -1,18 +1,20 @@
- => ERROR [build 6/6] RUN npm run build                                                      191.0s
+ => ERROR [build 6/6] RUN npm run build                                                      213.6s
 ------
  > [build 6/6] RUN npm run build:
-0.652
-0.652 > frontend@0.1.0 build
-0.652 > react-scripts build
-0.652
-3.293 Creating an optimized production build...
-190.6 Failed to compile.
-190.6
-190.6 [eslint]
-190.6 src/pages/CampaignDetailsPage.js
-190.6 Syntax error: Identifier 'Tooltip' has already been declared. (36:53) (36:53)
-190.6
-190.6
+0.978
+0.978 > frontend@0.1.0 build
+0.978 > react-scripts build
+0.978
+5.034 Creating an optimized production build...
+213.3 Failed to compile.
+213.3
+213.3 [eslint]
+213.3 src/pages/CampaignDetailsPage.js
+213.3   Line 203:19:  'totalLogs' is not defined  no-undef
+213.3
+213.3 Search for the keywords to learn more about each error.
+213.3
+213.3
 ------
 Dockerfile:14
 --------------------

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   SpeedDial,
@@ -11,6 +11,7 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import ChatIcon from '@mui/icons-material/Chat';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import HelpBotDialog from './HelpBotDialog';
 
 const actions = [
   { icon: <SupportAgentIcon />, name: 'Suporte' },
@@ -21,6 +22,15 @@ const actions = [
 
 const SupportSpeedDial = () => {
   const theme = useTheme();
+  const [openHelpBot, setOpenHelpBot] = useState(false);
+
+  const handleOpenHelpBot = () => {
+    setOpenHelpBot(true);
+  };
+
+  const handleCloseHelpBot = () => {
+    setOpenHelpBot(false);
+  };
 
   return (
     <Box
@@ -51,12 +61,16 @@ const SupportSpeedDial = () => {
             tooltipTitle={action.name}
             tooltipOpen
             onClick={() => {
-              // Lógica para cada ação pode ser adicionada aqui
-              console.log(`${action.name} clicado`);
+              if (action.name === 'Chat') {
+                handleOpenHelpBot();
+              } else {
+                console.log(`${action.name} clicado`);
+              }
             }}
           />
         ))}
       </SpeedDial>
+      <HelpBotDialog open={openHelpBot} handleClose={handleCloseHelpBot} />
     </Box>
   );
 };

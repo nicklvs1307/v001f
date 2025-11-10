@@ -295,12 +295,31 @@ const createRemoteInstance = async (tenantId) => {
 };
 
 const getQrCodeForConnect = async (tenantId) => {
+  console.log(`[WhatsappService] Attempting to generate a new QR Code for tenant ${tenantId}.`);
+  
+  // Primeiro, tenta fazer logout para garantir uma sessão limpa.
+  try {
+    console.log(`[WhatsappService] Logging out instance for tenant ${tenantId} before generating new QR code.`);
+    await logoutInstance(tenantId);
+    // Pausa para dar tempo à API para processar o logout
+    await new Promise(resolve => setTimeout(resolve, 1500)); 
+  } catch (error) {
+    // Se o logout falhar (por exemplo, se já estiver desconectado), apenas registramos e continuamos.
+    console.warn(`[WhatsappService] Non-critical error during pre-emptive logout for tenant ${tenantId}. It might have been already disconnected. Proceeding to get new QR code.`, error.message);
+  }
+
   const createResult = await createRemoteInstance(tenantId);
   if (createResult && createResult.status === 'error' && createResult.code !== 'INSTANCE_EXISTS') {
     return createResult;
   }
+
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
+  if (!config) {
+    throw new Error(`Configuration for tenant ${tenantId} not found after create/check.`);
+  }
+
   try {
+    console.log(`[WhatsappService] Fetching new QR code from API for instance ${config.instanceName}.`);
     const response = await axios.get(`${config.url}/instance/connect/${config.instanceName}`, getAxiosConfig(config));
     return response.data;
   } catch (error) {

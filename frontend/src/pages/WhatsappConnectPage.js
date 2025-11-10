@@ -132,10 +132,18 @@ const ConnectionCard = ({ config, qrCode, onAction, actionLoading }) => {
               disabled={actionLoading}
               startIcon={<QrCodeScanner />}
             >
-              Gerar QR Code
+              Gerar Novo QR Code
             </Button>
           )}
         </Stack>
+        {actionLoading && !qrCode && !isConnected && (
+          <Box sx={{ mt: 2, textAlign: 'center' }}>
+            <CircularProgress size={24} />
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              Aguarde, gerando novo QR Code...
+            </Typography>
+          </Box>
+        )}
         {qrCode && !isConnected && (
           <Box sx={{ mt: 2, p: 2, textAlign: 'center', backgroundColor: '#f5f5f5', borderRadius: 2 }}>
             <Typography variant="h6" gutterBottom>Escaneie para Conectar</Typography>

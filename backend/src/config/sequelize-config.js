@@ -1,4 +1,4 @@
-const config = require('./index'); // Importar o objeto de configuração centralizado
+const { config } = require('./index'); // Importar o objeto de configuração centralizado
 
 module.exports = {
   "development": {

@@ -23,14 +23,16 @@ const createMulterConfig = (destinationFolder, fieldName) => {
     storage: storage,
     limits: { fileSize: 1024 * 1024 * 5 }, // Limite de 5MB
     fileFilter: (req, file, cb) => {
-      const filetypes = /jpeg|jpg|png|gif/;
-      const mimetype = filetypes.test(file.mimetype);
-      const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+      const imageTypes = /jpeg|jpg|png|gif/;
+      const audioTypes = /mp3|ogg|wav|aac|mpeg/;
+      
+      const isImage = imageTypes.test(path.extname(file.originalname).toLowerCase()) && /image/.test(file.mimetype);
+      const isAudio = audioTypes.test(path.extname(file.originalname).toLowerCase()) && /audio/.test(file.mimetype);
 
-      if (mimetype && extname) {
+      if (isImage || isAudio) {
         return cb(null, true);
       } else {
-        cb(new ApiError(400, 'Apenas imagens (jpeg, jpg, png, gif) são permitidas!'));
+        cb(new ApiError(400, 'Apenas imagens ou áudios são permitidos!'));
       }
     },
   });

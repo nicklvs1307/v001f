@@ -119,7 +119,13 @@ class CampanhaService {
     });
 
     if (campanha.mediaUrl) {
-      await this.whatsappService.sendTenantMediaMessage(tenantId, testPhoneNumber, campanha.mediaUrl, personalizedMessage);
+      const extension = campanha.mediaUrl.split('.').pop().toLowerCase();
+      const isAudio = ['mp3', 'ogg', 'wav', 'aac', 'mpeg'].includes(extension);
+      if (isAudio) {
+        await this.whatsappService.sendTenantAudioMessage(tenantId, testPhoneNumber, campanha.mediaUrl);
+      } else {
+        await this.whatsappService.sendTenantMediaMessage(tenantId, testPhoneNumber, campanha.mediaUrl, personalizedMessage);
+      }
     } else {
       await this.whatsappService.sendTenantMessage(tenantId, testPhoneNumber, personalizedMessage);
     }
@@ -225,7 +231,13 @@ class CampanhaService {
         const delay = this._getRandomDelay(campanha.minMessageDelaySeconds, campanha.maxMessageDelaySeconds);
 
         if (campanha.mediaUrl) {
-          await this.whatsappService.sendCampaignMediaMessage(sender, client.phone, campanha.mediaUrl, personalizedMessage, delay);
+          const extension = campanha.mediaUrl.split('.').pop().toLowerCase();
+          const isAudio = ['mp3', 'ogg', 'wav', 'aac', 'mpeg'].includes(extension);
+          if (isAudio) {
+            await this.whatsappService.sendCampaignAudioMessage(sender, client.phone, campanha.mediaUrl, delay);
+          } else {
+            await this.whatsappService.sendCampaignMediaMessage(sender, client.phone, campanha.mediaUrl, personalizedMessage, delay);
+          }
         } else {
           await this.whatsappService.sendCampaignMessage(sender, client.phone, personalizedMessage, delay);
         }

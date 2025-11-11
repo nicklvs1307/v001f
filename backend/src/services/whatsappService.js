@@ -101,15 +101,22 @@ const sendTenantMediaMessage = async (tenantId, number, mediaUrl, caption) => {
 
   const fullMediaUrl = `${process.env.BACKEND_URL}${mediaUrl}`;
   const extension = mediaUrl.split('.').pop().toLowerCase();
-  const mimetype = `image/${extension === 'jpg' ? 'jpeg' : extension}`;
+  const isAudio = ['mp3', 'ogg', 'wav', 'aac', 'mpeg'].includes(extension);
+  const mimetype = isAudio ? `audio/${extension}` : `image/${extension === 'jpg' ? 'jpeg' : extension}`;
   const fileName = mediaUrl.split('/').pop();
+
+  if (isAudio) {
+    return sendTenantAudioMessage(tenantId, number, mediaUrl);
+  }
 
   try {
     const response = await axios.post(`${config.url}/message/sendMedia/${config.instanceName}`, {
       number: finalNumber,
+      mediatype: 'image',
+      mimetype: mimetype,
       caption: caption,
-      media: fullMediaUrl, // media as string
-      mediatype: mimetype, // separate mediatype
+      media: fullMediaUrl,
+      fileName: fileName,
     }, {
       headers: { 'Content-Type': 'application/json', 'apikey': config.apiKey },
     });
@@ -125,6 +132,41 @@ const sendTenantMediaMessage = async (tenantId, number, mediaUrl, caption) => {
     throw error;
   }
 };
+
+const sendTenantAudioMessage = async (tenantId, number, mediaUrl) => {
+  const config = await WhatsappConfig.findOne({ where: { tenantId } });
+
+  if (!config || !config.url || !config.apiKey || !config.instanceName) {
+    throw new Error('A configuração do WhatsApp para esta loja não foi encontrada ou está incompleta.');
+  }
+  if (config.instanceStatus !== 'connected') {
+    throw new Error('A instância do WhatsApp desta loja não está conectada.');
+  }
+  const finalNumber = normalizeNumber(number);
+  console.log(`[WhatsApp Service] Enviando mensagem de áudio de tenant ${tenantId} para: ${finalNumber}`);
+
+  const fullMediaUrl = `${process.env.BACKEND_URL}${mediaUrl}`;
+
+  try {
+    const response = await axios.post(`${config.url}/message/sendWhatsAppAudio/${config.instanceName}`, {
+      number: finalNumber,
+      audio: fullMediaUrl,
+    }, {
+      headers: { 'Content-Type': 'application/json', 'apikey': config.apiKey },
+    });
+    console.log(`Mensagem de áudio do tenant ${tenantId} enviada para ${number}:`, response.data);
+    return response.data;
+  } catch (error) {
+    console.error(`[WhatsApp Service] Falha ao enviar mensagem de áudio para o tenant ${tenantId}. Número: ${number}.`);
+    if (error.response) {
+      console.error('[WhatsApp Service] Erro detalhado da API:', JSON.stringify(error.response.data, null, 2));
+    } else {
+      console.error('[WhatsApp Service] Erro sem resposta da API:', error.message);
+    }
+    throw error;
+  }
+};
+
 
 // --- NEW METHODS FOR CAMPAIGN SENDER POOL ---
 
@@ -158,21 +200,54 @@ const sendCampaignMediaMessage = async (sender, number, mediaUrl, caption, delay
 
   const fullMediaUrl = `${process.env.BACKEND_URL}${mediaUrl}`;
   const extension = mediaUrl.split('.').pop().toLowerCase();
-  const mimetype = `image/${extension === 'jpg' ? 'jpeg' : extension}`;
+  const isAudio = ['mp3', 'ogg', 'wav', 'aac', 'mpeg'].includes(extension);
+  const mimetype = isAudio ? `audio/${extension}` : `image/${extension === 'jpg' ? 'jpeg' : extension}`;
   const fileName = mediaUrl.split('/').pop();
+
+  if (isAudio) {
+    return sendCampaignAudioMessage(sender, number, mediaUrl, delay);
+  }
 
   try {
     const response = await axios.post(`${sender.apiUrl}/message/sendMedia/${sender.instanceName}`, {
       number: finalNumber,
+      mediatype: 'image',
+      mimetype: mimetype,
       caption: caption,
-      media: fullMediaUrl, // media as string
-      mediatype: mimetype, // separate mediatype
+      media: fullMediaUrl,
+      fileName: fileName,
     }, {
       headers: { 'Content-Type': 'application/json', 'apikey': sender.apiKey },
     });
     return response.data;
   } catch (error) {
     console.error(`[WhatsApp Service] Falha ao enviar mensagem de CAMPANHA com mídia com disparador ${sender.name}.`);
+    if (error.response) {
+      console.error('[WhatsApp Service] Erro detalhado da API:', JSON.stringify(error.response.data, null, 2));
+    } else {
+      console.error('[WhatsApp Service] Erro sem resposta da API:', error.message);
+    }
+    throw error; // Re-throw to be handled by campaignService
+  }
+};
+
+const sendCampaignAudioMessage = async (sender, number, mediaUrl, delay = 1200) => {
+  const finalNumber = normalizeNumber(number);
+  console.log(`[WhatsApp Service] Enviando mensagem de CAMPANHA com áudio com disparador ${sender.name} para: ${finalNumber}`);
+
+  const fullMediaUrl = `${process.env.BACKEND_URL}${mediaUrl}`;
+
+  try {
+    const response = await axios.post(`${sender.apiUrl}/message/sendWhatsAppAudio/${sender.instanceName}`, {
+      number: finalNumber,
+      audio: fullMediaUrl,
+      options: { delay }
+    }, {
+      headers: { 'Content-Type': 'application/json', 'apikey': sender.apiKey },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`[WhatsApp Service] Falha ao enviar mensagem de CAMPANHA com áudio com disparador ${sender.name}.`);
     if (error.response) {
       console.error('[WhatsApp Service] Erro detalhado da API:', JSON.stringify(error.response.data, null, 2));
     } else {
@@ -531,8 +606,10 @@ module.exports = {
   sendSystemMessage,
   sendTenantMessage,
   sendTenantMediaMessage,
+  sendTenantAudioMessage,
   sendCampaignMessage, // Export new method
   sendCampaignMediaMessage, // Export new method
+  sendCampaignAudioMessage,
   sendInstanteDetractorMessage,
   getInstanceStatus,
   getConnectionInfo,

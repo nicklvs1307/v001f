@@ -74,20 +74,28 @@ class CampanhaService {
   }
 
   async scheduleProcessing(id, tenantId) {
+    console.log(`[CampanhaService] Recebida solicitação de processamento para campanha ${id}`);
     const campanha = await this.getById(id, tenantId);
+    if (!campanha) {
+      console.error(`[CampanhaService] Tentativa de processar campanha não encontrada: ${id}`);
+      throw ApiError.notFound('Campanha não encontrada.');
+    }
     if (['processing', 'sent'].includes(campanha.status)) {
+      console.warn(`[CampanhaService] Tentativa de reprocessar campanha ${id} com status ${campanha.status}`);
       throw ApiError.badRequest('Esta campanha já foi processada ou está em processamento.');
     }
 
     if (campanha.startDate && new Date(campanha.startDate) > new Date()) {
+      console.log(`[CampanhaService] Agendando campanha ${id} para ${new Date(campanha.startDate).toLocaleString()}`);
       await this.campanhaRepository.update(id, { status: 'scheduled' }, tenantId);
       const updatedCampanha = await this.getById(id, tenantId);
       scheduleCampaign(updatedCampanha, this._processCampaign.bind(this));
       return { message: `Campanha agendada para ${new Date(campanha.startDate).toLocaleString()}` };
     }
 
+    console.log(`[CampanhaService] Enviando campanha ${id} para processamento imediato em segundo plano.`);
     this._processCampaign(id, tenantId).catch(err => {
-        console.error(`[Campanha] Falha crítica no processamento da campanha ${id}:`, err);
+        console.error(`[CampanhaService] Falha crítica no processamento em segundo plano da campanha ${id}:`, err);
         this.campanhaRepository.update(id, { status: 'failed' }, tenantId);
     });
 
@@ -95,6 +103,7 @@ class CampanhaService {
   }
   
   async cancelScheduling(id, tenantId) {
+    console.log(`[CampanhaService] Cancelando agendamento da campanha ${id}`);
     cancelCampaign(id);
     return this.campanhaRepository.update(id, { status: 'draft' }, tenantId);
   }
@@ -147,42 +156,52 @@ class CampanhaService {
   }
 
   async _processCampaign(campaignId, tenantId) {
+    console.log(`[CampanhaService] Iniciando _processCampaign para campanha ${campaignId}`);
     // Initialize failure tracker for this campaign run
     campaignFailureTracker[campaignId] = [];
 
     try {
+      console.log(`[CampanhaService] _processCampaign: Atualizando status para 'processing' para campanha ${campaignId}`);
       await this.campanhaRepository.update(campaignId, { status: 'processing' }, tenantId);
       const campanha = await this.getById(campaignId, tenantId);
+      console.log(`[CampanhaService] _processCampaign: Campanha ${campaignId} obtida do banco de dados.`);
 
       const clients = await this._selectClients(campanha.criterioSelecao, tenantId);
+      console.log(`[CampanhaService] _processCampaign: ${clients ? clients.length : 0} clientes selecionados para a campanha ${campaignId}`);
       if (!clients || clients.length === 0) {
+        console.log(`[CampanhaService] _processCampaign: Nenhum cliente encontrado, finalizando campanha ${campaignId} como 'sent'.`);
         await this.campanhaRepository.update(campaignId, { status: 'sent' }, tenantId);
         return;
       }
 
       try {
         if (campanha.rewardType === 'NONE') {
+          console.log(`[CampanhaService] _processCampaign: Enviando mensagens simples para campanha ${campaignId}`);
           await this._sendSimpleMessages(campanha, clients);
         } else {
+          console.log(`[CampanhaService] _processCampaign: Gerando e enviando mensagens com recompensas para campanha ${campaignId}`);
           const rewards = await this._generateRewards(campanha, clients);
           await this._sendRewardMessages(campanha, clients, rewards);
         }
+        console.log(`[CampanhaService] _processCampaign: Envios concluídos. Atualizando status para 'sent' para campanha ${campaignId}`);
         // If the loop completes without being paused, mark as sent
         await this.campanhaRepository.update(campaignId, { status: 'sent' }, tenantId);
 
       } catch (err) {
         if (err instanceof PauseCampaignError) {
-          console.log(`[Campanha] Campanha ${campaignId} pausada devido a muitas falhas.`);
+          console.log(`[CampanhaService] _processCampaign: Campanha ${campaignId} pausada devido a muitas falhas.`);
           // The status is already set to 'paused' by the function that throws this
         } else {
           // Re-throw other unexpected errors to be caught by the outer block
+          console.error(`[CampanhaService] _processCampaign: Erro inesperado durante o envio da campanha ${campaignId}.`, err);
           throw err;
         }
       }
     } catch (err) {
-      console.error(`[Campanha] Falha no processamento da campanha ${campaignId}:`, err);
+      console.error(`[CampanhaService] _processCampaign: Falha crítica no processamento da campanha ${campaignId}:`, err);
       this.campanhaRepository.update(campaignId, { status: 'failed' }, tenantId).catch(console.error);
     } finally {
+      console.log(`[CampanhaService] _processCampaign: Finalizando processamento para campanha ${campaignId}. Limpando tracker.`);
       // Clean up the tracker for this campaign
       delete campaignFailureTracker[campaignId];
     }

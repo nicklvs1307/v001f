@@ -3,7 +3,7 @@ const ApiError = require('../errors/ApiError');
 const { scheduleCampaign, cancelCampaign } = require('../jobs/campaignScheduler');
 const { CampanhaLog, Client, sequelize } = require('../../models');
 const senderPoolService = require('./senderPoolService'); // Import the new service
-const spintax = require('cnc-spintax'); // Import spintax library
+const { Spinner } = require('cnc-spintax'); // Import spintax library
 
 // Campaign Auto-Pause Control
 const campaignFailureTracker = {}; // In-memory tracker for campaign failures
@@ -128,7 +128,7 @@ class CampanhaService {
   }
 
   _buildPersonalizedMessage(template, client, rewardData = {}) {
-    let message = spintax.spin(template); // Process spintax first
+    let message = new Spinner(template).unspinRandom(); // Process spintax first
     message = message.replace(/{{nome_cliente}}/g, client.name.split(' ')[0]);
     if (rewardData.codigo) message = message.replace(/{{codigo_premio}}/g, rewardData.codigo);
     if (rewardData.dataValidade) {

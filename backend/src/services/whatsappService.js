@@ -284,12 +284,6 @@ const createRemoteInstance = async (tenantId) => {
       integration: 'WHATSAPP-BAILEYS',
       webhook: webhookUrl,
       qrcode: true,
-      events: [
-        "QRCODE_UPDATED",
-        "CONNECTION_UPDATE",
-        "MESSAGES_UPSERT",
-        "MESSAGES_UPDATE"
-      ],
     };
 
     const response = await axios.post(

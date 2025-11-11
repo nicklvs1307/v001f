@@ -23,7 +23,7 @@ async function progressWarmingUpSenders() {
     try {
       const newDay = sender.warmingUpDay + 1;
       if (newDay > 7) {
-        await sender.update({ status: 'active', warmingUpDay: 1 }); // Reset day for future use
+        await sender.update({ status: 'active', warmingUpDay: 0 }); // Reset day to 0 to indicate completion
         console.log(`[${JOB_NAME}] Disparador ${sender.name} concluído o aquecimento e agora está ativo.`);
       } else {
         await sender.update({ warmingUpDay: newDay });

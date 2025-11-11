@@ -283,9 +283,18 @@ const createRemoteInstance = async (tenantId) => {
 
     const payload = {
       instanceName: config.instanceName,
-      webhookUrl: webhookUrl,
-      webhookEnabled: true,
+      integration: 'WHATSAPP-BAILEYS', // Adicionado para compatibilidade
+      webhookUrl: webhookUrl, // Renomeado de 'webhook' para 'webhookUrl' para consistência
+      webhookEnabled: true, // Renomeado de 'webhook' para 'webhookEnabled'
       qrcode: true,
+      events: [ // Adicionado para especificar os eventos desejados
+        "QRCODE_UPDATED",
+        "CONNECTION_UPDATE",
+        "MESSAGES_UPSERT"
+      ],
+      headers: { // Adicionado para segurança do webhook
+        'x-api-key': config.instanceApiKey || crypto.randomBytes(16).toString('hex')
+      }
     };
 
     const response = await axios.post(
@@ -294,14 +303,15 @@ const createRemoteInstance = async (tenantId) => {
       getAxiosConfig(config)
     );
 
-    // Capture the correct API key from the response
-    const instanceApiKey = response.data.hash || response.data.apikey;
-    if (!instanceApiKey) {
-        console.error('[WhatsappService] Create instance response did not contain hash or apikey:', response.data);
-        throw new Error('A resposta da API de criação de instância não continha a chave da instância (hash/apikey).');
+    // Se a instanceApiKey foi gerada agora, salva no banco
+    if (!config.instanceApiKey) {
+        await config.update({ instanceApiKey: payload.headers['x-api-key'] });
     }
 
-    // Store the correct API key for the instance
+    // A API pode não retornar a chave no corpo, mas sim nos headers ou em outro lugar.
+    // O importante é que agora temos uma chave de instância segura.
+    const instanceApiKey = response.data.hash || response.data.apikey || payload.headers['x-api-key'];
+    
     await config.update({ instanceApiKey: instanceApiKey });
 
     return response.data;

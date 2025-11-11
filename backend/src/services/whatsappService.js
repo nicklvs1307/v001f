@@ -283,6 +283,7 @@ const createRemoteInstance = async (tenantId) => {
       instanceName: config.instanceName,
       integration: 'WHATSAPP-BAILEYS',
       webhook: webhookUrl,
+      qrcode: true,
       events: [
         "QRCODE_UPDATED",
         "CONNECTION_UPDATE",

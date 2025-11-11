@@ -220,7 +220,7 @@ const DashboardPage = () => {
             </Container>
         );
     }
-    const { summary, responseChart = [], attendantsPerformance = [], criteriaScores = [], feedbacks = [], conversionChart = [], wordCloudData = [] } = dashboardData || {};
+    const { summary, responseChart = [], attendantsPerformance = [], criteriaScores = [], feedbacks = [], conversionChart = [], overallResults = {}, npsTrend = [] } = dashboardData || {};
 
 
 
@@ -393,14 +393,14 @@ const DashboardPage = () => {
 
 
             <Grid container spacing={3} sx={{ mb: 4 }}>
-                {/* Gráfico de Respostas dos Últimos 7 dias */}
+                {/* Gráfico de Respostas por Período */}
                 <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <Paper elevation={2} sx={{ p: 2, height: 400 }}>
                         <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
-                            Últimos 7 dias
+                            Respostas por Período
                         </Typography>
                         <Typography variant="subtitle2" color="text.secondary" mb={2}>
-                            Respostas dos últimos 7 dias.
+                            Respostas agrupadas por período selecionado.
                         </Typography>
                         <ResponsiveContainer width="100%" height={280}>
                             <BarChart data={responseChart}>

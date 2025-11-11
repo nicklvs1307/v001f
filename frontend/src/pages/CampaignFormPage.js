@@ -392,8 +392,8 @@ const CampaignFormPage = () => {
                 />
                 
                 <Button component="label" variant="outlined" startIcon={<PhotoCamera />} sx={{ mt: 2, mb: 2 }}>
-                  {mediaPreview ? 'Trocar Imagem' : 'Adicionar Imagem'}
-                  <VisuallyHiddenInput type="file" onChange={handleFileChange} accept="image/*" />
+                  {mediaPreview ? 'Trocar Mídia' : 'Adicionar Mídia (Imagem ou Áudio)'}
+                  <VisuallyHiddenInput type="file" onChange={handleFileChange} accept="image/*,audio/*" />
                 </Button>
 
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

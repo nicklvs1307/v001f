@@ -208,7 +208,17 @@ class CampanhaService {
   }
 
   async _selectClients(criterio, tenantId) {
-    // ... (existing logic)
+    if (!criterio || !criterio.type) {
+      return [];
+    }
+
+    switch (criterio.type) {
+      case 'todos':
+        return this.clientRepository.findAll({ where: { tenantId } });
+      // Add other cases here as they are implemented
+      default:
+        return [];
+    }
   }
 
   async _generateRewards(campanha, clients) {

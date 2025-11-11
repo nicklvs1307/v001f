@@ -30,14 +30,18 @@ class CampanhaController {
 
     // Handle dates
     const dateFormat = 'dd-MM-yyyy HH:mm';
-    const { dataValidade, startDate, endDate } = data;
+    const { dataValidade, startDate, endDate, rewardType } = data;
 
-    const parsedDataValidade = dataValidade ? parse(dataValidade, dateFormat, new Date()) : null;
+    if (rewardType && rewardType !== 'NONE') {
+      const parsedDataValidade = dataValidade ? parse(dataValidade, dateFormat, new Date()) : null;
 
-    if (!parsedDataValidade || isNaN(parsedDataValidade.getTime())) {
-      throw new ApiError(400, `A data de validade é obrigatória e deve estar no formato ${dateFormat}.`);
+      if (!parsedDataValidade || isNaN(parsedDataValidade.getTime())) {
+        throw new ApiError(400, `A data de validade é obrigatória para campanhas com recompensa e deve estar no formato ${dateFormat}.`);
+      }
+      data.dataValidade = parsedDataValidade;
+    } else {
+      data.dataValidade = null; // Ensure it's null if not required
     }
-    data.dataValidade = parsedDataValidade;
 
     ['startDate', 'endDate'].forEach(dateField => {
       const dateValue = data[dateField];

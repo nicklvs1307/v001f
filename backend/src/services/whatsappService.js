@@ -349,20 +349,26 @@ const createRemoteInstance = async (tenantId) => {
   }
   try {
     const webhookUrl = `${process.env.BACKEND_URL}/whatsapp-webhook/webhook`;
+    const instanceApiKey = config.instanceApiKey || crypto.randomBytes(16).toString('hex');
+    if (!config.instanceApiKey) {
+      await config.update({ instanceApiKey });
+    }
 
     const payload = {
       instanceName: config.instanceName,
-      integration: 'WHATSAPP-BAILEYS', // Adicionado para compatibilidade
-      webhookUrl: webhookUrl, // Renomeado de 'webhook' para 'webhookUrl' para consistência
-      webhookEnabled: true, // Renomeado de 'webhook' para 'webhookEnabled'
+      integration: 'WHATSAPP-BAILEYS',
       qrcode: true,
-      events: [ // Adicionado para especificar os eventos desejados
-        "QRCODE_UPDATED",
-        "CONNECTION_UPDATE",
-        "MESSAGES_UPSERT"
-      ],
-      headers: { // Adicionado para segurança do webhook
-        'x-api-key': config.instanceApiKey || crypto.randomBytes(16).toString('hex')
+      webhook: {
+        url: webhookUrl,
+        enabled: true,
+        events: [
+          "QRCODE_UPDATED",
+          "CONNECTION_UPDATE",
+          "MESSAGES_UPSERT"
+        ],
+        headers: {
+          'x-api-key': instanceApiKey
+        }
       }
     };
 
@@ -372,16 +378,10 @@ const createRemoteInstance = async (tenantId) => {
       getAxiosConfig(config)
     );
 
-    // Se a instanceApiKey foi gerada agora, salva no banco
-    if (!config.instanceApiKey) {
-        await config.update({ instanceApiKey: payload.headers['x-api-key'] });
+    const responseApiKey = response.data.hash || response.data.apikey;
+    if (responseApiKey && responseApiKey !== instanceApiKey) {
+      await config.update({ instanceApiKey: responseApiKey });
     }
-
-    // A API pode não retornar a chave no corpo, mas sim nos headers ou em outro lugar.
-    // O importante é que agora temos uma chave de instância segura.
-    const instanceApiKey = response.data.hash || response.data.apikey || payload.headers['x-api-key'];
-    
-    await config.update({ instanceApiKey: instanceApiKey });
 
     return response.data;
   } catch (error) {
@@ -498,13 +498,17 @@ const createSenderRemoteInstance = async (sender) => {
     const payload = {
       instanceName: sender.instanceName,
       integration: 'WHATSAPP-BAILEYS',
-      webhook: webhookUrl,
-      events: [
-        "QRCODE_UPDATED",
-        "CONNECTION_UPDATE",
-      ],
-      headers: {
-        'x-api-key': process.env.WHATSAPP_API_KEY
+      qrcode: true,
+      webhook: {
+        url: webhookUrl,
+        enabled: true,
+        events: [
+          "QRCODE_UPDATED",
+          "CONNECTION_UPDATE",
+        ],
+        headers: {
+          'x-api-key': process.env.WHATSAPP_API_KEY
+        }
       }
     };
 
@@ -564,7 +568,7 @@ const deleteSenderInstance = async (sender) => {
 
 const getAllInstanceStatuses = async () => {
   const configs = await WhatsappConfig.findAll({
-    include: [{ model: Tenant, attributes: ['id', 'name'] }]
+    include: [{ model: Tenant, as: 'tenant', attributes: ['id', 'name'] }]
   });
 
   const statuses = await Promise.all(

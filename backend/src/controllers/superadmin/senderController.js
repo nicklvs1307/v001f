@@ -60,6 +60,26 @@ class SenderController {
     }
   }
 
+  async restartInstance(req, res, next) {
+    try {
+      const { id } = req.params;
+      const result = await senderService.restartSender(id);
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async logoutInstance(req, res, next) {
+    try {
+      const { id } = req.params;
+      const result = await senderService.logoutSender(id);
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async handleWebhook(req, res, next) {
     try {
       const { instance, event, data } = req.body;

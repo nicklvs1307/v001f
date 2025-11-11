@@ -76,6 +76,34 @@ router.get(
   whatsappConfigController.getAllConfigsWithStatus
 );
 
+// Ações de gerenciamento para Super Admin
+router.put(
+  '/superadmin/restart/:tenantId',
+  protect,
+  authorize(['Super Admin']),
+  [ check("tenantId", "ID do tenant inválido").isUUID() ],
+  validate,
+  whatsappConfigController.superAdminRestartInstance
+);
+
+router.delete(
+  '/superadmin/logout/:tenantId',
+  protect,
+  authorize(['Super Admin']),
+  [ check("tenantId", "ID do tenant inválido").isUUID() ],
+  validate,
+  whatsappConfigController.superAdminLogoutInstance
+);
+
+router.delete(
+  '/superadmin/delete/:tenantId',
+  protect,
+  authorize(['Super Admin']),
+  [ check("tenantId", "ID do tenant inválido").isUUID() ],
+  validate,
+  whatsappConfigController.superAdminDeleteInstance
+);
+
 // Obtém a configuração de um tenant específico
 router.get(
   '/:tenantId',

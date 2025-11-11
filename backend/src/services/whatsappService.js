@@ -501,6 +501,28 @@ const getAllInstanceStatuses = async () => {
   return statuses;
 };
 
+const restartSenderInstance = async (sender) => {
+  if (!sender || !sender.instanceName) return { message: "Instância do disparador não configurada." };
+  try {
+    const response = await axios.put(`${sender.apiUrl}/instance/restart/${sender.instanceName}`, {}, { headers: { 'apikey': sender.apiKey } });
+    return response.data;
+  } catch (error) {
+    console.error(`[WhatsappService] Error restarting sender instance ${sender.name}:`, error.message);
+    throw error;
+  }
+};
+
+const logoutSenderInstance = async (sender) => {
+  if (!sender || !sender.instanceName) return { message: "Instância do disparador já desconectada ou não configurada." };
+  try {
+    const response = await axios.delete(`${sender.apiUrl}/instance/logout/${sender.instanceName}`, { headers: { 'apikey': sender.apiKey } });
+    return response.data;
+  } catch (error) {
+    console.error(`[WhatsappService] Error logging out sender instance ${sender.name}:`, error.message);
+    throw error;
+  }
+};
+
 module.exports = {
   sendSystemMessage,
   sendTenantMessage,
@@ -515,9 +537,11 @@ module.exports = {
   restartInstance,
   logoutInstance,
   deleteInstance,
+  getAllInstanceStatuses,
   getSenderInstanceStatus,    // Export new method
   createSenderRemoteInstance, // Export new method
   getSenderQrCodeForConnect,  // Export new method
+  restartSenderInstance,      // Export new method
+  logoutSenderInstance,       // Export new method
   deleteSenderInstance,
-  getAllInstanceStatuses,
 };

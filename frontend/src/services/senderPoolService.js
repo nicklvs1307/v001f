@@ -28,6 +28,14 @@ const senderPoolService = {
   getSenderQrCode: (id) => {
     return api.get(`/superadmin/senders/${id}/connect`);
   },
+
+  restartSender: (id) => {
+    return api.put(`/superadmin/senders/${id}/restart`);
+  },
+
+  logoutSender: (id) => {
+    return api.delete(`/superadmin/senders/${id}/logout`);
+  },
 };
 
 export default senderPoolService;

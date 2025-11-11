@@ -1,150 +1,270 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import {
-  Container, Typography, Box, TextField, Button, CircularProgress,
-  MenuItem, Snackbar, Alert, Paper, FormControl, InputLabel, Select
+  Container, Typography, Box, Button, CircularProgress, Snackbar, Alert, Paper,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton,
+  Chip, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Tooltip,
 } from '@mui/material';
+import { Edit, Delete, Refresh, VpnKey, PowerSettingsNew, LinkOff } from '@mui/icons-material';
 import AuthContext from '../context/AuthContext';
 import whatsappConfigService from '../services/whatsappConfigService';
-import tenantService from '../services/tenantService';
 
-// Componente para a visão do Super Administrador
+const statusMap = {
+  connected: { label: 'Conectado', color: 'success' },
+  disconnected: { label: 'Desconectado', color: 'error' },
+  not_created: { label: 'Não Criado', color: 'default' },
+  unconfigured: { label: 'Não Configurado', color: 'warning' },
+  error: { label: 'Erro', color: 'error' },
+};
+
+const EditConfigDialog = ({ open, onClose, config, onSave, saving }) => {
+  const [url, setUrl] = useState('');
+  const [apiKey, setApiKey] = useState('');
+
+  useEffect(() => {
+    if (config) {
+      setUrl(config.url || '');
+      setApiKey(config.apiKey || '');
+    }
+  }, [config]);
+
+  const handleSave = () => {
+    onSave(config.tenantId, { url, apiKey });
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <DialogTitle>Editar Configuração de {config?.Tenant?.name}</DialogTitle>
+      <DialogContent>
+        <TextField
+          fullWidth
+          label="URL da Instância da API"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          margin="normal"
+          required
+        />
+        <TextField
+          fullWidth
+          label="Chave de API (API Key)"
+          value={apiKey}
+          onChange={(e) => setApiKey(e.target.value)}
+          margin="normal"
+          required
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Cancelar</Button>
+        <Button onClick={handleSave} variant="contained" disabled={saving}>
+          {saving ? <CircularProgress size={24} /> : 'Salvar'}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
 const SuperAdminView = () => {
-    const [tenants, setTenants] = useState([]);
-    const [selectedTenant, setSelectedTenant] = useState('');
-    const [config, setConfig] = useState({ url: '', apiKey: '' });
-    const [loadingTenants, setLoadingTenants] = useState(true);
-    const [loadingConfig, setLoadingConfig] = useState(false);
-    const [saving, setSaving] = useState(false);
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const [configs, setConfigs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState({}); // { tenantId: boolean }
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [confirmDeleteDialogOpen, setConfirmDeleteDialogOpen] = useState(false);
+  const [selectedConfig, setSelectedConfig] = useState(null);
 
-    useEffect(() => {
-        tenantService.getAllTenants()
-            .then(response => setTenants(response.data || []))
-            .catch(() => {
-                setSnackbarMessage('Falha ao buscar tenants.');
-                setSnackbarSeverity('error');
-                setSnackbarOpen(true);
-            })
-            .finally(() => setLoadingTenants(false));
-    }, []);
+  const fetchConfigs = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await whatsappConfigService.getAllTenantConfigsWithStatus();
+      setConfigs(response.data || []);
+    } catch (error) {
+      setSnackbar({ open: true, message: 'Falha ao buscar configurações.', severity: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-    useEffect(() => {
-        let isMounted = true;
-        if (selectedTenant) {
-            setLoadingConfig(true);
-            setConfig({ url: '', apiKey: '' }); // Limpa a configuração anterior ao carregar uma nova
-            whatsappConfigService.getTenantConfig(selectedTenant)
-                .then(response => {
-                    if (isMounted) {
-                        setConfig(response.data || { url: '', apiKey: '' });
-                    }
-                })
-                .catch(() => {
-                    if (isMounted) {
-                        setSnackbarMessage('Falha ao buscar a configuração do WhatsApp. Pode não existir uma para este tenant.');
-                        setSnackbarSeverity('info');
-                        setSnackbarOpen(true);
-                        setConfig({ url: '', apiKey: '' });
-                    }
-                })
-                .finally(() => {
-                    if (isMounted) {
-                        setLoadingConfig(false);
-                    }
-                });
-        }
+  useEffect(() => {
+    fetchConfigs();
+  }, [fetchConfigs]);
 
-        return () => {
-            isMounted = false;
-        };
-    }, [selectedTenant]);
+  const handleAction = async (tenantId, action, successMessage) => {
+    setActionLoading(prev => ({ ...prev, [tenantId]: true }));
+    try {
+      await action(tenantId);
+      setSnackbar({ open: true, message: successMessage, severity: 'success' });
+      fetchConfigs(); // Refresh data
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Ocorreu um erro.';
+      setSnackbar({ open: true, message: errorMessage, severity: 'error' });
+    } finally {
+      setActionLoading(prev => ({ ...prev, [tenantId]: false }));
+    }
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setSaving(true);
-        whatsappConfigService.saveTenantConfig(selectedTenant, config)
-            .then(() => {
-                setSnackbarMessage('Configuração salva com sucesso!');
-                setSnackbarSeverity('success');
-            })
-            .catch(() => {
-                setSnackbarMessage('Falha ao salvar a configuração.');
-                setSnackbarSeverity('error');
-            })
-            .finally(() => {
-                setSaving(false);
-                setSnackbarOpen(true);
-            });
-    };
+  const handleSave = async (tenantId, data) => {
+    await handleAction(tenantId, (id) => whatsappConfigService.saveTenantConfig(id, data), 'Configuração salva com sucesso!');
+    setEditDialogOpen(false);
+  };
 
-    return (
-        <>
-            <Paper sx={{ p: 3, mt: 3 }}>
-                <Typography variant="h5" gutterBottom>
-                    Configurar API do WhatsApp para um Tenant
-                </Typography>
-                <Typography variant="subtitle1" gutterBottom>
-                    Selecione um tenant e configure os dados da sua instância da Evolution API.
-                </Typography>
-                {loadingTenants ? <CircularProgress /> : (
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel>Tenant</InputLabel>
-                        <Select value={selectedTenant} label="Tenant" onChange={e => setSelectedTenant(e.target.value)}>
-                            {tenants.map(tenant => <MenuItem key={tenant.id} value={tenant.id}>{tenant.name}</MenuItem>)}
-                        </Select>
-                    </FormControl>
-                )}
-                {selectedTenant && (loadingConfig ? <CircularProgress sx={{ mt: 2 }}/> : (
-                    <form onSubmit={handleSubmit}>
-                        <Box sx={{ mt: 3 }}>
-                            <TextField fullWidth label="URL da Instância da API" name="url" value={config.url} onChange={e => setConfig({...config, url: e.target.value})} margin="normal" required />
-                            <TextField fullWidth label="Chave de API (API Key)" name="apiKey" value={config.apiKey} onChange={e => setConfig({...config, apiKey: e.target.value})} margin="normal" required />
-                            <Button type="submit" variant="contained" color="primary" disabled={saving} sx={{ mt: 2 }}>
-                                {saving ? <CircularProgress size={24} /> : 'Salvar'}
-                            </Button>
-                        </Box>
-                    </form>
-                ))}
-            </Paper>
-            <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbarOpen(false)}>
-                <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
-                    {snackbarMessage}
-                </Alert>
-            </Snackbar>
-        </>
-    );
+  const handleDelete = async () => {
+    if (selectedConfig) {
+      await handleAction(selectedConfig.tenantId, whatsappConfigService.superAdminDeleteInstance, 'Instância deletada com sucesso!');
+    }
+    setConfirmDeleteDialogOpen(false);
+  };
+
+  const openEditDialog = (config) => {
+    setSelectedConfig(config);
+    setEditDialogOpen(true);
+  };
+
+  const openConfirmDeleteDialog = (config) => {
+    setSelectedConfig(config);
+    setConfirmDeleteDialogOpen(true);
+  };
+
+  return (
+    <>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+        <IconButton onClick={fetchConfigs} disabled={loading}>
+          <Refresh />
+        </IconButton>
+      </Box>
+      <Paper sx={{ p: 0 }}>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Tenant</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>URL da API</TableCell>
+                <TableCell>Chave da API</TableCell>
+                <TableCell align="center">Ações</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={5} align="center"><CircularProgress /></TableCell>
+                </TableRow>
+              ) : (
+                configs.map((config) => (
+                  <TableRow key={config.tenantId}>
+                    <TableCell>{config.Tenant?.name || 'N/A'}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={statusMap[config.status]?.label || 'Desconhecido'}
+                        color={statusMap[config.status]?.color || 'default'}
+                        size="small"
+                      />
+                    </TableCell>
+                    <TableCell>{config.url || '-'}</TableCell>
+                    <TableCell>{config.apiKey ? '••••••••' + config.apiKey.slice(-4) : '-'}</TableCell>
+                    <TableCell align="center">
+                      {actionLoading[config.tenantId] ? <CircularProgress size={24} /> : (
+                        <>
+                          <Tooltip title="Editar Configuração">
+                            <IconButton onClick={() => openEditDialog(config)}><Edit /></IconButton>
+                          </Tooltip>
+                          <Tooltip title="Reiniciar Instância">
+                            <span>
+                              <IconButton 
+                                onClick={() => handleAction(config.tenantId, whatsappConfigService.superAdminRestartInstance, 'Instância reiniciada.')}
+                                disabled={config.status === 'unconfigured' || config.status === 'not_created'}
+                              >
+                                <PowerSettingsNew />
+                              </IconButton>
+                            </span>
+                          </Tooltip>
+                          <Tooltip title="Desconectar Instância">
+                            <span>
+                              <IconButton 
+                                onClick={() => handleAction(config.tenantId, whatsappConfigService.superAdminLogoutInstance, 'Instância desconectada.')}
+                                disabled={config.status !== 'connected'}
+                              >
+                                <LinkOff />
+                              </IconButton>
+                            </span>
+                          </Tooltip>
+                          <Tooltip title="Deletar Instância">
+                            <span>
+                              <IconButton 
+                                onClick={() => openConfirmDeleteDialog(config)}
+                                disabled={config.status === 'unconfigured' || config.status === 'not_created'}
+                              >
+                                <Delete />
+                              </IconButton>
+                            </span>
+                          </Tooltip>
+                        </>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+
+      {selectedConfig && (
+        <EditConfigDialog
+          open={editDialogOpen}
+          onClose={() => setEditDialogOpen(false)}
+          config={selectedConfig}
+          onSave={handleSave}
+          saving={actionLoading[selectedConfig.tenantId]}
+        />
+      )}
+
+      <Dialog open={confirmDeleteDialogOpen} onClose={() => setConfirmDeleteDialogOpen(false)}>
+        <DialogTitle>Confirmar Deleção</DialogTitle>
+        <DialogContent>
+          <Typography>Tem certeza que deseja deletar a instância de <strong>{selectedConfig?.Tenant?.name}</strong>?</Typography>
+          <Alert severity="warning" sx={{ mt: 2 }}>Esta ação é irreversível e removerá a configuração do sistema.</Alert>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmDeleteDialogOpen(false)}>Cancelar</Button>
+          <Button onClick={handleDelete} color="error" autoFocus>Deletar</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}>
+        <Alert onClose={() => setSnackbar(prev => ({ ...prev, open: false }))} severity={snackbar.severity} sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </>
+  );
 };
 
 const WhatsappConfigPage = () => {
-    const { user, loading } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
 
-    if (loading) {
-        return (
-            <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-                <CircularProgress />
-            </Container>
-        );
-    }
-
-    // Esta página agora é apenas para o Super Admin
-    if (user?.role?.name !== 'Super Admin') {
-        return (
-            <Container>
-                <Alert severity="error" sx={{ mt: 3 }}>Acesso não autorizado.</Alert>
-            </Container>
-        );
-    }
-
+  if (loading) {
     return (
-        <Container maxWidth="md">
-            <Typography variant="h4" gutterBottom sx={{ mt: 3 }}>
-                Configurações do WhatsApp (Super Admin)
-            </Typography>
-            <SuperAdminView />
-        </Container>
+      <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+        <CircularProgress />
+      </Container>
     );
+  }
+
+  if (user?.role?.name !== 'Super Admin') {
+    return (
+      <Container>
+        <Alert severity="error" sx={{ mt: 3 }}>Acesso não autorizado.</Alert>
+      </Container>
+    );
+  }
+
+  return (
+    <Container maxWidth="lg">
+      <Typography variant="h4" gutterBottom sx={{ mt: 3, mb: 2 }}>
+        Gerenciador de Instâncias WhatsApp
+      </Typography>
+      <SuperAdminView />
+    </Container>
+  );
 };
 
 export default WhatsappConfigPage;

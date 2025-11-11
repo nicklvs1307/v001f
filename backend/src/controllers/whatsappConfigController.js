@@ -72,6 +72,24 @@ const whatsappConfigController = {
     const allConfigs = await whatsappService.getAllInstanceStatuses();
     res.json(allConfigs);
   }),
+
+  superAdminRestartInstance: asyncHandler(async (req, res) => {
+    const { tenantId } = req.params;
+    const result = await whatsappService.restartInstance(tenantId);
+    res.json(result);
+  }),
+
+  superAdminLogoutInstance: asyncHandler(async (req, res) => {
+    const { tenantId } = req.params;
+    const result = await whatsappService.logoutInstance(tenantId);
+    res.json(result);
+  }),
+
+  superAdminDeleteInstance: asyncHandler(async (req, res) => {
+    const { tenantId } = req.params;
+    const result = await whatsappService.deleteInstance(tenantId);
+    res.json(result);
+  }),
   
   getTenantConfig: asyncHandler(async (req, res) => {
     const { tenantId } = req.params;

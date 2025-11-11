@@ -49,6 +49,16 @@ class SenderService {
     return whatsappService.getSenderQrCodeForConnect(sender);
   }
 
+  async restartSender(id) {
+    const sender = await this.getSenderById(id);
+    return whatsappService.restartSenderInstance(sender);
+  }
+
+  async logoutSender(id) {
+    const sender = await this.getSenderById(id);
+    return whatsappService.logoutSenderInstance(sender);
+  }
+
   async updateSenderStatusByInstance(instanceName, status) {
     const sender = await whatsappSenderRepository.findByInstanceName(instanceName);
     if (sender) {

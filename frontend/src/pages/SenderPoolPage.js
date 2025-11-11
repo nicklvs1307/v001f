@@ -2,12 +2,15 @@ import React, { useState, useEffect, useCallback, useRef, useContext } from 'rea
 import {
   Container, Typography, Box, Button, CircularProgress, Paper,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton,
-  Alert, Chip, Tooltip, Dialog, DialogTitle, DialogContent
+  Alert, Chip, Tooltip, Dialog, DialogTitle, DialogContent, Snackbar
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LinkIcon from '@mui/icons-material/Link';
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import LinkOffIcon from '@mui/icons-material/LinkOff';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import QRCode from 'react-qr-code';
 import senderPoolService from '../services/senderPoolService';
 import SenderFormModal from '../components/SenderFormModal';
@@ -19,17 +22,21 @@ const statusColors = {
   resting: 'warning',
   blocked: 'error',
   disconnected: 'default',
-  connected: 'success',
+  not_created: 'default', // Adicionado para consistência
+  connected: 'success', // Adicionado para consistência
 };
 
 const SenderPoolPage = () => {
   const [senders, setSenders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState({}); // { senderId: boolean }
   const [error, setError] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [qrCode, setQrCode] = useState('');
   const [qrCodeModalOpen, setQrCodeModalOpen] = useState(false);
   const [currentSender, setCurrentSender] = useState(null);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [confirmDeleteDialogOpen, setConfirmDeleteDialogOpen] = useState(false);
   const socket = useContext(SocketContext);
   const isMounted = useRef(true);
 
@@ -100,35 +107,55 @@ const SenderPoolPage = () => {
     try {
       if (currentSender) {
         await senderPoolService.updateSender(currentSender.id, data);
+        setSnackbar({ open: true, message: 'Disparador atualizado com sucesso!', severity: 'success' });
       } else {
         await senderPoolService.createSender(data);
+        setSnackbar({ open: true, message: 'Disparador criado com sucesso!', severity: 'success' });
       }
       fetchSenders();
       handleCloseModal();
     } catch (err) {
       console.error("Failed to save sender", err);
-      setError("Falha ao salvar o disparador. Verifique os dados e tente novamente.");
+      setSnackbar({ open: true, message: err.response?.data?.message || "Falha ao salvar o disparador.", severity: 'error' });
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Tem certeza que deseja excluir este disparador?')) {
-      try {
-        await senderPoolService.deleteSender(id);
-        fetchSenders();
-      } catch (err) {
-        setError("Falha ao excluir o disparador.");
-      }
+  const handleAction = async (senderId, actionServiceCall, successMessage) => {
+    setActionLoading(prev => ({ ...prev, [senderId]: true }));
+    try {
+      await actionServiceCall(senderId);
+      setSnackbar({ open: true, message: successMessage, severity: 'success' });
+      fetchSenders(); // Refresh data
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Ocorreu um erro.';
+      setSnackbar({ open: true, message: errorMessage, severity: 'error' });
+    } finally {
+      setActionLoading(prev => ({ ...prev, [senderId]: false }));
     }
+  };
+
+  const handleDelete = async () => {
+    if (currentSender) {
+      await handleAction(currentSender.id, senderPoolService.deleteSender, 'Disparador excluído com sucesso!');
+    }
+    setConfirmDeleteDialogOpen(false);
+  };
+
+  const openConfirmDeleteDialog = (sender) => {
+    setCurrentSender(sender);
+    setConfirmDeleteDialogOpen(true);
   };
 
   const handleConnect = async (id) => {
+    setActionLoading(prev => ({ ...prev, [id]: true }));
     try {
       const response = await senderPoolService.getSenderQrCode(id);
       setQrCode(response.data.qrCode);
       setQrCodeModalOpen(true);
     } catch (error) {
-      setError("Falha ao obter o QR Code.");
+      setSnackbar({ open: true, message: error.response?.data?.message || "Falha ao obter o QR Code.", severity: 'error' });
+    } finally {
+      setActionLoading(prev => ({ ...prev, [id]: false }));
     }
   };
 
@@ -143,13 +170,19 @@ const SenderPoolPage = () => {
         <Typography variant="h4">
           Pool de Disparadores de Campanha
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => handleOpenModal()}
-        >
-          Novo Disparador
-        </Button>
+        <Box>
+          <IconButton onClick={fetchSenders} disabled={loading}>
+            <RefreshIcon />
+          </IconButton>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => handleOpenModal()}
+            sx={{ ml: 2 }}
+          >
+            Novo Disparador
+          </Button>
+        </Box>
       </Box>
 
       {loading ? (
@@ -184,30 +217,59 @@ const SenderPoolPage = () => {
                   <TableCell>{sender.messagesSentToday}</TableCell>
                   <TableCell>{sender.dailyLimit}</TableCell>
                   <TableCell align="right">
-                    <Tooltip title="Conectar">
-                      <IconButton
-                        aria-label="connect"
-                        onClick={() => handleConnect(sender.id)}
-                      >
-                        <LinkIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Editar">
-                      <IconButton
-                        aria-label="edit"
-                        onClick={() => handleOpenModal(sender)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Deletar">
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => handleDelete(sender.id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
+                    {actionLoading[sender.id] ? <CircularProgress size={24} /> : (
+                      <>
+                        <Tooltip title="Conectar / Gerar QR Code">
+                          <span>
+                            <IconButton
+                              aria-label="connect"
+                              onClick={() => handleConnect(sender.id)}
+                              disabled={sender.status === 'active' || sender.status === 'connected'}
+                            >
+                              <LinkIcon />
+                            </IconButton>
+                          </span>
+                        </Tooltip>
+                        <Tooltip title="Reiniciar Instância">
+                          <span>
+                            <IconButton
+                              aria-label="restart"
+                              onClick={() => handleAction(sender.id, senderPoolService.restartSender, 'Instância reiniciada!')}
+                              disabled={sender.status === 'not_created'}
+                            >
+                              <PowerSettingsNewIcon />
+                            </IconButton>
+                          </span>
+                        </Tooltip>
+                        <Tooltip title="Desconectar Instância">
+                          <span>
+                            <IconButton
+                              aria-label="logout"
+                              onClick={() => handleAction(sender.id, senderPoolService.logoutSender, 'Instância desconectada!')}
+                              disabled={sender.status === 'not_created' || sender.status === 'disconnected'}
+                            >
+                              <LinkOffIcon />
+                            </IconButton>
+                          </span>
+                        </Tooltip>
+                        <Tooltip title="Editar">
+                          <IconButton
+                            aria-label="edit"
+                            onClick={() => handleOpenModal(sender)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Deletar">
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => openConfirmDeleteDialog(sender)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -243,6 +305,24 @@ const SenderPoolPage = () => {
           </Box>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={confirmDeleteDialogOpen} onClose={() => setConfirmDeleteDialogOpen(false)}>
+        <DialogTitle>Confirmar Deleção</DialogTitle>
+        <DialogContent>
+          <Typography>Tem certeza que deseja deletar o disparador <strong>{currentSender?.name}</strong>?</Typography>
+          <Alert severity="warning" sx={{ mt: 2 }}>Esta ação é irreversível e removerá o disparador e sua instância do sistema.</Alert>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmDeleteDialogOpen(false)}>Cancelar</Button>
+          <Button onClick={handleDelete} color="error" autoFocus>Deletar</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}>
+        <Alert onClose={() => setSnackbar(prev => ({ ...prev, open: false }))} severity={snackbar.severity} sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

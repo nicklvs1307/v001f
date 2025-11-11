@@ -18,5 +18,7 @@ router.delete('/:id', senderController.delete);
 
 // Routes for instance connection
 router.get('/:id/connect', senderController.getQrCode);
+router.put('/:id/restart', senderController.restartInstance);
+router.delete('/:id/logout', senderController.logoutInstance);
 
 module.exports = router;

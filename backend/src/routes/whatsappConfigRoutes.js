@@ -68,6 +68,14 @@ router.delete(
 
 // --- Rotas para o Super Admin configurar os tenants ---
 
+// Obtém a configuração de todos os tenants com status
+router.get(
+  '/superadmin/all-tenants',
+  protect,
+  authorize(['Super Admin']),
+  whatsappConfigController.getAllConfigsWithStatus
+);
+
 // Obtém a configuração de um tenant específico
 router.get(
   '/:tenantId',

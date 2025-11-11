@@ -67,6 +67,11 @@ const whatsappConfigController = {
   
 
   // --- Rotas para o Super Admin ---
+
+  getAllConfigsWithStatus: asyncHandler(async (req, res) => {
+    const allConfigs = await whatsappService.getAllInstanceStatuses();
+    res.json(allConfigs);
+  }),
   
   getTenantConfig: asyncHandler(async (req, res) => {
     const { tenantId } = req.params;

@@ -1,4 +1,5 @@
 const axios = require('axios');
+const crypto = require('crypto');
 const dotenv = require('dotenv');
 const { WhatsappConfig, Tenant } = require('../../models'); // Import the model
 const whatsappConfigRepository = require('../repositories/whatsappConfigRepository');
@@ -279,10 +280,11 @@ const createRemoteInstance = async (tenantId) => {
   }
   try {
     const webhookUrl = `${process.env.BACKEND_URL}/whatsapp-webhook/webhook`;
+
     const payload = {
       instanceName: config.instanceName,
-      integration: 'WHATSAPP-BAILEYS',
-      webhook: webhookUrl,
+      webhookUrl: webhookUrl,
+      webhookEnabled: true,
       qrcode: true,
     };
 
@@ -291,6 +293,17 @@ const createRemoteInstance = async (tenantId) => {
       payload,
       getAxiosConfig(config)
     );
+
+    // Capture the correct API key from the response
+    const instanceApiKey = response.data.hash || response.data.apikey;
+    if (!instanceApiKey) {
+        console.error('[WhatsappService] Create instance response did not contain hash or apikey:', response.data);
+        throw new Error('A resposta da API de criação de instância não continha a chave da instância (hash/apikey).');
+    }
+
+    // Store the correct API key for the instance
+    await config.update({ instanceApiKey: instanceApiKey });
+
     return response.data;
   } catch (error) {
     const apiResponse = error.response?.data?.response;
@@ -470,6 +483,24 @@ const deleteSenderInstance = async (sender) => {
 };
 
 
+const getAllInstanceStatuses = async () => {
+  const configs = await WhatsappConfig.findAll({
+    include: [{ model: Tenant, attributes: ['id', 'name'] }]
+  });
+
+  const statuses = await Promise.all(
+    configs.map(async (config) => {
+      const status = await getInstanceStatus(config.tenantId);
+      return {
+        ...config.get({ plain: true }),
+        status,
+      };
+    })
+  );
+
+  return statuses;
+};
+
 module.exports = {
   sendSystemMessage,
   sendTenantMessage,
@@ -488,4 +519,5 @@ module.exports = {
   createSenderRemoteInstance, // Export new method
   getSenderQrCodeForConnect,  // Export new method
   deleteSenderInstance,
+  getAllInstanceStatuses,
 };

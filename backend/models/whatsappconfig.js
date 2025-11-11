@@ -46,11 +46,17 @@ module.exports = (sequelize, DataTypes) => {
       if (config.apiKey) {
         config.apiKey = encrypt(config.apiKey);
       }
+      if (config.instanceApiKey) {
+        config.instanceApiKey = encrypt(config.instanceApiKey);
+      }
     }
 
     static beforeUpdate(config, options) {
       if (config.changed('apiKey') && config.apiKey) {
         config.apiKey = encrypt(config.apiKey);
+      }
+      if (config.changed('instanceApiKey') && config.instanceApiKey) {
+        config.instanceApiKey = encrypt(config.instanceApiKey);
       }
     }
   }
@@ -69,6 +75,14 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       get() {
         const rawValue = this.getDataValue('apiKey');
+        return decrypt(rawValue);
+      }
+    },
+    instanceApiKey: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      get() {
+        const rawValue = this.getDataValue('instanceApiKey');
         return decrypt(rawValue);
       }
     },

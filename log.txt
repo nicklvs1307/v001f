@@ -1,16 +1,3 @@
-URL da solicitação
-https://apivoltaki.towersfy.com/api/whatsapp-config/instance/create
-Método da solicitação
-POST
-Código de status
-200 OK
-
-{
-    "status": "error",
-    "code": "HTTP_400",
-    "message": "A API do WhatsApp retornou um erro: Erro desconhecido da API do WhatsApp."
-}
-
 Postgres is up - executing command
 Server.js is being executed!
 Conexão com o banco de dados estabelecida com sucesso (Sequelize).
@@ -24,6 +11,14 @@ Agendador de expiração de cupons iniciado. A tarefa será executada todo dia �
 [CampanhaService] Inicializando campanhas agendadas...
 Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'scheduled' AND "Campanha"."startDate" IS NOT NULL;
 [CampanhaService] 0 campanhas reagendadas.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Verificando 1 disparador(es) inativo(s).
+[SENDER_MONITOR] Verificação de status concluída.
+[WhatsappService] Error getting status for sender Disparador 2: Request failed with status code 404
 [Auth Middleware] Request: POST /api/auth/verify-token
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
 [Auth Middleware] Request: GET /api/whatsapp-config/instance
@@ -84,3 +79,8 @@ Executing (default): SELECT "id", "url", "apiKey", "instanceName", "instanceStat
   }
 }
 Executing (default): UPDATE "whatsapp_configs" SET "instanceName"=$1,"updatedAt"=$2 WHERE "id" = $3
+{
+    "status": "error",
+    "code": "HTTP_400",
+    "message": "A API do WhatsApp retornou um erro: Erro desconhecido da API do WhatsApp."
+}

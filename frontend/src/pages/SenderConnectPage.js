@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Container, Typography, Box, Button, CircularProgress,
@@ -6,10 +6,12 @@ import {
 } from '@mui/material';
 import senderPoolService from '../services/senderPoolService';
 import { Wifi, WifiOff, QrCodeScanner, ArrowBack, Refresh } from '@mui/icons-material';
+import { SocketContext } from '../context/SocketContext';
 
 const SenderConnectPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const socket = useContext(SocketContext);
   const [sender, setSender] = useState(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
@@ -52,6 +54,22 @@ const SenderConnectPage = () => {
   }, [fetchSenderStatus]);
 
   useEffect(() => {
+    if (socket) {
+      const qrCodeEventHandler = (data) => {
+        if (data.qrCode) {
+          setQrCodeImg(`data:image/png;base64,${data.qrCode}`);
+          setActionLoading(false);
+        }
+      };
+      socket.on(`qrcode:update:${id}`, qrCodeEventHandler);
+
+      return () => {
+        socket.off(`qrcode:update:${id}`, qrCodeEventHandler);
+      };
+    }
+  }, [socket, id]);
+
+  useEffect(() => {
     let statusInterval;
     if (isPolling) {
       statusInterval = setInterval(() => {
@@ -70,22 +88,12 @@ const SenderConnectPage = () => {
     setQrCodeImg('');
     setIsPolling(true);
     try {
-      const response = await senderPoolService.getSenderQrCode(id);
-      if (isMounted.current) {
-        if (response.data.base64) {
-          setQrCodeImg(response.data.base64);
-        } else {
-          setError('Não foi possível obter o QR Code. Tente novamente.');
-          setIsPolling(false);
-        }
-      }
+      await senderPoolService.getSenderQrCode(id);
+      // O QR code será recebido via websocket
     } catch (err) {
       if (isMounted.current) {
-        setError(err.response?.data?.message || 'Ocorreu um erro ao gerar o QR Code.');
+        setError(err.response?.data?.message || 'Ocorreu um erro ao solicitar o QR Code.');
         setIsPolling(false);
-      }
-    } finally {
-      if (isMounted.current) {
         setActionLoading(false);
       }
     }
@@ -120,10 +128,10 @@ const SenderConnectPage = () => {
           <Button 
             variant="contained" 
             onClick={handleGetQrCode} 
-            disabled={actionLoading || isPolling}
+            disabled={actionLoading}
             startIcon={<QrCodeScanner />}
           >
-            Gerar QR Code para Conectar
+            {actionLoading ? 'Aguardando QR Code...' : 'Gerar QR Code para Conectar'}
           </Button>
         )}
         {qrCodeImg && !isConnected && (
@@ -133,6 +141,12 @@ const SenderConnectPage = () => {
               <img src={qrCodeImg} alt="QR Code para conexão do WhatsApp" style={{ maxWidth: '100%', height: 'auto' }} />
             </Box>
             <Typography variant="caption" display="block" mt={2}>A página será atualizada automaticamente após a conexão.</Typography>
+          </Box>
+        )}
+        {actionLoading && !qrCodeImg && (
+          <Box sx={{ mt: 3, textAlign: 'center' }}>
+            <CircularProgress />
+            <Typography variant="body1" mt={2}>Gerando QR Code, por favor aguarde...</Typography>
           </Box>
         )}
         {isConnected && (

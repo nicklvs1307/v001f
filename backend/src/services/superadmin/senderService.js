@@ -59,12 +59,16 @@ class SenderService {
     return whatsappService.logoutSenderInstance(sender);
   }
 
-  async updateSenderStatusByInstance(instanceName, status) {
+  async updateSenderStatusByInstanceName(instanceName, status) {
     const sender = await whatsappSenderRepository.findByInstanceName(instanceName);
     if (sender) {
       return whatsappSenderRepository.update(sender.id, { status });
     }
     return null;
+  }
+
+  async findSenderByInstanceName(instanceName) {
+    return whatsappSenderRepository.findByInstanceName(instanceName);
   }
 }
 

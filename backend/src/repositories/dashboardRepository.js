@@ -440,25 +440,30 @@ const dashboardRepository = {
         const responsesByCriteria = allResponses.reduce((acc, response) => {
             if (response.pergunta && response.pergunta.criterio && response.pergunta.type.startsWith('rating')) {
                 const criteriaName = response.pergunta.criterio.name;
-                if (!acc[criteriaName]) {
-                    acc[criteriaName] = {
+                const questionType = response.pergunta.type.startsWith('rating_0_10') ? 'NPS' : 'CSAT'; // Determine type from question
+                
+                const key = `${criteriaName}|${questionType}`;
+
+                if (!acc[key]) {
+                    acc[key] = {
+                        criterion: criteriaName,
                         responses: [],
-                        type: response.pergunta.criterio.type
+                        type: questionType
                     };
                 }
-                acc[criteriaName].responses.push(response);
+                acc[key].responses.push(response);
             }
             return acc;
         }, {});
 
-        const scoresByCriteria = Object.entries(responsesByCriteria).map(([criteriaName, data]) => {
-            const { responses, type } = data;
+        const scoresByCriteria = Object.values(responsesByCriteria).map((data) => {
+            const { responses, type, criterion } = data;
             if (type === 'NPS') {
                 const npsResult = ratingService.calculateNPS(responses);
-                return { criterion: criteriaName, scoreType: 'NPS', ...npsResult };
-            } else if (type === 'CSAT' || type === 'Star') {
+                return { criterion, scoreType: 'NPS', ...npsResult };
+            } else if (type === 'CSAT') {
                 const csatResult = ratingService.calculateCSAT(responses);
-                return { criterion: criteriaName, scoreType: 'CSAT', ...csatResult };
+                return { criterion, scoreType: 'CSAT', ...csatResult };
             }
             return null;
         }).filter(Boolean);

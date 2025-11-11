@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Paper, Typography, Box, CircularProgress } from '@mui/material';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -7,7 +6,21 @@ const ChartCard = ({ title, score, scoreLabel, data, colors, loading }) => {
     const hasData = data && data.some(item => item.value > 0);
 
     return (
-        <Paper elevation={3} sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', borderRadius: '16px', boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)' }}>
+        <Paper 
+            elevation={3} 
+            sx={{ 
+                p: 3, 
+                height: '100%', 
+                display: 'flex', 
+                flexDirection: 'column', 
+                borderRadius: '16px', 
+                boxShadow: '0 4px 20px 0 rgba(0,0,0,0.1)',
+                transition: 'transform 0.3s ease-in-out',
+                '&:hover': {
+                    transform: 'translateY(-5px)'
+                }
+            }}
+        >
             <Typography variant="h6" align="center" gutterBottom sx={{ fontWeight: 'bold' }}>
                 {title}
             </Typography>
@@ -17,7 +30,7 @@ const ChartCard = ({ title, score, scoreLabel, data, colors, loading }) => {
                 </Box>
             ) : (
                 <>
-                    <Box sx={{ position: 'relative', flexGrow: 1 }}>
+                    <Box sx={{ position: 'relative', flexGrow: 1, minHeight: '200px' }}>
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
                                 {hasData ? (
@@ -37,8 +50,8 @@ const ChartCard = ({ title, score, scoreLabel, data, colors, loading }) => {
                                                 <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
                                             ))}
                                         </Pie>
-                                        <Tooltip />
-                                        <Legend />
+                                        <Tooltip formatter={(value, name) => [value, name]} />
+                                        <Legend iconSize={10} />
                                     </>
                                 ) : (
                                     <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" fill="#888">

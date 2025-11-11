@@ -115,47 +115,95 @@ const dashboardRepository = {
     },
 
     getResponseChart: async (tenantId = null, startDate = null, endDate = null) => {
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
         const whereClause = tenantId ? { tenantId } : {};
-        const dateFilter = {};
-        if (startDate) dateFilter[Op.gte] = startDate;
-        if (endDate) dateFilter[Op.lte] = endDate;
-
-        if (Object.keys(dateFilter).length > 0) {
-            whereClause.createdAt = dateFilter;
+    
+        // Default to last 7 days if no dates are provided
+        if (!startDate || !endDate) {
+            endDate = new Date();
+            startDate = new Date();
+            startDate.setDate(endDate.getDate() - 6);
+        } else {
+            startDate = new Date(startDate);
+            endDate = new Date(endDate);
         }
-
-        const responsesByDay = await Resposta.findAll({
+    
+        const diffTime = Math.abs(endDate - startDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+        let period = 'day';
+        if (diffDays > 90) {
+            period = 'month';
+        } else if (diffDays > 31) {
+            period = 'week';
+        }
+    
+        whereClause.createdAt = {
+            [Op.gte]: startDate,
+            [Op.lte]: endDate
+        };
+    
+        const responsesByPeriod = await Resposta.findAll({
             where: whereClause,
             attributes: [
-                [fn('date_trunc', 'day', col('createdAt')), 'date'],
-                [fn('COUNT', col('id')), 'count']
+                [fn('date_trunc', period, col('createdAt')), 'period'],
+                [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'count']
             ],
-            group: [fn('date_trunc', 'day', col('createdAt'))],
-            order: [[fn('date_trunc', 'day', col('createdAt')), 'ASC']]
+            group: [fn('date_trunc', period, col('createdAt'))],
+            order: [[fn('date_trunc', period, col('createdAt')), 'ASC']]
         });
-
+    
         const chartData = [];
-        const daysOfWeek = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+        const dataMap = new Map(responsesByPeriod.map(item => [
+            new Date(item.dataValues.period).toISOString().split('T')[0],
+            parseInt(item.dataValues.count)
+        ]));
+    
+        let currentDate = new Date(startDate);
+        while (currentDate <= endDate) {
+            const formattedDate = currentDate.toISOString().split('T')[0];
+            let name;
+            
+            if (period === 'day') {
+                name = currentDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+                chartData.push({
+                    name,
+                    Respostas: dataMap.get(formattedDate) || 0,
+                });
+                currentDate.setDate(currentDate.getDate() + 1);
+            } else if (period === 'week') {
+                const weekStart = new Date(currentDate);
+                const weekEnd = new Date(currentDate);
+                weekEnd.setDate(weekEnd.getDate() + 6);
+                name = `${weekStart.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })} - ${weekEnd.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}`;
+                
+                // Find the truncated week start date from the map
+                const weekStartDateInDB = [...dataMap.keys()].find(key => {
+                    const dbDate = new Date(key);
+                    return dbDate >= weekStart && dbDate <= weekEnd;
+                });
 
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(sevenDaysAgo);
-            date.setDate(sevenDaysAgo.getDate() + i);
-            const dayName = daysOfWeek[date.getDay()];
-            const formattedDate = date.toISOString().split('T')[0];
+                chartData.push({
+                    name,
+                    Respostas: dataMap.get(weekStartDateInDB) || 0,
+                });
+                currentDate.setDate(currentDate.getDate() + 7);
+            } else { // month
+                const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+                name = currentDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+                
+                const monthStartDateInDB = [...dataMap.keys()].find(key => {
+                    const dbDate = new Date(key);
+                    return dbDate.getFullYear() === monthStart.getFullYear() && dbDate.getMonth() === monthStart.getMonth();
+                });
 
-            const found = responsesByDay.find(item => {
-                const itemDate = new Date(item.dataValues.date);
-                return itemDate.toISOString().split('T')[0] === formattedDate;
-            });
-
-            chartData.push({
-                name: dayName,
-                Respostas: found ? parseInt(found.dataValues.count) : 0,
-            });
+                chartData.push({
+                    name,
+                    Respostas: dataMap.get(monthStartDateInDB) || 0,
+                });
+                currentDate.setMonth(currentDate.getMonth() + 1);
+            }
         }
-
+    
         return chartData;
     },
 
@@ -345,8 +393,15 @@ const dashboardRepository = {
         ];
     },
 
-    getOverallResults: async function (tenantId = null) {
+    getOverallResults: async function (tenantId = null, startDate = null, endDate = null) {
         const whereClause = tenantId ? { tenantId } : {};
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
 
         const allResponses = await Resposta.findAll({
             where: { ...whereClause, ratingValue: { [Op.ne]: null } },
@@ -1014,6 +1069,21 @@ const dashboardRepository = {
     },
 
     getMainDashboard: async function (tenantId = null, startDate = null, endDate = null) {
+        // Ensure startDate and endDate are Date objects for calculations
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+
+        let npsTrendPeriod = 'day';
+        if (start && end) {
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays > 90) {
+                npsTrendPeriod = 'month';
+            } else if (diffDays > 31) {
+                npsTrendPeriod = 'week';
+            }
+        }
+
         const summary = await this.getSummary(tenantId, startDate, endDate);
         const responseChart = await this.getResponseChart(tenantId, startDate, endDate);
         const attendantsPerformance = await this.getAttendantsPerformanceWithGoals(tenantId, startDate, endDate);
@@ -1021,8 +1091,8 @@ const dashboardRepository = {
         const feedbacks = await this.getFeedbacks(tenantId, startDate, endDate);
         const conversionChart = await this.getConversionChart(tenantId, startDate, endDate);
         const npsByDayOfWeek = await this.getNpsByDayOfWeek(tenantId, startDate, endDate);
-        const wordCloudData = await this.getWordCloudData(tenantId, startDate, endDate);
-        const npsTrend = await this.getNpsTrendData(tenantId, 'day', startDate, endDate);
+        const npsTrend = await this.getNpsTrendData(tenantId, npsTrendPeriod, startDate, endDate);
+        const overallResults = await this.getOverallResults(tenantId, startDate, endDate);
 
 
         return {
@@ -1033,8 +1103,8 @@ const dashboardRepository = {
             feedbacks,
             conversionChart,
             npsByDayOfWeek,
-            wordCloudData,
             npsTrend,
+            overallResults,
         };
     },
 };

@@ -160,6 +160,8 @@ class CampanhaService {
         return;
       }
 
+      console.log('[CampanhaService] Campanha object before sending:', JSON.stringify(campanha, null, 2));
+
       try {
         if (campanha.rewardType === 'NONE') {
           await this._sendSimpleMessages(campanha, clients);

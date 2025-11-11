@@ -1,5 +1,5 @@
 URL da solicitação
-https://apivoltaki.towersfy.com/api/campanhas/5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f/test
+https://apivoltaki.towersfy.com/api/campanhas/62218125-a119-456d-97de-98e52cc93709/test
 Método da solicitação
 POST
 Código de status
@@ -7,8 +7,8 @@ Código de status
 {
     "status": "error",
     "code": "HTTP_500",
-    "message": "spintax.spin is not a function",
-    "details": "TypeError: spintax.spin is not a function\n    at CampanhaService._buildPersonalizedMessage (/usr/src/app/src/services/campanhaService.js:131:27)\n    at CampanhaService.sendTest (/usr/src/app/src/services/campanhaService.js:114:38)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async CampanhaController.sendTest (/usr/src/app/src/controllers/campanhaController.js:143:22)"
+    "message": "Request failed with status code 400",
+    "details": "AxiosError: Request failed with status code 400\n    at settle (/usr/src/app/node_modules/axios/dist/node/axios.cjs:2097:12)\n    at IncomingMessage.handleStreamEnd (/usr/src/app/node_modules/axios/dist/node/axios.cjs:3305:11)\n    at IncomingMessage.emit (node:events:529:35)\n    at endReadableNT (node:internal/streams/readable:1400:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)\n    at Axios.request (/usr/src/app/node_modules/axios/dist/node/axios.cjs:4483:41)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Object.sendTenantMediaMessage (/usr/src/app/src/services/whatsappService.js:108:22)\n    at async CampanhaService.sendTest (/usr/src/app/src/services/campanhaService.js:122:7)\n    at async CampanhaController.sendTest (/usr/src/app/src/controllers/campanhaController.js:143:22)"
 }
 
 Postgres is up - executing command
@@ -28,60 +28,757 @@ Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType",
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
 [Auth Middleware] Request: GET /api/campanhas/5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
-[Auth Middleware] Request: GET /api/campanhas/5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f/logs
 [Auth Middleware] Request: GET /api/campanhas/5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f/report
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
+[Auth Middleware] Request: GET /api/campanhas/5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f/logs
 Executing (default): SELECT "Campanha"."id", "Campanha"."tenantId", "Campanha"."nome", "Campanha"."mensagens", "Campanha"."rewardType", "Campanha"."recompensaId", "Campanha"."roletaId", "Campanha"."dataValidade", "Campanha"."criterioSelecao", "Campanha"."status", "Campanha"."startDate", "Campanha"."endDate", "Campanha"."minMessageDelaySeconds", "Campanha"."maxMessageDelaySeconds", "Campanha"."mediaUrl", "Campanha"."createdAt", "Campanha"."updatedAt", "recompensa"."id" AS "recompensa.id", "recompensa"."tenantId" AS "recompensa.tenantId", "recompensa"."name" AS "recompensa.name", "recompensa"."description" AS "recompensa.description", "recompensa"."pointsRequired" AS "recompensa.pointsRequired", "recompensa"."type" AS "recompensa.type", "recompensa"."value" AS "recompensa.value", "recompensa"."imageUrl" AS "recompensa.imageUrl", "recompensa"."active" AS "recompensa.active", "recompensa"."createdAt" AS "recompensa.createdAt", "recompensa"."updatedAt" AS "recompensa.updatedAt" FROM "campanhas" AS "Campanha" LEFT OUTER JOIN "recompensas" AS "recompensa" ON "Campanha"."recompensaId" = "recompensa"."id" WHERE "Campanha"."id" = '5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f' AND "Campanha"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "CampanhaLog"."id", "CampanhaLog"."campanhaId", "CampanhaLog"."clienteId", "CampanhaLog"."status", "CampanhaLog"."errorMessage", "CampanhaLog"."variant", "CampanhaLog"."sentAt", "CampanhaLog"."convertedAt", "CampanhaLog"."createdAt", "CampanhaLog"."updatedAt", "client"."id" AS "client.id", "client"."name" AS "client.name", "client"."phone" AS "client.phone" FROM "CampanhaLogs" AS "CampanhaLog" LEFT OUTER JOIN "clients" AS "client" ON "CampanhaLog"."clienteId" = "client"."id" WHERE "CampanhaLog"."campanhaId" = '5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f' ORDER BY "CampanhaLog"."sentAt" DESC;
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
 Executing (default): SELECT "variant", COUNT("id") AS "recipients", COUNT("convertedAt") AS "conversions" FROM "CampanhaLogs" AS "CampanhaLog" WHERE "CampanhaLog"."campanhaId" = '5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f' GROUP BY "variant";
+Executing (default): SELECT "CampanhaLog"."id", "CampanhaLog"."campanhaId", "CampanhaLog"."clienteId", "CampanhaLog"."status", "CampanhaLog"."errorMessage", "CampanhaLog"."variant", "CampanhaLog"."sentAt", "CampanhaLog"."convertedAt", "CampanhaLog"."createdAt", "CampanhaLog"."updatedAt", "client"."id" AS "client.id", "client"."name" AS "client.name", "client"."phone" AS "client.phone" FROM "CampanhaLogs" AS "CampanhaLog" LEFT OUTER JOIN "clients" AS "client" ON "CampanhaLog"."clienteId" = "client"."id" WHERE "CampanhaLog"."campanhaId" = '5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f' ORDER BY "CampanhaLog"."sentAt" DESC;
 Executing (default): SELECT "status", COUNT("status") AS "count" FROM "CampanhaLogs" AS "CampanhaLog" WHERE "CampanhaLog"."campanhaId" = '5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f' GROUP BY "status";
 [Auth Middleware] Request: GET /api/campanhas?tenantId=3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
 Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-[Auth Middleware] Request: GET /api/campanhas/5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f
+[Auth Middleware] Request: GET /api/campanhas/a2961325-91c3-4f4c-8580-078e20fa68dd/logs
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
-[Auth Middleware] Request: GET /api/campanhas/5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f/logs
+[Auth Middleware] Request: GET /api/campanhas/a2961325-91c3-4f4c-8580-078e20fa68dd
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
-Executing (default): SELECT "Campanha"."id", "Campanha"."tenantId", "Campanha"."nome", "Campanha"."mensagens", "Campanha"."rewardType", "Campanha"."recompensaId", "Campanha"."roletaId", "Campanha"."dataValidade", "Campanha"."criterioSelecao", "Campanha"."status", "Campanha"."startDate", "Campanha"."endDate", "Campanha"."minMessageDelaySeconds", "Campanha"."maxMessageDelaySeconds", "Campanha"."mediaUrl", "Campanha"."createdAt", "Campanha"."updatedAt", "recompensa"."id" AS "recompensa.id", "recompensa"."tenantId" AS "recompensa.tenantId", "recompensa"."name" AS "recompensa.name", "recompensa"."description" AS "recompensa.description", "recompensa"."pointsRequired" AS "recompensa.pointsRequired", "recompensa"."type" AS "recompensa.type", "recompensa"."value" AS "recompensa.value", "recompensa"."imageUrl" AS "recompensa.imageUrl", "recompensa"."active" AS "recompensa.active", "recompensa"."createdAt" AS "recompensa.createdAt", "recompensa"."updatedAt" AS "recompensa.updatedAt" FROM "campanhas" AS "Campanha" LEFT OUTER JOIN "recompensas" AS "recompensa" ON "Campanha"."recompensaId" = "recompensa"."id" WHERE "Campanha"."id" = '5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f' AND "Campanha"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-[Auth Middleware] Request: GET /api/campanhas/5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f/report
+[Auth Middleware] Request: GET /api/campanhas/a2961325-91c3-4f4c-8580-078e20fa68dd/report
+Executing (default): SELECT "CampanhaLog"."id", "CampanhaLog"."campanhaId", "CampanhaLog"."clienteId", "CampanhaLog"."status", "CampanhaLog"."errorMessage", "CampanhaLog"."variant", "CampanhaLog"."sentAt", "CampanhaLog"."convertedAt", "CampanhaLog"."createdAt", "CampanhaLog"."updatedAt", "client"."id" AS "client.id", "client"."name" AS "client.name", "client"."phone" AS "client.phone" FROM "CampanhaLogs" AS "CampanhaLog" LEFT OUTER JOIN "clients" AS "client" ON "CampanhaLog"."clienteId" = "client"."id" WHERE "CampanhaLog"."campanhaId" = 'a2961325-91c3-4f4c-8580-078e20fa68dd' ORDER BY "CampanhaLog"."sentAt" DESC;
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
-Executing (default): SELECT "CampanhaLog"."id", "CampanhaLog"."campanhaId", "CampanhaLog"."clienteId", "CampanhaLog"."status", "CampanhaLog"."errorMessage", "CampanhaLog"."variant", "CampanhaLog"."sentAt", "CampanhaLog"."convertedAt", "CampanhaLog"."createdAt", "CampanhaLog"."updatedAt", "client"."id" AS "client.id", "client"."name" AS "client.name", "client"."phone" AS "client.phone" FROM "CampanhaLogs" AS "CampanhaLog" LEFT OUTER JOIN "clients" AS "client" ON "CampanhaLog"."clienteId" = "client"."id" WHERE "CampanhaLog"."campanhaId" = '5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f' ORDER BY "CampanhaLog"."sentAt" DESC;
-Executing (default): SELECT "variant", COUNT("id") AS "recipients", COUNT("convertedAt") AS "conversions" FROM "CampanhaLogs" AS "CampanhaLog" WHERE "CampanhaLog"."campanhaId" = '5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f' GROUP BY "variant";
-Executing (default): SELECT "status", COUNT("status") AS "count" FROM "CampanhaLogs" AS "CampanhaLog" WHERE "CampanhaLog"."campanhaId" = '5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f' GROUP BY "status";
-[Auth Middleware] Request: POST /api/campanhas/5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f/test
+Executing (default): SELECT "Campanha"."id", "Campanha"."tenantId", "Campanha"."nome", "Campanha"."mensagens", "Campanha"."rewardType", "Campanha"."recompensaId", "Campanha"."roletaId", "Campanha"."dataValidade", "Campanha"."criterioSelecao", "Campanha"."status", "Campanha"."startDate", "Campanha"."endDate", "Campanha"."minMessageDelaySeconds", "Campanha"."maxMessageDelaySeconds", "Campanha"."mediaUrl", "Campanha"."createdAt", "Campanha"."updatedAt", "recompensa"."id" AS "recompensa.id", "recompensa"."tenantId" AS "recompensa.tenantId", "recompensa"."name" AS "recompensa.name", "recompensa"."description" AS "recompensa.description", "recompensa"."pointsRequired" AS "recompensa.pointsRequired", "recompensa"."type" AS "recompensa.type", "recompensa"."value" AS "recompensa.value", "recompensa"."imageUrl" AS "recompensa.imageUrl", "recompensa"."active" AS "recompensa.active", "recompensa"."createdAt" AS "recompensa.createdAt", "recompensa"."updatedAt" AS "recompensa.updatedAt" FROM "campanhas" AS "Campanha" LEFT OUTER JOIN "recompensas" AS "recompensa" ON "Campanha"."recompensaId" = "recompensa"."id" WHERE "Campanha"."id" = 'a2961325-91c3-4f4c-8580-078e20fa68dd' AND "Campanha"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "variant", COUNT("id") AS "recipients", COUNT("convertedAt") AS "conversions" FROM "CampanhaLogs" AS "CampanhaLog" WHERE "CampanhaLog"."campanhaId" = 'a2961325-91c3-4f4c-8580-078e20fa68dd' GROUP BY "variant";
+Executing (default): SELECT "status", COUNT("status") AS "count" FROM "CampanhaLogs" AS "CampanhaLog" WHERE "CampanhaLog"."campanhaId" = 'a2961325-91c3-4f4c-8580-078e20fa68dd' GROUP BY "status";
+[Auth Middleware] Request: POST /api/campanhas/a2961325-91c3-4f4c-8580-078e20fa68dd/test
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
-Executing (default): SELECT "Campanha"."id", "Campanha"."tenantId", "Campanha"."nome", "Campanha"."mensagens", "Campanha"."rewardType", "Campanha"."recompensaId", "Campanha"."roletaId", "Campanha"."dataValidade", "Campanha"."criterioSelecao", "Campanha"."status", "Campanha"."startDate", "Campanha"."endDate", "Campanha"."minMessageDelaySeconds", "Campanha"."maxMessageDelaySeconds", "Campanha"."mediaUrl", "Campanha"."createdAt", "Campanha"."updatedAt", "recompensa"."id" AS "recompensa.id", "recompensa"."tenantId" AS "recompensa.tenantId", "recompensa"."name" AS "recompensa.name", "recompensa"."description" AS "recompensa.description", "recompensa"."pointsRequired" AS "recompensa.pointsRequired", "recompensa"."type" AS "recompensa.type", "recompensa"."value" AS "recompensa.value", "recompensa"."imageUrl" AS "recompensa.imageUrl", "recompensa"."active" AS "recompensa.active", "recompensa"."createdAt" AS "recompensa.createdAt", "recompensa"."updatedAt" AS "recompensa.updatedAt" FROM "campanhas" AS "Campanha" LEFT OUTER JOIN "recompensas" AS "recompensa" ON "Campanha"."recompensaId" = "recompensa"."id" WHERE "Campanha"."id" = '5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f' AND "Campanha"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-TypeError: spintax.spin is not a function
-    at CampanhaService._buildPersonalizedMessage (/usr/src/app/src/services/campanhaService.js:131:27)
-    at CampanhaService.sendTest (/usr/src/app/src/services/campanhaService.js:114:38)
+Executing (default): SELECT "Campanha"."id", "Campanha"."tenantId", "Campanha"."nome", "Campanha"."mensagens", "Campanha"."rewardType", "Campanha"."recompensaId", "Campanha"."roletaId", "Campanha"."dataValidade", "Campanha"."criterioSelecao", "Campanha"."status", "Campanha"."startDate", "Campanha"."endDate", "Campanha"."minMessageDelaySeconds", "Campanha"."maxMessageDelaySeconds", "Campanha"."mediaUrl", "Campanha"."createdAt", "Campanha"."updatedAt", "recompensa"."id" AS "recompensa.id", "recompensa"."tenantId" AS "recompensa.tenantId", "recompensa"."name" AS "recompensa.name", "recompensa"."description" AS "recompensa.description", "recompensa"."pointsRequired" AS "recompensa.pointsRequired", "recompensa"."type" AS "recompensa.type", "recompensa"."value" AS "recompensa.value", "recompensa"."imageUrl" AS "recompensa.imageUrl", "recompensa"."active" AS "recompensa.active", "recompensa"."createdAt" AS "recompensa.createdAt", "recompensa"."updatedAt" AS "recompensa.updatedAt" FROM "campanhas" AS "Campanha" LEFT OUTER JOIN "recompensas" AS "recompensa" ON "Campanha"."recompensaId" = "recompensa"."id" WHERE "Campanha"."id" = 'a2961325-91c3-4f4c-8580-078e20fa68dd' AND "Campanha"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsApp Service] Enviando mensagem com mídia de tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd para: 5535998374007@s.whatsapp.net
+[WhatsApp Service] Falha ao enviar mensagem com mídia para o tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd. Número: 5535998374007.
+[WhatsApp Service] Erro detalhado da API: {
+  "status": 400,
+  "error": "Bad Request",
+  "response": {
+    "message": [
+      [
+        "media is not of a type(s) string",
+        "instance requires property \"mediatype\""
+      ]
+    ]
+  }
+}
+AxiosError: Request failed with status code 400
+    at settle (/usr/src/app/node_modules/axios/dist/node/axios.cjs:2097:12)
+    at IncomingMessage.handleStreamEnd (/usr/src/app/node_modules/axios/dist/node/axios.cjs:3305:11)
+    at IncomingMessage.emit (node:events:529:35)
+    at endReadableNT (node:internal/streams/readable:1400:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+    at Axios.request (/usr/src/app/node_modules/axios/dist/node/axios.cjs:4483:41)
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async CampanhaController.sendTest (/usr/src/app/src/controllers/campanhaController.js:143:22)
-[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
-Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
-[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
-Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
-[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
-[SENDER_MONITOR] Verificando 1 disparador(es) inativo(s).
-[WhatsappService] Error getting status for sender Disparador 1: Request failed with status code 404
-[SENDER_MONITOR] Verificação de status concluída.
-[Auth Middleware] Request: POST /api/auth/verify-token
+    at async Object.sendTenantMediaMessage (/usr/src/app/src/services/whatsappService.js:108:22)
+    at async CampanhaService.sendTest (/usr/src/app/src/services/campanhaService.js:122:7)
+    at async CampanhaController.sendTest (/usr/src/app/src/controllers/campanhaController.js:143:22) {
+  code: 'ERR_BAD_REQUEST',
+  config: {
+    transitional: {
+      silentJSONParsing: true,
+      forcedJSONParsing: true,
+      clarifyTimeoutError: false
+    },
+    adapter: [ 'xhr', 'http', 'fetch' ],
+    transformRequest: [ [Function: transformRequest] ],
+    transformResponse: [ [Function: transformResponse] ],
+    timeout: 0,
+    xsrfCookieName: 'XSRF-TOKEN',
+    xsrfHeaderName: 'X-XSRF-TOKEN',
+    maxContentLength: -1,
+    maxBodyLength: -1,
+    env: { FormData: [Function [FormData]], Blob: [class Blob] },
+    validateStatus: [Function: validateStatus],
+    headers: Object [AxiosHeaders] {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+      apikey: '9df82dcbee60ce08f6ca93aa4024ca6c',
+      'User-Agent': 'axios/1.12.2',
+      'Content-Length': '414',
+      'Accept-Encoding': 'gzip, compress, deflate, br'
+    },
+    method: 'post',
+    url: 'https://evolution2.towersfy.com/message/sendMedia/roma-pizzaria--chopperiaaa',
+    data: '{"number":"5535998374007@s.whatsapp.net","caption":"Tips for getting started:\\n1. Ask questions, edit files, or run commands.\\n2. Be specific for the best results.\\n3. /help for more information.","media":{"url":"https://apivoltaki.towersfy.com/uploads/campaigns/3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1762771956957.jpeg","mimetype":"image/jpeg","filename":"3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1762771956957.jpeg"}}',
+    allowAbsoluteUrls: true
+  },
+  request: <ref *1> ClientRequest {
+    _events: [Object: null prototype] {
+      abort: [Function (anonymous)],
+      aborted: [Function (anonymous)],
+      connect: [Function (anonymous)],
+      error: [Function (anonymous)],
+      socket: [Function (anonymous)],
+      timeout: [Function (anonymous)],
+      finish: [Function: requestOnFinish]
+    },
+    _eventsCount: 7,
+    _maxListeners: undefined,
+    outputData: [],
+    outputSize: 0,
+    writable: true,
+    destroyed: false,
+    _last: true,
+    chunkedEncoding: false,
+    shouldKeepAlive: false,
+    maxRequestsOnConnectionReached: false,
+    _defaultKeepAlive: true,
+    useChunkedEncodingByDefault: true,
+    sendDate: false,
+    _removedConnection: false,
+    _removedContLen: false,
+    _removedTE: false,
+    strictContentLength: false,
+    _contentLength: '414',
+    _hasBody: true,
+    _trailer: '',
+    finished: true,
+    _headerSent: true,
+    _closed: false,
+    socket: TLSSocket {
+      _tlsOptions: [Object],
+      _secureEstablished: true,
+      _securePending: false,
+      _newSessionPending: false,
+      _controlReleased: true,
+      secureConnecting: false,
+      _SNICallback: null,
+      servername: 'evolution2.towersfy.com',
+      alpnProtocol: false,
+      authorized: true,
+      authorizationError: null,
+      encrypted: true,
+      _events: [Object: null prototype],
+      _eventsCount: 10,
+      connecting: false,
+      _hadError: false,
+      _parent: null,
+      _host: 'evolution2.towersfy.com',
+      _closeAfterHandlingError: false,
+      _readableState: [ReadableState],
+      _maxListeners: undefined,
+      _writableState: [WritableState],
+      allowHalfOpen: false,
+      _sockname: null,
+      _pendingData: null,
+      _pendingEncoding: '',
+      server: undefined,
+      _server: null,
+      ssl: [TLSWrap],
+      _requestCert: true,
+      _rejectUnauthorized: true,
+      parser: null,
+      _httpMessage: [Circular *1],
+      [Symbol(alpncallback)]: null,
+      [Symbol(res)]: [TLSWrap],
+      [Symbol(verified)]: true,
+      [Symbol(pendingSession)]: null,
+      [Symbol(async_id_symbol)]: 853,
+      [Symbol(kHandle)]: [TLSWrap],
+      [Symbol(lastWriteQueueSize)]: 0,
+      [Symbol(timeout)]: null,
+      [Symbol(kBuffer)]: null,
+      [Symbol(kBufferCb)]: null,
+      [Symbol(kBufferGen)]: null,
+      [Symbol(kCapture)]: false,
+      [Symbol(kSetNoDelay)]: false,
+      [Symbol(kSetKeepAlive)]: true,
+      [Symbol(kSetKeepAliveInitialDelay)]: 60,
+      [Symbol(kBytesRead)]: 0,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(connect-options)]: [Object]
+    },
+    _header: 'POST /message/sendMedia/roma-pizzaria--chopperiaaa HTTP/1.1\r\n' +
+      'Accept: application/json, text/plain, */*\r\n' +
+      'Content-Type: application/json\r\n' +
+      'apikey: 9df82dcbee60ce08f6ca93aa4024ca6c\r\n' +
+      'User-Agent: axios/1.12.2\r\n' +
+      'Content-Length: 414\r\n' +
+      'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+      'Host: evolution2.towersfy.com\r\n' +
+      'Connection: close\r\n' +
+      '\r\n',
+    _keepAliveTimeout: 0,
+    _onPendingData: [Function: nop],
+    agent: Agent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      defaultPort: 443,
+      protocol: 'https:',
+      options: [Object: null prototype],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      maxCachedSessions: 100,
+      _sessionCache: [Object],
+      [Symbol(kCapture)]: false
+    },
+    socketPath: undefined,
+    method: 'POST',
+    maxHeaderSize: undefined,
+    insecureHTTPParser: undefined,
+    joinDuplicateHeaders: undefined,
+    path: '/message/sendMedia/roma-pizzaria--chopperiaaa',
+    _ended: true,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [TLSSocket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      rawHeaders: [Array],
+      rawTrailers: [],
+      joinDuplicateHeaders: undefined,
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 400,
+      statusMessage: 'Bad Request',
+      client: [TLSSocket],
+      _consuming: false,
+      _dumped: false,
+      req: [Circular *1],
+      responseUrl: 'https://evolution2.towersfy.com/message/sendMedia/roma-pizzaria--chopperiaaa',
+      redirects: [],
+      [Symbol(kCapture)]: false,
+      [Symbol(kHeaders)]: [Object],
+      [Symbol(kHeadersCount)]: 16,
+      [Symbol(kTrailers)]: null,
+      [Symbol(kTrailersCount)]: 0
+    },
+    aborted: false,
+    timeoutCb: null,
+    upgradeOrConnect: false,
+    parser: null,
+    maxHeadersCount: null,
+    reusedSocket: false,
+    host: 'evolution2.towersfy.com',
+    protocol: 'https:',
+    _redirectable: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: true,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 414,
+      _requestBodyBuffers: [],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [Circular *1],
+      _currentUrl: 'https://evolution2.towersfy.com/message/sendMedia/roma-pizzaria--chopperiaaa',
+      [Symbol(kCapture)]: false
+    },
+    [Symbol(kCapture)]: false,
+    [Symbol(kBytesWritten)]: 0,
+    [Symbol(kNeedDrain)]: false,
+    [Symbol(corked)]: 0,
+    [Symbol(kOutHeaders)]: [Object: null prototype] {
+      accept: [Array],
+      'content-type': [Array],
+      apikey: [Array],
+      'user-agent': [Array],
+      'content-length': [Array],
+      'accept-encoding': [Array],
+      host: [Array]
+    },
+    [Symbol(errored)]: null,
+    [Symbol(kHighWaterMark)]: 16384,
+    [Symbol(kRejectNonStandardBodyWrites)]: false,
+    [Symbol(kUniqueHeaders)]: null
+  },
+  response: {
+    status: 400,
+    statusText: 'Bad Request',
+    headers: Object [AxiosHeaders] {
+      'access-control-allow-credentials': 'true',
+      'content-length': '141',
+      'content-type': 'application/json; charset=utf-8',
+      date: 'Tue, 11 Nov 2025 18:18:22 GMT',
+      etag: 'W/"8d-/kG44J2/d6RBH+60h7yjhmLAESY"',
+      vary: 'Origin, Accept-Encoding',
+      'x-powered-by': 'Express',
+      connection: 'close'
+    },
+    config: {
+      transitional: [Object],
+      adapter: [Array],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      env: [Object],
+      validateStatus: [Function: validateStatus],
+      headers: [Object [AxiosHeaders]],
+      method: 'post',
+      url: 'https://evolution2.towersfy.com/message/sendMedia/roma-pizzaria--chopperiaaa',
+      data: '{"number":"5535998374007@s.whatsapp.net","caption":"Tips for getting started:\\n1. Ask questions, edit files, or run commands.\\n2. Be specific for the best results.\\n3. /help for more information.","media":{"url":"https://apivoltaki.towersfy.com/uploads/campaigns/3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1762771956957.jpeg","mimetype":"image/jpeg","filename":"3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1762771956957.jpeg"}}',
+      allowAbsoluteUrls: true
+    },
+    request: <ref *1> ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 7,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      destroyed: false,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      maxRequestsOnConnectionReached: false,
+      _defaultKeepAlive: true,
+      useChunkedEncodingByDefault: true,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      strictContentLength: false,
+      _contentLength: '414',
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      _closed: false,
+      socket: [TLSSocket],
+      _header: 'POST /message/sendMedia/roma-pizzaria--chopperiaaa HTTP/1.1\r\n' +
+        'Accept: application/json, text/plain, */*\r\n' +
+        'Content-Type: application/json\r\n' +
+        'apikey: 9df82dcbee60ce08f6ca93aa4024ca6c\r\n' +
+        'User-Agent: axios/1.12.2\r\n' +
+        'Content-Length: 414\r\n' +
+        'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+        'Host: evolution2.towersfy.com\r\n' +
+        'Connection: close\r\n' +
+        '\r\n',
+      _keepAliveTimeout: 0,
+      _onPendingData: [Function: nop],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'POST',
+      maxHeaderSize: undefined,
+      insecureHTTPParser: undefined,
+      joinDuplicateHeaders: undefined,
+      path: '/message/sendMedia/roma-pizzaria--chopperiaaa',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      host: 'evolution2.towersfy.com',
+      protocol: 'https:',
+      _redirectable: [Writable],
+      [Symbol(kCapture)]: false,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype],
+      [Symbol(errored)]: null,
+      [Symbol(kHighWaterMark)]: 16384,
+      [Symbol(kRejectNonStandardBodyWrites)]: false,
+      [Symbol(kUniqueHeaders)]: null
+    },
+    data: { status: 400, error: 'Bad Request', response: [Object] }
+  },
+  status: 400
+}
+[Auth Middleware] Request: GET /api/campanhas?tenantId=3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
-[Auth Middleware] Request: GET /api/campanhas/5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f/logs
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+[Auth Middleware] Request: GET /api/campanhas/62218125-a119-456d-97de-98e52cc93709
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
-[Auth Middleware] Request: GET /api/campanhas/5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f/report
-[Auth Middleware] Request: GET /api/campanhas/5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f
+[Auth Middleware] Request: GET /api/campanhas/62218125-a119-456d-97de-98e52cc93709/logs
+[Auth Middleware] Request: GET /api/campanhas/62218125-a119-456d-97de-98e52cc93709/report
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
-Executing (default): SELECT "CampanhaLog"."id", "CampanhaLog"."campanhaId", "CampanhaLog"."clienteId", "CampanhaLog"."status", "CampanhaLog"."errorMessage", "CampanhaLog"."variant", "CampanhaLog"."sentAt", "CampanhaLog"."convertedAt", "CampanhaLog"."createdAt", "CampanhaLog"."updatedAt", "client"."id" AS "client.id", "client"."name" AS "client.name", "client"."phone" AS "client.phone" FROM "CampanhaLogs" AS "CampanhaLog" LEFT OUTER JOIN "clients" AS "client" ON "CampanhaLog"."clienteId" = "client"."id" WHERE "CampanhaLog"."campanhaId" = '5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f' ORDER BY "CampanhaLog"."sentAt" DESC;
-Executing (default): SELECT "variant", COUNT("id") AS "recipients", COUNT("convertedAt") AS "conversions" FROM "CampanhaLogs" AS "CampanhaLog" WHERE "CampanhaLog"."campanhaId" = '5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f' GROUP BY "variant";
-Executing (default): SELECT "Campanha"."id", "Campanha"."tenantId", "Campanha"."nome", "Campanha"."mensagens", "Campanha"."rewardType", "Campanha"."recompensaId", "Campanha"."roletaId", "Campanha"."dataValidade", "Campanha"."criterioSelecao", "Campanha"."status", "Campanha"."startDate", "Campanha"."endDate", "Campanha"."minMessageDelaySeconds", "Campanha"."maxMessageDelaySeconds", "Campanha"."mediaUrl", "Campanha"."createdAt", "Campanha"."updatedAt", "recompensa"."id" AS "recompensa.id", "recompensa"."tenantId" AS "recompensa.tenantId", "recompensa"."name" AS "recompensa.name", "recompensa"."description" AS "recompensa.description", "recompensa"."pointsRequired" AS "recompensa.pointsRequired", "recompensa"."type" AS "recompensa.type", "recompensa"."value" AS "recompensa.value", "recompensa"."imageUrl" AS "recompensa.imageUrl", "recompensa"."active" AS "recompensa.active", "recompensa"."createdAt" AS "recompensa.createdAt", "recompensa"."updatedAt" AS "recompensa.updatedAt" FROM "campanhas" AS "Campanha" LEFT OUTER JOIN "recompensas" AS "recompensa" ON "Campanha"."recompensaId" = "recompensa"."id" WHERE "Campanha"."id" = '5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f' AND "Campanha"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "status", COUNT("status") AS "count" FROM "CampanhaLogs" AS "CampanhaLog" WHERE "CampanhaLog"."campanhaId" = '5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f' GROUP BY "status";
-[Auth Middleware] Request: POST /api/campanhas/5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f/test
+Executing (default): SELECT "Campanha"."id", "Campanha"."tenantId", "Campanha"."nome", "Campanha"."mensagens", "Campanha"."rewardType", "Campanha"."recompensaId", "Campanha"."roletaId", "Campanha"."dataValidade", "Campanha"."criterioSelecao", "Campanha"."status", "Campanha"."startDate", "Campanha"."endDate", "Campanha"."minMessageDelaySeconds", "Campanha"."maxMessageDelaySeconds", "Campanha"."mediaUrl", "Campanha"."createdAt", "Campanha"."updatedAt", "recompensa"."id" AS "recompensa.id", "recompensa"."tenantId" AS "recompensa.tenantId", "recompensa"."name" AS "recompensa.name", "recompensa"."description" AS "recompensa.description", "recompensa"."pointsRequired" AS "recompensa.pointsRequired", "recompensa"."type" AS "recompensa.type", "recompensa"."value" AS "recompensa.value", "recompensa"."imageUrl" AS "recompensa.imageUrl", "recompensa"."active" AS "recompensa.active", "recompensa"."createdAt" AS "recompensa.createdAt", "recompensa"."updatedAt" AS "recompensa.updatedAt" FROM "campanhas" AS "Campanha" LEFT OUTER JOIN "recompensas" AS "recompensa" ON "Campanha"."recompensaId" = "recompensa"."id" WHERE "Campanha"."id" = '62218125-a119-456d-97de-98e52cc93709' AND "Campanha"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "CampanhaLog"."id", "CampanhaLog"."campanhaId", "CampanhaLog"."clienteId", "CampanhaLog"."status", "CampanhaLog"."errorMessage", "CampanhaLog"."variant", "CampanhaLog"."sentAt", "CampanhaLog"."convertedAt", "CampanhaLog"."createdAt", "CampanhaLog"."updatedAt", "client"."id" AS "client.id", "client"."name" AS "client.name", "client"."phone" AS "client.phone" FROM "CampanhaLogs" AS "CampanhaLog" LEFT OUTER JOIN "clients" AS "client" ON "CampanhaLog"."clienteId" = "client"."id" WHERE "CampanhaLog"."campanhaId" = '62218125-a119-456d-97de-98e52cc93709' ORDER BY "CampanhaLog"."sentAt" DESC;
+Executing (default): SELECT "variant", COUNT("id") AS "recipients", COUNT("convertedAt") AS "conversions" FROM "CampanhaLogs" AS "CampanhaLog" WHERE "CampanhaLog"."campanhaId" = '62218125-a119-456d-97de-98e52cc93709' GROUP BY "variant";
+Executing (default): SELECT "status", COUNT("status") AS "count" FROM "CampanhaLogs" AS "CampanhaLog" WHERE "CampanhaLog"."campanhaId" = '62218125-a119-456d-97de-98e52cc93709' GROUP BY "status";
+[Auth Middleware] Request: POST /api/campanhas/62218125-a119-456d-97de-98e52cc93709/test
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
-Executing (default): SELECT "Campanha"."id", "Campanha"."tenantId", "Campanha"."nome", "Campanha"."mensagens", "Campanha"."rewardType", "Campanha"."recompensaId", "Campanha"."roletaId", "Campanha"."dataValidade", "Campanha"."criterioSelecao", "Campanha"."status", "Campanha"."startDate", "Campanha"."endDate", "Campanha"."minMessageDelaySeconds", "Campanha"."maxMessageDelaySeconds", "Campanha"."mediaUrl", "Campanha"."createdAt", "Campanha"."updatedAt", "recompensa"."id" AS "recompensa.id", "recompensa"."tenantId" AS "recompensa.tenantId", "recompensa"."name" AS "recompensa.name", "recompensa"."description" AS "recompensa.description", "recompensa"."pointsRequired" AS "recompensa.pointsRequired", "recompensa"."type" AS "recompensa.type", "recompensa"."value" AS "recompensa.value", "recompensa"."imageUrl" AS "recompensa.imageUrl", "recompensa"."active" AS "recompensa.active", "recompensa"."createdAt" AS "recompensa.createdAt", "recompensa"."updatedAt" AS "recompensa.updatedAt" FROM "campanhas" AS "Campanha" LEFT OUTER JOIN "recompensas" AS "recompensa" ON "Campanha"."recompensaId" = "recompensa"."id" WHERE "Campanha"."id" = '5c5cf5e5-57ca-4be1-a47e-ccb2594fee3f' AND "Campanha"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-TypeError: spintax.spin is not a function
-    at CampanhaService._buildPersonalizedMessage (/usr/src/app/src/services/campanhaService.js:131:27)
-    at CampanhaService.sendTest (/usr/src/app/src/services/campanhaService.js:114:38)
+Executing (default): SELECT "Campanha"."id", "Campanha"."tenantId", "Campanha"."nome", "Campanha"."mensagens", "Campanha"."rewardType", "Campanha"."recompensaId", "Campanha"."roletaId", "Campanha"."dataValidade", "Campanha"."criterioSelecao", "Campanha"."status", "Campanha"."startDate", "Campanha"."endDate", "Campanha"."minMessageDelaySeconds", "Campanha"."maxMessageDelaySeconds", "Campanha"."mediaUrl", "Campanha"."createdAt", "Campanha"."updatedAt", "recompensa"."id" AS "recompensa.id", "recompensa"."tenantId" AS "recompensa.tenantId", "recompensa"."name" AS "recompensa.name", "recompensa"."description" AS "recompensa.description", "recompensa"."pointsRequired" AS "recompensa.pointsRequired", "recompensa"."type" AS "recompensa.type", "recompensa"."value" AS "recompensa.value", "recompensa"."imageUrl" AS "recompensa.imageUrl", "recompensa"."active" AS "recompensa.active", "recompensa"."createdAt" AS "recompensa.createdAt", "recompensa"."updatedAt" AS "recompensa.updatedAt" FROM "campanhas" AS "Campanha" LEFT OUTER JOIN "recompensas" AS "recompensa" ON "Campanha"."recompensaId" = "recompensa"."id" WHERE "Campanha"."id" = '62218125-a119-456d-97de-98e52cc93709' AND "Campanha"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsApp Service] Enviando mensagem com mídia de tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd para: 5535998374007@s.whatsapp.net
+[WhatsApp Service] Falha ao enviar mensagem com mídia para o tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd. Número: 5535998374007.
+[WhatsApp Service] Erro detalhado da API: {
+  "status": 400,
+  "error": "Bad Request",
+  "response": {
+    "message": [
+      [
+        "media is not of a type(s) string",
+        "instance requires property \"mediatype\""
+      ]
+    ]
+  }
+}
+AxiosError: Request failed with status code 400
+    at settle (/usr/src/app/node_modules/axios/dist/node/axios.cjs:2097:12)
+    at IncomingMessage.handleStreamEnd (/usr/src/app/node_modules/axios/dist/node/axios.cjs:3305:11)
+    at IncomingMessage.emit (node:events:529:35)
+    at endReadableNT (node:internal/streams/readable:1400:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+    at Axios.request (/usr/src/app/node_modules/axios/dist/node/axios.cjs:4483:41)
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async CampanhaController.sendTest (/usr/src/app/src/controllers/campanhaController.js:143:22)
+    at async Object.sendTenantMediaMessage (/usr/src/app/src/services/whatsappService.js:108:22)
+    at async CampanhaService.sendTest (/usr/src/app/src/services/campanhaService.js:122:7)
+    at async CampanhaController.sendTest (/usr/src/app/src/controllers/campanhaController.js:143:22) {
+  code: 'ERR_BAD_REQUEST',
+  config: {
+    transitional: {
+      silentJSONParsing: true,
+      forcedJSONParsing: true,
+      clarifyTimeoutError: false
+    },
+    adapter: [ 'xhr', 'http', 'fetch' ],
+    transformRequest: [ [Function: transformRequest] ],
+    transformResponse: [ [Function: transformResponse] ],
+    timeout: 0,
+    xsrfCookieName: 'XSRF-TOKEN',
+    xsrfHeaderName: 'X-XSRF-TOKEN',
+    maxContentLength: -1,
+    maxBodyLength: -1,
+    env: { FormData: [Function [FormData]], Blob: [class Blob] },
+    validateStatus: [Function: validateStatus],
+    headers: Object [AxiosHeaders] {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+      apikey: '9df82dcbee60ce08f6ca93aa4024ca6c',
+      'User-Agent': 'axios/1.12.2',
+      'Content-Length': '708',
+      'Accept-Encoding': 'gzip, compress, deflate, br'
+    },
+    method: 'post',
+    url: 'https://evolution2.towersfy.com/message/sendMedia/roma-pizzaria--chopperiaaa',
+    data: '{"number":"5535998374007@s.whatsapp.net","caption":"🍕 Ei, Cliente!\\nOlha o que a Roma preparou pra você! 👀\\n\\nHoje liberamos um cupom especial pra quem pedir pelo delivery 🎁\\n\\nUse o código: QUARTA15\\ne garanta 15% de DESCONTO no seu pedido 😍\\n\\n⚠ Promoção não válida para Combo de Esfihas e Pizzas da Promoção.\\n\\n🕢 Válido a partir das 18h30!\\nAproveita e faz teu pedido antes que acabe ⏰\\n\\n📲 Roma Pizzaria & Chopperia\\n\\nhttps://romapizzaria.saipos.com/home ","media":{"url":"https://apivoltaki.towersfy.com/uploads/campaigns/3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1762622229396.png","mimetype":"image/png","filename":"3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1762622229396.png"}}',
+    allowAbsoluteUrls: true
+  },
+  request: <ref *1> ClientRequest {
+    _events: [Object: null prototype] {
+      abort: [Function (anonymous)],
+      aborted: [Function (anonymous)],
+      connect: [Function (anonymous)],
+      error: [Function (anonymous)],
+      socket: [Function (anonymous)],
+      timeout: [Function (anonymous)],
+      finish: [Function: requestOnFinish]
+    },
+    _eventsCount: 7,
+    _maxListeners: undefined,
+    outputData: [],
+    outputSize: 0,
+    writable: true,
+    destroyed: false,
+    _last: true,
+    chunkedEncoding: false,
+    shouldKeepAlive: false,
+    maxRequestsOnConnectionReached: false,
+    _defaultKeepAlive: true,
+    useChunkedEncodingByDefault: true,
+    sendDate: false,
+    _removedConnection: false,
+    _removedContLen: false,
+    _removedTE: false,
+    strictContentLength: false,
+    _contentLength: '708',
+    _hasBody: true,
+    _trailer: '',
+    finished: true,
+    _headerSent: true,
+    _closed: false,
+    socket: TLSSocket {
+      _tlsOptions: [Object],
+      _secureEstablished: true,
+      _securePending: false,
+      _newSessionPending: false,
+      _controlReleased: true,
+      secureConnecting: false,
+      _SNICallback: null,
+      servername: 'evolution2.towersfy.com',
+      alpnProtocol: false,
+      authorized: true,
+      authorizationError: null,
+      encrypted: true,
+      _events: [Object: null prototype],
+      _eventsCount: 10,
+      connecting: false,
+      _hadError: false,
+      _parent: null,
+      _host: 'evolution2.towersfy.com',
+      _closeAfterHandlingError: false,
+      _readableState: [ReadableState],
+      _maxListeners: undefined,
+      _writableState: [WritableState],
+      allowHalfOpen: false,
+      _sockname: null,
+      _pendingData: null,
+      _pendingEncoding: '',
+      server: undefined,
+      _server: null,
+      ssl: [TLSWrap],
+      _requestCert: true,
+      _rejectUnauthorized: true,
+      parser: null,
+      _httpMessage: [Circular *1],
+      [Symbol(alpncallback)]: null,
+      [Symbol(res)]: [TLSWrap],
+      [Symbol(verified)]: true,
+      [Symbol(pendingSession)]: null,
+      [Symbol(async_id_symbol)]: 1253,
+      [Symbol(kHandle)]: [TLSWrap],
+      [Symbol(lastWriteQueueSize)]: 0,
+      [Symbol(timeout)]: null,
+      [Symbol(kBuffer)]: null,
+      [Symbol(kBufferCb)]: null,
+      [Symbol(kBufferGen)]: null,
+      [Symbol(kCapture)]: false,
+      [Symbol(kSetNoDelay)]: false,
+      [Symbol(kSetKeepAlive)]: true,
+      [Symbol(kSetKeepAliveInitialDelay)]: 60,
+      [Symbol(kBytesRead)]: 0,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(connect-options)]: [Object]
+    },
+    _header: 'POST /message/sendMedia/roma-pizzaria--chopperiaaa HTTP/1.1\r\n' +
+      'Accept: application/json, text/plain, */*\r\n' +
+      'Content-Type: application/json\r\n' +
+      'apikey: 9df82dcbee60ce08f6ca93aa4024ca6c\r\n' +
+      'User-Agent: axios/1.12.2\r\n' +
+      'Content-Length: 708\r\n' +
+      'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+      'Host: evolution2.towersfy.com\r\n' +
+      'Connection: close\r\n' +
+      '\r\n',
+    _keepAliveTimeout: 0,
+    _onPendingData: [Function: nop],
+    agent: Agent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      defaultPort: 443,
+      protocol: 'https:',
+      options: [Object: null prototype],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      maxCachedSessions: 100,
+      _sessionCache: [Object],
+      [Symbol(kCapture)]: false
+    },
+    socketPath: undefined,
+    method: 'POST',
+    maxHeaderSize: undefined,
+    insecureHTTPParser: undefined,
+    joinDuplicateHeaders: undefined,
+    path: '/message/sendMedia/roma-pizzaria--chopperiaaa',
+    _ended: true,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [TLSSocket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      rawHeaders: [Array],
+      rawTrailers: [],
+      joinDuplicateHeaders: undefined,
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 400,
+      statusMessage: 'Bad Request',
+      client: [TLSSocket],
+      _consuming: false,
+      _dumped: false,
+      req: [Circular *1],
+      responseUrl: 'https://evolution2.towersfy.com/message/sendMedia/roma-pizzaria--chopperiaaa',
+      redirects: [],
+      [Symbol(kCapture)]: false,
+      [Symbol(kHeaders)]: [Object],
+      [Symbol(kHeadersCount)]: 16,
+      [Symbol(kTrailers)]: null,
+      [Symbol(kTrailersCount)]: 0
+    },
+    aborted: false,
+    timeoutCb: null,
+    upgradeOrConnect: false,
+    parser: null,
+    maxHeadersCount: null,
+    reusedSocket: false,
+    host: 'evolution2.towersfy.com',
+    protocol: 'https:',
+    _redirectable: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: true,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 708,
+      _requestBodyBuffers: [],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [Circular *1],
+      _currentUrl: 'https://evolution2.towersfy.com/message/sendMedia/roma-pizzaria--chopperiaaa',
+      [Symbol(kCapture)]: false
+    },
+    [Symbol(kCapture)]: false,
+    [Symbol(kBytesWritten)]: 0,
+    [Symbol(kNeedDrain)]: false,
+    [Symbol(corked)]: 0,
+    [Symbol(kOutHeaders)]: [Object: null prototype] {
+      accept: [Array],
+      'content-type': [Array],
+      apikey: [Array],
+      'user-agent': [Array],
+      'content-length': [Array],
+      'accept-encoding': [Array],
+      host: [Array]
+    },
+    [Symbol(errored)]: null,
+    [Symbol(kHighWaterMark)]: 16384,
+    [Symbol(kRejectNonStandardBodyWrites)]: false,
+    [Symbol(kUniqueHeaders)]: null
+  },
+  response: {
+    status: 400,
+    statusText: 'Bad Request',
+    headers: Object [AxiosHeaders] {
+      'access-control-allow-credentials': 'true',
+      'content-length': '141',
+      'content-type': 'application/json; charset=utf-8',
+      date: 'Tue, 11 Nov 2025 18:18:40 GMT',
+      etag: 'W/"8d-/kG44J2/d6RBH+60h7yjhmLAESY"',
+      vary: 'Origin, Accept-Encoding',
+      'x-powered-by': 'Express',
+      connection: 'close'
+    },
+    config: {
+      transitional: [Object],
+      adapter: [Array],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      env: [Object],
+      validateStatus: [Function: validateStatus],
+      headers: [Object [AxiosHeaders]],
+      method: 'post',
+      url: 'https://evolution2.towersfy.com/message/sendMedia/roma-pizzaria--chopperiaaa',
+      data: '{"number":"5535998374007@s.whatsapp.net","caption":"🍕 Ei, Cliente!\\nOlha o que a Roma preparou pra você! 👀\\n\\nHoje liberamos um cupom especial pra quem pedir pelo delivery 🎁\\n\\nUse o código: QUARTA15\\ne garanta 15% de DESCONTO no seu pedido 😍\\n\\n⚠ Promoção não válida para Combo de Esfihas e Pizzas da Promoção.\\n\\n🕢 Válido a partir das 18h30!\\nAproveita e faz teu pedido antes que acabe ⏰\\n\\n📲 Roma Pizzaria & Chopperia\\n\\nhttps://romapizzaria.saipos.com/home ","media":{"url":"https://apivoltaki.towersfy.com/uploads/campaigns/3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1762622229396.png","mimetype":"image/png","filename":"3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1762622229396.png"}}',
+      allowAbsoluteUrls: true
+    },
+    request: <ref *1> ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 7,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      destroyed: false,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      maxRequestsOnConnectionReached: false,
+      _defaultKeepAlive: true,
+      useChunkedEncodingByDefault: true,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      strictContentLength: false,
+      _contentLength: '708',
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      _closed: false,
+      socket: [TLSSocket],
+      _header: 'POST /message/sendMedia/roma-pizzaria--chopperiaaa HTTP/1.1\r\n' +
+        'Accept: application/json, text/plain, */*\r\n' +
+        'Content-Type: application/json\r\n' +
+        'apikey: 9df82dcbee60ce08f6ca93aa4024ca6c\r\n' +
+        'User-Agent: axios/1.12.2\r\n' +
+        'Content-Length: 708\r\n' +
+        'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+        'Host: evolution2.towersfy.com\r\n' +
+        'Connection: close\r\n' +
+        '\r\n',
+      _keepAliveTimeout: 0,
+      _onPendingData: [Function: nop],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'POST',
+      maxHeaderSize: undefined,
+      insecureHTTPParser: undefined,
+      joinDuplicateHeaders: undefined,
+      path: '/message/sendMedia/roma-pizzaria--chopperiaaa',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      host: 'evolution2.towersfy.com',
+      protocol: 'https:',
+      _redirectable: [Writable],
+      [Symbol(kCapture)]: false,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype],
+      [Symbol(errored)]: null,
+      [Symbol(kHighWaterMark)]: 16384,
+      [Symbol(kRejectNonStandardBodyWrites)]: false,
+      [Symbol(kUniqueHeaders)]: null
+    },
+    data: { status: 400, error: 'Bad Request', response: [Object] }
+  },
+  status: 400
+}

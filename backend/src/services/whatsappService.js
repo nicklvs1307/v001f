@@ -108,11 +108,8 @@ const sendTenantMediaMessage = async (tenantId, number, mediaUrl, caption) => {
     const response = await axios.post(`${config.url}/message/sendMedia/${config.instanceName}`, {
       number: finalNumber,
       caption: caption,
-      media: {
-        url: fullMediaUrl,
-        mimetype,
-        filename: fileName,
-      },
+      media: fullMediaUrl, // media as string
+      mediatype: mimetype, // separate mediatype
     }, {
       headers: { 'Content-Type': 'application/json', 'apikey': config.apiKey },
     });
@@ -168,11 +165,8 @@ const sendCampaignMediaMessage = async (sender, number, mediaUrl, caption, delay
     const response = await axios.post(`${sender.apiUrl}/message/sendMedia/${sender.instanceName}`, {
       number: finalNumber,
       caption: caption,
-      media: {
-        url: fullMediaUrl,
-        mimetype,
-        filename: fileName,
-      },
+      media: fullMediaUrl, // media as string
+      mediatype: mimetype, // separate mediatype
     }, {
       headers: { 'Content-Type': 'application/json', 'apikey': sender.apiKey },
     });

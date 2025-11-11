@@ -388,7 +388,7 @@ class CampanhaService {
 
     // 2. Get delivery status summary
     const deliveryStatus = await CampanhaLog.findAll({
-      where: { campanhaId },
+      where: { campanhaId: campaignId },
       attributes: [
         'status',
         [sequelize.fn('COUNT', sequelize.col('status')), 'count'],

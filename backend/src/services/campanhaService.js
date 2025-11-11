@@ -3,7 +3,7 @@ const ApiError = require('../errors/ApiError');
 const { scheduleCampaign, cancelCampaign } = require('../jobs/campaignScheduler');
 const { CampanhaLog, Client, sequelize } = require('../../models');
 const senderPoolService = require('./senderPoolService'); // Import the new service
-const { spin } = require('cnc-spintax'); // Import spintax library
+const spintax = require('cnc-spintax'); // Import spintax library
 
 // Campaign Auto-Pause Control
 const campaignFailureTracker = {}; // In-memory tracker for campaign failures
@@ -128,7 +128,7 @@ class CampanhaService {
   }
 
   _buildPersonalizedMessage(template, client, rewardData = {}) {
-    let message = spin(template); // Process spintax first
+    let message = spintax.spin(template); // Process spintax first
     message = message.replace(/{{nome_cliente}}/g, client.name.split(' ')[0]);
     if (rewardData.codigo) message = message.replace(/{{codigo_premio}}/g, rewardData.codigo);
     if (rewardData.dataValidade) {
@@ -323,7 +323,7 @@ class CampanhaService {
 
   async getCampaignLogs(campaignId) {
     return CampanhaLog.findAll({
-      where: { campanhaId },
+      where: { campanhaId: campaignId },
       include: [{
         model: Client,
         as: 'client',
@@ -335,7 +335,7 @@ class CampanhaService {
 
   async getAbTestResults(campaignId) {
     const results = await CampanhaLog.findAll({
-      where: { campanhaId },
+      where: { campanhaId: campaignId },
       attributes: [
         'variant',
         [sequelize.fn('COUNT', sequelize.col('id')), 'recipients'],

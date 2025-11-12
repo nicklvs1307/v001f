@@ -13,6 +13,7 @@ router.get(
   [
     check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
     check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+    check("surveyId", "ID da pesquisa inválido").optional().isUUID(),
   ],
   validate,
   authorize('dashboard:read'),
@@ -23,6 +24,7 @@ router.get(
   [
     check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
     check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+    check("surveyId", "ID da pesquisa inválido").optional().isUUID(),
   ],
   validate,
   authorize('dashboard:read'),
@@ -33,6 +35,7 @@ router.get(
   [
     check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
     check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+    check("surveyId", "ID da pesquisa inválido").optional().isUUID(),
   ],
   validate,
   authorize('dashboard:read'),
@@ -43,16 +46,18 @@ router.get(
   [
     check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
     check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+    check("surveyId", "ID da pesquisa inválido").optional().isUUID(),
   ],
   validate,
   authorize('dashboard:read'),
-  dashboardController.getNPSCritera
+  dashboardController.getCriteriaScores
 );
 router.get(
   '/recent-feedbacks',
   [
     check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
     check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+    check("surveyId", "ID da pesquisa inválido").optional().isUUID(),
   ],
   validate,
   authorize('dashboard:read'),
@@ -63,6 +68,7 @@ router.get(
   [
     check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
     check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+    check("surveyId", "ID da pesquisa inválido").optional().isUUID(),
   ],
   validate,
   authorize('dashboard:read'),
@@ -73,6 +79,7 @@ router.get(
   [
     check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
     check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+    check("surveyId", "ID da pesquisa inválido").optional().isUUID(),
   ],
   validate,
   authorize('dashboard:read'),
@@ -83,6 +90,9 @@ router.get(
   '/nps-trend',
   [
     check("period", "Período inválido. Use 'day', 'week' ou 'month'.").optional().isIn(['day', 'week', 'month']),
+    check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
+    check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+    check("surveyId", "ID da pesquisa inválido").optional().isUUID(),
   ],
   validate,
   authorize('dashboard:read'),
@@ -103,12 +113,24 @@ router.get(
 
 router.get(
     '/wordcloud',
+    [
+        check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
+        check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+        check("surveyId", "ID da pesquisa inválido").optional().isUUID(),
+    ],
+    validate,
     authorize('dashboard:read'),
     dashboardController.getWordCloud
 );
 
 router.get(
   '/attendants-performance',
+  [
+    check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
+    check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+    check("surveyId", "ID da pesquisa inválido").optional().isUUID(),
+  ],
+  validate,
   authorize('dashboard:read'),
   dashboardController.getAttendantsPerformance
 );
@@ -118,6 +140,7 @@ router.get(
   [
     check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
     check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+    check("surveyId", "ID da pesquisa inválido").optional().isUUID(),
   ],
   validate,
   authorize('dashboard:read'),
@@ -129,6 +152,7 @@ router.get(
     [
         check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
         check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+        check("surveyId", "ID da pesquisa inválido").optional().isUUID(),
     ],
     validate,
     authorize('dashboard:read'),
@@ -140,6 +164,7 @@ router.get(
     [
         check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
         check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+        check("surveyId", "ID da pesquisa inválido").optional().isUUID(),
     ],
     validate,
     authorize('dashboard:read'),
@@ -148,6 +173,9 @@ router.get(
 
 router.get(
     '/response/:sessionId',
+    [
+        check("surveyId", "ID da pesquisa inválido").optional().isUUID(),
+    ],
     validate,
     authorize('dashboard:read'),
     dashboardController.getResponseDetails
@@ -158,6 +186,7 @@ router.get(
   [
     check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
     check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+    check("surveyId", "ID da pesquisa inválido").optional().isUUID(),
   ],
   validate,
   authorize('dashboard:read'),

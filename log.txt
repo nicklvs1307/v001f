@@ -1,6 +1,6 @@
 Postgres is up - executing command
 Server.js is being executed!
-/usr/src/app/src/repositories/dashboardRepository.js:917
+/usr/src/app/src/repositories/dashboardRepository.js:918
                     ratingWhere = { '$pergunta.type
                                     ^^^^^^^^^^^^^^^
 SyntaxError: Invalid or unexpected token

@@ -164,7 +164,7 @@ const getNpsTrendData = async (tenantId = null, period = 'day', startDate = null
             [fn('date_trunc', period, col('Resposta.createdAt')), 'period'],
             [fn('SUM', literal('CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END')), 'promoters'],
             [fn('SUM', literal('CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END')), 'detractors'],
-            [fn('COUNT', col('id')), 'total']
+            [fn('COUNT', col('Resposta.id')), 'total']
         ],
         group: [fn('date_trunc', period, col('Resposta.createdAt'))],
         order: [[fn('date_trunc', period, col('Resposta.createdAt')), 'ASC']]
@@ -214,7 +214,7 @@ const getCsatTrendData = async (tenantId = null, period = 'day', startDate = nul
         attributes: [
             [fn('date_trunc', period, col('Resposta.createdAt')), 'period'],
             [fn('SUM', literal('CASE WHEN "ratingValue" >= 4 THEN 1 ELSE 0 END')), 'satisfied'],
-            [fn('COUNT', col('id')), 'total']
+            [fn('COUNT', col('Resposta.id')), 'total']
         ],
         group: [fn('date_trunc', period, col('Resposta.createdAt'))],
         order: [[fn('date_trunc', period, col('Resposta.createdAt')), 'ASC']]

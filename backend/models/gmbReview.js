@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'GmbReview',
-    tableName: 'gmb_reviews',
+    tableName: 'gmbReviews',
     timestamps: true,
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'

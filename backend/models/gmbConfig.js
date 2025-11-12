@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'GmbConfig',
-    tableName: 'gmb_configs',
+    tableName: 'gmbConfigs',
     timestamps: true,
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'

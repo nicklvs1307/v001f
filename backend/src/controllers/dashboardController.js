@@ -58,6 +58,13 @@ const dashboardController = {
         res.status(200).json(trendData);
     }),
 
+    getEvolutionDashboard: asyncHandler(async (req, res) => {
+        const tenantId = req.user.role === 'Super Admin' ? null : req.user.tenantId;
+        const { period, startDate, endDate } = req.query;
+        const evolutionData = await dashboardRepository.getEvolutionDashboard(tenantId, period, startDate, endDate);
+        res.status(200).json(evolutionData);
+    }),
+
     getNpsByDayOfWeek: asyncHandler(async (req, res) => {
         const tenantId = req.user.role === 'Super Admin' ? null : req.user.tenantId;
         const npsByDayOfWeek = await dashboardRepository.getNpsByDayOfWeek(tenantId);

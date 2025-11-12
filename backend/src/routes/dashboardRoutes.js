@@ -90,6 +90,18 @@ router.get(
 );
 
 router.get(
+    '/evolution',
+    [
+        check("period", "Período inválido. Use 'day', 'week' ou 'month'.").optional().isIn(['day', 'week', 'month']),
+        check("startDate", "Data de início inválida").optional().isISO8601().toDate(),
+        check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+    ],
+    validate,
+    authorize('dashboard:read'),
+    dashboardController.getEvolutionDashboard
+);
+
+router.get(
     '/wordcloud',
     authorize('dashboard:read'),
     dashboardController.getWordCloud

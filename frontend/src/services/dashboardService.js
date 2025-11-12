@@ -35,6 +35,11 @@ const dashboardService = {
         const response = await apiAuthenticated.get('/dashboard/wordcloud', { params });
         return response.data;
     },
+
+    getEvolutionDashboard: async (params) => {
+        const response = await apiAuthenticated.get('/dashboard/evolution', { params });
+        return response.data;
+    },
 };
 
 export default dashboardService;

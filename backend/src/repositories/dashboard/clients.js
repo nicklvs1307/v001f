@@ -12,11 +12,11 @@ const getBirthdaysOfMonth = async (tenantId = null) => {
                 [Op.ne]: null,
             },
             [Op.and]: [
-                Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('birthDate')), currentMonth),
+                Sequelize.where(Sequelize.fn('EXTRACT', Sequelize.literal('MONTH FROM "birthDate"')), currentMonth),
             ],
         },
         attributes: ['id', 'name', 'birthDate'],
-        order: [[Sequelize.fn('DAY', Sequelize.col('birthDate')), 'ASC']],
+        order: [[Sequelize.fn('EXTRACT', Sequelize.literal('DAY FROM "birthDate"')), 'ASC']],
     });
 
     return birthdays.map(client => ({

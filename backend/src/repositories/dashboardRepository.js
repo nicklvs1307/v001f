@@ -899,6 +899,7 @@ const dashboardRepository = {
     
             return result;
         },
+    
         getDetailsByCategory: async (tenantId, category, startDate, endDate) => {
             const whereClause = tenantId ? { tenantId } : {};
             const dateFilter = {};

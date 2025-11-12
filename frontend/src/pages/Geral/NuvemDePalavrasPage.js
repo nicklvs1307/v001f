@@ -73,13 +73,14 @@ const NuvemDePalavrasPage = () => {
 
     const wordCloudOptions = useMemo(() => ({
         colors: [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.dark.main],
-        rotations: 2,
-        rotationAngles: [0, 90],
+        rotations: 3,
+        rotationAngles: [-45, 0, 45],
         fontWeight: 'bold',
-        padding: 1,
-        fontSizes: [15, 90],
+        padding: 2,
+        fontSizes: [20, 120],
         fontFamily: theme.typography.fontFamily,
-        spiral: 'rectangular',
+        scale: 'sqrt',
+        spiral: 'archimedean',
         enableOptimizations: true,
     }), [theme]);
 
@@ -147,7 +148,7 @@ const NuvemDePalavrasPage = () => {
                     ) : Array.isArray(words) && words.length > 0 ? (
                         <ResponsiveContainer width="100%" height="100%">
                             <WordCloud 
-                                words={words} 
+                                words={words.slice(0, 75)} 
                                 options={wordCloudOptions}
                             />
                         </ResponsiveContainer>

@@ -8,11 +8,16 @@ import {
     TextField,
     Grid,
     Container,
-    useTheme
+    useTheme,
+    Select,
+    MenuItem,
+    FormControl,
+    InputLabel
 } from '@mui/material';
 import { WordCloud } from '@isoterik/react-word-cloud';
 import { ResponsiveContainer } from 'recharts';
 import dashboardService from '../../services/dashboardService';
+import surveyService from '../../services/surveyService';
 import { startOfMonth, endOfMonth, format } from 'date-fns';
 import useDebounce from '../../hooks/useDebounce';
 
@@ -22,16 +27,36 @@ const NuvemDePalavrasPage = () => {
     const [error, setError] = useState(null);
     const [startDate, setStartDate] = useState(format(startOfMonth(new Date()), 'yyyy-MM-dd'));
     const [endDate, setEndDate] = useState(format(endOfMonth(new Date()), 'yyyy-MM-dd'));
+    const [surveys, setSurveys] = useState([]);
+    const [selectedSurveyId, setSelectedSurveyId] = useState('');
 
     const debouncedStartDate = useDebounce(startDate, 500);
     const debouncedEndDate = useDebounce(endDate, 500);
 
     const theme = useTheme();
 
+    useEffect(() => {
+        const fetchSurveys = async () => {
+            try {
+                const fetchedSurveys = await surveyService.getSurveysList();
+                setSurveys(fetchedSurveys);
+            } catch (error) {
+                console.error("Error fetching surveys", error);
+            }
+        };
+
+        fetchSurveys();
+    }, []);
+
     const fetchWordCloudData = useCallback(async () => {
         try {
             setLoading(true);
-            const data = await dashboardService.getWordCloudData({ startDate: debouncedStartDate, endDate: debouncedEndDate });
+            const params = { 
+                startDate: debouncedStartDate, 
+                endDate: debouncedEndDate,
+                surveyId: selectedSurveyId || null
+            };
+            const data = await dashboardService.getWordCloudData(params);
             setWords(Array.isArray(data) ? data : []);
             setError(null);
         } catch (err) {
@@ -40,7 +65,7 @@ const NuvemDePalavrasPage = () => {
         } finally {
             setLoading(false);
         }
-    }, [debouncedStartDate, debouncedEndDate]);
+    }, [debouncedStartDate, debouncedEndDate, selectedSurveyId]);
 
     useEffect(() => {
         fetchWordCloudData();
@@ -51,53 +76,72 @@ const NuvemDePalavrasPage = () => {
         rotations: 2,
         rotationAngles: [0, 90],
         fontWeight: 'bold',
-        padding: 0,
-        fontSizes: [10, 80],
+        padding: 1,
+        fontSizes: [15, 90],
         fontFamily: theme.typography.fontFamily,
         spiral: 'rectangular',
         enableOptimizations: true,
     }), [theme]);
 
     return (
-        <Container maxWidth="lg">
-            <Box sx={{ my: 4 }}>
-                <Typography variant="h4" component="h1" gutterBottom>
-                    Nuvem de Palavras
-                </Typography>
-                <Typography variant="subtitle1" gutterBottom>
-                    Visualize as palavras mais frequentes nos feedbacks dos seus clientes.
-                </Typography>
-            </Box>
-            
-            <Grid container spacing={2} sx={{ mb: 3 }}>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        label="Data de Início"
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        label="Data de Fim"
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                    />
-                </Grid>
-            </Grid>
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Card sx={{ mb: 3, p: 2 }}>
+                <CardContent>
+                    <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
+                        Nuvem de Palavras
+                    </Typography>
+                    <Typography variant="subtitle1" gutterBottom>
+                        Visualize as palavras mais frequentes nos feedbacks dos seus clientes.
+                    </Typography>
+                    <Grid container spacing={2} sx={{ mt: 2 }}>
+                        <Grid item xs={12} sm={4}>
+                            <TextField
+                                label="Data de Início"
+                                type="date"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                InputLabelProps={{ shrink: true }}
+                                fullWidth
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <TextField
+                                label="Data de Fim"
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                InputLabelProps={{ shrink: true }}
+                                fullWidth
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                            <FormControl fullWidth>
+                                <InputLabel id="survey-select-label">Filtrar por Pesquisa</InputLabel>
+                                <Select
+                                    labelId="survey-select-label"
+                                    value={selectedSurveyId}
+                                    label="Filtrar por Pesquisa"
+                                    onChange={(e) => setSelectedSurveyId(e.target.value)}
+                                >
+                                    <MenuItem value="">
+                                        <em>Todas as Pesquisas</em>
+                                    </MenuItem>
+                                    {surveys.map((survey) => (
+                                        <MenuItem key={survey.id} value={survey.id}>
+                                            {survey.title || 'Pesquisa Sem Título'}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                    </Grid>
+                </CardContent>
+            </Card>
 
             <Card>
-                <CardContent sx={{ height: 500, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <CardContent sx={{ height: 600, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     {loading ? (
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                            <CircularProgress />
-                        </Box>
+                        <CircularProgress />
                     ) : error ? (
                         <Typography color="error">{error}</Typography>
                     ) : Array.isArray(words) && words.length > 0 ? (
@@ -108,9 +152,7 @@ const NuvemDePalavrasPage = () => {
                             />
                         </ResponsiveContainer>
                     ) : (
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                            <Typography>Nenhuma palavra encontrada para o período selecionado.</Typography>
-                        </Box>
+                        <Typography>Nenhuma palavra encontrada para o período selecionado.</Typography>
                     )}
                 </CardContent>
             </Card>

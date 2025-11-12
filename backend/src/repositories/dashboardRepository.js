@@ -650,7 +650,7 @@ const dashboardRepository = {
             .slice(0, 100);
     },
 
-        getNpsTrendData: async (tenantId = null, period = 'day', startDate = null, endDate = null, surveyId = null) => {
+    getNpsTrendData: async (tenantId = null, period = 'day', startDate = null, endDate = null, surveyId = null) => {
         const whereClause = tenantId ? { tenantId, ratingValue: { [Op.ne]: null } } : { ratingValue: { [Op.ne]: null } };
         if (surveyId) {
             whereClause.pesquisaId = surveyId;
@@ -833,73 +833,88 @@ const dashboardRepository = {
 
         return Object.values(evolutionData).sort((a, b) => new Date(a.period.split('/').reverse().join('-')) - new Date(b.period.split('/').reverse().join('-')));
     },
-
-    getNpsByDayOfWeek: async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
-        const whereClause = tenantId ? { tenantId, ratingValue: { [Op.ne]: null } } : { ratingValue: { [Op.ne]: null } };
-        if (surveyId) {
-            whereClause.pesquisaId = surveyId;
-        }
-        const dateFilter = {};
-        if (startDate) dateFilter[Op.gte] = startDate;
-        if (endDate) dateFilter[Op.lte] = endDate;
-
-        if (Object.keys(dateFilter).length > 0) {
-            whereClause.createdAt = dateFilter;
-        }
-
-        const responses = await Resposta.findAll({
-            where: whereClause,
-            include: [{
-                model: Pergunta,
-                as: 'pergunta',
-                attributes: ['type'],
-                where: {
-                    type: 'rating_0_10'
-                },
-                required: true
-            }],
-            attributes: ['createdAt', 'ratingValue']
-        });
-
-        const npsByDay = {
-            'Domingo': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
-            'Segunda-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
-            'Terça-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
-            'Quarta-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
-            'Quinta-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
-            'Sexta-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
-            'Sábado': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
-        };
-
-        const daysOfWeek = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
-
-        responses.forEach(response => {
-            const dayOfWeek = new Date(response.createdAt).getDay(); // 0 for Sunday, 6 for Saturday
-            const dayName = daysOfWeek[dayOfWeek];
-
-            const classification = ratingService.classifyNPS(response.ratingValue);
-
-            if (classification) {
-                npsByDay[dayName].total++;
-                if (classification === 'promoter') npsByDay[dayName].promoters++;
-                else if (classification === 'neutral') npsByDay[dayName].neutrals++;
-                else if (classification === 'detractor') npsByDay[dayName].detractors++;
+        getNpsByDayOfWeek: async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
+            const whereClause = tenantId ? { tenantId, ratingValue: { [Op.ne]: null } } : { ratingValue: { [Op.ne]: null } };
+            if (surveyId) {
+                whereClause.pesquisaId = surveyId;
             }
-        });
-
-        const result = Object.entries(npsByDay).map(([day, counts]) => {
-            let npsScore = 0;
-            if (counts.total > 0) {
-                npsScore = ((counts.promoters / counts.total) * 100) - ((counts.detractors / counts.total) * 100);
+            const dateFilter = {};
+            if (startDate) dateFilter[Op.gte] = startDate;
+            if (endDate) dateFilter[Op.lte] = endDate;
+    
+            if (Object.keys(dateFilter).length > 0) {
+                whereClause.createdAt = dateFilter;
             }
-            return {
-                day,
-                nps: parseFloat(npsScore.toFixed(1)),
+    
+            const responses = await Resposta.findAll({
+                where: whereClause,
+                include: [{
+                    model: Pergunta,
+                    as: 'pergunta',
+                    attributes: ['type'],
+                    where: {
+                        type: 'rating_0_10'
+                    },
+                    required: true
+                }],
+                attributes: ['createdAt', 'ratingValue']
+            });
+    
+            const npsByDay = {
+                'Domingo': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+                'Segunda-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+                'Terça-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+                'Quarta-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+                'Quinta-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+                'Sexta-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+                'Sábado': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
             };
-        });
-
-        return result;
-    },
+    
+            const daysOfWeek = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+    
+            responses.forEach(response => {
+                const dayOfWeek = new Date(response.createdAt).getDay(); // 0 for Sunday, 6 for Saturday
+                const dayName = daysOfWeek[dayOfWeek];
+    
+                const classification = ratingService.classifyNPS(response.ratingValue);
+    
+                if (classification) {
+                    npsByDay[dayName].total++;
+                    if (classification === 'promoter') npsByDay[dayName].promoters++;
+                    else if (classification === 'neutral') npsByDay[dayName].neutrals++;
+                    else if (classification === 'detractor') npsByDay[dayName].detractors++;
+                }
+            });
+    
+            const result = Object.entries(npsByDay).map(([day, counts]) => {
+                let npsScore = 0;
+                if (counts.total > 0) {
+                    npsScore = ((counts.promoters / counts.total) * 100) - ((counts.detractors / counts.total) * 100);
+                }
+                return {
+                    day,
+                    nps: parseFloat(npsScore.toFixed(1)),
+                };
+            });
+    
+            return result;
+        },
+        getDetailsByCategory: async (tenantId, category, startDate, endDate) => {
+            const whereClause = tenantId ? { tenantId } : {};
+            const dateFilter = {};
+            if (startDate) dateFilter[Op.gte] = startDate;
+            if (endDate) dateFilter[Op.lte] = endDate;
+    
+            if (Object.keys(dateFilter).length > 0) {
+                whereClause.createdAt = dateFilter;
+            }
+    
+            const categoryLower = category.toLowerCase();
+            let ratingWhere = {};
+    
+            switch (categoryLower) {
+                case 'promotores':
+                    ratingWhere = { '$pergunta.type
     getAttendantsPerformanceWithGoals: async (tenantId = null, startDate = null, endDate = null) => {
         const whereClause = tenantId ? { tenantId } : {};
 
@@ -1197,11 +1212,11 @@ const dashboardRepository = {
         const responsesByHour = await Resposta.findAll({
             where: whereClause,
             attributes: [
-                [fn('EXTRACT', literal('HOUR FROM "Resposta"."createdAt"')), 'hour'],
+                [fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'hour'],
                 [fn('COUNT', col('id')), 'count']
             ],
-            group: [fn('EXTRACT', literal('HOUR FROM "Resposta"."createdAt"'))],
-            order: [[fn('EXTRACT', literal('HOUR FROM "Resposta"."createdAt"')), 'ASC']]
+            group: [fn('EXTRACT', literal('HOUR FROM "createdAt"'))],
+            order: [[fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'ASC']]
         });
         
         const peakHours = responsesByHour.map(item => ({
@@ -1213,11 +1228,11 @@ const dashboardRepository = {
         const responsesByWeekday = await Resposta.findAll({
             where: whereClause,
             attributes: [
-                [fn('EXTRACT', literal('ISODOW FROM "Resposta"."createdAt"')), 'weekday'], // 1=Monday, 7=Sunday
+                [fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'weekday'], // 1=Monday, 7=Sunday
                 [fn('COUNT', col('id')), 'count']
             ],
-            group: [fn('EXTRACT', literal('ISODOW FROM "Resposta"."createdAt"'))],
-            order: [[fn('EXTRACT', literal('ISODOW FROM "Resposta"."createdAt"')), 'ASC']]
+            group: [fn('EXTRACT', literal('ISODOW FROM "createdAt"'))],
+            order: [[fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'ASC']]
         });
 
         const weekdays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
@@ -1265,7 +1280,2577 @@ const dashboardRepository = {
 
         const summary = await this.getSummary(tenantId, startDate, endDate, surveyId);
         const responseChart = await this.getResponseChart(tenantId, startDate, endDate, surveyId);
-        const attendantsPerformance = await this.getAttendantsPerformanceWithGoals(tenantId, startDate, endDate, surveyId);
+        const attendantsPerformance = await this.getAttendantsPerformanceWithGoals(tenantId, startDate, endDate);
+        const criteriaScores = await this.getCriteriaScores(tenantId, startDate, endDate, surveyId);
+        const feedbacks = await this.getFeedbacks(tenantId, startDate, endDate, surveyId);
+        const conversionChart = await this.getConversionChart(tenantId, startDate, endDate, surveyId);
+        const npsByDayOfWeek = await this.getNpsByDayOfWeek(tenantId, startDate, endDate, surveyId);
+        const npsTrend = await this.getNpsTrendData(tenantId, npsTrendPeriod, startDate, endDate, surveyId);
+        const overallResults = await this.getOverallResults(tenantId, startDate, endDate, surveyId);
+
+
+        return {
+            summary,
+            responseChart,
+            attendantsPerformance,
+            criteriaScores,
+            feedbacks,
+            conversionChart,
+            npsByDayOfWeek,
+            npsTrend,
+            overallResults,
+        };
+    },
+};
+
+module.exports = dashboardRepository;
+: 'rating_0_10', ratingValue: { [Op.gte]: 9 } };
+                    break;
+                case 'neutros': // NPS Neutral
+                    ratingWhere = { '$pergunta.type
+    getAttendantsPerformanceWithGoals: async (tenantId = null, startDate = null, endDate = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const allResponses = await Resposta.findAll({
+            where: { ...whereClause, ratingValue: { [Op.ne]: null } },
+            include: [
+                {
+                    model: Pergunta,
+                    as: 'pergunta',
+                    attributes: ['type'],
+                },
+                {
+                    model: Client,
+                    as: 'client',
+                    attributes: ['id'],
+                },
+                {
+                    model: Atendente,
+                    as: 'atendente',
+                    attributes: ['id', 'name'],
+                }
+            ]
+        });
+
+        const attendantPerformance = allResponses.reduce((acc, response) => {
+            if (response.atendente && response.atendente.id) {
+                const attendantId = response.atendente.id;
+                if (!acc[attendantId]) {
+                    acc[attendantId] = {
+                        id: attendantId,
+                        name: response.atendente.name,
+                        responses: [],
+                        uniqueClients: new Set(),
+                    };
+                }
+                acc[attendantId].responses.push(response);
+                if (response.client && response.client.id) {
+                    acc[attendantId].uniqueClients.add(response.client.id);
+                }
+            }
+            return acc;
+        }, {});
+
+        const attendantsWithPerformance = [];
+        for (const attendantStats of Object.values(attendantPerformance)) {
+            const npsResult = ratingService.calculateNPS(attendantStats.responses);
+            const csatResult = ratingService.calculateCSAT(attendantStats.responses);
+            const meta = await AtendenteMeta.findOne({
+                where: { atendenteId: attendantStats.id, tenantId: tenantId },
+            });
+
+            attendantsWithPerformance.push({
+                id: attendantStats.id,
+                name: attendantStats.name,
+                responses: attendantStats.responses.length,
+                currentNPS: npsResult.npsScore,
+                currentCSAT: csatResult.averageScore,
+                currentRegistrations: attendantStats.uniqueClients.size,
+                npsGoal: meta ? meta.npsGoal || 0 : 0,
+                csatGoal: meta ? meta.csatGoal || 0 : 0, // Assuming a csatGoal might exist
+                responsesGoal: meta ? meta.responsesGoal || 0 : 0,
+                registrationsGoal: meta ? meta.registrationsGoal || 0 : 0,
+            });
+        }
+
+        return attendantsWithPerformance;
+    },
+    getBirthdaysOfMonth: async (tenantId = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
+
+        const birthdays = await Client.findAll({
+            where: {
+                ...whereClause,
+                birthDate: {
+                    [Op.ne]: null,
+                },
+                [Op.and]: [
+                    Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('birthDate')), currentMonth),
+                ],
+            },
+            attributes: ['id', 'name', 'birthDate'],
+            order: [[Sequelize.fn('DAY', Sequelize.col('birthDate')), 'ASC']],
+        });
+
+        return birthdays.map(client => ({
+            id: client.id,
+            name: client.name,
+            birthDate: client.birthDate,
+            day: new Date(client.birthDate).getDate(),
+        }));
+    },
+    getDetailsByCategory: async (tenantId, category, startDate, endDate) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const categoryLower = category.toLowerCase();
+        let ratingWhere = {};
+
+        switch (categoryLower) {
+            case 'promotores':
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.gte]: 9 } };
+                break;
+            case 'neutros': // NPS Neutral
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.between]: [7, 8] } };
+                break;
+            case 'detratores':
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.lte]: 6 } };
+                break;
+            case 'satisfeitos': // CSAT Satisfied
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.gte]: 4 } };
+                break;
+            case 'neutros-csat': // CSAT Neutral
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.eq]: 3 } };
+                break;
+            case 'insatisfeitos': // CSAT Unsatisfied
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.lte]: 2 } };
+                break;
+            case 'cadastros':
+                return await Client.findAll({ where: whereClause, order: [['createdAt', 'DESC']] });
+            case 'cupons gerados':
+                return await Cupom.findAll({ where: whereClause, include: [{ model: Client, as: 'client', attributes: ['name'] }], order: [['createdAt', 'DESC']] });
+            case 'cupons utilizados':
+                const usedWhere = { ...whereClause, status: 'used' };
+                if (whereClause.createdAt) {
+                    usedWhere.updatedAt = whereClause.createdAt;
+                    delete usedWhere.createdAt;
+                }
+                return await Cupom.findAll({ where: usedWhere, include: [{ model: Client, as: 'client', attributes: ['name'] }], order: [['updatedAt', 'DESC']] });
+            default:
+                return [];
+        }
+
+        if (Object.keys(ratingWhere).length > 0) {
+            return await Resposta.findAll({
+                where: { ...whereClause, ...ratingWhere },
+                include: [
+                    { model: Client, as: 'client', attributes: ['name'] },
+                    { model: Pergunta, as: 'pergunta', attributes: ['text', 'type'] }
+                ],
+                order: [['createdAt', 'DESC']],
+            });
+        }
+
+        return [];
+    },
+
+    getAttendantDetailsById: async (tenantId, attendantId, startDate, endDate) => {
+        const whereClause = { atendenteId: attendantId };
+        if (tenantId) {
+            whereClause.tenantId = tenantId;
+        }
+
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const responses = await Resposta.findAll({
+            where: whereClause,
+            include: [
+                { model: Client, as: 'client', attributes: ['name'] },
+                { 
+                    model: Pergunta, 
+                    as: 'pergunta', 
+                    attributes: ['text', 'type']
+                }
+            ],
+            order: [['createdAt', 'DESC']],
+        });
+
+        const ratingResponses = responses.filter(r => r.ratingValue !== null && r.pergunta && r.pergunta.type.startsWith('rating'));
+
+        const npsResult = ratingService.calculateNPS(ratingResponses);
+        const csatResult = ratingService.calculateCSAT(ratingResponses);
+        const attendant = await Atendente.findByPk(attendantId, { attributes: ['name'] });
+
+        return {
+            attendantName: attendant ? attendant.name : 'Desconhecido',
+            nps: npsResult,
+            csat: csatResult,
+            totalResponses: responses.length,
+            responses,
+        };
+    },
+
+    getResponseDetailsBySessionId: async (tenantId, sessionId) => {
+        const whereClause = { respondentSessionId: sessionId };
+        if (tenantId) {
+            whereClause.tenantId = tenantId;
+        }
+
+        const responses = await Resposta.findAll({
+            where: whereClause,
+            include: [
+                { model: Client, as: 'client', attributes: ['name'] },
+                { model: Pergunta, as: 'pergunta', attributes: ['text'] }
+            ],
+            order: [['createdAt', 'ASC']],
+        });
+
+        return responses;
+    },
+
+    getMonthSummary: async (tenantId = null, startDate = null, endDate = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = new Date(startDate);
+        if (endDate) dateFilter[Op.lte] = new Date(endDate);
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const npsResponses = await Resposta.findAll({
+            where: {
+                ...whereClause,
+                ratingValue: { [Op.ne]: null }
+            },
+            include: [{
+                model: Pergunta,
+                as: 'pergunta',
+                attributes: ['type'],
+                where: { type: 'rating_0_10' },
+                required: true
+            }, {
+                model: Client,
+                as: 'client',
+                attributes: ['id'] // We only need to check for its existence
+            }],
+            attributes: ['id', 'ratingValue', 'createdAt'],
+            order: [['createdAt', 'ASC']]
+        });
+
+        // 1. Daily distribution and NPS
+        const dailyData = {};
+        let accumulatedPromoters = 0;
+        let accumulatedNeutrals = 0;
+        let accumulatedDetractors = 0;
+        let accumulatedTotal = 0;
+
+        npsResponses.forEach(response => {
+            const day = response.createdAt.toISOString().split('T')[0];
+            if (!dailyData[day]) {
+                dailyData[day] = { promoters: 0, neutrals: 0, detractors: 0, total: 0 };
+            }
+
+            const classification = ratingService.classifyNPS(response.ratingValue);
+            if (classification) {
+                dailyData[day][`${classification}s`]++;
+                dailyData[day].total++;
+            }
+        });
+
+        const dailyNps = Object.keys(dailyData).map(day => {
+            const dayData = dailyData[day];
+            const totalDaily = dayData.total;
+            const npsScore = totalDaily > 0 ? ((dayData.promoters / totalDaily) * 100) - ((dayData.detractors / totalDaily) * 100) : 0;
+            
+            accumulatedPromoters += dayData.promoters;
+            accumulatedNeutrals += dayData.neutrals;
+            accumulatedDetractors += dayData.detractors;
+            accumulatedTotal += dayData.total;
+            
+            const accumulatedNps = accumulatedTotal > 0 ? ((accumulatedPromoters / accumulatedTotal) * 100) - ((accumulatedDetractors / accumulatedTotal) * 100) : 0;
+
+            return {
+                date: day,
+                promoters: dayData.promoters,
+                neutrals: dayData.neutrals,
+                detractors: dayData.detractors,
+                nps: parseFloat(npsScore.toFixed(1)),
+                accumulatedNps: parseFloat(accumulatedNps.toFixed(1))
+            };
+        });
+
+        // 2. Peak response times
+        const responsesByHour = await Resposta.findAll({
+            where: whereClause,
+            attributes: [
+                [fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'hour'],
+                [fn('COUNT', col('id')), 'count']
+            ],
+            group: [fn('EXTRACT', literal('HOUR FROM "createdAt"'))],
+            order: [[fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'ASC']]
+        });
+        
+        const peakHours = responsesByHour.map(item => ({
+            hour: parseInt(item.dataValues.hour),
+            count: parseInt(item.dataValues.count)
+        }));
+
+        // 3. Distribution by day of the week
+        const responsesByWeekday = await Resposta.findAll({
+            where: whereClause,
+            attributes: [
+                [fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'weekday'], // 1=Monday, 7=Sunday
+                [fn('COUNT', col('id')), 'count']
+            ],
+            group: [fn('EXTRACT', literal('ISODOW FROM "createdAt"'))],
+            order: [[fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'ASC']]
+        });
+
+        const weekdays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+        const weekdayDistribution = responsesByWeekday.map(item => ({
+            day: weekdays[parseInt(item.dataValues.weekday) - 1],
+            count: parseInt(item.dataValues.count)
+        }));
+
+        // 4. Total responses
+        const totalResponses = await Resposta.count({ where: whereClause });
+
+        // 5. Registered vs. Unregistered
+        const registeredResponses = npsResponses.filter(r => r.client).length;
+        const unregisteredResponses = npsResponses.length - registeredResponses;
+        const clientProportion = {
+            registered: registeredResponses,
+            unregistered: unregisteredResponses,
+            total: npsResponses.length
+        };
+
+        return {
+            dailyNps,
+            peakHours,
+            weekdayDistribution,
+            totalResponses,
+            clientProportion
+        };
+    },
+
+    getMainDashboard: async function (tenantId = null, startDate = null, endDate = null, surveyId = null) {
+        // Ensure startDate and endDate are Date objects for calculations
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+
+        let npsTrendPeriod = 'day';
+        if (start && end) {
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays > 90) {
+                npsTrendPeriod = 'month';
+            } else if (diffDays > 31) {
+                npsTrendPeriod = 'week';
+            }
+        }
+
+        const summary = await this.getSummary(tenantId, startDate, endDate, surveyId);
+        const responseChart = await this.getResponseChart(tenantId, startDate, endDate, surveyId);
+        const attendantsPerformance = await this.getAttendantsPerformanceWithGoals(tenantId, startDate, endDate);
+        const criteriaScores = await this.getCriteriaScores(tenantId, startDate, endDate, surveyId);
+        const feedbacks = await this.getFeedbacks(tenantId, startDate, endDate, surveyId);
+        const conversionChart = await this.getConversionChart(tenantId, startDate, endDate, surveyId);
+        const npsByDayOfWeek = await this.getNpsByDayOfWeek(tenantId, startDate, endDate, surveyId);
+        const npsTrend = await this.getNpsTrendData(tenantId, npsTrendPeriod, startDate, endDate, surveyId);
+        const overallResults = await this.getOverallResults(tenantId, startDate, endDate, surveyId);
+
+
+        return {
+            summary,
+            responseChart,
+            attendantsPerformance,
+            criteriaScores,
+            feedbacks,
+            conversionChart,
+            npsByDayOfWeek,
+            npsTrend,
+            overallResults,
+        };
+    },
+};
+
+module.exports = dashboardRepository;
+: 'rating_0_10', ratingValue: { [Op.between]: [7, 8] } };
+                    break;
+                case 'detratores':
+                    ratingWhere = { '$pergunta.type
+    getAttendantsPerformanceWithGoals: async (tenantId = null, startDate = null, endDate = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const allResponses = await Resposta.findAll({
+            where: { ...whereClause, ratingValue: { [Op.ne]: null } },
+            include: [
+                {
+                    model: Pergunta,
+                    as: 'pergunta',
+                    attributes: ['type'],
+                },
+                {
+                    model: Client,
+                    as: 'client',
+                    attributes: ['id'],
+                },
+                {
+                    model: Atendente,
+                    as: 'atendente',
+                    attributes: ['id', 'name'],
+                }
+            ]
+        });
+
+        const attendantPerformance = allResponses.reduce((acc, response) => {
+            if (response.atendente && response.atendente.id) {
+                const attendantId = response.atendente.id;
+                if (!acc[attendantId]) {
+                    acc[attendantId] = {
+                        id: attendantId,
+                        name: response.atendente.name,
+                        responses: [],
+                        uniqueClients: new Set(),
+                    };
+                }
+                acc[attendantId].responses.push(response);
+                if (response.client && response.client.id) {
+                    acc[attendantId].uniqueClients.add(response.client.id);
+                }
+            }
+            return acc;
+        }, {});
+
+        const attendantsWithPerformance = [];
+        for (const attendantStats of Object.values(attendantPerformance)) {
+            const npsResult = ratingService.calculateNPS(attendantStats.responses);
+            const csatResult = ratingService.calculateCSAT(attendantStats.responses);
+            const meta = await AtendenteMeta.findOne({
+                where: { atendenteId: attendantStats.id, tenantId: tenantId },
+            });
+
+            attendantsWithPerformance.push({
+                id: attendantStats.id,
+                name: attendantStats.name,
+                responses: attendantStats.responses.length,
+                currentNPS: npsResult.npsScore,
+                currentCSAT: csatResult.averageScore,
+                currentRegistrations: attendantStats.uniqueClients.size,
+                npsGoal: meta ? meta.npsGoal || 0 : 0,
+                csatGoal: meta ? meta.csatGoal || 0 : 0, // Assuming a csatGoal might exist
+                responsesGoal: meta ? meta.responsesGoal || 0 : 0,
+                registrationsGoal: meta ? meta.registrationsGoal || 0 : 0,
+            });
+        }
+
+        return attendantsWithPerformance;
+    },
+    getBirthdaysOfMonth: async (tenantId = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
+
+        const birthdays = await Client.findAll({
+            where: {
+                ...whereClause,
+                birthDate: {
+                    [Op.ne]: null,
+                },
+                [Op.and]: [
+                    Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('birthDate')), currentMonth),
+                ],
+            },
+            attributes: ['id', 'name', 'birthDate'],
+            order: [[Sequelize.fn('DAY', Sequelize.col('birthDate')), 'ASC']],
+        });
+
+        return birthdays.map(client => ({
+            id: client.id,
+            name: client.name,
+            birthDate: client.birthDate,
+            day: new Date(client.birthDate).getDate(),
+        }));
+    },
+    getDetailsByCategory: async (tenantId, category, startDate, endDate) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const categoryLower = category.toLowerCase();
+        let ratingWhere = {};
+
+        switch (categoryLower) {
+            case 'promotores':
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.gte]: 9 } };
+                break;
+            case 'neutros': // NPS Neutral
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.between]: [7, 8] } };
+                break;
+            case 'detratores':
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.lte]: 6 } };
+                break;
+            case 'satisfeitos': // CSAT Satisfied
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.gte]: 4 } };
+                break;
+            case 'neutros-csat': // CSAT Neutral
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.eq]: 3 } };
+                break;
+            case 'insatisfeitos': // CSAT Unsatisfied
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.lte]: 2 } };
+                break;
+            case 'cadastros':
+                return await Client.findAll({ where: whereClause, order: [['createdAt', 'DESC']] });
+            case 'cupons gerados':
+                return await Cupom.findAll({ where: whereClause, include: [{ model: Client, as: 'client', attributes: ['name'] }], order: [['createdAt', 'DESC']] });
+            case 'cupons utilizados':
+                const usedWhere = { ...whereClause, status: 'used' };
+                if (whereClause.createdAt) {
+                    usedWhere.updatedAt = whereClause.createdAt;
+                    delete usedWhere.createdAt;
+                }
+                return await Cupom.findAll({ where: usedWhere, include: [{ model: Client, as: 'client', attributes: ['name'] }], order: [['updatedAt', 'DESC']] });
+            default:
+                return [];
+        }
+
+        if (Object.keys(ratingWhere).length > 0) {
+            return await Resposta.findAll({
+                where: { ...whereClause, ...ratingWhere },
+                include: [
+                    { model: Client, as: 'client', attributes: ['name'] },
+                    { model: Pergunta, as: 'pergunta', attributes: ['text', 'type'] }
+                ],
+                order: [['createdAt', 'DESC']],
+            });
+        }
+
+        return [];
+    },
+
+    getAttendantDetailsById: async (tenantId, attendantId, startDate, endDate) => {
+        const whereClause = { atendenteId: attendantId };
+        if (tenantId) {
+            whereClause.tenantId = tenantId;
+        }
+
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const responses = await Resposta.findAll({
+            where: whereClause,
+            include: [
+                { model: Client, as: 'client', attributes: ['name'] },
+                { 
+                    model: Pergunta, 
+                    as: 'pergunta', 
+                    attributes: ['text', 'type']
+                }
+            ],
+            order: [['createdAt', 'DESC']],
+        });
+
+        const ratingResponses = responses.filter(r => r.ratingValue !== null && r.pergunta && r.pergunta.type.startsWith('rating'));
+
+        const npsResult = ratingService.calculateNPS(ratingResponses);
+        const csatResult = ratingService.calculateCSAT(ratingResponses);
+        const attendant = await Atendente.findByPk(attendantId, { attributes: ['name'] });
+
+        return {
+            attendantName: attendant ? attendant.name : 'Desconhecido',
+            nps: npsResult,
+            csat: csatResult,
+            totalResponses: responses.length,
+            responses,
+        };
+    },
+
+    getResponseDetailsBySessionId: async (tenantId, sessionId) => {
+        const whereClause = { respondentSessionId: sessionId };
+        if (tenantId) {
+            whereClause.tenantId = tenantId;
+        }
+
+        const responses = await Resposta.findAll({
+            where: whereClause,
+            include: [
+                { model: Client, as: 'client', attributes: ['name'] },
+                { model: Pergunta, as: 'pergunta', attributes: ['text'] }
+            ],
+            order: [['createdAt', 'ASC']],
+        });
+
+        return responses;
+    },
+
+    getMonthSummary: async (tenantId = null, startDate = null, endDate = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = new Date(startDate);
+        if (endDate) dateFilter[Op.lte] = new Date(endDate);
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const npsResponses = await Resposta.findAll({
+            where: {
+                ...whereClause,
+                ratingValue: { [Op.ne]: null }
+            },
+            include: [{
+                model: Pergunta,
+                as: 'pergunta',
+                attributes: ['type'],
+                where: { type: 'rating_0_10' },
+                required: true
+            }, {
+                model: Client,
+                as: 'client',
+                attributes: ['id'] // We only need to check for its existence
+            }],
+            attributes: ['id', 'ratingValue', 'createdAt'],
+            order: [['createdAt', 'ASC']]
+        });
+
+        // 1. Daily distribution and NPS
+        const dailyData = {};
+        let accumulatedPromoters = 0;
+        let accumulatedNeutrals = 0;
+        let accumulatedDetractors = 0;
+        let accumulatedTotal = 0;
+
+        npsResponses.forEach(response => {
+            const day = response.createdAt.toISOString().split('T')[0];
+            if (!dailyData[day]) {
+                dailyData[day] = { promoters: 0, neutrals: 0, detractors: 0, total: 0 };
+            }
+
+            const classification = ratingService.classifyNPS(response.ratingValue);
+            if (classification) {
+                dailyData[day][`${classification}s`]++;
+                dailyData[day].total++;
+            }
+        });
+
+        const dailyNps = Object.keys(dailyData).map(day => {
+            const dayData = dailyData[day];
+            const totalDaily = dayData.total;
+            const npsScore = totalDaily > 0 ? ((dayData.promoters / totalDaily) * 100) - ((dayData.detractors / totalDaily) * 100) : 0;
+            
+            accumulatedPromoters += dayData.promoters;
+            accumulatedNeutrals += dayData.neutrals;
+            accumulatedDetractors += dayData.detractors;
+            accumulatedTotal += dayData.total;
+            
+            const accumulatedNps = accumulatedTotal > 0 ? ((accumulatedPromoters / accumulatedTotal) * 100) - ((accumulatedDetractors / accumulatedTotal) * 100) : 0;
+
+            return {
+                date: day,
+                promoters: dayData.promoters,
+                neutrals: dayData.neutrals,
+                detractors: dayData.detractors,
+                nps: parseFloat(npsScore.toFixed(1)),
+                accumulatedNps: parseFloat(accumulatedNps.toFixed(1))
+            };
+        });
+
+        // 2. Peak response times
+        const responsesByHour = await Resposta.findAll({
+            where: whereClause,
+            attributes: [
+                [fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'hour'],
+                [fn('COUNT', col('id')), 'count']
+            ],
+            group: [fn('EXTRACT', literal('HOUR FROM "createdAt"'))],
+            order: [[fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'ASC']]
+        });
+        
+        const peakHours = responsesByHour.map(item => ({
+            hour: parseInt(item.dataValues.hour),
+            count: parseInt(item.dataValues.count)
+        }));
+
+        // 3. Distribution by day of the week
+        const responsesByWeekday = await Resposta.findAll({
+            where: whereClause,
+            attributes: [
+                [fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'weekday'], // 1=Monday, 7=Sunday
+                [fn('COUNT', col('id')), 'count']
+            ],
+            group: [fn('EXTRACT', literal('ISODOW FROM "createdAt"'))],
+            order: [[fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'ASC']]
+        });
+
+        const weekdays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+        const weekdayDistribution = responsesByWeekday.map(item => ({
+            day: weekdays[parseInt(item.dataValues.weekday) - 1],
+            count: parseInt(item.dataValues.count)
+        }));
+
+        // 4. Total responses
+        const totalResponses = await Resposta.count({ where: whereClause });
+
+        // 5. Registered vs. Unregistered
+        const registeredResponses = npsResponses.filter(r => r.client).length;
+        const unregisteredResponses = npsResponses.length - registeredResponses;
+        const clientProportion = {
+            registered: registeredResponses,
+            unregistered: unregisteredResponses,
+            total: npsResponses.length
+        };
+
+        return {
+            dailyNps,
+            peakHours,
+            weekdayDistribution,
+            totalResponses,
+            clientProportion
+        };
+    },
+
+    getMainDashboard: async function (tenantId = null, startDate = null, endDate = null, surveyId = null) {
+        // Ensure startDate and endDate are Date objects for calculations
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+
+        let npsTrendPeriod = 'day';
+        if (start && end) {
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays > 90) {
+                npsTrendPeriod = 'month';
+            } else if (diffDays > 31) {
+                npsTrendPeriod = 'week';
+            }
+        }
+
+        const summary = await this.getSummary(tenantId, startDate, endDate, surveyId);
+        const responseChart = await this.getResponseChart(tenantId, startDate, endDate, surveyId);
+        const attendantsPerformance = await this.getAttendantsPerformanceWithGoals(tenantId, startDate, endDate);
+        const criteriaScores = await this.getCriteriaScores(tenantId, startDate, endDate, surveyId);
+        const feedbacks = await this.getFeedbacks(tenantId, startDate, endDate, surveyId);
+        const conversionChart = await this.getConversionChart(tenantId, startDate, endDate, surveyId);
+        const npsByDayOfWeek = await this.getNpsByDayOfWeek(tenantId, startDate, endDate, surveyId);
+        const npsTrend = await this.getNpsTrendData(tenantId, npsTrendPeriod, startDate, endDate, surveyId);
+        const overallResults = await this.getOverallResults(tenantId, startDate, endDate, surveyId);
+
+
+        return {
+            summary,
+            responseChart,
+            attendantsPerformance,
+            criteriaScores,
+            feedbacks,
+            conversionChart,
+            npsByDayOfWeek,
+            npsTrend,
+            overallResults,
+        };
+    },
+};
+
+module.exports = dashboardRepository;
+: 'rating_0_10', ratingValue: { [Op.lte]: 6 } };
+                    break;
+                case 'satisfeitos': // CSAT Satisfied
+                    ratingWhere = { '$pergunta.type
+    getAttendantsPerformanceWithGoals: async (tenantId = null, startDate = null, endDate = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const allResponses = await Resposta.findAll({
+            where: { ...whereClause, ratingValue: { [Op.ne]: null } },
+            include: [
+                {
+                    model: Pergunta,
+                    as: 'pergunta',
+                    attributes: ['type'],
+                },
+                {
+                    model: Client,
+                    as: 'client',
+                    attributes: ['id'],
+                },
+                {
+                    model: Atendente,
+                    as: 'atendente',
+                    attributes: ['id', 'name'],
+                }
+            ]
+        });
+
+        const attendantPerformance = allResponses.reduce((acc, response) => {
+            if (response.atendente && response.atendente.id) {
+                const attendantId = response.atendente.id;
+                if (!acc[attendantId]) {
+                    acc[attendantId] = {
+                        id: attendantId,
+                        name: response.atendente.name,
+                        responses: [],
+                        uniqueClients: new Set(),
+                    };
+                }
+                acc[attendantId].responses.push(response);
+                if (response.client && response.client.id) {
+                    acc[attendantId].uniqueClients.add(response.client.id);
+                }
+            }
+            return acc;
+        }, {});
+
+        const attendantsWithPerformance = [];
+        for (const attendantStats of Object.values(attendantPerformance)) {
+            const npsResult = ratingService.calculateNPS(attendantStats.responses);
+            const csatResult = ratingService.calculateCSAT(attendantStats.responses);
+            const meta = await AtendenteMeta.findOne({
+                where: { atendenteId: attendantStats.id, tenantId: tenantId },
+            });
+
+            attendantsWithPerformance.push({
+                id: attendantStats.id,
+                name: attendantStats.name,
+                responses: attendantStats.responses.length,
+                currentNPS: npsResult.npsScore,
+                currentCSAT: csatResult.averageScore,
+                currentRegistrations: attendantStats.uniqueClients.size,
+                npsGoal: meta ? meta.npsGoal || 0 : 0,
+                csatGoal: meta ? meta.csatGoal || 0 : 0, // Assuming a csatGoal might exist
+                responsesGoal: meta ? meta.responsesGoal || 0 : 0,
+                registrationsGoal: meta ? meta.registrationsGoal || 0 : 0,
+            });
+        }
+
+        return attendantsWithPerformance;
+    },
+    getBirthdaysOfMonth: async (tenantId = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
+
+        const birthdays = await Client.findAll({
+            where: {
+                ...whereClause,
+                birthDate: {
+                    [Op.ne]: null,
+                },
+                [Op.and]: [
+                    Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('birthDate')), currentMonth),
+                ],
+            },
+            attributes: ['id', 'name', 'birthDate'],
+            order: [[Sequelize.fn('DAY', Sequelize.col('birthDate')), 'ASC']],
+        });
+
+        return birthdays.map(client => ({
+            id: client.id,
+            name: client.name,
+            birthDate: client.birthDate,
+            day: new Date(client.birthDate).getDate(),
+        }));
+    },
+    getDetailsByCategory: async (tenantId, category, startDate, endDate) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const categoryLower = category.toLowerCase();
+        let ratingWhere = {};
+
+        switch (categoryLower) {
+            case 'promotores':
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.gte]: 9 } };
+                break;
+            case 'neutros': // NPS Neutral
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.between]: [7, 8] } };
+                break;
+            case 'detratores':
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.lte]: 6 } };
+                break;
+            case 'satisfeitos': // CSAT Satisfied
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.gte]: 4 } };
+                break;
+            case 'neutros-csat': // CSAT Neutral
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.eq]: 3 } };
+                break;
+            case 'insatisfeitos': // CSAT Unsatisfied
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.lte]: 2 } };
+                break;
+            case 'cadastros':
+                return await Client.findAll({ where: whereClause, order: [['createdAt', 'DESC']] });
+            case 'cupons gerados':
+                return await Cupom.findAll({ where: whereClause, include: [{ model: Client, as: 'client', attributes: ['name'] }], order: [['createdAt', 'DESC']] });
+            case 'cupons utilizados':
+                const usedWhere = { ...whereClause, status: 'used' };
+                if (whereClause.createdAt) {
+                    usedWhere.updatedAt = whereClause.createdAt;
+                    delete usedWhere.createdAt;
+                }
+                return await Cupom.findAll({ where: usedWhere, include: [{ model: Client, as: 'client', attributes: ['name'] }], order: [['updatedAt', 'DESC']] });
+            default:
+                return [];
+        }
+
+        if (Object.keys(ratingWhere).length > 0) {
+            return await Resposta.findAll({
+                where: { ...whereClause, ...ratingWhere },
+                include: [
+                    { model: Client, as: 'client', attributes: ['name'] },
+                    { model: Pergunta, as: 'pergunta', attributes: ['text', 'type'] }
+                ],
+                order: [['createdAt', 'DESC']],
+            });
+        }
+
+        return [];
+    },
+
+    getAttendantDetailsById: async (tenantId, attendantId, startDate, endDate) => {
+        const whereClause = { atendenteId: attendantId };
+        if (tenantId) {
+            whereClause.tenantId = tenantId;
+        }
+
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const responses = await Resposta.findAll({
+            where: whereClause,
+            include: [
+                { model: Client, as: 'client', attributes: ['name'] },
+                { 
+                    model: Pergunta, 
+                    as: 'pergunta', 
+                    attributes: ['text', 'type']
+                }
+            ],
+            order: [['createdAt', 'DESC']],
+        });
+
+        const ratingResponses = responses.filter(r => r.ratingValue !== null && r.pergunta && r.pergunta.type.startsWith('rating'));
+
+        const npsResult = ratingService.calculateNPS(ratingResponses);
+        const csatResult = ratingService.calculateCSAT(ratingResponses);
+        const attendant = await Atendente.findByPk(attendantId, { attributes: ['name'] });
+
+        return {
+            attendantName: attendant ? attendant.name : 'Desconhecido',
+            nps: npsResult,
+            csat: csatResult,
+            totalResponses: responses.length,
+            responses,
+        };
+    },
+
+    getResponseDetailsBySessionId: async (tenantId, sessionId) => {
+        const whereClause = { respondentSessionId: sessionId };
+        if (tenantId) {
+            whereClause.tenantId = tenantId;
+        }
+
+        const responses = await Resposta.findAll({
+            where: whereClause,
+            include: [
+                { model: Client, as: 'client', attributes: ['name'] },
+                { model: Pergunta, as: 'pergunta', attributes: ['text'] }
+            ],
+            order: [['createdAt', 'ASC']],
+        });
+
+        return responses;
+    },
+
+    getMonthSummary: async (tenantId = null, startDate = null, endDate = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = new Date(startDate);
+        if (endDate) dateFilter[Op.lte] = new Date(endDate);
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const npsResponses = await Resposta.findAll({
+            where: {
+                ...whereClause,
+                ratingValue: { [Op.ne]: null }
+            },
+            include: [{
+                model: Pergunta,
+                as: 'pergunta',
+                attributes: ['type'],
+                where: { type: 'rating_0_10' },
+                required: true
+            }, {
+                model: Client,
+                as: 'client',
+                attributes: ['id'] // We only need to check for its existence
+            }],
+            attributes: ['id', 'ratingValue', 'createdAt'],
+            order: [['createdAt', 'ASC']]
+        });
+
+        // 1. Daily distribution and NPS
+        const dailyData = {};
+        let accumulatedPromoters = 0;
+        let accumulatedNeutrals = 0;
+        let accumulatedDetractors = 0;
+        let accumulatedTotal = 0;
+
+        npsResponses.forEach(response => {
+            const day = response.createdAt.toISOString().split('T')[0];
+            if (!dailyData[day]) {
+                dailyData[day] = { promoters: 0, neutrals: 0, detractors: 0, total: 0 };
+            }
+
+            const classification = ratingService.classifyNPS(response.ratingValue);
+            if (classification) {
+                dailyData[day][`${classification}s`]++;
+                dailyData[day].total++;
+            }
+        });
+
+        const dailyNps = Object.keys(dailyData).map(day => {
+            const dayData = dailyData[day];
+            const totalDaily = dayData.total;
+            const npsScore = totalDaily > 0 ? ((dayData.promoters / totalDaily) * 100) - ((dayData.detractors / totalDaily) * 100) : 0;
+            
+            accumulatedPromoters += dayData.promoters;
+            accumulatedNeutrals += dayData.neutrals;
+            accumulatedDetractors += dayData.detractors;
+            accumulatedTotal += dayData.total;
+            
+            const accumulatedNps = accumulatedTotal > 0 ? ((accumulatedPromoters / accumulatedTotal) * 100) - ((accumulatedDetractors / accumulatedTotal) * 100) : 0;
+
+            return {
+                date: day,
+                promoters: dayData.promoters,
+                neutrals: dayData.neutrals,
+                detractors: dayData.detractors,
+                nps: parseFloat(npsScore.toFixed(1)),
+                accumulatedNps: parseFloat(accumulatedNps.toFixed(1))
+            };
+        });
+
+        // 2. Peak response times
+        const responsesByHour = await Resposta.findAll({
+            where: whereClause,
+            attributes: [
+                [fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'hour'],
+                [fn('COUNT', col('id')), 'count']
+            ],
+            group: [fn('EXTRACT', literal('HOUR FROM "createdAt"'))],
+            order: [[fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'ASC']]
+        });
+        
+        const peakHours = responsesByHour.map(item => ({
+            hour: parseInt(item.dataValues.hour),
+            count: parseInt(item.dataValues.count)
+        }));
+
+        // 3. Distribution by day of the week
+        const responsesByWeekday = await Resposta.findAll({
+            where: whereClause,
+            attributes: [
+                [fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'weekday'], // 1=Monday, 7=Sunday
+                [fn('COUNT', col('id')), 'count']
+            ],
+            group: [fn('EXTRACT', literal('ISODOW FROM "createdAt"'))],
+            order: [[fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'ASC']]
+        });
+
+        const weekdays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+        const weekdayDistribution = responsesByWeekday.map(item => ({
+            day: weekdays[parseInt(item.dataValues.weekday) - 1],
+            count: parseInt(item.dataValues.count)
+        }));
+
+        // 4. Total responses
+        const totalResponses = await Resposta.count({ where: whereClause });
+
+        // 5. Registered vs. Unregistered
+        const registeredResponses = npsResponses.filter(r => r.client).length;
+        const unregisteredResponses = npsResponses.length - registeredResponses;
+        const clientProportion = {
+            registered: registeredResponses,
+            unregistered: unregisteredResponses,
+            total: npsResponses.length
+        };
+
+        return {
+            dailyNps,
+            peakHours,
+            weekdayDistribution,
+            totalResponses,
+            clientProportion
+        };
+    },
+
+    getMainDashboard: async function (tenantId = null, startDate = null, endDate = null, surveyId = null) {
+        // Ensure startDate and endDate are Date objects for calculations
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+
+        let npsTrendPeriod = 'day';
+        if (start && end) {
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays > 90) {
+                npsTrendPeriod = 'month';
+            } else if (diffDays > 31) {
+                npsTrendPeriod = 'week';
+            }
+        }
+
+        const summary = await this.getSummary(tenantId, startDate, endDate, surveyId);
+        const responseChart = await this.getResponseChart(tenantId, startDate, endDate, surveyId);
+        const attendantsPerformance = await this.getAttendantsPerformanceWithGoals(tenantId, startDate, endDate);
+        const criteriaScores = await this.getCriteriaScores(tenantId, startDate, endDate, surveyId);
+        const feedbacks = await this.getFeedbacks(tenantId, startDate, endDate, surveyId);
+        const conversionChart = await this.getConversionChart(tenantId, startDate, endDate, surveyId);
+        const npsByDayOfWeek = await this.getNpsByDayOfWeek(tenantId, startDate, endDate, surveyId);
+        const npsTrend = await this.getNpsTrendData(tenantId, npsTrendPeriod, startDate, endDate, surveyId);
+        const overallResults = await this.getOverallResults(tenantId, startDate, endDate, surveyId);
+
+
+        return {
+            summary,
+            responseChart,
+            attendantsPerformance,
+            criteriaScores,
+            feedbacks,
+            conversionChart,
+            npsByDayOfWeek,
+            npsTrend,
+            overallResults,
+        };
+    },
+};
+
+module.exports = dashboardRepository;
+: 'rating_1_5', ratingValue: { [Op.gte]: 4 } };
+                    break;
+                case 'neutros-csat': // CSAT Neutral
+                    ratingWhere = { '$pergunta.type
+    getAttendantsPerformanceWithGoals: async (tenantId = null, startDate = null, endDate = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const allResponses = await Resposta.findAll({
+            where: { ...whereClause, ratingValue: { [Op.ne]: null } },
+            include: [
+                {
+                    model: Pergunta,
+                    as: 'pergunta',
+                    attributes: ['type'],
+                },
+                {
+                    model: Client,
+                    as: 'client',
+                    attributes: ['id'],
+                },
+                {
+                    model: Atendente,
+                    as: 'atendente',
+                    attributes: ['id', 'name'],
+                }
+            ]
+        });
+
+        const attendantPerformance = allResponses.reduce((acc, response) => {
+            if (response.atendente && response.atendente.id) {
+                const attendantId = response.atendente.id;
+                if (!acc[attendantId]) {
+                    acc[attendantId] = {
+                        id: attendantId,
+                        name: response.atendente.name,
+                        responses: [],
+                        uniqueClients: new Set(),
+                    };
+                }
+                acc[attendantId].responses.push(response);
+                if (response.client && response.client.id) {
+                    acc[attendantId].uniqueClients.add(response.client.id);
+                }
+            }
+            return acc;
+        }, {});
+
+        const attendantsWithPerformance = [];
+        for (const attendantStats of Object.values(attendantPerformance)) {
+            const npsResult = ratingService.calculateNPS(attendantStats.responses);
+            const csatResult = ratingService.calculateCSAT(attendantStats.responses);
+            const meta = await AtendenteMeta.findOne({
+                where: { atendenteId: attendantStats.id, tenantId: tenantId },
+            });
+
+            attendantsWithPerformance.push({
+                id: attendantStats.id,
+                name: attendantStats.name,
+                responses: attendantStats.responses.length,
+                currentNPS: npsResult.npsScore,
+                currentCSAT: csatResult.averageScore,
+                currentRegistrations: attendantStats.uniqueClients.size,
+                npsGoal: meta ? meta.npsGoal || 0 : 0,
+                csatGoal: meta ? meta.csatGoal || 0 : 0, // Assuming a csatGoal might exist
+                responsesGoal: meta ? meta.responsesGoal || 0 : 0,
+                registrationsGoal: meta ? meta.registrationsGoal || 0 : 0,
+            });
+        }
+
+        return attendantsWithPerformance;
+    },
+    getBirthdaysOfMonth: async (tenantId = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
+
+        const birthdays = await Client.findAll({
+            where: {
+                ...whereClause,
+                birthDate: {
+                    [Op.ne]: null,
+                },
+                [Op.and]: [
+                    Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('birthDate')), currentMonth),
+                ],
+            },
+            attributes: ['id', 'name', 'birthDate'],
+            order: [[Sequelize.fn('DAY', Sequelize.col('birthDate')), 'ASC']],
+        });
+
+        return birthdays.map(client => ({
+            id: client.id,
+            name: client.name,
+            birthDate: client.birthDate,
+            day: new Date(client.birthDate).getDate(),
+        }));
+    },
+    getDetailsByCategory: async (tenantId, category, startDate, endDate) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const categoryLower = category.toLowerCase();
+        let ratingWhere = {};
+
+        switch (categoryLower) {
+            case 'promotores':
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.gte]: 9 } };
+                break;
+            case 'neutros': // NPS Neutral
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.between]: [7, 8] } };
+                break;
+            case 'detratores':
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.lte]: 6 } };
+                break;
+            case 'satisfeitos': // CSAT Satisfied
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.gte]: 4 } };
+                break;
+            case 'neutros-csat': // CSAT Neutral
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.eq]: 3 } };
+                break;
+            case 'insatisfeitos': // CSAT Unsatisfied
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.lte]: 2 } };
+                break;
+            case 'cadastros':
+                return await Client.findAll({ where: whereClause, order: [['createdAt', 'DESC']] });
+            case 'cupons gerados':
+                return await Cupom.findAll({ where: whereClause, include: [{ model: Client, as: 'client', attributes: ['name'] }], order: [['createdAt', 'DESC']] });
+            case 'cupons utilizados':
+                const usedWhere = { ...whereClause, status: 'used' };
+                if (whereClause.createdAt) {
+                    usedWhere.updatedAt = whereClause.createdAt;
+                    delete usedWhere.createdAt;
+                }
+                return await Cupom.findAll({ where: usedWhere, include: [{ model: Client, as: 'client', attributes: ['name'] }], order: [['updatedAt', 'DESC']] });
+            default:
+                return [];
+        }
+
+        if (Object.keys(ratingWhere).length > 0) {
+            return await Resposta.findAll({
+                where: { ...whereClause, ...ratingWhere },
+                include: [
+                    { model: Client, as: 'client', attributes: ['name'] },
+                    { model: Pergunta, as: 'pergunta', attributes: ['text', 'type'] }
+                ],
+                order: [['createdAt', 'DESC']],
+            });
+        }
+
+        return [];
+    },
+
+    getAttendantDetailsById: async (tenantId, attendantId, startDate, endDate) => {
+        const whereClause = { atendenteId: attendantId };
+        if (tenantId) {
+            whereClause.tenantId = tenantId;
+        }
+
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const responses = await Resposta.findAll({
+            where: whereClause,
+            include: [
+                { model: Client, as: 'client', attributes: ['name'] },
+                { 
+                    model: Pergunta, 
+                    as: 'pergunta', 
+                    attributes: ['text', 'type']
+                }
+            ],
+            order: [['createdAt', 'DESC']],
+        });
+
+        const ratingResponses = responses.filter(r => r.ratingValue !== null && r.pergunta && r.pergunta.type.startsWith('rating'));
+
+        const npsResult = ratingService.calculateNPS(ratingResponses);
+        const csatResult = ratingService.calculateCSAT(ratingResponses);
+        const attendant = await Atendente.findByPk(attendantId, { attributes: ['name'] });
+
+        return {
+            attendantName: attendant ? attendant.name : 'Desconhecido',
+            nps: npsResult,
+            csat: csatResult,
+            totalResponses: responses.length,
+            responses,
+        };
+    },
+
+    getResponseDetailsBySessionId: async (tenantId, sessionId) => {
+        const whereClause = { respondentSessionId: sessionId };
+        if (tenantId) {
+            whereClause.tenantId = tenantId;
+        }
+
+        const responses = await Resposta.findAll({
+            where: whereClause,
+            include: [
+                { model: Client, as: 'client', attributes: ['name'] },
+                { model: Pergunta, as: 'pergunta', attributes: ['text'] }
+            ],
+            order: [['createdAt', 'ASC']],
+        });
+
+        return responses;
+    },
+
+    getMonthSummary: async (tenantId = null, startDate = null, endDate = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = new Date(startDate);
+        if (endDate) dateFilter[Op.lte] = new Date(endDate);
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const npsResponses = await Resposta.findAll({
+            where: {
+                ...whereClause,
+                ratingValue: { [Op.ne]: null }
+            },
+            include: [{
+                model: Pergunta,
+                as: 'pergunta',
+                attributes: ['type'],
+                where: { type: 'rating_0_10' },
+                required: true
+            }, {
+                model: Client,
+                as: 'client',
+                attributes: ['id'] // We only need to check for its existence
+            }],
+            attributes: ['id', 'ratingValue', 'createdAt'],
+            order: [['createdAt', 'ASC']]
+        });
+
+        // 1. Daily distribution and NPS
+        const dailyData = {};
+        let accumulatedPromoters = 0;
+        let accumulatedNeutrals = 0;
+        let accumulatedDetractors = 0;
+        let accumulatedTotal = 0;
+
+        npsResponses.forEach(response => {
+            const day = response.createdAt.toISOString().split('T')[0];
+            if (!dailyData[day]) {
+                dailyData[day] = { promoters: 0, neutrals: 0, detractors: 0, total: 0 };
+            }
+
+            const classification = ratingService.classifyNPS(response.ratingValue);
+            if (classification) {
+                dailyData[day][`${classification}s`]++;
+                dailyData[day].total++;
+            }
+        });
+
+        const dailyNps = Object.keys(dailyData).map(day => {
+            const dayData = dailyData[day];
+            const totalDaily = dayData.total;
+            const npsScore = totalDaily > 0 ? ((dayData.promoters / totalDaily) * 100) - ((dayData.detractors / totalDaily) * 100) : 0;
+            
+            accumulatedPromoters += dayData.promoters;
+            accumulatedNeutrals += dayData.neutrals;
+            accumulatedDetractors += dayData.detractors;
+            accumulatedTotal += dayData.total;
+            
+            const accumulatedNps = accumulatedTotal > 0 ? ((accumulatedPromoters / accumulatedTotal) * 100) - ((accumulatedDetractors / accumulatedTotal) * 100) : 0;
+
+            return {
+                date: day,
+                promoters: dayData.promoters,
+                neutrals: dayData.neutrals,
+                detractors: dayData.detractors,
+                nps: parseFloat(npsScore.toFixed(1)),
+                accumulatedNps: parseFloat(accumulatedNps.toFixed(1))
+            };
+        });
+
+        // 2. Peak response times
+        const responsesByHour = await Resposta.findAll({
+            where: whereClause,
+            attributes: [
+                [fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'hour'],
+                [fn('COUNT', col('id')), 'count']
+            ],
+            group: [fn('EXTRACT', literal('HOUR FROM "createdAt"'))],
+            order: [[fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'ASC']]
+        });
+        
+        const peakHours = responsesByHour.map(item => ({
+            hour: parseInt(item.dataValues.hour),
+            count: parseInt(item.dataValues.count)
+        }));
+
+        // 3. Distribution by day of the week
+        const responsesByWeekday = await Resposta.findAll({
+            where: whereClause,
+            attributes: [
+                [fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'weekday'], // 1=Monday, 7=Sunday
+                [fn('COUNT', col('id')), 'count']
+            ],
+            group: [fn('EXTRACT', literal('ISODOW FROM "createdAt"'))],
+            order: [[fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'ASC']]
+        });
+
+        const weekdays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+        const weekdayDistribution = responsesByWeekday.map(item => ({
+            day: weekdays[parseInt(item.dataValues.weekday) - 1],
+            count: parseInt(item.dataValues.count)
+        }));
+
+        // 4. Total responses
+        const totalResponses = await Resposta.count({ where: whereClause });
+
+        // 5. Registered vs. Unregistered
+        const registeredResponses = npsResponses.filter(r => r.client).length;
+        const unregisteredResponses = npsResponses.length - registeredResponses;
+        const clientProportion = {
+            registered: registeredResponses,
+            unregistered: unregisteredResponses,
+            total: npsResponses.length
+        };
+
+        return {
+            dailyNps,
+            peakHours,
+            weekdayDistribution,
+            totalResponses,
+            clientProportion
+        };
+    },
+
+    getMainDashboard: async function (tenantId = null, startDate = null, endDate = null, surveyId = null) {
+        // Ensure startDate and endDate are Date objects for calculations
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+
+        let npsTrendPeriod = 'day';
+        if (start && end) {
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays > 90) {
+                npsTrendPeriod = 'month';
+            } else if (diffDays > 31) {
+                npsTrendPeriod = 'week';
+            }
+        }
+
+        const summary = await this.getSummary(tenantId, startDate, endDate, surveyId);
+        const responseChart = await this.getResponseChart(tenantId, startDate, endDate, surveyId);
+        const attendantsPerformance = await this.getAttendantsPerformanceWithGoals(tenantId, startDate, endDate);
+        const criteriaScores = await this.getCriteriaScores(tenantId, startDate, endDate, surveyId);
+        const feedbacks = await this.getFeedbacks(tenantId, startDate, endDate, surveyId);
+        const conversionChart = await this.getConversionChart(tenantId, startDate, endDate, surveyId);
+        const npsByDayOfWeek = await this.getNpsByDayOfWeek(tenantId, startDate, endDate, surveyId);
+        const npsTrend = await this.getNpsTrendData(tenantId, npsTrendPeriod, startDate, endDate, surveyId);
+        const overallResults = await this.getOverallResults(tenantId, startDate, endDate, surveyId);
+
+
+        return {
+            summary,
+            responseChart,
+            attendantsPerformance,
+            criteriaScores,
+            feedbacks,
+            conversionChart,
+            npsByDayOfWeek,
+            npsTrend,
+            overallResults,
+        };
+    },
+};
+
+module.exports = dashboardRepository;
+: 'rating_1_5', ratingValue: { [Op.eq]: 3 } };
+                    break;
+                case 'insatisfeitos': // CSAT Unsatisfied
+                    ratingWhere = { '$pergunta.type
+    getAttendantsPerformanceWithGoals: async (tenantId = null, startDate = null, endDate = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const allResponses = await Resposta.findAll({
+            where: { ...whereClause, ratingValue: { [Op.ne]: null } },
+            include: [
+                {
+                    model: Pergunta,
+                    as: 'pergunta',
+                    attributes: ['type'],
+                },
+                {
+                    model: Client,
+                    as: 'client',
+                    attributes: ['id'],
+                },
+                {
+                    model: Atendente,
+                    as: 'atendente',
+                    attributes: ['id', 'name'],
+                }
+            ]
+        });
+
+        const attendantPerformance = allResponses.reduce((acc, response) => {
+            if (response.atendente && response.atendente.id) {
+                const attendantId = response.atendente.id;
+                if (!acc[attendantId]) {
+                    acc[attendantId] = {
+                        id: attendantId,
+                        name: response.atendente.name,
+                        responses: [],
+                        uniqueClients: new Set(),
+                    };
+                }
+                acc[attendantId].responses.push(response);
+                if (response.client && response.client.id) {
+                    acc[attendantId].uniqueClients.add(response.client.id);
+                }
+            }
+            return acc;
+        }, {});
+
+        const attendantsWithPerformance = [];
+        for (const attendantStats of Object.values(attendantPerformance)) {
+            const npsResult = ratingService.calculateNPS(attendantStats.responses);
+            const csatResult = ratingService.calculateCSAT(attendantStats.responses);
+            const meta = await AtendenteMeta.findOne({
+                where: { atendenteId: attendantStats.id, tenantId: tenantId },
+            });
+
+            attendantsWithPerformance.push({
+                id: attendantStats.id,
+                name: attendantStats.name,
+                responses: attendantStats.responses.length,
+                currentNPS: npsResult.npsScore,
+                currentCSAT: csatResult.averageScore,
+                currentRegistrations: attendantStats.uniqueClients.size,
+                npsGoal: meta ? meta.npsGoal || 0 : 0,
+                csatGoal: meta ? meta.csatGoal || 0 : 0, // Assuming a csatGoal might exist
+                responsesGoal: meta ? meta.responsesGoal || 0 : 0,
+                registrationsGoal: meta ? meta.registrationsGoal || 0 : 0,
+            });
+        }
+
+        return attendantsWithPerformance;
+    },
+    getBirthdaysOfMonth: async (tenantId = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
+
+        const birthdays = await Client.findAll({
+            where: {
+                ...whereClause,
+                birthDate: {
+                    [Op.ne]: null,
+                },
+                [Op.and]: [
+                    Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('birthDate')), currentMonth),
+                ],
+            },
+            attributes: ['id', 'name', 'birthDate'],
+            order: [[Sequelize.fn('DAY', Sequelize.col('birthDate')), 'ASC']],
+        });
+
+        return birthdays.map(client => ({
+            id: client.id,
+            name: client.name,
+            birthDate: client.birthDate,
+            day: new Date(client.birthDate).getDate(),
+        }));
+    },
+    getDetailsByCategory: async (tenantId, category, startDate, endDate) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const categoryLower = category.toLowerCase();
+        let ratingWhere = {};
+
+        switch (categoryLower) {
+            case 'promotores':
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.gte]: 9 } };
+                break;
+            case 'neutros': // NPS Neutral
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.between]: [7, 8] } };
+                break;
+            case 'detratores':
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.lte]: 6 } };
+                break;
+            case 'satisfeitos': // CSAT Satisfied
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.gte]: 4 } };
+                break;
+            case 'neutros-csat': // CSAT Neutral
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.eq]: 3 } };
+                break;
+            case 'insatisfeitos': // CSAT Unsatisfied
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.lte]: 2 } };
+                break;
+            case 'cadastros':
+                return await Client.findAll({ where: whereClause, order: [['createdAt', 'DESC']] });
+            case 'cupons gerados':
+                return await Cupom.findAll({ where: whereClause, include: [{ model: Client, as: 'client', attributes: ['name'] }], order: [['createdAt', 'DESC']] });
+            case 'cupons utilizados':
+                const usedWhere = { ...whereClause, status: 'used' };
+                if (whereClause.createdAt) {
+                    usedWhere.updatedAt = whereClause.createdAt;
+                    delete usedWhere.createdAt;
+                }
+                return await Cupom.findAll({ where: usedWhere, include: [{ model: Client, as: 'client', attributes: ['name'] }], order: [['updatedAt', 'DESC']] });
+            default:
+                return [];
+        }
+
+        if (Object.keys(ratingWhere).length > 0) {
+            return await Resposta.findAll({
+                where: { ...whereClause, ...ratingWhere },
+                include: [
+                    { model: Client, as: 'client', attributes: ['name'] },
+                    { model: Pergunta, as: 'pergunta', attributes: ['text', 'type'] }
+                ],
+                order: [['createdAt', 'DESC']],
+            });
+        }
+
+        return [];
+    },
+
+    getAttendantDetailsById: async (tenantId, attendantId, startDate, endDate) => {
+        const whereClause = { atendenteId: attendantId };
+        if (tenantId) {
+            whereClause.tenantId = tenantId;
+        }
+
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const responses = await Resposta.findAll({
+            where: whereClause,
+            include: [
+                { model: Client, as: 'client', attributes: ['name'] },
+                { 
+                    model: Pergunta, 
+                    as: 'pergunta', 
+                    attributes: ['text', 'type']
+                }
+            ],
+            order: [['createdAt', 'DESC']],
+        });
+
+        const ratingResponses = responses.filter(r => r.ratingValue !== null && r.pergunta && r.pergunta.type.startsWith('rating'));
+
+        const npsResult = ratingService.calculateNPS(ratingResponses);
+        const csatResult = ratingService.calculateCSAT(ratingResponses);
+        const attendant = await Atendente.findByPk(attendantId, { attributes: ['name'] });
+
+        return {
+            attendantName: attendant ? attendant.name : 'Desconhecido',
+            nps: npsResult,
+            csat: csatResult,
+            totalResponses: responses.length,
+            responses,
+        };
+    },
+
+    getResponseDetailsBySessionId: async (tenantId, sessionId) => {
+        const whereClause = { respondentSessionId: sessionId };
+        if (tenantId) {
+            whereClause.tenantId = tenantId;
+        }
+
+        const responses = await Resposta.findAll({
+            where: whereClause,
+            include: [
+                { model: Client, as: 'client', attributes: ['name'] },
+                { model: Pergunta, as: 'pergunta', attributes: ['text'] }
+            ],
+            order: [['createdAt', 'ASC']],
+        });
+
+        return responses;
+    },
+
+    getMonthSummary: async (tenantId = null, startDate = null, endDate = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = new Date(startDate);
+        if (endDate) dateFilter[Op.lte] = new Date(endDate);
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const npsResponses = await Resposta.findAll({
+            where: {
+                ...whereClause,
+                ratingValue: { [Op.ne]: null }
+            },
+            include: [{
+                model: Pergunta,
+                as: 'pergunta',
+                attributes: ['type'],
+                where: { type: 'rating_0_10' },
+                required: true
+            }, {
+                model: Client,
+                as: 'client',
+                attributes: ['id'] // We only need to check for its existence
+            }],
+            attributes: ['id', 'ratingValue', 'createdAt'],
+            order: [['createdAt', 'ASC']]
+        });
+
+        // 1. Daily distribution and NPS
+        const dailyData = {};
+        let accumulatedPromoters = 0;
+        let accumulatedNeutrals = 0;
+        let accumulatedDetractors = 0;
+        let accumulatedTotal = 0;
+
+        npsResponses.forEach(response => {
+            const day = response.createdAt.toISOString().split('T')[0];
+            if (!dailyData[day]) {
+                dailyData[day] = { promoters: 0, neutrals: 0, detractors: 0, total: 0 };
+            }
+
+            const classification = ratingService.classifyNPS(response.ratingValue);
+            if (classification) {
+                dailyData[day][`${classification}s`]++;
+                dailyData[day].total++;
+            }
+        });
+
+        const dailyNps = Object.keys(dailyData).map(day => {
+            const dayData = dailyData[day];
+            const totalDaily = dayData.total;
+            const npsScore = totalDaily > 0 ? ((dayData.promoters / totalDaily) * 100) - ((dayData.detractors / totalDaily) * 100) : 0;
+            
+            accumulatedPromoters += dayData.promoters;
+            accumulatedNeutrals += dayData.neutrals;
+            accumulatedDetractors += dayData.detractors;
+            accumulatedTotal += dayData.total;
+            
+            const accumulatedNps = accumulatedTotal > 0 ? ((accumulatedPromoters / accumulatedTotal) * 100) - ((accumulatedDetractors / accumulatedTotal) * 100) : 0;
+
+            return {
+                date: day,
+                promoters: dayData.promoters,
+                neutrals: dayData.neutrals,
+                detractors: dayData.detractors,
+                nps: parseFloat(npsScore.toFixed(1)),
+                accumulatedNps: parseFloat(accumulatedNps.toFixed(1))
+            };
+        });
+
+        // 2. Peak response times
+        const responsesByHour = await Resposta.findAll({
+            where: whereClause,
+            attributes: [
+                [fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'hour'],
+                [fn('COUNT', col('id')), 'count']
+            ],
+            group: [fn('EXTRACT', literal('HOUR FROM "createdAt"'))],
+            order: [[fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'ASC']]
+        });
+        
+        const peakHours = responsesByHour.map(item => ({
+            hour: parseInt(item.dataValues.hour),
+            count: parseInt(item.dataValues.count)
+        }));
+
+        // 3. Distribution by day of the week
+        const responsesByWeekday = await Resposta.findAll({
+            where: whereClause,
+            attributes: [
+                [fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'weekday'], // 1=Monday, 7=Sunday
+                [fn('COUNT', col('id')), 'count']
+            ],
+            group: [fn('EXTRACT', literal('ISODOW FROM "createdAt"'))],
+            order: [[fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'ASC']]
+        });
+
+        const weekdays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+        const weekdayDistribution = responsesByWeekday.map(item => ({
+            day: weekdays[parseInt(item.dataValues.weekday) - 1],
+            count: parseInt(item.dataValues.count)
+        }));
+
+        // 4. Total responses
+        const totalResponses = await Resposta.count({ where: whereClause });
+
+        // 5. Registered vs. Unregistered
+        const registeredResponses = npsResponses.filter(r => r.client).length;
+        const unregisteredResponses = npsResponses.length - registeredResponses;
+        const clientProportion = {
+            registered: registeredResponses,
+            unregistered: unregisteredResponses,
+            total: npsResponses.length
+        };
+
+        return {
+            dailyNps,
+            peakHours,
+            weekdayDistribution,
+            totalResponses,
+            clientProportion
+        };
+    },
+
+    getMainDashboard: async function (tenantId = null, startDate = null, endDate = null, surveyId = null) {
+        // Ensure startDate and endDate are Date objects for calculations
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+
+        let npsTrendPeriod = 'day';
+        if (start && end) {
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays > 90) {
+                npsTrendPeriod = 'month';
+            } else if (diffDays > 31) {
+                npsTrendPeriod = 'week';
+            }
+        }
+
+        const summary = await this.getSummary(tenantId, startDate, endDate, surveyId);
+        const responseChart = await this.getResponseChart(tenantId, startDate, endDate, surveyId);
+        const attendantsPerformance = await this.getAttendantsPerformanceWithGoals(tenantId, startDate, endDate);
+        const criteriaScores = await this.getCriteriaScores(tenantId, startDate, endDate, surveyId);
+        const feedbacks = await this.getFeedbacks(tenantId, startDate, endDate, surveyId);
+        const conversionChart = await this.getConversionChart(tenantId, startDate, endDate, surveyId);
+        const npsByDayOfWeek = await this.getNpsByDayOfWeek(tenantId, startDate, endDate, surveyId);
+        const npsTrend = await this.getNpsTrendData(tenantId, npsTrendPeriod, startDate, endDate, surveyId);
+        const overallResults = await this.getOverallResults(tenantId, startDate, endDate, surveyId);
+
+
+        return {
+            summary,
+            responseChart,
+            attendantsPerformance,
+            criteriaScores,
+            feedbacks,
+            conversionChart,
+            npsByDayOfWeek,
+            npsTrend,
+            overallResults,
+        };
+    },
+};
+
+module.exports = dashboardRepository;
+: 'rating_1_5', ratingValue: { [Op.lte]: 2 } };
+                    break;
+                case 'cadastros':
+                    return await Client.findAll({ where: whereClause, order: [['createdAt', 'DESC']] });
+                case 'cupons gerados':
+                    return await Cupom.findAll({ where: whereClause, include: [{ model: Client, as: 'client', attributes: ['name'] }], order: [['createdAt', 'DESC']] });
+                case 'cupons utilizados':
+                    const usedWhere = { ...whereClause, status: 'used' };
+                    if (whereClause.createdAt) {
+                        usedWhere.updatedAt = whereClause.createdAt;
+                        delete usedWhere.createdAt;
+                    }
+                    return await Cupom.findAll({ where: usedWhere, include: [{ model: Client, as: 'client', attributes: ['name'] }], order: [['updatedAt', 'DESC']] });
+                default:
+                    return [];
+            }
+    
+            if (Object.keys(ratingWhere).length > 0) {
+                return await Resposta.findAll({
+                    where: { ...whereClause, ...ratingWhere },
+                    include: [
+                        { model: Client, as: 'client', attributes: ['name'] },
+                        { model: Pergunta, as: 'pergunta', attributes: ['text', 'type'] }
+                    ],
+                    order: [['createdAt', 'DESC']],
+                });
+            }
+    
+            return [];
+        },
+    
+        getAttendantDetailsById: async (tenantId, attendantId, startDate, endDate) => {
+            const whereClause = { atendenteId: attendantId };
+            if (tenantId) {
+                whereClause.tenantId = tenantId;
+            }
+    
+            const dateFilter = {};
+            if (startDate) dateFilter[Op.gte] = startDate;
+            if (endDate) dateFilter[Op.lte] = endDate;
+    
+            if (Object.keys(dateFilter).length > 0) {
+                whereClause.createdAt = dateFilter;
+            }
+    
+            const responses = await Resposta.findAll({
+                where: whereClause,
+                include: [
+                    { model: Client, as: 'client', attributes: ['name'] },
+                    { 
+                        model: Pergunta, 
+                        as: 'pergunta', 
+                        attributes: ['text', 'type']
+                    }
+                ],
+                order: [['createdAt', 'DESC']],
+            });
+    
+            const ratingResponses = responses.filter(r => r.ratingValue !== null && r.pergunta && r.pergunta.type.startsWith('rating'));
+    
+            const npsResult = ratingService.calculateNPS(ratingResponses);
+            const csatResult = ratingService.calculateCSAT(ratingResponses);
+            const attendant = await Atendente.findByPk(attendantId, { attributes: ['name'] });
+    
+            return {
+                attendantName: attendant ? attendant.name : 'Desconhecido',
+                nps: npsResult,
+                csat: csatResult,
+                totalResponses: responses.length,
+                responses,
+            };
+        },
+    
+        getResponseDetailsBySessionId: async (tenantId, sessionId) => {
+            const whereClause = { respondentSessionId: sessionId };
+            if (tenantId) {
+                whereClause.tenantId = tenantId;
+            }
+    
+            const responses = await Resposta.findAll({
+                where: whereClause,
+                include: [
+                    { model: Client, as: 'client', attributes: ['name'] },
+                    { model: Pergunta, as: 'pergunta', attributes: ['text'] }
+                ],
+                order: [['createdAt', 'ASC']],
+            });
+    
+            return responses;
+        },
+    
+        getMonthSummary: async (tenantId = null, startDate = null, endDate = null) => {
+            const whereClause = tenantId ? { tenantId } : {};
+            const dateFilter = {};
+            if (startDate) dateFilter[Op.gte] = new Date(startDate);
+            if (endDate) dateFilter[Op.lte] = new Date(endDate);
+    
+            if (Object.keys(dateFilter).length > 0) {
+                whereClause.createdAt = dateFilter;
+            }
+    
+            const npsResponses = await Resposta.findAll({
+                where: {
+                    ...whereClause,
+                    ratingValue: { [Op.ne]: null }
+                },
+                include: [{
+                    model: Pergunta,
+                    as: 'pergunta',
+                    attributes: ['type'],
+                    where: { type: 'rating_0_10' },
+                    required: true
+                }, {
+                    model: Client,
+                    as: 'client',
+                    attributes: ['id'] // We only need to check for its existence
+                }],
+                attributes: ['id', 'ratingValue', 'createdAt'],
+                order: [['createdAt', 'ASC']]
+            });
+    
+            // 1. Daily distribution and NPS
+            const dailyData = {};
+            let accumulatedPromoters = 0;
+            let accumulatedNeutrals = 0;
+            let accumulatedDetractors = 0;
+            let accumulatedTotal = 0;
+    
+            npsResponses.forEach(response => {
+                const day = response.createdAt.toISOString().split('T')[0];
+                if (!dailyData[day]) {
+                    dailyData[day] = { promoters: 0, neutrals: 0, detractors: 0, total: 0 };
+                }
+    
+                const classification = ratingService.classifyNPS(response.ratingValue);
+                if (classification) {
+                    dailyData[day][`${classification}s`]++;
+                    dailyData[day].total++;
+                }
+            });
+    
+            const dailyNps = Object.keys(dailyData).map(day => {
+                const dayData = dailyData[day];
+                const totalDaily = dayData.total;
+                const npsScore = totalDaily > 0 ? ((dayData.promoters / totalDaily) * 100) - ((dayData.detractors / totalDaily) * 100) : 0;
+                
+                accumulatedPromoters += dayData.promoters;
+                accumulatedNeutrals += dayData.neutrals;
+                accumulatedDetractors += dayData.detractors;
+                accumulatedTotal += dayData.total;
+                
+                const accumulatedNps = accumulatedTotal > 0 ? ((accumulatedPromoters / accumulatedTotal) * 100) - ((accumulatedDetractors / accumulatedTotal) * 100) : 0;
+    
+                return {
+                    date: day,
+                    promoters: dayData.promoters,
+                    neutrals: dayData.neutrals,
+                    detractors: dayData.detractors,
+                    nps: parseFloat(npsScore.toFixed(1)),
+                    accumulatedNps: parseFloat(accumulatedNps.toFixed(1))
+                };
+            });
+    
+            // 2. Peak response times
+            const responsesByHour = await Resposta.findAll({
+                where: whereClause,
+                attributes: [
+                    [fn('EXTRACT', literal('HOUR FROM "Resposta"."createdAt"')), 'hour'],
+                    [fn('COUNT', col('id')), 'count']
+                ],
+                group: [fn('EXTRACT', literal('HOUR FROM "Resposta"."createdAt"'))],
+                order: [[fn('EXTRACT', literal('HOUR FROM "Resposta"."createdAt"')), 'ASC']]
+            });
+            
+            const peakHours = responsesByHour.map(item => ({
+                hour: parseInt(item.dataValues.hour),
+                count: parseInt(item.dataValues.count)
+            }));
+    
+            // 3. Distribution by day of the week
+            const responsesByWeekday = await Resposta.findAll({
+                where: whereClause,
+                attributes: [
+                    [fn('EXTRACT', literal('ISODOW FROM "Resposta"."createdAt"')), 'weekday'], // 1=Monday, 7=Sunday
+                    [fn('COUNT', col('id')), 'count']
+                ],
+                group: [fn('EXTRACT', literal('ISODOW FROM "Resposta"."createdAt"'))],
+                order: [[fn('EXTRACT', literal('ISODOW FROM "Resposta"."createdAt"')), 'ASC']]
+            });
+    
+            const weekdays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+            const weekdayDistribution = responsesByWeekday.map(item => ({
+                day: weekdays[parseInt(item.dataValues.weekday) - 1],
+                count: parseInt(item.dataValues.count)
+            }));
+    
+            // 4. Total responses
+            const totalResponses = await Resposta.count({ where: whereClause });
+    
+            // 5. Registered vs. Unregistered
+            const registeredResponses = npsResponses.filter(r => r.client).length;
+            const unregisteredResponses = npsResponses.length - registeredResponses;
+            const clientProportion = {
+                registered: registeredResponses,
+                unregistered: unregisteredResponses,
+                total: npsResponses.length
+            };
+    
+            return {
+                dailyNps,
+                peakHours,
+                weekdayDistribution,
+                totalResponses,
+                clientProportion
+            };
+        },
+    getAttendantsPerformanceWithGoals: async (tenantId = null, startDate = null, endDate = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const allResponses = await Resposta.findAll({
+            where: { ...whereClause, ratingValue: { [Op.ne]: null } },
+            include: [
+                {
+                    model: Pergunta,
+                    as: 'pergunta',
+                    attributes: ['type'],
+                },
+                {
+                    model: Client,
+                    as: 'client',
+                    attributes: ['id'],
+                },
+                {
+                    model: Atendente,
+                    as: 'atendente',
+                    attributes: ['id', 'name'],
+                }
+            ]
+        });
+
+        const attendantPerformance = allResponses.reduce((acc, response) => {
+            if (response.atendente && response.atendente.id) {
+                const attendantId = response.atendente.id;
+                if (!acc[attendantId]) {
+                    acc[attendantId] = {
+                        id: attendantId,
+                        name: response.atendente.name,
+                        responses: [],
+                        uniqueClients: new Set(),
+                    };
+                }
+                acc[attendantId].responses.push(response);
+                if (response.client && response.client.id) {
+                    acc[attendantId].uniqueClients.add(response.client.id);
+                }
+            }
+            return acc;
+        }, {});
+
+        const attendantsWithPerformance = [];
+        for (const attendantStats of Object.values(attendantPerformance)) {
+            const npsResult = ratingService.calculateNPS(attendantStats.responses);
+            const csatResult = ratingService.calculateCSAT(attendantStats.responses);
+            const meta = await AtendenteMeta.findOne({
+                where: { atendenteId: attendantStats.id, tenantId: tenantId },
+            });
+
+            attendantsWithPerformance.push({
+                id: attendantStats.id,
+                name: attendantStats.name,
+                responses: attendantStats.responses.length,
+                currentNPS: npsResult.npsScore,
+                currentCSAT: csatResult.averageScore,
+                currentRegistrations: attendantStats.uniqueClients.size,
+                npsGoal: meta ? meta.npsGoal || 0 : 0,
+                csatGoal: meta ? meta.csatGoal || 0 : 0, // Assuming a csatGoal might exist
+                responsesGoal: meta ? meta.responsesGoal || 0 : 0,
+                registrationsGoal: meta ? meta.registrationsGoal || 0 : 0,
+            });
+        }
+
+        return attendantsWithPerformance;
+    },
+    getBirthdaysOfMonth: async (tenantId = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
+
+        const birthdays = await Client.findAll({
+            where: {
+                ...whereClause,
+                birthDate: {
+                    [Op.ne]: null,
+                },
+                [Op.and]: [
+                    Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('birthDate')), currentMonth),
+                ],
+            },
+            attributes: ['id', 'name', 'birthDate'],
+            order: [[Sequelize.fn('DAY', Sequelize.col('birthDate')), 'ASC']],
+        });
+
+        return birthdays.map(client => ({
+            id: client.id,
+            name: client.name,
+            birthDate: client.birthDate,
+            day: new Date(client.birthDate).getDate(),
+        }));
+    },
+    getDetailsByCategory: async (tenantId, category, startDate, endDate) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const categoryLower = category.toLowerCase();
+        let ratingWhere = {};
+
+        switch (categoryLower) {
+            case 'promotores':
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.gte]: 9 } };
+                break;
+            case 'neutros': // NPS Neutral
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.between]: [7, 8] } };
+                break;
+            case 'detratores':
+                ratingWhere = { '$pergunta.type$': 'rating_0_10', ratingValue: { [Op.lte]: 6 } };
+                break;
+            case 'satisfeitos': // CSAT Satisfied
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.gte]: 4 } };
+                break;
+            case 'neutros-csat': // CSAT Neutral
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.eq]: 3 } };
+                break;
+            case 'insatisfeitos': // CSAT Unsatisfied
+                ratingWhere = { '$pergunta.type$': 'rating_1_5', ratingValue: { [Op.lte]: 2 } };
+                break;
+            case 'cadastros':
+                return await Client.findAll({ where: whereClause, order: [['createdAt', 'DESC']] });
+            case 'cupons gerados':
+                return await Cupom.findAll({ where: whereClause, include: [{ model: Client, as: 'client', attributes: ['name'] }], order: [['createdAt', 'DESC']] });
+            case 'cupons utilizados':
+                const usedWhere = { ...whereClause, status: 'used' };
+                if (whereClause.createdAt) {
+                    usedWhere.updatedAt = whereClause.createdAt;
+                    delete usedWhere.createdAt;
+                }
+                return await Cupom.findAll({ where: usedWhere, include: [{ model: Client, as: 'client', attributes: ['name'] }], order: [['updatedAt', 'DESC']] });
+            default:
+                return [];
+        }
+
+        if (Object.keys(ratingWhere).length > 0) {
+            return await Resposta.findAll({
+                where: { ...whereClause, ...ratingWhere },
+                include: [
+                    { model: Client, as: 'client', attributes: ['name'] },
+                    { model: Pergunta, as: 'pergunta', attributes: ['text', 'type'] }
+                ],
+                order: [['createdAt', 'DESC']],
+            });
+        }
+
+        return [];
+    },
+
+    getAttendantDetailsById: async (tenantId, attendantId, startDate, endDate) => {
+        const whereClause = { atendenteId: attendantId };
+        if (tenantId) {
+            whereClause.tenantId = tenantId;
+        }
+
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const responses = await Resposta.findAll({
+            where: whereClause,
+            include: [
+                { model: Client, as: 'client', attributes: ['name'] },
+                { 
+                    model: Pergunta, 
+                    as: 'pergunta', 
+                    attributes: ['text', 'type']
+                }
+            ],
+            order: [['createdAt', 'DESC']],
+        });
+
+        const ratingResponses = responses.filter(r => r.ratingValue !== null && r.pergunta && r.pergunta.type.startsWith('rating'));
+
+        const npsResult = ratingService.calculateNPS(ratingResponses);
+        const csatResult = ratingService.calculateCSAT(ratingResponses);
+        const attendant = await Atendente.findByPk(attendantId, { attributes: ['name'] });
+
+        return {
+            attendantName: attendant ? attendant.name : 'Desconhecido',
+            nps: npsResult,
+            csat: csatResult,
+            totalResponses: responses.length,
+            responses,
+        };
+    },
+
+    getResponseDetailsBySessionId: async (tenantId, sessionId) => {
+        const whereClause = { respondentSessionId: sessionId };
+        if (tenantId) {
+            whereClause.tenantId = tenantId;
+        }
+
+        const responses = await Resposta.findAll({
+            where: whereClause,
+            include: [
+                { model: Client, as: 'client', attributes: ['name'] },
+                { model: Pergunta, as: 'pergunta', attributes: ['text'] }
+            ],
+            order: [['createdAt', 'ASC']],
+        });
+
+        return responses;
+    },
+
+    getMonthSummary: async (tenantId = null, startDate = null, endDate = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = new Date(startDate);
+        if (endDate) dateFilter[Op.lte] = new Date(endDate);
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const npsResponses = await Resposta.findAll({
+            where: {
+                ...whereClause,
+                ratingValue: { [Op.ne]: null }
+            },
+            include: [{
+                model: Pergunta,
+                as: 'pergunta',
+                attributes: ['type'],
+                where: { type: 'rating_0_10' },
+                required: true
+            }, {
+                model: Client,
+                as: 'client',
+                attributes: ['id'] // We only need to check for its existence
+            }],
+            attributes: ['id', 'ratingValue', 'createdAt'],
+            order: [['createdAt', 'ASC']]
+        });
+
+        // 1. Daily distribution and NPS
+        const dailyData = {};
+        let accumulatedPromoters = 0;
+        let accumulatedNeutrals = 0;
+        let accumulatedDetractors = 0;
+        let accumulatedTotal = 0;
+
+        npsResponses.forEach(response => {
+            const day = response.createdAt.toISOString().split('T')[0];
+            if (!dailyData[day]) {
+                dailyData[day] = { promoters: 0, neutrals: 0, detractors: 0, total: 0 };
+            }
+
+            const classification = ratingService.classifyNPS(response.ratingValue);
+            if (classification) {
+                dailyData[day][`${classification}s`]++;
+                dailyData[day].total++;
+            }
+        });
+
+        const dailyNps = Object.keys(dailyData).map(day => {
+            const dayData = dailyData[day];
+            const totalDaily = dayData.total;
+            const npsScore = totalDaily > 0 ? ((dayData.promoters / totalDaily) * 100) - ((dayData.detractors / totalDaily) * 100) : 0;
+            
+            accumulatedPromoters += dayData.promoters;
+            accumulatedNeutrals += dayData.neutrals;
+            accumulatedDetractors += dayData.detractors;
+            accumulatedTotal += dayData.total;
+            
+            const accumulatedNps = accumulatedTotal > 0 ? ((accumulatedPromoters / accumulatedTotal) * 100) - ((accumulatedDetractors / accumulatedTotal) * 100) : 0;
+
+            return {
+                date: day,
+                promoters: dayData.promoters,
+                neutrals: dayData.neutrals,
+                detractors: dayData.detractors,
+                nps: parseFloat(npsScore.toFixed(1)),
+                accumulatedNps: parseFloat(accumulatedNps.toFixed(1))
+            };
+        });
+
+        // 2. Peak response times
+        const responsesByHour = await Resposta.findAll({
+            where: whereClause,
+            attributes: [
+                [fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'hour'],
+                [fn('COUNT', col('id')), 'count']
+            ],
+            group: [fn('EXTRACT', literal('HOUR FROM "createdAt"'))],
+            order: [[fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'ASC']]
+        });
+        
+        const peakHours = responsesByHour.map(item => ({
+            hour: parseInt(item.dataValues.hour),
+            count: parseInt(item.dataValues.count)
+        }));
+
+        // 3. Distribution by day of the week
+        const responsesByWeekday = await Resposta.findAll({
+            where: whereClause,
+            attributes: [
+                [fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'weekday'], // 1=Monday, 7=Sunday
+                [fn('COUNT', col('id')), 'count']
+            ],
+            group: [fn('EXTRACT', literal('ISODOW FROM "createdAt"'))],
+            order: [[fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'ASC']]
+        });
+
+        const weekdays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+        const weekdayDistribution = responsesByWeekday.map(item => ({
+            day: weekdays[parseInt(item.dataValues.weekday) - 1],
+            count: parseInt(item.dataValues.count)
+        }));
+
+        // 4. Total responses
+        const totalResponses = await Resposta.count({ where: whereClause });
+
+        // 5. Registered vs. Unregistered
+        const registeredResponses = npsResponses.filter(r => r.client).length;
+        const unregisteredResponses = npsResponses.length - registeredResponses;
+        const clientProportion = {
+            registered: registeredResponses,
+            unregistered: unregisteredResponses,
+            total: npsResponses.length
+        };
+
+        return {
+            dailyNps,
+            peakHours,
+            weekdayDistribution,
+            totalResponses,
+            clientProportion
+        };
+    },
+
+    getMainDashboard: async function (tenantId = null, startDate = null, endDate = null, surveyId = null) {
+        // Ensure startDate and endDate are Date objects for calculations
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+
+        let npsTrendPeriod = 'day';
+        if (start && end) {
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays > 90) {
+                npsTrendPeriod = 'month';
+            } else if (diffDays > 31) {
+                npsTrendPeriod = 'week';
+            }
+        }
+
+        const summary = await this.getSummary(tenantId, startDate, endDate, surveyId);
+        const responseChart = await this.getResponseChart(tenantId, startDate, endDate, surveyId);
+        const attendantsPerformance = await this.getAttendantsPerformanceWithGoals(tenantId, startDate, endDate);
         const criteriaScores = await this.getCriteriaScores(tenantId, startDate, endDate, surveyId);
         const feedbacks = await this.getFeedbacks(tenantId, startDate, endDate, surveyId);
         const conversionChart = await this.getConversionChart(tenantId, startDate, endDate, surveyId);

@@ -56,8 +56,11 @@ const getRanking = async (tenantId = null, startDate = null, endDate = null, sur
     return formattedRanking || [];
 };
 
-const getAttendantsPerformanceWithGoals = async (tenantId = null, startDate = null, endDate = null) => {
+const getAttendantsPerformanceWithGoals = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
     const whereClause = tenantId ? { tenantId } : {};
+    if (surveyId) {
+        whereClause.pesquisaId = surveyId;
+    }
 
     const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
 

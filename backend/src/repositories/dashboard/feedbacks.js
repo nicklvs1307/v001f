@@ -67,15 +67,6 @@ const getWordCloudData = async (tenantId = null, startDate = null, endDate = nul
     const feedbacks = await Resposta.findAll({
         where: whereClause,
         attributes: ['textValue'],
-        include: [{
-            model: Pergunta,
-            as: 'pergunta',
-            attributes: [],
-            where: {
-                type: 'free_text'
-            },
-            required: true
-        }],
         limit: 2000,
     });
 

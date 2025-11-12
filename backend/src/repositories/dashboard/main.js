@@ -26,7 +26,7 @@ const getMainDashboard = async function (tenantId = null, startDate = null, endD
 
     const summary = await getSummary(tenantId, startDate, endDate, surveyId);
     const responseChart = await getResponseChart(tenantId, startDate, endDate, surveyId);
-    const attendantsPerformance = await getAttendantsPerformanceWithGoals(tenantId, startDate, endDate);
+    const attendantsPerformance = await getAttendantsPerformanceWithGoals(tenantId, startDate, endDate, surveyId);
     const criteriaScores = await getCriteriaScores(tenantId, startDate, endDate, surveyId);
     const feedbacks = await getFeedbacks(tenantId, startDate, endDate, surveyId);
     const conversionChart = await getConversionChart(tenantId, startDate, endDate, surveyId);

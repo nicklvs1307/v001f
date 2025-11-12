@@ -1,7 +1,11 @@
 AuthContext.js:28 AuthContext useEffect running
-main.d33aa066.js:2 [Violation] 'message' handler took 168ms
-react-dom.production.min.js:188 TypeError: Cannot read properties of undefined (reading 'map')
-    at c (KeyMetrics.js:8:22)
+[Violation] 'message' handler levou <N> ms
+[Violation] 'message' handler levou <N> ms
+[Violation] 'message' handler levou <N> ms
+[Violation] 'message' handler levou <N> ms
+[Violation] 'message' handler levou <N> ms
+react-dom.production.min.js:188 TypeError: t.map is not a function
+    at u (KeyMetrics.js:8:22)
     at gi (react-dom.production.min.js:160:137)
     at Sl (react-dom.production.min.js:289:337)
     at bc (react-dom.production.min.js:279:389)
@@ -22,8 +26,8 @@ Ac @ react-dom.production.min.js:280
 oc @ react-dom.production.min.js:269
 w @ scheduler.production.min.js:13
 P @ scheduler.production.min.js:14
-react-dom.production.min.js:282 Uncaught TypeError: Cannot read properties of undefined (reading 'map')
-    at c (KeyMetrics.js:8:22)
+react-dom.production.min.js:282 Uncaught TypeError: t.map is not a function
+    at u (KeyMetrics.js:8:22)
     at gi (react-dom.production.min.js:160:137)
     at Sl (react-dom.production.min.js:289:337)
     at bc (react-dom.production.min.js:279:389)
@@ -33,7 +37,7 @@ react-dom.production.min.js:282 Uncaught TypeError: Cannot read properties of un
     at oc (react-dom.production.min.js:267:429)
     at w (scheduler.production.min.js:13:203)
     at MessagePort.P (scheduler.production.min.js:14:128)
-c @ KeyMetrics.js:8
+u @ KeyMetrics.js:8
 gi @ react-dom.production.min.js:160
 Sl @ react-dom.production.min.js:289
 bc @ react-dom.production.min.js:279

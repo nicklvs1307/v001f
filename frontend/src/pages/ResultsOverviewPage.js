@@ -69,6 +69,15 @@ const ResultsOverviewPage = () => {
         );
     }
 
+    const keyMetricsData = data && data.summary ? [
+        { title: 'NPS Geral', value: data.summary.nps?.score?.toFixed(1) ?? 'N/A' },
+        { title: 'CSAT Geral (%)', value: data.summary.csat?.satisfactionRate?.toFixed(1) ?? 'N/A' },
+        { title: 'Total de Respostas', value: data.summary.totalResponses ?? 0 },
+        { title: 'Total de Cadastros', value: data.summary.totalUsers ?? 0 },
+        { title: 'Cupons Gerados', value: data.summary.couponsGenerated ?? 0 },
+        { title: 'Cupons Utilizados', value: data.summary.couponsUsed ?? 0 },
+    ] : [];
+
     return (
         <Box sx={{ flexGrow: 1, p: 3, backgroundColor: '#f4f6f8' }}>
             <Paper elevation={2} sx={{ p: 3, mb: 3, borderRadius: '16px' }}>
@@ -106,7 +115,7 @@ const ResultsOverviewPage = () => {
             ) : (
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <KeyMetrics metrics={data.summary} />
+                        <KeyMetrics metrics={keyMetricsData} />
                     </Grid>
 
                     <Grid item xs={12} lg={8}>

@@ -182,7 +182,7 @@ const getOverallResults = async function (tenantId = null, startDate = null, end
     const bottomAttendants = sortedAttendants.slice(-5).reverse();
 
     // 6. Respostas ao longo do tempo
-    const responseChartData = await getResponseChart(tenantId, null, null);
+    const responseChartData = await getResponseChart(tenantId, startDate, endDate, surveyId);
 
     return {
         overallNPS: overallNpsResult,

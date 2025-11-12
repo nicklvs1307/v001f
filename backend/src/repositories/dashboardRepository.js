@@ -651,30 +651,201 @@ const dashboardRepository = {
     },
 
         getNpsTrendData: async (tenantId = null, period = 'day', startDate = null, endDate = null, surveyId = null) => {
+        const whereClause = tenantId ? { tenantId, ratingValue: { [Op.ne]: null } } : { ratingValue: { [Op.ne]: null } };
+        if (surveyId) {
+            whereClause.pesquisaId = surveyId;
+        }
 
-            const whereClause = tenantId ? { tenantId, ratingValue: { [Op.ne]: null } } : { ratingValue: { [Op.ne]: null } };
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
 
-            if (surveyId) {
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
 
-                whereClause.pesquisaId = surveyId;
+        const trendData = await Resposta.findAll({
+            where: whereClause,
+            include: [{
+                model: Pergunta,
+                as: 'pergunta',
+                attributes: [],
+                where: {
+                    type: 'rating_0_10'
+                },
+                required: true
+            }],
+            attributes: [
+                [fn('date_trunc', period, col('createdAt')), 'period'],
+                [fn('SUM', literal('CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END')), 'promoters'],
+                [fn('SUM', literal('CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END')), 'detractors'],
+                [fn('COUNT', col('id')), 'total']
+            ],
+            group: [fn('date_trunc', period, col('createdAt'))],
+            order: [[fn('date_trunc', period, col('createdAt')), 'ASC']]
+        });
 
+        return trendData.map(item => {
+            const data = item.dataValues;
+            const promoters = parseInt(data.promoters) || 0;
+            const detractors = parseInt(data.detractors) || 0;
+            const total = parseInt(data.total) || 0;
+            let nps = 0;
+            if (total > 0) {
+                nps = ((promoters / total) * 100) - ((detractors / total) * 100);
             }
+            return {
+                period: new Date(data.period).toLocaleDateString('pt-BR'),
+                nps: parseFloat(nps.toFixed(1)),
+            };
+        });
+    },
 
-    
+    getCsatTrendData: async (tenantId = null, period = 'day', startDate = null, endDate = null, surveyId = null) => {
+        const whereClause = tenantId ? { tenantId, ratingValue: { [Op.ne]: null } } : { ratingValue: { [Op.ne]: null } };
+        if (surveyId) {
+            whereClause.pesquisaId = surveyId;
+        }
 
-            const dateFilter = {};
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
 
-            if (startDate) dateFilter[Op.gte] = startDate;
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
 
-            if (endDate) dateFilter[Op.lte] = endDate;
+        const trendData = await Resposta.findAll({
+            where: whereClause,
+            include: [{
+                model: Pergunta,
+                as: 'pergunta',
+                attributes: [],
+                where: {
+                    type: 'rating_1_5'
+                },
+                required: true
+            }],
+            attributes: [
+                [fn('date_trunc', period, col('createdAt')), 'period'],
+                [fn('SUM', literal('CASE WHEN "ratingValue" >= 4 THEN 1 ELSE 0 END')), 'satisfied'],
+                [fn('COUNT', col('id')), 'total']
+            ],
+            group: [fn('date_trunc', period, col('createdAt'))],
+            order: [[fn('date_trunc', period, col('createdAt')), 'ASC']]
+        });
 
-    
+        return trendData.map(item => {
+            const data = item.dataValues;
+            const satisfied = parseInt(data.satisfied) || 0;
+            const total = parseInt(data.total) || 0;
+            let satisfactionRate = 0;
+            if (total > 0) {
+                satisfactionRate = (satisfied / total) * 100;
+            }
+            return {
+                period: new Date(data.period).toLocaleDateString('pt-BR'),
+                satisfaction: parseFloat(satisfactionRate.toFixed(1)),
+            };
+        });
+    },
 
-                    if (Object.keys(dateFilter).length > 0) {
+    getResponseCountTrendData: async (tenantId = null, period = 'day', startDate = null, endDate = null, surveyId = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        if (surveyId) {
+            whereClause.pesquisaId = surveyId;
+        }
 
-    
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
 
-                        whereClause['$Resposta.createdAt
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const trendData = await Resposta.findAll({
+            where: whereClause,
+            attributes: [
+                [fn('date_trunc', period, col('createdAt')), 'period'],
+                [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'count']
+            ],
+            group: [fn('date_trunc', period, col('createdAt'))],
+            order: [[fn('date_trunc', period, col('createdAt')), 'ASC']]
+        });
+
+        return trendData.map(item => ({
+            period: new Date(item.dataValues.period).toLocaleDateString('pt-BR'),
+            responses: parseInt(item.dataValues.count),
+        }));
+    },
+
+    getRegistrationTrendData: async (tenantId = null, period = 'day', startDate = null, endDate = null, surveyId = null) => {
+        const whereClause = tenantId ? { tenantId } : {};
+        // surveyId is not directly applicable to Client model, so we might need a more complex query if we want to filter by survey
+        
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
+
+        const trendData = await Client.findAll({
+            where: whereClause,
+            attributes: [
+                [fn('date_trunc', period, col('createdAt')), 'period'],
+                [fn('COUNT', col('id')), 'count']
+            ],
+            group: [fn('date_trunc', period, col('createdAt'))],
+            order: [[fn('date_trunc', period, col('createdAt')), 'ASC']]
+        });
+
+        return trendData.map(item => ({
+            period: new Date(item.dataValues.period).toLocaleDateString('pt-BR'),
+            registrations: parseInt(item.dataValues.count),
+        }));
+    },
+
+    getEvolutionDashboard: async function (tenantId = null, period = 'day', startDate = null, endDate = null) {
+        const npsTrend = await this.getNpsTrendData(tenantId, period, startDate, endDate);
+        const csatTrend = await this.getCsatTrendData(tenantId, period, startDate, endDate);
+        const responseCountTrend = await this.getResponseCountTrendData(tenantId, period, startDate, endDate);
+        const registrationTrend = await this.getRegistrationTrendData(tenantId, period, startDate, endDate);
+
+        // Combine data into a single structure
+        const evolutionData = {};
+
+        const processTrend = (trend, key) => {
+            trend.forEach(item => {
+                if (!evolutionData[item.period]) {
+                    evolutionData[item.period] = { period: item.period };
+                }
+                evolutionData[item.period][key] = item[key];
+            });
+        };
+
+        processTrend(npsTrend, 'nps');
+        processTrend(csatTrend, 'satisfaction');
+        processTrend(responseCountTrend, 'responses');
+        processTrend(registrationTrend, 'registrations');
+
+        return Object.values(evolutionData).sort((a, b) => new Date(a.period.split('/').reverse().join('-')) - new Date(b.period.split('/').reverse().join('-')));
+    },
+
+    getNpsByDayOfWeek: async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
+        const whereClause = tenantId ? { tenantId, ratingValue: { [Op.ne]: null } } : { ratingValue: { [Op.ne]: null } };
+        if (surveyId) {
+            whereClause.pesquisaId = surveyId;
+        }
+        const dateFilter = {};
+        if (startDate) dateFilter[Op.gte] = startDate;
+        if (endDate) dateFilter[Op.lte] = endDate;
+
+        if (Object.keys(dateFilter).length > 0) {
+            whereClause.createdAt = dateFilter;
+        }
 
         const responses = await Resposta.findAll({
             where: whereClause,

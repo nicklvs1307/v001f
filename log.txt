@@ -1,8 +1,8 @@
 Postgres is up - executing command
 Server.js is being executed!
-/usr/src/app/src/repositories/dashboardRepository.js:673
-                whereClause['$Resposta.createdAt
-                            ^^^^^^^^^^^^^^^^^^^^
+/usr/src/app/src/repositories/dashboardRepository.js:677
+                        whereClause['$Resposta.createdAt
+                                    ^^^^^^^^^^^^^^^^^^^^
 SyntaxError: Invalid or unexpected token
     at internalCompileFunction (node:internal/vm:76:18)
     at wrapSafe (node:internal/modules/cjs/loader:1283:20)

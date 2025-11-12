@@ -1,49 +1,21 @@
 AuthContext.js:28 AuthContext useEffect running
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-react-dom.production.min.js:188 TypeError: t.map is not a function
-    at u (KeyMetrics.js:8:22)
-    at gi (react-dom.production.min.js:160:137)
-    at Sl (react-dom.production.min.js:289:337)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at oc (react-dom.production.min.js:267:429)
-    at w (scheduler.production.min.js:13:203)
-    at MessagePort.P (scheduler.production.min.js:14:128)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-qa @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-P @ scheduler.production.min.js:14
-react-dom.production.min.js:282 Uncaught TypeError: t.map is not a function
-    at u (KeyMetrics.js:8:22)
-    at gi (react-dom.production.min.js:160:137)
-    at Sl (react-dom.production.min.js:289:337)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at oc (react-dom.production.min.js:267:429)
-    at w (scheduler.production.min.js:13:203)
-    at MessagePort.P (scheduler.production.min.js:14:128)
-u @ KeyMetrics.js:8
-gi @ react-dom.production.min.js:160
-Sl @ react-dom.production.min.js:289
+react-dom.production.min.js:24 Error: <g> attribute transform: Expected number, "translate(NaN,NaN)".
+b @ react-dom.production.min.js:24
+$s @ react-dom.production.min.js:230
+xc @ react-dom.production.min.js:280
 bc @ react-dom.production.min.js:279
 vc @ react-dom.production.min.js:279
 gc @ react-dom.production.min.js:279
-ac @ react-dom.production.min.js:270
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+P @ scheduler.production.min.js:14
+react-dom.production.min.js:24 Error: <svg> attribute viewBox: Expected number, "0 0 undefined undefi…".
+b @ react-dom.production.min.js:24
+$s @ react-dom.production.min.js:230
+xc @ react-dom.production.min.js:280
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
 oc @ react-dom.production.min.js:267
 w @ scheduler.production.min.js:13
 P @ scheduler.production.min.js:14

@@ -84,7 +84,25 @@ const NuvemDePalavrasPage = () => {
         enableOptimizations: true,
     }), [theme]);
 
-    const hasWords = Array.isArray(words) && words.length > 0;
+    const processedWords = useMemo(() => {
+        if (!words || words.length === 0) {
+            return [];
+        }
+        // If all words have the same frequency, the scaling function in the library fails.
+        // We add a small differentiator to the most frequent word to prevent this.
+        const values = words.map(w => w.value);
+        const min = Math.min(...values);
+        const max = Math.max(...values);
+
+        if (min === max) {
+            const newWords = [...words];
+            newWords[0] = { ...newWords[0], value: newWords[0].value + 1 };
+            return newWords;
+        }
+        return words;
+    }, [words]);
+
+    const hasWords = Array.isArray(processedWords) && processedWords.length > 0;
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -156,7 +174,7 @@ const NuvemDePalavrasPage = () => {
                         <Typography color="error">{error}</Typography>
                     ) : hasWords ? (
                         <WordCloud 
-                            words={words.slice(0, 75)} 
+                            words={processedWords.slice(0, 75)} 
                             options={wordCloudOptions}
                         />
                     ) : (

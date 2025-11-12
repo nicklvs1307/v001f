@@ -109,7 +109,43 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
 
   const novoCupom = await cupomRepository.create(cupomData);
 
-  // Envio da mensagem de WhatsApp se a automação estiver ativa
+  res.status(200).json({
+    message: 'Parabéns! Você ganhou um prêmio!',
+    premio: {
+      id: premioGanhador.id,
+      nome: premioGanhador.nome,
+      descricao: premioGanhador.descricao,
+      recompensa: {
+        name: recompensa.name,
+        value: recompensa.value,
+        type: recompensa.type,
+      },
+    },
+    cupom: {
+      id: novoCupom.id, // Adicionado ID do cupom
+      codigo: novoCupom.codigo,
+      dataValidade: novoCupom.dataValidade,
+    },
+  });
+});
+
+exports.sendPrizeMessage = asyncHandler(async (req, res) => {
+  const { cupomId } = req.body;
+
+  if (!cupomId) {
+    throw new ApiError(400, 'ID do cupom é obrigatório.');
+  }
+
+  const cupom = await cupomRepository.getCupomById(cupomId);
+  if (!cupom) {
+    throw new ApiError(404, 'Cupom não encontrado.');
+  }
+
+  const { tenantId, cliente, recompensa } = cupom;
+
+  // O prêmio está no nome da recompensa nesse fluxo
+  const premioNome = recompensa.name; 
+
   try {
     console.log(`[RoletaController] Verificando se deve enviar mensagem de prêmio para o tenant ${tenantId}.`);
     const whatsappConfig = await WhatsappConfig.findOne({ where: { tenantId: tenantId } });
@@ -126,39 +162,19 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
       console.log(`[RoletaController] Todas as condições satisfeitas. Preparando para enviar a mensagem.`);
       let message = whatsappConfig.prizeMessageTemplate;
       message = message.replace('{{cliente}}', cliente.name.split(' ')[0]);
-      message = message.replace('{{premio}}', premioGanhador.nome);
-      message = message.replace('{{cupom}}', novoCupom.codigo);
+      message = message.replace('{{premio}}', premioNome);
+      message = message.replace('{{cupom}}', cupom.codigo);
 
       console.log(`[RoletaController] Mensagem final: "${message}"`);
-      await new Promise(resolve => setTimeout(resolve, 12000)); // Adicionando atraso de 12 segundos
       await whatsappService.sendTenantMessage(tenantId, cliente.phone, message);
       console.log(`[RoletaController] Chamada para sendTenantMessage concluída.`);
     }
   } catch (error) {
-    // A falha no envio do WhatsApp não deve impedir o cliente de ver seu prêmio.
-    // Apenas registramos o erro no console.
-    console.error(`[RoletaController] Falha ao tentar enviar mensagem de prêmio via WhatsApp para o tenant ${tenantId}. Erro:`,
-    error.message);
+    console.error(`[RoletaController] Falha ao tentar enviar mensagem de prêmio via WhatsApp para o tenant ${tenantId}. Erro:`, error.message);
+    // Não joga o erro para o cliente, pois o envio da mensagem é um processo secundário
   }
 
-  res.status(200).json({
-    message: 'Parabéns! Você ganhou um prêmio!',
-    premio: {
-      id: premioGanhador.id,
-      nome: premioGanhador.nome,
-      descricao: premioGanhador.descricao,
-      recompensa: {
-        name: recompensa.name,
-        value: recompensa.value,
-        type: recompensa.type,
-      },
-    },
-    cupom: {
-      codigo: novoCupom.codigo,
-      dataValidade: novoCupom.dataValidade,
-    },
-  });
-});
+  res.status(200).json({ message: 'Solicitação de envio de mensagem recebida.' });
 
 // @desc    Obter configuração da roleta (itens e probabilidades)
 // @route   GET /api/roleta/config

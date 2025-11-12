@@ -27,4 +27,6 @@ router.get('/config/:pesquisaId/:clientId', roletaController.getRoletaConfig);
 router.get('/spins/validate/:token', roletaSpinController.validateToken);
 router.post('/spins/spin/:token', roletaSpinController.spinRoleta);
 
+router.post('/send-prize-message', roletaController.sendPrizeMessage);
+
 module.exports = router;

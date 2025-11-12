@@ -163,6 +163,8 @@ const getAttendantDetailsById = async (tenantId, attendantId, startDate, endDate
 
 module.exports = {
     getRanking,
-    getAttendantsPerformanceWithGoals,
-    getAttendantDetailsById,
-};
+        getAttendantsPerformanceWithGoals,
+        getAttendantDetailsById,
+        getRanking,
+    };
+    

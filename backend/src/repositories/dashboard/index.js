@@ -7,6 +7,7 @@ const npsFunctions = require('./nps');
 const criteriaFunctions = require('./criteria');
 const overallFunctions = require('./overall');
 const mainFunctions = require('./main');
+const clientsFunctions = require('./clients');
 
 module.exports = {
     ...summaryFunctions,
@@ -18,4 +19,5 @@ module.exports = {
     ...criteriaFunctions,
     ...overallFunctions,
     ...mainFunctions,
+    ...clientsFunctions,
 };

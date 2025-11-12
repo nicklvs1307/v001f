@@ -1,17 +1,37 @@
 Postgres is up - executing command
 Server.js is being executed!
-/usr/src/app/src/repositories/dashboardRepository.js:918
-                    ratingWhere = { '$pergunta.type
-                                    ^^^^^^^^^^^^^^^
-SyntaxError: Invalid or unexpected token
-    at internalCompileFunction (node:internal/vm:76:18)
-    at wrapSafe (node:internal/modules/cjs/loader:1283:20)
-    at Module._compile (node:internal/modules/cjs/loader:1328:27)
+node:internal/modules/cjs/loader:1143
+
+  throw err;
+  ^
+Error: Cannot find module '../../../services/ratingService'
+Require stack:
+- /usr/src/app/src/repositories/dashboard/summary.js
+- /usr/src/app/src/repositories/dashboard/index.js
+- /usr/src/app/src/repositories/dashboardRepository.js
+- /usr/src/app/src/controllers/dashboardController.js
+- /usr/src/app/src/routes/dashboardRoutes.js
+- /usr/src/app/src/routes/index.js
+- /usr/src/app/src/server.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1140:15)
+    at Module._load (node:internal/modules/cjs/loader:981:27)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at Object.<anonymous> (/usr/src/app/src/repositories/dashboard/summary.js:3:23)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
     at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
     at Module.load (node:internal/modules/cjs/loader:1203:32)
     at Module._load (node:internal/modules/cjs/loader:1019:12)
-    at Module.require (node:internal/modules/cjs/loader:1231:19)
-    at require (node:internal/modules/helpers:177:18)
-    at Object.<anonymous> (/usr/src/app/src/controllers/dashboardController.js:2:29)
-    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module.require (node:internal/modules/cjs/loader:1231:19) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/usr/src/app/src/repositories/dashboard/summary.js',
+    '/usr/src/app/src/repositories/dashboard/index.js',
+    '/usr/src/app/src/repositories/dashboardRepository.js',
+    '/usr/src/app/src/controllers/dashboardController.js',
+    '/usr/src/app/src/routes/dashboardRoutes.js',
+    '/usr/src/app/src/routes/index.js',
+    '/usr/src/app/src/server.js'
+  ]
+}
 Node.js v18.20.8

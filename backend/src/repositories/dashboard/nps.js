@@ -1,6 +1,6 @@
 const { Resposta, Pergunta } = require('../../../models');
 const { Op } = require('sequelize');
-const ratingService = require('../../../services/ratingService');
+const ratingService = require('../../services/ratingService');
 
 const getNpsByDayOfWeek = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
     const whereClause = tenantId ? { tenantId, ratingValue: { [Op.ne]: null } } : { ratingValue: { [Op.ne]: null } };

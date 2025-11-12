@@ -1,6 +1,6 @@
 const { Resposta, Pergunta, Criterio, Client, Atendente, AtendenteMeta } = require('../../../models');
 const { Op } = require('sequelize');
-const ratingService = require('../../../services/ratingService');
+const ratingService = require('../../services/ratingService');
 const { getResponseChart } = require('./charts');
 
 const getOverallResults = async function (tenantId = null, startDate = null, endDate = null, surveyId = null) {

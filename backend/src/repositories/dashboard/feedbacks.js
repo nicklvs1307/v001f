@@ -1,7 +1,7 @@
 const { Resposta, Pergunta, Client } = require('../../../models');
 const { Op } = require('sequelize');
 const { PorterStemmerPt } = require('natural');
-const stopwords = require('../../../utils/stopwords');
+const stopwords = require('../../utils/stopwords');
 
 const getFeedbacks = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
     const whereClause = tenantId ? { tenantId, textValue: { [Op.ne]: null, [Op.ne]: '' } } : { textValue: { [Op.ne]: null, [Op.ne]: '' } };

@@ -1,6 +1,6 @@
 const { Resposta, Atendente, AtendenteMeta, Pergunta, Client } = require('../../../models');
 const { Sequelize, Op } = require('sequelize');
-const ratingService = require('../../../services/ratingService');
+const ratingService = require('../../services/ratingService');
 
 const { fn, col, literal } = Sequelize;
 

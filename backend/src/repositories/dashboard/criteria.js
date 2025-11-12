@@ -1,6 +1,6 @@
 const { Resposta, Pergunta, Criterio } = require('../../../models');
 const { Op } = require('sequelize');
-const ratingService = require('../../../services/ratingService');
+const ratingService = require('../../services/ratingService');
 
 const getCriteriaScores = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
     const responseWhereClause = { ratingValue: { [Op.ne]: null } };

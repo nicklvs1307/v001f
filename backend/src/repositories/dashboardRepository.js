@@ -164,11 +164,11 @@ const dashboardRepository = {
         const responsesByPeriod = await Resposta.findAll({
             where: whereClause,
             attributes: [
-                [fn('date_trunc', period, col('createdAt')), 'period'],
+                [fn('date_trunc', period, col('Resposta.createdAt')), 'period'],
                 [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'count']
             ],
-            group: [fn('date_trunc', period, col('createdAt'))],
-            order: [[fn('date_trunc', period, col('createdAt')), 'ASC']]
+            group: [fn('date_trunc', period, col('Resposta.createdAt'))],
+            order: [[fn('date_trunc', period, col('Resposta.createdAt')), 'ASC']]
         });
     
         const chartData = [];
@@ -676,13 +676,13 @@ const dashboardRepository = {
                 required: true
             }],
             attributes: [
-                [fn('date_trunc', period, col('createdAt')), 'period'],
+                [fn('date_trunc', period, col('Resposta.createdAt')), 'period'],
                 [fn('SUM', literal('CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END')), 'promoters'],
                 [fn('SUM', literal('CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END')), 'detractors'],
                 [fn('COUNT', col('id')), 'total']
             ],
-            group: [fn('date_trunc', period, col('createdAt'))],
-            order: [[fn('date_trunc', period, col('createdAt')), 'ASC']]
+            group: [fn('date_trunc', period, col('Resposta.createdAt'))],
+            order: [[fn('date_trunc', period, col('Resposta.createdAt')), 'ASC']]
         });
 
         return trendData.map(item => {
@@ -727,12 +727,12 @@ const dashboardRepository = {
                 required: true
             }],
             attributes: [
-                [fn('date_trunc', period, col('createdAt')), 'period'],
+                [fn('date_trunc', period, col('Resposta.createdAt')), 'period'],
                 [fn('SUM', literal('CASE WHEN "ratingValue" >= 4 THEN 1 ELSE 0 END')), 'satisfied'],
                 [fn('COUNT', col('id')), 'total']
             ],
-            group: [fn('date_trunc', period, col('createdAt'))],
-            order: [[fn('date_trunc', period, col('createdAt')), 'ASC']]
+            group: [fn('date_trunc', period, col('Resposta.createdAt'))],
+            order: [[fn('date_trunc', period, col('Resposta.createdAt')), 'ASC']]
         });
 
         return trendData.map(item => {
@@ -767,11 +767,11 @@ const dashboardRepository = {
         const trendData = await Resposta.findAll({
             where: whereClause,
             attributes: [
-                [fn('date_trunc', period, col('createdAt')), 'period'],
+                [fn('date_trunc', period, col('Resposta.createdAt')), 'period'],
                 [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'count']
             ],
-            group: [fn('date_trunc', period, col('createdAt'))],
-            order: [[fn('date_trunc', period, col('createdAt')), 'ASC']]
+            group: [fn('date_trunc', period, col('Resposta.createdAt'))],
+            order: [[fn('date_trunc', period, col('Resposta.createdAt')), 'ASC']]
         });
 
         return trendData.map(item => ({
@@ -1197,11 +1197,11 @@ const dashboardRepository = {
         const responsesByHour = await Resposta.findAll({
             where: whereClause,
             attributes: [
-                [fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'hour'],
+                [fn('EXTRACT', literal('HOUR FROM "Resposta"."createdAt"')), 'hour'],
                 [fn('COUNT', col('id')), 'count']
             ],
-            group: [fn('EXTRACT', literal('HOUR FROM "createdAt"'))],
-            order: [[fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'ASC']]
+            group: [fn('EXTRACT', literal('HOUR FROM "Resposta"."createdAt"'))],
+            order: [[fn('EXTRACT', literal('HOUR FROM "Resposta"."createdAt"')), 'ASC']]
         });
         
         const peakHours = responsesByHour.map(item => ({
@@ -1213,11 +1213,11 @@ const dashboardRepository = {
         const responsesByWeekday = await Resposta.findAll({
             where: whereClause,
             attributes: [
-                [fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'weekday'], // 1=Monday, 7=Sunday
+                [fn('EXTRACT', literal('ISODOW FROM "Resposta"."createdAt"')), 'weekday'], // 1=Monday, 7=Sunday
                 [fn('COUNT', col('id')), 'count']
             ],
-            group: [fn('EXTRACT', literal('ISODOW FROM "createdAt"'))],
-            order: [[fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'ASC']]
+            group: [fn('EXTRACT', literal('ISODOW FROM "Resposta"."createdAt"'))],
+            order: [[fn('EXTRACT', literal('ISODOW FROM "Resposta"."createdAt"')), 'ASC']]
         });
 
         const weekdays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];

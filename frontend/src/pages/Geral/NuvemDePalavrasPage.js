@@ -84,6 +84,8 @@ const NuvemDePalavrasPage = () => {
         enableOptimizations: true,
     }), [theme]);
 
+    const hasWords = Array.isArray(words) && words.length > 0;
+
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Card sx={{ mb: 3, p: 2 }}>
@@ -140,18 +142,23 @@ const NuvemDePalavrasPage = () => {
             </Card>
 
             <Card>
-                <CardContent sx={{ height: 600, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <CardContent sx={{ 
+                    height: 600, 
+                    ...(!hasWords && {
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    })
+                }}>
                     {loading ? (
                         <CircularProgress />
                     ) : error ? (
                         <Typography color="error">{error}</Typography>
-                    ) : Array.isArray(words) && words.length > 0 ? (
-                        <ResponsiveContainer width="100%" height="100%">
-                            <WordCloud 
-                                words={words.slice(0, 75)} 
-                                options={wordCloudOptions}
-                            />
-                        </ResponsiveContainer>
+                    ) : hasWords ? (
+                        <WordCloud 
+                            words={words.slice(0, 75)} 
+                            options={wordCloudOptions}
+                        />
                     ) : (
                         <Typography>Nenhuma palavra encontrada para o período selecionado.</Typography>
                     )}

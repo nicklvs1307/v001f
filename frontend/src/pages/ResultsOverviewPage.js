@@ -106,7 +106,7 @@ const ResultsOverviewPage = () => {
             ) : (
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <KeyMetrics data={data.summary} />
+                        <KeyMetrics metrics={data.summary} />
                     </Grid>
 
                     <Grid item xs={12} lg={8}>

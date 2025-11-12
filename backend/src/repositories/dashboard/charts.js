@@ -3,23 +3,39 @@ const { Sequelize, Op } = require('sequelize');
 
 const { fn, col, literal } = Sequelize;
 
+const buildDateFilter = (startDate, endDate) => {
+    const filter = {};
+    if (startDate) {
+        const startOfDay = new Date(startDate);
+        startOfDay.setUTCHours(0, 0, 0, 0);
+        filter[Op.gte] = startOfDay;
+    }
+    if (endDate) {
+        const endOfDay = new Date(endDate);
+        endOfDay.setUTCHours(23, 59, 59, 999);
+        filter[Op.lte] = endOfDay;
+    }
+    return filter;
+};
+
 const getResponseChart = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
     const whereClause = tenantId ? { tenantId } : {};
     if (surveyId) {
         whereClause.pesquisaId = surveyId;
     }
 
+    let start, end;
     // Default to last 7 days if no dates are provided
     if (!startDate || !endDate) {
-        endDate = new Date();
-        startDate = new Date();
-        startDate.setDate(endDate.getDate() - 6);
+        end = new Date();
+        start = new Date();
+        start.setDate(end.getDate() - 6);
     } else {
-        startDate = new Date(startDate);
-        endDate = new Date(endDate);
+        start = new Date(startDate);
+        end = new Date(endDate);
     }
 
-    const diffTime = Math.abs(endDate - startDate);
+    const diffTime = Math.abs(end - start);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     let period = 'day';
@@ -29,10 +45,7 @@ const getResponseChart = async (tenantId = null, startDate = null, endDate = nul
         period = 'week';
     }
 
-    whereClause.createdAt = {
-        [Op.gte]: startDate,
-        [Op.lte]: endDate
-    };
+    whereClause.createdAt = buildDateFilter(start, end);
 
     const responsesByPeriod = await Resposta.findAll({
         where: whereClause,
@@ -50,8 +63,8 @@ const getResponseChart = async (tenantId = null, startDate = null, endDate = nul
         parseInt(item.dataValues.count)
     ]));
 
-    let currentDate = new Date(startDate);
-    while (currentDate <= endDate) {
+    let currentDate = new Date(start);
+    while (currentDate <= end) {
         const formattedDate = currentDate.toISOString().split('T')[0];
         let name;
         
@@ -104,11 +117,9 @@ const getConversionChart = async (tenantId = null, startDate = null, endDate = n
     if (surveyId) {
         whereClause.pesquisaId = surveyId;
     }
-    const dateFilter = {};
-    if (startDate) dateFilter[Op.gte] = startDate;
-    if (endDate) dateFilter[Op.lte] = endDate;
+    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
 
-    if (Object.keys(dateFilter).length > 0) {
+    if (dateFilter) {
         whereClause.createdAt = dateFilter;
     }
 
@@ -122,7 +133,7 @@ const getConversionChart = async (tenantId = null, startDate = null, endDate = n
 
     const couponsUsedWhere = { status: 'used' };
     if (tenantId) couponsUsedWhere.tenantId = tenantId;
-    if (Object.keys(dateFilter).length > 0) {
+    if (dateFilter) {
         couponsUsedWhere.updatedAt = dateFilter;
     }
     const couponsUsed = await Cupom.count({ where: couponsUsedWhere });
@@ -141,11 +152,9 @@ const getNpsTrendData = async (tenantId = null, period = 'day', startDate = null
         whereClause.pesquisaId = surveyId;
     }
 
-    const dateFilter = {};
-    if (startDate) dateFilter[Op.gte] = startDate;
-    if (endDate) dateFilter[Op.lte] = endDate;
+    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
 
-    if (Object.keys(dateFilter).length > 0) {
+    if (dateFilter) {
         whereClause.createdAt = dateFilter;
     }
 
@@ -192,11 +201,9 @@ const getCsatTrendData = async (tenantId = null, period = 'day', startDate = nul
         whereClause.pesquisaId = surveyId;
     }
 
-    const dateFilter = {};
-    if (startDate) dateFilter[Op.gte] = startDate;
-    if (endDate) dateFilter[Op.lte] = endDate;
+    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
 
-    if (Object.keys(dateFilter).length > 0) {
+    if (dateFilter) {
         whereClause.createdAt = dateFilter;
     }
 
@@ -241,11 +248,9 @@ const getResponseCountTrendData = async (tenantId = null, period = 'day', startD
         whereClause.pesquisaId = surveyId;
     }
 
-    const dateFilter = {};
-    if (startDate) dateFilter[Op.gte] = startDate;
-    if (endDate) dateFilter[Op.lte] = endDate;
+    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
 
-    if (Object.keys(dateFilter).length > 0) {
+    if (dateFilter) {
         whereClause.createdAt = dateFilter;
     }
 
@@ -269,11 +274,9 @@ const getRegistrationTrendData = async (tenantId = null, period = 'day', startDa
     const whereClause = tenantId ? { tenantId } : {};
     // surveyId is not directly applicable to Client model, so we might need a more complex query if we want to filter by survey
     
-    const dateFilter = {};
-    if (startDate) dateFilter[Op.gte] = startDate;
-    if (endDate) dateFilter[Op.lte] = endDate;
+    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
 
-    if (Object.keys(dateFilter).length > 0) {
+    if (dateFilter) {
         whereClause.createdAt = dateFilter;
     }
 

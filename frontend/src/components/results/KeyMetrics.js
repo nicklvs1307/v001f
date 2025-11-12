@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid, Card, CardContent, Typography, Box } from '@mui/material';
 import { ArrowUpward, ArrowDownward } from '@mui/icons-material';
 
-const KeyMetrics = ({ metrics }) => {
+const KeyMetrics = ({ metrics = [] }) => {
     return (
         <Grid container spacing={3} sx={{ mb: 3 }}>
             {metrics.map((metric, index) => (

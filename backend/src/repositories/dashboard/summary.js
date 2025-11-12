@@ -4,27 +4,30 @@ const ratingService = require('../../services/ratingService');
 
 const { fn, col, literal } = Sequelize;
 
-const getSummary = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
-    const dateFilter = {};
+const buildDateFilter = (startDate, endDate) => {
+    const filter = {};
     if (startDate) {
-        dateFilter[Op.gte] = startDate;
+        const startOfDay = new Date(startDate);
+        startOfDay.setUTCHours(0, 0, 0, 0);
+        filter[Op.gte] = startOfDay;
     }
     if (endDate) {
-        dateFilter[Op.lte] = endDate;
+        const endOfDay = new Date(endDate);
+        endOfDay.setUTCHours(23, 59, 59, 999);
+        filter[Op.lte] = endOfDay;
     }
+    return filter;
+};
+
+const getSummary = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
+    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
 
     const ratingResponsesWhere = {
         ratingValue: { [Op.ne]: null }
     };
-    if (tenantId) {
-        ratingResponsesWhere.tenantId = tenantId;
-    }
-    if (surveyId) {
-        ratingResponsesWhere.pesquisaId = surveyId;
-    }
-    if (startDate || endDate) {
-        ratingResponsesWhere.createdAt = dateFilter;
-    }
+    if (tenantId) ratingResponsesWhere.tenantId = tenantId;
+    if (surveyId) ratingResponsesWhere.pesquisaId = surveyId;
+    if (dateFilter) ratingResponsesWhere.createdAt = dateFilter;
 
     const ratingResponses = await Resposta.findAll({
         where: ratingResponsesWhere,
@@ -52,50 +55,30 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
         return responseDate.getMonth() === currentMonth && responseDate.getFullYear() === currentYear && r.ratingValue >= 9;
     }).length;
     
-    const totalResponsesWhere = {            respondentSessionId: { [Op.ne]: null }
+    const totalResponsesWhere = {
+        respondentSessionId: { [Op.ne]: null }
     };
-    if (tenantId) {
-        totalResponsesWhere.tenantId = tenantId;
-    }
-    if (surveyId) {
-        totalResponsesWhere.pesquisaId = surveyId;
-    }
-    if (startDate || endDate) {
-        totalResponsesWhere.createdAt = dateFilter;
-    }
+    if (tenantId) totalResponsesWhere.tenantId = tenantId;
+    if (surveyId) totalResponsesWhere.pesquisaId = surveyId;
+    if (dateFilter) totalResponsesWhere.createdAt = dateFilter;
     const totalResponses = await Resposta.count({ where: totalResponsesWhere, distinct: true, col: 'respondentSessionId' });
     
     const clientWhereClause = tenantId ? { tenantId } : {};
     if (surveyId) {
         // This might not be what you want - it counts all clients, not just those who responded to the survey
     }
-    if (startDate || endDate) {
-        clientWhereClause.createdAt = dateFilter;
-    }
+    if (dateFilter) clientWhereClause.createdAt = dateFilter;
     const totalUsers = await Client.count({ where: clientWhereClause });
 
     const couponsGeneratedWhere = tenantId ? { tenantId } : {};
-    if (surveyId) {
-        couponsGeneratedWhere.pesquisaId = surveyId;
-    }
-    if (startDate || endDate) {
-        couponsGeneratedWhere.createdAt = dateFilter;
-    }
+    if (surveyId) couponsGeneratedWhere.pesquisaId = surveyId;
+    if (dateFilter) couponsGeneratedWhere.createdAt = dateFilter;
     const couponsGenerated = await Cupom.count({ where: couponsGeneratedWhere });
 
     const couponsUsedWhere = { status: 'used' };
-    if (tenantId) {
-        couponsUsedWhere.tenantId = tenantId;
-    }
-    if (surveyId) {
-        couponsUsedWhere.pesquisaId = surveyId;
-    }
-    if (startDate || endDate) {
-        const dateFilterForUpdatedAt = {};
-        if (startDate) dateFilterForUpdatedAt[Op.gte] = startDate;
-        if (endDate) dateFilterForUpdatedAt[Op.lte] = endDate;
-        couponsUsedWhere.updatedAt = dateFilterForUpdatedAt;
-    }
+    if (tenantId) couponsUsedWhere.tenantId = tenantId;
+    if (surveyId) couponsUsedWhere.pesquisaId = surveyId;
+    if (dateFilter) couponsUsedWhere.updatedAt = dateFilter;
     const couponsUsed = await Cupom.count({ where: couponsUsedWhere });
 
     return {

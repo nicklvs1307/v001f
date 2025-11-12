@@ -175,6 +175,7 @@ exports.sendPrizeMessage = asyncHandler(async (req, res) => {
   }
 
   res.status(200).json({ message: 'Solicitação de envio de mensagem recebida.' });
+});
 
 // @desc    Obter configuração da roleta (itens e probabilidades)
 // @route   GET /api/roleta/config

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Container,
   Typography,
@@ -28,6 +28,7 @@ import {
   Grid,
   Divider,
 } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -41,6 +42,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import cupomService from '../services/cupomService';
 import recompensaService from '../services/recompensaService';
+import { debounce } from 'lodash';
 
 const CupomListPage = () => {
   const [cupons, setCupons] = useState([]);
@@ -55,23 +57,32 @@ const CupomListPage = () => {
   });
   const [selectedCupom, setSelectedCupom] = useState(null);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const [filters, setFilters] = useState({
+    search: '',
+    status: '',
+    recompensaId: '',
+    startDate: null,
+    endDate: null,
+  });
 
-  useEffect(() => {
-    fetchCupons();
-    fetchRecompensas();
-  }, []);
-
-  const fetchCupons = async () => {
+  const fetchCupons = useCallback(async (appliedFilters) => {
     try {
       setLoading(true);
-      const data = await cupomService.getAllCupons();
+      const data = await cupomService.getAllCupons(appliedFilters);
       setCupons(Array.isArray(data) ? data : []);
     } catch (err) {
       setError(err.message || 'Erro ao buscar cupons.');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  const debouncedFetch = useCallback(debounce(fetchCupons, 500), [fetchCupons]);
+
+  useEffect(() => {
+    debouncedFetch(filters);
+    fetchRecompensas();
+  }, [filters, debouncedFetch]);
 
   const fetchRecompensas = async () => {
     try {
@@ -80,6 +91,25 @@ const CupomListPage = () => {
     } catch (err) {
       console.error('Erro ao buscar recompensas:', err);
     }
+  };
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleDateChange = (name, date) => {
+    setFilters((prev) => ({ ...prev, [name]: date }));
+  };
+
+  const handleClearFilters = () => {
+    setFilters({
+      search: '',
+      status: '',
+      recompensaId: '',
+      startDate: null,
+      endDate: null,
+    });
   };
 
   const handleOpenGenerateForm = () => {
@@ -106,7 +136,7 @@ const CupomListPage = () => {
   const handleGenerateCupomSubmit = async () => {
     try {
       await cupomService.generateCupom(newCupomData);
-      fetchCupons();
+      fetchCupons(filters);
       handleCloseGenerateForm();
     } catch (err) {
     }
@@ -177,6 +207,80 @@ const CupomListPage = () => {
           Gerar Novo Cupom
         </Button>
       </Box>
+
+      <Paper elevation={2} sx={{ p: 2, mb: 3 }}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              label="Pesquisar por prêmio ou cliente"
+              name="search"
+              value={filters.search}
+              onChange={handleFilterChange}
+              variant="outlined"
+              size="small"
+            />
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <FormControl fullWidth size="small">
+              <InputLabel>Status</InputLabel>
+              <Select
+                name="status"
+                value={filters.status}
+                onChange={handleFilterChange}
+                label="Status"
+              >
+                <MenuItem value="">Todos</MenuItem>
+                <MenuItem value="active">Ativo</MenuItem>
+                <MenuItem value="used">Utilizado</MenuItem>
+                <MenuItem value="expired">Expirado</MenuItem>
+                <MenuItem value="pending">Pendente</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <FormControl fullWidth size="small">
+              <InputLabel>Recompensa</InputLabel>
+              <Select
+                name="recompensaId"
+                value={filters.recompensaId}
+                onChange={handleFilterChange}
+                label="Recompensa"
+              >
+                <MenuItem value="">Todas</MenuItem>
+                {recompensas.map((r) => (
+                  <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <DatePicker
+              label="Data Início"
+              value={filters.startDate}
+              onChange={(date) => handleDateChange('startDate', date)}
+              renderInput={(params) => <TextField {...params} fullWidth size="small" />}
+            />
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <DatePicker
+              label="Data Fim"
+              value={filters.endDate}
+              onChange={(date) => handleDateChange('endDate', date)}
+              renderInput={(params) => <TextField {...params} fullWidth size="small" />}
+            />
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <Button
+              fullWidth
+              variant="outlined"
+              onClick={handleClearFilters}
+            >
+              Limpar Filtros
+            </Button>
+          </Grid>
+        </Grid>
+      </Paper>
 
       <Paper elevation={2}>
         <TableContainer>

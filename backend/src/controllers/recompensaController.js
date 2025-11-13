@@ -116,6 +116,13 @@ const recompensaController = {
 
     res.status(200).json({ message: 'Recompensa deletada com sucesso.' });
   }),
+
+  getDashboard: asyncHandler(async (req, res) => {
+    const requestingUser = req.user;
+    const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+    const dashboardData = await recompensaRepository.getDashboardData(tenantId);
+    res.status(200).json(dashboardData);
+  }),
 };
 
 module.exports = recompensaController;

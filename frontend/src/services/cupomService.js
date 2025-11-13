@@ -8,8 +8,8 @@ const cupomService = {
     return response.data;
   },
 
-  getAllCupons: async () => {
-    const response = await apiAuthenticated.get(CUPOM_API_URL);
+  getAllCupons: async (params) => {
+    const response = await apiAuthenticated.get(CUPOM_API_URL, { params });
     return response.data;
   },
 

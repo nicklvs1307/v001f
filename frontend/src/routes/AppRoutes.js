@@ -28,6 +28,7 @@ const SurveyTemplatesPage = React.lazy(() => import('../pages/SurveyTemplatesPag
 const QuestionsPage = React.lazy(() => import('../pages/QuestionsPage'));
 const CriteriosPage = React.lazy(() => import('../pages/CriteriosPage'));
 const RewardsPage = React.lazy(() => import('../pages/RewardsPage'));
+const RewardsDashboardPage = React.lazy(() => import('../pages/RewardsDashboardPage'));
 const CouponsPage = React.lazy(() => import('../pages/CouponsPage'));
 const CampaignsPage = React.lazy(() => import('../pages/CampaignsPage'));
 const CampaignFormPage = React.lazy(() => import('../pages/CampaignFormPage'));
@@ -118,6 +119,7 @@ const AppRoutes = () => {
             <Route path="perguntas" element={<QuestionsPage />} />
             <Route path="criterios" element={<CriteriosPage />} />
             <Route path="recompensas" element={<RewardsPage />} />
+            <Route path="recompensas/dashboard" element={<RewardsDashboardPage />} />
             <Route path="cupons" element={<CouponsPage />} />
             <Route path="cupons/campanhas" element={<CampaignsPage />} />
             <Route path="cupons/campanhas/nova" element={<CampaignFormPage />} />

@@ -1,5 +1,5 @@
-const { Recompensa, Tenant } = require("../../models");
-const { Op } = require('sequelize');
+const { Recompensa, Tenant, Cupom } = require("../../models");
+const { Op, fn, col } = require('sequelize');
 
 const createRecompensa = async (tenantId, name, description, pointsRequired, active) => {
   return Recompensa.create({ tenantId, name, description, pointsRequired, active });
@@ -33,10 +33,47 @@ const deleteRecompensa = async (id, tenantId) => {
   return Recompensa.destroy({ where: { id, tenantId } });
 };
 
+const getDashboardData = async (tenantId) => {
+  const whereClause = tenantId ? { tenantId } : {};
+
+  const couponStatus = await Cupom.findAll({
+    where: whereClause,
+    attributes: [
+      'status',
+      [fn('COUNT', col('id')), 'count']
+    ],
+    group: ['status'],
+    raw: true,
+  });
+
+  const rewardsUsage = await Cupom.findAll({
+    where: whereClause,
+    attributes: [
+      [col('recompensa.name'), 'name'],
+      [fn('COUNT', col('Cupom.id')), 'count']
+    ],
+    include: [{
+      model: Recompensa,
+      as: 'recompensa',
+      attributes: [],
+      required: true,
+    }],
+    group: [col('recompensa.name')],
+    order: [[fn('COUNT', col('Cupom.id')), 'DESC']],
+    raw: true,
+  });
+
+  return {
+    couponStatus,
+    rewardsUsage,
+  };
+};
+
 module.exports = {
   createRecompensa,
   getAllRecompensas,
   findById,
   updateRecompensa,
   deleteRecompensa,
+  getDashboardData,
 };

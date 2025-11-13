@@ -10,17 +10,47 @@ class CupomRepository {
     return Cupom.create(cupomData);
   }
 
-  async getAllCupons(tenantId = null) {
+  async getAllCupons(tenantId = null, filters = {}) {
     const whereClause = tenantId ? { tenantId } : {};
+    const include = [
+      { model: Recompensa, as: 'recompensa' },
+      { model: Client, as: 'cliente' },
+    ];
+
+    if (filters.status) {
+      whereClause.status = filters.status;
+    }
+
+    if (filters.recompensaId) {
+      whereClause.recompensaId = filters.recompensaId;
+    }
+
+    if (filters.startDate && filters.endDate) {
+      whereClause.dataGeracao = {
+        [Op.between]: [new Date(filters.startDate), new Date(filters.endDate)],
+      };
+    }
+
+    if (filters.search) {
+      const searchTerm = `%${filters.search}%`;
+      whereClause[Op.or] = [
+        { '$recompensa.name$': { [Op.iLike]: searchTerm } },
+        { '$cliente.name$': { [Op.iLike]: searchTerm } },
+        { codigo: { [Op.iLike]: searchTerm } },
+      ];
+    }
+
     return Cupom.findAll({
       where: whereClause,
-      include: [{ model: Recompensa, as: 'recompensa' }, { model: Client, as: 'cliente' }],
+      include: include,
+      order: [['createdAt', 'DESC']],
     });
   }
 
   async getCuponsSummary(tenantId = null) {
     const whereClause = tenantId ? { tenantId } : {};
     const today = new Date();
+    const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
     const sevenDaysFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
 
     const totalCupons = await Cupom.count({ where: whereClause });
@@ -32,7 +62,7 @@ class CupomRepository {
     const expiredCupons = await Cupom.count({
       where: {
         ...whereClause,
-        status: 'pending',
+        status: { [Op.ne]: 'used' }, // Considera 'pending' e outros que não foram usados
         dataValidade: { [Op.lt]: today },
       },
     });
@@ -40,7 +70,7 @@ class CupomRepository {
     const activeCupons = await Cupom.count({
         where: {
             ...whereClause,
-            status: 'pending',
+            status: 'active',
             dataValidade: { [Op.gte]: today },
         }
     });
@@ -48,7 +78,7 @@ class CupomRepository {
     const expiringSoonCupons = await Cupom.count({
         where: {
             ...whereClause,
-            status: 'pending',
+            status: 'active',
             dataValidade: {
                 [Op.gte]: today,
                 [Op.lt]: sevenDaysFromNow,
@@ -76,6 +106,32 @@ class CupomRepository {
         count: parseInt(item.count, 10),
     }));
 
+    const dailyGenerated = await Cupom.findAll({
+      where: {
+        ...whereClause,
+        createdAt: {
+          [Op.gte]: thirtyDaysAgo,
+        },
+      },
+      attributes: [
+        [fn('DATE', col('createdAt')), 'date'],
+        [fn('COUNT', col('id')), 'count'],
+      ],
+      group: [fn('DATE', col('createdAt'))],
+      order: [[fn('DATE', col('createdAt')), 'ASC']],
+      raw: true,
+    });
+
+    const recentCupons = await Cupom.findAll({
+      where: whereClause,
+      limit: 10,
+      order: [['createdAt', 'DESC']],
+      include: [
+        { model: Recompensa, as: 'recompensa', attributes: ['name'] },
+        { model: Client, as: 'cliente', attributes: ['name'] },
+      ],
+    });
+
     return {
       totalCupons,
       usedCupons,
@@ -83,6 +139,8 @@ class CupomRepository {
       activeCupons,
       expiringSoonCupons,
       cuponsByType: formattedCuponsByType,
+      dailyGenerated,
+      recentCupons,
     };
   }
 

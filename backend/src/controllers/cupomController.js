@@ -40,7 +40,8 @@ const cupomController = {
   getAllCupons: asyncHandler(async (req, res) => {
     const requestingUser = req.user;
     const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
-    const cupons = await cupomRepository.getAllCupons(tenantId);
+    const filters = req.query;
+    const cupons = await cupomRepository.getAllCupons(tenantId, filters);
     res.status(200).json(cupons);
   }),
 

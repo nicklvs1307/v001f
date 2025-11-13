@@ -21,6 +21,7 @@ router.post(
   recompensaController.createRecompensa
 );
 router.get('/', authorize('recompensas:read'), recompensaController.getAllRecompensas);
+router.get('/dashboard', authorize('recompensas:read'), recompensaController.getDashboard);
 
 router
   .route('/:id')

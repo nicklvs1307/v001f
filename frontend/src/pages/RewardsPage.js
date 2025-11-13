@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Container,
   Typography,
@@ -34,6 +35,7 @@ const RecompensaListPage = () => {
   const [editingRecompensa, setEditingRecompensa] = useState(null);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [recompensaToDelete, setRecompensaToDelete] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchRecompensas();
@@ -99,14 +101,24 @@ const RecompensaListPage = () => {
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4" component="h1">Recompensas</Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={() => handleOpenForm()}
-        >
-          Nova Recompensa
-        </Button>
+        <Box>
+          <Button
+            variant="outlined"
+            color="primary"
+            sx={{ mr: 2 }}
+            onClick={() => navigate('/dashboard/recompensas/dashboard')}
+          >
+            Ver Dashboard
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={() => handleOpenForm()}
+          >
+            Nova Recompensa
+          </Button>
+        </Box>
       </Box>
 
       <Paper elevation={2}>

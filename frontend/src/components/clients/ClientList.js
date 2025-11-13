@@ -8,14 +8,16 @@ import ImportClientsModal from './ImportClientsModal';
 import { 
     Box, Typography, CircularProgress, Alert, Button, IconButton, 
     Grid, Card, CardActionArea, CardContent, CardActions, Avatar, 
-    TextField, Tooltip, TablePagination, Menu, MenuItem
+    TextField, Tooltip, TablePagination, Menu, MenuItem, Paper, Divider, Stack
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit'; 
 import DeleteIcon from '@mui/icons-material/Delete'; 
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import EventIcon from '@mui/icons-material/Event';
-import MoreVertIcon from '@mui/icons-material/MoreVert'; // Import MoreVertIcon
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { formatDateForDisplay } from '../../utils/dateUtils';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
 
 const ClientList = () => {
     const {
@@ -28,10 +30,10 @@ const ClientList = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
-    const [isImportModalOpen, setIsImportModalOpen] = useState(false); // State for the import modal
+    const [isImportModalOpen, setIsImportModalOpen] = useState(false);
     const [selectedClient, setSelectedClient] = useState(null);
     const [formError, setFormError] = useState('');
-    const [anchorEl, setAnchorEl] = useState(null); // State for the menu anchor
+    const [anchorEl, setAnchorEl] = useState(null);
 
     const handleOpenModal = (client = null) => {
         setSelectedClient(client);
@@ -57,7 +59,7 @@ const ClientList = () => {
 
     const handleOpenImportModal = () => {
         setIsImportModalOpen(true);
-        handleMenuClose(); // Close the menu after opening the modal
+        handleMenuClose();
     };
 
     const handleCloseImportModal = () => {
@@ -83,7 +85,7 @@ const ClientList = () => {
     };
 
     const handleCardClick = (id) => {
-        navigate(`/clientes/${id}`);
+        navigate(`/dashboard/clientes/${id}`);
     };
 
     const handleClientCreate = async (clientData) => {
@@ -119,79 +121,91 @@ const ClientList = () => {
 
     return (
         <Box sx={{ mt: 4 }}>
-            <Typography variant="h5" gutterBottom>Gerenciamento de Clientes</Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                <TextField
-                    label="Buscar Cliente"
-                    variant="outlined"
-                    size="small"
-                    value={filterText}
-                    onChange={handleFilterChange}
-                    sx={{ width: '40%' }}
-                />
-                <Box>
-                    <Button variant="contained" onClick={() => handleOpenModal()}>Adicionar Novo Cliente</Button>
-                    <IconButton
-                        aria-label="mais opções"
-                        aria-controls="client-options-menu"
-                        aria-haspopup="true"
-                        onClick={handleMenuOpen}
-                        color="inherit"
-                        sx={{ ml: 1 }}
-                    >
-                        <MoreVertIcon />
-                    </IconButton>
-                    <Menu
-                        id="client-options-menu"
-                        anchorEl={anchorEl}
-                        keepMounted
-                        open={Boolean(anchorEl)}
-                        onClose={handleMenuClose}
-                    >
-                        <MenuItem onClick={handleOpenImportModal}>Importar Clientes</MenuItem>
-                    </Menu>
-                </Box>
-            </Box>
-            {error && <Alert severity="error">{error}</Alert>}
+            <Paper sx={{ p: 2, mb: 3 }}>
+                <Grid container spacing={2} alignItems="center">
+                    <Grid item xs={12} sm={6} md={8}>
+                        <TextField
+                            label="Buscar Cliente por nome, e-mail ou telefone"
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            value={filterText}
+                            onChange={handleFilterChange}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <Button variant="contained" onClick={() => handleOpenModal()}>Adicionar Cliente</Button>
+                        <IconButton
+                            aria-label="mais opções"
+                            aria-controls="client-options-menu"
+                            aria-haspopup="true"
+                            onClick={handleMenuOpen}
+                            color="inherit"
+                            sx={{ ml: 1 }}
+                        >
+                            <MoreVertIcon />
+                        </IconButton>
+                        <Menu
+                            id="client-options-menu"
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={Boolean(anchorEl)}
+                            onClose={handleMenuClose}
+                        >
+                            <MenuItem onClick={handleOpenImportModal}>Importar Clientes</MenuItem>
+                        </Menu>
+                    </Grid>
+                </Grid>
+            </Paper>
+
+            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
             <Grid container spacing={3}>
                 {(clients || []).map((client) => (
                     <Grid item key={client.id} xs={12} sm={6} md={4}>
-                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', '&:hover': { boxShadow: 6 } }}>
                             <CardActionArea onClick={() => handleCardClick(client.id)} sx={{ flexGrow: 1 }}>
                                 <CardContent>
                                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                                        <Avatar sx={{ width: 56, height: 56, mr: 2, bgcolor: 'primary.main' }}>
+                                        <Avatar sx={{ width: 64, height: 64, mr: 2, bgcolor: 'primary.main' }}>
                                             {client.name.charAt(0).toUpperCase()}
                                         </Avatar>
-                                        <Box>
-                                            <Typography variant="h6">{client.name}</Typography>
-                                            <Typography variant="body2" color="text.secondary">{client.phone || 'Telefone não cadastrado'}</Typography>
-                                        </Box>
+                                        <Stack spacing={0.5}>
+                                            <Typography variant="h6" noWrap>{client.name}</Typography>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary' }}>
+                                                <PhoneIcon sx={{ mr: 1, fontSize: '1rem' }} />
+                                                <Typography variant="body2">{client.phone || 'N/A'}</Typography>
+                                            </Box>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary' }}>
+                                                <EmailIcon sx={{ mr: 1, fontSize: '1rem' }} />
+                                                <Typography variant="body2" noWrap>{client.email || 'N/A'}</Typography>
+                                            </Box>
+                                        </Stack>
                                     </Box>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, color: 'text.secondary' }}>
+                                    <Divider sx={{ my: 1.5 }} />
+                                    <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary' }}>
                                         <EventIcon sx={{ mr: 1, fontSize: '1rem' }} />
                                         <Typography variant="caption">
-                                            Última visita: {client.lastVisit ? formatDateForDisplay(client.lastVisit) : 'Nenhuma visita registrada'}
+                                            Última visita: {client.lastVisit ? formatDateForDisplay(client.lastVisit) : 'N/A'}
                                         </Typography>
                                     </Box>
                                 </CardContent>
                             </CardActionArea>
-                            <CardActions sx={{ justifyContent: 'flex-end' }}>
+                            <CardActions sx={{ justifyContent: 'flex-end', p: 1 }}>
                                 <Tooltip title="Enviar WhatsApp">
                                     <span>
-                                        <IconButton onClick={(e) => { e.stopPropagation(); handleOpenMessageModal(client); }} disabled={!client.phone}>
+                                        <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleOpenMessageModal(client); }} disabled={!client.phone}>
                                             <WhatsAppIcon />
                                         </IconButton>
                                     </span>
                                 </Tooltip>
                                 <Tooltip title="Editar">
-                                    <IconButton onClick={(e) => { e.stopPropagation(); handleOpenModal(client); }}>
+                                    <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleOpenModal(client); }}>
                                         <EditIcon />
                                     </IconButton>
                                 </Tooltip>
                                 <Tooltip title="Deletar">
-                                    <IconButton onClick={(e) => { e.stopPropagation(); handleOpenConfirm(client); }}>
+                                    <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleOpenConfirm(client); }}>
                                         <DeleteIcon />
                                     </IconButton>
                                 </Tooltip>
@@ -245,4 +259,3 @@ const ClientList = () => {
 };
 
 export default ClientList;
-

@@ -1,15 +1,37 @@
-import apiAuthenticated from "./apiAuthenticated";
+import apiAuthenticated from './apiAuthenticated';
 
-const API_URL = "/recompensas";
+const RECOMPENSA_API_URL = '/recompensas';
 
 const recompensaService = {
-  getAll: (activeOnly = false) => apiAuthenticated.get(`${API_URL}${activeOnly ? '?active=true' : ''}`),
+  create: async (recompensaData) => {
+    const response = await apiAuthenticated.post(RECOMPENSA_API_URL, recompensaData);
+    return response.data;
+  },
 
-  createRecompensa: (data) => apiAuthenticated.post(API_URL, data),
+  getAll: async (activeOnly = false) => {
+    const response = await apiAuthenticated.get(RECOMPENSA_API_URL, { params: { active: activeOnly } });
+    return response.data;
+  },
 
-  updateRecompensa: (id, data) => apiAuthenticated.put(`${API_URL}/${id}`, data),
+  getById: async (id) => {
+    const response = await apiAuthenticated.get(`${RECOMPENSA_API_URL}/${id}`);
+    return response.data;
+  },
 
-  deleteRecompensa: (id) => apiAuthenticated.delete(`${API_URL}/${id}`),
+  update: async (id, recompensaData) => {
+    const response = await apiAuthenticated.put(`${RECOMPENSA_API_URL}/${id}`, recompensaData);
+    return response.data;
+  },
+
+  delete: async (id) => {
+    const response = await apiAuthenticated.delete(`${RECOMPENSA_API_URL}/${id}`);
+    return response.data;
+  },
+
+  getRewardsDashboard: async () => {
+    const response = await apiAuthenticated.get(`${RECOMPENSA_API_URL}/dashboard`);
+    return response.data;
+  },
 };
 
 export default recompensaService;

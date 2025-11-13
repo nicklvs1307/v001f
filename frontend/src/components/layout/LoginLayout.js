@@ -17,8 +17,8 @@ background: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(https:
 
 const LoginContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
-  width: '900px',
-  height: '550px',
+  width: '800px',
+  height: '500px',
   background: 'rgba(255, 255, 255, 0.85)',
   borderRadius: theme.shape.borderRadius * 3,
   boxShadow: theme.shadows[5],
@@ -35,7 +35,7 @@ const WelcomeSection = styled(Box)(({ theme }) => ({
   flex: 1,
   background: 'transparent',
   color: 'white',
-  padding: theme.spacing(6),
+  padding: theme.spacing(4),
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
@@ -53,7 +53,7 @@ const WelcomeContent = styled(Box)({
 
 const LoginSection = styled(Box)(({ theme }) => ({
   flex: 1,
-  padding: theme.spacing(6),
+  padding: theme.spacing(4),
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
@@ -70,7 +70,7 @@ const LoginLayout = ({ children }) => {
               src={'/logo.png'}
               alt="Logo"
               sx={{
-                width: '150px',
+                width: '120px',
                 height: 'auto',
                 display: 'block',
                 margin: '0 auto 20px',

@@ -61,10 +61,12 @@ const HelpBotDialog = ({ open, handleClose }) => {
       elevation={5}
       sx={{
         position: 'fixed',
-        bottom: 20,
-        right: 20,
-        width: 350,
-        height: 500,
+        bottom: { xs: 10, sm: 20 },
+        right: { xs: 10, sm: 20 },
+        width: { xs: '90vw', sm: 350 }, // Use viewport width for small screens, fixed for larger
+        height: { xs: '80vh', sm: 500 }, // Use viewport height for small screens, fixed for larger
+        maxWidth: 400, // Max width for the dialog
+        maxHeight: 600, // Max height for the dialog
         display: 'flex',
         flexDirection: 'column',
         borderRadius: 2,

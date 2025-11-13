@@ -11,7 +11,7 @@ const StatCard = ({ title, value, icon }) => {
                 </Typography>
             </Box>
             {icon && (
-                <Box sx={{ fontSize: 60, color: 'primary.main' }}>
+                <Box sx={{ fontSize: 40, color: 'primary.main' }}>
                     {icon}
                 </Box>
             )}

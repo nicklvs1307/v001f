@@ -2,6 +2,9 @@ const { Tenant, WhatsappConfig } = require("../../models"); // Importa os modelo
 const { Op } = require('sequelize');
 
 const createTenant = async (tenantData) => {
+  if (tenantData.cnpj === '') {
+    tenantData.cnpj = null;
+  }
   const newTenant = await Tenant.create(tenantData, {
     returning: ['id', 'name', 'address', 'phone', 'email', 'cnpj', 'description', 'createdAt', 'updatedAt']
   });

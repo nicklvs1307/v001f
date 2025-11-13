@@ -194,7 +194,7 @@ const DashboardLayout = () => {
     const drawer = (
         <div>
             <Box sx={{ p: 2, textAlign: 'center' }}>
-                <img src="/logo.png" alt="Logo" style={{ maxHeight: '50px', width: 'auto' }} />
+                <img src="/logo.png" alt="Logo" style={{ maxHeight: '40px', width: 'auto' }} />
             </Box>
             <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.2)' }} />
             <List>
@@ -204,7 +204,7 @@ const DashboardLayout = () => {
                             onClick={() => item.children ? handleSubMenuClick(item.text) : navigate(item.path)}
                             selected={!item.children && location.pathname === item.path}
                         >
-                            <ListItemIcon>
+                            <ListItemIcon sx={{ color: 'text.primary' }}>
                                 {item.icon}
                             </ListItemIcon>
                             <ListItemText
@@ -240,7 +240,7 @@ const DashboardLayout = () => {
                                     {item.children.filter(child => child.roles.includes(user?.role?.name)).map((child) => (
                                         <ListItemButton
                                             key={child.text}
-                                            sx={{ pl: 4 }}
+                                            sx={{ pl: 3 }}
                                             onClick={() => navigate(child.path)}
                                             selected={location.pathname === child.path}
                                         >
@@ -413,7 +413,7 @@ const DashboardLayout = () => {
                 component="main"
                 sx={{
                     flexGrow: 1,
-                    p: 3,
+                    p: { xs: 1, sm: 2, md: 3 }, // Responsive padding
                     width: { sm: drawerOpen ? `calc(100% - ${drawerWidth}px)` : `calc(100% - ${collapsedDrawerWidth}px)` },
                     backgroundColor: 'background.default',
                     transition: (theme) => theme.transitions.create('width', { // Change 'margin' to 'width' for transition

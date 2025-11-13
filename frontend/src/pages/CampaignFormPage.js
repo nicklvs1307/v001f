@@ -379,7 +379,7 @@ const CampaignFormPage = () => {
           </Box>
 
           {activeTab === 0 && (
-            <Grid container spacing={4}>
+            <Grid container spacing={2}>
               <Grid item xs={12} md={7}>
                 <Typography variant="h6" gutterBottom>Editor da Campanha</Typography>
                 <TextField
@@ -471,7 +471,7 @@ const CampaignFormPage = () => {
               
               <Grid item xs={12} md={5}>
                 <Typography variant="h6" gutterBottom align="center">Pré-visualização</Typography>
-                <Box sx={{ position: 'sticky', top: '80px' }}>
+                <Box sx={{ position: { md: 'sticky' }, top: { md: '80px' } }}>
                   <WhatsappPreview
                     message={campaign.mensagens[activeMessageTab]}
                     imagePreview={mediaPreview}
@@ -482,7 +482,7 @@ const CampaignFormPage = () => {
           )}
 
           {activeTab === 1 && (
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
                 <ClientSegmentSelector
                   selectedValue={campaign.criterioSelecao?.type}
@@ -533,7 +533,7 @@ const CampaignFormPage = () => {
           )}
 
           {activeTab === 2 && (
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
                 <DateTimePicker
                   label="Data de Validade"

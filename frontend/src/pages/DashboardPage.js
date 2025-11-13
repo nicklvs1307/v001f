@@ -183,7 +183,7 @@ const DashboardPage = () => {
                 {children}
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', mt: 1 }}>
-                <Typography variant="h5" component="div" fontWeight="bold">
+                <Typography variant="h6" component="div" fontWeight="bold">
                     {value} {arrow === 'up' && <ArrowUpwardIcon color="success" fontSize="small" />}
                     {arrow === 'down' && <ArrowDownwardIcon color="error" fontSize="small" />}
                 </Typography>
@@ -253,14 +253,14 @@ const DashboardPage = () => {
                 </Grid>
             </Grid>
 
-            <Grid container spacing={3} sx={{ mb: 4 }}>
+            <Grid container spacing={2} sx={{ mb: 4 }}>
                 {/* Card NPS Score */}
                 <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <Paper elevation={2} sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
-                        <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
+                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
                             NPS Geral
                         </Typography>
-                        <Typography variant="h3" component="div" fontWeight="bold" textAlign="center" color="primary" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Typography variant="h4" component="div" fontWeight="bold" textAlign="center" color="primary" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             {summary?.nps?.score}
                         </Typography>
                     </Paper>
@@ -269,10 +269,10 @@ const DashboardPage = () => {
                 {/* Card CSAT Score */}
                 <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <Paper elevation={2} sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
-                        <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
+                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
                             Média de Satisfação
                         </Typography>
-                        <Typography variant="h3" component="div" fontWeight="bold" textAlign="center" color="secondary.main" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Typography variant="h4" component="div" fontWeight="bold" textAlign="center" color="secondary.main" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             {summary?.csat?.averageScore}
                         </Typography>
                     </Paper>
@@ -392,11 +392,11 @@ const DashboardPage = () => {
             />
 
 
-            <Grid container spacing={3} sx={{ mb: 4 }}>
+            <Grid container spacing={2} sx={{ mb: 4 }}>
                 {/* Gráfico de Respostas por Período */}
                 <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <Paper elevation={2} sx={{ p: 2, height: 400 }}>
-                        <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
+                    <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 } }}>
+                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
                             Respostas por Período
                         </Typography>
                         <Typography variant="subtitle2" color="text.secondary" mb={2}>
@@ -423,8 +423,8 @@ const DashboardPage = () => {
 
                 {/* Performance dos Atendentes */}
                 <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <Paper elevation={2} sx={{ p: 2, height: 400, display: 'flex', flexDirection: 'column' }}>
-                        <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
+                    <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 }, display: 'flex', flexDirection: 'column' }}>
+                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
                             Performance dos Atendentes
                         </Typography>
                         <TextField
@@ -483,11 +483,11 @@ const DashboardPage = () => {
                 </Grid>
             </Grid>
 
-            <Grid container spacing={3} sx={{ mb: 4 }}>
+            <Grid container spacing={2} sx={{ mb: 4 }}>
                 {/* NPS por Critério */}
                 <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <Paper elevation={2} sx={{ p: 2, height: 400, display: 'flex', flexDirection: 'column' }}>
-                        <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
+                    <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 }, display: 'flex', flexDirection: 'column' }}>
+                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
                             NPS por Critério
                         </Typography>
                         <TableContainer sx={{ flexGrow: 1, overflowY: 'auto' }}>
@@ -526,8 +526,8 @@ const DashboardPage = () => {
 
                 {/* Satisfação por Critério */}
                 <Grid item xs={12} md={6}>
-                    <Paper elevation={2} sx={{ p: 2, height: 400, display: 'flex', flexDirection: 'column' }}>
-                        <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
+                    <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 }, display: 'flex', flexDirection: 'column' }}>
+                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
                             Satisfação por Critério
                         </Typography>
                         <TableContainer sx={{ flexGrow: 1, overflowY: 'auto' }}>
@@ -566,8 +566,8 @@ const DashboardPage = () => {
 
                 {/* Feedbacks Recentes */}
                 <Grid item xs={12} md={6}>
-                    <Paper elevation={2} sx={{ p: 2, height: 400, display: 'flex', flexDirection: 'column' }}>
-                        <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
+                    <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 }, display: 'flex', flexDirection: 'column' }}>
+                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
                             Feedbacks Recentes
                         </Typography>
                         <List sx={{ flexGrow: 1, overflowY: 'auto' }}>
@@ -614,10 +614,10 @@ const DashboardPage = () => {
 
 
             {/* Gráfico de Conversão */}
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <Paper elevation={2} sx={{ p: 2, height: 400 }}>
-                        <Typography variant="h6" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
+                    <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 } }}>
+                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
                             Gráfico de Conversão
                         </Typography>
                         <Typography variant="subtitle2" color="text.secondary" mb={2}>

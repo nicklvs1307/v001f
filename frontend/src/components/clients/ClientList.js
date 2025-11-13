@@ -122,7 +122,7 @@ const ClientList = () => {
     return (
         <Box sx={{ mt: 4 }}>
             <Paper sx={{ p: 2, mb: 3 }}>
-                <Grid container spacing={2} alignItems="center">
+                <Grid container spacing={1} alignItems="center">
                     <Grid item xs={12} sm={6} md={8}>
                         <TextField
                             label="Buscar Cliente por nome, e-mail ou telefone"
@@ -160,14 +160,14 @@ const ClientList = () => {
 
             {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
                 {(clients || []).map((client) => (
                     <Grid item key={client.id} xs={12} sm={6} md={4}>
                         <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', '&:hover': { boxShadow: 6 } }}>
                             <CardActionArea onClick={() => handleCardClick(client.id)} sx={{ flexGrow: 1 }}>
                                 <CardContent>
                                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                                        <Avatar sx={{ width: 64, height: 64, mr: 2, bgcolor: 'primary.main' }}>
+                                        <Avatar sx={{ width: 48, height: 48, mr: 2, bgcolor: 'primary.main' }}>
                                             {client.name.charAt(0).toUpperCase()}
                                         </Avatar>
                                         <Stack spacing={0.5}>

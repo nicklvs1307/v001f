@@ -1,7 +1,7 @@
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
-  spacing: 6, // Reduz o espaçamento base (padrão é 8)
+  spacing: 5, // Reduz o espaçamento base (padrão é 8)
   palette: {
     primary: {
       main: '#FC4C35',
@@ -31,15 +31,15 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    fontSize: 13, // Reduz o tamanho da fonte base
-    h1: { fontSize: '2.5rem' },
-    h2: { fontSize: '2rem' },
-    h3: { fontSize: '1.75rem' },
-    h4: { fontSize: '1.5rem' },
-    h5: { fontSize: '1.25rem' },
-    h6: { fontSize: '1rem' },
-    body1: { fontSize: '0.9rem' },
-    body2: { fontSize: '0.8rem' },
+    fontSize: 12, // Reduz o tamanho da fonte base
+    h1: { fontSize: '2.2rem' },
+    h2: { fontSize: '1.8rem' },
+    h3: { fontSize: '1.5rem' },
+    h4: { fontSize: '1.3rem' },
+    h5: { fontSize: '1.1rem' },
+    h6: { fontSize: '0.9rem' },
+    body1: { fontSize: '0.8rem' },
+    body2: { fontSize: '0.7rem' },
     button: { textTransform: 'none' }
   },
   components: {

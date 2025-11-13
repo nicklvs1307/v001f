@@ -1,7 +1,8 @@
 import { createTheme } from '@mui/material/styles';
+import baseTheme from './theme'; // Import the base theme
 
 const getDynamicTheme = ({ mode = 'light', primaryColor = '#FC4C35', secondaryColor = '#1EBFAE' }) => {
-  const lightPalette = {
+  const dynamicPalette = {
     primary: {
       main: primaryColor,
       contrastText: '#FFFFFF',
@@ -10,59 +11,26 @@ const getDynamicTheme = ({ mode = 'light', primaryColor = '#FC4C35', secondaryCo
       main: secondaryColor,
       contrastText: '#FFFFFF',
     },
-    success: {
-      main: '#B7E66F',
-    },
-    error: {
-      main: '#E86B42',
-    },
-    dark: {
-      main: '#1B2432',
-    },
-    background: {
-      default: '#F6F7F9',
-      paper: '#FFFFFF',
-    },
-    text: {
-      primary: '#2B2B2B',
-      secondary: '#64748b',
-    },
   };
 
-  const darkPalette = {
-    primary: {
-      main: primaryColor,
-      contrastText: '#FFFFFF',
-    },
-    secondary: {
-      main: secondaryColor,
-      contrastText: '#FFFFFF',
-    },
-    success: {
-      main: '#B7E66F',
-    },
-    error: {
-      main: '#E86B42',
-    },
-    dark: {
-      main: '#FFFFFF',
-    },
-    background: {
-      default: '#121212',
-      paper: '#1E1E1E',
-    },
-    text: {
-      primary: '#FFFFFF',
-      secondary: '#A8A8A8',
-    },
-  };
-
-  return createTheme({
-    palette: mode === 'dark' ? darkPalette : lightPalette,
-    typography: {
-      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+  const themeOverrides = {
+    palette: {
+      ...baseTheme.palette,
+      ...dynamicPalette,
+      mode: mode,
+      ...(mode === 'dark' && {
+        background: {
+          default: '#121212',
+          paper: '#1E1E1E',
+        },
+        text: {
+          primary: '#FFFFFF',
+          secondary: '#A8A8A8',
+        },
+      }),
     },
     components: {
+      ...baseTheme.components,
       MuiAppBar: {
         styleOverrides: {
           root: {
@@ -72,6 +40,7 @@ const getDynamicTheme = ({ mode = 'light', primaryColor = '#FC4C35', secondaryCo
         },
       },
       MuiButton: {
+        ...baseTheme.components.MuiButton,
         styleOverrides: {
           root: {
             borderRadius: '50px',
@@ -99,7 +68,10 @@ const getDynamicTheme = ({ mode = 'light', primaryColor = '#FC4C35', secondaryCo
         },
       },
     },
-  });
+  };
+
+  return createTheme(baseTheme, themeOverrides);
 };
 
 export default getDynamicTheme;
+

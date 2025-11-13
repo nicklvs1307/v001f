@@ -225,7 +225,7 @@ const RoulettePageComponent = ({ survey, tenant, roletaConfig, isSpinning, winni
     theme.palette.primary.dark || theme.palette.primary.main,
     theme.palette.secondary.dark || theme.palette.secondary.main,
   ];
-  const buttonNextStyle = { background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, color: 'white', borderRadius: '50px', padding: '12px 25px', fontWeight: 600, '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 5px 15px rgba(0, 0, 0, 0.1)' } };
+  const buttonNextStyle = { background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, color: 'white', borderRadius: '50px', padding: { xs: '8px 16px', sm: '12px 25px' }, fontWeight: 600, '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 5px 15px rgba(0, 0, 0, 0.1)' } };
 
   return (
     <Box sx={{ background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`, minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', p: { xs: 1, sm: 2 }, textAlign: 'center' }}>
@@ -233,7 +233,7 @@ const RoulettePageComponent = ({ survey, tenant, roletaConfig, isSpinning, winni
           <Box sx={{ padding: { xs: '20px', sm: '30px' }, color: 'white' }}>
             {tenant?.logoUrl && (
               <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
-                <img src={`${process.env.REACT_APP_API_URL}${tenant.logoUrl}`} alt="Logo" style={{ maxHeight: '70px', maxWidth: '180px', objectFit: 'contain' }} />
+                <img src={`${process.env.REACT_APP_API_URL}${tenant.logoUrl}`} alt="Logo" style={{ maxHeight: { xs: '50px', sm: '70px' }, maxWidth: { xs: '120px', sm: '180px' }, objectFit: 'contain' }} />
               </Box>
             )}
             <Typography variant="h4" component="h1" gutterBottom>

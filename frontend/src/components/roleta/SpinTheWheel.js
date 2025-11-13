@@ -210,7 +210,8 @@ const SpinTheWheel = ({ items, onAnimationComplete, segColors, winningIndex }) =
     animateSpin(targetRotationRadians);
   }, [winningIndex, items, animateSpin]);
 
-  return (
+      const pointerSize = Math.max(12, wheelSize / 25);
+      return (
     <Box
       className="roleta-container"
       sx={{
@@ -244,23 +245,23 @@ const SpinTheWheel = ({ items, onAnimationComplete, segColors, winningIndex }) =
         className="seta"
         sx={{
           position: 'absolute',
-          top: -25,
+          top: -pointerSize * 1.4,
           left: '50%',
           transform: 'translateX(-50%)',
           width: 0,
           height: 0,
-          borderLeft: '18px solid transparent',
-          borderRight: '18px solid transparent',
-          borderTop: '30px solid #FFD700',
+          borderLeft: `${pointerSize}px solid transparent`,
+          borderRight: `${pointerSize}px solid transparent`,
+          borderTop: `${pointerSize * 1.6}px solid #FFD700`,
           zIndex: 10,
           filter: 'drop-shadow(0 0 5px #FFD700)',
           '&::after': {
             content: '""',
             position: 'absolute',
-            top: -33,
-            left: -10,
-            width: 20,
-            height: 20,
+            top: -pointerSize * 1.8,
+            left: -pointerSize / 1.8,
+            width: pointerSize * 1.1,
+            height: pointerSize * 1.1,
             background: '#FFD700',
             borderRadius: '50%',
             zIndex: -1,

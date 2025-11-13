@@ -45,7 +45,7 @@ const RecompensaListPage = () => {
     try {
       setLoading(true);
       const data = await recompensaService.getAll();
-      setRecompensas(Array.isArray(data.data) ? data.data : []);
+      setRecompensas(Array.isArray(data) ? data : []);
     } catch (err) {
       setError(err.message || 'Erro ao buscar recompensas.');
     } finally {

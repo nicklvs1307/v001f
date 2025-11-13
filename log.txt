@@ -1,12 +1,45 @@
-URL da solicitação
-https://apivoltaki.towersfy.com/api/dashboard/details/Cupons%20Gerados
-Método da solicitação
-GET
-Código de status
-500 Internal Server Error
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "Client is associated to Cupom using an alias. You've included an alias (client), but it does not match the alias(es) defined in your association (cliente).",
-    "details": "SequelizeEagerLoadingError: Client is associated to Cupom using an alias. You've included an alias (client), but it does not match the alias(es) defined in your association (cliente).\n    at Cupom._getIncludedAssociation (/usr/src/app/node_modules/sequelize/lib/model.js:574:15)\n    at Cupom._validateIncludedElement (/usr/src/app/node_modules/sequelize/lib/model.js:502:53)\n    at /usr/src/app/node_modules/sequelize/lib/model.js:421:37\n    at Array.map (<anonymous>)\n    at Cupom._validateIncludedElements (/usr/src/app/node_modules/sequelize/lib/model.js:417:39)\n    at Cupom.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1124:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Object.getDetailsByCategory (/usr/src/app/src/repositories/dashboard/details.js:39:20)\n    at async /usr/src/app/src/controllers/dashboardController.js:99:25"
-}
+AuthContext.js:28 AuthContext useEffect running
+react-dom.production.min.js:188 TypeError: Cannot read properties of undefined (reading 'map')
+    at W (AutomationsPage.js:339:96)
+    at gi (react-dom.production.min.js:160:137)
+    at Es (react-dom.production.min.js:196:258)
+    at Sl (react-dom.production.min.js:291:88)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+    at oc (react-dom.production.min.js:267:429)
+    at w (scheduler.production.min.js:13:203)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+qa @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+react-dom.production.min.js:282 Uncaught TypeError: Cannot read properties of undefined (reading 'map')
+    at W (AutomationsPage.js:339:96)
+    at gi (react-dom.production.min.js:160:137)
+    at Es (react-dom.production.min.js:196:258)
+    at Sl (react-dom.production.min.js:291:88)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+    at oc (react-dom.production.min.js:267:429)
+    at w (scheduler.production.min.js:13:203)
+W @ AutomationsPage.js:339
+gi @ react-dom.production.min.js:160
+Es @ react-dom.production.min.js:196
+Sl @ react-dom.production.min.js:291
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+ac @ react-dom.production.min.js:270
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14

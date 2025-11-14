@@ -1,8 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const dashboardRepository = require('../repositories/dashboardRepository');
 const { startOfDay, endOfDay, parseISO } = require('date-fns');
-const { zonedTimeToUtc } = require('date-fns-tz');
-console.log(require('date-fns-tz'));
+const { fromZonedTime } = require('date-fns-tz');
 
 const timeZone = 'America/Sao_Paulo';
 
@@ -14,11 +13,11 @@ const adjustDateRange = (startDateStr, endDateStr) => {
     if (startDateStr) {
         // The date string from the frontend (e.g., "2025-11-13") is treated as a local date in the target timezone.
         // We append time to make it explicit, then convert it to a UTC date object for the database.
-        adjustedStart = zonedTimeToUtc(`${startDateStr}T00:00:00`, timeZone);
+        adjustedStart = fromZonedTime(`${startDateStr}T00:00:00`, timeZone);
     }
 
     if (endDateStr) {
-        adjustedEnd = zonedTimeToUtc(`${endDateStr}T23:59:59.999`, timeZone);
+        adjustedEnd = fromZonedTime(`${endDateStr}T23:59:59.999`, timeZone);
     }
 
     return { startDate: adjustedStart, endDate: adjustedEnd };

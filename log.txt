@@ -1,6 +1,13 @@
+URL da solicitação
+https://apivoltaki.towersfy.com/api/dashboard/main?tenantId=3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd&startDate=2025-10-15&endDate=2025-11-14
+Método da solicitação
+GET
+Código de status
+500 Internal Server Erro
+
 {
     "status": "error",
     "code": "HTTP_500",
-    "message": "Client is associated to Resposta using an alias. You've included an alias (client), but it does not match the alias(es) defined in your association (cliente).",
-    "details": "SequelizeEagerLoadingError: Client is associated to Resposta using an alias. You've included an alias (client), but it does not match the alias(es) defined in your association (cliente).\n    at Resposta._getIncludedAssociation (/usr/src/app/node_modules/sequelize/lib/model.js:574:15)\n    at Resposta._validateIncludedElement (/usr/src/app/node_modules/sequelize/lib/model.js:502:53)\n    at /usr/src/app/node_modules/sequelize/lib/model.js:421:37\n    at Array.map (<anonymous>)\n    at Resposta._validateIncludedElements (/usr/src/app/node_modules/sequelize/lib/model.js:417:39)\n    at Resposta.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1124:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async getAttendantsPerformanceWithGoals (/usr/src/app/src/repositories/dashboard/attendants.js:71:26)\n    at async Object.getMainDashboard (/usr/src/app/src/repositories/dashboard/main.js:29:35)\n    at async /usr/src/app/src/controllers/dashboardController.js:120:31"
+    "message": "zonedTimeToUtc is not a function",
+    "details": "TypeError: zonedTimeToUtc is not a function\n    at adjustDateRange (/usr/src/app/src/controllers/dashboardController.js:17:25)\n    at /usr/src/app/src/controllers/dashboardController.js:120:40\n    at asyncUtilWrap (/usr/src/app/node_modules/express-async-handler/index.js:3:20)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at /usr/src/app/src/middlewares/authMiddleware.js:99:9\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
 }

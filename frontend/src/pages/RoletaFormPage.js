@@ -57,9 +57,9 @@ const RoletaFormPage = () => {
       setLoading(true);
       roletaService.getRoletaById(id)
         .then(response => {
-          const { nome, descricao, active, RoletaPremios } = response.data;
+          const { nome, descricao, active, premios } = response.data;
           setFormData({ nome, descricao, active });
-          setPremios(RoletaPremios.map(p => ({
+          setPremios(premios.map(p => ({
             id: p.id,
             option: p.nome,
             recompensaId: p.recompensaId,

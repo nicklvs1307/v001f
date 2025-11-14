@@ -63,7 +63,7 @@ const RoletaFormPage = () => {
             id: p.id,
             option: p.nome,
             recompensaId: p.recompensaId,
-            percentage: p.porcentagem,
+            porcentagem: p.porcentagem,
             style: { backgroundColor: p.cor, textColor: '#ffffff' },
           })));
         })
@@ -73,7 +73,7 @@ const RoletaFormPage = () => {
   }, [id, isEditing]);
 
   const totalPercentage = useMemo(() => {
-    return premios.reduce((acc, premio) => acc + (Number(premio.percentage) || 0), 0);
+    return premios.reduce((acc, premio) => acc + (Number(premio.porcentagem) || 0), 0);
   }, [premios]);
 
   const handleFormChange = (e) => {
@@ -106,7 +106,7 @@ const RoletaFormPage = () => {
     setPremios([...premios, {
       option: '',
       recompensaId: null,
-      percentage: 0,
+      porcentagem: 0,
       style: { backgroundColor: `#${Math.floor(Math.random()*16777215).toString(16)}`, textColor: '#ffffff' },
     }]);
   };
@@ -139,7 +139,7 @@ const RoletaFormPage = () => {
         id: p.id,
         nome: p.option,
         recompensaId: p.recompensaId,
-        porcentagem: Number(p.percentage),
+        porcentagem: Number(p.porcentagem),
         cor: p.style.backgroundColor,
       })),
     };
@@ -250,8 +250,8 @@ const RoletaFormPage = () => {
                       <TextField
                         label="Porcentagem (%)"
                         type="number"
-                        value={premio.percentage}
-                        onChange={(e) => handlePremioChange(index, 'percentage', e.target.value)}
+                        value={premio.porcentagem}
+                        onChange={(e) => handlePremioChange(index, 'porcentagem', e.target.value)}
                         fullWidth
                         inputProps={{ min: 0, step: "0.01" }}
                       />

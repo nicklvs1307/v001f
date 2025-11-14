@@ -1,5 +1,5 @@
 const { Pesquisa, Resposta, Usuario, Tenant, Pergunta, Cupom, Atendente, AtendenteMeta, Client, Criterio } = require('../../../models');
-const { zonedTimeToUtc } = require('date-fns-tz');
+const { fromZonedTime } = require('date-fns-tz');
 const { Sequelize, Op } = require('sequelize');
 const ratingService = require('../../services/ratingService');
 
@@ -45,8 +45,8 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
     const npsResult = ratingService.calculateNPS(npsResponses);
     const csatResult = ratingService.calculateCSAT(csatResponses);
     
-    const currentMonth = zonedTimeToUtc(new Date(), 'America/Sao_Paulo').getMonth();
-    const currentYear = zonedTimeToUtc(new Date(), 'America/Sao_Paulo').getFullYear();
+    const currentMonth = fromZonedTime(new Date(), 'America/Sao_Paulo').getMonth();
+    const currentYear = fromZonedTime(new Date(), 'America/Sao_Paulo').getFullYear();
     const ambassadorsMonth = npsResponses.filter(r => {
         const responseDate = new Date(r.createdAt);
         return responseDate.getMonth() === currentMonth && responseDate.getFullYear() === currentYear && r.ratingValue >= 9;

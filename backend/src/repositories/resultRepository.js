@@ -1,5 +1,5 @@
 const { Pesquisa, Pergunta, Resposta } = require("../../models"); // Importa os modelos do Sequelize
-const { zonedTimeToUtc } = require('date-fns-tz');
+const { fromZonedTime } = require('date-fns-tz');
 const { Op, Sequelize } = require('sequelize');
 
 const getSurveyDetails = async (surveyId, tenantId = null) => {
@@ -35,7 +35,7 @@ const getResponsesBySurveyId = async (surveyId, tenantId = null) => {
 };
 
 const getDailyStats = async (tenantId) => {
-  const yesterday = zonedTimeToUtc(new Date(), 'America/Sao_Paulo');
+  const yesterday = fromZonedTime(new Date(), 'America/Sao_Paulo');
   yesterday.setDate(yesterday.getDate() - 1);
   const startOfYesterday = new Date(yesterday.setHours(0, 0, 0, 0));
   const endOfYesterday = new Date(yesterday.setHours(23, 59, 59, 999));

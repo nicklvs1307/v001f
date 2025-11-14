@@ -1,5 +1,5 @@
 const { Pesquisa, Resposta, Client, Cupom, Pergunta } = require('../../../models');
-const { zonedTimeToUtc } = require('date-fns-tz');
+const { fromZonedTime } = require('date-fns-tz');
 const { Sequelize, Op } = require('sequelize');
 
 const { fn, col, literal } = Sequelize;
@@ -28,8 +28,8 @@ const getResponseChart = async (tenantId = null, startDate = null, endDate = nul
     let start, end;
     // Default to last 7 days if no dates are provided
     if (!startDate || !endDate) {
-        end = zonedTimeToUtc(new Date(), 'America/Sao_Paulo');
-        start = zonedTimeToUtc(new Date(), 'America/Sao_Paulo');
+        end = fromZonedTime(new Date(), 'America/Sao_Paulo');
+        start = fromZonedTime(new Date(), 'America/Sao_Paulo');
         start.setDate(end.getDate() - 6);
     } else {
         start = new Date(startDate);

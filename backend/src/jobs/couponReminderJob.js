@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const { zonedTimeToUtc } = require('date-fns-tz');
+const { fromZonedTime } = require('date-fns-tz');
 const { Op } = require('sequelize');
 const { WhatsappTemplate, Cupom, Client } = require('../../models');
 const whatsappService = require('../services/whatsappService');
@@ -30,7 +30,7 @@ const task = cron.schedule(schedule, async () => {
         continue;
       }
 
-      const targetDate = zonedTimeToUtc(new Date(), 'America/Sao_Paulo');
+      const targetDate = fromZonedTime(new Date(), 'America/Sao_Paulo');
       targetDate.setDate(targetDate.getDate() + daysBefore);
 
       const couponsToRemind = await Cupom.findAll({

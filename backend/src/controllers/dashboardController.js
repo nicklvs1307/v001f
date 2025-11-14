@@ -13,11 +13,13 @@ const adjustDateRange = (startDateStr, endDateStr) => {
     if (startDateStr) {
         // The date string from the frontend (e.g., "2025-11-13") is treated as a local date in the target timezone.
         // We append time to make it explicit, then convert it to a UTC date object for the database.
-        adjustedStart = fromZonedTime(`${startDateStr}T00:00:00`, timeZone);
+        const parsedStartDate = parseISO(`${startDateStr}T00:00:00`);
+        adjustedStart = fromZonedTime(parsedStartDate, timeZone);
     }
 
     if (endDateStr) {
-        adjustedEnd = fromZonedTime(`${endDateStr}T23:59:59.999`, timeZone);
+        const parsedEndDate = parseISO(`${endDateStr}T23:59:59.999`);
+        adjustedEnd = fromZonedTime(parsedEndDate, timeZone);
     }
 
     return { startDate: adjustedStart, endDate: adjustedEnd };

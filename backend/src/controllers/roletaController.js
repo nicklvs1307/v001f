@@ -53,12 +53,12 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
 
   // Validar probabilidades individuais
   for (const premio of premios) {
-    if (typeof premio.probabilidade !== 'number' || premio.probabilidade < 0) {
+    if (typeof premio.porcentagem !== 'number' || premio.porcentagem < 0) {
       throw new ApiError(500, `Prêmio com ID ${premio.id} tem uma probabilidade inválida.`);
     }
   }
 
-  const totalProbabilidade = premios.reduce((sum, premio) => sum + premio.probabilidade, 0);
+  const totalProbabilidade = premios.reduce((sum, premio) => sum + premio.porcentagem, 0);
   if (totalProbabilidade <= 0) {
     throw new ApiError(400, 'A soma das probabilidades dos prêmios deve ser maior que zero.');
   }
@@ -73,7 +73,7 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
   let premioGanhador = null;
 
   for (const premio of premios) {
-    cumulativeProbability += premio.probabilidade;
+    cumulativeProbability += premio.porcentagem;
     if (target < cumulativeProbability) {
       premioGanhador = premio;
       break;

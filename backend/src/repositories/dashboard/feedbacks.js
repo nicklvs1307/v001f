@@ -36,7 +36,7 @@ const getFeedbacks = async (tenantId = null, startDate = null, endDate = null, s
         limit: 7,
         include: [{
             model: Client,
-            as: 'client',
+            as: 'cliente',
             attributes: ['name'],
             foreignKey: 'respondentSessionId',
             targetKey: 'respondentSessionId'
@@ -46,7 +46,7 @@ const getFeedbacks = async (tenantId = null, startDate = null, endDate = null, s
     return feedbacksData.map(feedback => ({
         respondentSessionId: feedback.respondentSessionId,
         date: new Date(feedback.createdAt).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-        client: feedback.client ? feedback.client.name : 'Anônimo',
+        client: feedback.cliente ? feedback.cliente.name : 'Anônimo',
         rating: feedback.ratingValue !== null ? feedback.ratingValue : null,
         comment: feedback.textValue,
     }));

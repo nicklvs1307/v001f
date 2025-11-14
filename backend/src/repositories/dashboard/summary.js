@@ -8,14 +8,10 @@ const { fn, col, literal } = Sequelize;
 const buildDateFilter = (startDate, endDate) => {
     const filter = {};
     if (startDate) {
-        const startOfDay = new Date(startDate);
-        startOfDay.setUTCHours(0, 0, 0, 0);
-        filter[Op.gte] = startOfDay;
+        filter[Op.gte] = startDate;
     }
     if (endDate) {
-        const endOfDay = new Date(endDate);
-        endOfDay.setUTCHours(23, 59, 59, 999);
-        filter[Op.lte] = endOfDay;
+        filter[Op.lte] = endDate;
     }
     return filter;
 };

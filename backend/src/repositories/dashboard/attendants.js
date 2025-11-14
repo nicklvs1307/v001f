@@ -78,7 +78,7 @@ const getAttendantsPerformanceWithGoals = async (tenantId = null, startDate = nu
             },
             {
                 model: Client,
-                as: 'client',
+                as: 'cliente',
                 attributes: ['id'],
             },
             {
@@ -148,7 +148,7 @@ const getAttendantDetailsById = async (tenantId, attendantId, startDate, endDate
     const responses = await Resposta.findAll({
         where: whereClause,
         include: [
-            { model: Client, as: 'client', attributes: ['name'] },
+            { model: Client, as: 'cliente', attributes: ['name'] },
             { 
                 model: Pergunta, 
                 as: 'pergunta', 

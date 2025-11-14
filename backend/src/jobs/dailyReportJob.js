@@ -1,6 +1,6 @@
 const cron = require('node-cron');
-const { zonedTimeToUtc } = require('date-fns-tz');
-const { format } = require('date-fns');
+const { format, subDays, startOfDay, endOfDay } = require('date-fns');
+const { zonedTimeToUtc, utcToZonedTime } = require('date-fns-tz');
 const whatsappService = require('../services/whatsappService');
 const whatsappConfigRepository = require('../repositories/whatsappConfigRepository');
 const tenantRepository = require('../repositories/tenantRepository');
@@ -32,29 +32,32 @@ const dailyReportTask = cron.schedule(schedule, async () => {
         continue;
       }
 
-      // Define date ranges for yesterday and the day before
-      const yesterday = zonedTimeToUtc(new Date(), 'America/Sao_Paulo');
-      yesterday.setDate(yesterday.getDate() - 1);
-      const startOfYesterday = new Date(new Date(yesterday).setHours(0, 0, 0, 0));
-      const endOfYesterday = new Date(new Date(yesterday).setHours(23, 59, 59, 999));
+      const timeZone = 'America/Sao_Paulo';
+      const now = new Date();
+      
+      // We get the current date in the SP timezone to correctly determine "yesterday"
+      const zonedNow = utcToZonedTime(now, timeZone);
+      const yesterdayZoned = subDays(zonedNow, 1);
+      const twoDaysAgoZoned = subDays(zonedNow, 2);
 
-      const twoDaysAgo = zonedTimeToUtc(new Date(), 'America/Sao_Paulo');
-      twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
-      const startOfTwoDaysAgo = new Date(new Date(twoDaysAgo).setHours(0, 0, 0, 0));
-      const endOfTwoDaysAgo = new Date(new Date(twoDaysAgo).setHours(23, 59, 59, 999));
+      // We get the start and end of the day in the SP timezone
+      const startOfYesterdayZoned = startOfDay(yesterdayZoned);
+      const endOfYesterdayZoned = endOfDay(yesterdayZoned);
+      const startOfTwoDaysAgoZoned = startOfDay(twoDaysAgoZoned);
+      const endOfTwoDaysAgoZoned = endOfDay(twoDaysAgoZoned);
 
-      // Fetch summaries for both days
-      const yesterdaySummary = await dashboardRepository.getSummary(config.tenantId, startOfYesterday, endOfYesterday);
-      const twoDaysAgoSummary = await dashboardRepository.getSummary(config.tenantId, startOfTwoDaysAgo, endOfTwoDaysAgo);
+      // Fetch summaries for both days using the timezone-aware dates
+      const yesterdaySummary = await dashboardRepository.getSummary(config.tenantId, startOfYesterdayZoned, endOfYesterdayZoned);
+      const twoDaysAgoSummary = await dashboardRepository.getSummary(config.tenantId, startOfTwoDaysAgoZoned, endOfTwoDaysAgoZoned);
 
       // Calculate difference
       const diff = yesterdaySummary.totalResponses - twoDaysAgoSummary.totalResponses;
       const diffArrow = diff > 0 ? '⬆' : diff < 0 ? '⬇' : '➖';
-      const diffText = `(${diffArrow} ${diff} respostas em relação ${format(twoDaysAgo, 'dd/MM/yyyy')})`;
+      const diffText = `(${diffArrow} ${diff} respostas em relação ${format(twoDaysAgoZoned, 'dd/MM/yyyy')})`;
 
       // Format dates for the message
-      const formattedDate = format(yesterday, 'dd/MM/yyyy');
-      const isoDate = format(yesterday, 'yyyy-MM-dd');
+      const formattedDate = format(yesterdayZoned, 'dd/MM/yyyy');
+      const isoDate = format(yesterdayZoned, 'yyyy-MM-dd');
       const baseUrl = process.env.FRONTEND_URL || 'https://loyalfood.towersfy.com';
       const reportUrl = `${baseUrl}/relatorios/diario?date=${isoDate}`;
 

@@ -52,7 +52,7 @@ const getDetailsByCategory = async (tenantId, category, startDate, endDate) => {
         return await Resposta.findAll({
             where: { ...whereClause, ...ratingWhere },
             include: [
-                { model: Client, as: 'client', attributes: ['name'] },
+                { model: Client, as: 'cliente', attributes: ['name'] },
                 { model: Pergunta, as: 'pergunta', attributes: ['text', 'type'] }
             ],
             order: [['createdAt', 'DESC']],

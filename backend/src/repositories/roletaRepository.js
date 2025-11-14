@@ -1,5 +1,5 @@
 'use strict';
-const { Roleta, RoletaPremio } = require('../../models');
+const { Roleta, RoletaPremio, sequelize } = require('../../models');
 
 const createRoleta = async (roletaData, transaction) => {
   return Roleta.create(roletaData, { transaction });

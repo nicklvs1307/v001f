@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       Resposta.belongsTo(models.Pesquisa, { foreignKey: 'pesquisaId', as: 'pesquisa' });
       Resposta.belongsTo(models.Atendente, { foreignKey: 'atendenteId', as: 'atendente' });
       Resposta.belongsTo(models.Tenant, { foreignKey: 'tenantId', as: 'tenant' });
-      Resposta.belongsTo(models.Client, { foreignKey: 'respondentSessionId', targetKey: 'respondentSessionId', as: 'client' });
+      Resposta.belongsTo(models.Client, { foreignKey: 'respondentSessionId', targetKey: 'respondentSessionId', as: 'cliente' });
 
     }
   }

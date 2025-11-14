@@ -217,7 +217,7 @@ exports.getRoletaConfig = asyncHandler(async (req, res) => {
       id: premio.id,
       name: premio.nome,
       description: premio.descricao,
-      probabilidade: premio.probabilidade,
+      probabilidade: premio.porcentagem,
       recompensa: {
         id: premio.recompensa.id,
         name: premio.recompensa.name,

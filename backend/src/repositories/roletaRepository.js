@@ -24,14 +24,14 @@ const bulkCreatePremios = async (premios, transaction) => {
 const findAllByTenant = async (tenantId) => {
   return Roleta.findAll({ 
     where: { tenantId },
-    include: [{ model: RoletaPremio, as: 'RoletaPremios' }]
+    include: [{ model: RoletaPremio, as: 'premios' }]
   });
 };
 
 const findById = async (id, tenantId) => {
   return Roleta.findOne({
     where: { id, tenantId },
-    include: [{ model: RoletaPremio, as: 'RoletaPremios' }],
+    include: [{ model: RoletaPremio, as: 'premios' }],
   });
 };
 

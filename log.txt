@@ -1,19 +1,13 @@
-Postgres is up - executing command
-Server.js is being executed!
-Conexão com o banco de dados estabelecida com sucesso (Sequelize).
-Server is running on port 5000
-/usr/src/app/src/jobs/dailyReportJob.js:10
-const dailyReportTask = cron.schedule(schedule, async () => {
-                        ^
-ReferenceError: cron is not defined
-    at Object.<anonymous> (/usr/src/app/src/jobs/dailyReportJob.js:10:25)
-    at Module._compile (node:internal/modules/cjs/loader:1364:14)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
-    at Module.load (node:internal/modules/cjs/loader:1203:32)
-    at Module._load (node:internal/modules/cjs/loader:1019:12)
-    at Module.require (node:internal/modules/cjs/loader:1231:19)
-    at require (node:internal/modules/helpers:177:18)
-    at Server.<anonymous> (/usr/src/app/src/server.js:72:28)
-    at Object.onceWrapper (node:events:631:28)
-    at Server.emit (node:events:529:35)
-Node.js v18.20.8
+URL da solicitação
+https://apivoltaki.towersfy.com/api/roletas
+Método da solicitação
+GET
+Código de status
+500 Internal Server Error
+
+{
+    "status": "error",
+    "code": "HTTP_500",
+    "message": "RoletaPremio is associated to Roleta using an alias. You've included an alias (RoletaPremios), but it does not match the alias(es) defined in your association (premios).",
+    "details": "SequelizeEagerLoadingError: RoletaPremio is associated to Roleta using an alias. You've included an alias (RoletaPremios), but it does not match the alias(es) defined in your association (premios).\n    at Roleta._getIncludedAssociation (/usr/src/app/node_modules/sequelize/lib/model.js:574:15)\n    at Roleta._validateIncludedElement (/usr/src/app/node_modules/sequelize/lib/model.js:502:53)\n    at /usr/src/app/node_modules/sequelize/lib/model.js:421:37\n    at Array.map (<anonymous>)\n    at Roleta._validateIncludedElements (/usr/src/app/node_modules/sequelize/lib/model.js:417:39)\n    at Roleta.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1124:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async /usr/src/app/src/controllers/roletaAdminController.js:42:19"
+}

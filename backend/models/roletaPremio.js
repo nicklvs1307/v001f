@@ -37,10 +37,14 @@ module.exports = (sequelize, DataTypes) => {
     descricao: {
       type: DataTypes.TEXT,
     },
-    probabilidade: {
-      type: DataTypes.INTEGER,
+    porcentagem: {
+      type: DataTypes.FLOAT,
       allowNull: false,
-      defaultValue: 10,
+      defaultValue: 0,
+    },
+    cor: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     recompensaId: {
       type: DataTypes.UUID,

@@ -25,14 +25,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { Link as RouterLink } from 'react-router-dom';
 import roletaService from '../services/roletaService';
-import RoletaForm from '../components/roleta/RoletaForm';
 
 const RoletasPage = () => {
   const [roletas, setRoletas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [openForm, setOpenForm] = useState(false);
-  const [editingRoleta, setEditingRoleta] = useState(null);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [roletaToDelete, setRoletaToDelete] = useState(null);
 
@@ -52,30 +49,6 @@ const RoletasPage = () => {
     }
   };
 
-  const handleOpenForm = (roleta = null) => {
-    setEditingRoleta(roleta);
-    setOpenForm(true);
-  };
-
-  const handleCloseForm = () => {
-    setOpenForm(false);
-    setEditingRoleta(null);
-  };
-
-  const handleSubmitForm = async (formData) => {
-    try {
-      if (editingRoleta) {
-        await roletaService.updateRoleta(editingRoleta.id, formData);
-      } else {
-        await roletaService.createRoleta(formData);
-      }
-      fetchRoletas();
-      handleCloseForm();
-    } catch (err) {
-      setError(err.message || 'Erro ao salvar roleta.');
-    }
-  };
-
   const handleOpenConfirm = (roleta) => {
     setRoletaToDelete(roleta);
     setOpenConfirm(true);
@@ -87,12 +60,14 @@ const RoletasPage = () => {
   };
 
   const handleDelete = async () => {
+    if (!roletaToDelete) return;
     try {
       await roletaService.deleteRoleta(roletaToDelete.id);
-      fetchRoletas();
-      handleCloseConfirm();
+      fetchRoletas(); // Re-fetch the list after deletion
     } catch (err) {
       setError(err.message || 'Erro ao deletar roleta.');
+    } finally {
+      handleCloseConfirm();
     }
   };
 
@@ -121,7 +96,8 @@ const RoletasPage = () => {
           variant="contained"
           color="primary"
           startIcon={<AddIcon />}
-          onClick={() => handleOpenForm()}
+          component={RouterLink}
+          to="/dashboard/roletas/nova"
         >
           Nova Roleta
         </Button>
@@ -145,13 +121,14 @@ const RoletasPage = () => {
                   <TableCell>{roleta.descricao}</TableCell>
                   <TableCell>{roleta.active ? 'Ativa' : 'Inativa'}</TableCell>
                   <TableCell align="right">
-                    <Button component={RouterLink} to={`/dashboard/roletas/${roleta.id}/premios`}>
-                      Prêmios
-                    </Button>
-                    <IconButton color="primary" onClick={() => handleOpenForm(roleta)}>
+                    <IconButton
+                      color="primary"
+                      component={RouterLink}
+                      to={`/dashboard/roletas/editar/${roleta.id}`}
+                    >
                       <EditIcon />
                     </IconButton>
-                    <IconButton color="secondary" onClick={() => handleOpenConfirm(roleta)}>
+                    <IconButton color="error" onClick={() => handleOpenConfirm(roleta)}>
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
@@ -161,13 +138,6 @@ const RoletasPage = () => {
           </Table>
         </TableContainer>
       </Paper>
-
-      <RoletaForm
-        open={openForm}
-        handleClose={handleCloseForm}
-        roleta={editingRoleta}
-        handleSubmit={handleSubmitForm}
-      />
 
       <Dialog
         open={openConfirm}
@@ -180,8 +150,8 @@ const RoletasPage = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseConfirm} color="primary">Cancelar</Button>
-          <Button onClick={handleDelete} color="secondary" autoFocus>Deletar</Button>
+          <Button onClick={handleCloseConfirm}>Cancelar</Button>
+          <Button onClick={handleDelete} color="error" autoFocus>Deletar</Button>
         </DialogActions>
       </Dialog>
     </Container>

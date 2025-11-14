@@ -1,11 +1,10 @@
 const cron = require('node-cron');
-const SenderPoolService = require('../services/senderPoolService');
+const senderPoolService = require('../services/senderPoolService');
 
 // Run once a day at midnight
 const resetSenderCountsJob = cron.schedule('0 0 * * *', async () => {
   console.log('Running scheduled job: Reset Sender Daily Counts');
   try {
-    const senderPoolService = new SenderPoolService();
     await senderPoolService.resetDailyCounts();
   } catch (error) {
     console.error('Error running resetSenderCountsJob:', error);

@@ -1,4 +1,5 @@
 const asyncHandler = require("express-async-handler");
+const { zonedTimeToUtc } = require('date-fns-tz');
 const gmbReviewRepository = require("../repositories/gmbReviewRepository");
 const ApiError = require("../errors/ApiError");
 
@@ -27,7 +28,7 @@ const gmbReviewController = {
     const updatedRows = await gmbReviewRepository.updateReview(
       id,
       requestingUser.tenantId,
-      { replyComment, repliedAt: new Date() }
+      { replyComment, repliedAt: zonedTimeToUtc(new Date(), 'America/Sao_Paulo') }
     );
 
     if (updatedRows === 0) {

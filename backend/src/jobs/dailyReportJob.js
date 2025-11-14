@@ -1,4 +1,5 @@
 const cron = require('node-cron');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const { format } = require('date-fns');
 const whatsappService = require('../services/whatsappService');
 const whatsappConfigRepository = require('../repositories/whatsappConfigRepository');
@@ -32,12 +33,12 @@ const dailyReportTask = cron.schedule(schedule, async () => {
       }
 
       // Define date ranges for yesterday and the day before
-      const yesterday = new Date();
+      const yesterday = zonedTimeToUtc(new Date(), 'America/Sao_Paulo');
       yesterday.setDate(yesterday.getDate() - 1);
       const startOfYesterday = new Date(new Date(yesterday).setHours(0, 0, 0, 0));
       const endOfYesterday = new Date(new Date(yesterday).setHours(23, 59, 59, 999));
 
-      const twoDaysAgo = new Date();
+      const twoDaysAgo = zonedTimeToUtc(new Date(), 'America/Sao_Paulo');
       twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
       const startOfTwoDaysAgo = new Date(new Date(twoDaysAgo).setHours(0, 0, 0, 0));
       const endOfTwoDaysAgo = new Date(new Date(twoDaysAgo).setHours(23, 59, 59, 999));

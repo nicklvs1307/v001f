@@ -38,8 +38,8 @@ const AttendantsPage = React.lazy(() => import('../pages/AttendantsPage'));
 const AttendantGoalsPage = React.lazy(() => import('../pages/AttendantGoalsPage'));
 const GMBConfigsPage = React.lazy(() => import('../pages/GMBConfigsPage'));
 const GMBReviewsPage = React.lazy(() => import('../pages/GMBReviewsPage'));
-const RoulettePrizesPage = React.lazy(() => import('../pages/RoulettePrizesPage'));
 const RoletasPage = React.lazy(() => import('../pages/RoletasPage'));
+const RoletaFormPage = React.lazy(() => import('../pages/RoletaFormPage'));
 const WhatsappConfigPage = React.lazy(() => import('../pages/WhatsappConfigPage'));
 const WhatsappConnectPage = React.lazy(() => import('../pages/WhatsappConnectPage'));
 const AtendenteDashboardPage = React.lazy(() => import('../pages/AtendenteDashboardPage'));
@@ -139,7 +139,8 @@ const AppRoutes = () => {
             <Route path="config-gmb" element={<GMBConfigsPage />} />
             <Route path="reviews-gmb" element={<GMBReviewsPage />} />
             <Route path="roletas" element={<RoletasPage />} />
-            <Route path="roletas/:roletaId/premios" element={<RoulettePrizesPage />} />
+            <Route path="roletas/nova" element={<RoletaFormPage />} />
+            <Route path="roletas/editar/:id" element={<RoletaFormPage />} />
             {/* <Route path="config-whatsapp" element={<WhatsappConfigPage />} /> */} {/* Movido para superadmin */}
             <Route path="whatsapp-connect" element={<WhatsappConnectPage />} />
             <Route path="whatsapp/automations" element={<AutomationsPage />} />

@@ -1,4 +1,5 @@
 const { WhatsappSender, sequelize } = require('../../models');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const { Op } = require('sequelize');
 
 const WARMING_UP_CASE_STATEMENT = `
@@ -45,7 +46,7 @@ class SenderPoolService {
       }
 
       // Immediately mark this sender as "in-use" by updating its lastUsedAt
-      sender.lastUsedAt = new Date();
+      sender.lastUsedAt = zonedTimeToUtc(new Date(), 'America/Sao_Paulo');
       await sender.save({ transaction: t });
 
       return sender;

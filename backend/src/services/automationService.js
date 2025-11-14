@@ -1,4 +1,5 @@
 const whatsappConfigRepository = require('../repositories/whatsappConfigRepository');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const whatsappTemplateRepository = require('../repositories/whatsappTemplateRepository');
 const tenantRepository = require('../repositories/tenantRepository');
 const dashboardRepository = require('../repositories/dashboardRepository'); // Importar dashboardRepository
@@ -71,7 +72,7 @@ const automationService = {
   },
 
   sendDailyReportTest: async (tenantId, phoneNumbers) => {
-    const yesterday = new Date();
+    const yesterday = zonedTimeToUtc(new Date(), 'America/Sao_Paulo');
     yesterday.setDate(yesterday.getDate() - 1);
     const startOfYesterday = new Date(new Date(yesterday).setHours(0, 0, 0, 0));
     const endOfYesterday = new Date(new Date(yesterday).setHours(23, 59, 59, 999));

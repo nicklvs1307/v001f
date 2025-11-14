@@ -1,4 +1,5 @@
 const surveyRepository = require('../repositories/surveyRepository');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const resultRepository = require('../repositories/resultRepository');
 const ApiError = require('../errors/ApiError');
 const ratingService = require('./ratingService'); // Importar o ratingService
@@ -282,7 +283,7 @@ const getSurveyResultsById = async (surveyId, tenantId = null) => {
 
   if (birthDates.length > 0) {
     const ageGroups = { '18-24': 0, '25-34': 0, '35-44': 0, '45-54': 0, '55+': 0 };
-    const currentYear = new Date().getFullYear();
+    const currentYear = zonedTimeToUtc(new Date(), 'America/Sao_Paulo').getFullYear();
 
     birthDates.forEach(dob => {
       const age = currentYear - dob.getFullYear();

@@ -1,4 +1,5 @@
 const { Op } = require('sequelize');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const ApiError = require('../errors/ApiError');
 const { scheduleCampaign, cancelCampaign } = require('../jobs/campaignScheduler');
 const { CampanhaLog, Client, sequelize } = require('../../models');
@@ -79,7 +80,7 @@ class CampanhaService {
       throw ApiError.badRequest('Esta campanha já foi processada ou está em processamento.');
     }
 
-    if (campanha.startDate && new Date(campanha.startDate) > new Date()) {
+    if (campanha.startDate && new Date(campanha.startDate) > zonedTimeToUtc(new Date(), 'America/Sao_Paulo')) {
       await this.campanhaRepository.update(id, { status: 'scheduled' }, tenantId);
       const updatedCampanha = await this.getById(id, tenantId);
       scheduleCampaign(updatedCampanha, this._processCampaign.bind(this));

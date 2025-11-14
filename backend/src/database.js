@@ -17,6 +17,10 @@ const sequelize = new Sequelize(
     port: config.db.port,
     dialect: 'postgres', // Definido explicitamente
     logging: false, // Desabilitar logging por padrão para não poluir o console
+    timezone: 'America/Sao_Paulo',
+    dialectOptions: {
+      useUTC: false, // Para garantir que o cliente postgres não converta para UTC
+    },
   }
 );
 

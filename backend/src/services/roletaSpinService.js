@@ -1,4 +1,5 @@
 const { RoletaSpin, Roleta, RoletaPremio, Client } = require('../../models');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const ApiError = require('../errors/ApiError');
 
 class RoletaSpinService {
@@ -19,7 +20,7 @@ class RoletaSpinService {
       throw ApiError.badRequest('Este token já foi utilizado.');
     }
 
-    if (roletaSpin.expiresAt && new Date() > roletaSpin.expiresAt) {
+    if (roletaSpin.expiresAt && zonedTimeToUtc(new Date(), 'America/Sao_Paulo') > roletaSpin.expiresAt) {
       throw ApiError.badRequest('Este token expirou.');
     }
 
@@ -50,7 +51,7 @@ class RoletaSpinService {
       throw ApiError.badRequest('Este token já foi utilizado.');
     }
 
-    if (roletaSpin.expiresAt && new Date() > roletaSpin.expiresAt) {
+    if (roletaSpin.expiresAt && zonedTimeToUtc(new Date(), 'America/Sao_Paulo') > roletaSpin.expiresAt) {
       throw ApiError.badRequest('Este token expirou.');
     }
 

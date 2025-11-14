@@ -1,4 +1,5 @@
 const { Cupom, Recompensa, Client } = require('../../models');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const { Op, fn, col } = require('sequelize');
 
 class CupomRepository {
@@ -49,7 +50,7 @@ class CupomRepository {
 
   async getCuponsSummary(tenantId = null) {
     const whereClause = tenantId ? { tenantId } : {};
-    const today = new Date();
+    const today = zonedTimeToUtc(new Date(), 'America/Sao_Paulo');
     const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
     const sevenDaysFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
 

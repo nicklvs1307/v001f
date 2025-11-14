@@ -1,9 +1,10 @@
 const { Client, Sequelize } = require('../../../models');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const { Op } = require('sequelize');
 
 const getBirthdaysOfMonth = async (tenantId = null) => {
     const whereClause = tenantId ? { tenantId } : {};
-    const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
+    const currentMonth = zonedTimeToUtc(new Date(), 'America/Sao_Paulo').getMonth() + 1; // getMonth() returns 0-11
 
     const birthdays = await Client.findAll({
         where: {

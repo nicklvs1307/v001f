@@ -1,5 +1,5 @@
 const { Pesquisa, Resposta, Usuario, Tenant, Pergunta, Cupom, Atendente, AtendenteMeta, Client, Criterio } = require('../../../models');
-const { utcToZonedTime } = require('date-fns-tz');
+const { zonedTimeToUtc, utcToZonedTime } = require('date-fns-tz');
 const { Sequelize, Op } = require('sequelize');
 const ratingService = require('../../services/ratingService');
 

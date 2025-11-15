@@ -44,7 +44,7 @@ const RoletaFormPage = () => {
   useEffect(() => {
     const fetchRecompensas = async () => {
       try {
-        const response = await recompensaService.getAllRecompensas();
+        const response = await recompensaService.getAll();
         setRecompensas(response.data || []);
       } catch (err) {
         setError('Erro ao buscar recompensas.');

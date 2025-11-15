@@ -38,6 +38,8 @@ import {
     LineChart,
     Line
 } from 'recharts';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { parseISO, format } from 'date-fns';
 
 import dashboardService from '../services/dashboardService';
 import DetailsModal from '../components/Dashboard/DetailsModal';
@@ -64,8 +66,8 @@ const DashboardPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
 
     // State for the details modal
     const [modalOpen, setModalOpen] = useState(false);
@@ -87,10 +89,10 @@ const DashboardPage = () => {
                 setError('');
                 const params = {};
                 if (startDate) {
-                    params.startDate = startDate;
+                    params.startDate = format(startDate, 'yyyy-MM-dd');
                 }
                 if (endDate) {
-                    params.endDate = endDate;
+                    params.endDate = format(endDate, 'yyyy-MM-dd');
                 }
                 const data = await dashboardService.getMainDashboard(params);
                 setDashboardData(data);
@@ -226,32 +228,23 @@ const DashboardPage = () => {
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Typography variant="h4" component="h1" gutterBottom>
-                Dashboard de Análise
-            </Typography>
-
-            <Grid container spacing={2} sx={{ mb: 3 }}>
-                <Grid item xs={12} sm={6} md={3}>
-                    <TextField
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                <Typography variant="h4" component="h1" gutterBottom>
+                    Dashboard de Análise
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                    <DatePicker
                         label="Data de Início"
-                        type="date"
-                        fullWidth
-                        InputLabelProps={{ shrink: true }}
                         value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
+                        onChange={(newValue) => setStartDate(newValue)}
                     />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <TextField
+                    <DatePicker
                         label="Data de Fim"
-                        type="date"
-                        fullWidth
-                        InputLabelProps={{ shrink: true }}
                         value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
+                        onChange={(newValue) => setEndDate(newValue)}
                     />
-                </Grid>
-            </Grid>
+                </Box>
+            </Box>
 
             <Grid container spacing={2} sx={{ mb: 4 }}>
                 {/* Card NPS Score */}

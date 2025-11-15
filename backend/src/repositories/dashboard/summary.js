@@ -1,7 +1,9 @@
 const { Pesquisa, Resposta, Usuario, Tenant, Pergunta, Cupom, Atendente, AtendenteMeta, Client, Criterio } = require('../../../models');
-const { fromZonedTime } = require('date-fns-tz');
+const { fromZonedTime, toZonedTime } = require('date-fns-tz');
 const { Sequelize, Op } = require('sequelize');
 const ratingService = require('../../services/ratingService');
+
+const timeZone = 'America/Sao_Paulo';
 
 const { fn, col, literal } = Sequelize;
 
@@ -45,10 +47,12 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
     const npsResult = ratingService.calculateNPS(npsResponses);
     const csatResult = ratingService.calculateCSAT(csatResponses);
     
-    const currentMonth = fromZonedTime(new Date(), 'America/Sao_Paulo').getMonth();
-    const currentYear = fromZonedTime(new Date(), 'America/Sao_Paulo').getFullYear();
+    const nowInZone = toZonedTime(new Date(), timeZone);
+    const currentMonth = nowInZone.getMonth();
+    const currentYear = nowInZone.getFullYear();
+
     const ambassadorsMonth = npsResponses.filter(r => {
-        const responseDate = new Date(r.createdAt);
+        const responseDate = toZonedTime(r.createdAt, timeZone);
         return responseDate.getMonth() === currentMonth && responseDate.getFullYear() === currentYear && r.ratingValue >= 9;
     }).length;
     
@@ -61,10 +65,19 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
     const totalResponses = await Resposta.count({ where: totalResponsesWhere, distinct: true, col: 'respondentSessionId' });
     
     const clientWhereClause = tenantId ? { tenantId } : {};
-    if (surveyId) {
-        // This might not be what you want - it counts all clients, not just those who responded to the survey
-    }
     if (dateFilter) clientWhereClause.createdAt = dateFilter;
+
+    if (surveyId) {
+        const respondentClientIds = await Resposta.findAll({
+            where: {
+                pesquisaId: surveyId,
+                clientId: { [Op.ne]: null }
+            },
+            attributes: [[fn('DISTINCT', col('clientId')), 'clientId']]
+        });
+        const clientIds = respondentClientIds.map(r => r.dataValues.clientId);
+        clientWhereClause.id = { [Op.in]: clientIds };
+    }
     const totalUsers = await Client.count({ where: clientWhereClause });
 
     const couponsGeneratedWhere = tenantId ? { tenantId } : {};
@@ -144,7 +157,8 @@ const getMonthSummary = async (tenantId = null, startDate = null, endDate = null
     let accumulatedTotal = 0;
 
     npsResponses.forEach(response => {
-        const day = response.createdAt.toISOString().split('T')[0];
+        const zonedDate = toZonedTime(response.createdAt, timeZone);
+        const day = zonedDate.toISOString().split('T')[0];
         if (!dailyData[day]) {
             dailyData[day] = { promoters: 0, neutrals: 0, detractors: 0, total: 0 };
         }
@@ -182,11 +196,11 @@ const getMonthSummary = async (tenantId = null, startDate = null, endDate = null
     const responsesByHour = await Resposta.findAll({
         where: whereClause,
         attributes: [
-            [fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'hour'],
+            [fn('EXTRACT', literal(`HOUR FROM "createdAt" AT TIME ZONE '${timeZone}'`)), 'hour'],
             [fn('COUNT', col('id')), 'count']
         ],
-        group: [fn('EXTRACT', literal('HOUR FROM "createdAt"'))],
-        order: [[fn('EXTRACT', literal('HOUR FROM "createdAt"')), 'ASC']]
+        group: [fn('EXTRACT', literal(`HOUR FROM "createdAt" AT TIME ZONE '${timeZone}'`))],
+        order: [[fn('EXTRACT', literal(`HOUR FROM "createdAt" AT TIME ZONE '${timeZone}'`)), 'ASC']]
     });
     
     const peakHours = responsesByHour.map(item => ({
@@ -198,11 +212,11 @@ const getMonthSummary = async (tenantId = null, startDate = null, endDate = null
     const responsesByWeekday = await Resposta.findAll({
         where: whereClause,
         attributes: [
-            [fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'weekday'], // 1=Monday, 7=Sunday
+            [fn('EXTRACT', literal(`ISODOW FROM "createdAt" AT TIME ZONE '${timeZone}'`)), 'weekday'], // 1=Monday, 7=Sunday
             [fn('COUNT', col('id')), 'count']
         ],
-        group: [fn('EXTRACT', literal('ISODOW FROM "createdAt"'))],
-        order: [[fn('EXTRACT', literal('ISODOW FROM "createdAt"')), 'ASC']]
+        group: [fn('EXTRACT', literal(`ISODOW FROM "createdAt" AT TIME ZONE '${timeZone}'`))],
+        order: [[fn('EXTRACT', literal(`ISODOW FROM "createdAt" AT TIME ZONE '${timeZone}'`)), 'ASC']]
     });
 
     const weekdays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];

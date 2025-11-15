@@ -7,10 +7,10 @@ import {
     Alert, 
     Grid,
     Paper,
-    TextField,
-    Button
+    TextField
 } from '@mui/material';
-import { subDays, format } from 'date-fns';
+import { subDays, format, isValid } from 'date-fns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import resultService from '../services/resultService';
 import AuthContext from '../context/AuthContext';
 
@@ -27,8 +27,8 @@ const ResultsOverviewPage = () => {
     const { user } = useContext(AuthContext);
     const tenantId = user?.role === 'Super Admin' ? null : user?.tenantId;
 
-    const [startDate, setStartDate] = useState(format(subDays(new Date(), 30), 'yyyy-MM-dd'));
-    const [endDate, setEndDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+    const [startDate, setStartDate] = useState(subDays(new Date(), 30));
+    const [endDate, setEndDate] = useState(new Date());
 
     const fetchResults = useCallback(async () => {
         if (!tenantId) {
@@ -38,10 +38,16 @@ const ResultsOverviewPage = () => {
         try {
             setLoading(true);
             setError('');
-            const params = { tenantId, startDate, endDate };
+            const params = { tenantId };
+            if (startDate && isValid(startDate)) {
+                params.startDate = format(startDate, 'yyyy-MM-dd');
+            }
+            if (endDate && isValid(endDate)) {
+                params.endDate = format(endDate, 'yyyy-MM-dd');
+            }
             const resultData = await resultService.getMainDashboard(params);
             setData(resultData);
-        } catch (err) {
+        } catch (err) => {
             setError(err.message || 'Falha ao carregar os resultados.');
         } finally {
             setLoading(false);
@@ -88,21 +94,15 @@ const ResultsOverviewPage = () => {
                         </Typography>
                     </Grid>
                     <Grid item sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                        <TextField
+                        <DatePicker
                             label="Data de Início"
-                            type="date"
                             value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                            InputLabelProps={{ shrink: true }}
-                            size="small"
+                            onChange={(newValue) => setStartDate(newValue)}
                         />
-                        <TextField
+                        <DatePicker
                             label="Data de Fim"
-                            type="date"
                             value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                            InputLabelProps={{ shrink: true }}
-                            size="small"
+                            onChange={(newValue) => setEndDate(newValue)}
                         />
                     </Grid>
                 </Grid>

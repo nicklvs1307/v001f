@@ -142,7 +142,7 @@ const getMonthSummary = async (tenantId = null, startDate = null, endDate = null
             required: true
         }, {
             model: Client,
-            as: 'client',
+            as: 'cliente',
             attributes: ['id'] // We only need to check for its existence
         }],
         attributes: ['id', 'ratingValue', 'createdAt'],

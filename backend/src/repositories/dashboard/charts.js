@@ -55,11 +55,11 @@ const getResponseChart = async (tenantId = null, startDate = null, endDate = nul
     const responsesByPeriod = await Resposta.findAll({
         where: whereClause,
         attributes: [
-            [dateTruncTz(period, 'Resposta.createdAt'), 'period'],
+            [dateTruncTz(period, 'createdAt'), 'period'],
             [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'count']
         ],
-        group: [dateTruncTz(period, 'Resposta.createdAt')],
-        order: [[dateTruncTz(period, 'Resposta.createdAt'), 'ASC']]
+        group: [dateTruncTz(period, 'createdAt')],
+        order: [[dateTruncTz(period, 'createdAt'), 'ASC']]
     });
 
     const chartData = [];
@@ -178,13 +178,13 @@ const getNpsTrendData = async (tenantId = null, period = 'day', startDate = null
             required: true
         }],
         attributes: [
-            [dateTruncTz(period, 'Resposta.createdAt'), 'period'],
+            [dateTruncTz(period, 'createdAt'), 'period'],
             [fn('SUM', literal('CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END')), 'promoters'],
             [fn('SUM', literal('CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END')), 'detractors'],
             [fn('COUNT', col('Resposta.id')), 'total']
         ],
-        group: [dateTruncTz(period, 'Resposta.createdAt')],
-        order: [[dateTruncTz(period, 'Resposta.createdAt'), 'ASC']]
+        group: [dateTruncTz(period, 'createdAt')],
+        order: [[dateTruncTz(period, 'createdAt'), 'ASC']]
     });
 
     return trendData.map(item => {
@@ -229,12 +229,12 @@ const getCsatTrendData = async (tenantId = null, period = 'day', startDate = nul
             required: true
         }],
         attributes: [
-            [dateTruncTz(period, 'Resposta.createdAt'), 'period'],
+            [dateTruncTz(period, 'createdAt'), 'period'],
             [fn('SUM', literal('CASE WHEN "ratingValue" >= 4 THEN 1 ELSE 0 END')), 'satisfied'],
             [fn('COUNT', col('Resposta.id')), 'total']
         ],
-        group: [dateTruncTz(period, 'Resposta.createdAt')],
-        order: [[dateTruncTz(period, 'Resposta.createdAt'), 'ASC']]
+        group: [dateTruncTz(period, 'createdAt')],
+        order: [[dateTruncTz(period, 'createdAt'), 'ASC']]
     });
 
     return trendData.map(item => {
@@ -269,11 +269,11 @@ const getResponseCountTrendData = async (tenantId = null, period = 'day', startD
     const trendData = await Resposta.findAll({
         where: whereClause,
         attributes: [
-            [dateTruncTz(period, 'Resposta.createdAt'), 'period'],
+            [dateTruncTz(period, 'createdAt'), 'period'],
             [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'count']
         ],
-        group: [dateTruncTz(period, 'Resposta.createdAt')],
-        order: [[dateTruncTz(period, 'Resposta.createdAt'), 'ASC']]
+        group: [dateTruncTz(period, 'createdAt')],
+        order: [[dateTruncTz(period, 'createdAt'), 'ASC']]
     });
 
     return trendData.map(item => ({

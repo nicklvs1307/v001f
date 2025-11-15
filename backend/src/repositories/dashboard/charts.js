@@ -1,5 +1,4 @@
 const { Pesquisa, Resposta, Client, Cupom, Pergunta } = require('../../../models');
-const { Pesquisa, Resposta, Client, Cupom, Pergunta } = require('../../../models');
 const { zonedTimeToUtc, utcToZonedTime, format: formatTz } = require('date-fns-tz');
 const { Sequelize, Op } = require('sequelize');
 const { subDays, differenceInDays, eachDayOfInterval, format, startOfWeek, endOfWeek, startOfMonth, endOfMonth } = require('date-fns');

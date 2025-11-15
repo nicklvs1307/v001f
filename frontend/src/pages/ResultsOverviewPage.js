@@ -47,7 +47,7 @@ const ResultsOverviewPage = () => {
             }
             const resultData = await resultService.getMainDashboard(params);
             setData(resultData);
-        } catch (err) => {
+        } catch (err) {
             setError(err.message || 'Falha ao carregar os resultados.');
         } finally {
             setLoading(false);

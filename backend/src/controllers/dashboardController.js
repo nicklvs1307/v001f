@@ -10,13 +10,17 @@ const adjustDateRange = (startDateStr, endDateStr) => {
     let endDate = null;
 
     if (startDateStr) {
-        // Interpreta a string de data como estando no fuso horário de São Paulo e converte para um objeto Date UTC
-        startDate = fromZonedTime(`${startDateStr}T00:00:00`, timeZone);
+        const parsedStart = fromZonedTime(`${startDateStr}T00:00:00`, timeZone);
+        if (parsedStart && !isNaN(parsedStart.getTime())) {
+            startDate = parsedStart;
+        }
     }
 
     if (endDateStr) {
-        // Interpreta a string de data como estando no fuso horário de São Paulo e converte para um objeto Date UTC
-        endDate = fromZonedTime(`${endDateStr}T23:59:59.999`, timeZone);
+        const parsedEnd = fromZonedTime(`${endDateStr}T23:59:59.999`, timeZone);
+        if (parsedEnd && !isNaN(parsedEnd.getTime())) {
+            endDate = parsedEnd;
+        }
     }
 
     return { startDate, endDate };

@@ -1,4 +1,4 @@
-const { Pesquisa, Resposta, Client, Cupom } = require('../../../models');
+const models = require('../../../models');
 const { fromZonedTime } = require('date-fns-tz');
 const { Op } = require('sequelize');
 const ratingService = require('../../services/ratingService');
@@ -30,26 +30,26 @@ const getOverallResults = async function (tenantId = null, startDate = null, end
         whereClause.createdAt = dateFilter;
     }
 
-    const allResponses = await Resposta.findAll({
+    const allResponses = await models.Resposta.findAll({
         where: { ...whereClause, ratingValue: { [Op.ne]: null } },
         include: [
             {
-                model: Pergunta,
+                model: models.Pergunta,
                 as: 'pergunta',
                 attributes: ['id', 'type', 'criterioId'],
                 include: [{
-                    model: Criterio,
+                    model: models.Criterio,
                     as: 'criterio',
                     attributes: ['name', 'type'],
                 }]
             },
             {
-                model: Client,
+                model: models.Client,
                 as: 'cliente',
                 attributes: ['birthDate', 'gender'],
             },
             {
-                model: Atendente,
+                model: models.Atendente,
                 as: 'atendente',
                 attributes: ['id', 'name'],
             }
@@ -167,7 +167,7 @@ const getOverallResults = async function (tenantId = null, startDate = null, end
     const attendantsArray = await Promise.all(Object.values(responsesByAttendant).map(async (attendant) => {
         const npsResult = ratingService.calculateNPS(attendant.responses);
         const csatResult = ratingService.calculateCSAT(attendant.responses);
-        const meta = await AtendenteMeta.findOne({ where: { atendenteId: attendant.id, tenantId: tenantId } });
+        const meta = await models.AtendenteMeta.findOne({ where: { atendenteId: attendant.id, tenantId: tenantId } });
         return {
             name: attendant.name,
             responses: attendant.responses.length,

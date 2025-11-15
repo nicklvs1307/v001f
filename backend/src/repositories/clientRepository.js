@@ -1,6 +1,6 @@
 const { Client, Cupom, Resposta } = require('../../models');
-const { fromZonedTime } = require('date-fns-tz');
 const { Op, fn, col, literal } = require('sequelize');
+const sequelize = require('sequelize');
 const ApiError = require("../errors/ApiError");
 
 class ClientRepository {
@@ -130,9 +130,9 @@ class ClientRepository {
     // Cuidado: esta query pode ser lenta em bancos de dados grandes sem um índice no mês de aniversário.
     return Client.findAll({
       where: {
+        tenantId,
         [Op.and]: [
-          where(fn('EXTRACT', literal('MONTH FROM "birthDate"')), month),
-          { tenantId },
+          sequelize.where(sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "birthDate"')), month),
         ],
       },
     });
@@ -286,7 +286,7 @@ class ClientRepository {
       where: {
         ...whereClause,
         [Op.and]: [
-          where(fn('EXTRACT', literal('MONTH FROM "birthDate"')), currentMonth),
+          sequelize.where(sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "birthDate"')), currentMonth),
         ],
       },
     });

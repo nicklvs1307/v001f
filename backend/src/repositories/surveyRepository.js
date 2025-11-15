@@ -1,5 +1,5 @@
 const { Pesquisa, Pergunta, Resposta, Usuario, Tenant, Criterio, Atendente, Client } = require("../../models");
-const { zonedTimeToUtc } = require('date-fns-tz');
+const { fromZonedTime } = require('date-fns-tz');
 const { sequelize } = require("../database");
 const { Op } = require('sequelize');
 const ApiError = require("../errors/ApiError");
@@ -221,7 +221,7 @@ const getSurveyTenantIdAndCreatorId = async (id, tenantId = null) => {
 
 const getSurveyStats = async (tenantId = null) => {
   const whereClause = tenantId ? { tenantId } : {};
-  const today = zonedTimeToUtc(new Date(), 'America/Sao_Paulo');
+  const today = fromZonedTime(new Date(), 'America/Sao_Paulo');
   const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
   const activeSurveys = await Pesquisa.count({

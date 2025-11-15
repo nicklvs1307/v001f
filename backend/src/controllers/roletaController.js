@@ -1,5 +1,5 @@
 'use strict';
-const { zonedTimeToUtc } = require('date-fns-tz');
+const { fromZonedTime } = require('date-fns-tz');
 const crypto = require('crypto');
 const asyncHandler = require('express-async-handler');
 const { Pesquisa } = require('../../models');
@@ -33,7 +33,7 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
   // Verificar se o cliente já girou a roleta para esta pesquisa recentemente
   const latestCupom = await cupomRepository.findByClientAndSurvey(clientId, pesquisaId);
   if (latestCupom) {
-    const now = zonedTimeToUtc(new Date(), 'America/Sao_Paulo')
+    const now = fromZonedTime(new Date(), 'America/Sao_Paulo')
     const lastSpinTime = new Date(latestCupom.dataGeracao);
     const timeDiff = now.getTime() - lastSpinTime.getTime();
     const hoursDiff = timeDiff / (1000 * 3600);
@@ -94,7 +94,7 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
   const randomDigits = Math.floor(1000 + Math.random() * 9000);
   const codigoCupom = `${clienteNome.toUpperCase()}${randomDigits}`;
 
-  const dataValidade = zonedTimeToUtc(new Date(), 'America/Sao_Paulo')
+  const dataValidade = fromZonedTime(new Date(), 'America/Sao_Paulo')
   dataValidade.setDate(dataValidade.getDate() + 30);
 
   const cupomData = {
@@ -196,7 +196,7 @@ exports.getRoletaConfig = asyncHandler(async (req, res) => {
   const latestCupom = await cupomRepository.findByClientAndSurvey(clientId, pesquisaId);
   let hasSpunRecently = false;
   if (latestCupom) {
-    const now = zonedTimeToUtc(new Date(), 'America/Sao_Paulo')
+    const now = fromZonedTime(new Date(), 'America/Sao_Paulo')
     const lastSpinTime = new Date(latestCupom.dataGeracao);
     const timeDiff = now.getTime() - lastSpinTime.getTime();
     const hoursDiff = timeDiff / (1000 * 3600);

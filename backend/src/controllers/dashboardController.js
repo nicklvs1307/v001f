@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const dashboardRepository = require('../repositories/dashboardRepository');
-const { zonedTimeToUtc } = require('date-fns-tz');
+const { fromZonedTime } = require('date-fns-tz');
 
 const timeZone = 'America/Sao_Paulo';
 
@@ -11,12 +11,12 @@ const adjustDateRange = (startDateStr, endDateStr) => {
 
     if (startDateStr) {
         // Interpreta a string de data como estando no fuso horário de São Paulo e converte para um objeto Date UTC
-        startDate = zonedTimeToUtc(`${startDateStr}T00:00:00`, timeZone);
+        startDate = fromZonedTime(`${startDateStr}T00:00:00`, timeZone);
     }
 
     if (endDateStr) {
         // Interpreta a string de data como estando no fuso horário de São Paulo e converte para um objeto Date UTC
-        endDate = zonedTimeToUtc(`${endDateStr}T23:59:59.999`, timeZone);
+        endDate = fromZonedTime(`${endDateStr}T23:59:59.999`, timeZone);
     }
 
     return { startDate, endDate };

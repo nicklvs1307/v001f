@@ -1,5 +1,5 @@
 const asyncHandler = require('express-async-handler');
-const { zonedTimeToUtc } = require('date-fns-tz');
+const { fromZonedTime } = require('date-fns-tz');
 const cupomRepository = require('../repositories/cupomRepository');
 const recompensaRepository = require('../repositories/recompensaRepository');
 const ApiError = require('../errors/ApiError');
@@ -89,14 +89,14 @@ const cupomController = {
       throw new ApiError(400, 'Cupom já utilizado.');
     }
 
-    if (new Date(cupom.dataValidade) < zonedTimeToUtc(new Date(), 'America/Sao_Paulo')) {
+    if (new Date(cupom.dataValidade) < fromZonedTime(new Date(), 'America/Sao_Paulo')) {
       throw new ApiError(400, 'Cupom expirado.');
     }
 
     // Atualizar status do cupom para 'used' e registrar data de utilização
     const updatedCupom = await cupomRepository.updateCupom(cupom.id, cupom.tenantId, {
       status: 'used',
-      dataUtilizacao: zonedTimeToUtc(new Date(), 'America/Sao_Paulo'),
+      dataUtilizacao: fromZonedTime(new Date(), 'America/Sao_Paulo'),
     });
 
     if (!updatedCupom) {
@@ -114,7 +114,7 @@ const cupomController = {
         });
 
         if (logEntry && !logEntry.convertedAt) {
-          await logEntry.update({ convertedAt: zonedTimeToUtc(new Date(), 'America/Sao_Paulo') });
+          await logEntry.update({ convertedAt: fromZonedTime(new Date(), 'America/Sao_Paulo') });
         }
       } catch (error) {
         // Log the error but don't fail the request, as the coupon validation was successful.

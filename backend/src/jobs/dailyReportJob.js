@@ -1,6 +1,6 @@
 const cron = require('node-cron');
 const { format, subDays, startOfDay, endOfDay } = require('date-fns');
-const { utcToZonedTime } = require('date-fns-tz');
+const { toZonedTime } = require('date-fns-tz');
 const whatsappService = require('../services/whatsappService');
 const whatsappConfigRepository = require('../repositories/whatsappConfigRepository');
 const tenantRepository = require('../repositories/tenantRepository');
@@ -36,7 +36,7 @@ const dailyReportTask = cron.schedule(schedule, async () => {
       const now = new Date();
       
       // We get the current date in the SP timezone to correctly determine "yesterday"
-      const zonedNow = utcToZonedTime(now, timeZone);
+      const zonedNow = toZonedTime(now, timeZone);
       const yesterdayZoned = subDays(zonedNow, 1);
       const twoDaysAgoZoned = subDays(zonedNow, 2);
 

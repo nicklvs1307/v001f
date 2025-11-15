@@ -1,5 +1,5 @@
 const { Pesquisa, Resposta, Client, Cupom, Pergunta } = require('../../../models');
-const { zonedTimeToUtc, utcToZonedTime, format: formatTz } = require('date-fns-tz');
+const { fromZonedTime, toZonedTime, format: formatTz } = require('date-fns-tz');
 const { Sequelize, Op } = require('sequelize');
 const { subDays, differenceInDays, eachDayOfInterval, format, startOfWeek, endOfWeek, startOfMonth, endOfMonth } = require('date-fns');
 const ptBR = require('date-fns/locale/pt-BR');
@@ -31,7 +31,7 @@ const getResponseChart = async (tenantId = null, startDate = null, endDate = nul
     }
 
     // Se não houver datas, define o padrão dos últimos 7 dias no fuso horário correto.
-    const end = endDate ? endDate : zonedTimeToUtc(new Date(), timeZone);
+    const end = endDate ? endDate : fromZonedTime(new Date(), timeZone);
     const start = startDate ? startDate : subDays(end, 6);
 
     const diffDays = differenceInDays(end, start);
@@ -57,15 +57,15 @@ const getResponseChart = async (tenantId = null, startDate = null, endDate = nul
 
     const dataMap = new Map(responsesByPeriod.map(item => {
         // Converte a data do banco (que está em UTC, mas representa o início do período em SP) para o fuso de SP
-        const zonedPeriod = utcToZonedTime(item.dataValues.period, timeZone);
+        const zonedPeriod = toZonedTime(item.dataValues.period, timeZone);
         // Formata para uma chave consistente 'yyyy-MM-dd'
         const key = format(zonedPeriod, 'yyyy-MM-dd');
         return [key, parseInt(item.dataValues.count)];
     }));
 
     const interval = {
-        start: utcToZonedTime(start, timeZone),
-        end: utcToZonedTime(end, timeZone)
+        start: toZonedTime(start, timeZone),
+        end: toZonedTime(end, timeZone)
     };
 
     let intervalDays;

@@ -1,5 +1,5 @@
 const { parse } = require('date-fns');
-const { zonedTimeToUtc } = require('date-fns-tz');
+const { fromZonedTime } = require('date-fns-tz');
 const ApiError = require('../errors/ApiError');
 const campanhaRepository = require('../repositories/campanhaRepository');
 const clientRepository = require('../repositories/clientRepository');
@@ -34,7 +34,7 @@ class CampanhaController {
     const { dataValidade, startDate, endDate, rewardType } = data;
 
     if (rewardType && rewardType !== 'NONE') {
-      const parsedDataValidade = dataValidade ? parse(dataValidade, dateFormat, zonedTimeToUtc(new Date(), 'America/Sao_Paulo')) : null;
+      const parsedDataValidade = dataValidade ? parse(dataValidade, dateFormat, fromZonedTime(new Date(), 'America/Sao_Paulo')) : null;
 
       if (!parsedDataValidade || isNaN(parsedDataValidade.getTime())) {
         throw new ApiError(400, `A data de validade é obrigatória para campanhas com recompensa e deve estar no formato ${dateFormat}.`);
@@ -50,7 +50,7 @@ class CampanhaController {
         data[dateField] = null;
         return;
       }
-      const parsedDate = parse(dateValue, dateFormat, zonedTimeToUtc(new Date(), 'America/Sao_Paulo'));
+      const parsedDate = parse(dateValue, dateFormat, fromZonedTime(new Date(), 'America/Sao_Paulo'));
       if (isNaN(parsedDate.getTime())) {
         data[dateField] = null;
       } else {

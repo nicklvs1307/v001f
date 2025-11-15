@@ -245,6 +245,11 @@ const RoletaFormPage = () => {
                           handlePremioChange(index, 'recompensa', newValue ? newValue.id : null);
                         }}
                         renderInput={(params) => <TextField {...params} label="Recompensa" />}
+                        renderOption={(props, option) => (
+                            <Box component="li" sx={{ color: 'text.primary' }} {...props} key={option.id}>
+                                {option.nome}
+                            </Box>
+                        )}
                       />
                     </Grid>
                     <Grid item xs={6} sm={3}>
@@ -275,7 +280,7 @@ const RoletaFormPage = () => {
                         <Box sx={{ position: 'absolute', zIndex: 2 }}>
                           <Box sx={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0 }} onClick={handleColorClose} />
                           <SketchPicker
-                            color={premio.style.backgroundColor}
+                            color={premio.style.backgroundColor || '#FFFFFF'}
                             onChange={(color) => handlePremioStyleChange(index, 'backgroundColor', color.hex)}
                           />
                         </Box>

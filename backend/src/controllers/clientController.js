@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const { fromZonedTime } = require('date-fns-tz');
+const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
 const clientRepository = require("../repositories/clientRepository");
 const publicSurveyRepository = require("../repositories/publicSurveyRepository");
 const { sequelize } = require("../database");
@@ -274,7 +274,7 @@ exports.getClientDashboard = asyncHandler(async (req, res) => {
 // @access  Private (Admin)
 exports.getBirthdayClients = asyncHandler(async (req, res) => {
   const tenantId = req.user.tenantId;
-  const currentMonth = fromZonedTime(new Date(), 'America/Sao_Paulo').getMonth() + 1; // getMonth() retorna de 0 a 11
+  const currentMonth = zonedTimeToUtc(new Date(), 'America/Sao_Paulo').getMonth() + 1; // getMonth() retorna de 0 a 11
   const birthdayClients = await clientRepository.findByBirthMonth(currentMonth, tenantId);
   res.status(200).json(birthdayClients);
 });

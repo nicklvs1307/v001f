@@ -1,5 +1,6 @@
 const { Pesquisa, Resposta, Usuario, Tenant, Pergunta, Cupom, Atendente, AtendenteMeta, Client, Criterio } = require('../../../models');
-const { fromZonedTime, toZonedTime } = require('date-fns-tz');
+const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
+const { utcToZonedTime } = require('date-fns-tz/utcToZonedTime');
 const { Sequelize, Op } = require('sequelize');
 const ratingService = require('../../services/ratingService');
 
@@ -47,12 +48,12 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
     const npsResult = ratingService.calculateNPS(npsResponses);
     const csatResult = ratingService.calculateCSAT(csatResponses);
     
-    const nowInZone = toZonedTime(new Date(), timeZone);
+    const nowInZone = utcToZonedTime(new Date(), timeZone);
     const currentMonth = nowInZone.getMonth();
     const currentYear = nowInZone.getFullYear();
 
     const ambassadorsMonth = npsResponses.filter(r => {
-        const responseDate = toZonedTime(r.createdAt, timeZone);
+        const responseDate = utcToZonedTime(r.createdAt, timeZone);
         return responseDate.getMonth() === currentMonth && responseDate.getFullYear() === currentYear && r.ratingValue >= 9;
     }).length;
     
@@ -157,7 +158,7 @@ const getMonthSummary = async (tenantId = null, startDate = null, endDate = null
     let accumulatedTotal = 0;
 
     npsResponses.forEach(response => {
-        const zonedDate = toZonedTime(response.createdAt, timeZone);
+        const zonedDate = utcToZonedTime(response.createdAt, timeZone);
         const day = zonedDate.toISOString().split('T')[0];
         if (!dailyData[day]) {
             dailyData[day] = { promoters: 0, neutrals: 0, detractors: 0, total: 0 };

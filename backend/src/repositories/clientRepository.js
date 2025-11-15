@@ -1,5 +1,5 @@
 const { Client, Resposta, sequelize } = require('../../models');
-const { fromZonedTime } = require('date-fns-tz');
+const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
 const { Op, where, fn, literal } = require('sequelize');
 const ApiError = require("../errors/ApiError");
 
@@ -35,7 +35,7 @@ class ClientRepository {
   }
 
   async findInativos(tenantId) {
-    const threeMonthsAgo = fromZonedTime(new Date(), 'America/Sao_Paulo');
+    const threeMonthsAgo = zonedTimeToUtc(new Date(), 'America/Sao_Paulo');
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
     return Client.findAll({
@@ -54,7 +54,7 @@ class ClientRepository {
   }
 
   async findNovatos(tenantId) {
-    const threeMonthsAgo = fromZonedTime(new Date(), 'America/Sao_Paulo');
+    const threeMonthsAgo = zonedTimeToUtc(new Date(), 'America/Sao_Paulo');
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
     return Client.findAll({
@@ -74,7 +74,7 @@ class ClientRepository {
   }
 
   async findFieis(tenantId) {
-    const threeMonthsAgo = fromZonedTime(new Date(), 'America/Sao_Paulo');
+    const threeMonthsAgo = zonedTimeToUtc(new Date(), 'America/Sao_Paulo');
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
     return Client.findAll({
@@ -94,7 +94,7 @@ class ClientRepository {
   }
 
   async findSuperClientes(tenantId) {
-    const threeMonthsAgo = fromZonedTime(new Date(), 'America/Sao_Paulo');
+    const threeMonthsAgo = zonedTimeToUtc(new Date(), 'America/Sao_Paulo');
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
     return Client.findAll({
@@ -281,7 +281,7 @@ class ClientRepository {
     const totalClients = await Client.count({ where: whereClause });
 
     // 2. Aniversariantes do Mês
-    const currentMonth = fromZonedTime(new Date(), 'America/Sao_Paulo').getMonth() + 1;
+    const currentMonth = zonedTimeToUtc(new Date(), 'America/Sao_Paulo').getMonth() + 1;
     const birthdayCount = await Client.count({
       where: {
         ...whereClause,
@@ -296,7 +296,7 @@ class ClientRepository {
     // 3. Média de Idade
     let totalAge = 0;
     let clientsWithAge = 0;
-    const currentYear = fromZonedTime(new Date(), 'America/Sao_Paulo').getFullYear();
+    const currentYear = zonedTimeToUtc(new Date(), 'America/Sao_Paulo').getFullYear();
     clients.forEach(client => {
         if (client.birthDate) {
             const birthYear = new Date(client.birthDate).getFullYear();

@@ -1,5 +1,7 @@
 const { Pesquisa, Resposta, Client, Cupom, Pergunta } = require('../../../models');
-const { zonedTimeToUtc, utcToZonedTime, format: formatTz } = require('date-fns-tz');
+const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
+const { utcToZonedTime } = require('date-fns-tz/utcToZonedTime');
+const { format: formatTz } = require('date-fns-tz/format');
 const { Sequelize, Op } = require('sequelize');
 const { subDays, differenceInDays, eachDayOfInterval, format, startOfWeek, endOfWeek, startOfMonth, endOfMonth } = require('date-fns');
 const ptBR = require('date-fns/locale/pt-BR');

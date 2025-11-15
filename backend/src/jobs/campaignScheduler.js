@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const { fromZonedTime } = require('date-fns-tz');
+const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
 
 const scheduledJobs = new Map();
 
@@ -17,7 +17,7 @@ function scheduleCampaign(campaign, processFunction) {
   const cronTime = new Date(campaign.startDate);
 
   // Não agendar tarefas no passado
-  if (cronTime < fromZonedTime(new Date(), 'America/Sao_Paulo')) {
+  if (cronTime < zonedTimeToUtc(new Date(), 'America/Sao_Paulo')) {
     console.log(`[Scheduler] Campanha ${campaign.id} não agendada pois a data de início já passou.`);
     return;
   }

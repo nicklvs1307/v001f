@@ -1,5 +1,5 @@
 const { Resposta, Pergunta, Criterio, Client, Atendente, AtendenteMeta } = require('../../../models');
-const { fromZonedTime } = require('date-fns-tz');
+const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
 const { Op } = require('sequelize');
 const ratingService = require('../../services/ratingService');
 const { getResponseChart } = require('./charts');
@@ -130,7 +130,7 @@ const getOverallResults = async function (tenantId = null, startDate = null, end
 
     if (birthDates.length > 0) {
         const ageGroups = { '18-24': 0, '25-34': 0, '35-44': 0, '45-54': 0, '55+': 0 };
-        const currentYear = fromZonedTime(new Date(), 'America/Sao_Paulo').getFullYear();
+        const currentYear = zonedTimeToUtc(new Date(), 'America/Sao_Paulo').getFullYear();
         birthDates.forEach(dob => {
             const age = currentYear - dob.getFullYear();
             if (age >= 18 && age <= 24) ageGroups['18-24']++;

@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const { Cupom, Client, Tenant, WhatsappTemplate } = require('../models');
+const { Cupom, Client, Tenant, WhatsappTemplate } = require('../../models');
 const { zonedTimeToUtc } = require('date-fns-tz');
 const { Op } = require('sequelize');
 const whatsappService = require('../services/whatsappService');

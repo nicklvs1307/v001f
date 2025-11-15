@@ -1,6 +1,7 @@
 const models = require('../../../models');
 const { fromZonedTime } = require('date-fns-tz');
-const { Op } = require('sequelize');
+const sequelize = require('sequelize');
+const { Op } = sequelize;
 const ratingService = require('../../services/ratingService');
 const { getResponseChart } = require('./charts');
 

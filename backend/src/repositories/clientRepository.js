@@ -1,6 +1,7 @@
 const { Client, Cupom, Resposta } = require('../../models');
-const { Op, fn, col, literal } = require('sequelize');
 const sequelize = require('sequelize');
+const { Op } = sequelize;
+const { fromZonedTime } = require('date-fns-tz');
 const ApiError = require("../errors/ApiError");
 
 class ClientRepository {
@@ -194,7 +195,7 @@ class ClientRepository {
       attributes: {
         include: [
           [
-            literal(`(
+            sequelize.literal(`(
               SELECT MAX("createdAt")
               FROM "respostas" AS "r"
               WHERE "r"."respondentSessionId" = "Client"."respondentSessionId"

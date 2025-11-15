@@ -1,12 +1,10 @@
-const { Pesquisa, Resposta, Usuario, Tenant, Pergunta, Cupom, Atendente, AtendenteMeta, Client, Criterio } = require('../../../models');
-console.log(require('date-fns-tz'));
+const models = require('../../../models');
 const { fromZonedTime, toZonedTime } = require('date-fns-tz');
-const { Sequelize, Op } = require('sequelize');
+const sequelize = require('sequelize');
+const { Op } = sequelize;
 const ratingService = require('../../services/ratingService');
 
 const timeZone = 'America/Sao_Paulo';
-
-const { fn, col, literal } = Sequelize;
 
 const buildDateFilter = (startDate, endDate) => {
     const filter = {};
@@ -29,10 +27,10 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
     if (surveyId) ratingResponsesWhere.pesquisaId = surveyId;
     if (dateFilter) ratingResponsesWhere.createdAt = dateFilter;
 
-    const ratingResponses = await Resposta.findAll({
+    const ratingResponses = await models.Resposta.findAll({
         where: ratingResponsesWhere,
         include: [{
-            model: Pergunta,
+            model: models.Pergunta,
             as: 'pergunta',
             attributes: ['type'],
             where: {
@@ -63,34 +61,34 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
     if (tenantId) totalResponsesWhere.tenantId = tenantId;
     if (surveyId) totalResponsesWhere.pesquisaId = surveyId;
     if (dateFilter) totalResponsesWhere.createdAt = dateFilter;
-    const totalResponses = await Resposta.count({ where: totalResponsesWhere, distinct: true, col: 'respondentSessionId' });
+    const totalResponses = await models.Resposta.count({ where: totalResponsesWhere, distinct: true, col: 'respondentSessionId' });
     
     const clientWhereClause = tenantId ? { tenantId } : {};
     if (dateFilter) clientWhereClause.createdAt = dateFilter;
 
     if (surveyId) {
-        const respondentClientIds = await Resposta.findAll({
+        const respondentClientIds = await models.Resposta.findAll({
             where: {
                 pesquisaId: surveyId,
                 clientId: { [Op.ne]: null }
             },
-            attributes: [[fn('DISTINCT', col('clientId')), 'clientId']]
+            attributes: [[sequelize.fn('DISTINCT', sequelize.col('clientId')), 'clientId']]
         });
         const clientIds = respondentClientIds.map(r => r.dataValues.clientId);
         clientWhereClause.id = { [Op.in]: clientIds };
     }
-    const totalUsers = await Client.count({ where: clientWhereClause });
+    const totalUsers = await models.Client.count({ where: clientWhereClause });
 
     const couponsGeneratedWhere = tenantId ? { tenantId } : {};
     if (surveyId) couponsGeneratedWhere.pesquisaId = surveyId;
     if (dateFilter) couponsGeneratedWhere.createdAt = dateFilter;
-    const couponsGenerated = await Cupom.count({ where: couponsGeneratedWhere });
+    const couponsGenerated = await models.Cupom.count({ where: couponsGeneratedWhere });
 
     const couponsUsedWhere = { status: 'used' };
     if (tenantId) couponsUsedWhere.tenantId = tenantId;
     if (surveyId) couponsUsedWhere.pesquisaId = surveyId;
     if (dateFilter) couponsUsedWhere.updatedAt = dateFilter;
-    const couponsUsed = await Cupom.count({ where: couponsUsedWhere });
+    const couponsUsed = await models.Cupom.count({ where: couponsUsedWhere });
 
     return {
         nps: {
@@ -130,19 +128,19 @@ const getMonthSummary = async (tenantId = null, startDate = null, endDate = null
         whereClause.createdAt = dateFilter;
     }
 
-    const npsResponses = await Resposta.findAll({
+    const npsResponses = await models.Resposta.findAll({
         where: {
             ...whereClause,
             ratingValue: { [Op.ne]: null }
         },
         include: [{
-            model: Pergunta,
+            model: models.Pergunta,
             as: 'pergunta',
             attributes: ['type'],
             where: { type: 'rating_0_10' },
             required: true
         }, {
-            model: Client,
+            model: models.Client,
             as: 'cliente',
             attributes: ['id'] // We only need to check for its existence
         }],
@@ -194,14 +192,14 @@ const getMonthSummary = async (tenantId = null, startDate = null, endDate = null
     });
 
     // 2. Peak response times
-    const responsesByHour = await Resposta.findAll({
+    const responsesByHour = await models.Resposta.findAll({
         where: whereClause,
         attributes: [
-            [fn('EXTRACT', literal(`HOUR FROM "createdAt" AT TIME ZONE '${timeZone}'`)), 'hour'],
-            [fn('COUNT', col('id')), 'count']
+            [sequelize.fn('EXTRACT', sequelize.literal(`HOUR FROM "createdAt" AT TIME ZONE '${timeZone}'`)), 'hour'],
+            [sequelize.fn('COUNT', sequelize.col('id')), 'count']
         ],
-        group: [fn('EXTRACT', literal(`HOUR FROM "createdAt" AT TIME ZONE '${timeZone}'`))],
-        order: [[fn('EXTRACT', literal(`HOUR FROM "createdAt" AT TIME ZONE '${timeZone}'`)), 'ASC']]
+        group: [sequelize.fn('EXTRACT', sequelize.literal(`HOUR FROM "createdAt" AT TIME ZONE '${timeZone}'`))],
+        order: [[sequelize.fn('EXTRACT', sequelize.literal(`HOUR FROM "createdAt" AT TIME ZONE '${timeZone}'`)), 'ASC']]
     });
     
     const peakHours = responsesByHour.map(item => ({
@@ -210,14 +208,14 @@ const getMonthSummary = async (tenantId = null, startDate = null, endDate = null
     }));
 
     // 3. Distribution by day of the week
-    const responsesByWeekday = await Resposta.findAll({
+    const responsesByWeekday = await models.Resposta.findAll({
         where: whereClause,
         attributes: [
-            [fn('EXTRACT', literal(`ISODOW FROM "createdAt" AT TIME ZONE '${timeZone}'`)), 'weekday'], // 1=Monday, 7=Sunday
-            [fn('COUNT', col('id')), 'count']
+            [sequelize.fn('EXTRACT', sequelize.literal(`ISODOW FROM "createdAt" AT TIME ZONE '${timeZone}'`)), 'weekday'], // 1=Monday, 7=Sunday
+            [sequelize.fn('COUNT', sequelize.col('id')), 'count']
         ],
-        group: [fn('EXTRACT', literal(`ISODOW FROM "createdAt" AT TIME ZONE '${timeZone}'`))],
-        order: [[fn('EXTRACT', literal(`ISODOW FROM "createdAt" AT TIME ZONE '${timeZone}'`)), 'ASC']]
+        group: [sequelize.fn('EXTRACT', sequelize.literal(`ISODOW FROM "createdAt" AT TIME ZONE '${timeZone}'`))],
+        order: [[sequelize.fn('EXTRACT', sequelize.literal(`ISODOW FROM "createdAt" AT TIME ZONE '${timeZone}'`)), 'ASC']]
     });
 
     const weekdays = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
@@ -227,7 +225,7 @@ const getMonthSummary = async (tenantId = null, startDate = null, endDate = null
     }));
 
     // 4. Total responses
-    const totalResponses = await Resposta.count({ where: whereClause });
+    const totalResponses = await models.Resposta.count({ where: whereClause });
 
     // 5. Registered vs. Unregistered
     const registeredResponses = npsResponses.filter(r => r.client).length;

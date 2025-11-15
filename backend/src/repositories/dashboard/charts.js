@@ -1,6 +1,8 @@
 const { Pesquisa, Resposta, Client, Cupom, Pergunta } = require('../../../models');
-const { fromZonedTime } = require('date-fns-tz');
+const { Pesquisa, Resposta, Client, Cupom, Pergunta } = require('../../../models');
+const { zonedTimeToUtc, utcToZonedTime, format: formatTz } = require('date-fns-tz');
 const { Sequelize, Op } = require('sequelize');
+const { subDays, differenceInDays, eachDayOfInterval, format, startOfWeek, endOfWeek, startOfMonth, endOfMonth } = require('date-fns');
 
 const timeZone = 'America/Sao_Paulo';
 
@@ -14,14 +16,10 @@ const dateTruncTz = (p, column) => {
 const buildDateFilter = (startDate, endDate) => {
     const filter = {};
     if (startDate) {
-        const startOfDay = new Date(startDate);
-        startOfDay.setUTCHours(0, 0, 0, 0);
-        filter[Op.gte] = startOfDay;
+        filter[Op.gte] = startDate;
     }
     if (endDate) {
-        const endOfDay = new Date(endDate);
-        endOfDay.setUTCHours(23, 59, 59, 999);
-        filter[Op.lte] = endOfDay;
+        filter[Op.lte] = endDate;
     }
     return filter;
 };
@@ -32,19 +30,11 @@ const getResponseChart = async (tenantId = null, startDate = null, endDate = nul
         whereClause.pesquisaId = surveyId;
     }
 
-    let start, end;
-    // Default to last 7 days if no dates are provided
-    if (!startDate || !endDate) {
-        end = fromZonedTime(new Date(), timeZone);
-        start = fromZonedTime(new Date(), timeZone);
-        start.setDate(end.getDate() - 6);
-    } else {
-        start = new Date(startDate);
-        end = new Date(endDate);
-    }
+    // Se não houver datas, define o padrão dos últimos 7 dias no fuso horário correto.
+    const end = endDate ? endDate : zonedTimeToUtc(new Date(), timeZone);
+    const start = startDate ? startDate : subDays(end, 6);
 
-    const diffTime = Math.abs(end - start);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffDays = differenceInDays(end, start);
 
     let period = 'day';
     if (diffDays > 90) {
@@ -65,57 +55,85 @@ const getResponseChart = async (tenantId = null, startDate = null, endDate = nul
         order: [[dateTruncTz(period, 'createdAt'), 'ASC']]
     });
 
-    const chartData = [];
-    const dataMap = new Map(responsesByPeriod.map(item => [
-        new Date(item.dataValues.period).toISOString().split('T')[0],
-        parseInt(item.dataValues.count)
-    ]));
+    const dataMap = new Map(responsesByPeriod.map(item => {
+        // Converte a data do banco (que está em UTC, mas representa o início do período em SP) para o fuso de SP
+        const zonedPeriod = utcToZonedTime(item.dataValues.period, timeZone);
+        // Formata para uma chave consistente 'yyyy-MM-dd'
+        const key = format(zonedPeriod, 'yyyy-MM-dd');
+        return [key, parseInt(item.dataValues.count)];
+    }));
 
-    let currentDate = new Date(start);
-    while (currentDate <= end) {
-        const formattedDate = currentDate.toISOString().split('T')[0];
-        let name;
-        
-        if (period === 'day') {
-            name = currentDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', timeZone });
-            chartData.push({
-                name,
-                Respostas: dataMap.get(formattedDate) || 0,
-            });
-            currentDate.setDate(currentDate.getDate() + 1);
-        } else if (period === 'week') {
-            const weekStart = new Date(currentDate);
-            const weekEnd = new Date(currentDate);
-            weekEnd.setDate(weekEnd.getDate() + 6);
-            name = `${weekStart.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', timeZone })} - ${weekEnd.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', timeZone })}`;
-            
-            const weekStartDateInDB = [...dataMap.keys()].find(key => {
-                const dbDate = new Date(key);
-                return dbDate >= weekStart && dbDate <= weekEnd;
-            });
+    const interval = {
+        start: utcToZonedTime(start, timeZone),
+        end: utcToZonedTime(end, timeZone)
+    };
 
-            chartData.push({
-                name,
-                Respostas: dataMap.get(weekStartDateInDB) || 0,
-            });
-            currentDate.setDate(currentDate.getDate() + 7);
-        } else { // month
-            const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-            name = currentDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric', timeZone });
-            
-            const monthStartDateInDB = [...dataMap.keys()].find(key => {
-                const dbDate = new Date(key);
-                return dbDate.getFullYear() === monthStart.getFullYear() && dbDate.getMonth() === monthStart.getMonth();
-            });
-
-            chartData.push({
-                name,
-                Respostas: dataMap.get(monthStartDateInDB) || 0,
-            });
-            currentDate.setMonth(currentDate.getMonth() + 1);
-        }
+    let intervalDays;
+    if (period === 'day') {
+        intervalDays = eachDayOfInterval(interval);
+    } else if (period === 'week') {
+        intervalDays = eachDayOfInterval({
+            start: startOfWeek(interval.start),
+            end: endOfWeek(interval.end)
+        }, { step: 7 });
+    } else { // month
+        intervalDays = eachDayOfInterval({
+            start: startOfMonth(interval.start),
+            end: endOfMonth(interval.end)
+        }, { step: 30 }); // Aproximação, a lógica de formatação cuidará do mês correto
     }
 
+
+    const chartData = intervalDays.map(day => {
+        let name;
+        let key;
+        let count = 0;
+
+        if (period === 'day') {
+            name = format(day, 'dd/MM');
+            key = format(day, 'yyyy-MM-dd');
+            count = dataMap.get(key) || 0;
+        } else if (period === 'week') {
+            const weekStart = startOfWeek(day);
+            const weekEnd = endOfWeek(day);
+            name = `${format(weekStart, 'dd/MM')} - ${format(weekEnd, 'dd/MM')}`;
+            
+            // Para semanas, precisamos encontrar a chave correspondente no mapa, que é o início da semana
+            key = format(weekStart, 'yyyy-MM-dd');
+            count = dataMap.get(key) || 0;
+
+        } else { // month
+            name = format(day, 'MMMM/yy', { locale: require('date-fns/locale/pt-BR') });
+            const monthStartKey = format(startOfMonth(day), 'yyyy-MM-dd');
+            count = dataMap.get(monthStartKey) || 0;
+        }
+
+        return {
+            name,
+            Respostas: count,
+        };
+    });
+
+    // Lógica para agrupar semanas e meses, se necessário, para evitar duplicatas
+    if (period === 'week') {
+        const weeklyData = {};
+        chartData.forEach(item => {
+            if (!weeklyData[item.name]) {
+                weeklyData[item.name] = item;
+            }
+        });
+        return Object.values(weeklyData);
+    }
+    
+    if (period === 'month') {
+        const monthlyData = {};
+        chartData.forEach(item => {
+            if (!monthlyData[item.name]) {
+                monthlyData[item.name] = item;
+            }
+        });
+        return Object.values(monthlyData);
+    }
 
     return chartData;
 };

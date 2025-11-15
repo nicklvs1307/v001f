@@ -1,30 +1,25 @@
 const asyncHandler = require('express-async-handler');
 const dashboardRepository = require('../repositories/dashboardRepository');
-const { startOfDay, endOfDay, parseISO, isValid } = require('date-fns');
-const { fromZonedTime } = require('date-fns-tz');
+const { zonedTimeToUtc } = require('date-fns-tz');
 
 const timeZone = 'America/Sao_Paulo';
 
 // Helper to adjust date ranges to the tenant's timezone
 const adjustDateRange = (startDateStr, endDateStr) => {
-    let adjustedStart = null;
-    let adjustedEnd = null;
+    let startDate = null;
+    let endDate = null;
 
     if (startDateStr) {
-        const parsedStartDate = parseISO(`${startDateStr}T00:00:00`);
-        if (isValid(parsedStartDate)) {
-            adjustedStart = fromZonedTime(parsedStartDate, timeZone);
-        }
+        // Interpreta a string de data como estando no fuso horário de São Paulo e converte para um objeto Date UTC
+        startDate = zonedTimeToUtc(`${startDateStr}T00:00:00`, timeZone);
     }
 
     if (endDateStr) {
-        const parsedEndDate = parseISO(`${endDateStr}T23:59:59.999`);
-        if (isValid(parsedEndDate)) {
-            adjustedEnd = fromZonedTime(parsedEndDate, timeZone);
-        }
+        // Interpreta a string de data como estando no fuso horário de São Paulo e converte para um objeto Date UTC
+        endDate = zonedTimeToUtc(`${endDateStr}T23:59:59.999`, timeZone);
     }
 
-    return { startDate: adjustedStart, endDate: adjustedEnd };
+    return { startDate, endDate };
 };
 
 

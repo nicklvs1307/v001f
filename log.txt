@@ -1,12 +1,19 @@
-URL da solicitação
-https://apivoltaki.towersfy.com/api/dashboard/main
-Método da solicitação
-GET
-Código de status
-500 Internal Server Error
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "zonedTimeToUtc is not a function",
-    "details": "TypeError: zonedTimeToUtc is not a function\n    at getResponseChart (/usr/src/app/src/repositories/dashboard/charts.js:34:37)\n    at Object.getMainDashboard (/usr/src/app/src/repositories/dashboard/main.js:28:33)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async /usr/src/app/src/controllers/dashboardController.js:119:31"
+Postgres is up - executing command
+Server.js is being executed!
+node:internal/modules/cjs/loader:597
+      throw e;
+      ^
+Error [ERR_PACKAGE_PATH_NOT_EXPORTED]: Package subpath './zonedTimeToUtc' is not defined by "exports" in /usr/src/app/node_modules/date-fns-tz/package.json
+    at new NodeError (node:internal/errors:405:5)
+    at exportsNotFound (node:internal/modules/esm/resolve:366:10)
+    at packageExportsResolve (node:internal/modules/esm/resolve:713:9)
+    at resolveExports (node:internal/modules/cjs/loader:590:36)
+    at Module._findPath (node:internal/modules/cjs/loader:664:31)
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1126:27)
+    at Module._load (node:internal/modules/cjs/loader:981:27)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at Object.<anonymous> (/usr/src/app/src/repositories/surveyRepository.js:2:28) {
+  code: 'ERR_PACKAGE_PATH_NOT_EXPORTED'
 }
+Node.js v18.20.8

@@ -8,10 +8,12 @@ process.on('unhandledRejection', (reason, promise) => {
 
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
 const config = require("./config");
 const { connectDB } = require("./database"); // Importa a função connectDB
 
 const app = express();
+app.use(helmet());
 const path = require('path'); // Importar o módulo path
 
 // Middlewares

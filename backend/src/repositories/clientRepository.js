@@ -1,6 +1,6 @@
-const { Client, Resposta, sequelize } = require('../../models');
-const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
-const { Op, where, fn, literal } = require('sequelize');
+const { Client, Cupom, Resposta } = require('../../models');
+const { zonedTimeToUtc } = require('date-fns-tz');
+const { Op, fn, col, literal } = require('sequelize');
 const ApiError = require("../errors/ApiError");
 
 class ClientRepository {

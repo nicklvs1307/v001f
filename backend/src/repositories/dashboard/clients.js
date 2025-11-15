@@ -1,6 +1,6 @@
-const { Client, Sequelize } = require('../../../models');
-const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
-const { Op } = require('sequelize');
+const { Client, Resposta, Cupom } = require('../../../models');
+const { zonedTimeToUtc } = require('date-fns-tz');
+const { Op, fn, col, literal } = require('sequelize');
 
 const getBirthdaysOfMonth = async (tenantId = null) => {
     const whereClause = tenantId ? { tenantId } : {};

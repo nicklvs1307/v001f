@@ -1,5 +1,5 @@
-const { Resposta, Pergunta, Criterio, Client, Atendente, AtendenteMeta } = require('../../../models');
-const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
+const { Pesquisa, Resposta, Client, Cupom } = require('../../../models');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const { Op } = require('sequelize');
 const ratingService = require('../../services/ratingService');
 const { getResponseChart } = require('./charts');

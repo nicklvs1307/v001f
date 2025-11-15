@@ -1,4 +1,4 @@
-const schedule = require('node-schedule');
+const cron = require('node-cron');
 const { WhatsappSender } = require('../../models');
 const { Op } = require('sequelize');
 
@@ -40,9 +40,12 @@ async function progressWarmingUpSenders() {
 function initWarmingUpProgressJob() {
   // Roda todo dia à 1 da manhã
   if (job) {
-    job.cancel();
+    job.stop();
   }
-  job = schedule.scheduleJob('0 1 * * *', progressWarmingUpSenders);
+  job = cron.schedule('0 1 * * *', progressWarmingUpSenders, {
+    scheduled: true,
+    timezone: "America/Sao_Paulo"
+  });
   console.log('[WarmingUpProgressJob] Job de progressão de aquecimento inicializado para rodar diariamente à 1h.');
 }
 

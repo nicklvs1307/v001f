@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const ApiError = require('../errors/ApiError');
 const { scheduleCampaign, cancelCampaign } = require('../jobs/campaignScheduler');
 const { CampanhaLog, Client, sequelize } = require('../../models');

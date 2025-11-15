@@ -1,5 +1,5 @@
 const { Cupom, Recompensa, Client } = require('../../models');
-const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const { Op, fn, col } = require('sequelize');
 
 class CupomRepository {

@@ -1,5 +1,5 @@
 'use strict';
-const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const crypto = require('crypto');
 const asyncHandler = require('express-async-handler');
 const { Pesquisa } = require('../../models');

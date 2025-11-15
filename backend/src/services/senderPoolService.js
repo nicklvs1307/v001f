@@ -1,5 +1,5 @@
-const { WhatsappSender, sequelize } = require('../../models');
-const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
+const { WhatsappSender } = require('../../models');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const { Op } = require('sequelize');
 
 const WARMING_UP_CASE_STATEMENT = `

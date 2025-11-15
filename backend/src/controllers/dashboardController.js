@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const dashboardRepository = require('../repositories/dashboardRepository');
-const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
+const { zonedTimeToUtc } = require('date-fns-tz');
 
 const timeZone = 'America/Sao_Paulo';
 

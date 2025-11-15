@@ -1,5 +1,5 @@
 const { Pesquisa, Pergunta, Resposta } = require("../../models"); // Importa os modelos do Sequelize
-const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const { Op, Sequelize } = require('sequelize');
 
 const getSurveyDetails = async (surveyId, tenantId = null) => {

@@ -1,5 +1,5 @@
-const schedule = require('node-schedule');
-const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
+const cron = require('node-cron');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const { Campanha, WhatsappSender, sequelize } = require('../../models');
 const { Op } = require('sequelize');
 const { scheduleCampaign } = require('./campaignScheduler');
@@ -77,9 +77,12 @@ async function checkPausedCampaigns() {
 function initCampaignMonitorJob() {
   // Runs every 10 minutes
   if (job) {
-    job.cancel();
+    job.stop();
   }
-  job = schedule.scheduleJob('*/10 * * * *', checkPausedCampaigns);
+  job = cron.schedule('*/10 * * * *', checkPausedCampaigns, {
+    scheduled: true,
+    timezone: "America/Sao_Paulo"
+  });
   console.log('[CampaignMonitorJob] Job de monitoramento de campanhas inicializado para rodar a cada 10 minutos.');
 }
 

@@ -1,6 +1,6 @@
 const cron = require('node-cron');
 const { format, subDays, startOfDay, endOfDay } = require('date-fns');
-const { utcToZonedTime } = require('date-fns-tz/utcToZonedTime');
+const { utcToZonedTime } = require('date-fns-tz');
 const whatsappService = require('../services/whatsappService');
 const whatsappConfigRepository = require('../repositories/whatsappConfigRepository');
 const tenantRepository = require('../repositories/tenantRepository');

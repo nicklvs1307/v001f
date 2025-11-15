@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const clientRepository = require("../repositories/clientRepository");
 const publicSurveyRepository = require("../repositories/publicSurveyRepository");
 const { sequelize } = require("../database");

@@ -1,5 +1,5 @@
 const whatsappConfigRepository = require('../repositories/whatsappConfigRepository');
-const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const whatsappTemplateRepository = require('../repositories/whatsappTemplateRepository');
 const tenantRepository = require('../repositories/tenantRepository');
 const dashboardRepository = require('../repositories/dashboardRepository'); // Importar dashboardRepository

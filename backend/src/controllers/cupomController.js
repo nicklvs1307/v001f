@@ -1,5 +1,5 @@
 const asyncHandler = require('express-async-handler');
-const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const cupomRepository = require('../repositories/cupomRepository');
 const recompensaRepository = require('../repositories/recompensaRepository');
 const ApiError = require('../errors/ApiError');

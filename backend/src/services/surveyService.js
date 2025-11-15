@@ -1,5 +1,5 @@
 const surveyRepository = require('../repositories/surveyRepository');
-const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const resultRepository = require('../repositories/resultRepository');
 const ApiError = require('../errors/ApiError');
 const ratingService = require('./ratingService'); // Importar o ratingService

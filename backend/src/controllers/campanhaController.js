@@ -1,5 +1,5 @@
 const { parse } = require('date-fns');
-const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const ApiError = require('../errors/ApiError');
 const campanhaRepository = require('../repositories/campanhaRepository');
 const clientRepository = require('../repositories/clientRepository');

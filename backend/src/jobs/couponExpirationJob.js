@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const { zonedTimeToUtc } = require('date-fns-tz/zonedTimeToUtc');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const { Op } = require('sequelize');
 const { Cupom } = require('../../models');
 

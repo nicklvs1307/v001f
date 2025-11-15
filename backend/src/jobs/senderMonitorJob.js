@@ -1,4 +1,4 @@
-const schedule = require('node-schedule');
+const cron = require('node-cron');
 const { WhatsappSender } = require('../../models');
 const whatsappService = require('../services/whatsappService');
 const { Op } = require('sequelize');
@@ -38,9 +38,12 @@ async function checkSenderStatuses() {
 function initSenderMonitorJob() {
   // Runs every 5 minutes
   if (job) {
-    job.cancel();
+    job.stop();
   }
-  job = schedule.scheduleJob('*/5 * * * *', checkSenderStatuses);
+  job = cron.schedule('*/5 * * * *', checkSenderStatuses, {
+    scheduled: true,
+    timezone: "America/Sao_Paulo"
+  });
   console.log('[SenderMonitorJob] Job de monitoramento de disparadores inicializado para rodar a cada 5 minutos.');
 }
 

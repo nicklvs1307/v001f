@@ -1,11 +1,11 @@
-const { Pesquisa, Pergunta, Resposta, Tenant, Atendente, Roleta } = require("../../models"); // Adicionar Atendente e Roleta
+const models = require("../../models");
 const whatsappService = require('../services/whatsappService');
 const { sequelize } = require("../database"); // Importa a instância do Sequelize para transações
 const ApiError = require("../errors/ApiError"); // Importar ApiError para validações
 const { v4: uuidv4 } = require('uuid'); // Adicionar import do uuid
 
 const getAtendentesByTenantId = async (tenantId) => {
-  const atendentes = await Atendente.findAll({
+  const atendentes = await models.Atendente.findAll({
     where: { 
       tenantId,
       status: 'active' // Apenas atendentes ativos
@@ -17,20 +17,20 @@ const getAtendentesByTenantId = async (tenantId) => {
 };
 
 const getPublicSurveyById = async (id) => {
-  const survey = await Pesquisa.findByPk(id, {
+  const survey = await models.Pesquisa.findByPk(id, {
     attributes: ['id', 'title', 'description', 'createdAt', 'updatedAt', 'isOpen', 'tenantId', 'askForAttendant', 'status', 'recompensaId', 'roletaId'], // Adicionar 'status', 'recompensaId', 'roletaId'
     include: [{
-      model: Pergunta,
+      model: models.Pergunta,
       as: 'perguntas', // Certifique-se de que 'as' corresponde à associação definida no modelo Pesquisa
       attributes: ['id', 'type', 'text', 'options', 'order', 'required'], // Adicionar 'required'
       order: [['order', 'ASC']],
     }, {
-      model: Tenant, // Incluir o modelo Tenant
+      model: models.Tenant, // Incluir o modelo Tenant
       as: 'tenant', // Usar 'as' se houver uma associação definida no modelo Pesquisa
       attributes: ['name', 'logoUrl', 'description', 'primaryColor', 'secondaryColor'], // Selecionar os atributos desejados do Tenant
       required: false, // Adicionar para fazer um LEFT JOIN
     }, {
-      model: Roleta, // Incluir o modelo Roleta
+      model: models.Roleta, // Incluir o modelo Roleta
       as: 'roleta', // Usar 'as' se houver uma associação definida no modelo Pesquisa
       attributes: ['id', 'nome', 'descricao', 'active'], // Selecionar os atributos desejados da Roleta
       required: false, // Adicionar para fazer um LEFT JOIN
@@ -103,10 +103,10 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
   console.log("submitSurveyResponses: Transaction started");
 
   try {
-    const survey = await Pesquisa.findByPk(surveyId, {
+    const survey = await models.Pesquisa.findByPk(surveyId, {
       attributes: ['isOpen', 'tenantId', 'askForAttendant', 'title'],
       include: [{
-        model: Pergunta,
+        model: models.Pergunta,
         as: 'perguntas',
         attributes: ['id', 'type', 'options', 'required', 'text'],
       }],
@@ -185,7 +185,7 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
     }
 
     console.log("submitSurveyResponses: Preparing to bulk create responses:", JSON.stringify(responsesToCreate, null, 2));
-    await Resposta.bulkCreate(responsesToCreate, { transaction });
+    await models.Resposta.bulkCreate(responsesToCreate, { transaction });
     console.log("submitSurveyResponses: Bulk create successful");
 
     await transaction.commit();
@@ -210,7 +210,7 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
 
       if (ratingQuestions.length > 0 && allMaxScore) {
         console.log("submitSurveyResponses: All rating questions have max score. Checking for GMB link.");
-        const tenant = await Tenant.findByPk(survey.tenantId, { attributes: ['gmb_link'] });
+        const tenant = await models.Tenant.findByPk(survey.tenantId, { attributes: ['gmb_link'] });
         if (tenant && tenant.gmb_link) {
           gmb_link = tenant.gmb_link;
           console.log("submitSurveyResponses: GMB link found:", gmb_link);
@@ -225,7 +225,7 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
     (async () => {
       try {
         console.log("submitSurveyResponses: Checking for detractor responses for WhatsApp");
-        const tenant = await Tenant.findByPk(survey.tenantId);
+        const tenant = await models.Tenant.findByPk(survey.tenantId);
         if (!tenant || !tenant.reportPhoneNumber) {
           return;
         }
@@ -264,7 +264,7 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
 };
 
 const findTenantIdBySession = async (respondentSessionId) => {
-  const response = await Resposta.findOne({
+  const response = await models.Resposta.findOne({
     where: { respondentSessionId },
     attributes: ['tenantId'],
   });
@@ -272,14 +272,14 @@ const findTenantIdBySession = async (respondentSessionId) => {
 };
 
 const linkResponsesToClient = async (respondentSessionId, clienteId, transaction) => {
-  await Resposta.update(
+  await models.Resposta.update(
     { clienteId },
     { where: { respondentSessionId, clienteId: null }, transaction }
   );
 };
 
 const getPublicTenantById = async (id) => {
-  const tenant = await Tenant.findByPk(id, {
+  const tenant = await models.Tenant.findByPk(id, {
     attributes: ['id', 'name', 'logoUrl', 'primaryColor', 'secondaryColor', 'description'],
   });
   return tenant;

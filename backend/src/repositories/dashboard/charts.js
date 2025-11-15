@@ -6,6 +6,11 @@ const timeZone = 'America/Sao_Paulo';
 
 const { fn, col, literal } = Sequelize;
 
+const dateTruncTz = (p, column) => {
+    const quotedColumn = column.split('.').map(part => `"${part}"`).join('.');
+    return fn('date_trunc', p, literal(`${quotedColumn} AT TIME ZONE 'UTC' AT TIME ZONE '${timeZone}'`));
+};
+
 const buildDateFilter = (startDate, endDate) => {
     const filter = {};
     if (startDate) {
@@ -50,8 +55,6 @@ const getResponseChart = async (tenantId = null, startDate = null, endDate = nul
 
     whereClause.createdAt = buildDateFilter(start, end);
 
-    const dateTruncTz = (p, column) => fn('date_trunc', p, literal(`"${column}" AT TIME ZONE 'UTC' AT TIME ZONE '${timeZone}'`));
-
     const responsesByPeriod = await Resposta.findAll({
         where: whereClause,
         attributes: [
@@ -86,7 +89,6 @@ const getResponseChart = async (tenantId = null, startDate = null, endDate = nul
             weekEnd.setDate(weekEnd.getDate() + 6);
             name = `${weekStart.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', timeZone })} - ${weekEnd.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', timeZone })}`;
             
-            // Find the truncated week start date from the map
             const weekStartDateInDB = [...dataMap.keys()].find(key => {
                 const dbDate = new Date(key);
                 return dbDate >= weekStart && dbDate <= weekEnd;
@@ -164,8 +166,6 @@ const getNpsTrendData = async (tenantId = null, period = 'day', startDate = null
         whereClause.createdAt = dateFilter;
     }
 
-    const dateTruncTz = (p, column) => fn('date_trunc', p, literal(`"${column}" AT TIME ZONE 'UTC' AT TIME ZONE '${timeZone}'`));
-
     const trendData = await Resposta.findAll({
         where: whereClause,
         include: [{
@@ -178,13 +178,13 @@ const getNpsTrendData = async (tenantId = null, period = 'day', startDate = null
             required: true
         }],
         attributes: [
-            [dateTruncTz(period, 'createdAt'), 'period'],
+            [dateTruncTz(period, 'Resposta.createdAt'), 'period'],
             [fn('SUM', literal('CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END')), 'promoters'],
             [fn('SUM', literal('CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END')), 'detractors'],
             [fn('COUNT', col('Resposta.id')), 'total']
         ],
-        group: [dateTruncTz(period, 'createdAt')],
-        order: [[dateTruncTz(period, 'createdAt'), 'ASC']]
+        group: [dateTruncTz(period, 'Resposta.createdAt')],
+        order: [[dateTruncTz(period, 'Resposta.createdAt'), 'ASC']]
     });
 
     return trendData.map(item => {
@@ -215,8 +215,6 @@ const getCsatTrendData = async (tenantId = null, period = 'day', startDate = nul
         whereClause.createdAt = dateFilter;
     }
 
-    const dateTruncTz = (p, column) => fn('date_trunc', p, literal(`"${column}" AT TIME ZONE 'UTC' AT TIME ZONE '${timeZone}'`));
-
     const trendData = await Resposta.findAll({
         where: whereClause,
         include: [{
@@ -229,12 +227,12 @@ const getCsatTrendData = async (tenantId = null, period = 'day', startDate = nul
             required: true
         }],
         attributes: [
-            [dateTruncTz(period, 'createdAt'), 'period'],
+            [dateTruncTz(period, 'Resposta.createdAt'), 'period'],
             [fn('SUM', literal('CASE WHEN "ratingValue" >= 4 THEN 1 ELSE 0 END')), 'satisfied'],
             [fn('COUNT', col('Resposta.id')), 'total']
         ],
-        group: [dateTruncTz(period, 'createdAt')],
-        order: [[dateTruncTz(period, 'createdAt'), 'ASC']]
+        group: [dateTruncTz(period, 'Resposta.createdAt')],
+        order: [[dateTruncTz(period, 'Resposta.createdAt'), 'ASC']]
     });
 
     return trendData.map(item => {
@@ -264,8 +262,6 @@ const getResponseCountTrendData = async (tenantId = null, period = 'day', startD
         whereClause.createdAt = dateFilter;
     }
 
-    const dateTruncTz = (p, column) => fn('date_trunc', p, literal(`"${column}" AT TIME ZONE 'UTC' AT TIME ZONE '${timeZone}'`));
-
     const trendData = await Resposta.findAll({
         where: whereClause,
         attributes: [
@@ -291,8 +287,6 @@ const getRegistrationTrendData = async (tenantId = null, period = 'day', startDa
     if (dateFilter) {
         whereClause.createdAt = dateFilter;
     }
-
-    const dateTruncTz = (p, column) => fn('date_trunc', p, literal(`"${column}" AT TIME ZONE 'UTC' AT TIME ZONE '${timeZone}'`));
 
     const trendData = await Client.findAll({
         where: whereClause,

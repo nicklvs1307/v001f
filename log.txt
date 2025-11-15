@@ -11,166 +11,6 @@ Agendador de expiração de cupons iniciado. A tarefa será executada todo dia �
 [CampanhaService] Inicializando campanhas agendadas...
 Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'scheduled' AND "Campanha"."startDate" IS NOT NULL;
 [CampanhaService] 0 campanhas reagendadas.
-[Auth Middleware] Request: POST /api/auth/verify-token
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
-[Auth Middleware] Request: GET /api/dashboard/main?tenantId=eb629ea8-7d69-47a1-b1f1-f9dcb33475f4&startDate=2025-10-16&endDate=2025-11-15
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
-Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
-Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
-Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');
-Error
-    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
-    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)
-    at async Resposta.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)
-    at async getSummary (/usr/src/app/src/repositories/dashboard/summary.js:31:29)
-    at async Object.getMainDashboard (/usr/src/app/src/repositories/dashboard/main.js:27:21)
-    at async /usr/src/app/src/controllers/dashboardController.js:122:31 {
-  name: 'SequelizeDatabaseError',
-  parent: error: invalid input syntax for type timestamp with time zone: "Invalid date"
-      at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
-      at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
-      at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
-      at Socket.<anonymous> (/usr/src/app/node_modules/pg-protocol/dist/index.js:11:42)
-      at Socket.emit (node:events:517:28)
-      at addChunk (node:internal/streams/readable:368:12)
-      at readableAddChunk (node:internal/streams/readable:341:9)
-      at Readable.push (node:internal/streams/readable:278:10)
-      at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
-    length: 141,
-    severity: 'ERROR',
-    code: '22007',
-    detail: undefined,
-    hint: undefined,
-    position: '686',
-    internalPosition: undefined,
-    internalQuery: undefined,
-    where: undefined,
-    schema: undefined,
-    table: undefined,
-    column: undefined,
-    dataType: undefined,
-    constraint: undefined,
-    file: 'datetime.c',
-    line: '3800',
-    routine: 'DateTimeParseError',
-    sql: `SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');`,
-    parameters: undefined
-  },
-  original: error: invalid input syntax for type timestamp with time zone: "Invalid date"
-      at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
-      at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
-      at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
-      at Socket.<anonymous> (/usr/src/app/node_modules/pg-protocol/dist/index.js:11:42)
-      at Socket.emit (node:events:517:28)
-      at addChunk (node:internal/streams/readable:368:12)
-      at readableAddChunk (node:internal/streams/readable:341:9)
-      at Readable.push (node:internal/streams/readable:278:10)
-      at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
-    length: 141,
-    severity: 'ERROR',
-    code: '22007',
-    detail: undefined,
-    hint: undefined,
-    position: '686',
-    internalPosition: undefined,
-    internalQuery: undefined,
-    where: undefined,
-    schema: undefined,
-    table: undefined,
-    column: undefined,
-    dataType: undefined,
-    constraint: undefined,
-    file: 'datetime.c',
-    line: '3800',
-    routine: 'DateTimeParseError',
-    sql: `SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');`,
-    parameters: undefined
-  },
-  sql: `SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');`,
-  parameters: {}
-}
-[Auth Middleware] Request: POST /api/auth/verify-token
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
-[Auth Middleware] Request: GET /api/dashboard/main?tenantId=eb629ea8-7d69-47a1-b1f1-f9dcb33475f4&startDate=2025-10-16&endDate=2025-11-15
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
-Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
-Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
-Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');
-Error
-    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
-    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)
-    at async Resposta.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)
-    at async getSummary (/usr/src/app/src/repositories/dashboard/summary.js:31:29)
-    at async Object.getMainDashboard (/usr/src/app/src/repositories/dashboard/main.js:27:21)
-    at async /usr/src/app/src/controllers/dashboardController.js:122:31 {
-  name: 'SequelizeDatabaseError',
-  parent: error: invalid input syntax for type timestamp with time zone: "Invalid date"
-      at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
-      at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
-      at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
-      at Socket.<anonymous> (/usr/src/app/node_modules/pg-protocol/dist/index.js:11:42)
-      at Socket.emit (node:events:517:28)
-      at addChunk (node:internal/streams/readable:368:12)
-      at readableAddChunk (node:internal/streams/readable:341:9)
-      at Readable.push (node:internal/streams/readable:278:10)
-      at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
-    length: 141,
-    severity: 'ERROR',
-    code: '22007',
-    detail: undefined,
-    hint: undefined,
-    position: '686',
-    internalPosition: undefined,
-    internalQuery: undefined,
-    where: undefined,
-    schema: undefined,
-    table: undefined,
-    column: undefined,
-    dataType: undefined,
-    constraint: undefined,
-    file: 'datetime.c',
-    line: '3800',
-    routine: 'DateTimeParseError',
-    sql: `SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');`,
-    parameters: undefined
-  },
-  original: error: invalid input syntax for type timestamp with time zone: "Invalid date"
-      at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
-      at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
-      at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
-      at Socket.<anonymous> (/usr/src/app/node_modules/pg-protocol/dist/index.js:11:42)
-      at Socket.emit (node:events:517:28)
-      at addChunk (node:internal/streams/readable:368:12)
-      at readableAddChunk (node:internal/streams/readable:341:9)
-      at Readable.push (node:internal/streams/readable:278:10)
-      at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
-    length: 141,
-    severity: 'ERROR',
-    code: '22007',
-    detail: undefined,
-    hint: undefined,
-    position: '686',
-    internalPosition: undefined,
-    internalQuery: undefined,
-    where: undefined,
-    schema: undefined,
-    table: undefined,
-    column: undefined,
-    dataType: undefined,
-    constraint: undefined,
-    file: 'datetime.c',
-    line: '3800',
-    routine: 'DateTimeParseError',
-    sql: `SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');`,
-    parameters: undefined
-  },
-  sql: `SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');`,
-  parameters: {}
-}
 [Auth Middleware] Request: GET /api/dashboard/main
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
 Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
@@ -180,18 +20,35 @@ Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FR
 Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
 Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
 Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
-Executing (default): SELECT date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", COUNT(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= '2025-11-09 00:00:00.000 +00:00' AND "Resposta"."createdAt" <= '2025-11-15 23:59:59.999 +00:00') GROUP BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;
+Executing (default): SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", COUNT(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= '2025-11-09 00:00:00.000 +00:00' AND "Resposta"."createdAt" <= '2025-11-15 23:59:59.999 +00:00') GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "cliente"."id" AS "cliente.id", "atendente"."id" AS "atendente.id", "atendente"."name" AS "atendente.name" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" LEFT OUTER JOIN "clients" AS "cliente" ON "Resposta"."respondentSessionId" = "cliente"."respondentSessionId" LEFT OUTER JOIN "atendentes" AS "atendente" ON "Resposta"."atendenteId" = "atendente"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '63c97611-5436-4043-a378-f29bb28118ad' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '6d369960-a828-4a26-98c1-e295dfdc51d9' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '8ca6325c-8827-4cbf-982c-d734dcb66116' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '03c09f2f-c16b-4b42-b992-b78bfdfc55d7' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '67781806-855c-4e48-bf39-d1305176420a' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '87ccfbbd-4e8c-41ec-afc9-b3e14aacfdb0' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = 'f7fbfea4-3fd0-4eba-9839-d3a024a26687' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '4622ee0a-c73c-435e-9488-449479cb4bf5' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."text" AS "pergunta.text", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId", "pergunta->criterio"."id" AS "pergunta.criterio.id", "pergunta->criterio"."name" AS "pergunta.criterio.name", "pergunta->criterio"."type" AS "pergunta.criterio.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" LIKE 'rating%' LEFT OUTER JOIN "criterios" AS "pergunta->criterio" ON "pergunta"."criterioId" = "pergunta->criterio"."id" WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."createdAt", "Resposta"."textValue", "Resposta"."ratingValue", "Resposta"."respondentSessionId", "cliente"."id" AS "cliente.id", "cliente"."name" AS "cliente.name" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "clients" AS "cliente" ON "Resposta"."respondentSessionId" = "cliente"."respondentSessionId" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."textValue" != '' ORDER BY "Resposta"."createdAt" DESC LIMIT 7;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."createdAt", "Resposta"."ratingValue", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;
 Error
     at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
     at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
     at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)
     at async Resposta.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)
-    at async getResponseChart (/usr/src/app/src/repositories/dashboard/charts.js:55:31)
-    at async Object.getMainDashboard (/usr/src/app/src/repositories/dashboard/main.js:28:27)
-    at async /usr/src/app/src/controllers/dashboardController.js:122:31 {
+    at async getNpsTrendData (/usr/src/app/src/repositories/dashboard/charts.js:169:23)
+    at async Object.getMainDashboard (/usr/src/app/src/repositories/dashboard/main.js:34:22)
+    at async /usr/src/app/src/controllers/dashboardController.js:124:31 {
   name: 'SequelizeDatabaseError',
-  parent: error: column "Resposta.createdAt" does not exist
+  parent: error: column reference "createdAt" is ambiguous
       at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
       at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
       at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
@@ -201,9 +58,9 @@ Error
       at readableAddChunk (node:internal/streams/readable:341:9)
       at Readable.push (node:internal/streams/readable:278:10)
       at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
-    length: 118,
+    length: 114,
     severity: 'ERROR',
-    code: '42703',
+    code: '42702',
     detail: undefined,
     hint: undefined,
     position: '26',
@@ -216,12 +73,12 @@ Error
     dataType: undefined,
     constraint: undefined,
     file: 'parse_relation.c',
-    line: '3647',
-    routine: 'errorMissingColumn',
-    sql: `SELECT date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", COUNT(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= '2025-11-09 00:00:00.000 +00:00' AND "Resposta"."createdAt" <= '2025-11-15 23:59:59.999 +00:00') GROUP BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
+    line: '805',
+    routine: 'scanRTEForColumn',
+    sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
     parameters: undefined
   },
-  original: error: column "Resposta.createdAt" does not exist
+  original: error: column reference "createdAt" is ambiguous
       at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
       at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
       at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
@@ -231,9 +88,9 @@ Error
       at readableAddChunk (node:internal/streams/readable:341:9)
       at Readable.push (node:internal/streams/readable:278:10)
       at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
-    length: 118,
+    length: 114,
     severity: 'ERROR',
-    code: '42703',
+    code: '42702',
     detail: undefined,
     hint: undefined,
     position: '26',
@@ -246,41 +103,16 @@ Error
     dataType: undefined,
     constraint: undefined,
     file: 'parse_relation.c',
-    line: '3647',
-    routine: 'errorMissingColumn',
-    sql: `SELECT date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", COUNT(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= '2025-11-09 00:00:00.000 +00:00' AND "Resposta"."createdAt" <= '2025-11-15 23:59:59.999 +00:00') GROUP BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
+    line: '805',
+    routine: 'scanRTEForColumn',
+    sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
     parameters: undefined
   },
-  sql: `SELECT date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", COUNT(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= '2025-11-09 00:00:00.000 +00:00' AND "Resposta"."createdAt" <= '2025-11-15 23:59:59.999 +00:00') GROUP BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
+  sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
   parameters: {}
 }
-[Auth Middleware] Request: GET /api/atendentes
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
-Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
-Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'atendentes' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
-Executing (default): SELECT "id", "tenantId", "name", "code", "status", "createdAt", "updatedAt" FROM "atendentes" AS "Atendente" WHERE "Atendente"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' ORDER BY "Atendente"."name" ASC;
-[Auth Middleware] Request: GET /api/roletas
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
-Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
-Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'roletas' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
-Executing (default): SELECT "Roleta"."id", "Roleta"."tenantId", "Roleta"."nome", "Roleta"."descricao", "Roleta"."active", "Roleta"."createdAt", "Roleta"."updatedAt", "premios"."id" AS "premios.id", "premios"."tenantId" AS "premios.tenantId", "premios"."nome" AS "premios.nome", "premios"."descricao" AS "premios.descricao", "premios"."porcentagem" AS "premios.porcentagem", "premios"."cor" AS "premios.cor", "premios"."recompensaId" AS "premios.recompensaId", "premios"."roletaId" AS "premios.roletaId", "premios"."imageUrl" AS "premios.imageUrl", "premios"."active" AS "premios.active", "premios"."createdAt" AS "premios.createdAt", "premios"."updatedAt" AS "premios.updatedAt" FROM "roletas" AS "Roleta" LEFT OUTER JOIN "roleta_premios" AS "premios" ON "Roleta"."id" = "premios"."roletaId" WHERE "Roleta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
-[Auth Middleware] Request: GET /api/recompensas?active=false
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
-[Auth Middleware] Request: GET /api/roletas/f4da8c53-db4f-4452-8c7d-505be5e99657
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
-Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
-Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
-Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'recompensas' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
-Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'roletas' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
-Executing (default): SELECT "id", "tenantId", "name", "description", "pointsRequired", "type", "value", "imageUrl", "active", "createdAt", "updatedAt" FROM "recompensas" AS "Recompensa" WHERE "Recompensa"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' ORDER BY "Recompensa"."name" ASC;
-Executing (default): SELECT "Roleta"."id", "Roleta"."tenantId", "Roleta"."nome", "Roleta"."descricao", "Roleta"."active", "Roleta"."createdAt", "Roleta"."updatedAt", "premios"."id" AS "premios.id", "premios"."tenantId" AS "premios.tenantId", "premios"."nome" AS "premios.nome", "premios"."descricao" AS "premios.descricao", "premios"."porcentagem" AS "premios.porcentagem", "premios"."cor" AS "premios.cor", "premios"."recompensaId" AS "premios.recompensaId", "premios"."roletaId" AS "premios.roletaId", "premios"."imageUrl" AS "premios.imageUrl", "premios"."active" AS "premios.active", "premios"."createdAt" AS "premios.createdAt", "premios"."updatedAt" AS "premios.updatedAt" FROM "roletas" AS "Roleta" LEFT OUTER JOIN "roleta_premios" AS "premios" ON "Roleta"."id" = "premios"."roletaId" WHERE "Roleta"."id" = 'f4da8c53-db4f-4452-8c7d-505be5e99657' AND "Roleta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
 [Auth Middleware] Request: POST /api/auth/verify-token
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
-[Auth Middleware] Request: GET /api/roletas
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
-Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
-Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'roletas' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
-Executing (default): SELECT "Roleta"."id", "Roleta"."tenantId", "Roleta"."nome", "Roleta"."descricao", "Roleta"."active", "Roleta"."createdAt", "Roleta"."updatedAt", "premios"."id" AS "premios.id", "premios"."tenantId" AS "premios.tenantId", "premios"."nome" AS "premios.nome", "premios"."descricao" AS "premios.descricao", "premios"."porcentagem" AS "premios.porcentagem", "premios"."cor" AS "premios.cor", "premios"."recompensaId" AS "premios.recompensaId", "premios"."roletaId" AS "premios.roletaId", "premios"."imageUrl" AS "premios.imageUrl", "premios"."active" AS "premios.active", "premios"."createdAt" AS "premios.createdAt", "premios"."updatedAt" AS "premios.updatedAt" FROM "roletas" AS "Roleta" LEFT OUTER JOIN "roleta_premios" AS "premios" ON "Roleta"."id" = "premios"."roletaId" WHERE "Roleta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
 [Auth Middleware] Request: GET /api/dashboard/main
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
 Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
@@ -290,18 +122,35 @@ Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FR
 Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
 Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
 Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
-Executing (default): SELECT date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", COUNT(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= '2025-11-09 00:00:00.000 +00:00' AND "Resposta"."createdAt" <= '2025-11-15 23:59:59.999 +00:00') GROUP BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;
+Executing (default): SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", COUNT(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= '2025-11-09 00:00:00.000 +00:00' AND "Resposta"."createdAt" <= '2025-11-15 23:59:59.999 +00:00') GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "cliente"."id" AS "cliente.id", "atendente"."id" AS "atendente.id", "atendente"."name" AS "atendente.name" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" LEFT OUTER JOIN "clients" AS "cliente" ON "Resposta"."respondentSessionId" = "cliente"."respondentSessionId" LEFT OUTER JOIN "atendentes" AS "atendente" ON "Resposta"."atendenteId" = "atendente"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '63c97611-5436-4043-a378-f29bb28118ad' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '6d369960-a828-4a26-98c1-e295dfdc51d9' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '8ca6325c-8827-4cbf-982c-d734dcb66116' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '03c09f2f-c16b-4b42-b992-b78bfdfc55d7' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '67781806-855c-4e48-bf39-d1305176420a' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '87ccfbbd-4e8c-41ec-afc9-b3e14aacfdb0' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = 'f7fbfea4-3fd0-4eba-9839-d3a024a26687' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '4622ee0a-c73c-435e-9488-449479cb4bf5' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."text" AS "pergunta.text", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId", "pergunta->criterio"."id" AS "pergunta.criterio.id", "pergunta->criterio"."name" AS "pergunta.criterio.name", "pergunta->criterio"."type" AS "pergunta.criterio.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" LIKE 'rating%' LEFT OUTER JOIN "criterios" AS "pergunta->criterio" ON "pergunta"."criterioId" = "pergunta->criterio"."id" WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."createdAt", "Resposta"."textValue", "Resposta"."ratingValue", "Resposta"."respondentSessionId", "cliente"."id" AS "cliente.id", "cliente"."name" AS "cliente.name" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "clients" AS "cliente" ON "Resposta"."respondentSessionId" = "cliente"."respondentSessionId" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."textValue" != '' ORDER BY "Resposta"."createdAt" DESC LIMIT 7;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."createdAt", "Resposta"."ratingValue", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;
 Error
     at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
     at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
     at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)
     at async Resposta.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)
-    at async getResponseChart (/usr/src/app/src/repositories/dashboard/charts.js:55:31)
-    at async Object.getMainDashboard (/usr/src/app/src/repositories/dashboard/main.js:28:27)
-    at async /usr/src/app/src/controllers/dashboardController.js:122:31 {
+    at async getNpsTrendData (/usr/src/app/src/repositories/dashboard/charts.js:169:23)
+    at async Object.getMainDashboard (/usr/src/app/src/repositories/dashboard/main.js:34:22)
+    at async /usr/src/app/src/controllers/dashboardController.js:124:31 {
   name: 'SequelizeDatabaseError',
-  parent: error: column "Resposta.createdAt" does not exist
+  parent: error: column reference "createdAt" is ambiguous
       at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
       at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
       at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
@@ -311,9 +160,9 @@ Error
       at readableAddChunk (node:internal/streams/readable:341:9)
       at Readable.push (node:internal/streams/readable:278:10)
       at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
-    length: 118,
+    length: 114,
     severity: 'ERROR',
-    code: '42703',
+    code: '42702',
     detail: undefined,
     hint: undefined,
     position: '26',
@@ -326,12 +175,12 @@ Error
     dataType: undefined,
     constraint: undefined,
     file: 'parse_relation.c',
-    line: '3647',
-    routine: 'errorMissingColumn',
-    sql: `SELECT date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", COUNT(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= '2025-11-09 00:00:00.000 +00:00' AND "Resposta"."createdAt" <= '2025-11-15 23:59:59.999 +00:00') GROUP BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
+    line: '805',
+    routine: 'scanRTEForColumn',
+    sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
     parameters: undefined
   },
-  original: error: column "Resposta.createdAt" does not exist
+  original: error: column reference "createdAt" is ambiguous
       at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
       at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
       at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
@@ -341,9 +190,9 @@ Error
       at readableAddChunk (node:internal/streams/readable:341:9)
       at Readable.push (node:internal/streams/readable:278:10)
       at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
-    length: 118,
+    length: 114,
     severity: 'ERROR',
-    code: '42703',
+    code: '42702',
     detail: undefined,
     hint: undefined,
     position: '26',
@@ -356,33 +205,14 @@ Error
     dataType: undefined,
     constraint: undefined,
     file: 'parse_relation.c',
-    line: '3647',
-    routine: 'errorMissingColumn',
-    sql: `SELECT date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", COUNT(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= '2025-11-09 00:00:00.000 +00:00' AND "Resposta"."createdAt" <= '2025-11-15 23:59:59.999 +00:00') GROUP BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
+    line: '805',
+    routine: 'scanRTEForColumn',
+    sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
     parameters: undefined
   },
-  sql: `SELECT date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", COUNT(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= '2025-11-09 00:00:00.000 +00:00' AND "Resposta"."createdAt" <= '2025-11-15 23:59:59.999 +00:00') GROUP BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
+  sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
   parameters: {}
 }
-[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
-Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
-[SENDER_MONITOR] Nenhum disparador inativo encontrado.
-[Auth Middleware] Request: GET /api/clients/dashboard
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
-Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
-Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE (EXTRACT(MONTH FROM "birthDate") = 11) AND "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
-Executing (default): SELECT "birthDate", "gender" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
-[Auth Middleware] Request: GET /api/clients?page=1&limit=10&orderBy=name&order=asc&filter=
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
-Executing (default): SELECT "Client"."id", count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' GROUP BY "Client"."id";
-Executing (default): SELECT "id", "tenantId", "name", "email", "phone", "birthDate", "respondentSessionId", "gender", "createdAt", "updatedAt", (
-              SELECT MAX("createdAt")
-              FROM "respostas" AS "r"
-              WHERE "r"."respondentSessionId" = "Client"."respondentSessionId"
-            ) AS "lastVisit" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' GROUP BY "Client"."id" ORDER BY "Client"."name" ASC LIMIT 10 OFFSET 0;
-[Auth Middleware] Request: GET /api/clients/birthdays
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
-Executing (default): SELECT "id", "tenantId", "name", "email", "phone", "birthDate", "respondentSessionId", "gender", "createdAt", "updatedAt" FROM "clients" AS "Client" WHERE (EXTRACT(MONTH FROM "birthDate") = 11 AND "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4');
 [Auth Middleware] Request: GET /api/surveys/stats
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
 Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
@@ -404,22 +234,144 @@ Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissao
 Executing (default): SELECT "Pesquisa"."id", "Pesquisa"."tenantId", "Pesquisa"."creatorId", "Pesquisa"."title", "Pesquisa"."description", "Pesquisa"."startDate", "Pesquisa"."endDate", "Pesquisa"."isOpen", "Pesquisa"."askForAttendant", "Pesquisa"."status", "Pesquisa"."expectedRespondents", "Pesquisa"."dueDate", "Pesquisa"."recompensaId", "Pesquisa"."roletaId", "Pesquisa"."createdAt", "Pesquisa"."updatedAt", "perguntas"."id" AS "perguntas.id", "perguntas"."pesquisaId" AS "perguntas.pesquisaId", "perguntas"."criterioId" AS "perguntas.criterioId", "perguntas"."text" AS "perguntas.text", "perguntas"."type" AS "perguntas.type", "perguntas"."options" AS "perguntas.options", "perguntas"."order" AS "perguntas.order", "perguntas"."createdAt" AS "perguntas.createdAt", "perguntas"."updatedAt" AS "perguntas.updatedAt", "perguntas->respostas"."id" AS "perguntas.respostas.id", "perguntas->respostas"."ratingValue" AS "perguntas.respostas.ratingValue", "perguntas->respostas"."textValue" AS "perguntas.respostas.textValue", "perguntas->respostas"."selectedOption" AS "perguntas.respostas.selectedOption", "perguntas->respostas"."respondentSessionId" AS "perguntas.respostas.respondentSessionId", "perguntas->respostas->cliente"."id" AS "perguntas.respostas.cliente.id", "perguntas->respostas->cliente"."name" AS "perguntas.respostas.cliente.name", "perguntas->respostas->cliente"."email" AS "perguntas.respostas.cliente.email", "perguntas->respostas->cliente"."phone" AS "perguntas.respostas.cliente.phone", "perguntas->respostas->cliente"."birthDate" AS "perguntas.respostas.cliente.birthDate", "perguntas->criterio"."id" AS "perguntas.criterio.id", "perguntas->criterio"."name" AS "perguntas.criterio.name" FROM "pesquisas" AS "Pesquisa" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Pesquisa"."id" = "perguntas"."pesquisaId" LEFT OUTER JOIN "respostas" AS "perguntas->respostas" ON "perguntas"."id" = "perguntas->respostas"."perguntaId" LEFT OUTER JOIN "clients" AS "perguntas->respostas->cliente" ON "perguntas->respostas"."respondentSessionId" = "perguntas->respostas->cliente"."respondentSessionId" LEFT OUTER JOIN "criterios" AS "perguntas->criterio" ON "perguntas"."criterioId" = "perguntas->criterio"."id" WHERE "Pesquisa"."id" = '362bd09a-762a-49d4-9651-415955567e6a' AND "Pesquisa"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
 Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."pesquisaId" = '362bd09a-762a-49d4-9651-415955567e6a';
 Executing (default): SELECT "Resposta"."id", "Resposta"."textValue" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."pesquisaId" = '362bd09a-762a-49d4-9651-415955567e6a' AND "pergunta"."type" = 'free_text' WHERE "Resposta"."textValue" != '' AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+[Auth Middleware] Request: GET /api/dashboard/main?tenantId=eb629ea8-7d69-47a1-b1f1-f9dcb33475f4&startDate=2025-10-16&endDate=2025-11-15
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."respondentSessionId" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", COUNT(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= '2025-11-09 00:00:00.000 +00:00' AND "Resposta"."createdAt" <= '2025-11-15 23:59:59.999 +00:00') GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "cliente"."id" AS "cliente.id", "atendente"."id" AS "atendente.id", "atendente"."name" AS "atendente.name" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" LEFT OUTER JOIN "clients" AS "cliente" ON "Resposta"."respondentSessionId" = "cliente"."respondentSessionId" LEFT OUTER JOIN "atendentes" AS "atendente" ON "Resposta"."atendenteId" = "atendente"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '63c97611-5436-4043-a378-f29bb28118ad' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '6d369960-a828-4a26-98c1-e295dfdc51d9' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '8ca6325c-8827-4cbf-982c-d734dcb66116' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '03c09f2f-c16b-4b42-b992-b78bfdfc55d7' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '67781806-855c-4e48-bf39-d1305176420a' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '87ccfbbd-4e8c-41ec-afc9-b3e14aacfdb0' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = 'f7fbfea4-3fd0-4eba-9839-d3a024a26687' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '4622ee0a-c73c-435e-9488-449479cb4bf5' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."text" AS "pergunta.text", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId", "pergunta->criterio"."id" AS "pergunta.criterio.id", "pergunta->criterio"."name" AS "pergunta.criterio.name", "pergunta->criterio"."type" AS "pergunta.criterio.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" LIKE 'rating%' LEFT OUTER JOIN "criterios" AS "pergunta->criterio" ON "pergunta"."criterioId" = "pergunta->criterio"."id" WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."createdAt", "Resposta"."textValue", "Resposta"."ratingValue", "Resposta"."respondentSessionId", "cliente"."id" AS "cliente.id", "cliente"."name" AS "cliente.name" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "clients" AS "cliente" ON "Resposta"."respondentSessionId" = "cliente"."respondentSessionId" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."textValue" != '' ORDER BY "Resposta"."createdAt" DESC LIMIT 7;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."createdAt", "Resposta"."ratingValue", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;
+Error
+    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)
+    at async Resposta.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)
+    at async getNpsTrendData (/usr/src/app/src/repositories/dashboard/charts.js:169:23)
+    at async Object.getMainDashboard (/usr/src/app/src/repositories/dashboard/main.js:34:22)
+    at async /usr/src/app/src/controllers/dashboardController.js:124:31 {
+  name: 'SequelizeDatabaseError',
+  parent: error: column reference "createdAt" is ambiguous
+      at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
+      at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
+      at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
+      at Socket.<anonymous> (/usr/src/app/node_modules/pg-protocol/dist/index.js:11:42)
+      at Socket.emit (node:events:517:28)
+      at addChunk (node:internal/streams/readable:368:12)
+      at readableAddChunk (node:internal/streams/readable:341:9)
+      at Readable.push (node:internal/streams/readable:278:10)
+      at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
+    length: 114,
+    severity: 'ERROR',
+    code: '42702',
+    detail: undefined,
+    hint: undefined,
+    position: '26',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '805',
+    routine: 'scanRTEForColumn',
+    sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
+    parameters: undefined
+  },
+  original: error: column reference "createdAt" is ambiguous
+      at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
+      at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
+      at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
+      at Socket.<anonymous> (/usr/src/app/node_modules/pg-protocol/dist/index.js:11:42)
+      at Socket.emit (node:events:517:28)
+      at addChunk (node:internal/streams/readable:368:12)
+      at readableAddChunk (node:internal/streams/readable:341:9)
+      at Readable.push (node:internal/streams/readable:278:10)
+      at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
+    length: 114,
+    severity: 'ERROR',
+    code: '42702',
+    detail: undefined,
+    hint: undefined,
+    position: '26',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '805',
+    routine: 'scanRTEForColumn',
+    sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
+    parameters: undefined
+  },
+  sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
+  parameters: {}
+}
 [Auth Middleware] Request: GET /api/dashboard/main?tenantId=eb629ea8-7d69-47a1-b1f1-f9dcb33475f4&startDate=2025-11-15&endDate=2025-11-15
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
 Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
 Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
-Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."respondentSessionId" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", COUNT(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= '2025-11-09 00:00:00.000 +00:00' AND "Resposta"."createdAt" <= '2025-11-15 23:59:59.999 +00:00') GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "cliente"."id" AS "cliente.id", "atendente"."id" AS "atendente.id", "atendente"."name" AS "atendente.name" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" LEFT OUTER JOIN "clients" AS "cliente" ON "Resposta"."respondentSessionId" = "cliente"."respondentSessionId" LEFT OUTER JOIN "atendentes" AS "atendente" ON "Resposta"."atendenteId" = "atendente"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '63c97611-5436-4043-a378-f29bb28118ad' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '6d369960-a828-4a26-98c1-e295dfdc51d9' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '8ca6325c-8827-4cbf-982c-d734dcb66116' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '03c09f2f-c16b-4b42-b992-b78bfdfc55d7' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '67781806-855c-4e48-bf39-d1305176420a' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '87ccfbbd-4e8c-41ec-afc9-b3e14aacfdb0' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = 'f7fbfea4-3fd0-4eba-9839-d3a024a26687' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '4622ee0a-c73c-435e-9488-449479cb4bf5' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."text" AS "pergunta.text", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId", "pergunta->criterio"."id" AS "pergunta.criterio.id", "pergunta->criterio"."name" AS "pergunta.criterio.name", "pergunta->criterio"."type" AS "pergunta.criterio.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" LIKE 'rating%' LEFT OUTER JOIN "criterios" AS "pergunta->criterio" ON "pergunta"."criterioId" = "pergunta->criterio"."id" WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."createdAt", "Resposta"."textValue", "Resposta"."ratingValue", "Resposta"."respondentSessionId", "cliente"."id" AS "cliente.id", "cliente"."name" AS "cliente.name" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "clients" AS "cliente" ON "Resposta"."respondentSessionId" = "cliente"."respondentSessionId" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."textValue" != '' ORDER BY "Resposta"."createdAt" DESC LIMIT 7;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."createdAt", "Resposta"."ratingValue", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;
 Error
     at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
     at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
     at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)
     at async Resposta.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)
-    at async getSummary (/usr/src/app/src/repositories/dashboard/summary.js:31:29)
-    at async Object.getMainDashboard (/usr/src/app/src/repositories/dashboard/main.js:27:21)
-    at async /usr/src/app/src/controllers/dashboardController.js:122:31 {
+    at async getNpsTrendData (/usr/src/app/src/repositories/dashboard/charts.js:169:23)
+    at async Object.getMainDashboard (/usr/src/app/src/repositories/dashboard/main.js:34:22)
+    at async /usr/src/app/src/controllers/dashboardController.js:124:31 {
   name: 'SequelizeDatabaseError',
-  parent: error: invalid input syntax for type timestamp with time zone: "Invalid date"
+  parent: error: column reference "createdAt" is ambiguous
       at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
       at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
       at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
@@ -429,12 +381,12 @@ Error
       at readableAddChunk (node:internal/streams/readable:341:9)
       at Readable.push (node:internal/streams/readable:278:10)
       at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
-    length: 141,
+    length: 114,
     severity: 'ERROR',
-    code: '22007',
+    code: '42702',
     detail: undefined,
     hint: undefined,
-    position: '686',
+    position: '26',
     internalPosition: undefined,
     internalQuery: undefined,
     where: undefined,
@@ -443,13 +395,13 @@ Error
     column: undefined,
     dataType: undefined,
     constraint: undefined,
-    file: 'datetime.c',
-    line: '3800',
-    routine: 'DateTimeParseError',
-    sql: `SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');`,
+    file: 'parse_relation.c',
+    line: '805',
+    routine: 'scanRTEForColumn',
+    sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
     parameters: undefined
   },
-  original: error: invalid input syntax for type timestamp with time zone: "Invalid date"
+  original: error: column reference "createdAt" is ambiguous
       at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
       at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
       at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
@@ -459,12 +411,12 @@ Error
       at readableAddChunk (node:internal/streams/readable:341:9)
       at Readable.push (node:internal/streams/readable:278:10)
       at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
-    length: 141,
+    length: 114,
     severity: 'ERROR',
-    code: '22007',
+    code: '42702',
     detail: undefined,
     hint: undefined,
-    position: '686',
+    position: '26',
     internalPosition: undefined,
     internalQuery: undefined,
     where: undefined,
@@ -473,31 +425,53 @@ Error
     column: undefined,
     dataType: undefined,
     constraint: undefined,
-    file: 'datetime.c',
-    line: '3800',
-    routine: 'DateTimeParseError',
-    sql: `SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');`,
+    file: 'parse_relation.c',
+    line: '805',
+    routine: 'scanRTEForColumn',
+    sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
     parameters: undefined
   },
-  sql: `SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');`,
+  sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
   parameters: {}
 }
-[Auth Middleware] Request: GET /api/dashboard/main?tenantId=eb629ea8-7d69-47a1-b1f1-f9dcb33475f4&startDate=2025-11-14&endDate=2025-11-14
+[Auth Middleware] Request: GET /api/dashboard/main?tenantId=eb629ea8-7d69-47a1-b1f1-f9dcb33475f4&startDate=2025-11-03&endDate=2025-11-03
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
 Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
 Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
-Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."respondentSessionId" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", COUNT(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= '2025-11-09 00:00:00.000 +00:00' AND "Resposta"."createdAt" <= '2025-11-15 23:59:59.999 +00:00') GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "cliente"."id" AS "cliente.id", "atendente"."id" AS "atendente.id", "atendente"."name" AS "atendente.name" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" LEFT OUTER JOIN "clients" AS "cliente" ON "Resposta"."respondentSessionId" = "cliente"."respondentSessionId" LEFT OUTER JOIN "atendentes" AS "atendente" ON "Resposta"."atendenteId" = "atendente"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '63c97611-5436-4043-a378-f29bb28118ad' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '6d369960-a828-4a26-98c1-e295dfdc51d9' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '8ca6325c-8827-4cbf-982c-d734dcb66116' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '03c09f2f-c16b-4b42-b992-b78bfdfc55d7' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '67781806-855c-4e48-bf39-d1305176420a' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '87ccfbbd-4e8c-41ec-afc9-b3e14aacfdb0' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = 'f7fbfea4-3fd0-4eba-9839-d3a024a26687' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '4622ee0a-c73c-435e-9488-449479cb4bf5' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."text" AS "pergunta.text", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId", "pergunta->criterio"."id" AS "pergunta.criterio.id", "pergunta->criterio"."name" AS "pergunta.criterio.name", "pergunta->criterio"."type" AS "pergunta.criterio.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" LIKE 'rating%' LEFT OUTER JOIN "criterios" AS "pergunta->criterio" ON "pergunta"."criterioId" = "pergunta->criterio"."id" WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."createdAt", "Resposta"."textValue", "Resposta"."ratingValue", "Resposta"."respondentSessionId", "cliente"."id" AS "cliente.id", "cliente"."name" AS "cliente.name" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "clients" AS "cliente" ON "Resposta"."respondentSessionId" = "cliente"."respondentSessionId" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."textValue" != '' ORDER BY "Resposta"."createdAt" DESC LIMIT 7;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."createdAt", "Resposta"."ratingValue", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;
 Error
     at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
     at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
     at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)
     at async Resposta.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)
-    at async getSummary (/usr/src/app/src/repositories/dashboard/summary.js:31:29)
-    at async Object.getMainDashboard (/usr/src/app/src/repositories/dashboard/main.js:27:21)
-    at async /usr/src/app/src/controllers/dashboardController.js:122:31 {
+    at async getNpsTrendData (/usr/src/app/src/repositories/dashboard/charts.js:169:23)
+    at async Object.getMainDashboard (/usr/src/app/src/repositories/dashboard/main.js:34:22)
+    at async /usr/src/app/src/controllers/dashboardController.js:124:31 {
   name: 'SequelizeDatabaseError',
-  parent: error: invalid input syntax for type timestamp with time zone: "Invalid date"
+  parent: error: column reference "createdAt" is ambiguous
       at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
       at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
       at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
@@ -507,12 +481,12 @@ Error
       at readableAddChunk (node:internal/streams/readable:341:9)
       at Readable.push (node:internal/streams/readable:278:10)
       at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
-    length: 141,
+    length: 114,
     severity: 'ERROR',
-    code: '22007',
+    code: '42702',
     detail: undefined,
     hint: undefined,
-    position: '686',
+    position: '26',
     internalPosition: undefined,
     internalQuery: undefined,
     where: undefined,
@@ -521,13 +495,13 @@ Error
     column: undefined,
     dataType: undefined,
     constraint: undefined,
-    file: 'datetime.c',
-    line: '3800',
-    routine: 'DateTimeParseError',
-    sql: `SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');`,
+    file: 'parse_relation.c',
+    line: '805',
+    routine: 'scanRTEForColumn',
+    sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
     parameters: undefined
   },
-  original: error: invalid input syntax for type timestamp with time zone: "Invalid date"
+  original: error: column reference "createdAt" is ambiguous
       at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
       at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
       at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
@@ -537,12 +511,12 @@ Error
       at readableAddChunk (node:internal/streams/readable:341:9)
       at Readable.push (node:internal/streams/readable:278:10)
       at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
-    length: 141,
+    length: 114,
     severity: 'ERROR',
-    code: '22007',
+    code: '42702',
     detail: undefined,
     hint: undefined,
-    position: '686',
+    position: '26',
     internalPosition: undefined,
     internalQuery: undefined,
     where: undefined,
@@ -551,31 +525,53 @@ Error
     column: undefined,
     dataType: undefined,
     constraint: undefined,
-    file: 'datetime.c',
-    line: '3800',
-    routine: 'DateTimeParseError',
-    sql: `SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');`,
+    file: 'parse_relation.c',
+    line: '805',
+    routine: 'scanRTEForColumn',
+    sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
     parameters: undefined
   },
-  sql: `SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');`,
+  sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
   parameters: {}
 }
 [Auth Middleware] Request: GET /api/dashboard/main?tenantId=eb629ea8-7d69-47a1-b1f1-f9dcb33475f4&startDate=2025-11-01&endDate=2025-11-30
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
 Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
 Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
-Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."respondentSessionId" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", COUNT(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= '2025-11-09 00:00:00.000 +00:00' AND "Resposta"."createdAt" <= '2025-11-15 23:59:59.999 +00:00') GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "cliente"."id" AS "cliente.id", "atendente"."id" AS "atendente.id", "atendente"."name" AS "atendente.name" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" LEFT OUTER JOIN "clients" AS "cliente" ON "Resposta"."respondentSessionId" = "cliente"."respondentSessionId" LEFT OUTER JOIN "atendentes" AS "atendente" ON "Resposta"."atendenteId" = "atendente"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '63c97611-5436-4043-a378-f29bb28118ad' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '6d369960-a828-4a26-98c1-e295dfdc51d9' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '8ca6325c-8827-4cbf-982c-d734dcb66116' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '03c09f2f-c16b-4b42-b992-b78bfdfc55d7' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '67781806-855c-4e48-bf39-d1305176420a' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '87ccfbbd-4e8c-41ec-afc9-b3e14aacfdb0' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = 'f7fbfea4-3fd0-4eba-9839-d3a024a26687' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "atendenteId", "tenantId", "npsGoal", "responsesGoal", "registrationsGoal", "createdAt", "updatedAt" FROM "atendente_metas" AS "AtendenteMeta" WHERE "AtendenteMeta"."atendenteId" = '4622ee0a-c73c-435e-9488-449479cb4bf5' AND "AtendenteMeta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."text" AS "pergunta.text", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId", "pergunta->criterio"."id" AS "pergunta.criterio.id", "pergunta->criterio"."name" AS "pergunta.criterio.name", "pergunta->criterio"."type" AS "pergunta.criterio.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" LIKE 'rating%' LEFT OUTER JOIN "criterios" AS "pergunta->criterio" ON "pergunta"."criterioId" = "pergunta->criterio"."id" WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."createdAt", "Resposta"."textValue", "Resposta"."ratingValue", "Resposta"."respondentSessionId", "cliente"."id" AS "cliente.id", "cliente"."name" AS "cliente.name" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "clients" AS "cliente" ON "Resposta"."respondentSessionId" = "cliente"."respondentSessionId" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."textValue" != '' ORDER BY "Resposta"."createdAt" DESC LIMIT 7;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."createdAt", "Resposta"."ratingValue", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;
 Error
     at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
     at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
     at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)
     at async Resposta.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)
-    at async getSummary (/usr/src/app/src/repositories/dashboard/summary.js:31:29)
-    at async Object.getMainDashboard (/usr/src/app/src/repositories/dashboard/main.js:27:21)
-    at async /usr/src/app/src/controllers/dashboardController.js:122:31 {
+    at async getNpsTrendData (/usr/src/app/src/repositories/dashboard/charts.js:169:23)
+    at async Object.getMainDashboard (/usr/src/app/src/repositories/dashboard/main.js:34:22)
+    at async /usr/src/app/src/controllers/dashboardController.js:124:31 {
   name: 'SequelizeDatabaseError',
-  parent: error: invalid input syntax for type timestamp with time zone: "Invalid date"
+  parent: error: column reference "createdAt" is ambiguous
       at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
       at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
       at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
@@ -585,12 +581,12 @@ Error
       at readableAddChunk (node:internal/streams/readable:341:9)
       at Readable.push (node:internal/streams/readable:278:10)
       at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
-    length: 141,
+    length: 114,
     severity: 'ERROR',
-    code: '22007',
+    code: '42702',
     detail: undefined,
     hint: undefined,
-    position: '686',
+    position: '26',
     internalPosition: undefined,
     internalQuery: undefined,
     where: undefined,
@@ -599,13 +595,13 @@ Error
     column: undefined,
     dataType: undefined,
     constraint: undefined,
-    file: 'datetime.c',
-    line: '3800',
-    routine: 'DateTimeParseError',
-    sql: `SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');`,
+    file: 'parse_relation.c',
+    line: '805',
+    routine: 'scanRTEForColumn',
+    sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
     parameters: undefined
   },
-  original: error: invalid input syntax for type timestamp with time zone: "Invalid date"
+  original: error: column reference "createdAt" is ambiguous
       at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
       at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
       at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
@@ -615,12 +611,12 @@ Error
       at readableAddChunk (node:internal/streams/readable:341:9)
       at Readable.push (node:internal/streams/readable:278:10)
       at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
-    length: 141,
+    length: 114,
     severity: 'ERROR',
-    code: '22007',
+    code: '42702',
     detail: undefined,
     hint: undefined,
-    position: '686',
+    position: '26',
     internalPosition: undefined,
     internalQuery: undefined,
     where: undefined,
@@ -629,29 +625,23 @@ Error
     column: undefined,
     dataType: undefined,
     constraint: undefined,
-    file: 'datetime.c',
-    line: '3800',
-    routine: 'DateTimeParseError',
-    sql: `SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');`,
+    file: 'parse_relation.c',
+    line: '805',
+    routine: 'scanRTEForColumn',
+    sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
     parameters: undefined
   },
-  sql: `SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND ("pergunta"."type" = 'rating_0_10' OR "pergunta"."type" = 'rating_1_5') WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date');`,
+  sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
   parameters: {}
 }
 [Auth Middleware] Request: GET /api/dashboard/month-summary?startDate=2025-11-01&endDate=2025-11-30
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
 Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
 Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
-EagerLoadingError [SequelizeEagerLoadingError]: Client is associated to Resposta using an alias. You've included an alias (client), but it does not match the alias(es) defined in your association (cliente).
-    at Resposta._getIncludedAssociation (/usr/src/app/node_modules/sequelize/lib/model.js:574:15)
-    at Resposta._validateIncludedElement (/usr/src/app/node_modules/sequelize/lib/model.js:502:53)
-    at /usr/src/app/node_modules/sequelize/lib/model.js:421:37
-    at Array.map (<anonymous>)
-    at Resposta._validateIncludedElements (/usr/src/app/node_modules/sequelize/lib/model.js:417:39)
-    at Resposta.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1124:12)
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async Object.getMonthSummary (/usr/src/app/src/repositories/dashboard/summary.js:132:26)
-    at async /usr/src/app/src/controllers/dashboardController.js:156:25
+Executing (default): SELECT "Resposta"."id", "Resposta"."ratingValue", "Resposta"."createdAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "cliente"."id" AS "cliente.id" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' LEFT OUTER JOIN "clients" AS "cliente" ON "Resposta"."respondentSessionId" = "cliente"."respondentSessionId" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL ORDER BY "Resposta"."createdAt" ASC;
+Executing (default): SELECT EXTRACT(HOUR FROM "createdAt" AT TIME ZONE 'America/Sao_Paulo') AS "hour", COUNT("id") AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' GROUP BY EXTRACT(HOUR FROM "createdAt" AT TIME ZONE 'America/Sao_Paulo') ORDER BY EXTRACT(HOUR FROM "createdAt" AT TIME ZONE 'America/Sao_Paulo') ASC;
+Executing (default): SELECT EXTRACT(ISODOW FROM "createdAt" AT TIME ZONE 'America/Sao_Paulo') AS "weekday", COUNT("id") AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' GROUP BY EXTRACT(ISODOW FROM "createdAt" AT TIME ZONE 'America/Sao_Paulo') ORDER BY EXTRACT(ISODOW FROM "createdAt" AT TIME ZONE 'America/Sao_Paulo') ASC;
+Executing (default): SELECT count(*) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
 [Auth Middleware] Request: GET /api/surveys/list?status=all
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
 Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
@@ -662,7 +652,7 @@ Executing (default): SELECT "pesquisaId", COUNT(DISTINCT("respondentSessionId"))
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
 Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
 Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
-Executing (default): SELECT date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;
+Executing (default): SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;
 Error
     at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
     at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28
@@ -671,9 +661,9 @@ Error
     at async Resposta.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)
     at async getNpsTrendData (/usr/src/app/src/repositories/dashboard/charts.js:169:23)
     at async Object.getEvolutionDashboard (/usr/src/app/src/repositories/dashboard/charts.js:314:22)
-    at async /usr/src/app/src/controllers/dashboardController.js:91:31 {
+    at async /usr/src/app/src/controllers/dashboardController.js:93:31 {
   name: 'SequelizeDatabaseError',
-  parent: error: column "Resposta.createdAt" does not exist
+  parent: error: column reference "createdAt" is ambiguous
       at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
       at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
       at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
@@ -683,9 +673,9 @@ Error
       at readableAddChunk (node:internal/streams/readable:341:9)
       at Readable.push (node:internal/streams/readable:278:10)
       at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
-    length: 118,
+    length: 114,
     severity: 'ERROR',
-    code: '42703',
+    code: '42702',
     detail: undefined,
     hint: undefined,
     position: '26',
@@ -698,12 +688,12 @@ Error
     dataType: undefined,
     constraint: undefined,
     file: 'parse_relation.c',
-    line: '3647',
-    routine: 'errorMissingColumn',
-    sql: `SELECT date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
+    line: '805',
+    routine: 'scanRTEForColumn',
+    sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
     parameters: undefined
   },
-  original: error: column "Resposta.createdAt" does not exist
+  original: error: column reference "createdAt" is ambiguous
       at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
       at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
       at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
@@ -713,9 +703,9 @@ Error
       at readableAddChunk (node:internal/streams/readable:341:9)
       at Readable.push (node:internal/streams/readable:278:10)
       at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
-    length: 118,
+    length: 114,
     severity: 'ERROR',
-    code: '42703',
+    code: '42702',
     detail: undefined,
     hint: undefined,
     position: '26',
@@ -728,95 +718,22 @@ Error
     dataType: undefined,
     constraint: undefined,
     file: 'parse_relation.c',
-    line: '3647',
-    routine: 'errorMissingColumn',
-    sql: `SELECT date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
+    line: '805',
+    routine: 'scanRTEForColumn',
+    sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
     parameters: undefined
   },
-  sql: `SELECT date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "Resposta.createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
+  sql: `SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL GROUP BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ORDER BY date_trunc('day', "createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo') ASC;`,
   parameters: {}
 }
 [Auth Middleware] Request: GET /api/surveys/list?status=all
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'surveys' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT "Pesquisa"."id", "Pesquisa"."title", "Pesquisa"."description", "Pesquisa"."createdAt", "Pesquisa"."dueDate", "Pesquisa"."status", "Pesquisa"."isOpen", "Pesquisa"."expectedRespondents", "Pesquisa"."askForAttendant", "Pesquisa"."tenantId", "perguntas"."id" AS "perguntas.id", "perguntas"."text" AS "perguntas.text", "perguntas"."type" AS "perguntas.type", "perguntas"."options" AS "perguntas.options", "perguntas"."order" AS "perguntas.order" FROM "pesquisas" AS "Pesquisa" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Pesquisa"."id" = "perguntas"."pesquisaId" WHERE "Pesquisa"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' ORDER BY "Pesquisa"."createdAt" DESC;
+Executing (default): SELECT "pesquisaId", COUNT(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."pesquisaId" IN ('362bd09a-762a-49d4-9651-415955567e6a', '560e491d-aa5c-43fe-af72-87b12d362e7a', '70644ab0-f9a5-49e5-88cc-86773acfd2a4') GROUP BY "pesquisaId";
 [Auth Middleware] Request: GET /api/dashboard/wordcloud?startDate=2025-11-01&endDate=2025-11-30
 Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
 Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
-Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
-Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'surveys' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
 Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
-Executing (default): SELECT "Pesquisa"."id", "Pesquisa"."title", "Pesquisa"."description", "Pesquisa"."createdAt", "Pesquisa"."dueDate", "Pesquisa"."status", "Pesquisa"."isOpen", "Pesquisa"."expectedRespondents", "Pesquisa"."askForAttendant", "Pesquisa"."tenantId", "perguntas"."id" AS "perguntas.id", "perguntas"."text" AS "perguntas.text", "perguntas"."type" AS "perguntas.type", "perguntas"."options" AS "perguntas.options", "perguntas"."order" AS "perguntas.order" FROM "pesquisas" AS "Pesquisa" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Pesquisa"."id" = "perguntas"."pesquisaId" WHERE "Pesquisa"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' ORDER BY "Pesquisa"."createdAt" DESC;
-Executing (default): SELECT "textValue" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."textValue" != '' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date') LIMIT 2000;
-Executing (default): SELECT "pesquisaId", COUNT(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."pesquisaId" IN ('362bd09a-762a-49d4-9651-415955567e6a', '560e491d-aa5c-43fe-af72-87b12d362e7a', '70644ab0-f9a5-49e5-88cc-86773acfd2a4') GROUP BY "pesquisaId";
-Error
-    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
-    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)
-    at async Resposta.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)
-    at async Object.getWordCloudData (/usr/src/app/src/repositories/dashboard/feedbacks.js:67:23)
-    at async /usr/src/app/src/controllers/dashboardController.js:107:31 {
-  name: 'SequelizeDatabaseError',
-  parent: error: invalid input syntax for type timestamp with time zone: "Invalid date"
-      at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
-      at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
-      at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
-      at Socket.<anonymous> (/usr/src/app/node_modules/pg-protocol/dist/index.js:11:42)
-      at Socket.emit (node:events:517:28)
-      at addChunk (node:internal/streams/readable:368:12)
-      at readableAddChunk (node:internal/streams/readable:341:9)
-      at Readable.push (node:internal/streams/readable:278:10)
-      at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
-    length: 141,
-    severity: 'ERROR',
-    code: '22007',
-    detail: undefined,
-    hint: undefined,
-    position: '184',
-    internalPosition: undefined,
-    internalQuery: undefined,
-    where: undefined,
-    schema: undefined,
-    table: undefined,
-    column: undefined,
-    dataType: undefined,
-    constraint: undefined,
-    file: 'datetime.c',
-    line: '3800',
-    routine: 'DateTimeParseError',
-    sql: `SELECT "textValue" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."textValue" != '' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date') LIMIT 2000;`,
-    parameters: undefined
-  },
-  original: error: invalid input syntax for type timestamp with time zone: "Invalid date"
-      at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
-      at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
-      at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
-      at Socket.<anonymous> (/usr/src/app/node_modules/pg-protocol/dist/index.js:11:42)
-      at Socket.emit (node:events:517:28)
-      at addChunk (node:internal/streams/readable:368:12)
-      at readableAddChunk (node:internal/streams/readable:341:9)
-      at Readable.push (node:internal/streams/readable:278:10)
-      at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
-    length: 141,
-    severity: 'ERROR',
-    code: '22007',
-    detail: undefined,
-    hint: undefined,
-    position: '184',
-    internalPosition: undefined,
-    internalQuery: undefined,
-    where: undefined,
-    schema: undefined,
-    table: undefined,
-    column: undefined,
-    dataType: undefined,
-    constraint: undefined,
-    file: 'datetime.c',
-    line: '3800',
-    routine: 'DateTimeParseError',
-    sql: `SELECT "textValue" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."textValue" != '' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date') LIMIT 2000;`,
-    parameters: undefined
-  },
-
-SELECT "textValue" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."textValue" != '' AND ("Resposta"."createdAt" >= 'Invalid date' AND "Resposta"."createdAt" <= 'Invalid date') LIMIT 2000;`,
-  parameters: {}
-}
+Executing (default): SELECT "textValue" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."textValue" != '' LIMIT 2000;

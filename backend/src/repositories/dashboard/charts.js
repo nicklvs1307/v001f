@@ -3,6 +3,7 @@ const { Pesquisa, Resposta, Client, Cupom, Pergunta } = require('../../../models
 const { zonedTimeToUtc, utcToZonedTime, format: formatTz } = require('date-fns-tz');
 const { Sequelize, Op } = require('sequelize');
 const { subDays, differenceInDays, eachDayOfInterval, format, startOfWeek, endOfWeek, startOfMonth, endOfMonth } = require('date-fns');
+const ptBR = require('date-fns/locale/pt-BR');
 
 const timeZone = 'America/Sao_Paulo';
 
@@ -103,7 +104,7 @@ const getResponseChart = async (tenantId = null, startDate = null, endDate = nul
             count = dataMap.get(key) || 0;
 
         } else { // month
-            name = format(day, 'MMMM/yy', { locale: require('date-fns/locale/pt-BR') });
+            name = format(day, 'MMMM/yy', { locale: ptBR });
             const monthStartKey = format(startOfMonth(day), 'yyyy-MM-dd');
             count = dataMap.get(monthStartKey) || 0;
         }

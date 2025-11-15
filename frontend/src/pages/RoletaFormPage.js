@@ -44,8 +44,9 @@ const RoletaFormPage = () => {
   useEffect(() => {
     const fetchRecompensas = async () => {
       try {
-        const response = await recompensaService.getAll();
-        setRecompensas(response.data || []);
+        // Busca apenas recompensas ativas para popular o formulário
+        const response = await recompensaService.getAll(true);
+        setRecompensas(response || []);
       } catch (err) {
         setError('Erro ao buscar recompensas.');
       }

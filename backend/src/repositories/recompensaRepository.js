@@ -5,10 +5,10 @@ const createRecompensa = async (tenantId, name, description, pointsRequired, act
   return Recompensa.create({ tenantId, name, description, pointsRequired, active });
 };
 
-const getAllRecompensas = async (tenantId, activeOnly = false) => {
+const getAllRecompensas = async (tenantId, activeStatus = null) => {
   const whereClause = tenantId ? { tenantId } : {};
-  if (activeOnly) {
-    whereClause.active = true;
+  if (activeStatus !== null) {
+    whereClause.active = activeStatus;
   }
   return Recompensa.findAll({
     where: whereClause,

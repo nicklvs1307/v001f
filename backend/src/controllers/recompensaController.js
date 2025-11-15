@@ -32,7 +32,11 @@ const recompensaController = {
     const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
     const { active } = req.query; 
 
-    const recompensas = await recompensaRepository.getAllRecompensas(tenantId, active === 'true');
+    // active pode ser 'true', 'false', ou undefined.
+    // Se for undefined, passamos null para o repositório para não filtrar.
+    const activeFilter = active === 'true' ? true : (active === 'false' ? false : null);
+
+    const recompensas = await recompensaRepository.getAllRecompensas(tenantId, activeFilter);
     res.status(200).json(recompensas);
   }),
 

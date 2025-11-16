@@ -121,8 +121,6 @@ const SurveyResultsPage = () => {
         );
     }
 
-    
-
     return (
         <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
             <Paper elevation={2} sx={{ p: { xs: 2, md: 4 }, mb: 4, backgroundColor: theme.palette.primary.main, color: 'white' }}>

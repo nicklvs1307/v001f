@@ -54,6 +54,17 @@ const getWordCloudData = async (tenantId = null, startDate = null, endDate = nul
         where: whereClause,
         attributes: ['textValue'],
         limit: 2000,
+        include: [{
+            model: Pergunta,
+            as: 'pergunta',
+            attributes: [], // Não precisamos de atributos da pergunta, apenas para o filtro
+            where: {
+                type: {
+                    [Op.in]: ['text', 'textarea'],
+                },
+            },
+            required: true, // Garante que apenas respostas com perguntas correspondentes sejam retornadas
+        }],
     });
 
     const text = feedbacks.map(f => f.textValue).join(' ');

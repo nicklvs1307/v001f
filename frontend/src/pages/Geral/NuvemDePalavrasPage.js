@@ -25,8 +25,8 @@ const NuvemDePalavrasPage = () => {
     const [words, setWords] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [startDate, setStartDate] = useState(format(startOfMonth(new Date()), 'yyyy-MM-dd'));
-    const [endDate, setEndDate] = useState(format(endOfMonth(new Date()), 'yyyy-MM-dd'));
+    const [startDate, setStartDate] = useState(startOfMonth(new Date()));
+    const [endDate, setEndDate] = useState(endOfMonth(new Date()));
     const [surveys, setSurveys] = useState([]);
     const [selectedSurveyId, setSelectedSurveyId] = useState('');
 
@@ -52,8 +52,8 @@ const NuvemDePalavrasPage = () => {
         try {
             setLoading(true);
             const params = { 
-                startDate: debouncedStartDate, 
-                endDate: debouncedEndDate,
+                startDate: debouncedStartDate ? debouncedStartDate.toISOString() : null, 
+                endDate: debouncedEndDate ? debouncedEndDate.toISOString() : null,
                 surveyId: selectedSurveyId || null
             };
             const data = await dashboardService.getWordCloudData(params);
@@ -119,8 +119,13 @@ const NuvemDePalavrasPage = () => {
                             <TextField
                                 label="Data de Início"
                                 type="date"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
+                                value={startDate ? format(startDate, 'yyyy-MM-dd') : ''}
+                                onChange={(e) => {
+                                    const date = e.target.value ? new Date(e.target.value + 'T00:00:00') : null;
+                                    if (date && !isNaN(date.getTime())) {
+                                        setStartDate(date);
+                                    }
+                                }}
                                 InputLabelProps={{ shrink: true }}
                                 fullWidth
                             />
@@ -129,8 +134,13 @@ const NuvemDePalavrasPage = () => {
                             <TextField
                                 label="Data de Fim"
                                 type="date"
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
+                                value={endDate ? format(endDate, 'yyyy-MM-dd') : ''}
+                                onChange={(e) => {
+                                    const date = e.target.value ? new Date(e.target.value + 'T00:00:00') : null;
+                                    if (date && !isNaN(date.getTime())) {
+                                        setEndDate(date);
+                                    }
+                                }}
                                 InputLabelProps={{ shrink: true }}
                                 fullWidth
                             />

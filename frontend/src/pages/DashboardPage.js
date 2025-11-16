@@ -89,10 +89,10 @@ const DashboardPage = () => {
                 setError('');
                 const params = {};
                 if (startDate) {
-                    params.startDate = format(startDate, 'yyyy-MM-dd');
+                    params.startDate = startDate.toISOString();
                 }
                 if (endDate) {
-                    params.endDate = format(endDate, 'yyyy-MM-dd');
+                    params.endDate = endDate.toISOString();
                 }
                 const data = await dashboardService.getMainDashboard(params);
                 setDashboardData(data);

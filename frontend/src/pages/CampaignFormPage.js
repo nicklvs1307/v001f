@@ -37,7 +37,7 @@ import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatStrikethroughIcon from '@mui/icons-material/FormatStrikethrough';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import campanhaService from '../services/campanhaService';
 import recompensaService from '../services/recompensaService';
 import roletaService from '../services/roletaService';
@@ -338,7 +338,7 @@ const CampaignFormPage = () => {
         formData.append('media', value);
       } else if (['dataValidade', 'startDate'].includes(key) && value instanceof Date && !isNaN(value.getTime())) {
         // Format the Date object to the required string format
-        formData.append(key, format(value, 'dd-MM-yyyy HH:mm'));
+        formData.append(key, value.toISOString());
       } else if (value !== null && value !== undefined) {
         if (typeof value === 'object' && key !== 'media') {
           formData.append(key, JSON.stringify(value));
@@ -537,7 +537,7 @@ const CampaignFormPage = () => {
               <Grid item xs={12} md={6}>
                 <DateTimePicker
                   label="Data de Validade"
-                  value={campaign.dataValidade ? new Date(campaign.dataValidade) : null}
+                  value={campaign.dataValidade ? parseISO(campaign.dataValidade) : null}
                   onChange={(newValue) => handleDateChange('dataValidade', newValue)}
                   renderInput={(params) => <TextField {...params} fullWidth margin="normal" required helperText="Data de validade para cupons e roletas." />}
                 />
@@ -545,7 +545,7 @@ const CampaignFormPage = () => {
               <Grid item xs={12} md={6}>
                 <DateTimePicker
                   label="Data de Início do Envio (Opcional)"
-                  value={campaign.startDate ? new Date(campaign.startDate) : null}
+                  value={campaign.startDate ? parseISO(campaign.startDate) : null}
                   onChange={(newValue) => handleDateChange('startDate', newValue)}
                   renderInput={(params) => <TextField {...params} fullWidth margin="normal" helperText="Deixe em branco para processar o envio imediatamente." />}
                 />

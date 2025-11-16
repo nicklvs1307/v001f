@@ -48,6 +48,9 @@ import StarIcon from '@mui/icons-material/Star';
 import PeopleIcon from '@mui/icons-material/People';
 import CakeIcon from '@mui/icons-material/Cake';
 import WcIcon from '@mui/icons-material/Wc';
+import WordCloudComponent from '../components/results/WordCloud';
+import RadarChartComponent from '../components/results/RadarChart';
+import QuestionResult from '../components/results/QuestionResult';
 
 const MetricCard = ({ title, value, icon, color }) => (
     <Paper elevation={3} sx={{ p: 2, display: 'flex', alignItems: 'center', height: '100%' }}>
@@ -58,10 +61,6 @@ const MetricCard = ({ title, value, icon, color }) => (
         </Box>
     </Paper>
 );
-
-import WordCloudComponent from '../components/results/WordCloud';
-import RadarChartComponent from '../components/results/RadarChart';
-import QuestionResult from '../components/results/QuestionResult';
 
 const SurveyResultsPage = () => {
     const { id } = useParams();

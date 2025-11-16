@@ -31,109 +31,40 @@ const getResponseChart = async (tenantId = null, startDate = null, endDate = nul
     }
 
     // Se não houver datas, define o padrão dos últimos 7 dias no fuso horário correto.
-    const end = endDate ? endDate : fromZonedTime(new Date(), timeZone);
+    const end = endDate ? endDate : new Date();
     const start = startDate ? startDate : subDays(end, 6);
 
-    const diffDays = differenceInDays(end, start);
-
-    let period = 'day';
-    if (diffDays > 90) {
-        period = 'month';
-    } else if (diffDays > 31) {
-        period = 'week';
-    }
-
-    whereClause.createdAt = buildDateFilter(start, end);
+    whereClause.createdAt = {
+        [Op.gte]: start,
+        [Op.lte]: end,
+    };
 
     const responsesByPeriod = await Resposta.findAll({
         where: whereClause,
         attributes: [
-            [dateTruncTz(period, 'createdAt'), 'period'],
+            [literal(`DATE("createdAt" AT TIME ZONE '${timeZone}')`), 'period'],
             [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'count']
         ],
-        group: [dateTruncTz(period, 'createdAt')],
-        order: [[dateTruncTz(period, 'createdAt'), 'ASC']]
+        group: ['period'],
+        order: [['period', 'ASC']],
+        raw: true,
     });
 
     const dataMap = new Map(responsesByPeriod.map(item => {
-        // Converte a data do banco (que está em UTC, mas representa o início do período em SP) para o fuso de SP
-        const zonedPeriod = toZonedTime(item.dataValues.period, timeZone);
-        // Formata para uma chave consistente 'yyyy-MM-dd'
-        const key = format(zonedPeriod, 'yyyy-MM-dd');
-        return [key, parseInt(item.dataValues.count)];
+        // A data já vem no formato 'YYYY-MM-DD' por causa do DATE() do PostgreSQL
+        const key = format(new Date(item.period), 'yyyy-MM-dd');
+        return [key, parseInt(item.count, 10)];
     }));
 
-    const interval = {
-        start: toZonedTime(start, timeZone),
-        end: toZonedTime(end, timeZone)
-    };
-
-    let intervalDays;
-    if (period === 'day') {
-        intervalDays = eachDayOfInterval(interval);
-    } else if (period === 'week') {
-        intervalDays = eachDayOfInterval({
-            start: startOfWeek(interval.start),
-            end: endOfWeek(interval.end)
-        }, { step: 7 });
-    } else { // month
-        intervalDays = eachDayOfInterval({
-            start: startOfMonth(interval.start),
-            end: endOfMonth(interval.end)
-        }, { step: 30 }); // Aproximação, a lógica de formatação cuidará do mês correto
-    }
-
+    const intervalDays = eachDayOfInterval({ start, end });
 
     const chartData = intervalDays.map(day => {
-        let name;
-        let key;
-        let count = 0;
-
-        if (period === 'day') {
-            name = format(day, 'dd/MM');
-            key = format(day, 'yyyy-MM-dd');
-            count = dataMap.get(key) || 0;
-        } else if (period === 'week') {
-            const weekStart = startOfWeek(day);
-            const weekEnd = endOfWeek(day);
-            name = `${format(weekStart, 'dd/MM')} - ${format(weekEnd, 'dd/MM')}`;
-            
-            // Para semanas, precisamos encontrar a chave correspondente no mapa, que é o início da semana
-            key = format(weekStart, 'yyyy-MM-dd');
-            count = dataMap.get(key) || 0;
-
-        } else { // month
-            name = format(day, 'MMMM/yy', { locale: ptBR });
-            const monthStartKey = format(startOfMonth(day), 'yyyy-MM-dd');
-            count = dataMap.get(monthStartKey) || 0;
-        }
-
+        const key = format(day, 'yyyy-MM-dd');
         return {
-            name,
-            Respostas: count,
+            name: format(day, 'dd/MM'),
+            Respostas: dataMap.get(key) || 0,
         };
     });
-
-    // Lógica para agrupar semanas e meses, se necessário, para evitar duplicatas
-    if (period === 'week') {
-        const weeklyData = {};
-        chartData.forEach(item => {
-            if (!weeklyData[item.name]) {
-                weeklyData[item.name] = item;
-            }
-        });
-        return Object.values(weeklyData);
-    }
-    
-    if (period === 'month') {
-        const monthlyData = {};
-        chartData.forEach(item => {
-            if (!monthlyData[item.name]) {
-                monthlyData[item.name] = item;
-            }
-        });
-        return Object.values(monthlyData);
-    }
 
     return chartData;
 };

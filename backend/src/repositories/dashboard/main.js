@@ -2,7 +2,7 @@ const { getSummary } = require('./summary');
 const { getResponseChart, getNpsTrendData, getConversionChart } = require('./charts');
 const { getAttendantsPerformanceWithGoals } = require('./attendants');
 const { getCriteriaScores } = require('./criteria');
-const { getFeedbacks } = require('./feedbacks');
+const { getFeedbacks, getWordCloudData } = require('./feedbacks');
 const { getNpsByDayOfWeek } = require('./nps');
 const { getOverallResults } = require('./overall');
 const { getBirthdaysOfMonth } = require('./clients');
@@ -34,6 +34,7 @@ const getMainDashboard = async function (tenantId = null, startDate = null, endD
     const npsTrend = await getNpsTrendData(tenantId, npsTrendPeriod, startDate, endDate, surveyId);
     const overallResults = await getOverallResults(tenantId, startDate, endDate, surveyId);
     const birthdaysOfMonth = await getBirthdaysOfMonth(tenantId);
+    const wordCloudData = await getWordCloudData(tenantId, startDate, endDate, surveyId);
 
 
     return {
@@ -47,6 +48,7 @@ const getMainDashboard = async function (tenantId = null, startDate = null, endD
         npsTrend,
         overallResults,
         birthdaysOfMonth,
+        wordCloudData,
     };
 };
 

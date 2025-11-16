@@ -276,6 +276,64 @@ const linkResponsesToClient = async (respondentSessionId, clienteId, transaction
     { clienteId },
     { where: { respondentSessionId, clienteId: null }, transaction }
   );
+
+  // START: Coupon Generation Logic
+  console.log(`linkResponsesToClient: Checking for rewards for client ${clienteId} and session ${respondentSessionId}`);
+  
+  // Find one response to get the surveyId and tenantId
+  const response = await models.Resposta.findOne({
+    where: { respondentSessionId },
+    attributes: ['pesquisaId', 'tenantId'],
+    transaction
+  });
+
+  if (response && response.pesquisaId) {
+    const { pesquisaId, tenantId } = response;
+    console.log(`linkResponsesToClient: Found pesquisaId ${pesquisaId}`);
+
+    const survey = await models.Pesquisa.findByPk(pesquisaId, {
+      attributes: ['recompensaId'],
+      transaction
+    });
+
+    if (survey && survey.recompensaId) {
+      console.log(`linkResponsesToClient: Survey has reward ${survey.recompensaId}. Checking for existing coupon.`);
+      
+      // Check if a coupon already exists for this client and survey
+      const existingCoupon = await models.Cupom.findOne({
+        where: {
+          clienteId: clienteId,
+          pesquisaId: pesquisaId,
+        },
+        transaction
+      });
+
+      if (!existingCoupon) {
+        console.log(`linkResponsesToClient: No existing coupon found. Generating a new one.`);
+        const codigo = uuidv4().substring(0, 8).toUpperCase();
+        const dataGeracao = new Date();
+        const dataValidade = new Date();
+        dataValidade.setDate(dataValidade.getDate() + 30); // Set expiration to 30 days
+
+        const cupomData = {
+          tenantId: tenantId,
+          recompensaId: survey.recompensaId,
+          pesquisaId: pesquisaId,
+          clienteId: clienteId,
+          codigo: codigo,
+          dataGeracao: dataGeracao,
+          dataValidade: dataValidade,
+          status: 'active',
+        };
+
+        await models.Cupom.create(cupomData, { transaction });
+        console.log(`linkResponsesToClient: Coupon ${codigo} generated for client ${clienteId}`);
+      } else {
+        console.log(`linkResponsesToClient: Client ${clienteId} already has a coupon for this survey. Skipping generation.`);
+      }
+    }
+  }
+  // END: Coupon Generation Logic
 };
 
 const getPublicTenantById = async (id) => {

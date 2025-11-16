@@ -9,7 +9,8 @@ import {
 import { WordCloud } from '@isoterik/react-word-cloud';
 
 // Importando ícones
-import { TrendingUp, BarChart as BarChartIcon, People, Star, Cloud, CheckCircle, DonutLarge } from '@mui/icons-material';
+import { TrendingUp, BarChart as BarChartIcon, People, Star, Cloud, CheckCircle, DonutLarge, Chat as ChatIcon } from '@mui/icons-material';
+import FeedbacksList from './FeedbacksList';
 
 const NPS_COLORS = ['#2ECC71', '#F1C40F', '#E74C3C']; // Promoters, Neutrals, Detractors
 const CSAT_COLORS = ['#2ECC71', '#F1C40F', '#E74C3C']; // Satisfied, Neutral, Unsatisfied
@@ -41,7 +42,7 @@ const Dashboard = ({ data }) => {
         return <Typography>Nenhum dado disponível para o período selecionado.</Typography>;
     }
 
-    const { summary, npsTrend, wordCloudData, criteriaScores, attendantsPerformance, conversionChart } = data;
+    const { summary, npsTrend, wordCloudData, criteriaScores, attendantsPerformance, conversionChart, feedbacks } = data;
 
     const nps = summary?.nps;
     const totalResponses = summary?.totalResponses;
@@ -238,6 +239,11 @@ const Dashboard = ({ data }) => {
                         </TableContainer>
                     ) : <NoData />}
                 </StatCard>
+            </Grid>
+
+            {/* Feedbacks List */}
+            <Grid item xs={12}>
+                <FeedbacksList feedbacks={feedbacks} />
             </Grid>
 
         </Grid>

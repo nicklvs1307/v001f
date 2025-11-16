@@ -6,6 +6,9 @@ import {
 import { Chat as ChatIcon, Star } from '@mui/icons-material';
 
 const getRatingColor = (rating, type) => {
+    if (typeof type !== 'string') {
+        return 'text.secondary';
+    }
     if (type.includes('0_10')) { // NPS
         if (rating >= 9) return 'success.main';
         if (rating >= 7) return 'warning.main';

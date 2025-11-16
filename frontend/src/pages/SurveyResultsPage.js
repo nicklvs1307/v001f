@@ -78,8 +78,6 @@ const SurveyResultsPage = () => {
         theme.palette.error.main,
     ];
 
-
-
     useEffect(() => {
         const fetchResults = async () => {
             try {
@@ -113,15 +111,23 @@ const SurveyResultsPage = () => {
         );
     }
 
-    if (!results) {
-        return (
-            <Container sx={{ mt: 8, textAlign: 'center' }}>
-                <Typography>Nenhum resultado encontrado para esta pesquisa.</Typography>
-            </Container>
-        );
-    }
+        if (!results) {
 
-    return (
+            return (
+
+                <Container sx={{ mt: 8, textAlign: 'center' }}>
+
+                    <Typography>Nenhum resultado encontrado para esta pesquisa.</Typography>
+
+                </Container>
+
+            );
+
+        }
+
+    
+
+        return (
         <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
             <Paper elevation={2} sx={{ p: { xs: 2, md: 4 }, mb: 4, backgroundColor: theme.palette.primary.main, color: 'white' }}>
                 <Typography variant="h3" component="h1" gutterBottom fontWeight="bold">{results.surveyTitle}</Typography>
@@ -140,8 +146,6 @@ const SurveyResultsPage = () => {
                     <MetricCard title="Média de Satisfação" value={results.overallCSAT?.averageScore || 0} icon={<StarIcon fontSize="large" />} color={theme.palette.secondary.main} />
                 </Grid>
             </Grid>
-
-
 
             {/* Scores by Criteria */}
             <Grid container spacing={3} sx={{ mb: 4 }}>

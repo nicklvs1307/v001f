@@ -7,7 +7,9 @@ import CloudQueueIcon from '@mui/icons-material/CloudQueue';
 const WordCloudComponent = ({ data }) => {
   const theme = useTheme();
 
-  if (!data || data.length === 0) {
+  const validData = data.filter(item => typeof item.count === 'number' && item.count > 0);
+
+  if (!validData || validData.length === 0) {
     return (
         <Card elevation={3}>
             <CardHeader title="Nuvem de Palavras" avatar={<CloudQueueIcon />} />
@@ -18,7 +20,7 @@ const WordCloudComponent = ({ data }) => {
     );
   }
 
-  const wordCloudData = data.map(item => ({
+  const wordCloudData = validData.map(item => ({
     text: item.word,
     value: item.count,
   }));
@@ -42,7 +44,7 @@ const WordCloudComponent = ({ data }) => {
             height={400}
             font="Arial"
             fontWeight="bold"
-            fontSize={(word) => Math.sqrt(word.value) * 5}
+            fontSize={(word) => (word.value ? Math.sqrt(word.value) * 5 : 10)}
             spiral="archimedean"
             rotate={0}
             padding={2}

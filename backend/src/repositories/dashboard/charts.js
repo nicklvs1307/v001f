@@ -8,9 +8,11 @@ const timeZone = 'America/Sao_Paulo';
 
 const { fn, col, literal } = Sequelize;
 
-const dateTruncTz = (p, column) => {
-    const quotedColumn = column.split('.').map(part => `"${part}"`).join('.');
-    return fn('date_trunc', p, literal(`${quotedColumn} AT TIME ZONE 'UTC' AT TIME ZONE '${timeZone}'`));
+// Formata a data diretamente no PostgreSQL para evitar problemas de fuso horário no JS
+const formatDateTz = (period, column) => {
+    const quotedColumn = `"${column}"`;
+    const zonedColumn = `(${quotedColumn} AT TIME ZONE 'UTC' AT TIME ZONE '${timeZone}')`;
+    return fn('TO_CHAR', literal(zonedColumn), period === 'day' ? 'DD/MM/YYYY' : 'YYYY-MM');
 };
 
 const buildDateFilter = (startDate, endDate) => {
@@ -30,9 +32,8 @@ const getResponseChart = async (tenantId = null, startDate = null, endDate = nul
         whereClause.pesquisaId = surveyId;
     }
 
-    // Se não houver datas, define o padrão dos últimos 7 dias no fuso horário correto.
-    const end = endDate ? endDate : new Date();
-    const start = startDate ? startDate : subDays(end, 6);
+    const end = endDate ? new Date(endDate) : new Date();
+    const start = startDate ? new Date(startDate) : subDays(end, 6);
 
     whereClause.createdAt = {
         [Op.gte]: start,
@@ -42,24 +43,19 @@ const getResponseChart = async (tenantId = null, startDate = null, endDate = nul
     const responsesByPeriod = await Resposta.findAll({
         where: whereClause,
         attributes: [
-            [literal(`DATE("createdAt" AT TIME ZONE '${timeZone}')`), 'period'],
+            [formatDateTz('day', 'createdAt'), 'period'],
             [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'count']
         ],
         group: ['period'],
-        order: [['period', 'ASC']],
+        order: [[literal('MIN("createdAt")'), 'ASC']],
         raw: true,
     });
 
-    const dataMap = new Map(responsesByPeriod.map(item => {
-        // A data já vem no formato 'YYYY-MM-DD' por causa do DATE() do PostgreSQL
-        const key = format(new Date(item.period), 'yyyy-MM-dd');
-        return [key, parseInt(item.count, 10)];
-    }));
-
+    const dataMap = new Map(responsesByPeriod.map(item => [item.period, parseInt(item.count, 10)]));
     const intervalDays = eachDayOfInterval({ start, end });
 
     const chartData = intervalDays.map(day => {
-        const key = format(day, 'yyyy-MM-dd');
+        const key = format(day, 'dd/MM/yyyy');
         return {
             name: format(day, 'dd/MM'),
             Respostas: dataMap.get(key) || 0,
@@ -91,6 +87,7 @@ const getConversionChart = async (tenantId = null, startDate = null, endDate = n
     const couponsUsedWhere = { status: 'used' };
     if (tenantId) couponsUsedWhere.tenantId = tenantId;
     if (dateFilter) {
+        // Assumindo que a data de utilização é refletida no updatedAt
         couponsUsedWhere.updatedAt = dateFilter;
     }
     const couponsUsed = await Cupom.count({ where: couponsUsedWhere });
@@ -103,188 +100,111 @@ const getConversionChart = async (tenantId = null, startDate = null, endDate = n
     ];
 };
 
-const getNpsTrendData = async (tenantId = null, period = 'day', startDate = null, endDate = null, surveyId = null) => {
-    const whereClause = tenantId ? { tenantId, ratingValue: { [Op.ne]: null } } : { ratingValue: { [Op.ne]: null } };
-    if (surveyId) {
+const getTrendData = async (config) => {
+    const { tenantId, period = 'day', startDate, endDate, surveyId, model, include, attributes, groupCol } = config;
+
+    const whereClause = tenantId ? { tenantId } : {};
+    if (surveyId && model.name === 'Resposta') {
         whereClause.pesquisaId = surveyId;
     }
 
     const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
-
     if (dateFilter) {
         whereClause.createdAt = dateFilter;
     }
 
-    const trendData = await Resposta.findAll({
+    const trendData = await model.findAll({
         where: whereClause,
-        include: [{
-            model: Pergunta,
-            as: 'pergunta',
-            attributes: [],
-            where: {
-                type: 'rating_0_10'
-            },
-            required: true
-        }],
+        include: include,
         attributes: [
-            [dateTruncTz(period, 'Resposta.createdAt'), 'period'],
+            [formatDateTz(period, groupCol), 'period'],
+            ...attributes
+        ],
+        group: [formatDateTz(period, groupCol)],
+        order: [[literal(`MIN("${groupCol}")`), 'ASC']],
+        raw: true,
+    });
+
+    return trendData;
+};
+
+const getEvolutionDashboard = async function (tenantId = null, period = 'day', startDate = null, endDate = null) {
+    const commonConfig = { tenantId, period, startDate, endDate };
+
+    const npsTrendRaw = await getTrendData({
+        ...commonConfig,
+        model: Resposta,
+        include: [{ model: Pergunta, as: 'pergunta', attributes: [], where: { type: 'rating_0_10' }, required: true }],
+        attributes: [
             [fn('SUM', literal('CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END')), 'promoters'],
             [fn('SUM', literal('CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END')), 'detractors'],
             [fn('COUNT', col('Resposta.id')), 'total']
         ],
-        group: [dateTruncTz(period, 'Resposta.createdAt')],
-        order: [[dateTruncTz(period, 'Resposta.createdAt'), 'ASC']]
+        groupCol: 'createdAt'
     });
 
-    return trendData.map(item => {
-        const data = item.dataValues;
-        const promoters = parseInt(data.promoters) || 0;
-        const detractors = parseInt(data.detractors) || 0;
-        const total = parseInt(data.total) || 0;
-        let nps = 0;
-        if (total > 0) {
-            nps = ((promoters / total) * 100) - ((detractors / total) * 100);
-        }
-        return {
-            period: new Date(data.period).toLocaleDateString('pt-BR', { timeZone }),
-            nps: parseFloat(nps.toFixed(1)),
-        };
-    });
-};
-
-const getCsatTrendData = async (tenantId = null, period = 'day', startDate = null, endDate = null, surveyId = null) => {
-    const whereClause = tenantId ? { tenantId, ratingValue: { [Op.ne]: null } } : { ratingValue: { [Op.ne]: null } };
-    if (surveyId) {
-        whereClause.pesquisaId = surveyId;
-    }
-
-    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
-
-    if (dateFilter) {
-        whereClause.createdAt = dateFilter;
-    }
-
-    const trendData = await Resposta.findAll({
-        where: whereClause,
-        include: [{
-            model: Pergunta,
-            as: 'pergunta',
-            attributes: [],
-            where: {
-                type: 'rating_1_5'
-            },
-            required: true
-        }],
+    const csatTrendRaw = await getTrendData({
+        ...commonConfig,
+        model: Resposta,
+        include: [{ model: Pergunta, as: 'pergunta', attributes: [], where: { type: 'rating_1_5' }, required: true }],
         attributes: [
-            [dateTruncTz(period, 'Resposta.createdAt'), 'period'],
             [fn('SUM', literal('CASE WHEN "ratingValue" >= 4 THEN 1 ELSE 0 END')), 'satisfied'],
             [fn('COUNT', col('Resposta.id')), 'total']
         ],
-        group: [dateTruncTz(period, 'Resposta.createdAt')],
-        order: [[dateTruncTz(period, 'Resposta.createdAt'), 'ASC']]
+        groupCol: 'createdAt'
     });
 
-    return trendData.map(item => {
-        const data = item.dataValues;
-        const satisfied = parseInt(data.satisfied) || 0;
-        const total = parseInt(data.total) || 0;
-        let satisfactionRate = 0;
-        if (total > 0) {
-            satisfactionRate = (satisfied / total) * 100;
-        }
-        return {
-            period: new Date(data.period).toLocaleDateString('pt-BR', { timeZone }),
-            satisfaction: parseFloat(satisfactionRate.toFixed(1)),
-        };
-    });
-};
-
-const getResponseCountTrendData = async (tenantId = null, period = 'day', startDate = null, endDate = null, surveyId = null) => {
-    const whereClause = tenantId ? { tenantId } : {};
-    if (surveyId) {
-        whereClause.pesquisaId = surveyId;
-    }
-
-    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
-
-    if (dateFilter) {
-        whereClause.createdAt = dateFilter;
-    }
-
-    const trendData = await Resposta.findAll({
-        where: whereClause,
-        attributes: [
-            [dateTruncTz(period, 'createdAt'), 'period'],
-            [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'count']
-        ],
-        group: [dateTruncTz(period, 'createdAt')],
-        order: [[dateTruncTz(period, 'createdAt'), 'ASC']]
+    const responseCountTrendRaw = await getTrendData({
+        ...commonConfig,
+        model: Resposta,
+        attributes: [[fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'responses']],
+        groupCol: 'createdAt'
     });
 
-    return trendData.map(item => ({
-        period: new Date(item.dataValues.period).toLocaleDateString('pt-BR', { timeZone }),
-        responses: parseInt(item.dataValues.count),
-    }));
-};
-
-const getRegistrationTrendData = async (tenantId = null, period = 'day', startDate = null, endDate = null, surveyId = null) => {
-    const whereClause = tenantId ? { tenantId } : {};
-    // surveyId is not directly applicable to Client model, so we might need a more complex query if we want to filter by survey
-    
-    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
-
-    if (dateFilter) {
-        whereClause.createdAt = dateFilter;
-    }
-
-    const trendData = await Client.findAll({
-        where: whereClause,
-        attributes: [
-            [dateTruncTz(period, 'createdAt'), 'period'],
-            [fn('COUNT', col('id')), 'count']
-        ],
-        group: [dateTruncTz(period, 'createdAt')],
-        order: [[dateTruncTz(period, 'createdAt'), 'ASC']]
+    const registrationTrendRaw = await getTrendData({
+        ...commonConfig,
+        model: Client,
+        attributes: [[fn('COUNT', col('id')), 'registrations']],
+        groupCol: 'createdAt'
     });
 
-    return trendData.map(item => ({
-        period: new Date(item.dataValues.period).toLocaleDateString('pt-BR', { timeZone }),
-        registrations: parseInt(item.dataValues.count),
-    }));
-};
-
-const getEvolutionDashboard = async function (tenantId = null, period = 'day', startDate = null, endDate = null) {
-    const npsTrend = await getNpsTrendData(tenantId, period, startDate, endDate);
-    const csatTrend = await getCsatTrendData(tenantId, period, startDate, endDate);
-    const responseCountTrend = await getResponseCountTrendData(tenantId, period, startDate, endDate);
-    const registrationTrend = await getRegistrationTrendData(tenantId, period, startDate, endDate);
-
-    // Combine data into a single structure
     const evolutionData = {};
 
-    const processTrend = (trend, key) => {
+    const processTrend = (trend, key, calculation) => {
         trend.forEach(item => {
             if (!evolutionData[item.period]) {
                 evolutionData[item.period] = { period: item.period };
             }
-            evolutionData[item.period][key] = item[key];
+            evolutionData[item.period][key] = calculation ? calculation(item) : (item[key] || 0);
         });
     };
 
-    processTrend(npsTrend, 'nps');
-    processTrend(csatTrend, 'satisfaction');
-    processTrend(responseCountTrend, 'responses');
-    processTrend(registrationTrend, 'registrations');
+    processTrend(npsTrendRaw, 'nps', data => {
+        const promoters = parseInt(data.promoters) || 0;
+        const detractors = parseInt(data.detractors) || 0;
+        const total = parseInt(data.total) || 0;
+        return total > 0 ? parseFloat((((promoters / total) - (detractors / total)) * 100).toFixed(1)) : 0;
+    });
 
-    return Object.values(evolutionData).sort((a, b) => new Date(a.period.split('/').reverse().join('-')) - new Date(b.period.split('/').reverse().join('-')));
+    processTrend(csatTrendRaw, 'satisfaction', data => {
+        const satisfied = parseInt(data.satisfied) || 0;
+        const total = parseInt(data.total) || 0;
+        return total > 0 ? parseFloat(((satisfied / total) * 100).toFixed(1)) : 0;
+    });
+
+    processTrend(responseCountTrendRaw, 'responses', data => parseInt(data.responses));
+    processTrend(registrationTrendRaw, 'registrations', data => parseInt(data.registrations));
+
+    return Object.values(evolutionData).sort((a, b) => {
+        const dateA = new Date(a.period.split('/').reverse().join('-'));
+        const dateB = new Date(b.period.split('/').reverse().join('-'));
+        return dateA - dateB;
+    });
 };
 
 module.exports = {
     getResponseChart,
     getConversionChart,
-    getNpsTrendData,
-    getCsatTrendData,
-    getResponseCountTrendData,
-    getRegistrationTrendData,
     getEvolutionDashboard,
 };
+

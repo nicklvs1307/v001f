@@ -84,7 +84,7 @@ const SurveyResultsPage = () => {
                 setLoading(true);
                 const data = await resultService.getSurveyResults(id);
                 setResults(data);
-            } catch (err) => {
+            } catch (err) {
                 setError(err.message || 'Falha ao carregar os resultados da pesquisa.');
             } finally {
                 setLoading(false);

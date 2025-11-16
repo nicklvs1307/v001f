@@ -59,6 +59,10 @@ const MetricCard = ({ title, value, icon, color }) => (
     </Paper>
 );
 
+import WordCloudComponent from '../components/results/WordCloud';
+import RadarChartComponent from '../components/results/RadarChart';
+import QuestionResult from '../components/results/QuestionResult';
+
 const SurveyResultsPage = () => {
     const { id } = useParams();
     const [results, setResults] = useState(null);
@@ -83,7 +87,7 @@ const SurveyResultsPage = () => {
                 setLoading(true);
                 const data = await resultService.getSurveyResults(id);
                 setResults(data);
-            } catch (err) {
+            } catch (err) => {
                 setError(err.message || 'Falha ao carregar os resultados da pesquisa.');
             } finally {
                 setLoading(false);
@@ -118,73 +122,7 @@ const SurveyResultsPage = () => {
         );
     }
 
-    const renderQuestionResult = (qr, index) => {
-        switch (qr.questionType) {
-            case 'free_text':
-                return (
-                    <List dense>
-                        {qr.results.responses && qr.results.responses.length > 0 ? (
-                            qr.results.responses.map((answer, idx) => (
-                                <ListItem key={idx} divider>
-                                    <ListItemText primary={answer.text} secondary={`Respondido por: ${answer.clientName || 'Anônimo'}`} />
-                                </ListItem>
-                            ))
-                        ) : <Typography variant="body2">Nenhuma resposta de texto.</Typography>}
-                    </List>
-                );
-            case 'rating_0_10':
-            case 'rating_1_5':
-                const safeRatings = Array.isArray(qr.results.allRatings) ? qr.results.allRatings : [];
-                const ratingCounts = safeRatings.reduce((acc, rating) => {
-                    const key = String(rating);
-                    acc[key] = (acc[key] || 0) + 1;
-                    return acc;
-                }, {});
-                const ratingChartData = Object.entries(ratingCounts).map(([value, count]) => ({
-                    value: value,
-                    count: Number(count) || 0,
-                }));
-
-                return (
-                    <Box>
-                        <Typography variant="h6">Avaliação Média: {qr.results.averageRating}</Typography>
-                        <ResponsiveContainer width="100%" height={300}>
-                            <BarChart data={ratingChartData}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="value" />
-                                <YAxis />
-                                <Tooltip />
-                                <Bar dataKey="count" fill={theme.palette.primary.main} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </Box>
-                );
-            case 'multiple_choice':
-            case 'checkbox':
-                const pieData = qr.results ? Object.entries(qr.results).map(([name, value], idx) => ({ name, value: Number(value) || 0, fill: chartColors[idx % chartColors.length] })) : [];
-                return (
-                    <ResponsiveContainer width="100%" height={300}>
-                        <PieChart>
-                            <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>
-                                {pieData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.fill} />)}
-                            </Pie>
-                            <Tooltip />
-                            <Legend />
-                        </PieChart>
-                    </ResponsiveContainer>
-                );
-            default:
-                return (
-                    <Box>
-                        <Typography color="error">Tipo de questão não suportado para visualização: {qr.questionType}</Typography>
-                        <Typography variant="body2" sx={{ mt: 1, whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
-                            Dados recebidos:
-                            {JSON.stringify(qr, null, 2)}
-                        </Typography>
-                    </Box>
-                );
-        }
-    };
+    
 
     return (
         <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
@@ -312,22 +250,28 @@ const SurveyResultsPage = () => {
                 )}
             </Grid>
 
-            {/* Detailed Question Results */}
+            {/* Word Cloud & Radar Chart */}
+            <Grid container spacing={3} sx={{ mb: 4 }}>
+                <Grid item xs={12} md={6}>
+                    <WordCloudComponent data={results.wordCloudData} />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <RadarChartComponent data={results.radarChartData} />
+                </Grid>
+            </Grid>
+
+            {/* --- Análise por Pergunta --- */}
             <Typography variant="h4" component="h2" gutterBottom sx={{ mt: 4, mb: 2 }}>
-                Detalhes por Pergunta
+                Análise por Pergunta
             </Typography>
-            <Grid container spacing={4}>
-                {results.questionsResults && results.questionsResults.map((qr, index) => (
-                    <Grid item xs={12} md={6} key={qr.questionId}>
-                        <Card elevation={2} sx={{ height: '100%' }}>
-                            <CardHeader title={`${index + 1}. ${qr.questionText}`} />
-                            <CardContent>
-                                {renderQuestionResult(qr, index)}
-                            </CardContent>
-                        </Card>
+            <Grid container spacing={3}>
+                {results.questionsResults && results.questionsResults.map((question) => (
+                    <Grid item xs={12} md={6} lg={4} key={question.id}>
+                        <QuestionResult question={question} chartColors={chartColors} />
                     </Grid>
                 ))}
             </Grid>
+            
         </Container>
     );
 };

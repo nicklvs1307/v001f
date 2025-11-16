@@ -1,59 +1,25 @@
-AuthContext.js:28 AuthContext useEffect running
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] 'message' handler levou <N> ms
-[Violation] Forced reflow while executing JavaScript took 47ms
-[Violation] Forced reflow while executing JavaScript took 40ms
-[Violation] Forced reflow while executing JavaScript took 32ms
-main.1442b255.js:2 [Violation] 'click' handler took 151ms
-main.1442b255.js:2 [Violation] 'click' handler took 184ms
-main.1442b255.js:2 [Violation] 'click' handler took 153ms
-react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'hex')
-    at fr (color.js:26:20)
-    at new n (ColorWrap.js:42:34)
-    at is (react-dom.production.min.js:184:172)
-    at js (react-dom.production.min.js:197:97)
-    at Sl (react-dom.production.min.js:291:172)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at lc (react-dom.production.min.js:272:300)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-lc @ react-dom.production.min.js:272
-qo @ react-dom.production.min.js:127
-(anônimo) @ react-dom.production.min.js:266
-react-dom.production.min.js:127 Uncaught TypeError: Cannot read properties of null (reading 'hex')
-    at fr (color.js:26:20)
-    at new n (ColorWrap.js:42:34)
-    at is (react-dom.production.min.js:184:172)
-    at js (react-dom.production.min.js:197:97)
-    at Sl (react-dom.production.min.js:291:172)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at lc (react-dom.production.min.js:272:300)
-fr @ color.js:26
-n @ ColorWrap.js:42
-is @ react-dom.production.min.js:184
-js @ react-dom.production.min.js:197
-Sl @ react-dom.production.min.js:291
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-ac @ react-dom.production.min.js:270
-lc @ react-dom.production.min.js:272
-qo @ react-dom.production.min.js:127
-(anônimo) @ react-dom.production.min.js:266
-main.1442b255.js:2 [Violation] 'click' handler took 174ms
+ => ERROR [build 6/6] RUN npm run build                                                      193.5s
+------
+ > [build 6/6] RUN npm run build:
+0.896
+0.896 > frontend@0.1.0 build
+0.896 > react-scripts build
+0.896
+4.823 Creating an optimized production build...
+192.3 Failed to compile.
+192.3
+192.4 [eslint]
+192.4 src/pages/SurveyResultsPage.js
+192.4 Syntax error: Unexpected token, expected "{" (87:26) (87:26)
+192.4
+192.4
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

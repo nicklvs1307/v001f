@@ -111,23 +111,15 @@ const SurveyResultsPage = () => {
         );
     }
 
-        if (!results) {
-
-            return (
-
-                <Container sx={{ mt: 8, textAlign: 'center' }}>
-
-                    <Typography>Nenhum resultado encontrado para esta pesquisa.</Typography>
-
-                </Container>
-
-            );
-
-        }
-
-    
-
+    if (!results) {
         return (
+            <Container sx={{ mt: 8, textAlign: 'center' }}>
+                <Typography>Nenhum resultado encontrado para esta pesquisa.</Typography>
+            </Container>
+        );
+    }
+
+    return (
         <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
             <Paper elevation={2} sx={{ p: { xs: 2, md: 4 }, mb: 4, backgroundColor: theme.palette.primary.main, color: 'white' }}>
                 <Typography variant="h3" component="h1" gutterBottom fontWeight="bold">{results.surveyTitle}</Typography>

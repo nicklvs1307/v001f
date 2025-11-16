@@ -40,9 +40,20 @@ const getClientStatusCounts = async (tenantId = null, startDate, endDate) => {
     const result = await Resposta.findOne({
         where: whereClause,
         attributes: [
-            [sequelize.literal('COUNT(DISTINCT "respondentSessionId") FILTER (WHERE "clientId" IS NOT NULL)'), 'withClient'],
-            [sequelize.literal('COUNT(DISTINCT "respondentSessionId") FILTER (WHERE "clientId" IS NULL)'), 'withoutClient'],
+            [
+                sequelize.literal('COUNT(DISTINCT "Resposta"."respondentSessionId") FILTER (WHERE "cliente"."id" IS NOT NULL)'),
+                'withClient'
+            ],
+            [
+                sequelize.literal('COUNT(DISTINCT "Resposta"."respondentSessionId") FILTER (WHERE "cliente"."id" IS NULL)'),
+                'withoutClient'
+            ],
         ],
+        include: [{
+            model: Client,
+            as: 'cliente',
+            attributes: []
+        }],
         raw: true,
     });
 

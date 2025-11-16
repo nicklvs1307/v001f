@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const resultRepository = require("../repositories/resultRepository");
 const ApiError = require("../errors/ApiError");
+const { adjustDateRange } = require('../utils/dateUtils');
 
 // @desc    Obter resultados agregados de uma pesquisa
 // @route   GET /api/surveys/:id/results
@@ -9,6 +10,7 @@ exports.getSurveyResults = asyncHandler(async (req, res) => {
   const { id } = req.params; // ID da pesquisa
   const requestingUser = req.user;
   const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+  const { startDate, endDate } = adjustDateRange(req.query.startDate, req.query.endDate);
 
   // 1. Obter detalhes da pesquisa para verificação de permissão
   const survey = await resultRepository.getSurveyDetails(id, tenantId);
@@ -33,8 +35,8 @@ exports.getSurveyResults = asyncHandler(async (req, res) => {
   // 2. Obter todas as perguntas da pesquisa
   const questions = await resultRepository.getQuestionsBySurveyId(id, tenantId);
 
-  // 3. Obter todas as respostas para esta pesquisa
-  const allResponses = await resultRepository.getResponsesBySurveyId(id, tenantId);
+  // 3. Obter todas as respostas para esta pesquisa, aplicando o filtro de data
+  const allResponses = await resultRepository.getResponsesBySurveyId(id, tenantId, startDate, endDate);
 
   // 4. Processar e agregar os resultados
   const aggregatedResults = {

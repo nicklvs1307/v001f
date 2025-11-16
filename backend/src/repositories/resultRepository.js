@@ -19,8 +19,15 @@ const getQuestionsBySurveyId = async (surveyId, tenantId = null) => {
   });
 };
 
-const getResponsesBySurveyId = async (surveyId, tenantId = null) => {
+const getResponsesBySurveyId = async (surveyId, tenantId = null, startDate, endDate) => {
   const whereClause = tenantId ? { tenantId } : {};
+
+  if (startDate && endDate) {
+    whereClause.createdAt = {
+      [Op.between]: [startDate, endDate],
+    };
+  }
+
   return Resposta.findAll({
     attributes: ['perguntaId', 'respondentSessionId', 'ratingValue', 'textValue', 'selectedOption'],
     where: whereClause,

@@ -1,30 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const dashboardRepository = require('../repositories/dashboardRepository');
-const { fromZonedTime } = require('date-fns-tz');
-
-const timeZone = 'America/Sao_Paulo';
-
-// Helper to adjust date ranges to the tenant's timezone
-const adjustDateRange = (startDateStr, endDateStr) => {
-    let startDate = null;
-    let endDate = null;
-
-    if (startDateStr) {
-        const parsedStart = fromZonedTime(`${startDateStr}T00:00:00`, timeZone);
-        if (parsedStart && !isNaN(parsedStart.getTime())) {
-            startDate = parsedStart;
-        }
-    }
-
-    if (endDateStr) {
-        const parsedEnd = fromZonedTime(`${endDateStr}T23:59:59.999`, timeZone);
-        if (parsedEnd && !isNaN(parsedEnd.getTime())) {
-            endDate = parsedEnd;
-        }
-    }
-
-    return { startDate, endDate };
-};
+const { adjustDateRange } = require('../utils/dateUtils');
 
 
 const dashboardController = {

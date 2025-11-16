@@ -5,7 +5,7 @@ const { getCriteriaScores } = require('./criteria');
 const { getFeedbacks, getWordCloudData } = require('./feedbacks');
 const { getNpsByDayOfWeek } = require('./nps');
 const { getOverallResults } = require('./overall');
-const { getBirthdaysOfMonth } = require('./clients');
+const { getBirthdaysOfMonth, getClientStatusCounts } = require('./clients');
 
 
 const getMainDashboard = async function (tenantId = null, startDate = null, endDate = null, surveyId = null) {
@@ -35,6 +35,7 @@ const getMainDashboard = async function (tenantId = null, startDate = null, endD
     const overallResults = await getOverallResults(tenantId, startDate, endDate, surveyId);
     const birthdaysOfMonth = await getBirthdaysOfMonth(tenantId);
     const wordCloudData = await getWordCloudData(tenantId, startDate, endDate, surveyId);
+    const clientStatusCounts = await getClientStatusCounts(tenantId, startDate, endDate);
 
 
     return {
@@ -49,6 +50,7 @@ const getMainDashboard = async function (tenantId = null, startDate = null, endD
         overallResults,
         birthdaysOfMonth,
         wordCloudData,
+        clientStatusCounts,
     };
 };
 

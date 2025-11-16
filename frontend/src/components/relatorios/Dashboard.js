@@ -42,7 +42,7 @@ const Dashboard = ({ data }) => {
         return <Typography>Nenhum dado disponível para o período selecionado.</Typography>;
     }
 
-    const { summary, npsTrend, wordCloudData, criteriaScores, attendantsPerformance, conversionChart, feedbacks } = data;
+    const { summary, npsTrend, wordCloudData, criteriaScores, attendantsPerformance, conversionChart, feedbacks, clientStatusCounts } = data;
 
     const nps = summary?.nps;
     const totalResponses = summary?.totalResponses;
@@ -119,6 +119,22 @@ const Dashboard = ({ data }) => {
                             </ResponsiveContainer>
                         </>
                     ) : <NoData />}
+                </StatCard>
+            </Grid>
+
+            {/* Client Status Counts */}
+            <Grid item xs={12} sm={6} md={6}>
+                <StatCard title="Respostas com Cadastro" icon={<CheckCircle />}>
+                    <Typography variant="h2" component="div" sx={{ textAlign: 'center', fontWeight: 'bold', color: 'primary.dark' }}>
+                        {clientStatusCounts?.withClient ?? '0'}
+                    </Typography>
+                </StatCard>
+            </Grid>
+            <Grid item xs={12} sm={6} md={6}>
+                <StatCard title="Respostas sem Cadastro" icon={<ChatIcon />}>
+                    <Typography variant="h2" component="div" sx={{ textAlign: 'center', fontWeight: 'bold', color: 'primary.dark' }}>
+                        {clientStatusCounts?.withoutClient ?? '0'}
+                    </Typography>
                 </StatCard>
             </Grid>
 

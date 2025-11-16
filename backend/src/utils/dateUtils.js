@@ -1,47 +1,36 @@
+const { fromZonedTime } = require('date-fns-tz');
+
+const timeZone = 'America/Sao_Paulo';
+
 /**
- * Sanitiza e tenta converter uma string de data para o formato YYYY-MM-DD.
- * Suporta DD/MM/YYYY e outros formatos reconhecidos pelo construtor Date.
- * @param {string} value A string de data a ser sanitizada.
- * @returns {string|null} A data sanitizada no formato YYYY-MM-DD ou null se inválida/vazia.
+ * Adjusts start and end date strings to a specific timezone.
+ * Sets start date to the beginning of the day and end date to the end of the day.
+ * @param {string} startDateStr - The start date in 'YYYY-MM-DD' format.
+ * @param {string} endDateStr - The end date in 'YYYY-MM-DD' format.
+ * @returns {{startDate: Date|null, endDate: Date|null}}
  */
-const sanitizeBirthDate = (value) => {
-  if (!value) return null;
+const adjustDateRange = (startDateStr, endDateStr) => {
+    let startDate = null;
+    let endDate = null;
 
-  // Tenta converter de DD/MM/YYYY para YYYY-MM-DD
-  const parts = String(value).split('/');
-  if (parts.length === 3 && parts[2].length === 4) {
-    const day = parts[0].padStart(2, '0');
-    const month = parts[1].padStart(2, '0');
-    const year = parts[2];
-    const date = new Date(`${year}-${month}-${day}`);
-    if (!isNaN(date.getTime())) {
-      return `${year}-${month}-${day}`;
-    } else {
-      // Se a data DD/MM/YYYY for inválida, tenta como outros formatos
-      try {
-        const date = new Date(value);
-        if (!isNaN(date.getTime())) {
-          return date.toISOString().split('T')[0];
+    if (startDateStr) {
+        const parsedStart = fromZonedTime(`${startDateStr}T00:00:00`, timeZone);
+        if (parsedStart && !isNaN(parsedStart.getTime())) {
+            startDate = parsedStart;
         }
-      } catch (e) {
-        // Ignora erro de parsing
-      }
     }
-  }
 
-  // Tenta converter de outros formatos reconhecidos pelo construtor Date
-  try {
-    const date = new Date(value);
-    if (!isNaN(date.getTime())) {
-      return date.toISOString().split('T')[0];
+    if (endDateStr) {
+        const parsedEnd = fromZonedTime(`${endDateStr}T23:59:59.999`, timeZone);
+        if (parsedEnd && !isNaN(parsedEnd.getTime())) {
+            endDate = parsedEnd;
+        }
     }
-  } catch (e) {
-    // Ignora erro de parsing
-  }
 
-  return null; // Retorna null se não for possível sanitizar para um formato válido
+    return { startDate, endDate };
 };
 
 module.exports = {
-  sanitizeBirthDate,
+    adjustDateRange,
+    timeZone,
 };

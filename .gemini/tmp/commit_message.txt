@@ -1,0 +1,11 @@
+feat(reports): Padroniza relatórios e corrige inconsistências
+
+Esta atualização aborda várias questões no sistema de relatórios para melhorar a consistência, precisão e funcionalidade.
+
+- Padronização de Datas: Centraliza a lógica de tratamento de datas e fuso horário (`America/Sao_Paulo`) para todos os relatórios. Corrige a inconsistência onde a página de detalhes da pesquisa não aplicava filtros de data.
+
+- Correção de Bug de Fuso Horário: Resolve um bug crítico na nuvem de palavras e na lista de feedbacks onde um filtro UTC estava omitindo dados recentes.
+
+- Novas Métricas: Adiciona contagens de respostas "com cadastro" e "sem cadastro" aos dashboards de relatório, fornecendo novos insights.
+
+- Refatoração: Move a lógica de data para um utilitário compartilhado e refatora os controllers e repositórios para usar a nova estrutura, melhorando a manutenibilidade.

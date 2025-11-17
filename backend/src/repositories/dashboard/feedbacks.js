@@ -76,6 +76,7 @@ const getWordCloudData = async (
       whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
     }
   }
+  const feedbacks = await Resposta.findAll({
     where: whereClause,
     attributes: ["textValue"],
     limit: 2000,

@@ -1,7 +1,7 @@
 Postgres is up - executing command
 Server.js is being executed!
-/usr/src/app/src/repositories/dashboard/feedbacks.js:30
-    attributes: [
+/usr/src/app/src/repositories/dashboard/feedbacks.js:80
+    attributes: ["textValue"],
               ^
 SyntaxError: Unexpected token ':'
     at internalCompileFunction (node:internal/vm:76:18)

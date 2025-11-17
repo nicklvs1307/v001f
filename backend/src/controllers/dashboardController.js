@@ -1,120 +1,94 @@
 const asyncHandler = require("express-async-handler");
 const dashboardRepository = require("../repositories/dashboardRepository");
-const { adjustDateRange } = require("../utils/dateUtils");
 
 const dashboardController = {
   getSummary: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { startDate, endDate } = adjustDateRange(
-      req.query.startDate,
-      req.query.endDate,
-    );
+    const { startDate, endDate, surveyId } = req.query;
     const summary = await dashboardRepository.getSummary(
       tenantId,
       startDate,
       endDate,
-      req.query.surveyId,
+      surveyId,
     );
     res.status(200).json(summary);
   }),
 
   getResponseChart: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { startDate, endDate } = adjustDateRange(
-      req.query.startDate,
-      req.query.endDate,
-    );
+    const { startDate, endDate, surveyId } = req.query;
     const chartData = await dashboardRepository.getResponseChart(
       tenantId,
       startDate,
       endDate,
-      req.query.surveyId,
+      surveyId,
     );
     res.status(200).json(chartData);
   }),
 
   getRanking: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { startDate, endDate } = adjustDateRange(
-      req.query.startDate,
-      req.query.endDate,
-    );
+    const { startDate, endDate, surveyId } = req.query;
     const ranking = await dashboardRepository.getRanking(
       tenantId,
       startDate,
       endDate,
-      req.query.surveyId,
+      surveyId,
     );
     res.status(200).json(ranking);
   }),
 
   getCriteriaScores: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { startDate, endDate } = adjustDateRange(
-      req.query.startDate,
-      req.query.endDate,
-    );
+    const { startDate, endDate, surveyId } = req.query;
     const criteriaScores = await dashboardRepository.getCriteriaScores(
       tenantId,
       startDate,
       endDate,
-      req.query.surveyId,
+      surveyId,
     );
     res.status(200).json(criteriaScores);
   }),
 
   getFeedbacks: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { startDate, endDate } = adjustDateRange(
-      req.query.startDate,
-      req.query.endDate,
-    );
+    const { startDate, endDate, surveyId } = req.query;
     const feedbacks = await dashboardRepository.getFeedbacks(
       tenantId,
       startDate,
       endDate,
-      req.query.surveyId,
+      surveyId,
     );
     res.status(200).json(feedbacks);
   }),
 
   getConversionChart: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { startDate, endDate } = adjustDateRange(
-      req.query.startDate,
-      req.query.endDate,
-    );
+    const { startDate, endDate, surveyId } = req.query;
     const chartData = await dashboardRepository.getConversionChart(
       tenantId,
       startDate,
       endDate,
-      req.query.surveyId,
+      surveyId,
     );
     res.status(200).json(chartData);
   }),
 
   getOverallResults: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { startDate, endDate } = adjustDateRange(
-      req.query.startDate,
-      req.query.endDate,
-    );
+    const { startDate, endDate, surveyId } = req.query;
     const results = await dashboardRepository.getOverallResults(
       tenantId,
       startDate,
       endDate,
-      req.query.surveyId,
+      surveyId,
     );
     res.status(200).json(results);
   }),
 
   getNpsTrend: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { period, surveyId } = req.query;
-    const { startDate, endDate } = adjustDateRange(
-      req.query.startDate,
-      req.query.endDate,
-    );
+    const { period, surveyId, startDate, endDate } = req.query;
     const trendData = await dashboardRepository.getNpsTrendData(
       tenantId,
       period,
@@ -127,11 +101,7 @@ const dashboardController = {
 
   getEvolutionDashboard: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { period } = req.query;
-    const { startDate, endDate } = adjustDateRange(
-      req.query.startDate,
-      req.query.endDate,
-    );
+    const { period, startDate, endDate } = req.query;
     const evolutionData = await dashboardRepository.getEvolutionDashboard(
       tenantId,
       period,
@@ -143,11 +113,7 @@ const dashboardController = {
 
   getNpsByDayOfWeek: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { surveyId } = req.query;
-    const { startDate, endDate } = adjustDateRange(
-      req.query.startDate,
-      req.query.endDate,
-    );
+    const { surveyId, startDate, endDate } = req.query;
     const npsByDayOfWeek = await dashboardRepository.getNpsByDayOfWeek(
       tenantId,
       startDate,
@@ -159,11 +125,7 @@ const dashboardController = {
 
   getWordCloud: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { surveyId } = req.query;
-    const { startDate, endDate } = adjustDateRange(
-      req.query.startDate,
-      req.query.endDate,
-    );
+    const { surveyId, startDate, endDate } = req.query;
     const wordCloudData = await dashboardRepository.getWordCloudData(
       tenantId,
       startDate,
@@ -174,11 +136,7 @@ const dashboardController = {
   }),
   getAttendantsPerformance: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { surveyId } = req.query;
-    const { startDate, endDate } = adjustDateRange(
-      req.query.startDate,
-      req.query.endDate,
-    );
+    const { surveyId, startDate, endDate } = req.query;
     const attendantsPerformance =
       await dashboardRepository.getAttendantsPerformanceWithGoals(
         tenantId,
@@ -191,11 +149,7 @@ const dashboardController = {
 
   getMainDashboard: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { surveyId } = req.query;
-    const { startDate, endDate } = adjustDateRange(
-      req.query.startDate,
-      req.query.endDate,
-    );
+    const { surveyId, startDate, endDate } = req.query;
     const dashboardData = await dashboardRepository.getMainDashboard(
       tenantId,
       startDate,
@@ -208,11 +162,7 @@ const dashboardController = {
   getDetails: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
     const { category } = req.params;
-    const { surveyId } = req.query;
-    const { startDate, endDate } = adjustDateRange(
-      req.query.startDate,
-      req.query.endDate,
-    );
+    const { surveyId, startDate, endDate } = req.query;
     const details = await dashboardRepository.getDetailsByCategory(
       tenantId,
       category,
@@ -226,11 +176,7 @@ const dashboardController = {
   getAttendantDetails: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
     const { id } = req.params;
-    const { surveyId } = req.query;
-    const { startDate, endDate } = adjustDateRange(
-      req.query.startDate,
-      req.query.endDate,
-    );
+    const { surveyId, startDate, endDate } = req.query;
     const details = await dashboardRepository.getAttendantDetailsById(
       tenantId,
       id,
@@ -255,11 +201,7 @@ const dashboardController = {
 
   getMonthSummary: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { surveyId } = req.query;
-    const { startDate, endDate } = adjustDateRange(
-      req.query.startDate,
-      req.query.endDate,
-    );
+    const { surveyId, startDate, endDate } = req.query;
     const summary = await dashboardRepository.getMonthSummary(
       tenantId,
       startDate,

@@ -1,16 +1,21 @@
- => ERROR [build 6/6] RUN npm run build                                                      203.5s
+ => ERROR [build 6/6] RUN npm run build                                                      199.3s
 ------
  > [build 6/6] RUN npm run build:
-0.938
-0.938 > frontend@0.1.0 build
-0.938 > react-scripts build
-0.938
-4.747 Creating an optimized production build...
-203.1 Failed to compile.
-203.1
-203.1 Attempted import error: 'formatDateForInput' is not exported from '../../utils/dateUtils' (imported as 'formatDateForInput').
-203.1
-203.1
+0.904
+0.904 > frontend@0.1.0 build
+0.904 > react-scripts build
+0.904
+5.324 Creating an optimized production build...
+198.9 Failed to compile.
+198.9
+198.9 [eslint]
+198.9 src/pages/CampaignFormPage.js
+198.9   Line 539:50:  'parseISO' is not defined  no-undef
+198.9   Line 547:47:  'parseISO' is not defined  no-undef
+198.9
+198.9 Search for the keywords to learn more about each error.
+198.9
+198.9
 ------
 Dockerfile:14
 --------------------

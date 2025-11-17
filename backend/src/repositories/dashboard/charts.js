@@ -113,7 +113,9 @@ const getConversionChart = async (
 
   const couponsUsedWhere = { status: "used" };
   if (tenantId) couponsUsedWhere.tenantId = tenantId;
-  if (dateFilter) couponsUsedWhere.updatedAt = dateFilter;
+  if (whereClause.createdAt) {
+    couponsUsedWhere.updatedAt = whereClause.createdAt;
+  }
 
   const couponsUsed = await Cupom.count({ where: couponsUsedWhere });
 

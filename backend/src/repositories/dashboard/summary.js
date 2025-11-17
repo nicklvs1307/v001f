@@ -24,14 +24,15 @@ const getSummary = async (
   let dateFilter = null;
   if (startDate || endDate) {
     const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-    const end = convertToTimeZone(endInput);
-
     const startInput = startDate
       ? new Date(`${startDate}T00:00:00.000`)
       : subDays(endInput, 6);
-    const start = convertToTimeZone(startInput);
 
-    dateFilter = { [Op.gte]: start, [Op.lte]: end };
+    if (!isNaN(startInput) && !isNaN(endInput)) {
+      const end = convertToTimeZone(endInput);
+      const start = convertToTimeZone(startInput);
+      dateFilter = { [Op.gte]: start, [Op.lte]: end };
+    }
   }
 
   const ratingResponsesWhere = {
@@ -160,14 +161,15 @@ const getMonthSummary = async (
   const whereClause = tenantId ? { tenantId } : {};
   if (startDate || endDate) {
     const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-    const end = convertToTimeZone(endInput);
-
     const startInput = startDate
       ? new Date(`${startDate}T00:00:00.000`)
       : subDays(endInput, 30);
-    const start = convertToTimeZone(startInput);
 
-    whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+    if (!isNaN(startInput) && !isNaN(endInput)) {
+      const end = convertToTimeZone(endInput);
+      const start = convertToTimeZone(startInput);
+      whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+    }
   }
 
   const npsResponses = await Resposta.findAll({

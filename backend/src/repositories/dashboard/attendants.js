@@ -1,8 +1,6 @@
-const { Resposta, Atendente, AtendenteMeta, Pergunta, Client } = require('../../../models');
-const { Sequelize, Op } = require('sequelize');
+const { Resposta, Atendente, AtendenteMeta, Pergunta, Client, sequelize } = require('../../../models');
+const { Op } = require('sequelize');
 const ratingService = require('../../services/ratingService');
-
-const { fn, col, literal } = Sequelize;
 
 const buildDateFilter = (startDate, endDate) => {
     const filter = {};
@@ -34,10 +32,10 @@ const getRanking = async (tenantId = null, startDate = null, endDate = null, sur
         where: whereClause,
         attributes: [
             'atendenteId',
-            [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'occurrences']
+            [sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('respondentSessionId'))), 'occurrences']
         ],
         group: ['atendenteId', 'atendente.id', 'atendente.name'],
-        order: [[literal('occurrences'), 'DESC']],
+        order: [[sequelize.literal('occurrences'), 'DESC']],
         limit: 5,
         include: [{
             model: Atendente,
@@ -149,7 +147,7 @@ const getAttendantDetailsById = async (tenantId, attendantId, startDate, endDate
         where: whereClause,
         attributes: {
             include: [
-                [fn('TO_CHAR', literal(`"Resposta"."createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo'`), 'DD/MM/YYYY HH24:MI'), 'formattedCreatedAt']
+                [sequelize.fn('TO_CHAR', sequelize.literal(`"Resposta"."createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo'`), 'DD/MM/YYYY HH24:MI'), 'formattedCreatedAt']
             ]
         },
         include: [

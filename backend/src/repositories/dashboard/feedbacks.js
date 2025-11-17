@@ -1,4 +1,4 @@
-const { Resposta, Pergunta, Client } = require('../../../models');
+const { Resposta, Pergunta, Client, sequelize } = require('../../../models');
 const { Op } = require('sequelize');
 const { PorterStemmerPt } = require('natural');
 const stopwords = require('../../utils/stopwords');

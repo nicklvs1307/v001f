@@ -27,12 +27,7 @@ const formatDateTz = (period, column) => {
     return fn('TO_CHAR', literal(zonedColumn), formatString);
 };
 
-const buildDateFilter = (startDate, endDate) => {
-    const filter = {};
-    if (startDate) filter[Op.gte] = startDate;
-    if (endDate) filter[Op.lte] = endDate;
-    return filter;
-};
+
 
 const getResponseChart = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
     const whereClause = tenantId ? { tenantId } : {};
@@ -76,8 +71,15 @@ const getConversionChart = async (tenantId = null, startDate = null, endDate = n
     const whereClause = tenantId ? { tenantId } : {};
     if (surveyId) whereClause.pesquisaId = surveyId;
     
-    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
-    if (dateFilter) whereClause.createdAt = dateFilter;
+    if (startDate || endDate) {
+        const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
+        const end = dateFnsTz.zonedTimeToUtc(endInput, timeZone);
+
+        const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 6);
+        const start = dateFnsTz.zonedTimeToUtc(startInput, timeZone);
+
+        whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+    }
 
     const totalResponses = await Resposta.count({ where: whereClause, distinct: true, col: 'respondentSessionId' });
     const totalUsers = await Client.count({ where: whereClause });
@@ -101,8 +103,15 @@ const getNpsTrendData = async (tenantId = null, period = 'day', startDate = null
     const whereClause = tenantId ? { tenantId, ratingValue: { [Op.ne]: null } } : { ratingValue: { [Op.ne]: null } };
     if (surveyId) whereClause.pesquisaId = surveyId;
     
-    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
-    if (dateFilter) whereClause.createdAt = dateFilter;
+    if (startDate || endDate) {
+        const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
+        const end = dateFnsTz.zonedTimeToUtc(endInput, timeZone);
+
+        const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 6);
+        const start = dateFnsTz.zonedTimeToUtc(startInput, timeZone);
+
+        whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+    }
 
     const trendData = await Resposta.findAll({
         where: whereClause,
@@ -134,8 +143,15 @@ const getCsatTrendData = async (tenantId = null, period = 'day', startDate = nul
     const whereClause = tenantId ? { tenantId, ratingValue: { [Op.ne]: null } } : { ratingValue: { [Op.ne]: null } };
     if (surveyId) whereClause.pesquisaId = surveyId;
 
-    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
-    if (dateFilter) whereClause.createdAt = dateFilter;
+    if (startDate || endDate) {
+        const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
+        const end = dateFnsTz.zonedTimeToUtc(endInput, timeZone);
+
+        const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 6);
+        const start = dateFnsTz.zonedTimeToUtc(startInput, timeZone);
+
+        whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+    }
 
     const trendData = await Resposta.findAll({
         where: whereClause,
@@ -165,8 +181,15 @@ const getResponseCountTrendData = async (tenantId = null, period = 'day', startD
     const whereClause = tenantId ? { tenantId } : {};
     if (surveyId) whereClause.pesquisaId = surveyId;
 
-    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
-    if (dateFilter) whereClause.createdAt = dateFilter;
+    if (startDate || endDate) {
+        const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
+        const end = dateFnsTz.zonedTimeToUtc(endInput, timeZone);
+
+        const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 6);
+        const start = dateFnsTz.zonedTimeToUtc(startInput, timeZone);
+
+        whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+    }
 
     const trendData = await Resposta.findAll({
         where: whereClause,
@@ -188,8 +211,15 @@ const getResponseCountTrendData = async (tenantId = null, period = 'day', startD
 const getRegistrationTrendData = async (tenantId = null, period = 'day', startDate = null, endDate = null, surveyId = null) => {
     const whereClause = tenantId ? { tenantId } : {};
     
-    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
-    if (dateFilter) whereClause.createdAt = dateFilter;
+    if (startDate || endDate) {
+        const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
+        const end = dateFnsTz.zonedTimeToUtc(endInput, timeZone);
+
+        const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 6);
+        const start = dateFnsTz.zonedTimeToUtc(startInput, timeZone);
+
+        whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+    }
 
     const trendData = await Client.findAll({
         where: whereClause,

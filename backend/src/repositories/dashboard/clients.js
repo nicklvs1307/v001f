@@ -1,18 +1,10 @@
 const { Client, Resposta } = require('../../../models');
-const { fromZonedTime } = require('date-fns-tz');
+const dateFnsTz = require('date-fns-tz');
+const { subDays } = require('date-fns');
 const sequelize = require('sequelize');
 const { Op } = sequelize;
 
-const buildDateFilter = (startDate, endDate) => {
-    const filter = {};
-    if (startDate) {
-        filter[Op.gte] = startDate;
-    }
-    if (endDate) {
-        filter[Op.lte] = endDate;
-    }
-    return filter;
-};
+
 
 const getBirthdaysOfMonth = async (tenantId = null) => {
     const whereClause = tenantId ? { tenantId } : {};
@@ -43,9 +35,15 @@ const getBirthdaysOfMonth = async (tenantId = null) => {
 const getClientStatusCounts = async (tenantId = null, startDate, endDate) => {
     const whereClause = tenantId ? { tenantId } : {};
     
-    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
-    if (dateFilter) {
-        whereClause.createdAt = dateFilter;
+    const timeZone = 'America/Sao_Paulo';
+    if (startDate || endDate) {
+        const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
+        const end = dateFnsTz.zonedTimeToUtc(endInput, timeZone);
+
+        const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 6);
+        const start = dateFnsTz.zonedTimeToUtc(startInput, timeZone);
+
+        whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
     }
 
     const result = await Resposta.findOne({

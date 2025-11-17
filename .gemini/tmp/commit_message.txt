@@ -1,0 +1,5 @@
+fix(backend): Corrige TypeError em zonedTimeToUtc
+
+- Corrige a sintaxe de importação da biblioteca 'date-fns-tz' nos arquivos 'charts.js' e 'feedbacks.js'.
+- A desestruturação do módulo estava incorreta para o ambiente CommonJS, causando um 'TypeError: zonedTimeToUtc is not a function' e impedindo o servidor de iniciar.
+- Altera a importação para um formato de namespace (`const dateFnsTz = require('date-fns-tz')`) e prefixa as chamadas de função para garantir a resolução correta.

@@ -1,21 +1,10 @@
 const { Resposta, Pergunta, Criterio } = require('../../../models');
 const { Op } = require('sequelize');
+const { subDays } = require('date-fns');
+const dateFnsTz = require('date-fns-tz');
 const ratingService = require('../../services/ratingService');
 
-const buildDateFilter = (startDate, endDate) => {
-    const filter = {};
-    if (startDate) {
-        const startOfDay = new Date(startDate);
-        startOfDay.setUTCHours(0, 0, 0, 0);
-        filter[Op.gte] = startOfDay;
-    }
-    if (endDate) {
-        const endOfDay = new Date(endDate);
-        endOfDay.setUTCHours(23, 59, 59, 999);
-        filter[Op.lte] = endOfDay;
-    }
-    return filter;
-};
+
 
 const getCriteriaScores = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
     const responseWhereClause = { ratingValue: { [Op.ne]: null } };
@@ -25,10 +14,15 @@ const getCriteriaScores = async (tenantId = null, startDate = null, endDate = nu
     if (surveyId) {
         responseWhereClause.pesquisaId = surveyId;
     }
-    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
+    const timeZone = 'America/Sao_Paulo';
+    if (startDate || endDate) {
+        const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
+        const end = dateFnsTz.zonedTimeToUtc(endInput, timeZone);
 
-    if (dateFilter) {
-        responseWhereClause.createdAt = dateFilter;
+        const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 6);
+        const start = dateFnsTz.zonedTimeToUtc(startInput, timeZone);
+
+        responseWhereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
     }
 
     const allRatingResponses = await Resposta.findAll({

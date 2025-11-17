@@ -1,24 +1,26 @@
 const { Resposta, Pergunta, Client, Cupom, sequelize } = require('../../../models');
-const { fromZonedTime, toZonedTime } = require('date-fns-tz');
+const dateFnsTz = require('date-fns-tz');
 const { Op } = require('sequelize');
+const { subDays } = require('date-fns');
+const { subDays } = require('date-fns');
 const { getBirthdaysOfMonth } = require('./clients');
 const ratingService = require('../../services/ratingService');
 
 const timeZone = 'America/Sao_Paulo';
 
-const buildDateFilter = (startDate, endDate) => {
-    const filter = {};
-    if (startDate) {
-        filter[Op.gte] = startDate;
-    }
-    if (endDate) {
-        filter[Op.lte] = endDate;
-    }
-    return filter;
-};
+
 
 const getSummary = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
-    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
+    let dateFilter = null;
+    if (startDate || endDate) {
+        const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
+        const end = dateFnsTz.zonedTimeToUtc(endInput, timeZone);
+
+        const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 6);
+        const start = dateFnsTz.zonedTimeToUtc(startInput, timeZone);
+
+        dateFilter = { [Op.gte]: start, [Op.lte]: end };
+    }
 
     const ratingResponsesWhere = {
         ratingValue: { [Op.ne]: null }
@@ -117,12 +119,14 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
 
 const getMonthSummary = async (tenantId = null, startDate = null, endDate = null) => {
     const whereClause = tenantId ? { tenantId } : {};
-    const dateFilter = {};
-    if (startDate) dateFilter[Op.gte] = new Date(startDate);
-    if (endDate) dateFilter[Op.lte] = new Date(endDate);
+    if (startDate || endDate) {
+        const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
+        const end = dateFnsTz.zonedTimeToUtc(endInput, timeZone);
 
-    if (Object.keys(dateFilter).length > 0) {
-        whereClause.createdAt = dateFilter;
+        const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 30);
+        const start = dateFnsTz.zonedTimeToUtc(startInput, timeZone);
+
+        whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
     }
 
     const npsResponses = await Resposta.findAll({

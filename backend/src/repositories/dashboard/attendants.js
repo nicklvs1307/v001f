@@ -1,31 +1,25 @@
 const { Resposta, Atendente, AtendenteMeta, Pergunta, Client, sequelize } = require('../../../models');
 const { Op } = require('sequelize');
+const { subDays } = require('date-fns');
+const dateFnsTz = require('date-fns-tz');
 const ratingService = require('../../services/ratingService');
 
-const buildDateFilter = (startDate, endDate) => {
-    const filter = {};
-    if (startDate) {
-        const startOfDay = new Date(startDate);
-        startOfDay.setUTCHours(0, 0, 0, 0);
-        filter[Op.gte] = startOfDay;
-    }
-    if (endDate) {
-        const endOfDay = new Date(endDate);
-        endOfDay.setUTCHours(23, 59, 59, 999);
-        filter[Op.lte] = endOfDay;
-    }
-    return filter;
-};
+
 
 const getRanking = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
     const whereClause = tenantId ? { tenantId } : {};
     if (surveyId) {
         whereClause.pesquisaId = surveyId;
     }
-    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
+    const timeZone = 'America/Sao_Paulo';
+    if (startDate || endDate) {
+        const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
+        const end = dateFnsTz.zonedTimeToUtc(endInput, timeZone);
 
-    if (dateFilter) {
-        whereClause.createdAt = dateFilter;
+        const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 6);
+        const start = dateFnsTz.zonedTimeToUtc(startInput, timeZone);
+
+        whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
     }
 
     const rankingData = await Resposta.findAll({
@@ -60,10 +54,15 @@ const getAttendantsPerformanceWithGoals = async (tenantId = null, startDate = nu
         whereClause.pesquisaId = surveyId;
     }
 
-    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
+    const timeZone = 'America/Sao_Paulo';
+    if (startDate || endDate) {
+        const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
+        const end = dateFnsTz.zonedTimeToUtc(endInput, timeZone);
 
-    if (dateFilter) {
-        whereClause.createdAt = dateFilter;
+        const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 6);
+        const start = dateFnsTz.zonedTimeToUtc(startInput, timeZone);
+
+        whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
     }
 
     const allResponses = await Resposta.findAll({
@@ -137,10 +136,15 @@ const getAttendantDetailsById = async (tenantId, attendantId, startDate, endDate
         whereClause.tenantId = tenantId;
     }
 
-    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
+    const timeZone = 'America/Sao_Paulo';
+    if (startDate || endDate) {
+        const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
+        const end = dateFnsTz.zonedTimeToUtc(endInput, timeZone);
 
-    if (dateFilter) {
-        whereClause.createdAt = dateFilter;
+        const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 6);
+        const start = dateFnsTz.zonedTimeToUtc(startInput, timeZone);
+
+        whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
     }
 
     const responses = await Resposta.findAll({

@@ -39,7 +39,10 @@ const getNpsByDayOfWeek = async (tenantId = null, startDate = null, endDate = nu
             },
             required: true
         }],
-        attributes: ['createdAt', 'ratingValue']
+        attributes: [
+            'ratingValue',
+            [sequelize.fn('EXTRACT', sequelize.literal(`ISODOW FROM "createdAt" AT TIME ZONE 'America/Sao_Paulo'`)), 'dayOfWeek']
+        ]
     });
 
     const npsByDay = {
@@ -55,8 +58,8 @@ const getNpsByDayOfWeek = async (tenantId = null, startDate = null, endDate = nu
     const daysOfWeek = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
 
     responses.forEach(response => {
-        const dayOfWeek = new Date(response.createdAt).getDay(); // 0 for Sunday, 6 for Saturday
-        const dayName = daysOfWeek[dayOfWeek];
+        const dayOfWeek = response.get('dayOfWeek'); // 1 for Monday, 7 for Sunday
+        const dayName = daysOfWeek[dayOfWeek % 7]; // Map Sunday (7) to index 0
 
         const classification = ratingService.classifyNPS(response.ratingValue);
 

@@ -3,6 +3,17 @@ const { fromZonedTime } = require('date-fns-tz');
 const sequelize = require('sequelize');
 const { Op } = sequelize;
 
+const buildDateFilter = (startDate, endDate) => {
+    const filter = {};
+    if (startDate) {
+        filter[Op.gte] = startDate;
+    }
+    if (endDate) {
+        filter[Op.lte] = endDate;
+    }
+    return filter;
+};
+
 const getBirthdaysOfMonth = async (tenantId = null) => {
     const whereClause = tenantId ? { tenantId } : {};
     const currentMonth = fromZonedTime(new Date(), 'America/Sao_Paulo').getMonth() + 1; // getMonth() returns 0-11
@@ -31,10 +42,10 @@ const getBirthdaysOfMonth = async (tenantId = null) => {
 
 const getClientStatusCounts = async (tenantId = null, startDate, endDate) => {
     const whereClause = tenantId ? { tenantId } : {};
-    if (startDate && endDate) {
-        whereClause.createdAt = {
-            [Op.between]: [startDate, endDate],
-        };
+    
+    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
+    if (dateFilter) {
+        whereClause.createdAt = dateFilter;
     }
 
     const result = await Resposta.findOne({

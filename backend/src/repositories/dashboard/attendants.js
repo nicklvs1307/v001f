@@ -147,6 +147,11 @@ const getAttendantDetailsById = async (tenantId, attendantId, startDate, endDate
 
     const responses = await Resposta.findAll({
         where: whereClause,
+        attributes: {
+            include: [
+                [fn('TO_CHAR', literal(`"Resposta"."createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo'`), 'DD/MM/YYYY HH24:MI'), 'formattedCreatedAt']
+            ]
+        },
         include: [
             { model: Client, as: 'cliente', attributes: ['name'] },
             { 

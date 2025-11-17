@@ -46,14 +46,7 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
     const npsResult = ratingService.calculateNPS(npsResponses);
     const csatResult = ratingService.calculateCSAT(csatResponses);
     
-    const nowInZone = toZonedTime(new Date(), timeZone);
-    const currentMonth = nowInZone.getMonth();
-    const currentYear = nowInZone.getFullYear();
-
-    const ambassadorsMonth = npsResponses.filter(r => {
-        const responseDate = toZonedTime(r.createdAt, timeZone);
-        return responseDate.getMonth() === currentMonth && responseDate.getFullYear() === currentYear && r.ratingValue >= 9;
-    }).length;
+    const ambassadorsInPeriod = npsResponses.filter(r => r.ratingValue >= 9).length;
     
     const totalResponsesWhere = {
         respondentSessionId: { [Op.ne]: null }
@@ -113,7 +106,7 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
         couponsUsedConversion: couponsGenerated > 0 ? parseFloat(((couponsUsed / couponsGenerated) * 100).toFixed(2)) : 0,
         totalResponses,
         totalUsers,
-        ambassadorsMonth,
+        ambassadorsInPeriod,
         couponsGeneratedPeriod: startDate && endDate ? `de ${new Date(startDate).toLocaleDateString('pt-BR')} até ${new Date(endDate).toLocaleDateString('pt-BR')}` : 'Desde o início',
     };
 };

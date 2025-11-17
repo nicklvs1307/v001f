@@ -3,21 +3,36 @@ const { Op } = require('sequelize');
 const { PorterStemmerPt } = require('natural');
 const stopwords = require('../../utils/stopwords');
 
+const buildDateFilter = (startDate, endDate) => {
+    const filter = {};
+    if (startDate) {
+        filter[Op.gte] = startDate;
+    }
+    if (endDate) {
+        filter[Op.lte] = endDate;
+    }
+    return filter;
+};
+
 const getFeedbacks = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
     const whereClause = tenantId ? { tenantId, textValue: { [Op.ne]: null, [Op.ne]: '' } } : { textValue: { [Op.ne]: null, [Op.ne]: '' } };
     if (surveyId) {
         whereClause.pesquisaId = surveyId;
     }
     
-    if (startDate && endDate) {
-        whereClause.createdAt = {
-            [Op.between]: [startDate, endDate],
-        };
+    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
+    if (dateFilter) {
+        whereClause.createdAt = dateFilter;
     }
 
     const feedbacksData = await Resposta.findAll({
         where: whereClause,
-        attributes: ['createdAt', 'textValue', 'ratingValue', 'respondentSessionId'],
+        attributes: [
+            'textValue', 
+            'ratingValue', 
+            'respondentSessionId',
+            [sequelize.fn('TO_CHAR', sequelize.literal(`"Resposta"."createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo'`), 'DD/MM/YYYY HH24:MI'), 'formattedCreatedAt']
+        ],
         order: [['createdAt', 'DESC']],
         limit: 7,
         include: [{
@@ -31,7 +46,7 @@ const getFeedbacks = async (tenantId = null, startDate = null, endDate = null, s
 
     return feedbacksData.map(feedback => ({
         respondentSessionId: feedback.respondentSessionId,
-        date: new Date(feedback.createdAt).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        date: feedback.get('formattedCreatedAt'),
         client: feedback.cliente ? feedback.cliente.name : 'Anônimo',
         rating: feedback.ratingValue !== null ? feedback.ratingValue : null,
         comment: feedback.textValue,
@@ -44,27 +59,16 @@ const getWordCloudData = async (tenantId = null, startDate = null, endDate = nul
         whereClause.pesquisaId = surveyId;
     }
 
-    if (startDate && endDate) {
-        whereClause.createdAt = {
-            [Op.between]: [startDate, endDate],
-        };
+    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
+    if (dateFilter) {
+        whereClause.createdAt = dateFilter;
     }
 
     const feedbacks = await Resposta.findAll({
         where: whereClause,
         attributes: ['textValue'],
         limit: 2000,
-        include: [{
-            model: Pergunta,
-            as: 'pergunta',
-            attributes: [], // Não precisamos de atributos da pergunta, apenas para o filtro
-            where: {
-                type: {
-                    [Op.in]: ['text', 'textarea'],
-                },
-            },
-            required: true, // Garante que apenas respostas com perguntas correspondentes sejam retornadas
-        }],
+        order: [['createdAt', 'DESC']],
     });
 
     const text = feedbacks.map(f => f.textValue).join(' ');

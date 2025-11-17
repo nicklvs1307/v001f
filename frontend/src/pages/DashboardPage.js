@@ -340,9 +340,9 @@ const DashboardPage = () => {
                 </Grid>
                 <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <MetricCard
-                        title="Ambresários no Mês"
+                        title="Aniversariantes do Mês"
                         value={summary?.ambassadorsMonth}
-                        onClick={() => handleCardClick('Ambresários no Mês')}
+                        onClick={() => handleCardClick('Aniversariantes do Mês')}
                     />
                 </Grid>
                 <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>

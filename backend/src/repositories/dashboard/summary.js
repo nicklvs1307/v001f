@@ -1,6 +1,7 @@
 const { Resposta, Pergunta, Client, Cupom, sequelize } = require('../../../models');
 const { fromZonedTime, toZonedTime } = require('date-fns-tz');
 const { Op } = require('sequelize');
+const { getBirthdaysOfMonth } = require('./clients');
 const ratingService = require('../../services/ratingService');
 
 const timeZone = 'America/Sao_Paulo';
@@ -82,6 +83,9 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
     if (dateFilter) couponsUsedWhere.updatedAt = dateFilter;
     const couponsUsed = await Cupom.count({ where: couponsUsedWhere });
 
+    const birthdays = await getBirthdaysOfMonth(tenantId);
+    const ambassadorsMonth = birthdays.length;
+
     return {
         nps: {
             score: npsResult.npsScore,
@@ -106,6 +110,7 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
         totalResponses,
         totalUsers,
         ambassadorsInPeriod,
+        ambassadorsMonth,
         couponsGeneratedPeriod: startDate && endDate ? `de ${new Date(startDate).toLocaleDateString('pt-BR')} até ${new Date(endDate).toLocaleDateString('pt-BR')}` : 'Desde o início',
     };
 };

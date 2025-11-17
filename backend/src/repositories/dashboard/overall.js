@@ -46,7 +46,7 @@ const getOverallResults = async function (tenantId = null, startDate = null, end
             },
             {
                 model: models.Client,
-                as: 'cliente',
+                as: 'client',
                 attributes: ['birthDate', 'gender'],
             },
             {
@@ -123,9 +123,9 @@ const getOverallResults = async function (tenantId = null, startDate = null, end
     const birthDates = [];
     const genders = [];
     allResponses.forEach(response => {
-        if (response.cliente) {
-            if (response.cliente.birthDate) birthDates.push(new Date(response.cliente.birthDate));
-            if (response.cliente.gender) genders.push(response.cliente.gender);
+        if (response.client) {
+            if (response.client.birthDate) birthDates.push(new Date(response.client.birthDate));
+            if (response.client.gender) genders.push(response.client.gender);
         }
     });
 

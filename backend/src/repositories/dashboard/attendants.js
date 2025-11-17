@@ -76,7 +76,7 @@ const getAttendantsPerformanceWithGoals = async (tenantId = null, startDate = nu
             },
             {
                 model: Client,
-                as: 'cliente',
+                as: 'client',
                 attributes: ['id'],
             },
             {
@@ -151,7 +151,7 @@ const getAttendantDetailsById = async (tenantId, attendantId, startDate, endDate
             ]
         },
         include: [
-            { model: Client, as: 'cliente', attributes: ['name'] },
+            { model: Client, as: 'client', attributes: ['name'] },
             { 
                 model: Pergunta, 
                 as: 'pergunta', 

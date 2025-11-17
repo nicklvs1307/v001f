@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Cupom.belongsTo(models.Tenant, { foreignKey: 'tenantId', as: 'tenant' });
       Cupom.belongsTo(models.Recompensa, { foreignKey: 'recompensaId', as: 'recompensa' });
-      Cupom.belongsTo(models.Client, { foreignKey: 'clienteId', as: 'cliente' });
+      Cupom.belongsTo(models.Client, { foreignKey: 'clienteId', as: 'client' });
       Cupom.belongsTo(models.Campanha, { foreignKey: 'campanhaId', as: 'campanha' });
       Cupom.belongsTo(models.Pesquisa, { foreignKey: 'pesquisaId', as: 'pesquisa' });
     }

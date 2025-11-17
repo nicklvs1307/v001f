@@ -36,14 +36,14 @@ const getDetailsByCategory = async (tenantId, category, startDate, endDate) => {
         case 'cadastros':
             return await Client.findAll({ where: whereClause, order: [['createdAt', 'DESC']] });
         case 'cupons gerados':
-            return await Cupom.findAll({ where: whereClause, include: [{ model: Client, as: 'cliente', attributes: ['name'] }], order: [['createdAt', 'DESC']] });
+            return await Cupom.findAll({ where: whereClause, include: [{ model: Client, as: 'client', attributes: ['name'] }], order: [['createdAt', 'DESC']] });
         case 'cupons utilizados':
             const usedWhere = { ...whereClause, status: 'used' };
             if (whereClause.createdAt) {
                 usedWhere.updatedAt = whereClause.createdAt;
                 delete usedWhere.createdAt;
             }
-            return await Cupom.findAll({ where: usedWhere, include: [{ model: Client, as: 'cliente', attributes: ['name'] }], order: [['updatedAt', 'DESC']] });
+            return await Cupom.findAll({ where: usedWhere, include: [{ model: Client, as: 'client', attributes: ['name'] }], order: [['updatedAt', 'DESC']] });
         default:
             return [];
     }
@@ -52,7 +52,7 @@ const getDetailsByCategory = async (tenantId, category, startDate, endDate) => {
         return await Resposta.findAll({
             where: { ...whereClause, ...ratingWhere },
             include: [
-                { model: Client, as: 'cliente', attributes: ['name'] },
+{ model: Client, as: 'client', attributes: ['name'] }
                 { model: Pergunta, as: 'pergunta', attributes: ['text', 'type'] }
             ],
             order: [['createdAt', 'DESC']],

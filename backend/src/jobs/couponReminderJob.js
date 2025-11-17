@@ -41,7 +41,7 @@ const task = cron.schedule(schedule, async () => {
             [Op.lt]: endOfDay(targetDate),
           },
         },
-        include: [{ model: Client, as: 'cliente', required: true }],
+        include: [{ model: Client, as: 'client', required: true }],
       });
 
       if (couponsToRemind.length > 0) {
@@ -49,7 +49,7 @@ const task = cron.schedule(schedule, async () => {
       }
 
       for (const coupon of couponsToRemind) {
-        const client = coupon.cliente;
+        const client = coupon.client;
         if (client && client.phone) {
           const personalizedMessage = message
             .replace(/{{nome_cliente}}/g, client.name)

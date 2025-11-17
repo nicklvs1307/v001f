@@ -37,17 +37,16 @@ const getFeedbacks = async (tenantId = null, startDate = null, endDate = null, s
         limit: 7,
         include: [{
             model: Client,
-            as: 'cliente',
+            as: 'client',
             attributes: ['name'],
             foreignKey: 'respondentSessionId',
             targetKey: 'respondentSessionId'
-        }]
-    });
+        }]    });
 
     return feedbacksData.map(feedback => ({
         respondentSessionId: feedback.respondentSessionId,
         date: feedback.date,
-        client: feedback.cliente ? feedback.cliente.name : 'Anônimo',
+        client: feedback.client ? feedback.client.name : 'Anônimo',
         rating: feedback.ratingValue !== null ? feedback.ratingValue : null,
         comment: feedback.textValue,
     }));

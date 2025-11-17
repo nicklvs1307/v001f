@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       RoletaSpin.belongsTo(models.Tenant, { foreignKey: 'tenantId', as: 'tenant' });
       RoletaSpin.belongsTo(models.Roleta, { foreignKey: 'roletaId', as: 'roleta' });
-      RoletaSpin.belongsTo(models.Client, { foreignKey: 'clienteId', as: 'cliente' });
+      RoletaSpin.belongsTo(models.Client, { foreignKey: 'clienteId', as: 'client' });
       RoletaSpin.belongsTo(models.Campanha, { foreignKey: 'campanhaId', as: 'campanha' });
     }
   }

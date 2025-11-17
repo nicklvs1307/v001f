@@ -8,7 +8,7 @@ class RoletaSpinService {
       where: { token },
       include: [
         { model: Roleta, as: 'roleta', include: [{ model: RoletaPremio, as: 'premios' }] },
-        { model: Client, as: 'cliente' },
+        { model: Client, as: 'client' },
       ],
     });
 

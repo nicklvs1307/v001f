@@ -15,7 +15,7 @@ class CupomRepository {
     const whereClause = tenantId ? { tenantId } : {};
     const include = [
       { model: Recompensa, as: 'recompensa' },
-      { model: Client, as: 'cliente' },
+      { model: Client, as: 'client' },
     ];
 
     if (filters.status) {
@@ -36,7 +36,7 @@ class CupomRepository {
       const searchTerm = `%${filters.search}%`;
       whereClause[Op.or] = [
         { '$recompensa.name$': { [Op.iLike]: searchTerm } },
-        { '$cliente.name$': { [Op.iLike]: searchTerm } },
+        { '$client.name$': { [Op.iLike]: searchTerm } },
         { codigo: { [Op.iLike]: searchTerm } },
       ];
     }
@@ -129,7 +129,7 @@ class CupomRepository {
       order: [['createdAt', 'DESC']],
       include: [
         { model: Recompensa, as: 'recompensa', attributes: ['name'] },
-        { model: Client, as: 'cliente', attributes: ['name'] },
+        { model: Client, as: 'client', attributes: ['name'] },
       ],
     });
 
@@ -152,7 +152,7 @@ class CupomRepository {
     }
     return Cupom.findOne({
       where: whereClause,
-      include: [{ model: Recompensa, as: 'recompensa' }, { model: Client, as: 'cliente' }],
+      include: [{ model: Recompensa, as: 'recompensa' }, { model: Client, as: 'client' }],
     });
   }
 
@@ -163,7 +163,7 @@ class CupomRepository {
     }
     return Cupom.findOne({
       where: whereClause,
-      include: [{ model: Recompensa, as: 'recompensa' }, { model: Client, as: 'cliente' }],
+      include: [{ model: Recompensa, as: 'recompensa' }, { model: Client, as: 'client' }],
     });
   }
 

@@ -312,7 +312,7 @@ const findResultsById = async (surveyId, tenantId = null) => {
             attributes: ['ratingValue', 'textValue', 'selectedOption', 'respondentSessionId'],
             include: [{
               model: Client,
-              as: 'cliente',
+              as: 'client',
               attributes: ['name', 'email', 'phone', 'birthDate'],
             }]
           },

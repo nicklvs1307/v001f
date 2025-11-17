@@ -52,17 +52,17 @@ const getClientStatusCounts = async (tenantId = null, startDate, endDate) => {
         where: whereClause,
         attributes: [
             [
-                sequelize.literal('COUNT(DISTINCT "Resposta"."respondentSessionId") FILTER (WHERE "cliente"."id" IS NOT NULL)'),
+                sequelize.literal('COUNT(DISTINCT "Resposta"."respondentSessionId") FILTER (WHERE "client"."id" IS NOT NULL)'),
                 'withClient'
             ],
             [
-                sequelize.literal('COUNT(DISTINCT "Resposta"."respondentSessionId") FILTER (WHERE "cliente"."id" IS NULL)'),
+                sequelize.literal('COUNT(DISTINCT "Resposta"."respondentSessionId") FILTER (WHERE "client"."id" IS NULL)'),
                 'withoutClient'
             ],
         ],
         include: [{
             model: Client,
-            as: 'cliente',
+            as: 'client',
             attributes: []
         }],
         raw: true,

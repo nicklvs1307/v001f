@@ -6,8 +6,8 @@ const {
   Pergunta,
 } = require("../../../models");
 const { Sequelize, Op } = require("sequelize");
-const { subDays, eachDayOfInterval, format } = require("date-fns");
-const { TIMEZONE, convertToTimeZone } = require("../../utils/dateUtils");
+const { eachDayOfInterval, format } = require("date-fns"); // Keep eachDayOfInterval and format
+const { TIMEZONE } = require("../../utils/dateUtils"); // Only TIMEZONE is needed now
 
 const { fn, col, literal } = Sequelize;
 
@@ -37,29 +37,16 @@ const formatDateTz = (period, column) => {
 
 const getResponseChart = async (
   tenantId = null,
-  startDate = null,
-  endDate = null,
+  startOfDayUtc = null, // Changed parameter name
+  endOfDayUtc = null,   // Changed parameter name
   surveyId = null,
 ) => {
   const whereClause = tenantId ? { tenantId } : {};
   if (surveyId) whereClause.pesquisaId = surveyId;
 
-  let endInput = new Date(); // Initialize with default
-  let startInput = subDays(endInput, 6); // Initialize with default
-
-  if (startDate || endDate) {
-    const tempEndInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-    const tempStartInput = startDate
-      ? new Date(`${startDate}T00:00:00.000`)
-      : subDays(tempEndInput, 6);
-
-    if (!isNaN(tempStartInput) && !isNaN(tempEndInput)) {
-      endInput = tempEndInput;
-      startInput = tempStartInput;
-      const end = convertToTimeZone(endInput);
-      const start = convertToTimeZone(startInput);
-      whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
-    }
+  // Use the already processed UTC Date objects
+  if (startOfDayUtc && endOfDayUtc) {
+    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
   }
 
   const responsesByPeriod = await Resposta.findAll({
@@ -77,7 +64,8 @@ const getResponseChart = async (
     responsesByPeriod.map((item) => [item.period, parseInt(item.count, 10)]),
   );
 
-  const intervalDays = eachDayOfInterval({ start: startInput, end: endInput });
+  // Use startOfDayUtc and endOfDayUtc for intervalDays
+  const intervalDays = eachDayOfInterval({ start: startOfDayUtc, end: endOfDayUtc });
 
   const chartData = intervalDays.map((day) => {
     const key = format(day, "dd/MM/yyyy");
@@ -92,23 +80,16 @@ const getResponseChart = async (
 
 const getConversionChart = async (
   tenantId = null,
-  startDate = null,
-  endDate = null,
+  startOfDayUtc = null, // Changed parameter name
+  endOfDayUtc = null,   // Changed parameter name
   surveyId = null,
 ) => {
   const whereClause = tenantId ? { tenantId } : {};
   if (surveyId) whereClause.pesquisaId = surveyId;
 
-  if (startDate || endDate) {
-    const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-    const end = convertToTimeZone(endInput);
-
-    const startInput = startDate
-      ? new Date(`${startDate}T00:00:00.000`)
-      : subDays(endInput, 6);
-    const start = convertToTimeZone(startInput);
-
-    whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+  // Use the already processed UTC Date objects
+  if (startOfDayUtc && endOfDayUtc) {
+    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
   }
 
   const totalResponses = await Resposta.count({
@@ -138,8 +119,8 @@ const getConversionChart = async (
 const getNpsTrendData = async (
   tenantId = null,
   period = "day",
-  startDate = null,
-  endDate = null,
+  startOfDayUtc = null, // Changed parameter name
+  endOfDayUtc = null,   // Changed parameter name
   surveyId = null,
 ) => {
   const whereClause = tenantId
@@ -147,16 +128,9 @@ const getNpsTrendData = async (
     : { ratingValue: { [Op.ne]: null } };
   if (surveyId) whereClause.pesquisaId = surveyId;
 
-  if (startDate || endDate) {
-    const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-    const end = convertToTimeZone(endInput);
-
-    const startInput = startDate
-      ? new Date(`${startDate}T00:00:00.000`)
-      : subDays(endInput, 6);
-    const start = convertToTimeZone(startInput);
-
-    whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+  // Use the already processed UTC Date objects
+  if (startOfDayUtc && endOfDayUtc) {
+    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
   }
 
   const trendData = await Resposta.findAll({
@@ -203,8 +177,8 @@ const getNpsTrendData = async (
 const getCsatTrendData = async (
   tenantId = null,
   period = "day",
-  startDate = null,
-  endDate = null,
+  startOfDayUtc = null, // Changed parameter name
+  endOfDayUtc = null,   // Changed parameter name
   surveyId = null,
 ) => {
   const whereClause = tenantId
@@ -212,16 +186,9 @@ const getCsatTrendData = async (
     : { ratingValue: { [Op.ne]: null } };
   if (surveyId) whereClause.pesquisaId = surveyId;
 
-  if (startDate || endDate) {
-    const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-    const end = convertToTimeZone(endInput);
-
-    const startInput = startDate
-      ? new Date(`${startDate}T00:00:00.000`)
-      : subDays(endInput, 6);
-    const start = convertToTimeZone(startInput);
-
-    whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+  // Use the already processed UTC Date objects
+  if (startOfDayUtc && endOfDayUtc) {
+    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
   }
 
   const trendData = await Resposta.findAll({
@@ -262,23 +229,16 @@ const getCsatTrendData = async (
 const getResponseCountTrendData = async (
   tenantId = null,
   period = "day",
-  startDate = null,
-  endDate = null,
+  startOfDayUtc = null, // Changed parameter name
+  endOfDayUtc = null,   // Changed parameter name
   surveyId = null,
 ) => {
   const whereClause = tenantId ? { tenantId } : {};
   if (surveyId) whereClause.pesquisaId = surveyId;
 
-  if (startDate || endDate) {
-    const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-    const end = convertToTimeZone(endInput);
-
-    const startInput = startDate
-      ? new Date(`${startDate}T00:00:00.000`)
-      : subDays(endInput, 6);
-    const start = convertToTimeZone(startInput);
-
-    whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+  // Use the already processed UTC Date objects
+  if (startOfDayUtc && endOfDayUtc) {
+    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
   }
 
   const trendData = await Resposta.findAll({
@@ -301,22 +261,15 @@ const getResponseCountTrendData = async (
 const getRegistrationTrendData = async (
   tenantId = null,
   period = "day",
-  startDate = null,
-  endDate = null,
+  startOfDayUtc = null, // Changed parameter name
+  endOfDayUtc = null,   // Changed parameter name
   surveyId = null,
 ) => {
   const whereClause = tenantId ? { tenantId } : {};
 
-  if (startDate || endDate) {
-    const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-    const end = convertToTimeZone(endInput);
-
-    const startInput = startDate
-      ? new Date(`${startDate}T00:00:00.000`)
-      : subDays(endInput, 6);
-    const start = convertToTimeZone(startInput);
-
-    whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+  // Use the already processed UTC Date objects
+  if (startOfDayUtc && endOfDayUtc) {
+    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
   }
 
   const trendData = await Client.findAll({
@@ -339,27 +292,27 @@ const getRegistrationTrendData = async (
 const getEvolutionDashboard = async function (
   tenantId = null,
   period = "day",
-  startDate = null,
-  endDate = null,
+  startOfDayUtc = null, // Changed parameter name
+  endOfDayUtc = null,   // Changed parameter name
 ) {
-  const npsTrend = await getNpsTrendData(tenantId, period, startDate, endDate);
+  const npsTrend = await getNpsTrendData(tenantId, period, startOfDayUtc, endOfDayUtc);
   const csatTrend = await getCsatTrendData(
     tenantId,
     period,
-    startDate,
-    endDate,
+    startOfDayUtc,
+    endOfDayUtc,
   );
   const responseCountTrend = await getResponseCountTrendData(
     tenantId,
     period,
-    startDate,
-    endDate,
+    startOfDayUtc,
+    endOfDayUtc,
   );
   const registrationTrend = await getRegistrationTrendData(
     tenantId,
     period,
-    startDate,
-    endDate,
+    startOfDayUtc,
+    endOfDayUtc,
   );
 
   const evolutionData = {};

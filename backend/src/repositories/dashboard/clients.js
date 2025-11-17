@@ -1,9 +1,9 @@
 const { Client, Resposta } = require("../../../models");
-const { subDays } = require("date-fns");
+// const { subDays } = require("date-fns"); // No longer needed here
 const sequelize = require("sequelize");
 const { Op } = sequelize;
 const {
-  convertToTimeZone,
+  // convertToTimeZone, // No longer needed here
   convertFromTimeZone,
 } = require("../../utils/dateUtils");
 
@@ -41,19 +41,12 @@ const getBirthdaysOfMonth = async (tenantId = null) => {
   }));
 };
 
-const getClientStatusCounts = async (tenantId = null, startDate, endDate) => {
+const getClientStatusCounts = async (tenantId = null, startOfDayUtc, endOfDayUtc) => {
   const whereClause = tenantId ? { tenantId } : {};
 
-  if (startDate || endDate) {
-    const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-    const end = convertToTimeZone(endInput);
-
-    const startInput = startDate
-      ? new Date(`${startDate}T00:00:00.000`)
-      : subDays(endInput, 6);
-    const start = convertToTimeZone(startInput);
-
-    whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+  // Use the already processed UTC Date objects
+  if (startOfDayUtc && endOfDayUtc) {
+    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
   }
 
   const result = await Resposta.findOne({

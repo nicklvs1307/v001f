@@ -1,14 +1,14 @@
 // Repositório para cálculos de NPS para o dashboard.
 const { Resposta, Pergunta, sequelize } = require("../../../models");
 const { Op } = require("sequelize");
-const { subDays } = require("date-fns");
-const { convertToTimeZone, TIMEZONE } = require("../../utils/dateUtils");
+// const { subDays } = require("date-fns"); // No longer needed here
+const { TIMEZONE } = require("../../utils/dateUtils"); // Only TIMEZONE is needed now
 const ratingService = require("../../services/ratingService");
 
 const getNpsByDayOfWeek = async (
   tenantId = null,
-  startDate = null,
-  endDate = null,
+  startOfDayUtc = null, // Changed parameter name
+  endOfDayUtc = null,   // Changed parameter name
   surveyId = null,
 ) => {
   const whereClause = tenantId
@@ -17,16 +17,9 @@ const getNpsByDayOfWeek = async (
   if (surveyId) {
     whereClause.pesquisaId = surveyId;
   }
-  if (startDate || endDate) {
-    const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-    const end = convertToTimeZone(endInput);
-
-    const startInput = startDate
-      ? new Date(`${startDate}T00:00:00.000`)
-      : subDays(endInput, 6);
-    const start = convertToTimeZone(startInput);
-
-    whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+  // Use the already processed UTC Date objects
+  if (startOfDayUtc && endOfDayUtc) {
+    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
   }
 
   const responses = await Resposta.findAll({

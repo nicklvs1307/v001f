@@ -1,9 +1,9 @@
 const models = require("../../../models");
-const { subDays } = require("date-fns");
+// const { subDays } = require("date-fns"); // No longer needed here
 const sequelize = require("sequelize");
 const { Op } = sequelize;
 const {
-  convertToTimeZone,
+  // convertToTimeZone, // No longer needed here
   convertFromTimeZone,
 } = require("../../utils/dateUtils");
 const ratingService = require("../../services/ratingService");
@@ -11,24 +11,17 @@ const { getResponseChart } = require("./charts");
 
 const getOverallResults = async function (
   tenantId = null,
-  startDate = null,
-  endDate = null,
+  startOfDayUtc = null, // Changed parameter name
+  endOfDayUtc = null,   // Changed parameter name
   surveyId = null,
 ) {
   const whereClause = tenantId ? { tenantId } : {};
   if (surveyId) {
     whereClause.pesquisaId = surveyId;
   }
-  if (startDate || endDate) {
-    const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-    const end = convertToTimeZone(endInput);
-
-    const startInput = startDate
-      ? new Date(`${startDate}T00:00:00.000`)
-      : subDays(endInput, 6);
-    const start = convertToTimeZone(startInput);
-
-    whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+  // Use the already processed UTC Date objects
+  if (startOfDayUtc && endOfDayUtc) {
+    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
   }
 
   const allResponses = await models.Resposta.findAll({
@@ -221,8 +214,8 @@ const getOverallResults = async function (
   // 6. Respostas ao longo do tempo
   const responseChartData = await getResponseChart(
     tenantId,
-    startDate,
-    endDate,
+    startOfDayUtc, // Pass the Date object
+    endOfDayUtc,   // Pass the Date object
     surveyId,
   );
 

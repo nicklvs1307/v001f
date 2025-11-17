@@ -6,9 +6,9 @@ const {
   sequelize,
 } = require("../../../models");
 const { Op } = require("sequelize");
-const { subDays } = require("date-fns");
+// const { subDays } = require("date-fns"); // No longer needed here
 const {
-  convertToTimeZone,
+  // convertToTimeZone, // No longer needed here
   formatInTimeZone,
   TIMEZONE,
 } = require("../../utils/dateUtils");
@@ -17,22 +17,14 @@ const ratingService = require("../../services/ratingService");
 
 const getSummary = async (
   tenantId = null,
-  startDate = null,
-  endDate = null,
+  startOfDayUtc = null, // Changed parameter name
+  endOfDayUtc = null,   // Changed parameter name
   surveyId = null,
 ) => {
   let dateFilter = null;
-  if (startDate || endDate) {
-    const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-    const startInput = startDate
-      ? new Date(`${startDate}T00:00:00.000`)
-      : subDays(endInput, 6);
-
-    if (!isNaN(startInput) && !isNaN(endInput)) {
-      const end = convertToTimeZone(endInput);
-      const start = convertToTimeZone(startInput);
-      dateFilter = { [Op.gte]: start, [Op.lte]: end };
-    }
+  // Use the already processed UTC Date objects
+  if (startOfDayUtc && endOfDayUtc) {
+    dateFilter = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
   }
 
   const ratingResponsesWhere = {
@@ -147,29 +139,21 @@ const getSummary = async (
     ambassadorsInPeriod,
     ambassadorsMonth,
     couponsGeneratedPeriod:
-      startDate && endDate
-        ? `de ${new Date(startDate).toLocaleDateString("pt-BR")} até ${new Date(endDate).toLocaleDateString("pt-BR")}`
+      startOfDayUtc && endOfDayUtc
+        ? `de ${startOfDayUtc.toLocaleDateString("pt-BR")} até ${endOfDayUtc.toLocaleDateString("pt-BR")}`
         : "Desde o início",
   };
 };
 
 const getMonthSummary = async (
   tenantId = null,
-  startDate = null,
-  endDate = null,
+  startOfDayUtc = null, // Changed parameter name
+  endOfDayUtc = null,   // Changed parameter name
 ) => {
   const whereClause = tenantId ? { tenantId } : {};
-  if (startDate || endDate) {
-    const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-    const startInput = startDate
-      ? new Date(`${startDate}T00:00:00.000`)
-      : subDays(endInput, 30);
-
-    if (!isNaN(startInput) && !isNaN(endInput)) {
-      const end = convertToTimeZone(endInput);
-      const start = convertToTimeZone(startInput);
-      whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
-    }
+  // Use the already processed UTC Date objects
+  if (startOfDayUtc && endOfDayUtc) {
+    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
   }
 
   const npsResponses = await Resposta.findAll({

@@ -1,13 +1,13 @@
 const { Resposta, Pergunta, Criterio } = require("../../../models");
 const { Op } = require("sequelize");
-const { subDays } = require("date-fns");
-const { convertToTimeZone } = require("../../utils/dateUtils");
+// const { subDays } = require("date-fns"); // No longer needed here
+// const { convertToTimeZone } = require("../../utils/dateUtils"); // No longer needed here
 const ratingService = require("../../services/ratingService");
 
 const getCriteriaScores = async (
   tenantId = null,
-  startDate = null,
-  endDate = null,
+  startOfDayUtc = null, // Changed parameter name
+  endOfDayUtc = null,   // Changed parameter name
   surveyId = null,
 ) => {
   const responseWhereClause = { ratingValue: { [Op.ne]: null } };
@@ -17,16 +17,9 @@ const getCriteriaScores = async (
   if (surveyId) {
     responseWhereClause.pesquisaId = surveyId;
   }
-  if (startDate || endDate) {
-    const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-    const end = convertToTimeZone(endInput);
-
-    const startInput = startDate
-      ? new Date(`${startDate}T00:00:00.000`)
-      : subDays(endInput, 6);
-    const start = convertToTimeZone(startInput);
-
-    responseWhereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+  // Use the already processed UTC Date objects
+  if (startOfDayUtc && endOfDayUtc) {
+    responseWhereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
   }
 
   const allRatingResponses = await Resposta.findAll({

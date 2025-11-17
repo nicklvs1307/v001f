@@ -10,24 +10,23 @@ const { getFeedbacks, getWordCloudData } = require("./feedbacks");
 const { getNpsByDayOfWeek } = require("./nps");
 const { getOverallResults } = require("./overall");
 const { getClientStatusCounts } = require("./clients");
+const { getUtcDateRange } = require("../../utils/dateUtils"); // Import the new utility
 
 const getMainDashboard = async function (
   tenantId = null,
-  startDate = null,
-  endDate = null,
+  startDateStr = null, // Renamed to avoid confusion with Date objects
+  endDateStr = null,   // Renamed to avoid confusion with Date objects
   surveyId = null,
 ) {
-  const isValidDate = (dateStr) => dateStr && !isNaN(new Date(dateStr));
-  const validStartDate = isValidDate(startDate) ? startDate : null;
-  const validEndDate = isValidDate(endDate) ? endDate : null;
+  const { startOfDayUtc, endOfDayUtc } = getUtcDateRange(startDateStr, endDateStr);
 
-  // Ensure startDate and endDate are Date objects for calculations
-  const start = validStartDate ? new Date(validStartDate) : null;
-  const end = validEndDate ? new Date(validEndDate) : null;
+  // These 'start' and 'end' are now UTC Date objects
+  const start = startOfDayUtc;
+  const end = endOfDayUtc;
 
   let npsTrendPeriod = "day";
   if (start && end) {
-    const diffTime = Math.abs(end - start);
+    const diffTime = Math.abs(end.getTime() - start.getTime()); // Use getTime() for Date objects
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     if (diffDays > 90) {
       npsTrendPeriod = "month";
@@ -38,70 +37,70 @@ const getMainDashboard = async function (
 
   const summary = await getSummary(
     tenantId,
-    validStartDate,
-    validEndDate,
+    startOfDayUtc, // Pass UTC Date objects
+    endOfDayUtc,   // Pass UTC Date objects
     surveyId,
   );
   const responseChart = await getResponseChart(
     tenantId,
-    validStartDate,
-    validEndDate,
+    startOfDayUtc, // Pass UTC Date objects
+    endOfDayUtc,   // Pass UTC Date objects
     surveyId,
   );
   const attendantsPerformance = await getAttendantsPerformanceWithGoals(
     tenantId,
-    validStartDate,
-    validEndDate,
+    startOfDayUtc, // Pass UTC Date objects
+    endOfDayUtc,   // Pass UTC Date objects
     surveyId,
   );
   const criteriaScores = await getCriteriaScores(
     tenantId,
-    validStartDate,
-    validEndDate,
+    startOfDayUtc, // Pass UTC Date objects
+    endOfDayUtc,   // Pass UTC Date objects
     surveyId,
   );
   const feedbacks = await getFeedbacks(
     tenantId,
-    validStartDate,
-    validEndDate,
+    startOfDayUtc, // Pass UTC Date objects
+    endOfDayUtc,   // Pass UTC Date objects
     surveyId,
   );
   const conversionChart = await getConversionChart(
     tenantId,
-    validStartDate,
-    validEndDate,
+    startOfDayUtc, // Pass UTC Date objects
+    endOfDayUtc,   // Pass UTC Date objects
     surveyId,
   );
   const npsByDayOfWeek = await getNpsByDayOfWeek(
     tenantId,
-    validStartDate,
-    validEndDate,
+    startOfDayUtc, // Pass UTC Date objects
+    endOfDayUtc,   // Pass UTC Date objects
     surveyId,
   );
   const npsTrend = await getNpsTrendData(
     tenantId,
     npsTrendPeriod,
-    validStartDate,
-    validEndDate,
+    startOfDayUtc, // Pass UTC Date objects
+    endOfDayUtc,   // Pass UTC Date objects
     surveyId,
   );
   const overallResults = await getOverallResults(
     tenantId,
-    validStartDate,
-    validEndDate,
+    startOfDayUtc, // Pass UTC Date objects
+    endOfDayUtc,   // Pass UTC Date objects
     surveyId,
   );
 
   const wordCloudData = await getWordCloudData(
     tenantId,
-    validStartDate,
-    validEndDate,
+    startOfDayUtc, // Pass UTC Date objects
+    endOfDayUtc,   // Pass UTC Date objects
     surveyId,
   );
   const clientStatusCounts = await getClientStatusCounts(
     tenantId,
-    validStartDate,
-    validEndDate,
+    startOfDayUtc, // Pass UTC Date objects
+    endOfDayUtc,   // Pass UTC Date objects
   );
 
   return {

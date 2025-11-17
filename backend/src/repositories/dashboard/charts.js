@@ -44,15 +44,18 @@ const getResponseChart = async (
   const whereClause = tenantId ? { tenantId } : {};
   if (surveyId) whereClause.pesquisaId = surveyId;
 
-  const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-  const end = convertToTimeZone(endInput);
+  if (startDate || endDate) { // Only attempt to create date filters if dates are provided
+    const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
+    const startInput = startDate
+      ? new Date(`${startDate}T00:00:00.000`)
+      : subDays(endInput, 6);
 
-  const startInput = startDate
-    ? new Date(`${startDate}T00:00:00.000`)
-    : subDays(endInput, 6);
-  const start = convertToTimeZone(startInput);
-
-  whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+    if (!isNaN(startInput) && !isNaN(endInput)) { // Validate dates
+      const end = convertToTimeZone(endInput);
+      const start = convertToTimeZone(startInput);
+      whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+    }
+  }
 
   const responsesByPeriod = await Resposta.findAll({
     where: whereClause,

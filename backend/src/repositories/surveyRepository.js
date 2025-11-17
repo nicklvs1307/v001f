@@ -8,7 +8,6 @@ const {
   Atendente,
   Client,
 } = require("../../models");
-const { convertFromTimeZone } = require("../utils/dateUtils");
 const { sequelize } = require("../database");
 const { Op } = require("sequelize");
 const ApiError = require("../errors/ApiError");
@@ -283,7 +282,7 @@ const getSurveyTenantIdAndCreatorId = async (id, tenantId = null) => {
 
 const getSurveyStats = async (tenantId = null) => {
   const whereClause = tenantId ? { tenantId } : {};
-  const today = convertFromTimeZone(new Date());
+  const today = new Date();
   const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
   const activeSurveys = await Pesquisa.count({

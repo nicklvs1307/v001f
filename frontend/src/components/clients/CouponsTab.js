@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Grid, Paper, Typography, Chip } from '@mui/material';
-import { format } from 'date-fns';
+import { formatDateForDisplay } from '../../utils/dateUtils';
 import CupomDetailsModal from '../coupons/CupomDetailsModal';
 
 const CouponsTab = ({ coupons, isUsed = false }) => {
@@ -38,9 +38,9 @@ const CouponsTab = ({ coupons, isUsed = false }) => {
                                 <Typography variant="h6">{cupom.recompensa?.name || 'Recompensa não encontrada'}</Typography>
                                 <Typography variant="body2" color="text.secondary">Código: {cupom.codigo}</Typography>
                                 {isUsed ? (
-                                    <Chip label={`Usado em: ${format(new Date(cupom.dataUtilizacao), 'dd/MM/yyyy')}`} color="success" size="small" sx={{ mt: 1 }} />
+                                    <Chip label={`Usado em: ${formatDateForDisplay(cupom.dataUtilizacao, 'dd/MM/yyyy')}`} color="success" size="small" sx={{ mt: 1 }} />
                                 ) : (
-                                    <Chip label={`Válido até: ${format(new Date(cupom.dataValidade), 'dd/MM/yyyy')}`} color="primary" size="small" sx={{ mt: 1 }} />
+                                    <Chip label={`Válido até: ${formatDateForDisplay(cupom.dataValidade, 'dd/MM/yyyy')}`} color="primary" size="small" sx={{ mt: 1 }} />
                                 )}
                             </Paper>
                         </Grid>

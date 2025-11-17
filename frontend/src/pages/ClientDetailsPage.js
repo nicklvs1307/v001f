@@ -4,6 +4,7 @@ import clientService from '../services/clientService';
 import { Container, Typography, Box, CircularProgress, Alert, Paper, Grid, Avatar, Tabs, Tab } from '@mui/material';
 import { Person, Receipt, BarChart, Cake, Phone, Email } from '@mui/icons-material';
 import { format } from 'date-fns';
+import { formatDateForDisplay } from '../utils/dateUtils';
 
 import ActivityTab from '../components/clients/ActivityTab';
 import CouponsTab from '../components/clients/CouponsTab';
@@ -69,7 +70,7 @@ const ClientDetailsPage = () => {
                         {birthDate && 
                             <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, color: 'text.secondary' }}>
                                 <Cake sx={{ mr: 1 }} />
-                                <Typography variant="body1">{format(new Date(birthDate), 'dd/MM/yyyy')}</Typography>
+                                <Typography variant="body1">{formatDateForDisplay(birthDate, 'dd/MM/yyyy')}</Typography>
                             </Box>
                         }
                     </Grid>

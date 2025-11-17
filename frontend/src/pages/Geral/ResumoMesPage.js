@@ -23,7 +23,11 @@ import {
     ResponsiveContainer
 } from 'recharts';
 import dashboardService from '../../services/dashboardService';
-import { startOfMonth, endOfMonth, format } from 'date-fns';
+import { startOfMonth, endOfMonth } from 'date-fns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
 import StatCard from '../../components/common/StatCard';
 import { FaChartLine, FaChartBar, FaChartPie, FaUsers } from 'react-icons/fa';
 
@@ -48,13 +52,16 @@ const ResumoMesPage = () => {
     const [summary, setSummary] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [startDate, setStartDate] = useState(format(startOfMonth(new Date()), 'yyyy-MM-dd'));
-    const [endDate, setEndDate] = useState(format(endOfMonth(new Date()), 'yyyy-MM-dd'));
+    const [startDate, setStartDate] = useState(startOfMonth(new Date()));
+    const [endDate, setEndDate] = useState(endOfMonth(new Date()));
 
     const fetchSummary = useCallback(async () => {
         try {
             setLoading(true);
-            const data = await dashboardService.getMonthSummary({ startDate, endDate });
+            const data = await dashboardService.getMonthSummary({
+                startDate: getStartOfDayUTC(startDate),
+                endDate: getEndOfDayUTC(endDate)
+            });
             setSummary(data);
             setError(null);
         } catch (err) {
@@ -85,24 +92,26 @@ const ResumoMesPage = () => {
                 </Typography>
                 <Grid container spacing={2} alignItems="center">
                     <Grid item xs={12} sm={6}>
-                        <TextField
-                            label="Data de Início"
-                            type="date"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                            InputLabelProps={{ shrink: true }}
-                            fullWidth
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                label="Data de Início"
+                                views={['month', 'year']}
+                                value={startDate}
+                                onChange={(newValue) => setStartDate(newValue)}
+                                renderInput={(params) => <TextField {...params} fullWidth />}
+                            />
+                        </LocalizationProvider>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <TextField
-                            label="Data de Fim"
-                            type="date"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                            InputLabelProps={{ shrink: true }}
-                            fullWidth
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                label="Data de Fim"
+                                views={['month', 'year']}
+                                value={endDate}
+                                onChange={(newValue) => setEndDate(newValue)}
+                                renderInput={(params) => <TextField {...params} fullWidth />}
+                            />
+                        </LocalizationProvider>
                     </Grid>
                 </Grid>
             </Paper>

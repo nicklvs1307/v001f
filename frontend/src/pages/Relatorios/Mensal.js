@@ -5,6 +5,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { format, startOfMonth, endOfMonth } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
 import { useAuth } from '../../context/AuthContext';
 import resultService from '../../services/resultService';
 import Dashboard from '../../components/relatorios/Dashboard';
@@ -25,13 +26,13 @@ const RelatorioMensal = () => {
                 const start = startOfMonth(selectedDate);
                 const end = endOfMonth(selectedDate);
 
-                const formattedStartDate = format(start, 'yyyy-MM-dd');
-                const formattedEndDate = format(end, 'yyyy-MM-dd');
+                const startDateUTC = getStartOfDayUTC(start);
+                const endDateUTC = getEndOfDayUTC(end);
 
                 const data = await resultService.getMainDashboard({
                     tenantId: tenantId,
-                    startDate: formattedStartDate,
-                    endDate: formattedEndDate,
+                    startDate: startDateUTC,
+                    endDate: endDateUTC,
                 });
                 setReportData(data);
             } catch (error) {

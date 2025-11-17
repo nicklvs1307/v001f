@@ -37,7 +37,6 @@ import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatStrikethroughIcon from '@mui/icons-material/FormatStrikethrough';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { format, parseISO } from 'date-fns';
 import campanhaService from '../services/campanhaService';
 import recompensaService from '../services/recompensaService';
 import roletaService from '../services/roletaService';

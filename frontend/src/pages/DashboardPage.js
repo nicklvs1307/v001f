@@ -39,7 +39,7 @@ import {
     Line
 } from 'recharts';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { parseISO, format } from 'date-fns';
+import { formatDateForDisplay, getStartOfDayUTC, getEndOfDayUTC } from '../utils/dateUtils';
 
 import dashboardService from '../services/dashboardService';
 import DetailsModal from '../components/Dashboard/DetailsModal';
@@ -89,10 +89,10 @@ const DashboardPage = () => {
                 setError('');
                 const params = {};
                 if (startDate) {
-                    params.startDate = format(startDate, 'yyyy-MM-dd');
+                    params.startDate = getStartOfDayUTC(startDate);
                 }
                 if (endDate) {
-                    params.endDate = format(endDate, 'yyyy-MM-dd');
+                    params.endDate = getEndOfDayUTC(endDate);
                 }
                 const data = await dashboardService.getMainDashboard(params);
                 setDashboardData(data);
@@ -575,7 +575,7 @@ const DashboardPage = () => {
                                         primary={
                                             <Box>
                                                 <Typography component="span" variant="body2" color="text.secondary" mr={1}>
-                                                    {feedback.date ? format(parseISO(feedback.date), 'dd/MM/yyyy HH:mm') : ''}
+                                                    {formatDateForDisplay(feedback.date)}
                                                 </Typography>
                                                 {feedback.client && (
                                                     <Typography component="span" variant="body2" fontWeight="bold">

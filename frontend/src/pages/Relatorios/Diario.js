@@ -6,6 +6,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { formatDateForDisplay, getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
 import { useAuth } from '../../context/AuthContext';
 import resultService from '../../services/resultService';
 import Dashboard from '../../components/relatorios/Dashboard';
@@ -32,11 +33,12 @@ const RelatorioDiario = () => {
 
             setLoading(true);
             try {
-                const formattedDate = format(selectedDate, 'yyyy-MM-dd');
+                const startDateUTC = getStartOfDayUTC(selectedDate);
+                const endDateUTC = getEndOfDayUTC(selectedDate);
                 const data = await resultService.getMainDashboard({
                     tenantId: tenantId,
-                    startDate: formattedDate,
-                    endDate: formattedDate,
+                    startDate: startDateUTC,
+                    endDate: endDateUTC,
                 });
                 setReportData(data);
             } catch (error) {

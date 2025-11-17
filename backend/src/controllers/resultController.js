@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const resultRepository = require("../repositories/resultRepository");
 const ApiError = require("../errors/ApiError");
-const { adjustDateRange } = require("../utils/dateUtils");
+const { getUtcDateRange } = require("../utils/dateUtils");
 
 // @desc    Obter resultados agregados de uma pesquisa
 // @route   GET /api/surveys/:id/results

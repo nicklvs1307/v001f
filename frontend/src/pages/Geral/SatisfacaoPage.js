@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { 
-    Typography, 
-    Box, 
-    Grid, 
-    CircularProgress, 
-    TextField, 
+import {
+    Typography,
+    Box,
+    Grid,
+    CircularProgress,
+    TextField,
     Paper,
     Container,
     Card,
@@ -13,7 +13,11 @@ import {
 } from '@mui/material';
 import resultService from '../../services/resultService';
 import { useAuth } from '../../context/AuthContext';
-import { format, startOfMonth, endOfMonth } from 'date-fns';
+import { startOfMonth, endOfMonth } from 'date-fns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
 import ChartCard from '../../components/charts/ChartCard';
 import KeyMetrics from '../../components/results/KeyMetrics'; // Assuming this component will be created
 
@@ -24,10 +28,9 @@ const SatisfacaoPage = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const { user } = useAuth();
-    const [startDate, setStartDate] = useState(format(startOfMonth(new Date()), 'yyyy-MM-dd'));
-    const [endDate, setEndDate] = useState(format(endOfMonth(new Date()), 'yyyy-MM-dd'));
+    const [startDate, setStartDate] = useState(startOfMonth(new Date()));
+    const [endDate, setEndDate] = useState(endOfMonth(new Date()));
     const [error, setError] = useState(null);
-
     useEffect(() => {
         const fetchData = async () => {
             if (!user?.tenantId) {
@@ -37,7 +40,11 @@ const SatisfacaoPage = () => {
             setLoading(true);
             setError(null);
             try {
-                const response = await resultService.getMainDashboard({ tenantId: user.tenantId, startDate, endDate });
+                const response = await resultService.getMainDashboard({
+                    tenantId: user.tenantId,
+                    startDate: getStartOfDayUTC(startDate),
+                    endDate: getEndOfDayUTC(endDate)
+                });
                 setData(response.overallResults); // Focus on the overallResults object
             } catch (err) {
                 console.error("Error fetching data", err);
@@ -172,24 +179,24 @@ const SatisfacaoPage = () => {
                     </Typography>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item xs={12} sm={4}>
-                            <TextField
-                                label="Data de Início"
-                                type="date"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
-                                InputLabelProps={{ shrink: true }}
-                                fullWidth
-                            />
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    label="Data de Início"
+                                    value={startDate}
+                                    onChange={(newValue) => setStartDate(newValue)}
+                                    renderInput={(params) => <TextField {...params} fullWidth />}
+                                />
+                            </LocalizationProvider>
                         </Grid>
                         <Grid item xs={12} sm={4}>
-                            <TextField
-                                label="Data de Fim"
-                                type="date"
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
-                                InputLabelProps={{ shrink: true }}
-                                fullWidth
-                            />
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    label="Data de Fim"
+                                    value={endDate}
+                                    onChange={(newValue) => setEndDate(newValue)}
+                                    renderInput={(params) => <TextField {...params} fullWidth />}
+                                />
+                            </LocalizationProvider>
                         </Grid>
                     </Grid>
                 </CardContent>

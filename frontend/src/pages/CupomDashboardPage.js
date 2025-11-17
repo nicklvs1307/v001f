@@ -32,7 +32,7 @@ import {
   Cell,
 } from 'recharts';
 import cupomService from '../services/cupomService';
-import { format, parseISO } from 'date-fns';
+import { formatDateForDisplay } from '../utils/dateUtils';
 
 const MetricCard = ({ title, value, color }) => (
   <Paper elevation={3} sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%', borderTop: `4px solid ${color}` }}>
@@ -102,7 +102,7 @@ const CupomDashboardPage = () => {
   const PIE_COLORS = [theme.palette.success.main, theme.palette.warning.main, theme.palette.error.main];
 
   const formattedDailyData = dailyGenerated.map(item => ({
-    date: format(parseISO(item.date), 'dd/MM'),
+    date: formatDateForDisplay(item.date, 'dd/MM'),
     count: Number(item.count),
   }));
 
@@ -202,7 +202,7 @@ const CupomDashboardPage = () => {
                     <TableRow key={cupom.id}>
                       <TableCell>{cupom.client?.name || 'N/A'}</TableCell>
                       <TableCell>{cupom.recompensa?.name || 'N/A'}</TableCell>
-                      <TableCell>{format(parseISO(cupom.createdAt), 'dd/MM/yy HH:mm')}</TableCell>
+                      <TableCell>{formatDateForDisplay(cupom.createdAt, 'dd/MM/yy HH:mm')}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

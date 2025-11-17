@@ -9,7 +9,8 @@ import {
     Paper,
     TextField
 } from '@mui/material';
-import { subDays, format, isValid } from 'date-fns';
+import { subDays } from 'date-fns';
+import { getStartOfDayUTC, getEndOfDayUTC } from '../utils/dateUtils';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import resultService from '../services/resultService';
 import AuthContext from '../context/AuthContext';
@@ -39,11 +40,11 @@ const ResultsOverviewPage = () => {
             setLoading(true);
             setError('');
             const params = { tenantId };
-            if (startDate && isValid(startDate)) {
-                params.startDate = format(startDate, 'yyyy-MM-dd');
+            if (startDate) {
+                params.startDate = getStartOfDayUTC(startDate);
             }
-            if (endDate && isValid(endDate)) {
-                params.endDate = format(endDate, 'yyyy-MM-dd');
+            if (endDate) {
+                params.endDate = getEndOfDayUTC(endDate);
             }
             const resultData = await resultService.getMainDashboard(params);
             setData(resultData);

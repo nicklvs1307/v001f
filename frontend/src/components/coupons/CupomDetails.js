@@ -11,7 +11,7 @@ import {
   Event,
   AccessTime,
 } from '@mui/icons-material';
-import { format } from 'date-fns';
+import { formatDateForDisplay } from '../../utils/dateUtils';
 
 const getStatusChip = (status) => {
   const statusMap = {
@@ -49,16 +49,16 @@ const CupomDetails = ({ cupom }) => {
       </Grid>
       <Grid item xs={12} sm={6}>
         <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}><Today sx={{ mr: 1 }} /> Gerado em</Typography>
-        <Typography variant="body1">{format(new Date(cupom.dataGeracao), 'dd/MM/yyyy HH:mm')}</Typography>
+        <Typography variant="body1">{formatDateForDisplay(cupom.dataGeracao, 'dd/MM/yyyy HH:mm')}</Typography>
       </Grid>
       <Grid item xs={12} sm={6}>
         <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}><Event sx={{ mr: 1 }} /> Válido até</Typography>
-        <Typography variant="body1">{format(new Date(cupom.dataValidade), 'dd/MM/yyyy')}</Typography>
+        <Typography variant="body1">{formatDateForDisplay(cupom.dataValidade, 'dd/MM/yyyy')}</Typography>
       </Grid>
       {cupom.status === 'used' && cupom.dataUtilizacao && (
         <Grid item xs={12} sm={6}>
           <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}><AccessTime sx={{ mr: 1 }} /> Utilizado em</Typography>
-          <Typography variant="body1">{format(new Date(cupom.dataUtilizacao), 'dd/MM/yyyy HH:mm')}</Typography>
+          <Typography variant="body1">{formatDateForDisplay(cupom.dataUtilizacao, 'dd/MM/yyyy HH:mm')}</Typography>
         </Grid>
       )}
     </Grid>

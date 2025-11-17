@@ -1,7 +1,7 @@
 import React from 'react';
 import { Paper, Grid, Typography, Box } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { format } from 'date-fns';
+import { formatDateForDisplay } from '../../utils/dateUtils';
 
 const StatCard = ({ title, value, icon }) => (
     <Paper sx={{ p: 2, display: 'flex', alignItems: 'center', height: '100%' }}>
@@ -23,7 +23,7 @@ const ActivityTab = ({ stats }) => {
                     <StatCard title="Total de Visitas" value={totalVisits} />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <StatCard title="Última Visita" value={lastVisit ? format(new Date(lastVisit), 'dd/MM/yyyy') : 'N/A'} />
+                    <StatCard title="Última Visita" value={lastVisit ? formatDateForDisplay(lastVisit, 'dd/MM/yyyy') : 'N/A'} />
                 </Grid>
                 <Grid item xs={12}>
                     <Paper sx={{ p: 2, mt: 2 }}>

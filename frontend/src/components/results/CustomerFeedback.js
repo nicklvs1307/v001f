@@ -1,6 +1,7 @@
 import React from 'react';
 import { Paper, Typography, List, ListItem, ListItemText, Divider, Box } from '@mui/material';
 import { Forum } from '@mui/icons-material';
+import { formatDateForDisplay } from '../../utils/dateUtils';
 
 const CustomerFeedback = ({ latestComments }) => {
     return (
@@ -19,7 +20,7 @@ const CustomerFeedback = ({ latestComments }) => {
                                 <ListItem alignItems="flex-start">
                                     <ListItemText
                                         primary={comment.comment}
-                                        secondary={`- ${comment.client} em ${comment.date}`}
+                                        secondary={`- ${comment.client} em ${formatDateForDisplay(comment.date)}`}
                                     />
                                 </ListItem>
                                 {index < latestComments.length - 1 && <Divider variant="inset" component="li" />}

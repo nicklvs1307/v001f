@@ -3,8 +3,9 @@ import { Typography, Paper, Box, CircularProgress, TextField } from '@mui/materi
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { format, startOfWeek, endOfWeek } from 'date-fns';
+import { startOfWeek, endOfWeek } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
 import { useAuth } from '../../context/AuthContext';
 import resultService from '../../services/resultService';
 import Dashboard from '../../components/relatorios/Dashboard';
@@ -25,13 +26,13 @@ const RelatorioSemanal = () => {
                 const start = startOfWeek(selectedDate, { weekStartsOn: 1 }); // Segunda-feira como início da semana
                 const end = endOfWeek(selectedDate, { weekStartsOn: 1 });
 
-                const formattedStartDate = format(start, 'yyyy-MM-dd');
-                const formattedEndDate = format(end, 'yyyy-MM-dd');
+                const startDateUTC = getStartOfDayUTC(start);
+                const endDateUTC = getEndOfDayUTC(end);
 
                 const data = await resultService.getMainDashboard({
                     tenantId: tenantId,
-                    startDate: formattedStartDate,
-                    endDate: formattedEndDate,
+                    startDate: startDateUTC,
+                    endDate: endDateUTC,
                 });
                 setReportData(data);
             } catch (error) {

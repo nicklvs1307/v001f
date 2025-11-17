@@ -18,7 +18,10 @@ import { WordCloud } from '@isoterik/react-word-cloud';
 import { ResponsiveContainer } from 'recharts';
 import dashboardService from '../../services/dashboardService';
 import surveyService from '../../services/surveyService';
-import { startOfMonth, endOfMonth, format } from 'date-fns';
+import { startOfMonth, endOfMonth } from 'date-fns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import useDebounce from '../../hooks/useDebounce';
 
 const NuvemDePalavrasPage = () => {
@@ -115,37 +118,26 @@ const NuvemDePalavrasPage = () => {
                         Visualize as palavras mais frequentes nos feedbacks dos seus clientes.
                     </Typography>
                     <Grid container spacing={2} sx={{ mt: 2 }}>
-                        <Grid item xs={12} sm={4}>
-                            <TextField
-                                label="Data de Início"
-                                type="date"
-                                value={startDate ? format(startDate, 'yyyy-MM-dd') : ''}
-                                onChange={(e) => {
-                                    const date = e.target.value ? new Date(e.target.value + 'T00:00:00') : null;
-                                    if (date && !isNaN(date.getTime())) {
-                                        setStartDate(date);
-                                    }
-                                }}
-                                InputLabelProps={{ shrink: true }}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <TextField
-                                label="Data de Fim"
-                                type="date"
-                                value={endDate ? format(endDate, 'yyyy-MM-dd') : ''}
-                                onChange={(e) => {
-                                    const date = e.target.value ? new Date(e.target.value + 'T00:00:00') : null;
-                                    if (date && !isNaN(date.getTime())) {
-                                        setEndDate(date);
-                                    }
-                                }}
-                                InputLabelProps={{ shrink: true }}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
+                                            <Grid item xs={12} sm={4}>
+                                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                    <DatePicker
+                                                        label="Data de Início"
+                                                        value={startDate}
+                                                        onChange={(newValue) => setStartDate(newValue)}
+                                                        renderInput={(params) => <TextField {...params} fullWidth />}
+                                                    />
+                                                </LocalizationProvider>
+                                            </Grid>
+                                            <Grid item xs={12} sm={4}>
+                                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                    <DatePicker
+                                                        label="Data de Fim"
+                                                        value={endDate}
+                                                        onChange={(newValue) => setEndDate(newValue)}
+                                                        renderInput={(params) => <TextField {...params} fullWidth />}
+                                                    />
+                                                </LocalizationProvider>
+                                            </Grid>                        <Grid item xs={12} sm={4}>
                             <FormControl fullWidth>
                                 <InputLabel id="survey-select-label">Filtrar por Pesquisa</InputLabel>
                                 <Select

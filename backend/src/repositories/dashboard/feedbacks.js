@@ -26,7 +26,7 @@ const getFeedbacks = async (
       whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
     }
   }
-    where: whereClause,
+  const feedbacksData = await Resposta.findAll({
     attributes: [
       "textValue",
       "ratingValue",

@@ -1,0 +1,6 @@
+fix(dashboard): Enhance date validation and fix ReferenceError in charts.js and feedbacks.js
+
+This commit addresses the remaining date-related issues in the dashboard:
+
+- Fix(charts): Resolved `ReferenceError: startInput is not defined` in `charts.js` by ensuring `startInput` and `endInput` are always initialized before use, while maintaining robust date validation.
+- Fix(feedbacks): Implemented robust date validation in `feedbacks.js` (`getFeedbacks` and `getWordCloudData`) to prevent `SequelizeDatabaseError: invalid input syntax for type timestamp with time zone: "Invalid date"` errors. This ensures that invalid date strings from query parameters do not lead to database errors.

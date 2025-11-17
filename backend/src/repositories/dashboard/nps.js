@@ -1,4 +1,5 @@
-const { Resposta, Pergunta } = require('../../../models');
+// Repositório para cálculos de NPS para o dashboard.
+const { Resposta, Pergunta, sequelize } = require('../../../models');
 const { Op } = require('sequelize');
 const ratingService = require('../../services/ratingService');
 

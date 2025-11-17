@@ -182,7 +182,7 @@ exports.uploadProfilePicture = asyncHandler(async (req, res) => {
     if (fs.existsSync(filePath)) {
       try {
         await fs.promises.unlink(filePath);
-        console.log(`Arquivo recém-enviado ${filePath} deletado devido a falha na atualização do usuário.`);
+        console.error(`Arquivo recém-enviado ${filePath} deletado devido a falha na atualização do usuário.`);
       } catch (unlinkError) {
         console.error(`Erro ao deletar arquivo recém-enviado ${filePath}:`, unlinkError);
       }
@@ -196,7 +196,7 @@ exports.uploadProfilePicture = asyncHandler(async (req, res) => {
     if (fs.existsSync(oldFilePath)) {
       try {
         await fs.promises.unlink(oldFilePath);
-        console.log(`Arquivo antigo ${oldFilePath} deletado com sucesso.`);
+
       } catch (unlinkError) {
         console.error(`Erro ao deletar arquivo antigo ${oldFilePath}:`, unlinkError);
       }

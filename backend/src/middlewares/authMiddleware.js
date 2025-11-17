@@ -66,7 +66,7 @@ const authorize = (requiredPermissionOrRoles) => {
         if (requiredPermissionOrRoles.includes(userRoleName)) {
           return next(); // Usuário tem um dos papéis necessários
         } else {
-          console.log(`Authorization failed for user role: ${userRoleName}, required roles: ${requiredPermissionOrRoles.join(', ')}`);
+          console.error(`Authorization failed for user role: ${userRoleName}, required roles: ${requiredPermissionOrRoles.join(', ')}`);
           return res.status(403).json({ message: "Você não tem permissão para acessar este recurso." });
         }
       }

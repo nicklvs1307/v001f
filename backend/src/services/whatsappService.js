@@ -41,7 +41,6 @@ const sendSystemMessage = async (number, message) => {
     }, {
       headers: { 'Content-Type': 'application/json', 'apikey': SYSTEM_WHATSAPP_API_KEY },
     });
-    console.log(`Mensagem de sistema enviada para ${finalNumber}:`, response.data);
     return response.data;
   } catch (error) {
     console.error(`[WhatsApp Service] Falha ao enviar mensagem de sistema para ${finalNumber}.`);
@@ -74,7 +73,6 @@ const sendTenantMessage = async (tenantId, number, message) => {
     }, {
       headers: { 'Content-Type': 'application/json', 'apikey': config.apiKey },
     });
-    console.log(`Mensagem do tenant ${tenantId} enviada para ${number}:`, response.data);
     return response.data;
   } catch (error) {
     console.error(`[WhatsApp Service] Falha ao enviar mensagem para o tenant ${tenantId}. Número: ${number}.`);
@@ -120,7 +118,6 @@ const sendTenantMediaMessage = async (tenantId, number, mediaUrl, caption) => {
     }, {
       headers: { 'Content-Type': 'application/json', 'apikey': config.apiKey },
     });
-    console.log(`Mensagem com mídia do tenant ${tenantId} enviada para ${number}:`, response.data);
     return response.data;
   } catch (error) {
     console.error(`[WhatsApp Service] Falha ao enviar mensagem com mídia para o tenant ${tenantId}. Número: ${number}.`);
@@ -154,7 +151,6 @@ const sendTenantAudioMessage = async (tenantId, number, mediaUrl) => {
     }, {
       headers: { 'Content-Type': 'application/json', 'apikey': config.apiKey },
     });
-    console.log(`Mensagem de áudio do tenant ${tenantId} enviada para ${number}:`, response.data);
     return response.data;
   } catch (error) {
     console.error(`[WhatsApp Service] Falha ao enviar mensagem de áudio para o tenant ${tenantId}. Número: ${number}.`);
@@ -395,11 +391,8 @@ const createRemoteInstance = async (tenantId) => {
 };
 
 const getQrCodeForConnect = async (tenantId) => {
-  console.log(`[WhatsappService] Attempting to generate a new QR Code for tenant ${tenantId}.`);
-  
   // Primeiro, tenta fazer logout para garantir uma sessão limpa.
   try {
-    console.log(`[WhatsappService] Logging out instance for tenant ${tenantId} before generating new QR code.`);
     await logoutInstance(tenantId);
     // Pausa para dar tempo à API para processar o logout
     await new Promise(resolve => setTimeout(resolve, 1500)); 
@@ -419,7 +412,6 @@ const getQrCodeForConnect = async (tenantId) => {
   }
 
   try {
-    console.log(`[WhatsappService] Fetching new QR code from API for instance ${config.instanceName}.`);
     const response = await axios.get(`${config.url}/instance/connect/${config.instanceName}`, getAxiosConfig(config));
     return response.data;
   } catch (error) {
@@ -492,7 +484,7 @@ const createSenderRemoteInstance = async (sender) => {
   if (!sender || !sender.apiUrl || !sender.apiKey || !sender.instanceName) {
     throw new Error('Dados do disparador incompletos para criar instância remota.');
   }
-  console.log(`[WhatsappService] createSenderRemoteInstance: sender.apiUrl = ${sender.apiUrl}`);
+
   try {
     const webhookUrl = `${process.env.BACKEND_URL}/superadmin/senders/webhook`;
     const payload = {
@@ -553,7 +545,7 @@ const deleteSenderInstance = async (sender) => {
   if (!sender || !sender.instanceName) {
     return { message: "Instância do disparador já removida ou não configurada." };
   }
-  console.log(`[WhatsappService] deleteSenderInstance: sender.apiUrl = ${sender.apiUrl}`);
+
   try {
     await axios.delete(`${sender.apiUrl}/instance/delete/${sender.instanceName}`, { headers: { 'apikey': sender.apiKey } });
     return { message: "Instância do disparador deletada com sucesso." };

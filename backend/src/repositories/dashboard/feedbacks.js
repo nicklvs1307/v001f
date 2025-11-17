@@ -31,7 +31,7 @@ const getFeedbacks = async (tenantId = null, startDate = null, endDate = null, s
             'textValue', 
             'ratingValue', 
             'respondentSessionId',
-            [sequelize.fn('TO_CHAR', sequelize.literal(`"Resposta"."createdAt" AT TIME ZONE 'UTC' AT TIME ZONE 'America/Sao_Paulo'`), 'DD/MM/YYYY HH24:MI'), 'formattedCreatedAt']
+            ['createdAt', 'date']
         ],
         order: [['createdAt', 'DESC']],
         limit: 7,
@@ -46,7 +46,7 @@ const getFeedbacks = async (tenantId = null, startDate = null, endDate = null, s
 
     return feedbacksData.map(feedback => ({
         respondentSessionId: feedback.respondentSessionId,
-        date: feedback.get('formattedCreatedAt'),
+        date: feedback.date,
         client: feedback.cliente ? feedback.cliente.name : 'Anônimo',
         rating: feedback.ratingValue !== null ? feedback.ratingValue : null,
         comment: feedback.textValue,

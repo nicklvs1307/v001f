@@ -1,5 +1,6 @@
 const cron = require('node-cron');
-const moment = require('moment');
+const { toZonedTime } = require('date-fns-tz');
+const { startOfDay, addDays, getMonth, getDate, endOfDay } = require('date-fns');
 const whatsappConfigRepository = require('../repositories/whatsappConfigRepository');
 const clientRepository = require('../repositories/clientRepository');
 const cupomRepository = require('../repositories/cupomRepository');
@@ -12,16 +13,17 @@ const birthdayAutomationJob = cron.schedule('0 9 * * *', async () => { // Execut
   console.log('Iniciando job de automação de aniversário...');
   try {
     const configs = await whatsappConfigRepository.findAllWithBirthdayAutomationEnabled();
+    const timeZone = 'America/Sao_Paulo';
 
     for (const config of configs) {
       if (!config.birthdayAutomationEnabled || !config.birthdayRewardType || !config.birthdayRewardId) {
         continue; // Pula se a automação não estiver habilitada ou sem recompensa configurada
       }
 
-      const today = moment().startOf('day');
-      const birthdayDate = today.add(config.birthdayDaysBefore, 'days');
+      const today = startOfDay(toZonedTime(new Date(), timeZone));
+      const birthdayDate = addDays(today, config.birthdayDaysBefore);
 
-      const clients = await clientRepository.findClientsByBirthdayMonthAndDay(birthdayDate.month() + 1, birthdayDate.date(), config.tenantId);
+      const clients = await clientRepository.findClientsByBirthdayMonthAndDay(getMonth(birthdayDate) + 1, getDate(birthdayDate), config.tenantId);
 
       for (const client of clients) {
         let rewardName = '';
@@ -33,7 +35,7 @@ const birthdayAutomationJob = cron.schedule('0 9 * * *', async () => { // Execut
           if (recompensa) {
             rewardName = recompensa.name;
             cupomCode = uuidv4().substring(0, 8).toUpperCase(); // Gera um código de cupom único
-            const expiryDate = moment().add(config.birthdayCouponValidityDays, 'days').endOf('day').toDate();
+            const expiryDate = endOfDay(addDays(toZonedTime(new Date(), timeZone), config.birthdayCouponValidityDays));
             await cupomRepository.create({
               code: cupomCode,
               recompensaId: recompensa.id,
@@ -48,7 +50,7 @@ const birthdayAutomationJob = cron.schedule('0 9 * * *', async () => { // Execut
           if (roleta) {
             rewardName = roleta.name; // Ou outro campo relevante da roleta
             cupomCode = uuidv4().substring(0, 8).toUpperCase(); // Gera um código de cupom único
-            const expiryDate = moment().add(config.birthdayCouponValidityDays, 'days').endOf('day').toDate();
+            const expiryDate = endOfDay(addDays(toZonedTime(new Date(), timeZone), config.birthdayCouponValidityDays));
             await cupomRepository.create({
               code: cupomCode,
               recompensaId: null, // Roleta não tem recompensaId diretamente

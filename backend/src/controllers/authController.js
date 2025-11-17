@@ -49,8 +49,7 @@ exports.registerSuperAdmin = asyncHandler(async (req, res) => {
 
 // Função de Login
 exports.login = asyncHandler(async (req, res) => {
-  console.log('Login request body:', req.body); // Debugging line
-  const { email, password } = req.body;
+    const { email, password } = req.body;
 
   // Buscar usuário pelo email
   const user = await authRepository.findUserByEmail(email);

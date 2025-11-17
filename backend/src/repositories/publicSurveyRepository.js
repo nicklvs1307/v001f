@@ -95,13 +95,8 @@ const getPublicSurveyById = async (id) => {
 };
 
 const submitSurveyResponses = async (surveyId, responses, respondentSessionId, clienteId, atendenteId, io) => {
-  console.log("submitSurveyResponses: Starting submission process");
-  console.log(`submitSurveyResponses: surveyId=${surveyId}, respondentSessionId=${respondentSessionId}, clienteId=${clienteId}, atendenteId=${atendenteId}`);
-  console.log("submitSurveyResponses: responses:", JSON.stringify(responses, null, 2));
-
-  const transaction = await sequelize.transaction();
-  console.log("submitSurveyResponses: Transaction started");
-
+  
+      const transaction = await sequelize.transaction();
   try {
     const survey = await models.Pesquisa.findByPk(surveyId, {
       attributes: ['isOpen', 'tenantId', 'askForAttendant', 'title'],
@@ -117,30 +112,24 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
       console.error("submitSurveyResponses: Survey not found");
       throw new ApiError(404, "Pesquisa não encontrada.");
     }
-    console.log("submitSurveyResponses: Survey found:", survey.title);
 
     if (!survey.isOpen) {
       console.error("submitSurveyResponses: Survey is not open");
       throw new ApiError(403, "Esta pesquisa não está aberta para novas respostas.");
     }
-    console.log("submitSurveyResponses: Survey is open");
 
     const questionsMap = new Map(survey.perguntas.map(q => [q.id, q]));
-    console.log("submitSurveyResponses: Questions map created");
 
     const finalAtendenteId = atendenteId === '' ? null : atendenteId;
-    console.log("submitSurveyResponses: finalAtendenteId=", finalAtendenteId);
 
     const responsesToCreate = [];
     for (const res of responses) {
-      console.log("submitSurveyResponses: Processing response:", JSON.stringify(res, null, 2));
       const question = questionsMap.get(res.perguntaId);
 
       if (!question) {
         console.error(`submitSurveyResponses: Question with ID ${res.perguntaId} not found`);
         throw new ApiError(400, `Pergunta com ID ${res.perguntaId} não encontrada na pesquisa.`);
       }
-      console.log("submitSurveyResponses: Question found:", question.text);
 
       // Mapeamento do valor da resposta para o campo correto no banco de dados
       const responseData = {
@@ -171,7 +160,6 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
           }
           break;
         default:
-          console.log(`submitSurveyResponses: Unknown question type ${question.type}, skipping`);
           continue;
       }
       
@@ -181,15 +169,11 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
       }
 
       responsesToCreate.push(responseData);
-      console.log("submitSurveyResponses: Response data prepared:", JSON.stringify(responseData, null, 2));
     }
 
-    console.log("submitSurveyResponses: Preparing to bulk create responses:", JSON.stringify(responsesToCreate, null, 2));
     await models.Resposta.bulkCreate(responsesToCreate, { transaction });
-    console.log("submitSurveyResponses: Bulk create successful");
 
     await transaction.commit();
-    console.log("submitSurveyResponses: Transaction committed");
 
     // Lógica para verificar nota máxima e retornar link do GMB
     let gmb_link = null;
@@ -209,11 +193,9 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
       });
 
       if (ratingQuestions.length > 0 && allMaxScore) {
-        console.log("submitSurveyResponses: All rating questions have max score. Checking for GMB link.");
         const tenant = await models.Tenant.findByPk(survey.tenantId, { attributes: ['gmb_link'] });
         if (tenant && tenant.gmb_link) {
           gmb_link = tenant.gmb_link;
-          console.log("submitSurveyResponses: GMB link found:", gmb_link);
         }
       }
     } catch (error) {
@@ -224,7 +206,6 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
     // Lógica para notificação de detratores via WhatsApp
     (async () => {
       try {
-        console.log("submitSurveyResponses: Checking for detractor responses for WhatsApp");
         const tenant = await models.Tenant.findByPk(survey.tenantId);
         if (!tenant || !tenant.reportPhoneNumber) {
           return;
@@ -251,13 +232,11 @@ const submitSurveyResponses = async (surveyId, responses, respondentSessionId, c
       }
     })();
 
-    console.log("submitSurveyResponses: Submission process finished successfully");
     return { respondentSessionId: respondentSessionId, gmb_link: gmb_link };
   } catch (error) {
     console.error('submitSurveyResponses: An error occurred. Rolling back transaction.', error);
     if (transaction && !transaction.finished) {
       await transaction.rollback();
-      console.log("submitSurveyResponses: Transaction rolled back");
     }
     throw error;
   }
@@ -277,9 +256,6 @@ const linkResponsesToClient = async (respondentSessionId, clienteId, transaction
     { where: { respondentSessionId, clienteId: null }, transaction }
   );
 
-  // START: Coupon Generation Logic
-  console.log(`linkResponsesToClient: Checking for rewards for client ${clienteId} and session ${respondentSessionId}`);
-  
   // Find one response to get the surveyId and tenantId
   const response = await models.Resposta.findOne({
     where: { respondentSessionId },
@@ -289,7 +265,6 @@ const linkResponsesToClient = async (respondentSessionId, clienteId, transaction
 
   if (response && response.pesquisaId) {
     const { pesquisaId, tenantId } = response;
-    console.log(`linkResponsesToClient: Found pesquisaId ${pesquisaId}`);
 
     const survey = await models.Pesquisa.findByPk(pesquisaId, {
       attributes: ['recompensaId'],
@@ -297,7 +272,6 @@ const linkResponsesToClient = async (respondentSessionId, clienteId, transaction
     });
 
     if (survey && survey.recompensaId) {
-      console.log(`linkResponsesToClient: Survey has reward ${survey.recompensaId}. Checking for existing coupon.`);
       
       // Check if a coupon already exists for this client and survey
       const existingCoupon = await models.Cupom.findOne({
@@ -309,7 +283,6 @@ const linkResponsesToClient = async (respondentSessionId, clienteId, transaction
       });
 
       if (!existingCoupon) {
-        console.log(`linkResponsesToClient: No existing coupon found. Generating a new one.`);
         const codigo = uuidv4().substring(0, 8).toUpperCase();
         const dataGeracao = new Date();
         const dataValidade = new Date();
@@ -327,9 +300,7 @@ const linkResponsesToClient = async (respondentSessionId, clienteId, transaction
         };
 
         await models.Cupom.create(cupomData, { transaction });
-        console.log(`linkResponsesToClient: Coupon ${codigo} generated for client ${clienteId}`);
       } else {
-        console.log(`linkResponsesToClient: Client ${clienteId} already has a coupon for this survey. Skipping generation.`);
       }
     }
   }

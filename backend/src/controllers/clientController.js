@@ -378,8 +378,7 @@ exports.importClients = asyncHandler(async (req, res) => {
     } catch (error) {
       errors.push({ row, error: error.message });
       skippedCount++;
-      console.log(`Erro ao importar linha: ${name}, ${error.message}`);
-    }
+              console.error(`Erro ao importar linha: ${name}, ${error.message}`);    }
   }
 
   console.log("Importação concluída.");

@@ -89,10 +89,10 @@ const DashboardPage = () => {
                 setError('');
                 const params = {};
                 if (startDate) {
-                    params.startDate = startDate.toISOString();
+                    params.startDate = format(startDate, 'yyyy-MM-dd');
                 }
                 if (endDate) {
-                    params.endDate = endDate.toISOString();
+                    params.endDate = format(endDate, 'yyyy-MM-dd');
                 }
                 const data = await dashboardService.getMainDashboard(params);
                 setDashboardData(data);
@@ -575,7 +575,7 @@ const DashboardPage = () => {
                                         primary={
                                             <Box>
                                                 <Typography component="span" variant="body2" color="text.secondary" mr={1}>
-                                                    {feedback.date}
+                                                    {format(parseISO(feedback.date), 'dd/MM/yyyy HH:mm')}
                                                 </Typography>
                                                 {feedback.client && (
                                                     <Typography component="span" variant="body2" fontWeight="bold">

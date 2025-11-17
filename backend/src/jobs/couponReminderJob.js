@@ -2,8 +2,7 @@ const cron = require('node-cron');
 const { Cupom, Client, Tenant, WhatsappTemplate } = require('../../models');
 const { fromZonedTime } = require('date-fns-tz');
 const { Op } = require('sequelize');
-const whatsappService = require('../services/whatsappService');
-const { format } = require('date-fns');
+const { format, addDays, startOfDay, endOfDay } = require('date-fns');
 
 const schedule = '0 9 * * *'; // Todos os dias às 9:00
 
@@ -30,16 +29,16 @@ const task = cron.schedule(schedule, async () => {
         continue;
       }
 
-      const targetDate = fromZonedTime(new Date(), 'America/Sao_Paulo');
-      targetDate.setDate(targetDate.getDate() + daysBefore);
+      const todayInZone = fromZonedTime(new Date(), 'America/Sao_Paulo');
+      const targetDate = addDays(todayInZone, daysBefore);
 
       const couponsToRemind = await Cupom.findAll({
         where: {
           tenantId,
           status: 'active',
           dataValidade: {
-            [Op.gte]: new Date(targetDate.setHours(0, 0, 0, 0)),
-            [Op.lt]: new Date(targetDate.setHours(23, 59, 59, 999)),
+            [Op.gte]: startOfDay(targetDate),
+            [Op.lt]: endOfDay(targetDate),
           },
         },
         include: [{ model: Client, as: 'cliente', required: true }],

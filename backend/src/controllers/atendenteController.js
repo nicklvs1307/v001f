@@ -4,7 +4,7 @@ const ApiError = require('../errors/ApiError');
 
 const atendenteController = {
     createAtendente: asyncHandler(async (req, res) => {
-    console.log('createAtendente called with body:', req.body);
+
     const { name, status } = req.body;
     const requestingUser = req.user;
 

@@ -42,7 +42,6 @@ const whatsappConfigController = {
   getQrCode: asyncHandler(async (req, res) => {
     const { tenantId } = req.user;
     const qrCodeData = await whatsappService.getQrCodeForConnect(tenantId);
-    console.log('[DEBUG] QR Code Response from Service:', qrCodeData);
     res.json(qrCodeData);
   }),
 
@@ -125,9 +124,6 @@ const whatsappConfigController = {
 
   // --- Webhook ---
   handleWebhook: asyncHandler(async (req, res) => {
-    const { event, instance, data } = req.body;
-    console.log('Webhook recebido:', req.body);
-
     if (event === 'connection.update') {
       const { state } = data;
       const newStatus = state === 'CONNECTED' ? 'connected' : 'disconnected';

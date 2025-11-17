@@ -1,5 +1,6 @@
 const cron = require('node-cron');
 const { fromZonedTime } = require('date-fns-tz');
+const { startOfDay } = require('date-fns');
 const { Op } = require('sequelize');
 const { Cupom } = require('../../models');
 
@@ -11,7 +12,7 @@ const task = cron.schedule(schedule, async () => {
 
   try {
     const today = fromZonedTime(new Date(), 'America/Sao_Paulo');
-    today.setHours(0, 0, 0, 0); // Define para o início do dia
+    const startOfToday = startOfDay(today);
 
     const [updateCount] = await Cupom.update(
       { status: 'expired' },
@@ -19,7 +20,7 @@ const task = cron.schedule(schedule, async () => {
         where: {
           status: 'active',
           dataValidade: {
-            [Op.lt]: today,
+            [Op.lt]: startOfToday,
           },
         },
       }

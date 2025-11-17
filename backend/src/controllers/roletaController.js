@@ -148,27 +148,19 @@ exports.sendPrizeMessage = asyncHandler(async (req, res) => {
   const premioNome = recompensa.name; 
 
   try {
-    console.log(`[RoletaController] Verificando se deve enviar mensagem de prêmio para o tenant ${tenantId}.`);
     const whatsappConfig = await WhatsappConfig.findOne({ where: { tenantId: tenantId } });
 
     if (!whatsappConfig) {
-      console.log(`[RoletaController] Nenhuma configuração do WhatsApp encontrada para o tenant. Mensagem não enviada.`);
     } else if (!whatsappConfig.sendPrizeMessage) {
-      console.log(`[RoletaController] Automação de envio de prêmio está desativada para o tenant. Mensagem não enviada.`);
     } else if (whatsappConfig.instanceStatus !== 'connected') {
-      console.log(`[RoletaController] Instância do WhatsApp não está conectada (${whatsappConfig.instanceStatus}). Mensagem não enviada.`);
     } else if (!cliente.phone) {
-      console.log(`[RoletaController] Cliente não possui número de telefone cadastrado. Mensagem não enviada.`);
     } else {
-      console.log(`[RoletaController] Todas as condições satisfeitas. Preparando para enviar a mensagem.`);
       let message = whatsappConfig.prizeMessageTemplate;
       message = message.replace('{{cliente}}', cliente.name.split(' ')[0]);
       message = message.replace('{{premio}}', premioNome);
       message = message.replace('{{cupom}}', cupom.codigo);
 
-      console.log(`[RoletaController] Mensagem final: "${message}"`);
       await whatsappService.sendTenantMessage(tenantId, cliente.phone, message);
-      console.log(`[RoletaController] Chamada para sendTenantMessage concluída.`);
     }
   } catch (error) {
     console.error(`[RoletaController] Falha ao tentar enviar mensagem de prêmio via WhatsApp para o tenant ${tenantId}. Erro:`, error.message);

@@ -575,7 +575,7 @@ const DashboardPage = () => {
                                         primary={
                                             <Box>
                                                 <Typography component="span" variant="body2" color="text.secondary" mr={1}>
-                                                    {format(parseISO(feedback.date), 'dd/MM/yyyy HH:mm')}
+                                                    {feedback.date ? format(parseISO(feedback.date), 'dd/MM/yyyy HH:mm') : ''}
                                                 </Typography>
                                                 {feedback.client && (
                                                     <Typography component="span" variant="body2" fontWeight="bold">

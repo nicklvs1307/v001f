@@ -1,7 +1,7 @@
 const { Pesquisa, Resposta, Client, Cupom, Pergunta } = require('../../../models');
 const { Sequelize, Op } = require('sequelize');
-const { subDays, eachDayOfInterval, format, startOfDay, endOfDay } = require('date-fns');
-const { fromZonedTime } = require('date-fns-tz');
+const { subDays, eachDayOfInterval, format } = require('date-fns');
+const { fromZonedTime, zonedTimeToUtc } = require('date-fns-tz');
 
 const timeZone = 'America/Sao_Paulo';
 const { fn, col, literal } = Sequelize;
@@ -38,8 +38,11 @@ const getResponseChart = async (tenantId = null, startDate = null, endDate = nul
     const whereClause = tenantId ? { tenantId } : {};
     if (surveyId) whereClause.pesquisaId = surveyId;
 
-    const end = endDate ? endOfDay(new Date(endDate)) : fromZonedTime(new Date(), timeZone);
-    const start = startDate ? startOfDay(new Date(startDate)) : startOfDay(subDays(end, 6));
+    const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
+    const end = zonedTimeToUtc(endInput, timeZone);
+
+    const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 6);
+    const start = zonedTimeToUtc(startInput, timeZone);
 
     whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
 
@@ -55,7 +58,8 @@ const getResponseChart = async (tenantId = null, startDate = null, endDate = nul
     });
 
     const dataMap = new Map(responsesByPeriod.map(item => [item.period, parseInt(item.count, 10)]));
-    const intervalDays = eachDayOfInterval({ start, end });
+    
+    const intervalDays = eachDayOfInterval({ start: startInput, end: endInput });
 
     const chartData = intervalDays.map(day => {
         const key = format(day, 'dd/MM/yyyy');

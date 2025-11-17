@@ -1,5 +1,0 @@
-fix(dashboard): Corrige card de Aniversariantes do Mês
-
-- Corrige o erro de digitação "Ambresários no Mês" para "Aniversariantes do Mês" no frontend.
-- Resolve o problema do card de aniversariantes aparecer em branco no dashboard.
-- Alinha a nomenclatura e a estrutura de dados entre frontend e backend, movendo o cálculo de aniversariantes para o `summary.js` e garantindo que o valor seja retornado como `summary.ambassadorsMonth`, conforme esperado pelo frontend.

@@ -200,7 +200,7 @@ const CupomDashboardPage = () => {
                 <TableBody>
                   {recentCupons.map((cupom) => (
                     <TableRow key={cupom.id}>
-                      <TableCell>{cupom.cliente?.name || 'N/A'}</TableCell>
+                      <TableCell>{cupom.client?.name || 'N/A'}</TableCell>
                       <TableCell>{cupom.recompensa?.name || 'N/A'}</TableCell>
                       <TableCell>{format(parseISO(cupom.createdAt), 'dd/MM/yy HH:mm')}</TableCell>
                     </TableRow>

@@ -1,28 +1,28 @@
 const { Resposta, Pergunta, Client, sequelize } = require('../../../models');
 const { Op } = require('sequelize');
+const { subDays } = require('date-fns');
+const { zonedTimeToUtc } = require('date-fns-tz');
 const { PorterStemmerPt } = require('natural');
 const stopwords = require('../../utils/stopwords');
 
-const buildDateFilter = (startDate, endDate) => {
-    const filter = {};
-    if (startDate) {
-        filter[Op.gte] = startDate;
-    }
-    if (endDate) {
-        filter[Op.lte] = endDate;
-    }
-    return filter;
-};
+
 
 const getFeedbacks = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
     const whereClause = tenantId ? { tenantId, textValue: { [Op.ne]: null, [Op.ne]: '' } } : { textValue: { [Op.ne]: null, [Op.ne]: '' } };
     if (surveyId) {
         whereClause.pesquisaId = surveyId;
     }
-    
-    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
-    if (dateFilter) {
-        whereClause.createdAt = dateFilter;
+
+    const timeZone = 'America/Sao_Paulo';
+
+    if (startDate || endDate) {
+        const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
+        const end = zonedTimeToUtc(endInput, timeZone);
+
+        const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 6);
+        const start = zonedTimeToUtc(startInput, timeZone);
+
+        whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
     }
 
     const feedbacksData = await Resposta.findAll({
@@ -58,9 +58,16 @@ const getWordCloudData = async (tenantId = null, startDate = null, endDate = nul
         whereClause.pesquisaId = surveyId;
     }
 
-    const dateFilter = (startDate || endDate) ? buildDateFilter(startDate, endDate) : null;
-    if (dateFilter) {
-        whereClause.createdAt = dateFilter;
+    const timeZone = 'America/Sao_Paulo';
+
+    if (startDate || endDate) {
+        const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
+        const end = zonedTimeToUtc(endInput, timeZone);
+
+        const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 6);
+        const start = zonedTimeToUtc(startInput, timeZone);
+
+        whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
     }
 
     const feedbacks = await Resposta.findAll({

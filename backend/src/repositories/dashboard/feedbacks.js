@@ -1,7 +1,7 @@
 const { Resposta, Pergunta, Client, sequelize } = require('../../../models');
 const { Op } = require('sequelize');
 const { subDays } = require('date-fns');
-const { zonedTimeToUtc } = require('date-fns-tz');
+const dateFnsTz = require('date-fns-tz');
 const { PorterStemmerPt } = require('natural');
 const stopwords = require('../../utils/stopwords');
 
@@ -17,10 +17,10 @@ const getFeedbacks = async (tenantId = null, startDate = null, endDate = null, s
 
     if (startDate || endDate) {
         const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-        const end = zonedTimeToUtc(endInput, timeZone);
+        const end = dateFnsTz.zonedTimeToUtc(endInput, timeZone);
 
         const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 6);
-        const start = zonedTimeToUtc(startInput, timeZone);
+        const start = dateFnsTz.zonedTimeToUtc(startInput, timeZone);
 
         whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
     }
@@ -62,10 +62,10 @@ const getWordCloudData = async (tenantId = null, startDate = null, endDate = nul
 
     if (startDate || endDate) {
         const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-        const end = zonedTimeToUtc(endInput, timeZone);
+        const end = dateFnsTz.zonedTimeToUtc(endInput, timeZone);
 
         const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 6);
-        const start = zonedTimeToUtc(startInput, timeZone);
+        const start = dateFnsTz.zonedTimeToUtc(startInput, timeZone);
 
         whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
     }

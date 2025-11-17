@@ -1,7 +1,7 @@
 const { Pesquisa, Resposta, Client, Cupom, Pergunta } = require('../../../models');
 const { Sequelize, Op } = require('sequelize');
 const { subDays, eachDayOfInterval, format } = require('date-fns');
-const { fromZonedTime, zonedTimeToUtc } = require('date-fns-tz');
+const dateFnsTz = require('date-fns-tz');
 
 const timeZone = 'America/Sao_Paulo';
 const { fn, col, literal } = Sequelize;
@@ -39,10 +39,10 @@ const getResponseChart = async (tenantId = null, startDate = null, endDate = nul
     if (surveyId) whereClause.pesquisaId = surveyId;
 
     const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-    const end = zonedTimeToUtc(endInput, timeZone);
+    const end = dateFnsTz.zonedTimeToUtc(endInput, timeZone);
 
     const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 6);
-    const start = zonedTimeToUtc(startInput, timeZone);
+    const start = dateFnsTz.zonedTimeToUtc(startInput, timeZone);
 
     whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
 

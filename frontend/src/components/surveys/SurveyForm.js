@@ -28,7 +28,9 @@ import { Alert } from '@mui/material';
 import { SURVEY_STATUS } from '../../constants/surveyStatus';
 import AddIcon from '@mui/icons-material/Add';
 import QuestionForm from './QuestionForm';
-import { formatDateForInput } from '../../utils/dateUtils';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 const SurveyForm = ({ initialData = {}, onSubmit, loading = false, error = null }) => {
   const formActions = useSurveyForm(initialData);
@@ -151,49 +153,43 @@ const SurveyForm = ({ initialData = {}, onSubmit, loading = false, error = null 
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              label="Data de Início (Opcional)"
-              name="startDate"
-              type="date"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={formatDateForInput(survey.startDate)}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-            />
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label="Data de Início (Opcional)"
+                value={survey.startDate ? new Date(survey.startDate) : null}
+                onChange={(newValue) => formActions.handleDateChange('startDate', newValue)}
+                renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+              />
+            </LocalizationProvider>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              label="Data de Término"
-              name="endDate"
-              type="date"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={formatDateForInput(survey.endDate)}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              required
-              error={!!errors.endDate}
-              helperText={errors.endDate}
-            />
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label="Data de Término"
+                value={survey.endDate ? new Date(survey.endDate) : null}
+                onChange={(newValue) => formActions.handleDateChange('endDate', newValue)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    margin="normal"
+                    required
+                    error={!!errors.endDate}
+                    helperText={errors.endDate}
+                  />
+                )}
+              />
+            </LocalizationProvider>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              label="Data de Vencimento (Opcional)"
-              name="dueDate"
-              type="date"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={formatDateForInput(survey.dueDate)}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-            />
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label="Data de Vencimento (Opcional)"
+                value={survey.dueDate ? new Date(survey.dueDate) : null}
+                onChange={(newValue) => formActions.handleDateChange('dueDate', newValue)}
+                renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+              />
+            </LocalizationProvider>
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth margin="normal">

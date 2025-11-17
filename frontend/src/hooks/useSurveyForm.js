@@ -40,6 +40,19 @@ const useSurveyForm = (initialData = {}) => {
         });
     }, []);
 
+    const handleDateChange = useCallback((name, value) => {
+        setSurvey((prevSurvey) => {
+            const updatedSurvey = {
+                ...prevSurvey,
+                [name]: value,
+            };
+            if (name === 'startDate' || name === 'endDate') {
+                validateDates(updatedSurvey);
+            }
+            return updatedSurvey;
+        });
+    }, []);
+
     const handleRewardChange = useCallback((e) => {
         const { name, value } = e.target;
 
@@ -127,6 +140,7 @@ const useSurveyForm = (initialData = {}) => {
         setSurvey,
         errors,
         handleChange,
+        handleDateChange,
         handleAddQuestion,
         handleQuestionChange,
         handleCriterioChange,

@@ -8,7 +8,7 @@ const {
 } = require("../../../models");
 const { Op } = require("sequelize");
 const { subDays } = require("date-fns");
-const { convertToTimeZone } = require("../../../utils/dateUtils");
+const { convertToTimeZone } = require("../../utils/dateUtils");
 const ratingService = require("../../services/ratingService");
 
 const getRanking = async (

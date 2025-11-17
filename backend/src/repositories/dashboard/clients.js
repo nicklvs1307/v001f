@@ -5,7 +5,7 @@ const { Op } = sequelize;
 const {
   convertToTimeZone,
   convertFromTimeZone,
-} = require("../../../utils/dateUtils");
+} = require("../../utils/dateUtils");
 
 const getBirthdaysOfMonth = async (tenantId = null) => {
   const whereClause = tenantId ? { tenantId } : {};

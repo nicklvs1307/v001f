@@ -1,7 +1,7 @@
 const { Resposta, Pergunta, Client, sequelize } = require("../../../models");
 const { Op } = require("sequelize");
 const { subDays } = require("date-fns");
-const { convertToTimeZone } = require("../../../utils/dateUtils");
+const { convertToTimeZone } = require("../../utils/dateUtils");
 const { PorterStemmerPt } = require("natural");
 const stopwords = require("../../utils/stopwords");
 

@@ -11,7 +11,7 @@ const {
   convertToTimeZone,
   formatInTimeZone,
   TIMEZONE,
-} = require("../../../utils/dateUtils");
+} = require("../../utils/dateUtils");
 const { getBirthdaysOfMonth } = require("./clients");
 const ratingService = require("../../services/ratingService");
 

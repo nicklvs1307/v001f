@@ -5,7 +5,7 @@ const { Op } = sequelize;
 const {
   convertToTimeZone,
   convertFromTimeZone,
-} = require("../../../utils/dateUtils");
+} = require("../../utils/dateUtils");
 const ratingService = require("../../services/ratingService");
 const { getResponseChart } = require("./charts");
 

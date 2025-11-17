@@ -7,7 +7,7 @@ const {
 } = require("../../../models");
 const { Sequelize, Op } = require("sequelize");
 const { subDays, eachDayOfInterval, format } = require("date-fns");
-const { TIMEZONE, convertToTimeZone } = require("../../../utils/dateUtils");
+const { TIMEZONE, convertToTimeZone } = require("../../utils/dateUtils");
 
 const { fn, col, literal } = Sequelize;
 

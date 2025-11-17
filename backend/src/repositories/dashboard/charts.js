@@ -17,7 +17,7 @@ const formatDateTz = (period, column) => {
     .split(".")
     .map((part) => `"${part}"`)
     .join(".");
-  const zonedColumn = `(${quotedColumn} AT TIME ZONE 'UTC' AT TIME ZONE '${timeZone}')`;
+  const zonedColumn = `(${quotedColumn} AT TIME ZONE 'UTC' AT TIME ZONE '${TIMEZONE}')`;
 
   let formatString;
   switch (period) {

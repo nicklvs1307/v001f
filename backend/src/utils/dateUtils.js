@@ -10,7 +10,7 @@ const TIMEZONE = "America/Sao_Paulo";
  * @returns {Date} A data convertida para UTC.
  */
 const convertToTimeZone = (date) => {
-  return zonedTimeToUtc(date, TIMEZONE);
+  return fromZonedTime(date, TIMEZONE);
 };
 
 /**

@@ -42,7 +42,7 @@ const getNpsByDayOfWeek = async (tenantId = null, startDate = null, endDate = nu
         }],
         attributes: [
             'ratingValue',
-            [sequelize.fn('EXTRACT', sequelize.literal(`ISODOW FROM "createdAt" AT TIME ZONE 'America/Sao_Paulo'`)), 'dayOfWeek']
+            [sequelize.fn('EXTRACT', sequelize.literal(`ISODOW FROM "Resposta"."createdAt" AT TIME ZONE 'America/Sao_Paulo'`)), 'dayOfWeek']
         ]
     });
 

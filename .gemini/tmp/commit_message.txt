@@ -1,11 +1,5 @@
-feat(reports): Padroniza relatórios e corrige inconsistências
+fix(dashboard): Corrige ambiguidade de coluna 'createdAt' em consulta
 
-Esta atualização aborda várias questões no sistema de relatórios para melhorar a consistência, precisão e funcionalidade.
+A consulta para obter o NPS por dia da semana falhava com um erro de "column reference 'createdAt' is ambiguous" porque a query une as tabelas 'respostas' e 'perguntas', e ambas possuem a coluna 'createdAt'.
 
-- Padronização de Datas: Centraliza a lógica de tratamento de datas e fuso horário (`America/Sao_Paulo`) para todos os relatórios. Corrige a inconsistência onde a página de detalhes da pesquisa não aplicava filtros de data.
-
-- Correção de Bug de Fuso Horário: Resolve um bug crítico na nuvem de palavras e na lista de feedbacks onde um filtro UTC estava omitindo dados recentes.
-
-- Novas Métricas: Adiciona contagens de respostas "com cadastro" e "sem cadastro" aos dashboards de relatório, fornecendo novos insights.
-
-- Refatoração: Move a lógica de data para um utilitário compartilhado e refatora os controllers e repositórios para usar a nova estrutura, melhorando a manutenibilidade.
+Esta correção especifica a tabela na consulta (`"Resposta"."createdAt"`), resolvendo a ambiguidade e permitindo que a API do dashboard funcione corretamente.

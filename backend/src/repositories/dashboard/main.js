@@ -17,9 +17,13 @@ const getMainDashboard = async function (
   endDate = null,
   surveyId = null,
 ) {
+  const isValidDate = (dateStr) => dateStr && !isNaN(new Date(dateStr));
+  const validStartDate = isValidDate(startDate) ? startDate : null;
+  const validEndDate = isValidDate(endDate) ? endDate : null;
+
   // Ensure startDate and endDate are Date objects for calculations
-  const start = startDate ? new Date(startDate) : null;
-  const end = endDate ? new Date(endDate) : null;
+  const start = validStartDate ? new Date(validStartDate) : null;
+  const end = validEndDate ? new Date(validEndDate) : null;
 
   let npsTrendPeriod = "day";
   if (start && end) {
@@ -32,62 +36,72 @@ const getMainDashboard = async function (
     }
   }
 
-  const summary = await getSummary(tenantId, startDate, endDate, surveyId);
+  const summary = await getSummary(
+    tenantId,
+    validStartDate,
+    validEndDate,
+    surveyId,
+  );
   const responseChart = await getResponseChart(
     tenantId,
-    startDate,
-    endDate,
+    validStartDate,
+    validEndDate,
     surveyId,
   );
   const attendantsPerformance = await getAttendantsPerformanceWithGoals(
     tenantId,
-    startDate,
-    endDate,
+    validStartDate,
+    validEndDate,
     surveyId,
   );
   const criteriaScores = await getCriteriaScores(
     tenantId,
-    startDate,
-    endDate,
+    validStartDate,
+    validEndDate,
     surveyId,
   );
-  const feedbacks = await getFeedbacks(tenantId, startDate, endDate, surveyId);
+  const feedbacks = await getFeedbacks(
+    tenantId,
+    validStartDate,
+    validEndDate,
+    surveyId,
+  );
   const conversionChart = await getConversionChart(
     tenantId,
-    startDate,
-    endDate,
+    validStartDate,
+    validEndDate,
     surveyId,
   );
   const npsByDayOfWeek = await getNpsByDayOfWeek(
     tenantId,
-    startDate,
-    endDate,
+    validStartDate,
+    validEndDate,
     surveyId,
   );
   const npsTrend = await getNpsTrendData(
     tenantId,
     npsTrendPeriod,
-    startDate,
-    endDate,
+    validStartDate,
+    validEndDate,
     surveyId,
   );
   const overallResults = await getOverallResults(
     tenantId,
-    startDate,
-    endDate,
+    validStartDate,
+    validEndDate,
     surveyId,
   );
 
   const wordCloudData = await getWordCloudData(
     tenantId,
-    startDate,
-    endDate,
+    validStartDate,
+    validEndDate,
     surveyId,
   );
   const clientStatusCounts = await getClientStatusCounts(
     tenantId,
-    startDate,
-    endDate,
+    validStartDate,
+    validEndDate,
   );
 
   return {
@@ -104,7 +118,6 @@ const getMainDashboard = async function (
     clientStatusCounts,
   };
 };
-
 module.exports = {
   getMainDashboard,
 };

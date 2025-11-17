@@ -1,7 +1,7 @@
-'use strict';
-const asyncHandler = require('express-async-handler');
-const roletaPremioRepository = require('../repositories/roletaPremioRepository');
-const ApiError = require('../errors/ApiError');
+"use strict";
+const asyncHandler = require("express-async-handler");
+const roletaPremioRepository = require("../repositories/roletaPremioRepository");
+const ApiError = require("../errors/ApiError");
 
 // @desc    Criar um novo prêmio para a roleta
 // @route   POST /api/roleta-premios
@@ -11,10 +11,20 @@ exports.createPremio = asyncHandler(async (req, res) => {
   const tenantId = req.user.tenantId;
 
   if (!roletaId || !nome || !probabilidade || !recompensaId) {
-    throw new ApiError(400, 'ID da roleta, nome, probabilidade e ID da recompensa são obrigatórios.');
+    throw new ApiError(
+      400,
+      "ID da roleta, nome, probabilidade e ID da recompensa são obrigatórios.",
+    );
   }
 
-  const premio = await roletaPremioRepository.createPremio({ tenantId, roletaId, nome, descricao, probabilidade, recompensaId });
+  const premio = await roletaPremioRepository.createPremio({
+    tenantId,
+    roletaId,
+    nome,
+    descricao,
+    probabilidade,
+    recompensaId,
+  });
   res.status(201).json(premio);
 });
 
@@ -37,7 +47,7 @@ exports.getPremioById = asyncHandler(async (req, res) => {
   const premio = await roletaPremioRepository.findById(id, tenantId);
 
   if (!premio) {
-    throw new ApiError(404, 'Prêmio da roleta não encontrado.');
+    throw new ApiError(404, "Prêmio da roleta não encontrado.");
   }
   res.status(200).json(premio);
 });
@@ -50,12 +60,21 @@ exports.updatePremio = asyncHandler(async (req, res) => {
   const tenantId = req.user.tenantId;
   const { roletaId, nome, descricao, probabilidade, recompensaId } = req.body;
 
-  const updatedRows = await roletaPremioRepository.updatePremio(id, tenantId, { roletaId, nome, descricao, probabilidade, recompensaId });
+  const updatedRows = await roletaPremioRepository.updatePremio(id, tenantId, {
+    roletaId,
+    nome,
+    descricao,
+    probabilidade,
+    recompensaId,
+  });
 
   if (updatedRows === 0) {
-    throw new ApiError(404, 'Prêmio da roleta não encontrado para atualização.');
+    throw new ApiError(
+      404,
+      "Prêmio da roleta não encontrado para atualização.",
+    );
   }
-  res.status(200).json({ message: 'Prêmio atualizado com sucesso.' });
+  res.status(200).json({ message: "Prêmio atualizado com sucesso." });
 });
 
 // @desc    Deletar um prêmio da roleta
@@ -68,7 +87,7 @@ exports.deletePremio = asyncHandler(async (req, res) => {
   const deletedRows = await roletaPremioRepository.deletePremio(id, tenantId);
 
   if (deletedRows === 0) {
-    throw new ApiError(404, 'Prêmio da roleta não encontrado para deleção.');
+    throw new ApiError(404, "Prêmio da roleta não encontrado para deleção.");
   }
   res.status(204).send();
 });

@@ -1,5 +1,5 @@
 const { AtendenteMeta, Atendente, Tenant } = require("../../models");
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 
 const atendenteMetaRepository = {
   // Cria ou atualiza a meta de um atendente
@@ -19,9 +19,7 @@ const atendenteMetaRepository = {
   getMetaByAtendenteId: async (atendenteId, tenantId) => {
     return AtendenteMeta.findOne({
       where: { atendenteId, tenantId },
-      include: [
-        { model: Atendente, as: 'atendente', attributes: ['name'] },
-      ],
+      include: [{ model: Atendente, as: "atendente", attributes: ["name"] }],
     });
   },
 
@@ -29,10 +27,8 @@ const atendenteMetaRepository = {
   getAllMetasByTenant: async (tenantId) => {
     return AtendenteMeta.findAll({
       where: { tenantId },
-      include: [
-        { model: Atendente, as: 'atendente', attributes: ['name'] },
-      ],
-      order: [['atendente', 'name', 'ASC']],
+      include: [{ model: Atendente, as: "atendente", attributes: ["name"] }],
+      order: [["atendente", "name", "ASC"]],
     });
   },
 

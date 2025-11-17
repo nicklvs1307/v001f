@@ -1,4 +1,4 @@
-const { Tenant } = require('../../models');
+const { Tenant } = require("../../models");
 
 class ConfigRepository {
   async getTenantConfig(tenantId) {

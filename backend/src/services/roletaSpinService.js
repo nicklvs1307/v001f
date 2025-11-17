@@ -1,27 +1,34 @@
-const { RoletaSpin, Roleta, RoletaPremio, Client } = require('../../models');
-const { fromZonedTime } = require('date-fns-tz');
-const ApiError = require('../errors/ApiError');
+const { RoletaSpin, Roleta, RoletaPremio, Client } = require("../../models");
+const { convertFromTimeZone } = require("../utils/dateUtils");
+const ApiError = require("../errors/ApiError");
 
 class RoletaSpinService {
   async validateToken(token) {
     const roletaSpin = await RoletaSpin.findOne({
       where: { token },
       include: [
-        { model: Roleta, as: 'roleta', include: [{ model: RoletaPremio, as: 'premios' }] },
-        { model: Client, as: 'client' },
+        {
+          model: Roleta,
+          as: "roleta",
+          include: [{ model: RoletaPremio, as: "premios" }],
+        },
+        { model: Client, as: "client" },
       ],
     });
 
     if (!roletaSpin) {
-      throw ApiError.notFound('Token de roleta não encontrado.');
+      throw ApiError.notFound("Token de roleta não encontrado.");
     }
 
-    if (roletaSpin.status === 'USED') {
-      throw ApiError.badRequest('Este token já foi utilizado.');
+    if (roletaSpin.status === "USED") {
+      throw ApiError.badRequest("Este token já foi utilizado.");
     }
 
-    if (roletaSpin.expiresAt && fromZonedTime(new Date(), 'America/Sao_Paulo') > roletaSpin.expiresAt) {
-      throw ApiError.badRequest('Este token expirou.');
+    if (
+      roletaSpin.expiresAt &&
+      convertFromTimeZone(new Date()) > roletaSpin.expiresAt
+    ) {
+      throw ApiError.badRequest("Este token expirou.");
     }
 
     // Retorna os dados necessários para a página da roleta
@@ -44,19 +51,22 @@ class RoletaSpinService {
     });
 
     if (!roletaSpin) {
-      throw ApiError.notFound('Token de roleta não encontrado.');
+      throw ApiError.notFound("Token de roleta não encontrado.");
     }
 
-    if (roletaSpin.status === 'USED') {
-      throw ApiError.badRequest('Este token já foi utilizado.');
+    if (roletaSpin.status === "USED") {
+      throw ApiError.badRequest("Este token já foi utilizado.");
     }
 
-    if (roletaSpin.expiresAt && fromZonedTime(new Date(), 'America/Sao_Paulo') > roletaSpin.expiresAt) {
-      throw ApiError.badRequest('Este token expirou.');
+    if (
+      roletaSpin.expiresAt &&
+      convertFromTimeZone(new Date()) > roletaSpin.expiresAt
+    ) {
+      throw ApiError.badRequest("Este token expirou.");
     }
 
     // Atualiza o status do spin para 'USED' e registra o prêmio
-    roletaSpin.status = 'USED';
+    roletaSpin.status = "USED";
     roletaSpin.premioId = premioId;
     await roletaSpin.save();
 

@@ -1,4 +1,4 @@
-const { RoletaSpin } = require('../../models');
+const { RoletaSpin } = require("../../models");
 
 class RoletaSpinRepository {
   async bulkCreate(data) {

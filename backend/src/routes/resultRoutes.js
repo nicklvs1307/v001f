@@ -12,12 +12,10 @@ router.use(protect);
 router
   .route("/surveys/:id/results")
   .get(
-    [
-      check("id", "ID da pesquisa inválido").isUUID().not().isEmpty(),
-    ],
+    [check("id", "ID da pesquisa inválido").isUUID().not().isEmpty()],
     validate,
     authorize("results:read"),
-    resultController.getSurveyResults
+    resultController.getSurveyResults,
   );
 
 module.exports = router;

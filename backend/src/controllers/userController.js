@@ -2,8 +2,8 @@ const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const userRepository = require("../repositories/userRepository");
 const ApiError = require("../errors/ApiError");
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 // @desc    Criar um novo usuário (para um tenant específico)
 // @access  Private (Super Admin ou Admin)
@@ -53,13 +53,13 @@ exports.createUser = asyncHandler(async (req, res) => {
   );
 
   // --- NOTIFICATION ---
-  const io = req.app.get('io');
-  const notificationService = require('../services/NotificationService');
+  const io = req.app.get("io");
+  const notificationService = require("../services/NotificationService");
   await notificationService.createNotification(io, {
-    type: 'NEW_USER',
+    type: "NEW_USER",
     message: `Novo usuário criado: ${name}`,
     tenantId: targetTenantId,
-    userId: req.user.id
+    userId: req.user.id,
   });
   // --- END NOTIFICATION ---
 
@@ -73,7 +73,8 @@ exports.createUser = asyncHandler(async (req, res) => {
 // @access Private (Super Admin ou Admin)
 exports.getUsers = asyncHandler(async (req, res) => {
   const requestingUser = req.user;
-  const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+  const tenantId =
+    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
   const users = await userRepository.getUsers(tenantId);
   res.status(200).json(users);
 });
@@ -83,7 +84,8 @@ exports.getUsers = asyncHandler(async (req, res) => {
 exports.getUserById = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const requestingUser = req.user;
-  const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+  const tenantId =
+    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
   const user = await userRepository.findById(id, tenantId);
 
@@ -109,7 +111,8 @@ exports.updateUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { name, email, roleId, password } = req.body;
   const requestingUser = req.user;
-  const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+  const tenantId =
+    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
   const existingUser = await userRepository.findUserById(id, tenantId);
   if (!existingUser) {
@@ -122,7 +125,10 @@ exports.updateUser = asyncHandler(async (req, res) => {
   if (
     requestingUser.userId !== id && // Se não for o próprio usuário
     requestingUser.role !== "Super Admin" && // E não for Super Admin
-    !(requestingUser.role === "Admin" && existingUser.tenantId === requestingUser.tenantId) // E não for Admin do mesmo tenant
+    !(
+      requestingUser.role === "Admin" &&
+      existingUser.tenantId === requestingUser.tenantId
+    ) // E não for Admin do mesmo tenant
   ) {
     throw new ApiError(
       403,
@@ -168,37 +174,62 @@ exports.uploadProfilePicture = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Nenhum arquivo enviado.");
   }
 
-  const oldProfilePictureUrl = await userRepository.getUserProfilePictureUrlById(id);
+  const oldProfilePictureUrl =
+    await userRepository.getUserProfilePictureUrlById(id);
 
   // O caminho do arquivo é relativo à raiz do projeto, mas precisamos de um caminho acessível via URL
   // Assumindo que 'uploads' é servido estaticamente em /uploads
   const profilePictureUrl = `/uploads/profile-pictures/${req.file.filename}`;
 
-  const updatedUser = await userRepository.updateUser(id, null, null, null, null, profilePictureUrl); // Apenas atualiza a foto de perfil
+  const updatedUser = await userRepository.updateUser(
+    id,
+    null,
+    null,
+    null,
+    null,
+    profilePictureUrl,
+  ); // Apenas atualiza a foto de perfil
 
   if (!updatedUser) {
     // Se o usuário não for encontrado para atualização, deletar o arquivo recém-enviado
-    const filePath = path.join(__dirname, '..', '..', 'uploads', 'profile-pictures', req.file.filename);
+    const filePath = path.join(
+      __dirname,
+      "..",
+      "..",
+      "uploads",
+      "profile-pictures",
+      req.file.filename,
+    );
     if (fs.existsSync(filePath)) {
       try {
         await fs.promises.unlink(filePath);
-        console.error(`Arquivo recém-enviado ${filePath} deletado devido a falha na atualização do usuário.`);
+        console.error(
+          `Arquivo recém-enviado ${filePath} deletado devido a falha na atualização do usuário.`,
+        );
       } catch (unlinkError) {
-        console.error(`Erro ao deletar arquivo recém-enviado ${filePath}:`, unlinkError);
+        console.error(
+          `Erro ao deletar arquivo recém-enviado ${filePath}:`,
+          unlinkError,
+        );
       }
     }
-    throw new ApiError(404, "Usuário não encontrado para atualização da foto de perfil.");
+    throw new ApiError(
+      404,
+      "Usuário não encontrado para atualização da foto de perfil.",
+    );
   }
 
   // Se houver uma foto de perfil antiga e ela for diferente da nova, deletá-la
   if (oldProfilePictureUrl && oldProfilePictureUrl !== profilePictureUrl) {
-    const oldFilePath = path.join(__dirname, '..', '..', oldProfilePictureUrl);
+    const oldFilePath = path.join(__dirname, "..", "..", oldProfilePictureUrl);
     if (fs.existsSync(oldFilePath)) {
       try {
         await fs.promises.unlink(oldFilePath);
-
       } catch (unlinkError) {
-        console.error(`Erro ao deletar arquivo antigo ${oldFilePath}:`, unlinkError);
+        console.error(
+          `Erro ao deletar arquivo antigo ${oldFilePath}:`,
+          unlinkError,
+        );
       }
     }
   }
@@ -215,7 +246,8 @@ exports.uploadProfilePicture = asyncHandler(async (req, res) => {
 exports.deleteUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const requestingUser = req.user;
-  const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+  const tenantId =
+    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
   const existingUser = await userRepository.findUserById(id, tenantId);
   if (!existingUser) {

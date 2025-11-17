@@ -16,10 +16,12 @@ const gmbConfigController = {
 
     const config = await gmbConfigRepository.createOrUpdateConfig(
       requestingUser.tenantId,
-      { accessToken, refreshToken, locationId }
+      { accessToken, refreshToken, locationId },
     );
 
-    res.status(200).json({ message: "Configuração GMB salva com sucesso!", config });
+    res
+      .status(200)
+      .json({ message: "Configuração GMB salva com sucesso!", config });
   }),
 
   // @desc    Obtém a configuração GMB de um tenant
@@ -28,10 +30,15 @@ const gmbConfigController = {
   getConfig: asyncHandler(async (req, res) => {
     const requestingUser = req.user;
 
-    const config = await gmbConfigRepository.getConfigByTenantId(requestingUser.tenantId);
+    const config = await gmbConfigRepository.getConfigByTenantId(
+      requestingUser.tenantId,
+    );
 
     if (!config) {
-      throw new ApiError(404, "Configuração GMB não encontrada para este tenant.");
+      throw new ApiError(
+        404,
+        "Configuração GMB não encontrada para este tenant.",
+      );
     }
 
     res.status(200).json(config);
@@ -43,7 +50,9 @@ const gmbConfigController = {
   deleteConfig: asyncHandler(async (req, res) => {
     const requestingUser = req.user;
 
-    const deletedRows = await gmbConfigRepository.deleteConfig(requestingUser.tenantId);
+    const deletedRows = await gmbConfigRepository.deleteConfig(
+      requestingUser.tenantId,
+    );
 
     if (deletedRows === 0) {
       throw new ApiError(404, "Configuração GMB não encontrada para deleção.");

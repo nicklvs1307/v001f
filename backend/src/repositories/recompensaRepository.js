@@ -1,8 +1,20 @@
 const { Recompensa, Tenant, Cupom } = require("../../models");
-const { Op, fn, col } = require('sequelize');
+const { Op, fn, col } = require("sequelize");
 
-const createRecompensa = async (tenantId, name, description, pointsRequired, active) => {
-  return Recompensa.create({ tenantId, name, description, pointsRequired, active });
+const createRecompensa = async (
+  tenantId,
+  name,
+  description,
+  pointsRequired,
+  active,
+) => {
+  return Recompensa.create({
+    tenantId,
+    name,
+    description,
+    pointsRequired,
+    active,
+  });
 };
 
 const getAllRecompensas = async (tenantId, activeStatus = null) => {
@@ -12,7 +24,7 @@ const getAllRecompensas = async (tenantId, activeStatus = null) => {
   }
   return Recompensa.findAll({
     where: whereClause,
-    order: [['name', 'ASC']],
+    order: [["name", "ASC"]],
   });
 };
 
@@ -21,10 +33,17 @@ const findById = async (id, tenantId = null) => {
   return Recompensa.findOne({ where: whereClause });
 };
 
-const updateRecompensa = async (id, tenantId, name, description, pointsRequired, active) => {
+const updateRecompensa = async (
+  id,
+  tenantId,
+  name,
+  description,
+  pointsRequired,
+  active,
+) => {
   const [updatedRows, [updatedRecompensa]] = await Recompensa.update(
     { name, description, pointsRequired, active },
-    { where: { id, tenantId }, returning: true }
+    { where: { id, tenantId }, returning: true },
   );
   return updatedRecompensa;
 };
@@ -38,28 +57,27 @@ const getDashboardData = async (tenantId) => {
 
   const couponStatus = await Cupom.findAll({
     where: whereClause,
-    attributes: [
-      'status',
-      [fn('COUNT', col('id')), 'count']
-    ],
-    group: ['status'],
+    attributes: ["status", [fn("COUNT", col("id")), "count"]],
+    group: ["status"],
     raw: true,
   });
 
   const rewardsUsage = await Cupom.findAll({
     where: whereClause,
     attributes: [
-      [col('recompensa.name'), 'name'],
-      [fn('COUNT', col('Cupom.id')), 'count']
+      [col("recompensa.name"), "name"],
+      [fn("COUNT", col("Cupom.id")), "count"],
     ],
-    include: [{
-      model: Recompensa,
-      as: 'recompensa',
-      attributes: [],
-      required: true,
-    }],
-    group: [col('recompensa.name')],
-    order: [[fn('COUNT', col('Cupom.id')), 'DESC']],
+    include: [
+      {
+        model: Recompensa,
+        as: "recompensa",
+        attributes: [],
+        required: true,
+      },
+    ],
+    group: [col("recompensa.name")],
+    order: [[fn("COUNT", col("Cupom.id")), "DESC"]],
     raw: true,
   });
 

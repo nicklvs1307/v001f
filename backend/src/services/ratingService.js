@@ -8,9 +8,9 @@ const ratingService = {
     if (rating === null || rating === undefined) {
       return null;
     }
-    if (rating >= 9) return 'promoter';
-    if (rating >= 7) return 'neutral';
-    return 'detractor';
+    if (rating >= 9) return "promoter";
+    if (rating >= 7) return "neutral";
+    return "detractor";
   },
 
   /**
@@ -22,9 +22,9 @@ const ratingService = {
     if (rating === null || rating === undefined) {
       return null;
     }
-    if (rating >= 4) return 'satisfied'; // Notas 4 e 5 são consideradas satisfeitos
-    if (rating === 3) return 'neutral';
-    return 'unsatisfied'; // Notas 1 e 2 são consideradas insatisfeitos
+    if (rating >= 4) return "satisfied"; // Notas 4 e 5 são consideradas satisfeitos
+    if (rating === 3) return "neutral";
+    return "unsatisfied"; // Notas 1 e 2 são consideradas insatisfeitos
   },
 
   /**
@@ -39,11 +39,11 @@ const ratingService = {
     let detractors = 0;
     let total = 0;
 
-    responses.forEach(response => {
+    responses.forEach((response) => {
       const rating = response.ratingValue;
       const questionType = response.pergunta ? response.pergunta.type : null;
 
-      if (questionType !== 'rating_0_10') {
+      if (questionType !== "rating_0_10") {
         return; // Ignora silenciosamente para não quebrar a aplicação durante a transição
       }
 
@@ -51,17 +51,23 @@ const ratingService = {
 
       if (classification) {
         total++;
-        if (classification === 'promoter') promoters++;
-        else if (classification === 'neutral') neutrals++;
-        else if (classification === 'detractor') detractors++;
+        if (classification === "promoter") promoters++;
+        else if (classification === "neutral") neutrals++;
+        else if (classification === "detractor") detractors++;
       }
     });
 
     if (total === 0) {
-      return { npsScore: 0, promoters: 0, neutrals: 0, detractors: 0, total: 0 };
+      return {
+        npsScore: 0,
+        promoters: 0,
+        neutrals: 0,
+        detractors: 0,
+        total: 0,
+      };
     }
 
-    const npsScore = ((promoters / total) * 100) - ((detractors / total) * 100);
+    const npsScore = (promoters / total) * 100 - (detractors / total) * 100;
 
     return {
       npsScore: parseFloat(npsScore.toFixed(1)),
@@ -85,22 +91,22 @@ const ratingService = {
     let total = 0;
     let sumOfRatings = 0;
 
-    responses.forEach(response => {
+    responses.forEach((response) => {
       const rating = response.ratingValue;
       const questionType = response.pergunta ? response.pergunta.type : null;
 
-      if (questionType !== 'rating_1_5') {
+      if (questionType !== "rating_1_5") {
         return; // Ignora silenciosamente
       }
-      
+
       const classification = this.classifyCSAT(rating);
 
       if (classification) {
         total++;
         sumOfRatings += rating;
-        if (classification === 'satisfied') satisfied++;
-        else if (classification === 'neutral') neutral++;
-        else if (classification === 'unsatisfied') unsatisfied++;
+        if (classification === "satisfied") satisfied++;
+        else if (classification === "neutral") neutral++;
+        else if (classification === "unsatisfied") unsatisfied++;
       }
     });
 

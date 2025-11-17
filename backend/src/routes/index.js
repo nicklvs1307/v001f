@@ -16,61 +16,61 @@ const recompensaRoutes = require("./recompensaRoutes");
 const cupomRoutes = require("./cupomRoutes");
 const dashboardRoutes = require("./dashboardRoutes");
 const clientRoutes = require("./clientRoutes"); // Importar clientRoutes
-const surveyTemplateRoutes = require('./surveyTemplateRoutes');
-const gmbAuthRoutes = require('./gmbAuthRoutes');
-const gmbConfigRoutes = require('./gmbConfigRoutes');
-const gmbReviewRoutes = require('./gmbReviewRoutes');
-const roletaPremioRoutes = require('./roletaPremioRoutes');
-const campanhaRoutes = require('./campanhaRoutes');
-const atendenteMetaRoutes = require('./atendenteMetaRoutes');
-const whatsappConfigRoutes = require('./whatsappConfigRoutes');
-const whatsappTemplateRoutes = require('./whatsappTemplateRoutes'); // Rota para templates
-const roletaRoutes = require('./roletaRoutes');
-const whatsappWebhookRoutes = require('./whatsappWebhookRoutes');
-const roletaAdminRoutes = require('./roletaAdminRoutes');
-const automationRoutes = require('./automationRoutes');
-const aiRoutes = require('./aiRoutes'); // Import the new AI routes
+const surveyTemplateRoutes = require("./surveyTemplateRoutes");
+const gmbAuthRoutes = require("./gmbAuthRoutes");
+const gmbConfigRoutes = require("./gmbConfigRoutes");
+const gmbReviewRoutes = require("./gmbReviewRoutes");
+const roletaPremioRoutes = require("./roletaPremioRoutes");
+const campanhaRoutes = require("./campanhaRoutes");
+const atendenteMetaRoutes = require("./atendenteMetaRoutes");
+const whatsappConfigRoutes = require("./whatsappConfigRoutes");
+const whatsappTemplateRoutes = require("./whatsappTemplateRoutes"); // Rota para templates
+const roletaRoutes = require("./roletaRoutes");
+const whatsappWebhookRoutes = require("./whatsappWebhookRoutes");
+const roletaAdminRoutes = require("./roletaAdminRoutes");
+const automationRoutes = require("./automationRoutes");
+const aiRoutes = require("./aiRoutes"); // Import the new AI routes
 
 // Super Admin Routes
-const senderRoutes = require('./superadmin/senderRoutes');
-const reportRoutes = require('./superadmin/reportRoutes');
+const senderRoutes = require("./superadmin/senderRoutes");
+const reportRoutes = require("./superadmin/reportRoutes");
 
 module.exports = (router) => {
   // Rota para Health Check do Docker
-  router.get('/health', (_req, res) => {
-    res.status(200).send('OK');
+  router.get("/health", (_req, res) => {
+    res.status(200).send("OK");
   });
 
   // Super Admin Routes
-  router.use('/superadmin/senders', senderRoutes);
-  router.use('/superadmin/reports', reportRoutes);
+  router.use("/superadmin/senders", senderRoutes);
+  router.use("/superadmin/reports", reportRoutes);
 
-  router.use('/auth', authRoutes);
-  router.use('/users', userRoutes);
-  router.use('/tenants', tenantRoutes);
-  router.use('/roles', roleRoutes);
-  router.use('/surveys', surveyRoutes);
-  router.use('/public', publicSurveyRoutes);
-  router.use('/results', resultRoutes);
-  router.use('/config', configRoutes);
-  router.use('/criterios', criterioRoutes);
-  router.use('/atendentes', atendenteRoutes);
-  router.use('/recompensas', recompensaRoutes);
-  router.use('/cupons', cupomRoutes);
-  router.use('/clients', clientRoutes); // Importar clientRoutes
-  router.use('/atendenteMetas', atendenteMetaRoutes);
-  router.use('/dashboard', dashboardRoutes);
-  router.use('/whatsapp-config', whatsappConfigRoutes);
-  router.use('/whatsapp-templates', whatsappTemplateRoutes); // Rota para templates
-  router.use('/whatsapp-webhook', whatsappWebhookRoutes);
-  router.use('/roleta', roletaRoutes);
-  router.use('/survey-templates', surveyTemplateRoutes);
-  router.use('/gmb-auth', gmbAuthRoutes);
-  router.use('/gmb-config', gmbConfigRoutes);
-  router.use('/gmb-review', gmbReviewRoutes);
-  router.use('/roleta-premios', roletaPremioRoutes);
-  router.use('/campanhas', campanhaRoutes);
-  router.use('/roletas', roletaAdminRoutes);
-  router.use('/automations', automationRoutes);
-  router.use('/ai', aiRoutes); // Register AI routes
+  router.use("/auth", authRoutes);
+  router.use("/users", userRoutes);
+  router.use("/tenants", tenantRoutes);
+  router.use("/roles", roleRoutes);
+  router.use("/surveys", surveyRoutes);
+  router.use("/public", publicSurveyRoutes);
+  router.use("/results", resultRoutes);
+  router.use("/config", configRoutes);
+  router.use("/criterios", criterioRoutes);
+  router.use("/atendentes", atendenteRoutes);
+  router.use("/recompensas", recompensaRoutes);
+  router.use("/cupons", cupomRoutes);
+  router.use("/clients", clientRoutes); // Importar clientRoutes
+  router.use("/atendenteMetas", atendenteMetaRoutes);
+  router.use("/dashboard", dashboardRoutes);
+  router.use("/whatsapp-config", whatsappConfigRoutes);
+  router.use("/whatsapp-templates", whatsappTemplateRoutes); // Rota para templates
+  router.use("/whatsapp-webhook", whatsappWebhookRoutes);
+  router.use("/roleta", roletaRoutes);
+  router.use("/survey-templates", surveyTemplateRoutes);
+  router.use("/gmb-auth", gmbAuthRoutes);
+  router.use("/gmb-config", gmbConfigRoutes);
+  router.use("/gmb-review", gmbReviewRoutes);
+  router.use("/roleta-premios", roletaPremioRoutes);
+  router.use("/campanhas", campanhaRoutes);
+  router.use("/roletas", roletaAdminRoutes);
+  router.use("/automations", automationRoutes);
+  router.use("/ai", aiRoutes); // Register AI routes
 };

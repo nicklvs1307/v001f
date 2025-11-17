@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const resultRepository = require("../repositories/resultRepository");
 const ApiError = require("../errors/ApiError");
-const { adjustDateRange } = require('../utils/dateUtils');
+const { adjustDateRange } = require("../utils/dateUtils");
 
 // @desc    Obter resultados agregados de uma pesquisa
 // @route   GET /api/surveys/:id/results
@@ -9,8 +9,12 @@ const { adjustDateRange } = require('../utils/dateUtils');
 exports.getSurveyResults = asyncHandler(async (req, res) => {
   const { id } = req.params; // ID da pesquisa
   const requestingUser = req.user;
-  const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
-  const { startDate, endDate } = adjustDateRange(req.query.startDate, req.query.endDate);
+  const tenantId =
+    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+  const { startDate, endDate } = adjustDateRange(
+    req.query.startDate,
+    req.query.endDate,
+  );
 
   // 1. Obter detalhes da pesquisa para verificação de permissão
   const survey = await resultRepository.getSurveyDetails(id, tenantId);
@@ -36,7 +40,12 @@ exports.getSurveyResults = asyncHandler(async (req, res) => {
   const questions = await resultRepository.getQuestionsBySurveyId(id, tenantId);
 
   // 3. Obter todas as respostas para esta pesquisa, aplicando o filtro de data
-  const allResponses = await resultRepository.getResponsesBySurveyId(id, tenantId, startDate, endDate);
+  const allResponses = await resultRepository.getResponsesBySurveyId(
+    id,
+    tenantId,
+    startDate,
+    endDate,
+  );
 
   // 4. Processar e agregar os resultados
   const aggregatedResults = {
@@ -75,15 +84,11 @@ exports.getSurveyResults = asyncHandler(async (req, res) => {
       result.averageRating =
         ratings.length > 0 ? parseFloat((sum / ratings.length).toFixed(2)) : 0;
       result.allRatings = ratings;
-
     } else if (question.type === "multiple_choice") {
       const optionsCount = {};
       question.options.forEach((opt) => (optionsCount[opt] = 0));
       questionResponses.forEach((r) => {
-        if (
-          r.selectedOption &&
-          optionsCount.hasOwnProperty(r.selectedOption)
-        ) {
+        if (r.selectedOption && optionsCount.hasOwnProperty(r.selectedOption)) {
           optionsCount[r.selectedOption]++;
         }
       });

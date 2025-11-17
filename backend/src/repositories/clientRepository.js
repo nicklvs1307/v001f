@@ -1,7 +1,7 @@
-const { Client, Cupom, Resposta } = require('../../models');
-const sequelize = require('sequelize');
+const { Client, Cupom, Resposta } = require("../../models");
+const sequelize = require("sequelize");
 const { Op } = sequelize;
-const { fromZonedTime } = require('date-fns-tz');
+const { convertFromTimeZone } = require("../utils/dateUtils");
 const ApiError = require("../errors/ApiError");
 
 class ClientRepository {
@@ -10,11 +10,20 @@ class ClientRepository {
       where: {
         tenantId,
         [Op.and]: [
-          sequelize.where(sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "birthDate"')), month),
-          sequelize.where(sequelize.fn('EXTRACT', sequelize.literal('DAY FROM "birthDate"')), day),
+          sequelize.where(
+            sequelize.fn(
+              "EXTRACT",
+              sequelize.literal('MONTH FROM "birthDate"'),
+            ),
+            month,
+          ),
+          sequelize.where(
+            sequelize.fn("EXTRACT", sequelize.literal('DAY FROM "birthDate"')),
+            day,
+          ),
         ],
       },
-      attributes: ['id', 'name', 'phone', 'birthDate'],
+      attributes: ["id", "name", "phone", "birthDate"],
       raw: true,
     });
   }
@@ -22,95 +31,120 @@ class ClientRepository {
   async findCuriosos(tenantId) {
     return Client.findAll({
       where: { tenantId },
-      include: [{
-        model: Resposta,
-        as: 'respostas',
-        attributes: [],
-      }],
+      include: [
+        {
+          model: Resposta,
+          as: "respostas",
+          attributes: [],
+        },
+      ],
       attributes: {
-        include: [[sequelize.fn('COUNT', sequelize.col('respostas.id')), 'visitCount']],
+        include: [
+          [sequelize.fn("COUNT", sequelize.col("respostas.id")), "visitCount"],
+        ],
       },
-      group: ['Client.id'],
-      having: sequelize.literal('COUNT(respostas.id) = 0'),
+      group: ["Client.id"],
+      having: sequelize.literal("COUNT(respostas.id) = 0"),
     });
   }
 
   async findInativos(tenantId) {
-    const threeMonthsAgo = fromZonedTime(new Date(), 'America/Sao_Paulo');
+    const threeMonthsAgo = convertFromTimeZone(new Date());
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
     return Client.findAll({
       where: { tenantId },
-      include: [{
-        model: Resposta,
-        as: 'respostas',
-        attributes: [],
-      }],
+      include: [
+        {
+          model: Resposta,
+          as: "respostas",
+          attributes: [],
+        },
+      ],
       attributes: {
-        include: [[sequelize.fn('MAX', sequelize.col('respostas.createdAt')), 'lastVisit']],
+        include: [
+          [
+            sequelize.fn("MAX", sequelize.col("respostas.createdAt")),
+            "lastVisit",
+          ],
+        ],
       },
-      group: ['Client.id'],
-      having: sequelize.literal(`MAX("respostas"."createdAt") < '${threeMonthsAgo.toISOString()}' AND COUNT("respostas"."id") > 0`),
+      group: ["Client.id"],
+      having: sequelize.literal(
+        `MAX("respostas"."createdAt") < '${threeMonthsAgo.toISOString()}' AND COUNT("respostas"."id") > 0`,
+      ),
     });
   }
 
   async findNovatos(tenantId) {
-    const threeMonthsAgo = fromZonedTime(new Date(), 'America/Sao_Paulo');
+    const threeMonthsAgo = convertFromTimeZone(new Date());
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
     return Client.findAll({
       where: { tenantId },
-      include: [{
-        model: Resposta,
-        as: 'respostas',
-        where: { createdAt: { [Op.gte]: threeMonthsAgo } },
-        attributes: [],
-      }],
+      include: [
+        {
+          model: Resposta,
+          as: "respostas",
+          where: { createdAt: { [Op.gte]: threeMonthsAgo } },
+          attributes: [],
+        },
+      ],
       attributes: {
-        include: [[sequelize.fn('COUNT', sequelize.col('respostas.id')), 'visitCount']],
+        include: [
+          [sequelize.fn("COUNT", sequelize.col("respostas.id")), "visitCount"],
+        ],
       },
-      group: ['Client.id'],
-      having: sequelize.literal('COUNT(respostas.id) = 1'),
+      group: ["Client.id"],
+      having: sequelize.literal("COUNT(respostas.id) = 1"),
     });
   }
 
   async findFieis(tenantId) {
-    const threeMonthsAgo = fromZonedTime(new Date(), 'America/Sao_Paulo');
+    const threeMonthsAgo = convertToTimeZone(new Date());
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
     return Client.findAll({
       where: { tenantId },
-      include: [{
-        model: Resposta,
-        as: 'respostas',
-        where: { createdAt: { [Op.gte]: threeMonthsAgo } },
-        attributes: [],
-      }],
+      include: [
+        {
+          model: Resposta,
+          as: "respostas",
+          where: { createdAt: { [Op.gte]: threeMonthsAgo } },
+          attributes: [],
+        },
+      ],
       attributes: {
-        include: [[sequelize.fn('COUNT', sequelize.col('respostas.id')), 'visitCount']],
+        include: [
+          [sequelize.fn("COUNT", sequelize.col("respostas.id")), "visitCount"],
+        ],
       },
-      group: ['Client.id'],
-      having: sequelize.literal('COUNT(respostas.id) BETWEEN 2 AND 4'),
+      group: ["Client.id"],
+      having: sequelize.literal("COUNT(respostas.id) BETWEEN 2 AND 4"),
     });
   }
 
   async findSuperClientes(tenantId) {
-    const threeMonthsAgo = fromZonedTime(new Date(), 'America/Sao_Paulo');
+    const threeMonthsAgo = convertToTimeZone(new Date());
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
     return Client.findAll({
       where: { tenantId },
-      include: [{
-        model: Resposta,
-        as: 'respostas',
-        where: { createdAt: { [Op.gte]: threeMonthsAgo } },
-        attributes: [],
-      }],
+      include: [
+        {
+          model: Resposta,
+          as: "respostas",
+          where: { createdAt: { [Op.gte]: threeMonthsAgo } },
+          attributes: [],
+        },
+      ],
       attributes: {
-        include: [[sequelize.fn('COUNT', sequelize.col('respostas.id')), 'visitCount']],
+        include: [
+          [sequelize.fn("COUNT", sequelize.col("respostas.id")), "visitCount"],
+        ],
       },
-      group: ['Client.id'],
-      having: sequelize.literal('COUNT(respostas.id) >= 5'),
+      group: ["Client.id"],
+      having: sequelize.literal("COUNT(respostas.id) >= 5"),
     });
   }
 
@@ -133,7 +167,13 @@ class ClientRepository {
       where: {
         tenantId,
         [Op.and]: [
-          sequelize.where(sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "birthDate"')), month),
+          sequelize.where(
+            sequelize.fn(
+              "EXTRACT",
+              sequelize.literal('MONTH FROM "birthDate"'),
+            ),
+            month,
+          ),
         ],
       },
     });
@@ -200,15 +240,18 @@ class ClientRepository {
               FROM "respostas" AS "r"
               WHERE "r"."respondentSessionId" = "Client"."respondentSessionId"
             )`),
-            'lastVisit'
-          ]
-        ]
+            "lastVisit",
+          ],
+        ],
       },
-      group: ['Client.id'], // Agrupar para garantir que a contagem seja correta
+      group: ["Client.id"], // Agrupar para garantir que a contagem seja correta
     });
 
     // A contagem pode ser um array de objetos por causa do group. Precisamos somar.
-    const total = count.reduce((acc, item) => acc + parseInt(item.count, 10), 0);
+    const total = count.reduce(
+      (acc, item) => acc + parseInt(item.count, 10),
+      0,
+    );
 
     return { clients: rows, total };
   }
@@ -218,19 +261,21 @@ class ClientRepository {
       where: { id: clientId, tenantId },
       include: [
         {
-          model: require('../../models').Cupom,
-          as: 'cupons',
-          include: [{
-            model: require('../../models').Recompensa,
-            as: 'recompensa'
-          }]
+          model: require("../../models").Cupom,
+          as: "cupons",
+          include: [
+            {
+              model: require("../../models").Recompensa,
+              as: "recompensa",
+            },
+          ],
         },
         {
-          model: require('../../models').Resposta,
-          as: 'respostas',
-          attributes: ['createdAt'],
-        }
-      ]
+          model: require("../../models").Resposta,
+          as: "respostas",
+          attributes: ["createdAt"],
+        },
+      ],
     });
 
     if (!client) {
@@ -241,24 +286,32 @@ class ClientRepository {
 
     // Processar cupons
     const cupons = clientJSON.cupons || [];
-    const activeCoupons = cupons.filter(c => c.status === 'active');
-    const usedCoupons = cupons.filter(c => c.status === 'used');
+    const activeCoupons = cupons.filter((c) => c.status === "active");
+    const usedCoupons = cupons.filter((c) => c.status === "used");
 
     // Processar visitas
     const visits = clientJSON.respostas || [];
-    const totalVisits = new Set(visits.map(v => new Date(v.createdAt).toDateString())).size;
-    const lastVisit = visits.length > 0 ? new Date(Math.max(...visits.map(v => new Date(v.createdAt)))) : null;
+    const totalVisits = new Set(
+      visits.map((v) => new Date(v.createdAt).toDateString()),
+    ).size;
+    const lastVisit =
+      visits.length > 0
+        ? new Date(Math.max(...visits.map((v) => new Date(v.createdAt))))
+        : null;
 
     // Gráfico de comparecimento (visitas por mês)
     const attendance = visits.reduce((acc, visit) => {
-      const month = new Date(visit.createdAt).toLocaleString('default', { month: 'long', year: 'numeric' });
+      const month = new Date(visit.createdAt).toLocaleString("default", {
+        month: "long",
+        year: "numeric",
+      });
       acc[month] = (acc[month] || 0) + 1;
       return acc;
     }, {});
 
-    const attendanceData = Object.keys(attendance).map(month => ({
+    const attendanceData = Object.keys(attendance).map((month) => ({
       month,
-      visits: attendance[month]
+      visits: attendance[month],
     }));
 
     return {
@@ -271,7 +324,7 @@ class ClientRepository {
         activeCoupons,
         usedCoupons,
         attendanceData,
-      }
+      },
     };
   }
 
@@ -282,62 +335,85 @@ class ClientRepository {
     const totalClients = await Client.count({ where: whereClause });
 
     // 2. Aniversariantes do Mês
-    const currentMonth = fromZonedTime(new Date(), 'America/Sao_Paulo').getMonth() + 1;
+    const currentMonth = convertFromTimeZone(new Date()).getMonth() + 1;
     const birthdayCount = await Client.count({
       where: {
         ...whereClause,
         [Op.and]: [
-          sequelize.where(sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "birthDate"')), currentMonth),
+          sequelize.where(
+            sequelize.fn(
+              "EXTRACT",
+              sequelize.literal('MONTH FROM "birthDate"'),
+            ),
+            currentMonth,
+          ),
         ],
       },
     });
 
-    const clients = await Client.findAll({ where: whereClause, attributes: ['birthDate', 'gender'], raw: true });
+    const clients = await Client.findAll({
+      where: whereClause,
+      attributes: ["birthDate", "gender"],
+      raw: true,
+    });
 
     // 3. Média de Idade
     let totalAge = 0;
     let clientsWithAge = 0;
-    const currentYear = fromZonedTime(new Date(), 'America/Sao_Paulo').getFullYear();
-    clients.forEach(client => {
-        if (client.birthDate) {
-            const birthYear = new Date(client.birthDate).getFullYear();
-            totalAge += currentYear - birthYear;
-            clientsWithAge++;
-        }
+    const currentYear = convertFromTimeZone(new Date()).getFullYear();
+    clients.forEach((client) => {
+      if (client.birthDate) {
+        const birthYear = new Date(client.birthDate).getFullYear();
+        totalAge += currentYear - birthYear;
+        clientsWithAge++;
+      }
     });
-    const averageAge = clientsWithAge > 0 ? Math.round(totalAge / clientsWithAge) : 0;
+    const averageAge =
+      clientsWithAge > 0 ? Math.round(totalAge / clientsWithAge) : 0;
 
     // 4. Distribuição por Faixa Etária
-    const ageGroups = { '18-24': 0, '25-34': 0, '35-44': 0, '45-54': 0, '55+': 0, 'N/A': 0 };
-    clients.forEach(client => {
-        if (client.birthDate) {
-            const age = currentYear - new Date(client.birthDate).getFullYear();
-            if (age >= 18 && age <= 24) ageGroups['18-24']++;
-            else if (age >= 25 && age <= 34) ageGroups['25-34']++;
-            else if (age >= 35 && age <= 44) ageGroups['35-44']++;
-            else if (age >= 45 && age <= 54) ageGroups['45-54']++;
-            else if (age >= 55) ageGroups['55+']++;
-            else ageGroups['N/A']++;
-        } else {
-            ageGroups['N/A']++;
-        }
+    const ageGroups = {
+      "18-24": 0,
+      "25-34": 0,
+      "35-44": 0,
+      "45-54": 0,
+      "55+": 0,
+      "N/A": 0,
+    };
+    clients.forEach((client) => {
+      if (client.birthDate) {
+        const age = currentYear - new Date(client.birthDate).getFullYear();
+        if (age >= 18 && age <= 24) ageGroups["18-24"]++;
+        else if (age >= 25 && age <= 34) ageGroups["25-34"]++;
+        else if (age >= 35 && age <= 44) ageGroups["35-44"]++;
+        else if (age >= 45 && age <= 54) ageGroups["45-54"]++;
+        else if (age >= 55) ageGroups["55+"]++;
+        else ageGroups["N/A"]++;
+      } else {
+        ageGroups["N/A"]++;
+      }
     });
-    const ageDistribution = Object.entries(ageGroups).map(([name, count]) => ({ name, count }));
+    const ageDistribution = Object.entries(ageGroups).map(([name, count]) => ({
+      name,
+      count,
+    }));
 
     // 5. Distribuição por Gênero
     const genderCounts = {};
-    clients.forEach(client => {
-        const gender = client.gender || 'Não informado';
-        genderCounts[gender] = (genderCounts[gender] || 0) + 1;
+    clients.forEach((client) => {
+      const gender = client.gender || "Não informado";
+      genderCounts[gender] = (genderCounts[gender] || 0) + 1;
     });
-    const genderDistribution = Object.entries(genderCounts).map(([name, value]) => ({ name, value }));
+    const genderDistribution = Object.entries(genderCounts).map(
+      ([name, value]) => ({ name, value }),
+    );
 
     return {
-        totalClients,
-        birthdayCount,
-        averageAge,
-        ageDistribution,
-        genderDistribution,
+      totalClients,
+      birthdayCount,
+      averageAge,
+      ageDistribution,
+      genderDistribution,
     };
   }
 }

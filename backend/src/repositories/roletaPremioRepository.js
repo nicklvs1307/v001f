@@ -1,5 +1,5 @@
-'use strict';
-const { RoletaPremio, Recompensa } = require('../../models');
+"use strict";
+const { RoletaPremio, Recompensa } = require("../../models");
 
 const createPremio = async (premioData) => {
   return RoletaPremio.create(premioData);
@@ -12,15 +12,15 @@ const findAll = async ({ tenantId, roletaId }) => {
   }
   return RoletaPremio.findAll({
     where: whereClause,
-    include: [{ model: Recompensa, as: 'recompensa' }],
-    order: [['nome', 'ASC']],
+    include: [{ model: Recompensa, as: "recompensa" }],
+    order: [["nome", "ASC"]],
   });
 };
 
 const findById = async (id, tenantId) => {
   return RoletaPremio.findOne({
     where: { id, tenantId },
-    include: [{ model: Recompensa, as: 'recompensa' }],
+    include: [{ model: Recompensa, as: "recompensa" }],
   });
 };
 

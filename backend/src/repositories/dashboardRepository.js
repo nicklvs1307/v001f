@@ -1,3 +1,3 @@
-const dashboardRepository = require('./dashboard');
+const dashboardRepository = require("./dashboard");
 
 module.exports = dashboardRepository;

@@ -4,7 +4,8 @@ const ApiError = require("../errors/ApiError"); // Importar ApiError
 const errorHandler = (err, req, res, next) => {
   let statusCode = res.statusCode === 200 ? 500 : res.statusCode; // Evita 200 OK para erros
 
-  let message = "Ocorreu um erro inesperado no servidor. Por favor, tente novamente mais tarde.";
+  let message =
+    "Ocorreu um erro inesperado no servidor. Por favor, tente novamente mais tarde.";
   let errorCode = null;
   let details = null;
 

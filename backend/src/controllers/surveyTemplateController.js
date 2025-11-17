@@ -8,7 +8,8 @@ const surveyTemplateController = {
   // @access  Private (Super Admin, Admin, Survey Creator)
   getAllTemplates: asyncHandler(async (req, res) => {
     const requestingUser = req.user;
-    const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+    const tenantId =
+      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
     const templates = await surveyTemplateRepository.getAllTemplates(tenantId);
     res.status(200).json(templates);
@@ -44,7 +45,10 @@ const surveyTemplateController = {
   // @route   POST /api/survey-templates
   // @access  Private (Super Admin, Admin)
   createTemplate: asyncHandler(async (req, res) => {
-    const newTemplate = await surveyTemplateRepository.createTemplate(req.body, req.user);
+    const newTemplate = await surveyTemplateRepository.createTemplate(
+      req.body,
+      req.user,
+    );
     res.status(201).json(newTemplate);
   }),
 
@@ -53,7 +57,11 @@ const surveyTemplateController = {
   // @access  Private (Super Admin, Admin)
   updateTemplate: asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const updatedTemplate = await surveyTemplateRepository.updateTemplate(id, req.body, req.user);
+    const updatedTemplate = await surveyTemplateRepository.updateTemplate(
+      id,
+      req.body,
+      req.user,
+    );
     res.status(200).json(updatedTemplate);
   }),
 
@@ -77,10 +85,13 @@ const surveyTemplateController = {
     const newSurvey = await surveyTemplateRepository.createSurveyFromTemplate(
       id,
       { title, description, atendenteId, isOpen },
-      requestingUser
+      requestingUser,
     );
 
-    res.status(201).json({ message: "Pesquisa criada a partir do template com sucesso!", survey: newSurvey });
+    res.status(201).json({
+      message: "Pesquisa criada a partir do template com sucesso!",
+      survey: newSurvey,
+    });
   }),
 
   // @desc    Sobrescrever uma pesquisa existente com um template
@@ -90,13 +101,17 @@ const surveyTemplateController = {
     const { templateId, surveyId } = req.params;
     const requestingUser = req.user;
 
-    const updatedSurvey = await surveyTemplateRepository.overwriteSurveyWithTemplate(
-      surveyId,
-      templateId,
-      requestingUser
-    );
+    const updatedSurvey =
+      await surveyTemplateRepository.overwriteSurveyWithTemplate(
+        surveyId,
+        templateId,
+        requestingUser,
+      );
 
-    res.status(200).json({ message: "Pesquisa sobrescrita com sucesso!", survey: updatedSurvey });
+    res.status(200).json({
+      message: "Pesquisa sobrescrita com sucesso!",
+      survey: updatedSurvey,
+    });
   }),
 };
 

@@ -1,10 +1,10 @@
-const asyncHandler = require('express-async-handler');
-const { fromZonedTime } = require('date-fns-tz');
-const cupomRepository = require('../repositories/cupomRepository');
-const recompensaRepository = require('../repositories/recompensaRepository');
-const ApiError = require('../errors/ApiError');
-const { v4: uuidv4 } = require('uuid');
-const { CampanhaLog } = require('../../models');
+const asyncHandler = require("express-async-handler");
+const { convertFromTimeZone } = require("../utils/dateUtils");
+const cupomRepository = require("../repositories/cupomRepository");
+const recompensaRepository = require("../repositories/recompensaRepository");
+const ApiError = require("../errors/ApiError");
+const { v4: uuidv4 } = require("uuid");
+const { CampanhaLog } = require("../../models");
 
 const cupomController = {
   generateCupom: asyncHandler(async (req, res) => {
@@ -13,16 +13,16 @@ const cupomController = {
 
     const recompensa = await recompensaRepository.findById(recompensaId);
     if (!recompensa) {
-      throw new ApiError(404, 'Recompensa não encontrada.');
+      throw new ApiError(404, "Recompensa não encontrada.");
     }
 
     const targetTenantId =
-      requestingUser.role === 'Super Admin' && req.body.tenantId
+      requestingUser.role === "Super Admin" && req.body.tenantId
         ? req.body.tenantId
         : requestingUser.tenantId;
 
     if (!targetTenantId) {
-      throw new ApiError(400, 'Tenant ID é obrigatório para gerar um cupom.');
+      throw new ApiError(400, "Tenant ID é obrigatório para gerar um cupom.");
     }
 
     const codigo = uuidv4(); // Gerar um código único para o cupom
@@ -35,12 +35,13 @@ const cupomController = {
       dataValidade,
     });
 
-    res.status(201).json({ message: 'Cupom gerado com sucesso!', cupom });
+    res.status(201).json({ message: "Cupom gerado com sucesso!", cupom });
   }),
 
   getAllCupons: asyncHandler(async (req, res) => {
     const requestingUser = req.user;
-    const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+    const tenantId =
+      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
     const filters = req.query;
     const cupons = await cupomRepository.getAllCupons(tenantId, filters);
     res.status(200).json(cupons);
@@ -49,19 +50,20 @@ const cupomController = {
   getCupomById: asyncHandler(async (req, res) => {
     const { id } = req.params;
     const requestingUser = req.user;
-    const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+    const tenantId =
+      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
     const cupom = await cupomRepository.getCupomById(id, tenantId);
 
     if (!cupom) {
-      throw new ApiError(404, 'Cupom não encontrado.');
+      throw new ApiError(404, "Cupom não encontrado.");
     }
 
     if (
-      requestingUser.role !== 'Super Admin' &&
+      requestingUser.role !== "Super Admin" &&
       cupom.tenantId !== requestingUser.tenantId
     ) {
-      throw new ApiError(403, 'Você não tem permissão para ver este cupom.');
+      throw new ApiError(403, "Você não tem permissão para ver este cupom.");
     }
 
     res.status(200).json(cupom);
@@ -70,37 +72,45 @@ const cupomController = {
   validateCupom: asyncHandler(async (req, res) => {
     const { codigo } = req.body;
     const requestingUser = req.user;
-    const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+    const tenantId =
+      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
     const cupom = await cupomRepository.getCupomByCodigo(codigo, tenantId);
 
     if (!cupom) {
-      throw new ApiError(404, 'Cupom não encontrado.');
+      throw new ApiError(404, "Cupom não encontrado.");
     }
 
     if (
-      requestingUser.role !== 'Super Admin' &&
+      requestingUser.role !== "Super Admin" &&
       cupom.tenantId !== requestingUser.tenantId
     ) {
-      throw new ApiError(403, 'Você não tem permissão para validar este cupom.');
+      throw new ApiError(
+        403,
+        "Você não tem permissão para validar este cupom.",
+      );
     }
 
-    if (cupom.status === 'used') {
-      throw new ApiError(400, 'Cupom já utilizado.');
+    if (cupom.status === "used") {
+      throw new ApiError(400, "Cupom já utilizado.");
     }
 
-    if (new Date(cupom.dataValidade) < fromZonedTime(new Date(), 'America/Sao_Paulo')) {
-      throw new ApiError(400, 'Cupom expirado.');
+    if (new Date(cupom.dataValidade) < convertFromTimeZone(new Date())) {
+      throw new ApiError(400, "Cupom expirado.");
     }
 
     // Atualizar status do cupom para 'used' e registrar data de utilização
-    const updatedCupom = await cupomRepository.updateCupom(cupom.id, cupom.tenantId, {
-      status: 'used',
-      dataUtilizacao: fromZonedTime(new Date(), 'America/Sao_Paulo'),
-    });
+    const updatedCupom = await cupomRepository.updateCupom(
+      cupom.id,
+      cupom.tenantId,
+      {
+        status: "used",
+        dataUtilizacao: convertFromTimeZone(new Date()),
+      },
+    );
 
     if (!updatedCupom) {
-      throw new ApiError(500, 'Falha ao atualizar status do cupom.');
+      throw new ApiError(500, "Falha ao atualizar status do cupom.");
     }
 
     // Track conversion for A/B testing
@@ -114,11 +124,16 @@ const cupomController = {
         });
 
         if (logEntry && !logEntry.convertedAt) {
-          await logEntry.update({ convertedAt: fromZonedTime(new Date(), 'America/Sao_Paulo') });
+          await logEntry.update({
+            convertedAt: convertFromTimeZone(new Date()),
+          });
         }
       } catch (error) {
         // Log the error but don't fail the request, as the coupon validation was successful.
-        console.error('[Conversion Tracking] Failed to update CampanhaLog:', error);
+        console.error(
+          "[Conversion Tracking] Failed to update CampanhaLog:",
+          error,
+        );
       }
     }
 
@@ -133,12 +148,15 @@ const cupomController = {
     // });
     // --- END NOTIFICATION ---
 
-    res.status(200).json({ message: 'Cupom validado com sucesso!', cupom: updatedCupom });
+    res
+      .status(200)
+      .json({ message: "Cupom validado com sucesso!", cupom: updatedCupom });
   }),
 
   getCuponsSummary: asyncHandler(async (req, res) => {
     const requestingUser = req.user;
-    const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+    const tenantId =
+      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
     const summary = await cupomRepository.getCuponsSummary(tenantId);
     res.status(200).json(summary);
@@ -147,19 +165,20 @@ const cupomController = {
   getCupomByCodigo: asyncHandler(async (req, res) => {
     const { codigo } = req.params;
     const requestingUser = req.user;
-    const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+    const tenantId =
+      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
     const cupom = await cupomRepository.getCupomByCodigo(codigo, tenantId);
 
     if (!cupom) {
-      throw new ApiError(404, 'Cupom não encontrado.');
+      throw new ApiError(404, "Cupom não encontrado.");
     }
 
     if (
-      requestingUser.role !== 'Super Admin' &&
+      requestingUser.role !== "Super Admin" &&
       cupom.tenantId !== requestingUser.tenantId
     ) {
-      throw new ApiError(403, 'Você não tem permissão para ver este cupom.');
+      throw new ApiError(403, "Você não tem permissão para ver este cupom.");
     }
 
     res.status(200).json(cupom);
@@ -168,24 +187,28 @@ const cupomController = {
   deleteCupom: asyncHandler(async (req, res) => {
     const { id } = req.params;
     const requestingUser = req.user;
-    const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+    const tenantId =
+      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
     const cupom = await cupomRepository.getCupomById(id, tenantId);
 
     if (!cupom) {
-      throw new ApiError(404, 'Cupom não encontrado.');
+      throw new ApiError(404, "Cupom não encontrado.");
     }
 
     if (
-      requestingUser.role !== 'Super Admin' &&
+      requestingUser.role !== "Super Admin" &&
       cupom.tenantId !== requestingUser.tenantId
     ) {
-      throw new ApiError(403, 'Você não tem permissão para deletar este cupom.');
+      throw new ApiError(
+        403,
+        "Você não tem permissão para deletar este cupom.",
+      );
     }
 
     await cupomRepository.deleteCupom(id, tenantId);
 
-    res.status(200).json({ message: 'Cupom deletado com sucesso!' });
+    res.status(200).json({ message: "Cupom deletado com sucesso!" });
   }),
 };
 

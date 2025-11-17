@@ -1,8 +1,7 @@
-const reportService = require('../../services/superadmin/reportService');
+const reportService = require("../../services/superadmin/reportService");
 const asyncHandler = require("express-async-handler");
 
 class ReportController {
-
   getSuperAdminDashboard = asyncHandler(async (req, res) => {
     const reportData = await reportService.getSuperAdminDashboard();
     res.status(200).json(reportData);

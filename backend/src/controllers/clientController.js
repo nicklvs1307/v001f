@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const { fromZonedTime } = require('date-fns-tz');
+const { convertFromTimeZone } = require("../utils/dateUtils");
 const clientRepository = require("../repositories/clientRepository");
 const publicSurveyRepository = require("../repositories/publicSurveyRepository");
 const { sequelize } = require("../database");
@@ -11,7 +11,8 @@ const xlsx = require("xlsx");
 // @desc    Criar ou atualizar um cliente (público)
 // @access  Public
 exports.publicRegisterClient = asyncHandler(async (req, res) => {
-  const { name, email, phone, birthDate, respondentSessionId, gender } = req.body;
+  const { name, email, phone, birthDate, respondentSessionId, gender } =
+    req.body;
 
   // Tratamento para birthDate
   let parsedBirthDate = null;
@@ -28,36 +29,48 @@ exports.publicRegisterClient = asyncHandler(async (req, res) => {
   const transaction = await sequelize.transaction();
 
   try {
-    const tenantId = await publicSurveyRepository.findTenantIdBySession(respondentSessionId);
+    const tenantId =
+      await publicSurveyRepository.findTenantIdBySession(respondentSessionId);
     if (!tenantId) {
       throw new ApiError(404, "Sessão de pesquisa não encontrada ou inválida.");
     }
 
     // Verificar unicidade de Email e Telefone antes de qualquer outra coisa
     if (email) {
-      const existingClientByEmail = await clientRepository.findClientByEmail(email, tenantId, { transaction });
+      const existingClientByEmail = await clientRepository.findClientByEmail(
+        email,
+        tenantId,
+        { transaction },
+      );
       if (existingClientByEmail) {
         throw new ApiError(409, "Email já existe.");
       }
     }
 
     if (phone) {
-      const existingClientByPhone = await clientRepository.findClientByPhone(phone, tenantId, { transaction });
+      const existingClientByPhone = await clientRepository.findClientByPhone(
+        phone,
+        tenantId,
+        { transaction },
+      );
       if (existingClientByPhone) {
         throw new ApiError(409, "WhatsApp já existe.");
       }
     }
 
     // Tenta encontrar o cliente anônimo criado na etapa anterior
-    let client = await clientRepository.getClientByRespondentSessionId(respondentSessionId, { transaction });
+    let client = await clientRepository.getClientByRespondentSessionId(
+      respondentSessionId,
+      { transaction },
+    );
 
-    if (client && client.name.startsWith('Cliente Anônimo')) {
+    if (client && client.name.startsWith("Cliente Anônimo")) {
       // Se encontrou o cliente anônimo, atualiza com os dados do formulário
       const updatedClient = await clientRepository.updateClient(
         client.id,
         { name, email, phone, birthDate: parsedBirthDate, gender },
         tenantId,
-        { transaction }
+        { transaction },
       );
       await transaction.commit();
       return res.status(200).json({
@@ -77,12 +90,24 @@ exports.publicRegisterClient = asyncHandler(async (req, res) => {
 
     // Se não encontrou nenhum cliente pela sessão, cria um novo
     const newClient = await clientRepository.createClient(
-      { name, email, phone, birthDate: parsedBirthDate, tenantId, respondentSessionId, gender },
-      { transaction }
+      {
+        name,
+        email,
+        phone,
+        birthDate: parsedBirthDate,
+        tenantId,
+        respondentSessionId,
+        gender,
+      },
+      { transaction },
     );
 
     // Vincular as respostas ao cliente recém-criado
-    await publicSurveyRepository.linkResponsesToClient(respondentSessionId, newClient.id, transaction);
+    await publicSurveyRepository.linkResponsesToClient(
+      respondentSessionId,
+      newClient.id,
+      transaction,
+    );
 
     await transaction.commit();
 
@@ -90,7 +115,6 @@ exports.publicRegisterClient = asyncHandler(async (req, res) => {
       message: "Cliente cadastrado com sucesso!",
       client: newClient,
     });
-
   } catch (error) {
     await transaction.rollback();
     // Garante que o erro seja relançado para o middleware de erro
@@ -108,7 +132,10 @@ exports.createClient = asyncHandler(async (req, res) => {
   const tenantId = req.user.tenantId; // Associa o cliente ao tenant do usuário logado
 
   if (!tenantId) {
-    throw new ApiError(403, "Tenant ID não encontrado no token do usuário. Acesso negado.");
+    throw new ApiError(
+      403,
+      "Tenant ID não encontrado no token do usuário. Acesso negado.",
+    );
   }
 
   if (!name) {
@@ -117,20 +144,32 @@ exports.createClient = asyncHandler(async (req, res) => {
 
   // Verificar unicidade de Email e Telefone
   if (email) {
-    const existingClientByEmail = await clientRepository.findClientByEmail(email, tenantId);
+    const existingClientByEmail = await clientRepository.findClientByEmail(
+      email,
+      tenantId,
+    );
     if (existingClientByEmail) {
       throw new ApiError(409, "Email já existe.");
     }
   }
 
   if (phone) {
-    const existingClientByPhone = await clientRepository.findClientByPhone(phone, tenantId);
+    const existingClientByPhone = await clientRepository.findClientByPhone(
+      phone,
+      tenantId,
+    );
     if (existingClientByPhone) {
       throw new ApiError(409, "WhatsApp já existe.");
     }
   }
 
-  const newClient = await clientRepository.createClient({ name, email, phone, birthDate, tenantId });
+  const newClient = await clientRepository.createClient({
+    name,
+    email,
+    phone,
+    birthDate,
+    tenantId,
+  });
 
   res.status(201).json({
     message: "Cliente criado com sucesso!",
@@ -142,7 +181,13 @@ exports.createClient = asyncHandler(async (req, res) => {
 // @access  Private (Admin)
 exports.getAllClients = asyncHandler(async (req, res) => {
   const tenantId = req.user.tenantId;
-  let { page = 1, limit = 10, orderBy = 'name', order = 'asc', filter = '' } = req.query;
+  let {
+    page = 1,
+    limit = 10,
+    orderBy = "name",
+    order = "asc",
+    filter = "",
+  } = req.query;
 
   page = parseInt(page, 10);
   limit = parseInt(limit, 10);
@@ -154,16 +199,15 @@ exports.getAllClients = asyncHandler(async (req, res) => {
     limit = 10;
   }
 
-
   // Lista de colunas permitidas para ordenação
-  const allowedOrderBy = ['name', 'email', 'phone', 'birthDate', 'createdAt'];
+  const allowedOrderBy = ["name", "email", "phone", "birthDate", "createdAt"];
   if (!allowedOrderBy.includes(orderBy)) {
-    orderBy = 'name'; // Padrão seguro
+    orderBy = "name"; // Padrão seguro
   }
 
   // Validar a ordem
-  if (!['asc', 'desc'].includes(order.toLowerCase())) {
-    order = 'asc'; // Padrão seguro
+  if (!["asc", "desc"].includes(order.toLowerCase())) {
+    order = "asc"; // Padrão seguro
   }
 
   const { clients, total } = await clientRepository.findAndCountAllByTenant(
@@ -172,7 +216,7 @@ exports.getAllClients = asyncHandler(async (req, res) => {
     parseInt(limit),
     orderBy,
     order,
-    filter
+    filter,
   );
 
   res.status(200).json({ clients, total });
@@ -221,20 +265,30 @@ exports.updateClient = asyncHandler(async (req, res) => {
 
   // Verificar unicidade de Email e Telefone
   if (email) {
-    const existingClient = await clientRepository.findClientByEmail(email, tenantId);
+    const existingClient = await clientRepository.findClientByEmail(
+      email,
+      tenantId,
+    );
     if (existingClient && existingClient.id !== id) {
       throw new ApiError(409, "Email já existe.");
     }
   }
 
   if (phone) {
-    const existingClient = await clientRepository.findClientByPhone(phone, tenantId);
+    const existingClient = await clientRepository.findClientByPhone(
+      phone,
+      tenantId,
+    );
     if (existingClient && existingClient.id !== id) {
       throw new ApiError(409, "WhatsApp já existe.");
     }
   }
 
-  const updatedClient = await clientRepository.updateClient(id, { name, email, phone, birthDate }, tenantId);
+  const updatedClient = await clientRepository.updateClient(
+    id,
+    { name, email, phone, birthDate },
+    tenantId,
+  );
 
   if (!updatedClient) {
     throw new ApiError(404, "Cliente não encontrado para atualização.");
@@ -274,8 +328,11 @@ exports.getClientDashboard = asyncHandler(async (req, res) => {
 // @access  Private (Admin)
 exports.getBirthdayClients = asyncHandler(async (req, res) => {
   const tenantId = req.user.tenantId;
-  const currentMonth = fromZonedTime(new Date(), 'America/Sao_Paulo').getMonth() + 1; // getMonth() retorna de 0 a 11
-  const birthdayClients = await clientRepository.findByBirthMonth(currentMonth, tenantId);
+  const currentMonth = convertFromTimeZone(new Date()).getMonth() + 1; // getMonth() retorna de 0 a 11
+  const birthdayClients = await clientRepository.findByBirthMonth(
+    currentMonth,
+    tenantId,
+  );
   res.status(200).json(birthdayClients);
 });
 
@@ -294,7 +351,10 @@ exports.sendMessageToClient = asyncHandler(async (req, res) => {
   }
 
   if (!client.phone) {
-    throw new ApiError(400, "Este cliente não possui um número de telefone cadastrado.");
+    throw new ApiError(
+      400,
+      "Este cliente não possui um número de telefone cadastrado.",
+    );
   }
 
   await whatsappService.sendTenantMessage(tenantId, client.phone, message);
@@ -313,7 +373,10 @@ exports.importClients = asyncHandler(async (req, res) => {
 
   const tenantId = req.user.tenantId;
   if (!tenantId) {
-    throw new ApiError(403, "Tenant ID não encontrado no token do usuário. Acesso negado.");
+    throw new ApiError(
+      403,
+      "Tenant ID não encontrado no token do usuário. Acesso negado.",
+    );
   }
 
   const workbook = xlsx.read(req.file.buffer, { type: "buffer" });
@@ -331,9 +394,9 @@ exports.importClients = asyncHandler(async (req, res) => {
     let { Nome: name, Telefone: phone, "Data Aniversário": birthDate } = row;
 
     // Tratar birthDate vazio como null para evitar erros de validação
-    if (birthDate === '') {
+    if (birthDate === "") {
       birthDate = null;
-    } else if (typeof birthDate === 'number') {
+    } else if (typeof birthDate === "number") {
       // Se for um número, assume que é um número de série do Excel e converte para data
       // Excel epoch é 1899-12-30, JavaScript epoch é 1970-01-01
       // 25569 é o número de dias entre as duas épocas
@@ -345,7 +408,7 @@ exports.importClients = asyncHandler(async (req, res) => {
       } else {
         birthDate = date;
       }
-    } else if (typeof birthDate === 'string') {
+    } else if (typeof birthDate === "string") {
       // Tenta parsear a string como data
       const date = new Date(birthDate);
       if (isNaN(date.getTime())) {
@@ -364,7 +427,10 @@ exports.importClients = asyncHandler(async (req, res) => {
       continue;
     }
 
-    const existingClient = await clientRepository.findClientByPhone(phone, tenantId);
+    const existingClient = await clientRepository.findClientByPhone(
+      phone,
+      tenantId,
+    );
     if (existingClient) {
       skippedCount++;
       console.log(`Linha ignorada (cliente duplicado): ${name}`);
@@ -378,7 +444,8 @@ exports.importClients = asyncHandler(async (req, res) => {
     } catch (error) {
       errors.push({ row, error: error.message });
       skippedCount++;
-              console.error(`Erro ao importar linha: ${name}, ${error.message}`);    }
+      console.error(`Erro ao importar linha: ${name}, ${error.message}`);
+    }
   }
 
   console.log("Importação concluída.");

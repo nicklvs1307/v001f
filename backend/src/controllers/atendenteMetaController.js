@@ -15,7 +15,10 @@ const atendenteMetaController = {
       throw new ApiError(400, "ID do atendente é obrigatório.");
     }
 
-    const tenantId = requestingUser.role === 'Super Admin' ? req.body.tenantId : requestingUser.tenantId;
+    const tenantId =
+      requestingUser.role === "Super Admin"
+        ? req.body.tenantId
+        : requestingUser.tenantId;
 
     if (!tenantId) {
       throw new ApiError(400, "Tenant ID é obrigatório para definir metas.");
@@ -26,10 +29,12 @@ const atendenteMetaController = {
     const meta = await atendenteMetaRepository.createOrUpdateMeta(
       atendenteId,
       tenantId,
-      metaData
+      metaData,
     );
 
-    res.status(200).json({ message: "Meta do atendente salva com sucesso!", meta });
+    res
+      .status(200)
+      .json({ message: "Meta do atendente salva com sucesso!", meta });
   }),
 
   // @desc    Obtém a meta de um atendente específico
@@ -39,13 +44,19 @@ const atendenteMetaController = {
     const { atendenteId } = req.params;
     const requestingUser = req.user;
 
-    const tenantId = requestingUser.role === 'Super Admin' ? req.query.tenantId : requestingUser.tenantId;
+    const tenantId =
+      requestingUser.role === "Super Admin"
+        ? req.query.tenantId
+        : requestingUser.tenantId;
 
     if (!tenantId) {
       throw new ApiError(400, "Tenant ID é obrigatório para buscar metas.");
     }
 
-    const meta = await atendenteMetaRepository.getMetaByAtendenteId(atendenteId, tenantId);
+    const meta = await atendenteMetaRepository.getMetaByAtendenteId(
+      atendenteId,
+      tenantId,
+    );
 
     if (!meta) {
       throw new ApiError(404, "Meta do atendente não encontrada.");
@@ -60,7 +71,10 @@ const atendenteMetaController = {
   getAllMetasByTenant: asyncHandler(async (req, res) => {
     const requestingUser = req.user;
 
-    const tenantId = requestingUser.role === 'Super Admin' ? req.query.tenantId : requestingUser.tenantId;
+    const tenantId =
+      requestingUser.role === "Super Admin"
+        ? req.query.tenantId
+        : requestingUser.tenantId;
 
     if (!tenantId) {
       throw new ApiError(400, "Tenant ID é obrigatório para buscar metas.");
@@ -77,19 +91,27 @@ const atendenteMetaController = {
     const { atendenteId } = req.params;
     const requestingUser = req.user;
 
-    const tenantId = requestingUser.role === 'Super Admin' ? req.query.tenantId : requestingUser.tenantId;
+    const tenantId =
+      requestingUser.role === "Super Admin"
+        ? req.query.tenantId
+        : requestingUser.tenantId;
 
     if (!tenantId) {
       throw new ApiError(400, "Tenant ID é obrigatório para deletar metas.");
     }
 
-    const deletedRows = await atendenteMetaRepository.deleteMeta(atendenteId, tenantId);
+    const deletedRows = await atendenteMetaRepository.deleteMeta(
+      atendenteId,
+      tenantId,
+    );
 
     if (deletedRows === 0) {
       throw new ApiError(404, "Meta do atendente não encontrada para deleção.");
     }
 
-    res.status(200).json({ message: "Meta do atendente deletada com sucesso." });
+    res
+      .status(200)
+      .json({ message: "Meta do atendente deletada com sucesso." });
   }),
 };
 

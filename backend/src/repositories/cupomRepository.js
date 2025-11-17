@@ -1,6 +1,6 @@
-const { Cupom, Recompensa, Client } = require('../../models');
-const { fromZonedTime } = require('date-fns-tz');
-const { Op, fn, col } = require('sequelize');
+const { Cupom, Recompensa, Client } = require("../../models");
+const { convertFromTimeZone } = require("../utils/dateUtils");
+const { Op, fn, col } = require("sequelize");
 
 class CupomRepository {
   async bulkCreate(cupons) {
@@ -14,8 +14,8 @@ class CupomRepository {
   async getAllCupons(tenantId = null, filters = {}) {
     const whereClause = tenantId ? { tenantId } : {};
     const include = [
-      { model: Recompensa, as: 'recompensa' },
-      { model: Client, as: 'client' },
+      { model: Recompensa, as: "recompensa" },
+      { model: Client, as: "client" },
     ];
 
     if (filters.status) {
@@ -35,8 +35,8 @@ class CupomRepository {
     if (filters.search) {
       const searchTerm = `%${filters.search}%`;
       whereClause[Op.or] = [
-        { '$recompensa.name$': { [Op.iLike]: searchTerm } },
-        { '$client.name$': { [Op.iLike]: searchTerm } },
+        { "$recompensa.name$": { [Op.iLike]: searchTerm } },
+        { "$client.name$": { [Op.iLike]: searchTerm } },
         { codigo: { [Op.iLike]: searchTerm } },
       ];
     }
@@ -44,67 +44,69 @@ class CupomRepository {
     return Cupom.findAll({
       where: whereClause,
       include: include,
-      order: [['createdAt', 'DESC']],
+      order: [["createdAt", "DESC"]],
     });
   }
 
   async getCuponsSummary(tenantId = null) {
     const whereClause = tenantId ? { tenantId } : {};
-    const today = fromZonedTime(new Date(), 'America/Sao_Paulo');
+    const today = convertFromTimeZone(new Date());
     const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
-    const sevenDaysFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const sevenDaysFromNow = new Date(
+      today.getTime() + 7 * 24 * 60 * 60 * 1000,
+    );
 
     const totalCupons = await Cupom.count({ where: whereClause });
 
     const usedCupons = await Cupom.count({
-      where: { ...whereClause, status: 'used' },
+      where: { ...whereClause, status: "used" },
     });
 
     const expiredCupons = await Cupom.count({
       where: {
         ...whereClause,
-        status: { [Op.ne]: 'used' }, // Considera 'pending' e outros que não foram usados
+        status: { [Op.ne]: "used" }, // Considera 'pending' e outros que não foram usados
         dataValidade: { [Op.lt]: today },
       },
     });
 
     const activeCupons = await Cupom.count({
-        where: {
-            ...whereClause,
-            status: 'active',
-            dataValidade: { [Op.gte]: today },
-        }
+      where: {
+        ...whereClause,
+        status: "active",
+        dataValidade: { [Op.gte]: today },
+      },
     });
 
     const expiringSoonCupons = await Cupom.count({
-        where: {
-            ...whereClause,
-            status: 'active',
-            dataValidade: {
-                [Op.gte]: today,
-                [Op.lt]: sevenDaysFromNow,
-            },
+      where: {
+        ...whereClause,
+        status: "active",
+        dataValidade: {
+          [Op.gte]: today,
+          [Op.lt]: sevenDaysFromNow,
         },
+      },
     });
 
     const cuponsByType = await Cupom.findAll({
-        where: whereClause,
-        attributes: [
-            [fn('COUNT', col('Cupom.id')), 'count'],
-        ],
-        include: [{
-            model: Recompensa,
-            as: 'recompensa',
-            attributes: ['type'],
-            required: true,
-        }],
-        group: ['recompensa.type'],
-        raw: true,
+      where: whereClause,
+      attributes: [[fn("COUNT", col("Cupom.id")), "count"]],
+      include: [
+        {
+          model: Recompensa,
+          as: "recompensa",
+          attributes: ["type"],
+          required: true,
+        },
+      ],
+      group: ["recompensa.type"],
+      raw: true,
     });
 
-    const formattedCuponsByType = cuponsByType.map(item => ({
-        type: item['recompensa.type'],
-        count: parseInt(item.count, 10),
+    const formattedCuponsByType = cuponsByType.map((item) => ({
+      type: item["recompensa.type"],
+      count: parseInt(item.count, 10),
     }));
 
     const dailyGenerated = await Cupom.findAll({
@@ -115,21 +117,21 @@ class CupomRepository {
         },
       },
       attributes: [
-        [fn('DATE', col('createdAt')), 'date'],
-        [fn('COUNT', col('id')), 'count'],
+        [fn("DATE", col("createdAt")), "date"],
+        [fn("COUNT", col("id")), "count"],
       ],
-      group: [fn('DATE', col('createdAt'))],
-      order: [[fn('DATE', col('createdAt')), 'ASC']],
+      group: [fn("DATE", col("createdAt"))],
+      order: [[fn("DATE", col("createdAt")), "ASC"]],
       raw: true,
     });
 
     const recentCupons = await Cupom.findAll({
       where: whereClause,
       limit: 10,
-      order: [['createdAt', 'DESC']],
+      order: [["createdAt", "DESC"]],
       include: [
-        { model: Recompensa, as: 'recompensa', attributes: ['name'] },
-        { model: Client, as: 'client', attributes: ['name'] },
+        { model: Recompensa, as: "recompensa", attributes: ["name"] },
+        { model: Client, as: "client", attributes: ["name"] },
       ],
     });
 
@@ -152,7 +154,10 @@ class CupomRepository {
     }
     return Cupom.findOne({
       where: whereClause,
-      include: [{ model: Recompensa, as: 'recompensa' }, { model: Client, as: 'client' }],
+      include: [
+        { model: Recompensa, as: "recompensa" },
+        { model: Client, as: "client" },
+      ],
     });
   }
 
@@ -163,7 +168,10 @@ class CupomRepository {
     }
     return Cupom.findOne({
       where: whereClause,
-      include: [{ model: Recompensa, as: 'recompensa' }, { model: Client, as: 'client' }],
+      include: [
+        { model: Recompensa, as: "recompensa" },
+        { model: Client, as: "client" },
+      ],
     });
   }
 
@@ -184,7 +192,7 @@ class CupomRepository {
         clienteId: clienteId,
         pesquisaId: pesquisaId,
       },
-      order: [['dataGeracao', 'DESC']],
+      order: [["dataGeracao", "DESC"]],
     });
   }
 

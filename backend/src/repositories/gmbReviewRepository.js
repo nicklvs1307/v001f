@@ -10,7 +10,7 @@ const gmbReviewRepository = {
   getAllReviewsByTenant: async (tenantId) => {
     return GmbReview.findAll({
       where: { tenantId },
-      order: [['createdAt', 'DESC']],
+      order: [["createdAt", "DESC"]],
     });
   },
 

@@ -13,7 +13,10 @@ exports.registerSuperAdmin = asyncHandler(async (req, res) => {
   // Verificar se já existe um Super Admin
   const existingSuperAdmin = await authRepository.findSuperAdminUser();
   if (existingSuperAdmin) {
-    throw new ApiError(403, "Super Admin já registrado. Não é possível registrar outro.");
+    throw new ApiError(
+      403,
+      "Super Admin já registrado. Não é possível registrar outro.",
+    );
   }
 
   // Verificar se o email já existe
@@ -49,7 +52,7 @@ exports.registerSuperAdmin = asyncHandler(async (req, res) => {
 
 // Função de Login
 exports.login = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
   // Buscar usuário pelo email
   const user = await authRepository.findUserByEmail(email);
@@ -76,7 +79,9 @@ exports.login = asyncHandler(async (req, res) => {
     tenantName: user.tenant ? user.tenant.name : null, // Adicionar o nome do tenant
   };
 
-  const token = jwt.sign(payload, config.jwtSecret, { expiresIn: config.jwtExpiresIn });
+  const token = jwt.sign(payload, config.jwtSecret, {
+    expiresIn: config.jwtExpiresIn,
+  });
 
   res.json({
     message: "Login bem-sucedido!",

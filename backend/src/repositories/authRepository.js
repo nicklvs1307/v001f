@@ -3,10 +3,16 @@ const { Usuario, Role, Tenant } = require("../../models"); // Importa os modelos
 const findUserByEmail = async (email) => {
   return Usuario.findOne({
     where: { email },
-    attributes: ['id', 'name', 'email', 'passwordHash', 'profilePictureUrl', 'tenantId', 'roleId'],
-    include: [
-      { model: Tenant, as: 'tenant', attributes: ['name'] },
+    attributes: [
+      "id",
+      "name",
+      "email",
+      "passwordHash",
+      "profilePictureUrl",
+      "tenantId",
+      "roleId",
     ],
+    include: [{ model: Tenant, as: "tenant", attributes: ["name"] }],
   });
 };
 
@@ -31,7 +37,7 @@ const createSuperAdminUser = async (roleId, name, email, passwordHash) => {
 
 const getRoleNameByRoleId = async (roleId) => {
   const role = await Role.findByPk(roleId, {
-    attributes: ['name'],
+    attributes: ["name"],
   });
   return role ? role.name : null;
 };

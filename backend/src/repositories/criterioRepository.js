@@ -1,5 +1,5 @@
 const { Criterio } = require("../../models");
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 
 // Funções CRUD para Criterio
 const createCriterio = async (criterioData) => {
@@ -10,7 +10,7 @@ const getAllCriterios = async (tenantId) => {
   const whereClause = tenantId ? { tenantId } : {};
   return Criterio.findAll({
     where: whereClause,
-    order: [['name', 'ASC']],
+    order: [["name", "ASC"]],
   });
 };
 
@@ -22,7 +22,7 @@ const getCriterioById = async (id, tenantId = null) => {
 const updateCriterio = async (id, tenantId, name, description, type) => {
   const [updatedRows, [updatedCriterio]] = await Criterio.update(
     { name, description, type },
-    { where: { id, tenantId }, returning: true }
+    { where: { id, tenantId }, returning: true },
   );
   return updatedCriterio;
 };

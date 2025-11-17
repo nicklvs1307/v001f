@@ -1,12 +1,12 @@
-const OpenAI = require('openai');
-const ApiError = require('../errors/ApiError');
-const { readSecret } = require('../utils/secretReader');
+const OpenAI = require("openai");
+const ApiError = require("../errors/ApiError");
+const { readSecret } = require("../utils/secretReader");
 
 const openai = new OpenAI({
-  apiKey: readSecret('OPENAI_API_KEY'),
+  apiKey: readSecret("OPENAI_API_KEY"),
 });
 
-const AI_MODEL = 'gpt-3.5-turbo'; // Or a newer model if available/preferred
+const AI_MODEL = "gpt-3.5-turbo"; // Or a newer model if available/preferred
 
 class AiService {
   /**
@@ -39,8 +39,8 @@ class AiService {
       const response = await openai.chat.completions.create({
         model: AI_MODEL,
         messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: baseMessage },
+          { role: "system", content: systemPrompt },
+          { role: "user", content: baseMessage },
         ],
         temperature: 0.7,
         max_tokens: 200,
@@ -49,24 +49,26 @@ class AiService {
 
       const content = response.choices[0]?.message?.content;
       if (!content) {
-        throw new Error('A resposta da IA estava vazia.');
+        throw new Error("A resposta da IA estava vazia.");
       }
 
       // Split the response by newlines, trim whitespace, and filter out empty lines
-      const variations = content.split('\n').map(v => v.trim()).filter(v => v);
+      const variations = content
+        .split("\n")
+        .map((v) => v.trim())
+        .filter((v) => v);
 
       if (variations.length === 0) {
-        throw new Error('A IA não gerou variações válidas.');
+        throw new Error("A IA não gerou variações válidas.");
       }
 
       // Format into a spintax string
-      const spintaxString = `{${variations.join('|')}}`;
+      const spintaxString = `{${variations.join("|")}}`;
 
       return spintaxString;
-
     } catch (error) {
-      console.error('OpenAI API Error:', error);
-      throw new ApiError(502, 'Falha ao se comunicar com o serviço de IA.');
+      console.error("OpenAI API Error:", error);
+      throw new ApiError(502, "Falha ao se comunicar com o serviço de IA.");
     }
   }
 
@@ -89,7 +91,7 @@ class AiService {
       const response = await openai.chat.completions.create({
         model: AI_MODEL,
         messages: [
-          { role: 'system', content: systemPrompt },
+          { role: "system", content: systemPrompt },
           ...messages, // Spread the incoming messages array
         ],
         temperature: 0.5,
@@ -99,14 +101,16 @@ class AiService {
 
       const content = response.choices[0]?.message?.content;
       if (!content) {
-        throw new Error('A resposta da IA estava vazia.');
+        throw new Error("A resposta da IA estava vazia.");
       }
 
       return content;
-
     } catch (error) {
-      console.error('OpenAI API Error:', error);
-      throw new ApiError(502, 'Falha ao se comunicar com o serviço de IA para o chat.');
+      console.error("OpenAI API Error:", error);
+      throw new ApiError(
+        502,
+        "Falha ao se comunicar com o serviço de IA para o chat.",
+      );
     }
   }
 }

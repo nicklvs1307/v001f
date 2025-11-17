@@ -1,6 +1,6 @@
-const { WhatsappSender } = require('../../models');
-const { fromZonedTime } = require('date-fns-tz');
-const { Op } = require('sequelize');
+const { WhatsappSender } = require("../../models");
+const { convertFromTimeZone } = require("../utils/dateUtils");
+const { Op } = require("sequelize");
 
 const WARMING_UP_CASE_STATEMENT = `
   CASE "warmingUpDay"
@@ -22,31 +22,33 @@ class SenderPoolService {
         where: {
           [Op.or]: [
             {
-              status: 'active',
-              messagesSentToday: { [Op.lt]: sequelize.col('dailyLimit') }
+              status: "active",
+              messagesSentToday: { [Op.lt]: sequelize.col("dailyLimit") },
             },
             {
-              status: 'warming_up',
+              status: "warming_up",
               [Op.and]: [
-                sequelize.literal(`"messagesSentToday" < CEILING("dailyLimit" * ${WARMING_UP_CASE_STATEMENT})`)
-              ]
-            }
-          ]
+                sequelize.literal(
+                  `"messagesSentToday" < CEILING("dailyLimit" * ${WARMING_UP_CASE_STATEMENT})`,
+                ),
+              ],
+            },
+          ],
         },
         order: [
-          ['priority', 'ASC'],
-          ['lastUsedAt', 'ASC'],
+          ["priority", "ASC"],
+          ["lastUsedAt", "ASC"],
         ],
         lock: t.LOCK.UPDATE,
         transaction: t,
       });
 
       if (!sender) {
-        throw new Error('Nenhum disparador disponível no pool no momento.');
+        throw new Error("Nenhum disparador disponível no pool no momento.");
       }
 
       // Immediately mark this sender as "in-use" by updating its lastUsedAt
-      sender.lastUsedAt = fromZonedTime(new Date(), 'America/Sao_Paulo');
+      sender.lastUsedAt = convertFromTimeZone(new Date());
       await sender.save({ transaction: t });
 
       return sender;
@@ -55,7 +57,10 @@ class SenderPoolService {
 
   async recordSuccessfulSend(senderId) {
     return sequelize.transaction(async (t) => {
-      const sender = await WhatsappSender.findByPk(senderId, { lock: t.LOCK.UPDATE, transaction: t });
+      const sender = await WhatsappSender.findByPk(senderId, {
+        lock: t.LOCK.UPDATE,
+        transaction: t,
+      });
       if (sender) {
         sender.messagesSentToday += 1;
         await sender.save({ transaction: t });
@@ -63,9 +68,9 @@ class SenderPoolService {
     });
   }
 
-  async reportFailedSender(senderId, errorType = 'disconnected') {
+  async reportFailedSender(senderId, errorType = "disconnected") {
     const sender = await WhatsappSender.findByPk(senderId);
-    if (sender && ['active', 'warming_up'].includes(sender.status)) {
+    if (sender && ["active", "warming_up"].includes(sender.status)) {
       await sender.update({ status: errorType });
     }
   }
@@ -76,12 +81,14 @@ class SenderPoolService {
   }
 
   async resetDailyCounts() {
-    console.log('[SenderPoolService] Resetando contagem diária de mensagens...');
+    console.log(
+      "[SenderPoolService] Resetando contagem diária de mensagens...",
+    );
     await WhatsappSender.update(
       { messagesSentToday: 0 },
-      { where: { messagesSentToday: { [Op.gt]: 0 } } }
+      { where: { messagesSentToday: { [Op.gt]: 0 } } },
     );
-    console.log('[SenderPoolService] Contagem diária resetada.');
+    console.log("[SenderPoolService] Contagem diária resetada.");
   }
 }
 

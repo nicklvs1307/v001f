@@ -1,19 +1,22 @@
-const whatsappConfigRepository = require('../repositories/whatsappConfigRepository');
-const { fromZonedTime } = require('date-fns-tz');
-const whatsappTemplateRepository = require('../repositories/whatsappTemplateRepository');
-const tenantRepository = require('../repositories/tenantRepository');
-const dashboardRepository = require('../repositories/dashboardRepository'); // Importar dashboardRepository
-const whatsappService = require('../services/whatsappService'); // Importar whatsappService
-const ApiError = require('../errors/ApiError');
+const whatsappConfigRepository = require("../repositories/whatsappConfigRepository");
+const { convertFromTimeZone } = require("../utils/dateUtils");
+const whatsappTemplateRepository = require("../repositories/whatsappTemplateRepository");
+const tenantRepository = require("../repositories/tenantRepository");
+const dashboardRepository = require("../repositories/dashboardRepository"); // Importar dashboardRepository
+const whatsappService = require("../services/whatsappService"); // Importar whatsappService
+const ApiError = require("../errors/ApiError");
 
 const automationService = {
   getAutomations: async (tenantId) => {
     const config = await whatsappConfigRepository.findByTenant(tenantId);
     if (!config) {
-      throw new ApiError(404, 'Configuração do WhatsApp não encontrada.');
+      throw new ApiError(404, "Configuração do WhatsApp não encontrada.");
     }
 
-    const couponReminderTemplate = await whatsappTemplateRepository.findByType('COUPON_REMINDER', tenantId);
+    const couponReminderTemplate = await whatsappTemplateRepository.findByType(
+      "COUPON_REMINDER",
+      tenantId,
+    );
 
     return {
       dailyReport: {
@@ -25,9 +28,13 @@ const automationService = {
         template: config.prizeMessageTemplate,
       },
       couponReminder: {
-        enabled: couponReminderTemplate ? couponReminderTemplate.isEnabled : false,
-        daysBefore: couponReminderTemplate ? couponReminderTemplate.daysBefore : 7,
-        template: couponReminderTemplate ? couponReminderTemplate.message : '',
+        enabled: couponReminderTemplate
+          ? couponReminderTemplate.isEnabled
+          : false,
+        daysBefore: couponReminderTemplate
+          ? couponReminderTemplate.daysBefore
+          : 7,
+        template: couponReminderTemplate ? couponReminderTemplate.message : "",
       },
       birthdayAutomation: {
         enabled: config.birthdayAutomationEnabled,
@@ -41,7 +48,8 @@ const automationService = {
   },
 
   updateAutomations: async (tenantId, data) => {
-    const { dailyReport, prizeRoulette, couponReminder, birthdayAutomation } = data;
+    const { dailyReport, prizeRoulette, couponReminder, birthdayAutomation } =
+      data;
 
     const configData = {
       dailyReportEnabled: dailyReport.enabled,
@@ -59,7 +67,7 @@ const automationService = {
     await whatsappConfigRepository.updateByTenant(tenantId, configData);
 
     const templateData = {
-      type: 'COUPON_REMINDER',
+      type: "COUPON_REMINDER",
       isEnabled: couponReminder.enabled,
       daysBefore: couponReminder.daysBefore,
       message: couponReminder.template,
@@ -72,35 +80,56 @@ const automationService = {
   },
 
   sendDailyReportTest: async (tenantId, phoneNumbers) => {
-    const yesterday = fromZonedTime(new Date(), 'America/Sao_Paulo');
+    const yesterday = convertFromTimeZone(new Date());
     yesterday.setDate(yesterday.getDate() - 1);
     const startOfYesterday = new Date(new Date(yesterday).setHours(0, 0, 0, 0));
-    const endOfYesterday = new Date(new Date(yesterday).setHours(23, 59, 59, 999));
+    const endOfYesterday = new Date(
+      new Date(yesterday).setHours(23, 59, 59, 999),
+    );
 
-    const summary = await dashboardRepository.getSummary(tenantId, startOfYesterday, endOfYesterday);
+    const summary = await dashboardRepository.getSummary(
+      tenantId,
+      startOfYesterday,
+      endOfYesterday,
+    );
     const report = summary.nps;
     const totalResponses = summary.totalResponses;
     const totalNpsResponses = report.total;
 
-    const promotersPercentage = totalNpsResponses > 0 ? ((report.promoters / totalNpsResponses) * 100).toFixed(1) : 0;
-    const neutralsPercentage = totalNpsResponses > 0 ? ((report.neutrals / totalNpsResponses) * 100).toFixed(1) : 0;
-    const detractorsPercentage = totalNpsResponses > 0 ? ((report.detractors / totalNpsResponses) * 100).toFixed(1) : 0;
+    const promotersPercentage =
+      totalNpsResponses > 0
+        ? ((report.promoters / totalNpsResponses) * 100).toFixed(1)
+        : 0;
+    const neutralsPercentage =
+      totalNpsResponses > 0
+        ? ((report.neutrals / totalNpsResponses) * 100).toFixed(1)
+        : 0;
+    const detractorsPercentage =
+      totalNpsResponses > 0
+        ? ((report.detractors / totalNpsResponses) * 100).toFixed(1)
+        : 0;
 
-    const message = `*Relatório Diário de NPS*\n\n` +
-                    `*NPS:* ${report.score}\n` +
-                    `*Promotores:* ${report.promoters} (${promotersPercentage}%)\n` +
-                    `*Neutros:* ${report.neutrals} (${neutralsPercentage}%)\n` +
-                    `*Detratores:* ${report.detractors} (${detractorsPercentage}%)\n` +
-                    `*Total de Respostas:* ${totalResponses}\n\n` +
-                    `_Este é um teste do relatório diário de NPS._`;
+    const message =
+      `*Relatório Diário de NPS*\n\n` +
+      `*NPS:* ${report.score}\n` +
+      `*Promotores:* ${report.promoters} (${promotersPercentage}%)\n` +
+      `*Neutros:* ${report.neutrals} (${neutralsPercentage}%)\n` +
+      `*Detratores:* ${report.detractors} (${detractorsPercentage}%)\n` +
+      `*Total de Respostas:* ${totalResponses}\n\n` +
+      `_Este é um teste do relatório diário de NPS._`;
 
-    const numbersArray = phoneNumbers.split(',').map(num => num.trim()).filter(num => num);
+    const numbersArray = phoneNumbers
+      .split(",")
+      .map((num) => num.trim())
+      .filter((num) => num);
 
     for (const number of numbersArray) {
-          await whatsappService.sendTenantMessage(tenantId, number, message);
-          console.log(`Relatório de teste enviado para ${number} do tenant ${tenantId}`);
+      await whatsappService.sendTenantMessage(tenantId, number, message);
+      console.log(
+        `Relatório de teste enviado para ${number} do tenant ${tenantId}`,
+      );
     }
-    return { message: 'Relatório de teste enviado com sucesso!' };
+    return { message: "Relatório de teste enviado com sucesso!" };
   },
 };
 

@@ -1,36 +1,59 @@
-const { fromZonedTime } = require('date-fns-tz');
+const {
+  zonedTimeToUtc,
+  format,
+  toDate,
+  fromZonedTime,
+  toZonedTime,
+} = require("date-fns-tz");
+const { ptBR } = require("date-fns/locale");
 
-const timeZone = 'America/Sao_Paulo';
+const TIMEZONE = "America/Sao_Paulo";
 
 /**
- * Adjusts start and end date strings to a specific timezone.
- * Sets start date to the beginning of the day and end date to the end of the day.
- * @param {string} startDateStr - The start date in 'YYYY-MM-DD' format.
- * @param {string} endDateStr - The end date in 'YYYY-MM-DD' format.
- * @returns {{startDate: Date|null, endDate: Date|null}}
+ * Converte uma data para o fuso horário UTC, considerando o fuso padrão da aplicação.
+ * @param {Date | string | number} date - A data a ser convertida.
+ * @returns {Date} A data convertida para UTC.
  */
-const adjustDateRange = (startDateStr, endDateStr) => {
-    let startDate = null;
-    let endDate = null;
+const convertToTimeZone = (date) => {
+  return zonedTimeToUtc(date, TIMEZONE);
+};
 
-    if (startDateStr) {
-        const parsedStart = fromZonedTime(`${startDateStr}T00:00:00`, timeZone);
-        if (parsedStart && !isNaN(parsedStart.getTime())) {
-            startDate = parsedStart;
-        }
-    }
+/**
+ * Converte uma data de um fuso horário específico para o horário local do sistema.
+ * @param {Date | string | number} date - A data a ser convertida.
+ * @returns {Date} A data convertida.
+ */
+const convertFromTimeZone = (date) => {
+  return fromZonedTime(date, TIMEZONE);
+};
 
-    if (endDateStr) {
-        const parsedEnd = fromZonedTime(`${endDateStr}T23:59:59.999`, timeZone);
-        if (parsedEnd && !isNaN(parsedEnd.getTime())) {
-            endDate = parsedEnd;
-        }
-    }
+/**
+ * Converte uma data para um fuso horário específico.
+ * @param {Date | string | number} date - A data a ser convertida.
+ * @returns {Date} A data convertida.
+ */
+const convertToZonedTime = (date) => {
+  return toZonedTime(date, TIMEZONE);
+};
 
-    return { startDate, endDate };
+/**
+ * Formata uma data em um formato específico, ajustada para o fuso horário padrão.
+ * @param {Date | string | number} date - A data a ser formatada.
+ * @param {string} formatString - O formato desejado (ex: 'dd/MM/yyyy HH:mm:ss').
+ * @returns {string} A data formatada.
+ */
+const formatInTimeZone = (date, formatString) => {
+  const zonedDate = toDate(date, { timeZone: TIMEZONE });
+  return format(zonedDate, formatString, {
+    timeZone: TIMEZONE,
+    locale: ptBR,
+  });
 };
 
 module.exports = {
-    adjustDateRange,
-    timeZone,
+  TIMEZONE,
+  convertToTimeZone,
+  formatInTimeZone,
+  convertFromTimeZone,
+  convertToZonedTime,
 };

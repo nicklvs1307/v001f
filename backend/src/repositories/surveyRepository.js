@@ -1,7 +1,16 @@
-const { Pesquisa, Pergunta, Resposta, Usuario, Tenant, Criterio, Atendente, Client } = require("../../models");
-const { fromZonedTime } = require('date-fns-tz');
+const {
+  Pesquisa,
+  Pergunta,
+  Resposta,
+  Usuario,
+  Tenant,
+  Criterio,
+  Atendente,
+  Client,
+} = require("../../models");
+const { convertFromTimeZone } = require("../utils/dateUtils");
 const { sequelize } = require("../database");
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 const ApiError = require("../errors/ApiError");
 
 const createSurvey = async (surveyData) => {
@@ -25,27 +34,33 @@ const createSurvey = async (surveyData) => {
 
   const transaction = await sequelize.transaction();
   try {
-    const newSurvey = await Pesquisa.create({
-      tenantId,
-      creatorId,
-      title,
-      description,
-      isOpen,
-      askForAttendant,
-      expectedRespondents,
-      atendenteId,
-      status,
-      dueDate,
-      startDate,
-      endDate,
-      recompensaId,
-      roletaId,
-    }, { transaction });
+    const newSurvey = await Pesquisa.create(
+      {
+        tenantId,
+        creatorId,
+        title,
+        description,
+        isOpen,
+        askForAttendant,
+        expectedRespondents,
+        atendenteId,
+        status,
+        dueDate,
+        startDate,
+        endDate,
+        recompensaId,
+        roletaId,
+      },
+      { transaction },
+    );
 
     if (questions && questions.length > 0) {
       const questionsToCreate = questions.map((q, index) => {
         if (!q.text) {
-          throw new ApiError(400, `O texto da pergunta ${index + 1} é obrigatório.`);
+          throw new ApiError(
+            400,
+            `O texto da pergunta ${index + 1} é obrigatório.`,
+          );
         }
         return {
           pesquisaId: newSurvey.id,
@@ -63,7 +78,10 @@ const createSurvey = async (surveyData) => {
     return { ...newSurvey.toJSON(), questions: questions || [] };
   } catch (error) {
     await transaction.rollback();
-    console.error('[SurveyRepository] Transaction rolled back due to error:', error);
+    console.error(
+      "[SurveyRepository] Transaction rolled back due to error:",
+      error,
+    );
     throw error;
   }
 };
@@ -73,15 +91,31 @@ const getSurveyById = async (id, tenantId = null) => {
   const survey = await Pesquisa.findByPk(id, {
     where: whereClause,
     include: [
-      { model: Usuario, as: 'creator', attributes: ['name'] },
+      { model: Usuario, as: "creator", attributes: ["name"] },
       {
         model: Pergunta,
-        as: 'perguntas',
-        attributes: ['id', 'text', 'type', 'options', 'order', 'criterioId'],
-        order: [['order', 'ASC']],
+        as: "perguntas",
+        attributes: ["id", "text", "type", "options", "order", "criterioId"],
+        order: [["order", "ASC"]],
       },
     ],
-    attributes: ['id', 'title', 'description', 'createdAt', 'tenantId', 'isOpen', 'askForAttendant', 'expectedRespondents', 'startDate', 'endDate', 'dueDate', 'status', 'creatorId', 'recompensaId', 'roletaId'],
+    attributes: [
+      "id",
+      "title",
+      "description",
+      "createdAt",
+      "tenantId",
+      "isOpen",
+      "askForAttendant",
+      "expectedRespondents",
+      "startDate",
+      "endDate",
+      "dueDate",
+      "status",
+      "creatorId",
+      "recompensaId",
+      "roletaId",
+    ],
   });
 
   if (!survey) return null;
@@ -103,7 +137,7 @@ const getSurveyById = async (id, tenantId = null) => {
     creatorId: survey.creatorId,
     recompensaId: survey.recompensaId,
     roletaId: survey.roletaId,
-    questions: survey.perguntas.map(q => ({
+    questions: survey.perguntas.map((q) => ({
       ...q.toJSON(),
     })),
   };
@@ -131,9 +165,23 @@ const updateSurvey = async (id, surveyData, tenantId = null) => {
     const whereClause = tenantId ? { id, tenantId } : { id };
 
     // 1. Atualiza os dados da pesquisa principal
-    const [updatedRows] = await Pesquisa.update({
-      title, description, isOpen, askForAttendant, expectedRespondents, atendenteId, status, dueDate, startDate, endDate, recompensaId, roletaId
-    }, { where: whereClause, transaction });
+    const [updatedRows] = await Pesquisa.update(
+      {
+        title,
+        description,
+        isOpen,
+        askForAttendant,
+        expectedRespondents,
+        atendenteId,
+        status,
+        dueDate,
+        startDate,
+        endDate,
+        recompensaId,
+        roletaId,
+      },
+      { where: whereClause, transaction },
+    );
 
     if (updatedRows === 0) {
       await transaction.rollback();
@@ -141,18 +189,28 @@ const updateSurvey = async (id, surveyData, tenantId = null) => {
     }
 
     // 2. Busca as perguntas existentes no banco
-    const existingQuestions = await Pergunta.findAll({ where: { pesquisaId: id }, transaction });
-    const existingQuestionIds = existingQuestions.map(q => q.id);
-    const incomingQuestionIds = questions.map(q => q.id).filter(qId => qId); // Filtra IDs undefined/null
+    const existingQuestions = await Pergunta.findAll({
+      where: { pesquisaId: id },
+      transaction,
+    });
+    const existingQuestionIds = existingQuestions.map((q) => q.id);
+    const incomingQuestionIds = questions.map((q) => q.id).filter((qId) => qId); // Filtra IDs undefined/null
 
     // 3. Determina as ações (criar, atualizar, deletar)
-    const questionIdsToDelete = existingQuestionIds.filter(qId => !incomingQuestionIds.includes(qId));
-    const questionsToCreate = questions.filter(q => !q.id);
-    const questionsToUpdate = questions.filter(q => q.id && existingQuestionIds.includes(q.id));
+    const questionIdsToDelete = existingQuestionIds.filter(
+      (qId) => !incomingQuestionIds.includes(qId),
+    );
+    const questionsToCreate = questions.filter((q) => !q.id);
+    const questionsToUpdate = questions.filter(
+      (q) => q.id && existingQuestionIds.includes(q.id),
+    );
 
     // 4. Executa as ações
     if (questionIdsToDelete.length > 0) {
-      await Pergunta.destroy({ where: { id: questionIdsToDelete }, transaction });
+      await Pergunta.destroy({
+        where: { id: questionIdsToDelete },
+        transaction,
+      });
     }
 
     if (questionsToCreate.length > 0) {
@@ -161,7 +219,7 @@ const updateSurvey = async (id, surveyData, tenantId = null) => {
         text: q.text,
         type: q.type,
         options: q.options || null,
-        order: questions.findIndex(iq => iq === q) + 1, // Mantém a ordem da requisição
+        order: questions.findIndex((iq) => iq === q) + 1, // Mantém a ordem da requisição
         criterioId: q.criterioId || null,
       }));
       await Pergunta.bulkCreate(newQuestions, { transaction });
@@ -169,13 +227,16 @@ const updateSurvey = async (id, surveyData, tenantId = null) => {
 
     if (questionsToUpdate.length > 0) {
       for (const q of questionsToUpdate) {
-        await Pergunta.update({
-          text: q.text,
-          type: q.type,
-          options: q.options || null,
-          order: questions.findIndex(iq => iq.id === q.id) + 1, // Mantém a ordem da requisição
-          criterioId: q.criterioId || null,
-        }, { where: { id: q.id }, transaction });
+        await Pergunta.update(
+          {
+            text: q.text,
+            type: q.type,
+            options: q.options || null,
+            order: questions.findIndex((iq) => iq.id === q.id) + 1, // Mantém a ordem da requisição
+            criterioId: q.criterioId || null,
+          },
+          { where: { id: q.id }, transaction },
+        );
       }
     }
 
@@ -183,10 +244,11 @@ const updateSurvey = async (id, surveyData, tenantId = null) => {
 
     // 5. Retorna a pesquisa atualizada com todas as perguntas
     const finalSurvey = await Pesquisa.findByPk(id, {
-      include: [{ model: Pergunta, as: 'perguntas', order: [['order', 'ASC']] }],
+      include: [
+        { model: Pergunta, as: "perguntas", order: [["order", "ASC"]] },
+      ],
     });
     return finalSurvey;
-
   } catch (error) {
     await transaction.rollback();
     console.error("Error updating survey:", error);
@@ -201,7 +263,7 @@ const deleteSurvey = async (id, tenantId = null) => {
     await Pergunta.destroy({ where: { pesquisaId: id }, transaction });
     const deletedRows = await Pesquisa.destroy({
       where: whereClause,
-      transaction
+      transaction,
     });
     await transaction.commit();
     return deletedRows;
@@ -215,30 +277,31 @@ const getSurveyTenantIdAndCreatorId = async (id, tenantId = null) => {
   const whereClause = tenantId ? { id, tenantId } : { id };
   return Pesquisa.findByPk(id, {
     where: whereClause,
-    attributes: ['tenantId', 'creatorId'],
+    attributes: ["tenantId", "creatorId"],
   });
 };
 
 const getSurveyStats = async (tenantId = null) => {
   const whereClause = tenantId ? { tenantId } : {};
-  const today = fromZonedTime(new Date(), 'America/Sao_Paulo');
+  const today = convertFromTimeZone(new Date());
   const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
   const activeSurveys = await Pesquisa.count({
-    where: { ...whereClause, status: 'active' }
+    where: { ...whereClause, status: "active" },
   });
 
   const responsesMonth = await Resposta.count({
     where: { ...whereClause, createdAt: { [Op.gte]: startOfMonth } },
     distinct: true,
-    col: 'respondentSessionId'
+    col: "respondentSessionId",
   });
 
   const totalClients = await Client.count({ where: { ...whereClause } });
-  const responseRate = totalClients > 0 ? (responsesMonth / totalClients) * 100 : 0;
+  const responseRate =
+    totalClients > 0 ? (responsesMonth / totalClients) * 100 : 0;
 
   const pendingSurveys = await Pesquisa.count({
-    where: { ...whereClause, status: 'pending' }
+    where: { ...whereClause, status: "pending" },
   });
 
   return {
@@ -249,10 +312,10 @@ const getSurveyStats = async (tenantId = null) => {
   };
 };
 
-const findAllForList = async (tenantId = null, status = 'all') => {
+const findAllForList = async (tenantId = null, status = "all") => {
   const whereClause = tenantId ? { tenantId } : {};
 
-  if (status && status !== 'all') {
+  if (status && status !== "all") {
     whereClause.status = status;
   }
 
@@ -261,38 +324,53 @@ const findAllForList = async (tenantId = null, status = 'all') => {
     include: [
       {
         model: Pergunta,
-        as: 'perguntas',
-        attributes: ['id', 'text', 'type', 'options', 'order'],
+        as: "perguntas",
+        attributes: ["id", "text", "type", "options", "order"],
       },
     ],
     attributes: [
-      'id', 'title', 'description', 'createdAt', 'dueDate', 'status', 'isOpen', 'expectedRespondents', 'askForAttendant', 'tenantId'
+      "id",
+      "title",
+      "description",
+      "createdAt",
+      "dueDate",
+      "status",
+      "isOpen",
+      "expectedRespondents",
+      "askForAttendant",
+      "tenantId",
     ],
-    order: [['createdAt', 'DESC']],
+    order: [["createdAt", "DESC"]],
   });
 
-  const surveyIds = surveys.map(s => s.id);
+  const surveyIds = surveys.map((s) => s.id);
   const respondentCounts = await Resposta.findAll({
     attributes: [
-      'pesquisaId',
-      [sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('respondentSessionId'))), 'count']
+      "pesquisaId",
+      [
+        sequelize.fn(
+          "COUNT",
+          sequelize.fn("DISTINCT", sequelize.col("respondentSessionId")),
+        ),
+        "count",
+      ],
     ],
     where: {
       pesquisaId: {
-        [Op.in]: surveyIds
-      }
+        [Op.in]: surveyIds,
+      },
     },
-    group: ['pesquisaId']
+    group: ["pesquisaId"],
   });
 
   const countsMap = respondentCounts.reduce((acc, curr) => {
-    acc[curr.pesquisaId] = curr.get('count');
+    acc[curr.pesquisaId] = curr.get("count");
     return acc;
   }, {});
 
-  return surveys.map(survey => ({
+  return surveys.map((survey) => ({
     ...survey.toJSON(),
-    currentRespondents: countsMap[survey.id] || 0
+    currentRespondents: countsMap[survey.id] || 0,
   }));
 };
 
@@ -304,25 +382,32 @@ const findResultsById = async (surveyId, tenantId = null) => {
     include: [
       {
         model: Pergunta,
-        as: 'perguntas',
+        as: "perguntas",
         include: [
           {
             model: Resposta,
-            as: 'respostas',
-            attributes: ['ratingValue', 'textValue', 'selectedOption', 'respondentSessionId'],
-            include: [{
-              model: Client,
-              as: 'client',
-              attributes: ['name', 'email', 'phone', 'birthDate'],
-            }]
+            as: "respostas",
+            attributes: [
+              "ratingValue",
+              "textValue",
+              "selectedOption",
+              "respondentSessionId",
+            ],
+            include: [
+              {
+                model: Client,
+                as: "client",
+                attributes: ["name", "email", "phone", "birthDate"],
+              },
+            ],
           },
           {
             model: Criterio,
-            as: 'criterio',
-            attributes: ['name'],
-          }
+            as: "criterio",
+            attributes: ["name"],
+          },
         ],
-        order: [['order', 'ASC']],
+        order: [["order", "ASC"]],
       },
     ],
   });
@@ -334,7 +419,7 @@ const findResultsById = async (surveyId, tenantId = null) => {
   const totalResponsesCount = await Resposta.count({
     where: { pesquisaId: surveyId },
     distinct: true,
-    col: 'respondentSessionId'
+    col: "respondentSessionId",
   });
 
   return { survey, totalResponsesCount };

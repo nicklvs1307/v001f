@@ -1,5 +1,5 @@
-const { Campanha } = require('../../models');
-const ApiError = require('../errors/ApiError');
+const { Campanha } = require("../../models");
+const ApiError = require("../errors/ApiError");
 
 class CampanhaRepository {
   async create(data) {
@@ -11,9 +11,12 @@ class CampanhaRepository {
   }
 
   async findById(id, tenantId, options = {}) {
-    const campanha = await Campanha.findOne({ where: { id, tenantId }, ...options });
+    const campanha = await Campanha.findOne({
+      where: { id, tenantId },
+      ...options,
+    });
     if (!campanha) {
-      throw ApiError.notFound('Campanha não encontrada.');
+      throw ApiError.notFound("Campanha não encontrada.");
     }
     return campanha;
   }
@@ -21,14 +24,14 @@ class CampanhaRepository {
   async update(id, data, tenantId) {
     // Garante que a campanha exista para o tenant antes de tentar atualizar
     await this.findById(id, tenantId);
-    
+
     // Executa a atualização usando o 'where' para garantir a atomicidade
     const [updatedRows] = await Campanha.update(data, {
       where: { id, tenantId },
     });
 
     if (updatedRows === 0) {
-      throw ApiError.notFound('Campanha não encontrada para atualização.');
+      throw ApiError.notFound("Campanha não encontrada para atualização.");
     }
 
     return this.findById(id, tenantId); // Retorna a instância atualizada

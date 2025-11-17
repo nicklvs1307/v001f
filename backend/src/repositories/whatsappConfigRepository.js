@@ -1,8 +1,8 @@
-const { WhatsappConfig, Tenant } = require('../../models');
+const { WhatsappConfig, Tenant } = require("../../models");
 
 class WhatsappConfigRepository {
   async findByTenant(tenantId) {
-    const { WhatsappConfig } = require('../../models');
+    const { WhatsappConfig } = require("../../models");
     return await WhatsappConfig.findOne({ where: { tenantId } });
   }
 
@@ -16,14 +16,14 @@ class WhatsappConfigRepository {
   }
 
   async findAllWithDailyReportEnabled() {
-    const { Op } = require('sequelize');
+    const { Op } = require("sequelize");
     return await WhatsappConfig.findAll({
       where: {
         dailyReportEnabled: true,
         reportPhoneNumbers: {
           [Op.ne]: null,
-          [Op.not]: ''
-        }
+          [Op.not]: "",
+        },
       },
       raw: true,
     });

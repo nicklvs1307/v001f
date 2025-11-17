@@ -1,85 +1,111 @@
 // Repositório para cálculos de NPS para o dashboard.
-const { Resposta, Pergunta, sequelize } = require('../../../models');
-const { Op } = require('sequelize');
-const { subDays } = require('date-fns');
-const dateFnsTz = require('date-fns-tz');
-const ratingService = require('../../services/ratingService');
+const { Resposta, Pergunta, sequelize } = require("../../../models");
+const { Op } = require("sequelize");
+const { subDays } = require("date-fns");
+const { convertToTimeZone, TIMEZONE } = require("../../../utils/dateUtils");
+const ratingService = require("../../services/ratingService");
 
+const getNpsByDayOfWeek = async (
+  tenantId = null,
+  startDate = null,
+  endDate = null,
+  surveyId = null,
+) => {
+  const whereClause = tenantId
+    ? { tenantId, ratingValue: { [Op.ne]: null } }
+    : { ratingValue: { [Op.ne]: null } };
+  if (surveyId) {
+    whereClause.pesquisaId = surveyId;
+  }
+  if (startDate || endDate) {
+    const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
+    const end = convertToTimeZone(endInput);
 
+    const startInput = startDate
+      ? new Date(`${startDate}T00:00:00.000`)
+      : subDays(endInput, 6);
+    const start = convertToTimeZone(startInput);
 
-const getNpsByDayOfWeek = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
-    const whereClause = tenantId ? { tenantId, ratingValue: { [Op.ne]: null } } : { ratingValue: { [Op.ne]: null } };
-    if (surveyId) {
-        whereClause.pesquisaId = surveyId;
+    whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+  }
+
+  const responses = await Resposta.findAll({
+    where: whereClause,
+    include: [
+      {
+        model: Pergunta,
+        as: "pergunta",
+        attributes: ["type"],
+        where: {
+          type: "rating_0_10",
+        },
+        required: true,
+      },
+    ],
+    attributes: [
+      "ratingValue",
+      [
+        sequelize.fn(
+          "EXTRACT",
+          sequelize.literal(
+            `ISODOW FROM "Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`,
+          ),
+        ),
+        "dayOfWeek",
+      ],
+    ],
+  });
+
+  const npsByDay = {
+    Domingo: { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+    "Segunda-feira": { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+    "Terça-feira": { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+    "Quarta-feira": { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+    "Quinta-feira": { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+    "Sexta-feira": { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+    Sábado: { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+  };
+
+  const daysOfWeek = [
+    "Domingo",
+    "Segunda-feira",
+    "Terça-feira",
+    "Quarta-feira",
+    "Quinta-feira",
+    "Sexta-feira",
+    "Sábado",
+  ];
+
+  responses.forEach((response) => {
+    const dayOfWeek = response.get("dayOfWeek"); // 1 for Monday, 7 for Sunday
+    const dayName = daysOfWeek[dayOfWeek % 7]; // Map Sunday (7) to index 0
+
+    const classification = ratingService.classifyNPS(response.ratingValue);
+
+    if (classification) {
+      npsByDay[dayName].total++;
+      if (classification === "promoter") npsByDay[dayName].promoters++;
+      else if (classification === "neutral") npsByDay[dayName].neutrals++;
+      else if (classification === "detractor") npsByDay[dayName].detractors++;
     }
-    const timeZone = 'America/Sao_Paulo';
-    if (startDate || endDate) {
-        const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-        const end = dateFnsTz.zonedTimeToUtc(endInput, timeZone);
+  });
 
-        const startInput = startDate ? new Date(`${startDate}T00:00:00.000`) : subDays(endInput, 6);
-        const start = dateFnsTz.zonedTimeToUtc(startInput, timeZone);
-
-        whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+  const result = Object.entries(npsByDay).map(([day, counts]) => {
+    let npsScore = 0;
+    if (counts.total > 0) {
+      npsScore =
+        (counts.promoters / counts.total) * 100 -
+        (counts.detractors / counts.total) * 100;
     }
-
-    const responses = await Resposta.findAll({
-        where: whereClause,
-        include: [{
-            model: Pergunta,
-            as: 'pergunta',
-            attributes: ['type'],
-            where: {
-                type: 'rating_0_10'
-            },
-            required: true
-        }],
-        attributes: [
-            'ratingValue',
-            [sequelize.fn('EXTRACT', sequelize.literal(`ISODOW FROM "Resposta"."createdAt" AT TIME ZONE 'America/Sao_Paulo'`)), 'dayOfWeek']
-        ]
-    });
-
-    const npsByDay = {
-        'Domingo': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
-        'Segunda-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
-        'Terça-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
-        'Quarta-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
-        'Quinta-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
-        'Sexta-feira': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
-        'Sábado': { promoters: 0, neutrals: 0, detractors: 0, total: 0 },
+    return {
+      day,
+      nps: parseFloat(npsScore.toFixed(1)),
     };
+  });
 
-    const daysOfWeek = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
-
-    responses.forEach(response => {
-        const dayOfWeek = response.get('dayOfWeek'); // 1 for Monday, 7 for Sunday
-        const dayName = daysOfWeek[dayOfWeek % 7]; // Map Sunday (7) to index 0
-
-        const classification = ratingService.classifyNPS(response.ratingValue);
-
-        if (classification) {
-            npsByDay[dayName].total++;
-            if (classification === 'promoter') npsByDay[dayName].promoters++;
-            else if (classification === 'neutral') npsByDay[dayName].neutrals++;
-            else if (classification === 'detractor') npsByDay[dayName].detractors++;
-        }
-    });
-
-    const result = Object.entries(npsByDay).map(([day, counts]) => {
-        let npsScore = 0;
-        if (counts.total > 0) {
-            npsScore = ((counts.promoters / counts.total) * 100) - ((counts.detractors / counts.total) * 100);
-        }
-        return {
-            day,
-            nps: parseFloat(npsScore.toFixed(1)),
-        };
-    });
-
-    return result;
+  return result;
 };
 
 module.exports = {
-    getNpsByDayOfWeek,
+  getNpsByDayOfWeek,
 };

@@ -1,8 +1,11 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const { check } = require("express-validator");
-const { getClientDetails, ...clientController } = require('../controllers/clientController');
-const { protect, authorize } = require('../middlewares/authMiddleware');
+const {
+  getClientDetails,
+  ...clientController
+} = require("../controllers/clientController");
+const { protect, authorize } = require("../middlewares/authMiddleware");
 const validate = require("../middlewares/validationMiddleware");
 const multer = require("multer");
 const path = require("path");
@@ -24,9 +27,9 @@ const upload = multer({
 // Validador reutilizável para data de nascimento
 const birthDateValidator = check("birthDate", "Data de nascimento inválida")
   .optional({ checkFalsy: true })
-  .customSanitizer(value => {
-    if (!value || value === '') return null;
-    const parts = value.split('/');
+  .customSanitizer((value) => {
+    if (!value || value === "") return null;
+    const parts = value.split("/");
     if (parts.length === 3 && parts[2].length === 4) {
       const date = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
       if (!isNaN(date.getTime())) {
@@ -35,92 +38,113 @@ const birthDateValidator = check("birthDate", "Data de nascimento inválida")
     }
     return null;
   })
-  .if(check('birthDate').notEmpty())
+  .if(check("birthDate").notEmpty())
   .isISO8601()
-  .withMessage('A data de nascimento deve estar no formato DD/MM/AAAA.');
+  .withMessage("A data de nascimento deve estar no formato DD/MM/AAAA.");
 
 // Rota pública para auto-cadastro de cliente após pesquisa
 router.post(
-  '/register',
+  "/register",
   [
     check("name", "Nome do cliente é obrigatório").not().isEmpty(),
     check("email", "Email do cliente inválido").optional().isEmail(),
     check("phone", "Telefone do cliente é obrigatório").not().isEmpty(),
     birthDateValidator, // Usa o validador reutilizável
-    check("respondentSessionId", "ID da sessão de resposta é obrigatório").not().isEmpty().isUUID(),
+    check("respondentSessionId", "ID da sessão de resposta é obrigatório")
+      .not()
+      .isEmpty()
+      .isUUID(),
   ],
   validate,
-  clientController.publicRegisterClient
+  clientController.publicRegisterClient,
 );
 
 // Rotas para o dashboard de clientes
-router.get('/dashboard', protect, authorize(['Admin']), clientController.getClientDashboard);
+router.get(
+  "/dashboard",
+  protect,
+  authorize(["Admin"]),
+  clientController.getClientDashboard,
+);
 
 // Rotas para clientes aniversariantes
-router.get('/birthdays', protect, authorize(['Admin']), clientController.getBirthdayClients);
+router.get(
+  "/birthdays",
+  protect,
+  authorize(["Admin"]),
+  clientController.getBirthdayClients,
+);
 
 // Rotas CRUD para clientes
-router.route('/')
+router
+  .route("/")
   .post(
     protect,
-    authorize(['Admin']),
+    authorize(["Admin"]),
     [
       check("name", "Nome do cliente é obrigatório").not().isEmpty(),
       check("email", "Email do cliente inválido").optional().isEmail(),
       check("phone", "Telefone do cliente é obrigatório").not().isEmpty(),
       birthDateValidator, // Usa o validador reutilizável
-      check("respondentSessionId", "ID da sessão do respondente inválido").optional({ nullable: true }).isUUID(),
+      check("respondentSessionId", "ID da sessão do respondente inválido")
+        .optional({ nullable: true })
+        .isUUID(),
     ],
     validate,
-    clientController.createClient
+    clientController.createClient,
   )
-  .get(protect, authorize(['Admin']), clientController.getAllClients);
+  .get(protect, authorize(["Admin"]), clientController.getAllClients);
 
-router.route('/:id')
+router
+  .route("/:id")
   .get(
     protect,
-    authorize(['Admin']),
-    [
-      check("id", "ID do cliente inválido").isUUID().not().isEmpty(),
-    ],
+    authorize(["Admin"]),
+    [check("id", "ID do cliente inválido").isUUID().not().isEmpty()],
     validate,
-    clientController.getClientById
-  )
+    clientController.getClientById,
+  );
 
-router.route('/:id/details')
+router
+  .route("/:id/details")
   .get(
     protect,
-    authorize(['Admin']),
-    [
-      check("id", "ID do cliente inválido").isUUID().not().isEmpty(),
-    ],
+    authorize(["Admin"]),
+    [check("id", "ID do cliente inválido").isUUID().not().isEmpty()],
     validate,
-    getClientDetails
-  )
+    getClientDetails,
+  );
 
-router.route('/:id')
+router
+  .route("/:id")
   .put(
     protect,
-    authorize(['Admin']),
+    authorize(["Admin"]),
     [
       check("id", "ID do cliente inválido").isUUID().not().isEmpty(),
-      check("name", "Nome do cliente deve ser uma string não vazia").optional().not().isEmpty(),
+      check("name", "Nome do cliente deve ser uma string não vazia")
+        .optional()
+        .not()
+        .isEmpty(),
       check("email", "Email do cliente inválido").optional().isEmail(),
-      check("phone", "Telefone do cliente deve ser uma string não vazia").optional().not().isEmpty(),
+      check("phone", "Telefone do cliente deve ser uma string não vazia")
+        .optional()
+        .not()
+        .isEmpty(),
       birthDateValidator, // Usa o validador reutilizável
-      check("respondentSessionId", "ID da sessão do respondente inválido").optional({ nullable: true }).isUUID(),
+      check("respondentSessionId", "ID da sessão do respondente inválido")
+        .optional({ nullable: true })
+        .isUUID(),
     ],
     validate,
-    clientController.updateClient
+    clientController.updateClient,
   )
   .delete(
     protect,
-    authorize(['Admin']),
-    [
-      check("id", "ID do cliente inválido").isUUID().not().isEmpty(),
-    ],
+    authorize(["Admin"]),
+    [check("id", "ID do cliente inválido").isUUID().not().isEmpty()],
     validate,
-    clientController.deleteClient
+    clientController.deleteClient,
   );
 
 // Rota para enviar mensagem de WhatsApp
@@ -133,7 +157,7 @@ router.post(
     check("message", "A mensagem é obrigatória").not().isEmpty(),
   ],
   validate,
-  clientController.sendMessageToClient
+  clientController.sendMessageToClient,
 );
 
 router.post(
@@ -141,7 +165,7 @@ router.post(
   protect,
   authorize(["Admin"]),
   upload.single("file"),
-  clientController.importClients
+  clientController.importClients,
 );
 
 module.exports = router;

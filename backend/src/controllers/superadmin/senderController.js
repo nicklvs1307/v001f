@@ -1,5 +1,5 @@
-const senderService = require('../../services/superadmin/senderService');
-const { getSocketIO } = require('../../socket');
+const senderService = require("../../services/superadmin/senderService");
+const { getSocketIO } = require("../../socket");
 
 class SenderController {
   async getAll(req, res, next) {
@@ -83,29 +83,40 @@ class SenderController {
   async handleWebhook(req, res, next) {
     try {
       const { instance, event, data } = req.body;
-      console.log(`[Webhook] Received event '${event}' for instance '${instance}'`);
+      console.log(
+        `[Webhook] Received event '${event}' for instance '${instance}'`,
+      );
 
-      if (event === 'connection.update') {
-        const newStatus = data.state === 'CONNECTED' ? 'active' : 'disconnected';
-        const updatedSender = await senderService.updateSenderStatusByInstanceName(instance, newStatus);
+      if (event === "connection.update") {
+        const newStatus =
+          data.state === "CONNECTED" ? "active" : "disconnected";
+        const updatedSender =
+          await senderService.updateSenderStatusByInstanceName(
+            instance,
+            newStatus,
+          );
 
         if (updatedSender) {
           const io = getSocketIO();
-          console.log(`[Socket.IO] Emitting sender:update for sender ${updatedSender.id}`);
-          io.emit('sender:update', updatedSender);
+          console.log(
+            `[Socket.IO] Emitting sender:update for sender ${updatedSender.id}`,
+          );
+          io.emit("sender:update", updatedSender);
         }
-      } else if (event === 'qrcode.updated') {
+      } else if (event === "qrcode.updated") {
         const sender = await senderService.findSenderByInstanceName(instance);
         if (sender && data.qrcode?.base64) {
           const io = getSocketIO();
-          console.log(`[Socket.IO] Emitting qrcode:update for sender ${sender.id}`);
+          console.log(
+            `[Socket.IO] Emitting qrcode:update for sender ${sender.id}`,
+          );
           io.emit(`qrcode:update:${sender.id}`, { qrCode: data.qrcode.base64 });
         }
       }
-      
+
       res.sendStatus(200);
     } catch (error) {
-      console.error('[Webhook] Error:', error);
+      console.error("[Webhook] Error:", error);
       next(error);
     }
   }

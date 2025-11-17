@@ -8,7 +8,10 @@ const protect = async (req, res, next) => {
   try {
     console.log(`[Auth Middleware] Request: ${req.method} ${req.originalUrl}`);
 
-    if (!req.headers.authorization || !req.headers.authorization.startsWith("Bearer")) {
+    if (
+      !req.headers.authorization ||
+      !req.headers.authorization.startsWith("Bearer")
+    ) {
       throw new ApiError(401, "Nenhum token fornecido. Acesso não autorizado.");
     }
 
@@ -19,9 +22,9 @@ const protect = async (req, res, next) => {
     const { Usuario, Role, Tenant } = require("../../models");
     const user = await Usuario.findByPk(decoded.userId, {
       include: [
-        { model: Role, as: 'role' },
-        { model: Tenant, as: 'tenant' }
-      ]
+        { model: Role, as: "role" },
+        { model: Tenant, as: "tenant" },
+      ],
     });
 
     if (!user) {
@@ -33,9 +36,12 @@ const protect = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Erro no middleware de proteção:', error.message);
+    console.error("Erro no middleware de proteção:", error.message);
     // Cria um novo ApiError para padronizar a resposta de erro de autenticação
-    const authError = new ApiError(401, "Token inválido ou expirado. Acesso não autorizado.");
+    const authError = new ApiError(
+      401,
+      "Token inválido ou expirado. Acesso não autorizado.",
+    );
     next(authError); // Passa o erro padronizado para o Express
   }
 };
@@ -46,7 +52,9 @@ const authorize = (requiredPermissionOrRoles) => {
     try {
       // Adicionar verificação defensiva para req.user
       if (!req.user || !req.user.role) {
-        return res.status(403).json({ message: "Acesso não autorizado: Informações do usuário ausentes." });
+        return res.status(403).json({
+          message: "Acesso não autorizado: Informações do usuário ausentes.",
+        });
       }
 
       const userRoleName = req.user.role ? req.user.role.name : null;
@@ -57,7 +65,7 @@ const authorize = (requiredPermissionOrRoles) => {
       }
 
       // Se o usuário for Super Admin, ele tem acesso total
-      if (userRoleName === 'Super Admin') {
+      if (userRoleName === "Super Admin") {
         return next();
       }
 
@@ -66,8 +74,12 @@ const authorize = (requiredPermissionOrRoles) => {
         if (requiredPermissionOrRoles.includes(userRoleName)) {
           return next(); // Usuário tem um dos papéis necessários
         } else {
-          console.error(`Authorization failed for user role: ${userRoleName}, required roles: ${requiredPermissionOrRoles.join(', ')}`);
-          return res.status(403).json({ message: "Você não tem permissão para acessar este recurso." });
+          console.error(
+            `Authorization failed for user role: ${userRoleName}, required roles: ${requiredPermissionOrRoles.join(", ")}`,
+          );
+          return res.status(403).json({
+            message: "Você não tem permissão para acessar este recurso.",
+          });
         }
       }
 
@@ -86,12 +98,14 @@ const authorize = (requiredPermissionOrRoles) => {
       // 3. Verificar se o papel do usuário tem a permissão necessária
       const hasPermission = await RolePermissao.findOne({
         where: { roleId: roleId },
-        include: [{
-          model: Permissao,
-          as: 'permissao', // Certifique-se de que 'as' corresponde à associação definida no modelo RolePermissao
-          where: { module, action },
-          required: true // Garante que a permissão deve existir
-        }]
+        include: [
+          {
+            model: Permissao,
+            as: "permissao", // Certifique-se de que 'as' corresponde à associação definida no modelo RolePermissao
+            where: { module, action },
+            required: true, // Garante que a permissão deve existir
+          },
+        ],
       });
 
       if (hasPermission) {

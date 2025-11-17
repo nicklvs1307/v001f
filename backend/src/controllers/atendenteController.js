@@ -1,21 +1,23 @@
-const asyncHandler = require('express-async-handler');
-const atendenteRepository = require('../repositories/atendenteRepository');
-const ApiError = require('../errors/ApiError');
+const asyncHandler = require("express-async-handler");
+const atendenteRepository = require("../repositories/atendenteRepository");
+const ApiError = require("../errors/ApiError");
 
 const atendenteController = {
-    createAtendente: asyncHandler(async (req, res) => {
-
+  createAtendente: asyncHandler(async (req, res) => {
     const { name, status } = req.body;
     const requestingUser = req.user;
 
     const targetTenantId =
-      requestingUser.role === 'Super Admin' && req.body.tenantId
+      requestingUser.role === "Super Admin" && req.body.tenantId
         ? req.body.tenantId
         : requestingUser.tenantId;
 
     if (!targetTenantId) {
-      console.error('Error: Tenant ID is missing.');
-      throw new ApiError(400, 'Tenant ID é obrigatório para criar um atendente.');
+      console.error("Error: Tenant ID is missing.");
+      throw new ApiError(
+        400,
+        "Tenant ID é obrigatório para criar um atendente.",
+      );
     }
 
     let atendente;
@@ -23,22 +25,30 @@ const atendenteController = {
     while (retries > 0) {
       const code = Math.floor(1000 + Math.random() * 9000).toString();
       try {
-        console.log('Attempting to create atendente with:', { targetTenantId, name, status, code });
+        console.log("Attempting to create atendente with:", {
+          targetTenantId,
+          name,
+          status,
+          code,
+        });
         atendente = await atendenteRepository.createAtendente(
           targetTenantId,
           name,
           status,
-          code
+          code,
         );
-        console.log('Atendente created successfully:', atendente);
+        console.log("Atendente created successfully:", atendente);
         break; // Success
       } catch (error) {
-        console.error('Error creating atendente:', error);
-        if (error.name === 'SequelizeUniqueConstraintError') {
+        console.error("Error creating atendente:", error);
+        if (error.name === "SequelizeUniqueConstraintError") {
           retries--;
           if (retries === 0) {
-            console.error('Error: Could not generate a unique code.');
-            throw new ApiError(500, 'Não foi possível gerar um código único para o atendente.');
+            console.error("Error: Could not generate a unique code.");
+            throw new ApiError(
+              500,
+              "Não foi possível gerar um código único para o atendente.",
+            );
           }
         } else {
           throw error; // Re-throw other errors
@@ -46,12 +56,15 @@ const atendenteController = {
       }
     }
 
-    res.status(201).json({ message: 'Atendente criado com sucesso!', atendente });
+    res
+      .status(201)
+      .json({ message: "Atendente criado com sucesso!", atendente });
   }),
 
   getAllAtendentes: asyncHandler(async (req, res) => {
     const requestingUser = req.user;
-    const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+    const tenantId =
+      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
     const atendentes = await atendenteRepository.getAllAtendentes(tenantId);
     res.status(200).json(atendentes);
@@ -60,19 +73,23 @@ const atendenteController = {
   getAtendenteById: asyncHandler(async (req, res) => {
     const { id } = req.params;
     const requestingUser = req.user;
-    const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+    const tenantId =
+      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
     const atendente = await atendenteRepository.getAtendenteById(id, tenantId);
 
     if (!atendente) {
-      throw new ApiError(404, 'Atendente não encontrado.');
+      throw new ApiError(404, "Atendente não encontrado.");
     }
 
     if (
-      requestingUser.role !== 'Super Admin' &&
+      requestingUser.role !== "Super Admin" &&
       atendente.tenantId !== requestingUser.tenantId
     ) {
-      throw new ApiError(403, 'Você não tem permissão para ver este atendente.');
+      throw new ApiError(
+        403,
+        "Você não tem permissão para ver este atendente.",
+      );
     }
 
     res.status(200).json(atendente);
@@ -82,18 +99,25 @@ const atendenteController = {
     const { id } = req.params;
     const { name, status } = req.body;
     const requestingUser = req.user;
-    const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+    const tenantId =
+      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
-    const existingAtendente = await atendenteRepository.getAtendenteById(id, tenantId);
+    const existingAtendente = await atendenteRepository.getAtendenteById(
+      id,
+      tenantId,
+    );
     if (!existingAtendente) {
-      throw new ApiError(404, 'Atendente não encontrado.');
+      throw new ApiError(404, "Atendente não encontrado.");
     }
 
     if (
-      requestingUser.role !== 'Super Admin' &&
+      requestingUser.role !== "Super Admin" &&
       existingAtendente.tenantId !== requestingUser.tenantId
     ) {
-      throw new ApiError(403, 'Você não tem permissão para atualizar este atendente.');
+      throw new ApiError(
+        403,
+        "Você não tem permissão para atualizar este atendente.",
+      );
     }
 
     const updatedAtendente = await atendenteRepository.updateAtendente(
@@ -104,36 +128,49 @@ const atendenteController = {
     );
 
     if (!updatedAtendente) {
-      throw new ApiError(404, 'Atendente não encontrado para atualização.');
+      throw new ApiError(404, "Atendente não encontrado para atualização.");
     }
 
-    res.status(200).json({ message: 'Atendente atualizado com sucesso!', atendente: updatedAtendente });
+    res.status(200).json({
+      message: "Atendente atualizado com sucesso!",
+      atendente: updatedAtendente,
+    });
   }),
 
   deleteAtendente: asyncHandler(async (req, res) => {
     const { id } = req.params;
     const requestingUser = req.user;
-    const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+    const tenantId =
+      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
-    const existingAtendente = await atendenteRepository.getAtendenteById(id, tenantId);
+    const existingAtendente = await atendenteRepository.getAtendenteById(
+      id,
+      tenantId,
+    );
     if (!existingAtendente) {
-      throw new ApiError(404, 'Atendente não encontrado para deleção.');
+      throw new ApiError(404, "Atendente não encontrado para deleção.");
     }
 
     if (
-      requestingUser.role !== 'Super Admin' &&
+      requestingUser.role !== "Super Admin" &&
       existingAtendente.tenantId !== requestingUser.tenantId
     ) {
-      throw new ApiError(403, 'Você não tem permissão para deletar este atendente.');
+      throw new ApiError(
+        403,
+        "Você não tem permissão para deletar este atendente.",
+      );
     }
 
-    const deletedRows = await atendenteRepository.deleteAtendente(id, existingAtendente.tenantId);
+    const deletedRows = await atendenteRepository.deleteAtendente(
+      id,
+      existingAtendente.tenantId,
+    );
 
     if (deletedRows === 0) {
-      throw new ApiError(404, 'Atendente não encontrado para deleção.');
+      throw new ApiError(404, "Atendente não encontrado para deleção.");
     }
 
-    res.status(200).json({ message: 'Atendente deletado com sucesso.' });
+    res.status(200).json({ message: "Atendente deletado com sucesso." });
   }),
 };
 

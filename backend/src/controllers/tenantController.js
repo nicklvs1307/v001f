@@ -1,8 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const tenantRepository = require("../repositories/tenantRepository");
 const ApiError = require("../errors/ApiError");
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 // @desc    Criar um novo tenant
 // @route   POST /api/tenants
@@ -10,7 +10,14 @@ const path = require('path');
 exports.createTenant = asyncHandler(async (req, res) => {
   const { name, address, phone, email, cnpj, description } = req.body;
 
-  const newTenant = await tenantRepository.createTenant({ name, address, phone, email, cnpj, description });
+  const newTenant = await tenantRepository.createTenant({
+    name,
+    address,
+    phone,
+    email,
+    cnpj,
+    description,
+  });
 
   res.status(201).json({
     message: "Tenant criado com sucesso!",
@@ -22,7 +29,7 @@ exports.createTenant = asyncHandler(async (req, res) => {
 // @route   GET /api/tenants
 // @access  Private (Super Admin)
 exports.getTenants = asyncHandler(async (req, res) => {
-  const tenantId = req.user.role === 'Super Admin' ? null : req.user.tenantId;
+  const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
   const tenants = await tenantRepository.getTenants(tenantId);
   res.status(200).json(tenants);
 });
@@ -32,7 +39,7 @@ exports.getTenants = asyncHandler(async (req, res) => {
 // @access  Private (Super Admin)
 exports.getTenantById = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const tenantId = req.user.role === 'Super Admin' ? null : req.user.tenantId;
+  const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
 
   const tenant = await tenantRepository.getTenantById(id, tenantId);
 
@@ -48,9 +55,29 @@ exports.getTenantById = asyncHandler(async (req, res) => {
 // @access  Private (Super Admin)
 exports.updateTenant = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { name, address, phone, email, cnpj, description, logoUrl, primaryColor, secondaryColor } = req.body;
+  const {
+    name,
+    address,
+    phone,
+    email,
+    cnpj,
+    description,
+    logoUrl,
+    primaryColor,
+    secondaryColor,
+  } = req.body;
 
-  const updatedTenant = await tenantRepository.updateTenant(id, { name, address, phone, email, cnpj, description, logoUrl, primaryColor, secondaryColor });
+  const updatedTenant = await tenantRepository.updateTenant(id, {
+    name,
+    address,
+    phone,
+    email,
+    cnpj,
+    description,
+    logoUrl,
+    primaryColor,
+    secondaryColor,
+  });
 
   if (!updatedTenant) {
     throw new ApiError(404, "Tenant não encontrado para atualização.");
@@ -97,7 +124,14 @@ exports.uploadLogo = asyncHandler(async (req, res) => {
 
   if (!updatedTenant) {
     // Se o tenant não for encontrado para atualização, deletar o arquivo recém-enviado
-    const filePath = path.join(__dirname, '..', '..', 'uploads', 'logos', req.file.filename);
+    const filePath = path.join(
+      __dirname,
+      "..",
+      "..",
+      "uploads",
+      "logos",
+      req.file.filename,
+    );
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
     }
@@ -106,7 +140,7 @@ exports.uploadLogo = asyncHandler(async (req, res) => {
 
   // Se houver uma logo antiga e ela for diferente da nova, deletá-la
   if (oldLogoUrl && oldLogoUrl !== logoUrl) {
-    const oldFilePath = path.join(__dirname, '..', '..', oldLogoUrl);
+    const oldFilePath = path.join(__dirname, "..", "..", oldLogoUrl);
     if (fs.existsSync(oldFilePath)) {
       fs.unlinkSync(oldFilePath);
     }
@@ -151,7 +185,10 @@ exports.updateMe = asyncHandler(async (req, res) => {
   // Apenas campos permitidos podem ser atualizados por esta rota
   const allowedUpdates = { reportPhoneNumber };
 
-  const updatedRowCount = await tenantRepository.update(tenantId, allowedUpdates);
+  const updatedRowCount = await tenantRepository.update(
+    tenantId,
+    allowedUpdates,
+  );
 
   if (updatedRowCount === 0) {
     // Isso pode acontecer se o tenant não for encontrado, embora a verificação acima deva pegar isso.

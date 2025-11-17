@@ -1,12 +1,12 @@
-const { parse } = require('date-fns');
-const { fromZonedTime } = require('date-fns-tz');
-const ApiError = require('../errors/ApiError');
-const campanhaRepository = require('../repositories/campanhaRepository');
-const clientRepository = require('../repositories/clientRepository');
-const cupomRepository = require('../repositories/cupomRepository');
-const CampanhaService = require('../services/campanhaService');
-const roletaSpinRepository = require('../repositories/roletaSpinRepository');
-const whatsappService = require('../services/whatsappService');
+const { parse } = require("date-fns");
+const { convertFromTimeZone } = require("../utils/dateUtils");
+const ApiError = require("../errors/ApiError");
+const campanhaRepository = require("../repositories/campanhaRepository");
+const clientRepository = require("../repositories/clientRepository");
+const cupomRepository = require("../repositories/cupomRepository");
+const CampanhaService = require("../services/campanhaService");
+const roletaSpinRepository = require("../repositories/roletaSpinRepository");
+const whatsappService = require("../services/whatsappService");
 
 // Instanciando apenas o Service, que é uma classe que recebe as dependências
 const campanhaService = new CampanhaService(
@@ -14,7 +14,7 @@ const campanhaService = new CampanhaService(
   clientRepository,
   cupomRepository,
   roletaSpinRepository,
-  whatsappService
+  whatsappService,
 );
 
 class CampanhaController {
@@ -22,47 +22,60 @@ class CampanhaController {
     const data = { ...body };
 
     // Parse JSON fields
-    if (data.mensagens && typeof data.mensagens === 'string') {
+    if (data.mensagens && typeof data.mensagens === "string") {
       data.mensagens = JSON.parse(data.mensagens);
     }
-    if (data.criterioSelecao && typeof data.criterioSelecao === 'string') {
+    if (data.criterioSelecao && typeof data.criterioSelecao === "string") {
       data.criterioSelecao = JSON.parse(data.criterioSelecao);
     }
 
     // Handle dates
-    const dateFormat = 'dd-MM-yyyy HH:mm';
+    const dateFormat = "dd-MM-yyyy HH:mm";
     const { dataValidade, startDate, endDate, rewardType } = data;
 
-    if (rewardType && rewardType !== 'NONE') {
-      const parsedDataValidade = dataValidade ? parse(dataValidade, dateFormat, fromZonedTime(new Date(), 'America/Sao_Paulo')) : null;
+    if (rewardType && rewardType !== "NONE") {
+      const parsedDataValidade = dataValidade
+        ? parse(dataValidade, dateFormat, convertFromTimeZone(new Date()))
+        : null;
 
       if (!parsedDataValidade || isNaN(parsedDataValidade.getTime())) {
-        throw new ApiError(400, `A data de validade é obrigatória para campanhas com recompensa e deve estar no formato ${dateFormat}.`);
+        throw new ApiError(
+          400,
+          `A data de validade é obrigatória para campanhas com recompensa e deve estar no formato ${dateFormat}.`,
+        );
       }
       data.dataValidade = parsedDataValidade;
     } else {
       data.dataValidade = null; // Ensure it's null if not required
     }
 
-    ['startDate', 'endDate'].forEach(dateField => {
+    ["startDate", "endDate"].forEach((dateField) => {
       const dateValue = data[dateField];
       if (!dateValue) {
         data[dateField] = null;
         return;
       }
-      const parsedDate = parse(dateValue, dateFormat, fromZonedTime(new Date(), 'America/Sao_Paulo'));
+      const parsedDate = parse(
+        dateValue,
+        dateFormat,
+        convertFromTimeZone(new Date()),
+      );
       if (isNaN(parsedDate.getTime())) {
         data[dateField] = null;
       } else {
         data[dateField] = parsedDate;
       }
     });
-    
+
     // Handle nullish reward IDs
-    ['recompensaId', 'roletaId'].forEach(idField => {
-        if (data[idField] === 'null' || data[idField] === 'undefined' || data[idField] === '') {
-            data[idField] = null;
-        }
+    ["recompensaId", "roletaId"].forEach((idField) => {
+      if (
+        data[idField] === "null" ||
+        data[idField] === "undefined" ||
+        data[idField] === ""
+      ) {
+        data[idField] = null;
+      }
     });
 
     // Add mediaUrl if a file was uploaded
@@ -77,7 +90,10 @@ class CampanhaController {
     try {
       const { tenantId } = req.user;
       const campaignData = this._prepareCampaignData(req.body, req.file);
-      const campanha = await campanhaService.create({ ...campaignData, tenantId });
+      const campanha = await campanhaService.create({
+        ...campaignData,
+        tenantId,
+      });
       res.status(201).json(campanha);
     } catch (error) {
       next(error);
@@ -145,7 +161,11 @@ class CampanhaController {
       const { tenantId } = req.user;
       const { id } = req.params;
       const { testPhoneNumber } = req.body;
-      const result = await campanhaService.sendTest(id, tenantId, testPhoneNumber);
+      const result = await campanhaService.sendTest(
+        id,
+        tenantId,
+        testPhoneNumber,
+      );
       res.status(200).json(result);
     } catch (error) {
       next(error);

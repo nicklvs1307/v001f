@@ -1,12 +1,22 @@
 const { Tenant, WhatsappConfig } = require("../../models"); // Importa os modelos
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 
 const createTenant = async (tenantData) => {
-  if (tenantData.cnpj === '') {
+  if (tenantData.cnpj === "") {
     tenantData.cnpj = null;
   }
   const newTenant = await Tenant.create(tenantData, {
-    returning: ['id', 'name', 'address', 'phone', 'email', 'cnpj', 'description', 'createdAt', 'updatedAt']
+    returning: [
+      "id",
+      "name",
+      "address",
+      "phone",
+      "email",
+      "cnpj",
+      "description",
+      "createdAt",
+      "updatedAt",
+    ],
   });
   return {
     id: newTenant.id,
@@ -24,8 +34,17 @@ const getTenants = async (tenantId = null) => {
   const whereClause = tenantId ? { id: tenantId } : {};
   return Tenant.findAll({
     where: whereClause,
-    attributes: ['id', 'name', 'address', 'phone', 'email', 'cnpj', 'description', 'createdAt'],
-    order: [['createdAt', 'DESC']],
+    attributes: [
+      "id",
+      "name",
+      "address",
+      "phone",
+      "email",
+      "cnpj",
+      "description",
+      "createdAt",
+    ],
+    order: [["createdAt", "DESC"]],
   });
 };
 
@@ -33,7 +52,17 @@ const getTenantById = async (id, tenantId = null) => {
   const whereClause = tenantId ? { id, id: tenantId } : { id };
   return Tenant.findByPk(id, {
     where: whereClause,
-    attributes: ['id', 'name', 'address', 'phone', 'email', 'cnpj', 'description', 'createdAt', 'reportPhoneNumber'],
+    attributes: [
+      "id",
+      "name",
+      "address",
+      "phone",
+      "email",
+      "cnpj",
+      "description",
+      "createdAt",
+      "reportPhoneNumber",
+    ],
     raw: true,
   });
 };
@@ -41,7 +70,17 @@ const getTenantById = async (id, tenantId = null) => {
 const updateTenant = async (id, tenantData) => {
   const [updatedRows, [updatedTenant]] = await Tenant.update(tenantData, {
     where: { id },
-    returning: ['id', 'name', 'address', 'phone', 'email', 'cnpj', 'description', 'createdAt', 'updatedAt']
+    returning: [
+      "id",
+      "name",
+      "address",
+      "phone",
+      "email",
+      "cnpj",
+      "description",
+      "createdAt",
+      "updatedAt",
+    ],
   });
 
   if (updatedRows === 0) {
@@ -60,7 +99,7 @@ const deleteTenant = async (id) => {
 
 const getTenantLogoUrlById = async (id) => {
   const tenant = await Tenant.findByPk(id, {
-    attributes: ['logoUrl'],
+    attributes: ["logoUrl"],
   });
   return tenant ? tenant.logoUrl : null;
 };
@@ -70,10 +109,10 @@ const findAllWithReportPhoneNumber = async () => {
     where: {
       reportPhoneNumber: {
         [Op.ne]: null,
-        [Op.not]: ''
-      }
+        [Op.not]: "",
+      },
     },
-    attributes: ['id', 'name', 'reportPhoneNumber']
+    attributes: ["id", "name", "reportPhoneNumber"],
   });
 };
 

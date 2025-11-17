@@ -23,7 +23,8 @@ exports.createCriterio = asyncHandler(async (req, res) => {
 // @access Private (Super Admin, Admin, Survey Creator, Survey Viewer)
 exports.getAllCriterios = asyncHandler(async (req, res) => {
   const requestingUser = req.user;
-  const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+  const tenantId =
+    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
   const criterios = await criterioRepository.getAllCriterios(tenantId);
   res.status(200).json(criterios);
@@ -35,7 +36,8 @@ exports.getAllCriterios = asyncHandler(async (req, res) => {
 exports.getCriterioById = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const requestingUser = req.user;
-  const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+  const tenantId =
+    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
   const criterio = await criterioRepository.getCriterioById(id, tenantId);
 
@@ -61,9 +63,13 @@ exports.updateCriterio = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { name, description, type } = req.body;
   const requestingUser = req.user;
-  const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+  const tenantId =
+    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
-  const existingCriterio = await criterioRepository.getCriterioById(id, tenantId);
+  const existingCriterio = await criterioRepository.getCriterioById(
+    id,
+    tenantId,
+  );
   if (!existingCriterio) {
     throw new ApiError(404, "Critério não encontrado.");
   }
@@ -74,7 +80,10 @@ exports.updateCriterio = asyncHandler(async (req, res) => {
     requestingUser.role !== "Super Admin" &&
     existingCriterio.tenantId !== requestingUser.tenantId
   ) {
-    throw new ApiError(403, "Você não tem permissão para atualizar este critério.");
+    throw new ApiError(
+      403,
+      "Você não tem permissão para atualizar este critério.",
+    );
   }
 
   const updatedCriterio = await criterioRepository.updateCriterio(
@@ -89,7 +98,10 @@ exports.updateCriterio = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Critério não encontrado para atualização.");
   }
 
-  res.status(200).json({ message: "Critério atualizado com sucesso!", criterio: updatedCriterio });
+  res.status(200).json({
+    message: "Critério atualizado com sucesso!",
+    criterio: updatedCriterio,
+  });
 });
 
 // @desc    Deletar um critério
@@ -98,9 +110,13 @@ exports.updateCriterio = asyncHandler(async (req, res) => {
 exports.deleteCriterio = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const requestingUser = req.user;
-  const tenantId = requestingUser.role === 'Super Admin' ? null : requestingUser.tenantId;
+  const tenantId =
+    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
-  const existingCriterio = await criterioRepository.getCriterioById(id, tenantId);
+  const existingCriterio = await criterioRepository.getCriterioById(
+    id,
+    tenantId,
+  );
   if (!existingCriterio) {
     throw new ApiError(404, "Critério não encontrado para deleção.");
   }
@@ -111,10 +127,16 @@ exports.deleteCriterio = asyncHandler(async (req, res) => {
     requestingUser.role !== "Super Admin" &&
     existingCriterio.tenantId !== requestingUser.tenantId
   ) {
-    throw new ApiError(403, "Você não tem permissão para deletar este critério.");
+    throw new ApiError(
+      403,
+      "Você não tem permissão para deletar este critério.",
+    );
   }
 
-  const deletedRows = await criterioRepository.deleteCriterio(id, existingCriterio.tenantId);
+  const deletedRows = await criterioRepository.deleteCriterio(
+    id,
+    existingCriterio.tenantId,
+  );
 
   if (deletedRows === 0) {
     throw new ApiError(404, "Critério não encontrado para deleção.");

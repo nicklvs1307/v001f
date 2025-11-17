@@ -13,11 +13,11 @@ router.post(
     check("email", "Por favor, inclua um email válido").isEmail(),
     check(
       "password",
-      "Por favor, insira uma senha com 6 ou mais caracteres"
+      "Por favor, insira uma senha com 6 ou mais caracteres",
     ).isLength({ min: 6 }),
   ],
   validate,
-  authController.registerSuperAdmin
+  authController.registerSuperAdmin,
 );
 
 // Rota de login para todos os usuários
@@ -28,7 +28,7 @@ router.post(
     check("password", "Senha é obrigatória").not().isEmpty(),
   ],
   validate,
-  authController.login
+  authController.login,
 );
 
 // Rota para verificar o token

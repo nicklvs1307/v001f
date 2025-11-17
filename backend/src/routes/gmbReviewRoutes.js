@@ -11,8 +11,8 @@ router.use(protect);
 // Rotas para Avaliações GMB
 router.get(
   "/",
-  authorize(['Admin', 'Super Admin']),
-  gmbReviewController.getAllReviews
+  authorize(["Admin", "Super Admin"]),
+  gmbReviewController.getAllReviews,
 );
 router.put(
   "/:id/reply",
@@ -21,14 +21,14 @@ router.put(
     check("replyContent", "Conteúdo da resposta é obrigatório").not().isEmpty(),
   ],
   validate,
-  authorize(['Admin', 'Super Admin']),
-  gmbReviewController.replyToReview
+  authorize(["Admin", "Super Admin"]),
+  gmbReviewController.replyToReview,
 );
 router.post(
   "/sync",
   validate, // Adicionar validate mesmo que não haja parâmetros de corpo explícitos, para consistência
-  authorize(['Admin', 'Super Admin']),
-  gmbReviewController.syncReviews
+  authorize(["Admin", "Super Admin"]),
+  gmbReviewController.syncReviews,
 );
 
 module.exports = router;

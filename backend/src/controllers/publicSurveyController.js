@@ -16,13 +16,14 @@ const getPublicSurveyById = asyncHandler(async (req, res) => {
 
 const getPublicAtendentesByTenant = asyncHandler(async (req, res) => {
   const { tenantId } = req.params;
-  const atendentes = await publicSurveyRepository.getAtendentesByTenantId(tenantId);
+  const atendentes =
+    await publicSurveyRepository.getAtendentesByTenantId(tenantId);
   res.json(atendentes);
 });
 
 const getPublicTenantById = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const tenant = await publicSurveyRepository.getPublicTenantById(id); 
+  const tenant = await publicSurveyRepository.getPublicTenantById(id);
   if (!tenant) {
     throw new ApiError(404, "Tenant não encontrado.");
   }
@@ -40,7 +41,7 @@ const submitSurveyResponses = asyncHandler(async (req, res) => {
     respondentSessionId,
     null, // clienteId é nulo inicialmente
     atendenteId,
-    req.app.get('io')
+    req.app.get("io"),
   );
   res.status(201).json(result);
 });
@@ -59,7 +60,10 @@ const submitSurveyWithClient = asyncHandler(async (req, res) => {
   }
   const tenantId = survey.tenantId;
 
-  const existingClient = await clientRepository.findClientByPhone(client.phone, tenantId);
+  const existingClient = await clientRepository.findClientByPhone(
+    client.phone,
+    tenantId,
+  );
   if (!existingClient) {
     throw new ApiError(404, "Cliente não encontrado com o telefone fornecido.");
   }
@@ -72,7 +76,7 @@ const submitSurveyWithClient = asyncHandler(async (req, res) => {
     respondentSessionId,
     existingClient.id,
     atendenteId,
-    req.app.get('io')
+    req.app.get("io"),
   );
 
   res.status(201).json({

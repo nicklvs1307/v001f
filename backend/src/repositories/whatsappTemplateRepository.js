@@ -1,4 +1,4 @@
-const { WhatsappTemplate } = require('../../models');
+const { WhatsappTemplate } = require("../../models");
 
 class WhatsappTemplateRepository {
   async findByType(type, tenantId) {

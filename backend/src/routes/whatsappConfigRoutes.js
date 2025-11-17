@@ -1,131 +1,129 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const { check } = require("express-validator");
-const whatsappConfigController = require('../controllers/whatsappConfigController');
-const { protect, authorize } = require('../middlewares/authMiddleware');
+const whatsappConfigController = require("../controllers/whatsappConfigController");
+const { protect, authorize } = require("../middlewares/authMiddleware");
 const validate = require("../middlewares/validationMiddleware");
 
 // --- Rotas para o Tenant Admin gerenciar sua própria instância ---
 
 // Busca a configuração atual da instância (nome e status)
 router.get(
-  '/instance',
+  "/instance",
   protect,
-  authorize(['Admin']),
-  whatsappConfigController.getInstanceConfig
+  authorize(["Admin"]),
+  whatsappConfigController.getInstanceConfig,
 );
 
 router.get(
-  '/instance/connection-info',
+  "/instance/connection-info",
   protect,
-  authorize(['Admin']),
-  whatsappConfigController.getConnectionInfo
+  authorize(["Admin"]),
+  whatsappConfigController.getConnectionInfo,
 );
 
 // Cria a instância na API da Evolution
 router.post(
-  '/instance/create',
+  "/instance/create",
   protect,
-  authorize(['Admin']),
-  whatsappConfigController.createInstance
+  authorize(["Admin"]),
+  whatsappConfigController.createInstance,
 );
 
 // Inicia a conexão e obtém o QR code
 router.post(
-  '/instance/connect',
+  "/instance/connect",
   protect,
-  authorize(['Admin']),
-  whatsappConfigController.getQrCode
+  authorize(["Admin"]),
+  whatsappConfigController.getQrCode,
 );
 
 // Desconecta a instância (logout)
 router.delete(
-  '/instance/logout',
+  "/instance/logout",
   protect,
-  authorize(['Admin']),
-  whatsappConfigController.logoutInstance
+  authorize(["Admin"]),
+  whatsappConfigController.logoutInstance,
 );
 
 // Reinicia a instância
 router.put(
-  '/instance/restart',
+  "/instance/restart",
   protect,
-  authorize(['Admin']),
-  whatsappConfigController.restartInstance
+  authorize(["Admin"]),
+  whatsappConfigController.restartInstance,
 );
 
 // Deleta a instância permanentemente
 router.delete(
-  '/instance',
+  "/instance",
   protect,
-  authorize(['Admin']),
-  whatsappConfigController.deleteInstance
+  authorize(["Admin"]),
+  whatsappConfigController.deleteInstance,
 );
 
 // Salva ou atualiza as configurações de automação do tenant logado
-
-
 
 // --- Rotas para o Super Admin configurar os tenants ---
 
 // Obtém a configuração de todos os tenants com status
 router.get(
-  '/superadmin/all-tenants',
+  "/superadmin/all-tenants",
   protect,
-  authorize(['Super Admin']),
-  whatsappConfigController.getAllConfigsWithStatus
+  authorize(["Super Admin"]),
+  whatsappConfigController.getAllConfigsWithStatus,
 );
 
 // Ações de gerenciamento para Super Admin
 router.put(
-  '/superadmin/restart/:tenantId',
+  "/superadmin/restart/:tenantId",
   protect,
-  authorize(['Super Admin']),
-  [ check("tenantId", "ID do tenant inválido").isUUID() ],
+  authorize(["Super Admin"]),
+  [check("tenantId", "ID do tenant inválido").isUUID()],
   validate,
-  whatsappConfigController.superAdminRestartInstance
+  whatsappConfigController.superAdminRestartInstance,
 );
 
 router.delete(
-  '/superadmin/logout/:tenantId',
+  "/superadmin/logout/:tenantId",
   protect,
-  authorize(['Super Admin']),
-  [ check("tenantId", "ID do tenant inválido").isUUID() ],
+  authorize(["Super Admin"]),
+  [check("tenantId", "ID do tenant inválido").isUUID()],
   validate,
-  whatsappConfigController.superAdminLogoutInstance
+  whatsappConfigController.superAdminLogoutInstance,
 );
 
 router.delete(
-  '/superadmin/delete/:tenantId',
+  "/superadmin/delete/:tenantId",
   protect,
-  authorize(['Super Admin']),
-  [ check("tenantId", "ID do tenant inválido").isUUID() ],
+  authorize(["Super Admin"]),
+  [check("tenantId", "ID do tenant inválido").isUUID()],
   validate,
-  whatsappConfigController.superAdminDeleteInstance
+  whatsappConfigController.superAdminDeleteInstance,
 );
 
 // Obtém a configuração de um tenant específico
 router.get(
-  '/:tenantId',
+  "/:tenantId",
   protect,
-  authorize(['Super Admin']),
-  [ check("tenantId", "ID do tenant inválido").isUUID() ],
+  authorize(["Super Admin"]),
+  [check("tenantId", "ID do tenant inválido").isUUID()],
   validate,
-  whatsappConfigController.getTenantConfig
+  whatsappConfigController.getTenantConfig,
 );
 
 // Salva ou atualiza a configuração de um tenant
 router.post(
-  '/:tenantId',
+  "/:tenantId",
   protect,
-  authorize(['Super Admin']),
+  authorize(["Super Admin"]),
   [
     check("tenantId", "ID do tenant inválido").isUUID(),
     check("url", "URL da Evolution API é obrigatória").not().isEmpty().isURL(),
     check("apiKey", "API Key da Evolution API é obrigatória").not().isEmpty(),
   ],
   validate,
-  whatsappConfigController.saveTenantConfig
+  whatsappConfigController.saveTenantConfig,
 );
 
 module.exports = router;

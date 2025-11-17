@@ -1,35 +1,34 @@
-const cron = require('node-cron');
-const { fromZonedTime } = require('date-fns-tz');
-const { Campanha, WhatsappSender, sequelize } = require('../../models');
-const { Op } = require('sequelize');
-const { scheduleCampaign } = require('./campaignScheduler');
+const cron = require("node-cron");
+const { convertFromTimeZone } = require("../utils/dateUtils");
+const { Campanha, WhatsappSender, sequelize } = require("../../models");
+const { Op } = require("sequelize");
+const { scheduleCampaign } = require("./campaignScheduler");
 
 // We need to lazy-load services to avoid circular dependency issues at startup
 let campanhaServiceInstance;
 function getCampanhaService() {
   if (!campanhaServiceInstance) {
-    const CampanhaService = require('../services/campanhaService');
+    const CampanhaService = require("../services/campanhaService");
     campanhaServiceInstance = new CampanhaService(
-      require('../repositories/campanhaRepository'),
-      require('../repositories/clientRepository'),
-      require('../repositories/cupomRepository'),
-      require('../repositories/roletaSpinRepository'),
-      require('../services/whatsappService')
+      require("../repositories/campanhaRepository"),
+      require("../repositories/clientRepository"),
+      require("../repositories/cupomRepository"),
+      require("../repositories/roletaSpinRepository"),
+      require("../services/whatsappService"),
     );
   }
   return campanhaServiceInstance;
 }
 
-
-const JOB_NAME = 'CAMPAIGN_MONITOR';
+const JOB_NAME = "CAMPAIGN_MONITOR";
 let job = null;
 
 // This is a simplified check. A more advanced one could check the actual query from senderPoolService.
 async function hasAvailableSenders() {
   const availableSender = await WhatsappSender.findOne({
     where: {
-      status: { [Op.in]: ['active', 'warming_up'] },
-      messagesSentToday: { [Op.lt]: sequelize.col('dailyLimit') },
+      status: { [Op.in]: ["active", "warming_up"] },
+      messagesSentToday: { [Op.lt]: sequelize.col("dailyLimit") },
     },
   });
   return !!availableSender;
@@ -37,9 +36,9 @@ async function hasAvailableSenders() {
 
 async function checkPausedCampaigns() {
   console.log(`[${JOB_NAME}] Iniciando verificação de campanhas pausadas...`);
-  
+
   const pausedCampaigns = await Campanha.findAll({
-    where: { status: 'paused' },
+    where: { status: "paused" },
   });
 
   if (pausedCampaigns.length === 0) {
@@ -47,27 +46,39 @@ async function checkPausedCampaigns() {
     return;
   }
 
-  console.log(`[${JOB_NAME}] Verificando ${pausedCampaigns.length} campanha(s) pausada(s).`);
+  console.log(
+    `[${JOB_NAME}] Verificando ${pausedCampaigns.length} campanha(s) pausada(s).`,
+  );
 
   const sendersAvailable = await hasAvailableSenders();
   if (!sendersAvailable) {
-    console.log(`[${JOB_NAME}] Nenhum disparador disponível. As campanhas permanecerão pausadas.`);
+    console.log(
+      `[${JOB_NAME}] Nenhum disparador disponível. As campanhas permanecerão pausadas.`,
+    );
     return;
   }
 
-  console.log(`[${JOB_NAME}] Disparadores disponíveis. Tentando re-agendar campanhas pausadas.`);
-  
+  console.log(
+    `[${JOB_NAME}] Disparadores disponíveis. Tentando re-agendar campanhas pausadas.`,
+  );
+
   const service = getCampanhaService();
 
   for (const campaign of pausedCampaigns) {
     try {
       console.log(`[${JOB_NAME}] Re-agendando campanha ${campaign.id}.`);
       // Update status and set start date to now to trigger immediate (or near-immediate) processing
-      await campaign.update({ status: 'scheduled', startDate: fromZonedTime(new Date(), 'America/Sao_Paulo') });
+      await campaign.update({
+        status: "scheduled",
+        startDate: convertFromTimeZone(new Date()),
+      });
       // Use the existing scheduler to restart the campaign
       scheduleCampaign(campaign, service._processCampaign.bind(service));
     } catch (error) {
-      console.error(`[${JOB_NAME}] Erro ao re-agendar a campanha ${campaign.id}:`, error.message);
+      console.error(
+        `[${JOB_NAME}] Erro ao re-agendar a campanha ${campaign.id}:`,
+        error.message,
+      );
     }
   }
 
@@ -79,11 +90,13 @@ function initCampaignMonitorJob() {
   if (job) {
     job.stop();
   }
-  job = cron.schedule('*/10 * * * *', checkPausedCampaigns, {
+  job = cron.schedule("*/10 * * * *", checkPausedCampaigns, {
     scheduled: true,
-    timezone: "America/Sao_Paulo"
+    timezone: "America/Sao_Paulo",
   });
-  console.log('[CampaignMonitorJob] Job de monitoramento de campanhas inicializado para rodar a cada 10 minutos.');
+  console.log(
+    "[CampaignMonitorJob] Job de monitoramento de campanhas inicializado para rodar a cada 10 minutos.",
+  );
 }
 
 module.exports = {

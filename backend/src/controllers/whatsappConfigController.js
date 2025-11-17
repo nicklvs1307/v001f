@@ -1,9 +1,9 @@
-const asyncHandler = require('express-async-handler');
-const whatsappConfigRepository = require('../repositories/whatsappConfigRepository');
-const tenantRepository = require('../repositories/tenantRepository'); // Importar tenantRepository
-const whatsappService = require('../services/whatsappService');
-const ApiError = require('../errors/ApiError');
-const whatsappWebhookRepository = require('../repositories/whatsappWebhookRepository');
+const asyncHandler = require("express-async-handler");
+const whatsappConfigRepository = require("../repositories/whatsappConfigRepository");
+const tenantRepository = require("../repositories/tenantRepository"); // Importar tenantRepository
+const whatsappService = require("../services/whatsappService");
+const ApiError = require("../errors/ApiError");
+const whatsappWebhookRepository = require("../repositories/whatsappWebhookRepository");
 
 const whatsappConfigController = {
   // --- Rotas para o Tenant Admin ---
@@ -13,11 +13,11 @@ const whatsappConfigController = {
     const config = await whatsappConfigRepository.findByTenant(tenantId);
 
     if (!config) {
-      return res.json({ status: 'unconfigured' });
+      return res.json({ status: "unconfigured" });
     }
 
     const currentStatus = await whatsappService.getInstanceStatus(tenantId);
-    
+
     // Retorna o objeto de configuração completo do banco de dados, com o status atualizado
     const response = {
       ...config.get({ plain: true }),
@@ -63,8 +63,6 @@ const whatsappConfigController = {
     res.json(result);
   }),
 
-  
-
   // --- Rotas para o Super Admin ---
 
   getAllConfigsWithStatus: asyncHandler(async (req, res) => {
@@ -89,7 +87,7 @@ const whatsappConfigController = {
     const result = await whatsappService.deleteInstance(tenantId);
     res.json(result);
   }),
-  
+
   getTenantConfig: asyncHandler(async (req, res) => {
     const { tenantId } = req.params;
     const config = await whatsappConfigRepository.findByTenant(tenantId);
@@ -103,18 +101,22 @@ const whatsappConfigController = {
     const { tenantId } = req.params;
     const { url, apiKey } = req.body;
 
-    if (!url || url.trim() === '') {
+    if (!url || url.trim() === "") {
       throw new ApiError(400, "A URL da API do WhatsApp é obrigatória.");
     }
-    if (!apiKey || apiKey.trim() === '') {
+    if (!apiKey || apiKey.trim() === "") {
       throw new ApiError(400, "A chave da API do WhatsApp é obrigatória.");
     }
 
-    const existingConfig = await whatsappConfigRepository.findByTenant(tenantId);
+    const existingConfig =
+      await whatsappConfigRepository.findByTenant(tenantId);
 
     let config;
     if (existingConfig) {
-      config = await whatsappConfigRepository.updateByTenant(tenantId, { url, apiKey });
+      config = await whatsappConfigRepository.updateByTenant(tenantId, {
+        url,
+        apiKey,
+      });
     } else {
       config = await whatsappConfigRepository.create({ tenantId, url, apiKey });
     }
@@ -124,10 +126,13 @@ const whatsappConfigController = {
 
   // --- Webhook ---
   handleWebhook: asyncHandler(async (req, res) => {
-    if (event === 'connection.update') {
+    if (event === "connection.update") {
       const { state } = data;
-      const newStatus = state === 'CONNECTED' ? 'connected' : 'disconnected';
-      await whatsappWebhookRepository.updateStatusByInstanceName(instance, newStatus);
+      const newStatus = state === "CONNECTED" ? "connected" : "disconnected";
+      await whatsappWebhookRepository.updateStatusByInstanceName(
+        instance,
+        newStatus,
+      );
     }
 
     res.sendStatus(200);

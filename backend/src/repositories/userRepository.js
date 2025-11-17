@@ -1,5 +1,5 @@
 const { Usuario, Role } = require("../../models"); // Importa os modelos do Sequelize
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 
 const findByEmail = async (email, tenantId = null) => {
   const whereClause = tenantId ? { email, tenantId } : { email };
@@ -33,33 +33,60 @@ const getUsers = async (tenantId = null) => {
 
   return Usuario.findAll({
     where: whereClause,
-    include: [{ model: Role, as: 'role', attributes: ['name'] }],
-    order: [['name', 'ASC']],
-    attributes: ['id', 'tenantId', 'name', 'email', 'roleId', 'profilePictureUrl'], // Incluir profilePictureUrl
-  }).then(users => users.map(user => ({
-    ...user.toJSON(), // Converte a instância do modelo para um objeto JSON
-    roleName: user.role ? user.role.name : null // Mapeia o nome da role para roleName
-  })));
+    include: [{ model: Role, as: "role", attributes: ["name"] }],
+    order: [["name", "ASC"]],
+    attributes: [
+      "id",
+      "tenantId",
+      "name",
+      "email",
+      "roleId",
+      "profilePictureUrl",
+    ], // Incluir profilePictureUrl
+  }).then((users) =>
+    users.map((user) => ({
+      ...user.toJSON(), // Converte a instância do modelo para um objeto JSON
+      roleName: user.role ? user.role.name : null, // Mapeia o nome da role para roleName
+    })),
+  );
 };
 
 const findById = async (id, tenantId = null) => {
   const whereClause = tenantId ? { id, tenantId } : { id };
   return Usuario.findByPk(id, {
     where: whereClause,
-    include: [{ model: Role, as: 'role', attributes: ['name'] }],
-    attributes: ['id', 'tenantId', 'name', 'email', 'roleId', 'profilePictureUrl'], // Incluir profilePictureUrl
-  }).then(user => user ? { ...user.toJSON(), roleName: user.role ? user.role.name : null } : null);
+    include: [{ model: Role, as: "role", attributes: ["name"] }],
+    attributes: [
+      "id",
+      "tenantId",
+      "name",
+      "email",
+      "roleId",
+      "profilePictureUrl",
+    ], // Incluir profilePictureUrl
+  }).then((user) =>
+    user
+      ? { ...user.toJSON(), roleName: user.role ? user.role.name : null }
+      : null,
+  );
 };
 
 const findUserById = async (id, tenantId = null) => {
   const whereClause = tenantId ? { id, tenantId } : { id };
   return Usuario.findByPk(id, {
     where: whereClause,
-    attributes: ['tenantId', 'roleId'],
+    attributes: ["tenantId", "roleId"],
   });
 };
 
-const updateUser = async (id, name, email, roleId, passwordHash, tenantId = null) => {
+const updateUser = async (
+  id,
+  name,
+  email,
+  roleId,
+  passwordHash,
+  tenantId = null,
+) => {
   const updateData = {};
   if (name) updateData.name = name;
   if (email) updateData.email = email;
@@ -78,7 +105,14 @@ const updateUser = async (id, name, email, roleId, passwordHash, tenantId = null
   }
 
   const updatedUser = await Usuario.findByPk(id, {
-    attributes: ['id', 'tenantId', 'roleId', 'name', 'email', 'profilePictureUrl'], // Incluir profilePictureUrl no retorno
+    attributes: [
+      "id",
+      "tenantId",
+      "roleId",
+      "name",
+      "email",
+      "profilePictureUrl",
+    ], // Incluir profilePictureUrl no retorno
   });
   return updatedUser;
 };
@@ -93,7 +127,7 @@ const deleteUser = async (id, tenantId = null) => {
 
 const getUserProfilePictureUrlById = async (id) => {
   const user = await Usuario.findByPk(id, {
-    attributes: ['profilePictureUrl'],
+    attributes: ["profilePictureUrl"],
   });
   return user ? user.profilePictureUrl : null;
 };

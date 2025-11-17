@@ -1,5 +1,14 @@
-fix(backend): Corrige TypeError em zonedTimeToUtc
+refactor(dashboard): Padroniza tratamento de fuso horário nos repositórios
 
-- Corrige a sintaxe de importação da biblioteca 'date-fns-tz' nos arquivos 'charts.js' e 'feedbacks.js'.
-- A desestruturação do módulo estava incorreta para o ambiente CommonJS, causando um 'TypeError: zonedTimeToUtc is not a function' e impedindo o servidor de iniciar.
-- Altera a importação para um formato de namespace (`const dateFnsTz = require('date-fns-tz')`) e prefixa as chamadas de função para garantir a resolução correta.
+- Substitui a função local 'buildDateFilter' em todos os repositórios do dashboard por uma lógica robusta que utiliza 'zonedTimeToUtc' da biblioteca 'date-fns-tz'.
+- Garante que todos os filtros de data baseados em 'createdAt' sejam consistentes com o fuso horário da aplicação ('America/Sao_Paulo'), tratando corretamente a conversão de datas locais para UTC antes de consultar o banco de dados.
+- Esta refatoração resolve a causa raiz de múltiplos bugs relacionados a datas, incluindo o gráfico de "Respostas por Período" e todos os relatórios (diário, semanal, mensal).
+
+Arquivos afetados:
+- repositories/dashboard/summary.js
+- repositories/dashboard/overall.js
+- repositories/dashboard/nps.js
+- repositories/dashboard/criteria.js
+- repositories/dashboard/clients.js
+- repositories/dashboard/charts.js
+- repositories/dashboard/attendants.js

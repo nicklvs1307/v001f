@@ -1,9 +1,12 @@
-const { WhatsappSender } = require('../../models');
+const { WhatsappSender } = require("../../models");
 
 class WhatsappSenderRepository {
   async findAll() {
     return WhatsappSender.findAll({
-      order: [['priority', 'ASC'], ['name', 'ASC']],
+      order: [
+        ["priority", "ASC"],
+        ["name", "ASC"],
+      ],
     });
   }
 
@@ -43,9 +46,9 @@ class WhatsappSenderRepository {
     // The actual implementation will be more complex, considering status, priority, limits, etc.
     return WhatsappSender.findOne({
       where: {
-        status: 'active',
+        status: "active",
       },
-      order: [['lastUsedAt', 'ASC']],
+      order: [["lastUsedAt", "ASC"]],
     });
   }
 }

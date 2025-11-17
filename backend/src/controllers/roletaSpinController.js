@@ -1,4 +1,4 @@
-const roletaSpinService = require('../services/roletaSpinService');
+const roletaSpinService = require("../services/roletaSpinService");
 
 class RoletaSpinController {
   async validateToken(req, res, next) {

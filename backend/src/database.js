@@ -3,8 +3,12 @@ const config = require("./config"); // Importa a configuração consolidada
 
 // Validação para garantir que a configuração do banco de dados foi carregada
 if (!config.db || !config.db.database) {
-  console.error("Erro Crítico: A configuração do banco de dados não foi carregada corretamente.");
-  console.error("Verifique seu arquivo .env e as configurações em src/config/index.js");
+  console.error(
+    "Erro Crítico: A configuração do banco de dados não foi carregada corretamente.",
+  );
+  console.error(
+    "Verifique seu arquivo .env e as configurações em src/config/index.js",
+  );
   process.exit(1);
 }
 
@@ -15,22 +19,27 @@ const sequelize = new Sequelize(
   {
     host: config.db.host,
     port: config.db.port,
-    dialect: 'postgres', // Definido explicitamente
+    dialect: "postgres", // Definido explicitamente
     logging: false, // Desabilitar logging por padrão para não poluir o console
-    timezone: 'America/Sao_Paulo',
+    timezone: "America/Sao_Paulo",
     dialectOptions: {
       useUTC: false, // Para garantir que o cliente postgres não converta para UTC
     },
-  }
+  },
 );
 
 // Testar a conexão
 async function connectDB() {
   try {
     await sequelize.authenticate();
-    console.log("Conexão com o banco de dados estabelecida com sucesso (Sequelize).");
+    console.log(
+      "Conexão com o banco de dados estabelecida com sucesso (Sequelize).",
+    );
   } catch (error) {
-    console.error("Não foi possível conectar ao banco de dados (Sequelize):", error);
+    console.error(
+      "Não foi possível conectar ao banco de dados (Sequelize):",
+      error,
+    );
     process.exit(1); // Sair do processo se a conexão falhar
   }
 }

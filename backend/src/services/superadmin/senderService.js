@@ -1,6 +1,6 @@
-const whatsappSenderRepository = require('../../repositories/whatsappSenderRepository');
-const whatsappService = require('../whatsappService');
-const ApiError = require('../../errors/ApiError');
+const whatsappSenderRepository = require("../../repositories/whatsappSenderRepository");
+const whatsappService = require("../whatsappService");
+const ApiError = require("../../errors/ApiError");
 
 class SenderService {
   async getAllSendersWithStatus() {
@@ -9,7 +9,7 @@ class SenderService {
       senders.map(async (sender) => {
         const status = await whatsappService.getSenderInstanceStatus(sender);
         return { ...sender.get({ plain: true }), status };
-      })
+      }),
     );
     return sendersWithStatus;
   }
@@ -21,7 +21,7 @@ class SenderService {
   async getSenderById(id) {
     const sender = await whatsappSenderRepository.findById(id);
     if (!sender) {
-      throw ApiError.notFound('Sender não encontrado.');
+      throw ApiError.notFound("Sender não encontrado.");
     }
     return sender;
   }
@@ -60,7 +60,8 @@ class SenderService {
   }
 
   async updateSenderStatusByInstanceName(instanceName, status) {
-    const sender = await whatsappSenderRepository.findByInstanceName(instanceName);
+    const sender =
+      await whatsappSenderRepository.findByInstanceName(instanceName);
     if (sender) {
       return whatsappSenderRepository.update(sender.id, { status });
     }

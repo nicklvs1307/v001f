@@ -6,7 +6,7 @@ const { protect, authorize } = require("../middlewares/authMiddleware");
 const validate = require("../middlewares/validationMiddleware");
 const createMulterConfig = require("../config/multerConfig");
 
-const uploadLogoMiddleware = createMulterConfig('logos', 'logo');
+const uploadLogoMiddleware = createMulterConfig("logos", "logo");
 
 // Todas as rotas abaixo são protegidas e requerem autenticação.
 router.use(protect);
@@ -18,10 +18,16 @@ router
   .post(
     authorize("tenants:create"),
     [
-      check("name", "Nome do tenant é obrigatório e deve ter no mínimo 3 caracteres").isLength({ min: 3 }).not().isEmpty(),
+      check(
+        "name",
+        "Nome do tenant é obrigatório e deve ter no mínimo 3 caracteres",
+      )
+        .isLength({ min: 3 })
+        .not()
+        .isEmpty(),
     ],
     validate,
-    tenantController.createTenant
+    tenantController.createTenant,
   );
 
 // Rota para obter o tenant do usuário logado
@@ -33,7 +39,7 @@ router.post(
   "/:id/upload-logo",
   authorize("tenants:update"), // Permissão para atualizar tenant
   uploadLogoMiddleware, // 'logo' é o nome do campo no formulário
-  tenantController.uploadLogo
+  tenantController.uploadLogo,
 );
 
 // Rota para obter um tenant específico por ID.
@@ -43,10 +49,16 @@ router
   .put(
     authorize("tenants:update"),
     [
-      check("name", "Nome do tenant é obrigatório e deve ter no mínimo 3 caracteres").isLength({ min: 3 }).not().isEmpty(),
+      check(
+        "name",
+        "Nome do tenant é obrigatório e deve ter no mínimo 3 caracteres",
+      )
+        .isLength({ min: 3 })
+        .not()
+        .isEmpty(),
     ],
     validate,
-    tenantController.updateTenant
+    tenantController.updateTenant,
   )
   .delete(authorize("tenants:delete"), tenantController.deleteTenant);
 

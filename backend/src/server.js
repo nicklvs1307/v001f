@@ -1,9 +1,9 @@
-require('dotenv').config();
+require("dotenv").config();
 
-console.log('Server.js is being executed!');
+console.log("Server.js is being executed!");
 
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
 });
 
 const express = require("express");
@@ -14,20 +14,22 @@ const { connectDB } = require("./database"); // Importa a função connectDB
 
 const app = express();
 app.use(helmet());
-const path = require('path'); // Importar o módulo path
+const path = require("path"); // Importar o módulo path
 
 // Middlewares
 const corsOptions = {
   origin: (origin, callback) => {
-    const allowedOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [];
-    if (process.env.NODE_ENV !== 'production') {
-      allowedOrigins.push('http://localhost:3000');
+    const allowedOrigins = process.env.FRONTEND_URL
+      ? process.env.FRONTEND_URL.split(",")
+      : [];
+    if (process.env.NODE_ENV !== "production") {
+      allowedOrigins.push("http://localhost:3000");
     }
 
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true,
@@ -37,7 +39,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // Servir arquivos estáticos da pasta 'uploads'
-app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 
 // Rota de verificação
 app.get("/", (req, res) => {
@@ -51,12 +53,12 @@ const apiRouter = express.Router(); // Crie um novo Router
 apiRoutes(apiRouter); // Chame a função de rotas com o router
 app.use("/api", apiRouter); // Use o router como middleware
 
-const http = require('http');
+const http = require("http");
 const server = http.createServer(app);
-const { initSocket } = require('./socket');
+const { initSocket } = require("./socket");
 const io = initSocket(server);
 
-app.set('io', io);
+app.set("io", io);
 
 // Error Handler
 const { errorHandler } = require("./middlewares/errorMiddleware");
@@ -69,17 +71,17 @@ const startServer = async () => {
   await connectDB(); // Chama a função para conectar ao banco de dados
   server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-    
+
     // Inicia os jobs agendados
-    const dailyReportJob = require('./jobs/dailyReportJob');
-    const couponReminderJob = require('./jobs/couponReminderJob');
-    const birthdayAutomationJob = require('./jobs/birthdayAutomationJob');
-    const couponExpirationJob = require('./jobs/couponExpirationJob');
-    const resetSenderCountsJob = require('./jobs/resetSenderCountsJob');
-    const { initSenderMonitorJob } = require('./jobs/senderMonitorJob');
-    const { initWarmingUpProgressJob } = require('./jobs/warmingUpProgressJob');
-    const { initCampaignMonitorJob } = require('./jobs/campaignMonitorJob');
-    
+    const dailyReportJob = require("./jobs/dailyReportJob");
+    const couponReminderJob = require("./jobs/couponReminderJob");
+    const birthdayAutomationJob = require("./jobs/birthdayAutomationJob");
+    const couponExpirationJob = require("./jobs/couponExpirationJob");
+    const resetSenderCountsJob = require("./jobs/resetSenderCountsJob");
+    const { initSenderMonitorJob } = require("./jobs/senderMonitorJob");
+    const { initWarmingUpProgressJob } = require("./jobs/warmingUpProgressJob");
+    const { initCampaignMonitorJob } = require("./jobs/campaignMonitorJob");
+
     dailyReportJob.start();
     couponReminderJob.start();
     birthdayAutomationJob.start();
@@ -90,19 +92,19 @@ const startServer = async () => {
     initCampaignMonitorJob();
 
     // Instanciar dependências e inicializar agendamentos de campanha
-    const CampanhaService = require('./services/campanhaService');
-    const campanhaRepository = require('./repositories/campanhaRepository');
-    const clientRepository = require('./repositories/clientRepository');
-    const cupomRepository = require('./repositories/cupomRepository');
-    const roletaSpinRepository = require('./repositories/roletaSpinRepository');
-    const whatsappService = require('./services/whatsappService');
+    const CampanhaService = require("./services/campanhaService");
+    const campanhaRepository = require("./repositories/campanhaRepository");
+    const clientRepository = require("./repositories/clientRepository");
+    const cupomRepository = require("./repositories/cupomRepository");
+    const roletaSpinRepository = require("./repositories/roletaSpinRepository");
+    const whatsappService = require("./services/whatsappService");
 
     const campanhaServiceInstance = new CampanhaService(
       campanhaRepository,
       clientRepository,
       cupomRepository,
       roletaSpinRepository,
-      whatsappService
+      whatsappService,
     );
     campanhaServiceInstance.initScheduledCampaigns();
   });

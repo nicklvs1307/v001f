@@ -1,5 +1,5 @@
-'use strict';
-const { Roleta, RoletaPremio, sequelize } = require('../../models');
+"use strict";
+const { Roleta, RoletaPremio, sequelize } = require("../../models");
 
 const createRoleta = async (roletaData, transaction) => {
   return Roleta.create(roletaData, { transaction });
@@ -21,18 +21,17 @@ const bulkCreatePremios = async (premios, transaction) => {
   return RoletaPremio.bulkCreate(premios, { transaction });
 };
 
-
 const findAllByTenant = async (tenantId) => {
   return Roleta.findAll({
     where: { tenantId },
-    include: [{ model: RoletaPremio, as: 'premios' }]
+    include: [{ model: RoletaPremio, as: "premios" }],
   });
 };
 
 const findById = async (id, tenantId) => {
   return Roleta.findOne({
     where: { id, tenantId },
-    include: [{ model: RoletaPremio, as: 'premios' }],
+    include: [{ model: RoletaPremio, as: "premios" }],
   });
 };
 

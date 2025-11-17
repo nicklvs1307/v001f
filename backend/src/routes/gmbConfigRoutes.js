@@ -18,18 +18,18 @@ router.post(
     check("tenantId", "Tenant ID inválido").optional().isUUID(),
   ],
   validate,
-  authorize(['Admin', 'Super Admin']),
-  gmbConfigController.createOrUpdateConfig
+  authorize(["Admin", "Super Admin"]),
+  gmbConfigController.createOrUpdateConfig,
 );
 router.get(
   "/",
-  authorize(['Admin', 'Super Admin']),
-  gmbConfigController.getConfig
+  authorize(["Admin", "Super Admin"]),
+  gmbConfigController.getConfig,
 );
 router.delete(
   "/",
-  authorize(['Admin', 'Super Admin']),
-  gmbConfigController.deleteConfig
+  authorize(["Admin", "Super Admin"]),
+  gmbConfigController.deleteConfig,
 );
 
 module.exports = router;

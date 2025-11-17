@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require("fs");
 
 const readSecret = (secretName) => {
   // Tenta ler da variável de ambiente diretamente
@@ -10,28 +10,33 @@ const readSecret = (secretName) => {
   const secretPath = process.env[`${secretName}_FILE`];
   if (secretPath) {
     try {
-      const secret = fs.readFileSync(secretPath, 'utf8');
+      const secret = fs.readFileSync(secretPath, "utf8");
       return secret.trim();
     } catch (error) {
-      console.error(`Erro ao ler o arquivo de segredo ${secretName}_FILE:`, error);
+      console.error(
+        `Erro ao ler o arquivo de segredo ${secretName}_FILE:`,
+        error,
+      );
       throw new Error(`Erro ao carregar o segredo ${secretName} do arquivo.`);
     }
   }
 
   // Se nenhum dos dois estiver configurado, lança um erro
-  throw new Error(`Segredo obrigatório não configurado: ${secretName}. Defina ${secretName} ou ${secretName}_FILE.`);
+  throw new Error(
+    `Segredo obrigatório não configurado: ${secretName}. Defina ${secretName} ou ${secretName}_FILE.`,
+  );
 };
 
 const config = {
   db: {
     host: process.env.DB_HOST, // Acessar diretamente a variável de ambiente
     user: process.env.DB_USER, // Acessar diretamente a variável de ambiente
-    password: readSecret('DB_PASSWORD'), // Usar readSecret para o segredo do arquivo
+    password: readSecret("DB_PASSWORD"), // Usar readSecret para o segredo do arquivo
     database: process.env.DB_DATABASE, // Acessar diretamente a variável de ambiente
     port: process.env.DB_PORT || 5432, // Acessar diretamente a variável de ambiente com fallback
   },
-  jwtSecret: readSecret('JWT_SECRET'),
-  jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
+  jwtSecret: readSecret("JWT_SECRET"),
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
   port: process.env.PORT || 3001,
   googleAuth: {
     clientId: process.env.GOOGLE_CLIENT_ID,
@@ -46,4 +51,3 @@ const config = {
 };
 
 module.exports = config;
-

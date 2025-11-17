@@ -14,23 +14,18 @@ const getFeedbacks = async (
   const whereClause = tenantId
     ? { tenantId, textValue: { [Op.ne]: null, [Op.ne]: "" } }
     : { textValue: { [Op.ne]: null, [Op.ne]: "" } };
-  if (surveyId) {
-    whereClause.pesquisaId = surveyId;
-  }
-
   if (startDate || endDate) {
     const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-    const end = convertToTimeZone(endInput);
-
     const startInput = startDate
       ? new Date(`${startDate}T00:00:00.000`)
       : subDays(endInput, 6);
-    const start = convertToTimeZone(startInput);
 
-    whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+    if (!isNaN(startInput) && !isNaN(endInput)) {
+      const end = convertToTimeZone(endInput);
+      const start = convertToTimeZone(startInput);
+      whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+    }
   }
-
-  const feedbacksData = await Resposta.findAll({
     where: whereClause,
     attributes: [
       "textValue",
@@ -69,23 +64,18 @@ const getWordCloudData = async (
   const whereClause = tenantId
     ? { tenantId, textValue: { [Op.ne]: null, [Op.ne]: "" } }
     : { textValue: { [Op.ne]: null, [Op.ne]: "" } };
-  if (surveyId) {
-    whereClause.pesquisaId = surveyId;
-  }
-
   if (startDate || endDate) {
     const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-    const end = convertToTimeZone(endInput);
-
     const startInput = startDate
       ? new Date(`${startDate}T00:00:00.000`)
       : subDays(endInput, 6);
-    const start = convertToTimeZone(startInput);
 
-    whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+    if (!isNaN(startInput) && !isNaN(endInput)) {
+      const end = convertToTimeZone(endInput);
+      const start = convertToTimeZone(startInput);
+      whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };
+    }
   }
-
-  const feedbacks = await Resposta.findAll({
     where: whereClause,
     attributes: ["textValue"],
     limit: 2000,

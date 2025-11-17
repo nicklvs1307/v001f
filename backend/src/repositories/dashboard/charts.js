@@ -44,13 +44,18 @@ const getResponseChart = async (
   const whereClause = tenantId ? { tenantId } : {};
   if (surveyId) whereClause.pesquisaId = surveyId;
 
-  if (startDate || endDate) { // Only attempt to create date filters if dates are provided
-    const endInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
-    const startInput = startDate
-      ? new Date(`${startDate}T00:00:00.000`)
-      : subDays(endInput, 6);
+  let endInput = new Date(); // Initialize with default
+  let startInput = subDays(endInput, 6); // Initialize with default
 
-    if (!isNaN(startInput) && !isNaN(endInput)) { // Validate dates
+  if (startDate || endDate) {
+    const tempEndInput = endDate ? new Date(`${endDate}T23:59:59.999`) : new Date();
+    const tempStartInput = startDate
+      ? new Date(`${startDate}T00:00:00.000`)
+      : subDays(tempEndInput, 6);
+
+    if (!isNaN(tempStartInput) && !isNaN(tempEndInput)) {
+      endInput = tempEndInput;
+      startInput = tempStartInput;
       const end = convertToTimeZone(endInput);
       const start = convertToTimeZone(startInput);
       whereClause.createdAt = { [Op.gte]: start, [Op.lte]: end };

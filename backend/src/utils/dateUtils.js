@@ -1,4 +1,4 @@
-const dateFnsTz = require("date-fns-tz");
+const { zonedTimeToUtc, fromZonedTime, toZonedTime, format } = require("date-fns-tz");
 const { toDate } = require("date-fns");
 const { ptBR } = require("date-fns/locale");
 
@@ -10,7 +10,7 @@ const TIMEZONE = "America/Sao_Paulo";
  * @returns {Date} A data convertida para UTC.
  */
 const convertToTimeZone = (date) => {
-  return dateFnsTz.zonedTimeToUtc(date, TIMEZONE);
+  return zonedTimeToUtc(date, TIMEZONE);
 };
 
 /**
@@ -19,7 +19,7 @@ const convertToTimeZone = (date) => {
  * @returns {Date} A data convertida.
  */
 const convertFromTimeZone = (date) => {
-  return dateFnsTz.fromZonedTime(date, TIMEZONE);
+  return fromZonedTime(date, TIMEZONE);
 };
 
 /**
@@ -28,7 +28,7 @@ const convertFromTimeZone = (date) => {
  * @returns {Date} A data convertida.
  */
 const convertToZonedTime = (date) => {
-  return dateFnsTz.toZonedTime(date, TIMEZONE);
+  return toZonedTime(date, TIMEZONE);
 };
 
 /**
@@ -41,7 +41,7 @@ const formatInTimeZone = (date, formatString) => {
   // A função toDate de date-fns não aceita timeZone como opção.
   // A conversão de fuso horário é feita pela função `format` de `date-fns-tz`.
   const dateObj = toDate(date);
-  return dateFnsTz.format(dateObj, formatString, {
+  return format(dateObj, formatString, {
     timeZone: TIMEZONE,
     locale: ptBR,
   });

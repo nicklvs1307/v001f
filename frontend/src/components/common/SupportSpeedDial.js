@@ -22,7 +22,11 @@ const actions = [
 
 const SupportSpeedDial = () => {
   const theme = useTheme();
+  const [open, setOpen] = useState(false);
   const [openHelpBot, setOpenHelpBot] = useState(false);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const handleOpenHelpBot = () => {
     setOpenHelpBot(true);
@@ -39,18 +43,23 @@ const SupportSpeedDial = () => {
         bottom: 32,
         right: 32,
         zIndex: theme.zIndex.speedDial,
+        pointerEvents: open ? 'auto' : 'none',
       }}
     >
       <SpeedDial
         ariaLabel="Menu de Suporte"
         icon={<SpeedDialIcon icon={<HelpOutlineIcon />} />}
         direction="up"
+        onClose={handleClose}
+        onOpen={handleOpen}
+        open={open}
         FabProps={{
           sx: {
             bgcolor: theme.palette.primary.main,
             '&:hover': {
               bgcolor: theme.palette.primary.dark,
             },
+            pointerEvents: 'auto',
           },
         }}
       >
@@ -66,6 +75,7 @@ const SupportSpeedDial = () => {
               } else {
                 console.log(`${action.name} clicado`);
               }
+              handleClose();
             }}
           />
         ))}

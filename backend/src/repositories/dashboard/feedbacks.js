@@ -18,7 +18,11 @@ const getFeedbacks = async (
   if (startOfDayUtc && endOfDayUtc) {
     whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
   }
+  if (surveyId) {
+    whereClause.pesquisaId = surveyId;
+  }
   const feedbacksData = await Resposta.findAll({
+    where: whereClause,
     attributes: [
       "textValue",
       "ratingValue",

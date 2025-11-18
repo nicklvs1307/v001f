@@ -43,6 +43,9 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import cupomService from '../services/cupomService';
 import recompensaService from '../services/recompensaService';
 import { debounce } from 'lodash';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { ptBR } from 'date-fns/locale';
 
 const CupomListPage = () => {
   const [cupons, setCupons] = useState([]);
@@ -209,77 +212,81 @@ const CupomListPage = () => {
       </Box>
 
       <Paper elevation={2} sx={{ p: 2, mb: 3 }}>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              label="Pesquisar por prêmio ou cliente"
-              name="search"
-              value={filters.search}
-              onChange={handleFilterChange}
-              variant="outlined"
-              size="small"
-            />
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <FormControl fullWidth size="small">
-              <InputLabel>Status</InputLabel>
-              <Select
-                name="status"
-                value={filters.status}
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={12} md={4}>
+              <TextField
+                fullWidth
+                label="Pesquisar por prêmio ou cliente"
+                name="search"
+                value={filters.search}
                 onChange={handleFilterChange}
-                label="Status"
+                variant="outlined"
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Status</InputLabel>
+                <Select
+                  name="status"
+                  value={filters.status}
+                  onChange={handleFilterChange}
+                  label="Status"
+                >
+                  <MenuItem value="">Todos</MenuItem>
+                  <MenuItem value="active">Ativo</MenuItem>
+                  <MenuItem value="used">Utilizado</MenuItem>
+                  <MenuItem value="expired">Expirado</MenuItem>
+                  <MenuItem value="pending">Pendente</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Recompensa</InputLabel>
+                <Select
+                  name="recompensaId"
+                  value={filters.recompensaId}
+                  onChange={handleFilterChange}
+                  label="Recompensa"
+                >
+                  <MenuItem value="">Todas</MenuItem>
+                  {recompensas.map((r) => (
+                    <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <DatePicker
+                label="Data Início"
+                value={filters.startDate}
+                onChange={(date) => handleDateChange('startDate', date)}
+                inputFormat="dd/MM/yyyy"
+                renderInput={(params) => <TextField {...params} fullWidth size="small" />}
+              />
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <DatePicker
+                label="Data Fim"
+                value={filters.endDate}
+                onChange={(date) => handleDateChange('endDate', date)}
+                inputFormat="dd/MM/yyyy"
+                renderInput={(params) => <TextField {...params} fullWidth size="small" />}
+              />
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <Button
+                fullWidth
+                variant="outlined"
+                onClick={handleClearFilters}
               >
-                <MenuItem value="">Todos</MenuItem>
-                <MenuItem value="active">Ativo</MenuItem>
-                <MenuItem value="used">Utilizado</MenuItem>
-                <MenuItem value="expired">Expirado</MenuItem>
-                <MenuItem value="pending">Pendente</MenuItem>
-              </Select>
-            </FormControl>
+                Limpar Filtros
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={3}>
-            <FormControl fullWidth size="small">
-              <InputLabel>Recompensa</InputLabel>
-              <Select
-                name="recompensaId"
-                value={filters.recompensaId}
-                onChange={handleFilterChange}
-                label="Recompensa"
-              >
-                <MenuItem value="">Todas</MenuItem>
-                {recompensas.map((r) => (
-                  <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <DatePicker
-              label="Data Início"
-              value={filters.startDate}
-              onChange={(date) => handleDateChange('startDate', date)}
-              renderInput={(params) => <TextField {...params} fullWidth size="small" />}
-            />
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <DatePicker
-              label="Data Fim"
-              value={filters.endDate}
-              onChange={(date) => handleDateChange('endDate', date)}
-              renderInput={(params) => <TextField {...params} fullWidth size="small" />}
-            />
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={handleClearFilters}
-            >
-              Limpar Filtros
-            </Button>
-          </Grid>
-        </Grid>
+        </LocalizationProvider>
       </Paper>
 
       <Paper elevation={2}>

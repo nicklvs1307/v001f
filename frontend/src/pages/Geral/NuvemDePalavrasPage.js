@@ -124,6 +124,7 @@ const NuvemDePalavrasPage = () => {
                                                         label="Data de Início"
                                                         value={startDate}
                                                         onChange={(newValue) => setStartDate(newValue)}
+                                                        inputFormat="dd/MM/yyyy"
                                                         renderInput={(params) => <TextField {...params} fullWidth />}
                                                     />
                                                 </LocalizationProvider>
@@ -134,6 +135,7 @@ const NuvemDePalavrasPage = () => {
                                                         label="Data de Fim"
                                                         value={endDate}
                                                         onChange={(newValue) => setEndDate(newValue)}
+                                                        inputFormat="dd/MM/yyyy"
                                                         renderInput={(params) => <TextField {...params} fullWidth />}
                                                     />
                                                 </LocalizationProvider>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { 
     Paper, Grid, Typography, Box, useTheme, Card, CardContent, CardHeader,
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Avatar
@@ -43,6 +43,22 @@ const Dashboard = ({ data }) => {
     }
 
     const { summary, npsTrend, wordCloudData, criteriaScores, attendantsPerformance, conversionChart, feedbacks, clientStatusCounts } = data;
+
+    const processedWordCloudData = useMemo(() => {
+        if (!wordCloudData || wordCloudData.length === 0) {
+            return [];
+        }
+        const values = wordCloudData.map(w => w.value);
+        const min = Math.min(...values);
+        const max = Math.max(...values);
+
+        if (min === max) {
+            const newWords = [...wordCloudData];
+            newWords[0] = { ...newWords[0], value: newWords[0].value + 1 };
+            return newWords;
+        }
+        return wordCloudData;
+    }, [wordCloudData]);
 
     const nps = summary?.nps;
     const totalResponses = summary?.totalResponses;
@@ -160,10 +176,10 @@ const Dashboard = ({ data }) => {
             {/* Word Cloud */}
             <Grid item xs={12} md={6}>
                 <StatCard title="Nuvem de Palavras" icon={<Cloud />}>
-                    {wordCloudData && wordCloudData.length > 0 ? (
+                    {processedWordCloudData && processedWordCloudData.length > 0 ? (
                         <Box sx={{ height: 300, width: '100%' }}>
                             <WordCloud
-                                words={wordCloudData}
+                                words={processedWordCloudData}
                                 options={{
                                     fontFamily: theme.typography.fontFamily,
                                     fontWeight: "bold",

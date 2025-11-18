@@ -39,6 +39,9 @@ import {
     Line
 } from 'recharts';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { ptBR } from 'date-fns/locale';
 import { formatDateForDisplay, getStartOfDayUTC, getEndOfDayUTC } from '../utils/dateUtils';
 
 import dashboardService from '../services/dashboardService';
@@ -232,18 +235,24 @@ const DashboardPage = () => {
                 <Typography variant="h4" component="h1" gutterBottom>
                     Dashboard de Análise
                 </Typography>
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                    <DatePicker
-                        label="Data de Início"
-                        value={startDate}
-                        onChange={(newValue) => setStartDate(newValue)}
-                    />
-                    <DatePicker
-                        label="Data de Fim"
-                        value={endDate}
-                        onChange={(newValue) => setEndDate(newValue)}
-                    />
-                </Box>
+                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
+                    <Box sx={{ display: 'flex', gap: 2 }}>
+                        <DatePicker
+                            label="Data de Início"
+                            value={startDate}
+                            onChange={(newValue) => setStartDate(newValue)}
+                            inputFormat="dd/MM/yyyy"
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                        <DatePicker
+                            label="Data de Fim"
+                            value={endDate}
+                            onChange={(newValue) => setEndDate(newValue)}
+                            inputFormat="dd/MM/yyyy"
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </Box>
+                </LocalizationProvider>
             </Box>
 
             <Grid container spacing={2} sx={{ mb: 4 }}>

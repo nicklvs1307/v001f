@@ -12,6 +12,9 @@ import {
 import { subDays } from 'date-fns';
 import { getStartOfDayUTC, getEndOfDayUTC } from '../utils/dateUtils';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { ptBR } from 'date-fns/locale';
 import dashboardService from '../services/dashboardService';
 import AuthContext from '../context/AuthContext';
 
@@ -95,16 +98,22 @@ const ResultsOverviewPage = () => {
                         </Typography>
                     </Grid>
                     <Grid item sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                        <DatePicker
-                            label="Data de Início"
-                            value={startDate}
-                            onChange={(newValue) => setStartDate(newValue)}
-                        />
-                        <DatePicker
-                            label="Data de Fim"
-                            value={endDate}
-                            onChange={(newValue) => setEndDate(newValue)}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
+                            <DatePicker
+                                label="Data de Início"
+                                value={startDate}
+                                onChange={(newValue) => setStartDate(newValue)}
+                                inputFormat="dd/MM/yyyy"
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                            <DatePicker
+                                label="Data de Fim"
+                                value={endDate}
+                                onChange={(newValue) => setEndDate(newValue)}
+                                inputFormat="dd/MM/yyyy"
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                        </LocalizationProvider>
                     </Grid>
                 </Grid>
             </Paper>

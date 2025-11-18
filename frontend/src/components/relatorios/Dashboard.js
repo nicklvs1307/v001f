@@ -38,11 +38,7 @@ const NoData = () => (
 const Dashboard = ({ data }) => {
     const theme = useTheme();
 
-    if (!data) {
-        return <Typography>Nenhum dado disponível para o período selecionado.</Typography>;
-    }
-
-    const { summary, npsTrend, wordCloudData, criteriaScores, attendantsPerformance, conversionChart, feedbacks, clientStatusCounts } = data;
+    const wordCloudData = data?.wordCloudData;
 
     const processedWordCloudData = useMemo(() => {
         if (!wordCloudData || wordCloudData.length === 0) {
@@ -59,6 +55,12 @@ const Dashboard = ({ data }) => {
         }
         return wordCloudData;
     }, [wordCloudData]);
+
+    if (!data) {
+        return <Typography>Nenhum dado disponível para o período selecionado.</Typography>;
+    }
+
+    const { summary, npsTrend, criteriaScores, attendantsPerformance, conversionChart, feedbacks, clientStatusCounts } = data;
 
     const nps = summary?.nps;
     const totalResponses = summary?.totalResponses;

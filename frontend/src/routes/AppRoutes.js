@@ -17,6 +17,8 @@ import SurveyIdentifyPage from '../pages/SurveyIdentifyPage';
 import ConfirmClientPage from '../pages/ConfirmClientPage';
 import ClientIdentificationPage from '../pages/ClientIdentificationPage';
 import RoletaSpinPage from '../pages/RoletaSpinPage';
+import PrivacyPolicyPage from '../pages/PrivacyPolicyPage';
+import TermsOfServicePage from '../pages/TermsOfServicePage';
 
 // Páginas
 const DashboardPage = React.lazy(() => import('../pages/DashboardPage'));
@@ -80,6 +82,8 @@ const AppRoutes = () => {
         {/* Rotas Públicas */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/politica-de-privacidade" element={<PrivacyPolicyPage />} />
+        <Route path="/termos-de-servico" element={<TermsOfServicePage />} />
         <Route path="/pesquisa/:tenantId/:pesquisaId" element={<PublicSurveyPage />} />
         <Route path="/identificacao-pesquisa/:tenantId/:pesquisaId" element={<SurveyIdentifyPage />} />
         <Route path="/identificacao-cliente/:tenantId/:pesquisaId" element={<ClientIdentificationPage />} />

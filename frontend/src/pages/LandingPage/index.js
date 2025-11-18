@@ -24,7 +24,6 @@ const Header = () => {
   const navLinks = [
     { text: 'Funcionalidades', href: '#funcionalidades' },
     { text: 'Depoimentos', href: '#depoimentos' },
-    { text: 'Preços', href: '#precos' },
     { text: 'Contato', href: '#contato' },
   ];
 
@@ -130,7 +129,7 @@ const HeroSection = () => (
             Transforme Clientes em Fãs e Venda Mais Todos os Dias
           </Typography>
           <Typography variant="h6" color="text.secondary" sx={{ my: { xs: 3, md: 4 }, maxWidth: { xs: '100%', md: '90%' } }}>
-            Com o Feedeliza, você cria um programa de fidelidade e pesquisas de satisfação em minutos, aumenta a recorrência e transforma seu restaurante em um sucesso.
+            Com o Voltaki, você cria um programa de fidelidade e pesquisas de satisfação em minutos, aumenta a recorrência e transforma seu restaurante em um sucesso.
           </Typography>
           <Button component="a" href="#funcionalidades" variant="contained" color="primary" size="large" sx={{ borderRadius: '50px', fontWeight: 700, px: 4, py: 1.5 }}>
             Descubra Como
@@ -175,23 +174,35 @@ const FeaturesSection = () => (
 // Seção de Depoimentos
 const testimonials = [
   {
-    text: 'O Feedeliza mudou a forma como nos relacionamos com nossos clientes. A recorrência aumentou 30% em apenas 3 meses!',
-    author: 'João Silva',
-    role: 'Dono da Pizzaria do João',
+    text: 'O Voltaki mudou a forma como nos relacionamos com nossos clientes. A recorrência aumentou 30% em apenas 3 meses!',
+    author: 'João',
+    role: 'Dono da Cantina Italiana',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80'
   },
   {
     text: 'Finalmente consigo saber o que meus clientes pensam de verdade. O feedback tem sido fundamental para melhorar nosso serviço.',
-    author: 'Maria Oliveira',
-    role: 'Gerente do Hamburgueria Top',
+    author: 'Maria',
+    role: 'Gerente do Burger House',
     avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?auto=format&fit=crop&w=100&q=80'
   },
   {
     text: 'A roleta de prêmios é um sucesso! Os clientes adoram e sempre voltam para tentar a sorte. Recomendo!',
-    author: 'Carlos Pereira',
-    role: 'Proprietário do Restaurante Sabor & Cia',
+    author: 'Carlos',
+    role: 'Proprietário do Sabor & Cia',
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80'
   },
+  {
+    text: 'A plataforma é super intuitiva e o suporte é muito atencioso. Em poucos dias já estávamos com tudo funcionando.',
+    author: 'Ana',
+    role: 'Sócia do Café Aconchego',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80'
+  },
+  {
+    text: 'Nossas vendas aumentaram e, o mais importante, nossos clientes estão mais felizes e engajados com a marca.',
+    author: 'Pedro',
+    role: 'Dono da Temakeria do Sol',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80'
+  }
 ];
 
 const TestimonialsSection = () => (
@@ -202,7 +213,7 @@ const TestimonialsSection = () => (
       </Typography>
       <Grid container spacing={4}>
         {testimonials.map((testimonial, index) => (
-          <Grid item xs={12} md={4} key={index}>
+          <Grid item xs={12} sm={6} md={4} key={index}>
             <Paper elevation={0} sx={{ p: 4, borderRadius: '16px', display: 'flex', flexDirection: 'column', height: '100%', backgroundColor: 'background.default' }}>
               <Typography variant="body1" sx={{ fontStyle: 'italic', mb: 2, flexGrow: 1 }}>"{testimonial.text}"</Typography>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -220,43 +231,7 @@ const TestimonialsSection = () => (
   </Box>
 );
 
-// Seção de Preços
-const pricingTiers = [
-    { title: 'Básico', price: '99', description: 'Ideal para pequenos estabelecimentos', features: ['Pesquisas de Satisfação', 'Dashboard Básico', 'Até 500 clientes'], buttonText: 'Comece Agora', variant: 'outlined' },
-    { title: 'Pro', price: '199', description: 'Perfeito para restaurantes em crescimento', features: ['Tudo do plano Básico', 'Recompensas e Cupons', 'Campanhas de Marketing', 'Até 2.000 clientes'], buttonText: 'Comece Agora', variant: 'contained', recommended: true },
-    { title: 'Premium', price: '299', description: 'Para estabelecimentos de alto desempenho', features: ['Tudo do plano Pro', 'Gamificação com Roleta', 'Integração com WhatsApp', 'Clientes ilimitados', 'Suporte prioritário'], buttonText: 'Comece Agora', variant: 'outlined' },
-];
 
-const PricingSection = () => (
-  <Box id="precos" sx={{ py: { xs: 8, md: 12 }, backgroundColor: 'background.default' }}>
-    <Container>
-      <Typography variant="h3" component="h2" color="text.primary" sx={{ textAlign: 'center', mb: { xs: 6, md: 8 }, fontWeight: 700, fontSize: { xs: '2.2rem', md: '3rem' } }}>Planos e Preços</Typography>
-      <Grid container spacing={4} alignItems="flex-end">
-        {pricingTiers.map((tier) => (
-          <Grid item key={tier.title} xs={12} md={4}>
-            <Paper elevation={tier.recommended ? 8 : 3} sx={{ p: 4, borderRadius: '16px', border: tier.recommended ? '2px solid' : '1px solid #e0e0e0', borderColor: 'primary.main', transition: 'all 0.3s' }}>
-              {tier.recommended && <Typography sx={{ background: 'primary.main', color: 'white', p: '4px 8px', borderRadius: '8px', display: 'inline-block', mb: 2, fontSize: '0.8rem', fontWeight: 'bold' }}>MAIS POPULAR</Typography>}
-              <Typography variant="h5" component="h3" color="text.primary" sx={{ fontWeight: 'bold' }}>{tier.title}</Typography>
-              <Typography color="text.secondary" sx={{ mb: 2 }}>{tier.description}</Typography>
-              <Box sx={{ display: 'flex', alignItems: 'baseline', my: 2 }}>
-                <Typography variant="h3" component="p" color="text.primary" sx={{ fontWeight: 'bold' }}>R${tier.price}</Typography>
-                <Typography variant="h6" color="text.secondary">/mês</Typography>
-              </Box>
-              <ul style={{ listStyle: 'none', padding: 0, margin: '20px 0' }}>
-                {tier.features.map((feature) => (
-                  <Typography component="li" key={feature} sx={{ mb: 1, display: 'flex', alignItems: 'center' }}>
-                    <FaCheck style={{ color: '#B7E66F', marginRight: '8px' }} /> {feature}
-                  </Typography>
-                ))}
-              </ul>
-              <Button fullWidth variant={tier.variant} color="primary" size="large">{tier.buttonText}</Button>
-            </Paper>
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
-  </Box>
-);
 
 // Seção de Contato
 const ContactSection = () => (
@@ -290,19 +265,19 @@ const Footer = () => (
     <Container>
       <Grid container spacing={4}>
         <Grid item xs={12} md={4}>
-          <img src="/logo.png" alt="Feedeliza Logo" style={{ height: '40px', marginBottom: '20px' }} />
+          <img src="/logo.png" alt="Voltaki Logo" style={{ height: '40px', marginBottom: '20px' }} />
           <Typography sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>A solução premium para restaurantes que desejam transformar clientes em fãs e aumentar suas vendas.</Typography>
         </Grid>
         <Grid item xs={6} md={2}>
           <Typography variant="h6" sx={{ mb: 2 }}>Links</Typography>
-          <Link href="#funcionalidades" color="inherit" display="block" sx={{ mb: 1, textDecoration: 'none', color: 'secondary.main', '&:hover': { color: '#17A396' } }}>Funcionalidades</Link>
-          <Link href="#depoimentos" color="inherit" display="block" sx={{ mb: 1, textDecoration: 'none', color: 'secondary.main', '&:hover': { color: '#17A396' } }}>Depoimentos</Link>
-          <Link href="#precos" color="inherit" display="block" sx={{ mb: 1, textDecoration: 'none', color: 'secondary.main', '&:hover': { color: '#17A396' } }}>Preços</Link>
+          <Button component="a" href="#funcionalidades" sx={{ p: 0, justifyContent: 'flex-start', textTransform: 'none', color: 'secondary.main', '&:hover': { color: '#17A396', backgroundColor: 'transparent' } }}>Funcionalidades</Button>
+          <Button component="a" href="#depoimentos" sx={{ p: 0, justifyContent: 'flex-start', textTransform: 'none', color: 'secondary.main', '&:hover': { color: '#17A396', backgroundColor: 'transparent' } }}>Depoimentos</Button>
+          <Button component="a" href="#contato" sx={{ p: 0, justifyContent: 'flex-start', textTransform: 'none', color: 'secondary.main', '&:hover': { color: '#17A396', backgroundColor: 'transparent' } }}>Contato</Button>
         </Grid>
         <Grid item xs={6} md={2}>
           <Typography variant="h6" sx={{ mb: 2 }}>Legal</Typography>
-          <Link href="#" color="inherit" display="block" sx={{ mb: 1, textDecoration: 'none', color: 'secondary.main', '&:hover': { color: '#17A396' } }}>Termos de Uso</Link>
-          <Link href="#" color="inherit" display="block" sx={{ mb: 1, textDecoration: 'none', color: 'secondary.main', '&:hover': { color: '#17A396' } }}>Política de Privacidade</Link>
+          <Button component={Link} to="/termos-de-servico" sx={{ p: 0, justifyContent: 'flex-start', textTransform: 'none', color: 'secondary.main', '&:hover': { color: '#17A396', backgroundColor: 'transparent' } }}>Termos de Uso</Button>
+          <Button component={Link} to="/politica-de-privacidade" sx={{ p: 0, justifyContent: 'flex-start', textTransform: 'none', color: 'secondary.main', '&:hover': { color: '#17A396', backgroundColor: 'transparent' } }}>Política de Privacidade</Button>
         </Grid>
         <Grid item xs={12} md={4}>
           <Typography variant="h6" sx={{ mb: 2 }}>Social</Typography>
@@ -312,7 +287,7 @@ const Footer = () => (
           <IconButton href="#" sx={{ color: 'white', backgroundColor: 'rgba(255, 255, 255, 0.1)', '&:hover': { backgroundColor: 'primary.main' } }}><FaWhatsapp /></IconButton>
         </Grid>
       </Grid>
-      <Typography sx={{ textAlign: 'center', mt: { xs: 4, md: 6 }, color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.9rem' }}>&copy; {new Date().getFullYear()} Feedeliza. Todos os direitos reservados.</Typography>
+      <Typography sx={{ textAlign: 'center', mt: { xs: 4, md: 6 }, color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.9rem' }}>&copy; {new Date().getFullYear()} Voltaki. Todos os direitos reservados.</Typography>
     </Container>
   </Box>
 );
@@ -325,7 +300,6 @@ const LandingPage = () => {
         <HeroSection />
         <FeaturesSection />
         <TestimonialsSection />
-        <PricingSection />
         <ContactSection />
       </main>
       <Footer />

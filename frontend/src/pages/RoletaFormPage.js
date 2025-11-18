@@ -41,6 +41,16 @@ const RoletaFormPage = () => {
   const [error, setError] = useState('');
   const [displayColorPicker, setDisplayColorPicker] = useState(null);
 
+  // Função para obter uma cor de texto contrastante (preto ou branco)
+  const getContrastColor = (hexColor) => {
+    if (!hexColor) return '#000000';
+    const r = parseInt(hexColor.substr(1, 2), 16);
+    const g = parseInt(hexColor.substr(3, 2), 16);
+    const b = parseInt(hexColor.substr(5, 2), 16);
+    const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+    return (yiq >= 128) ? '#000000' : '#ffffff';
+  };
+
   useEffect(() => {
     const fetchRecompensas = async () => {
       try {
@@ -65,7 +75,7 @@ const RoletaFormPage = () => {
             option: p.nome,
             recompensaId: p.recompensaId,
             porcentagem: p.porcentagem,
-            style: { backgroundColor: p.cor, textColor: '#ffffff' },
+            style: { backgroundColor: p.cor, textColor: getContrastColor(p.cor) },
           })));
         })
         .catch(err => setError('Erro ao buscar dados da roleta.'))
@@ -100,15 +110,19 @@ const RoletaFormPage = () => {
   const handlePremioStyleChange = (index, property, value) => {
     const newPremios = [...premios];
     newPremios[index].style[property] = value;
+    if (property === 'backgroundColor') {
+      newPremios[index].style.textColor = getContrastColor(value);
+    }
     setPremios(newPremios);
   };
 
   const addPremio = () => {
+    const newColor = `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`;
     setPremios([...premios, {
       option: '',
       recompensaId: null,
       porcentagem: 0,
-      style: { backgroundColor: `#${Math.floor(Math.random()*16777215).toString(16)}`, textColor: '#ffffff' },
+      style: { backgroundColor: newColor, textColor: getContrastColor(newColor) },
     }]);
   };
 
@@ -244,9 +258,9 @@ const RoletaFormPage = () => {
                         onChange={(event, newValue) => {
                           handlePremioChange(index, 'recompensa', newValue ? newValue.id : null);
                         }}
-                        renderInput={(params) => <TextField {...params} label="Recompensa" sx={{ input: { color: 'text.primary' } }} />}
+                        renderInput={(params) => <TextField {...params} label="Recompensa" />}
                         renderOption={(props, option) => (
-                            <Box component="li" sx={{ color: 'text.primary' }} {...props} key={option.id}>
+                            <Box component="li" {...props} key={option.id}>
                                 {option.nome}
                             </Box>
                         )}

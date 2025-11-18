@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { formatDateForDisplay, getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
 import { useAuth } from '../../context/AuthContext';
-import resultService from '../../services/resultService';
+import dashboardService from '../../services/dashboardService';
 import Dashboard from '../../components/relatorios/Dashboard';
 
 const RelatorioDiario = () => {
@@ -35,7 +35,7 @@ const RelatorioDiario = () => {
             try {
                 const startDateUTC = getStartOfDayUTC(selectedDate);
                 const endDateUTC = getEndOfDayUTC(selectedDate);
-                const data = await resultService.getMainDashboard({
+                const data = await dashboardService.getMainDashboard({
                     tenantId: tenantId,
                     startDate: startDateUTC,
                     endDate: endDateUTC,

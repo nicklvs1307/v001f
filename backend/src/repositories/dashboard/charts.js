@@ -6,7 +6,7 @@ const {
   Pergunta,
 } = require("../../../models");
 const { Sequelize, Op } = require("sequelize");
-const { eachDayOfInterval, format } = require("date-fns"); // Keep eachDayOfInterval and format
+const { eachDayOfInterval, format, subDays } = require("date-fns"); // Keep eachDayOfInterval and format
 const { TIMEZONE } = require("../../utils/dateUtils"); // Only TIMEZONE is needed now
 
 const { fn, col, literal } = Sequelize;
@@ -43,6 +43,13 @@ const getResponseChart = async (
 ) => {
   const whereClause = tenantId ? { tenantId } : {};
   if (surveyId) whereClause.pesquisaId = surveyId;
+
+  // Default to the last 30 days if no date range is provided
+  if (!startOfDayUtc || !endOfDayUtc) {
+    const now = new Date();
+    endOfDayUtc = now;
+    startOfDayUtc = subDays(now, 30);
+  }
 
   // Use the already processed UTC Date objects
   if (startOfDayUtc && endOfDayUtc) {

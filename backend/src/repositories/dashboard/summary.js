@@ -104,7 +104,11 @@ const getSummary = async (
   if (dateFilter) couponsUsedWhere.updatedAt = dateFilter;
   const couponsUsed = await Cupom.count({ where: couponsUsedWhere });
 
-  const birthdays = await getBirthdaysOfMonth(tenantId);
+  const birthdays = await getBirthdaysOfMonth(
+    tenantId,
+    startOfDayUtc,
+    endOfDayUtc,
+  );
   const ambassadorsMonth = birthdays.length;
 
   return {

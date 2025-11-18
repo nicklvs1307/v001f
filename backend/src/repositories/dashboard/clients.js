@@ -7,9 +7,16 @@ const {
   convertFromTimeZone,
 } = require("../../utils/dateUtils");
 
-const getBirthdaysOfMonth = async (tenantId = null) => {
+const getBirthdaysOfMonth = async (
+  tenantId = null,
+  startOfDayUtc = null,
+  endOfDayUtc = null,
+) => {
   const whereClause = tenantId ? { tenantId } : {};
-  const currentMonth = convertFromTimeZone(new Date()).getMonth() + 1; // getMonth() returns 0-11
+
+  // Determine the month to query. Use the start date's month if available, otherwise use the current month.
+  const referenceDate = startOfDayUtc ? new Date(startOfDayUtc) : new Date();
+  const monthToQuery = convertFromTimeZone(referenceDate).getMonth() + 1; // getMonth() is 0-11
 
   const birthdays = await Client.findAll({
     where: {
@@ -20,7 +27,7 @@ const getBirthdaysOfMonth = async (tenantId = null) => {
       [Op.and]: [
         sequelize.where(
           sequelize.fn("EXTRACT", sequelize.literal('MONTH FROM "birthDate"')),
-          currentMonth,
+          monthToQuery,
         ),
       ],
     },

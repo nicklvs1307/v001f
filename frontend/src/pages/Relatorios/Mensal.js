@@ -7,7 +7,7 @@ import { format, startOfMonth, endOfMonth } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
 import { useAuth } from '../../context/AuthContext';
-import resultService from '../../services/resultService';
+import dashboardService from '../../services/dashboardService';
 import Dashboard from '../../components/relatorios/Dashboard';
 
 const RelatorioMensal = () => {
@@ -29,7 +29,7 @@ const RelatorioMensal = () => {
                 const startDateUTC = getStartOfDayUTC(start);
                 const endDateUTC = getEndOfDayUTC(end);
 
-                const data = await resultService.getMainDashboard({
+                const data = await dashboardService.getMainDashboard({
                     tenantId: tenantId,
                     startDate: startDateUTC,
                     endDate: endDateUTC,

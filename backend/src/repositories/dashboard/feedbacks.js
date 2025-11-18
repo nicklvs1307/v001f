@@ -82,14 +82,12 @@ const getWordCloudData = async (
 
   const frequencies = {};
   for (const word of words) {
-    const stemmedWord = PorterStemmerPt.stem(word);
     if (
-      stemmedWord &&
-      stemmedWord.length > 2 &&
-      !stopwords.has(word) &&
-      !stopwords.has(stemmedWord)
+      word &&
+      word.length > 2 &&
+      !stopwords.has(word)
     ) {
-      frequencies[stemmedWord] = (frequencies[stemmedWord] || 0) + 1;
+      frequencies[word] = (frequencies[word] || 0) + 1;
     }
   }
 

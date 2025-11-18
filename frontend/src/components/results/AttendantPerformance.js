@@ -1,9 +1,10 @@
 import React from 'react';
-import { Grid, Paper, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box } from '@mui/material';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Grid, Paper, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box, useTheme } from '@mui/material';
+import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Star } from '@mui/icons-material';
 
 const AttendantPerformance = ({ performanceData }) => {
+    const theme = useTheme();
 
     if (!performanceData || performanceData.length === 0) {
         return (
@@ -24,7 +25,11 @@ const AttendantPerformance = ({ performanceData }) => {
     const sortedAttendants = [...performanceData].sort((a, b) => (b.currentNPS || -101) - (a.currentNPS || -101));
     const topAttendants = sortedAttendants.slice(0, 5);
     const bottomAttendants = sortedAttendants.length > 5 ? sortedAttendants.slice(-5).reverse() : [];
-    const chartData = sortedAttendants.map(attendant => ({ name: attendant.name, NPS: attendant.currentNPS }));
+    const chartData = sortedAttendants.map(attendant => ({ 
+        name: attendant.name, 
+        NPS: attendant.currentNPS,
+        Respostas: attendant.responses 
+    }));
 
     return (
         <Paper sx={{ p: 3, borderRadius: '16px', boxShadow: '0 4px 12px 0 rgba(0,0,0,0.05)', height: '100%' }}>
@@ -36,16 +41,22 @@ const AttendantPerformance = ({ performanceData }) => {
             </Box>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
-                    <Typography variant="subtitle1" gutterBottom>NPS por Atendente</Typography>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={chartData} layout="vertical" margin={{ left: 100 }}>
+                    <Typography variant="subtitle1" gutterBottom>NPS e Volume de Respostas por Atendente</Typography>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <ComposedChart 
+                            data={chartData} 
+                            layout="vertical" 
+                            margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                        >
                             <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis type="number" domain={[-100, 100]} />
-                            <YAxis type="category" dataKey="name" width={50} tick={{ fontSize: 12 }} />
+                            <XAxis type="number" yAxisId="left" domain={[-100, 100]} />
+                            <XAxis type="number" yAxisId="right" orientation="top" />
+                            <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 12 }} />
                             <Tooltip />
                             <Legend />
-                            <Bar dataKey="NPS" fill="#82ca9d" />
-                        </BarChart>
+                            <Bar yAxisId="left" dataKey="NPS" barSize={20} fill={theme.palette.primary.main} />
+                            <Line yAxisId="right" type="monotone" dataKey="Respostas" stroke={theme.palette.secondary.main} strokeWidth={2} />
+                        </ComposedChart>
                     </ResponsiveContainer>
                 </Grid>
                 <Grid item xs={12} md={6}>

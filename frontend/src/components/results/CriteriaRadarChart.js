@@ -9,11 +9,13 @@ const CriteriaRadarChart = ({ data }) => {
         return null; // The parent component will handle the "no data" message for the section
     }
     
-    const chartData = data.map(item => ({
-        subject: item.criterio,
-        NPS: typeof item.nps === 'number' ? item.nps : 0,
-        fullMark: 100,
-    }));
+    const chartData = data
+        .filter(item => item.criterion !== 'Recomendação')
+        .map(item => ({
+            subject: item.criterion,
+            NPS: typeof item.score === 'number' ? item.score : 0,
+            fullMark: 100,
+        }));
 
     return (
         <Box sx={{ height: 400 }}>

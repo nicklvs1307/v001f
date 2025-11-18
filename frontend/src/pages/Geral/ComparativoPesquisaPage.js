@@ -18,9 +18,9 @@ import {
 } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import surveyService from '../../services/surveyService';
-import resultService from '../../services/resultService';
 import { useAuth } from '../../context/AuthContext';
 import { FaChartBar } from 'react-icons/fa';
+import dashboardService from '../../services/dashboardService';
 
 const ChartContainer = ({ title, icon, children }) => (
     <Card elevation={3} sx={{ p: 3, borderRadius: '16px', height: '100%', boxShadow: '0 4px 20px 0 rgba(0,0,0,0.1)', transition: 'transform 0.3s ease-in-out', '&:hover': { transform: 'translateY(-5px)' } }}>
@@ -71,7 +71,7 @@ const ComparativoPesquisaPage = () => {
             setError(null);
             try {
                 const promises = selectedSurveyIds.map(surveyId => 
-                    resultService.getMainDashboard({ tenantId: user.tenantId, surveyId })
+                    dashboardService.getMainDashboard({ tenantId: user.tenantId, surveyId })
                 );
                 const results = await Promise.all(promises);
                 

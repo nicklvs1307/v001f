@@ -12,7 +12,7 @@ import {
 import { subDays } from 'date-fns';
 import { getStartOfDayUTC, getEndOfDayUTC } from '../utils/dateUtils';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import resultService from '../services/resultService';
+import dashboardService from '../services/dashboardService';
 import AuthContext from '../context/AuthContext';
 
 import KeyMetrics from '../components/results/KeyMetrics';
@@ -46,7 +46,7 @@ const ResultsOverviewPage = () => {
             if (endDate) {
                 params.endDate = getEndOfDayUTC(endDate);
             }
-            const resultData = await resultService.getMainDashboard(params);
+            const resultData = await dashboardService.getMainDashboard(params);
             setData(resultData);
         } catch (err) {
             setError(err.message || 'Falha ao carregar os resultados.');

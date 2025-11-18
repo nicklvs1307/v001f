@@ -11,7 +11,7 @@ import {
     CardContent,
     Alert
 } from '@mui/material';
-import resultService from '../../services/resultService';
+import dashboardService from '../../services/dashboardService';
 import { useAuth } from '../../context/AuthContext';
 import { startOfMonth, endOfMonth } from 'date-fns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -40,7 +40,7 @@ const SatisfacaoPage = () => {
             setLoading(true);
             setError(null);
             try {
-                const response = await resultService.getMainDashboard({
+                const response = await dashboardService.getMainDashboard({
                     tenantId: user.tenantId,
                     startDate: getStartOfDayUTC(startDate),
                     endDate: getEndOfDayUTC(endDate)

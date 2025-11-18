@@ -111,6 +111,15 @@ const getSurveysList = async (status = 'all') => {
     }
 };
 
+const getSurveyResults = async (surveyId) => {
+    try {
+        const response = await apiAuthenticated.get(`/surveys/${surveyId}/results`);
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
 const surveyService = {
 
     getSurveyById,
@@ -120,6 +129,7 @@ const surveyService = {
     generateQrCode,
     getSurveyStats, // Exportar nova função
     getSurveysList, // Exportar nova função
+    getSurveyResults,
 };
 
 export default surveyService;

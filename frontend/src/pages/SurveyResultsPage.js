@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import resultService from '../services/resultService';
+import surveyService from '../services/surveyService';
 import { 
     Container, 
     Box, 
@@ -82,7 +82,7 @@ const SurveyResultsPage = () => {
         const fetchResults = async () => {
             try {
                 setLoading(true);
-                const data = await resultService.getSurveyResults(id);
+                const data = await surveyService.getSurveyResults(id);
                 setResults(data);
             } catch (err) {
                 setError(err.message || 'Falha ao carregar os resultados da pesquisa.');

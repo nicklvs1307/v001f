@@ -244,7 +244,7 @@ const RoletaFormPage = () => {
                         onChange={(event, newValue) => {
                           handlePremioChange(index, 'recompensa', newValue ? newValue.id : null);
                         }}
-                        renderInput={(params) => <TextField {...params} label="Recompensa" />}
+                        renderInput={(params) => <TextField {...params} label="Recompensa" sx={{ input: { color: 'text.primary' } }} />}
                         renderOption={(props, option) => (
                             <Box component="li" sx={{ color: 'text.primary' }} {...props} key={option.id}>
                                 {option.nome}

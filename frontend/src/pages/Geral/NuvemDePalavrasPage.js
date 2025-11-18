@@ -76,15 +76,15 @@ const NuvemDePalavrasPage = () => {
 
     const wordCloudOptions = useMemo(() => ({
         colors: [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.dark.main],
-        rotations: 3,
-        rotationAngles: [-45, 0, 45],
+        rotations: 1,
+        rotationAngles: [0, 0],
         fontWeight: 'bold',
         padding: 2,
         fontSizes: [20, 120],
         fontFamily: theme.typography.fontFamily,
         scale: 'sqrt',
-        spiral: 'archimedean',
-        enableOptimizations: true,
+        spiral: 'rectangular',
+        deterministic: true,
     }), [theme]);
 
     const hasWords = Array.isArray(words) && words.length > 0;

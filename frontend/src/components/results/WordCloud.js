@@ -41,7 +41,8 @@ const WordCloudComponent = ({ data }) => {
     rotations: 1,
     rotationAngles: [0, 0],
     scale: 'sqrt',
-    spiral: 'archimedean',
+    spiral: 'rectangular',
+    deterministic: true,
   };
 
   return (

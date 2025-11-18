@@ -179,9 +179,11 @@ const Dashboard = ({ data }) => {
                                     fontWeight: "bold",
                                     fontSizes: [20, 80],
                                     padding: 5,
-                                    rotations: 2,
-                                    rotationAngles: [-45, 45],
+                                    rotations: 1,
+                                    rotationAngles: [0, 0],
                                     colors: [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.primary.light, theme.palette.secondary.light],
+                                    spiral: 'rectangular',
+                                    deterministic: true
                                 }}
                             />
                         </Box>

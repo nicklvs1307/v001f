@@ -35,6 +35,7 @@ const RelatorioDiario = () => {
             try {
                 const startDateUTC = getStartOfDayUTC(selectedDate);
                 const endDateUTC = getEndOfDayUTC(selectedDate);
+                console.log('Fetching daily report with dates:', { startDateUTC, endDateUTC });
                 const data = await dashboardService.getMainDashboard({
                     tenantId: tenantId,
                     startDate: startDateUTC,
@@ -68,8 +69,9 @@ const RelatorioDiario = () => {
             </Box>
 
             {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', my: 5 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', my: 5 }}>
                     <CircularProgress />
+                    <Typography sx={{ mt: 2 }}>Carregando dados do relatório...</Typography>
                 </Box>
             ) : (
                 <Dashboard data={reportData} />

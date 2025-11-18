@@ -60,7 +60,17 @@ const Dashboard = ({ data }) => {
         return <Typography>Nenhum dado disponível para o período selecionado.</Typography>;
     }
 
-    const { summary, npsTrend, criteriaScores, attendantsPerformance, conversionChart, feedbacks, clientStatusCounts } = data;
+    const { summary, responseChart, npsTrend, criteriaScores, attendantsPerformance, conversionChart, feedbacks, clientStatusCounts } = data;
+
+    console.log("Dashboard - summary:", summary);
+    console.log("Dashboard - responseChart:", responseChart);
+    console.log("Dashboard - npsTrend:", npsTrend);
+    console.log("Dashboard - criteriaScores:", criteriaScores);
+    console.log("Dashboard - attendantsPerformance:", attendantsPerformance);
+    console.log("Dashboard - conversionChart:", conversionChart);
+    console.log("Dashboard - feedbacks:", feedbacks);
+    console.log("Dashboard - clientStatusCounts:", clientStatusCounts);
+    console.log("Dashboard - processedWordCloudData:", processedWordCloudData);
 
     const nps = summary?.nps;
     const totalResponses = summary?.totalResponses;

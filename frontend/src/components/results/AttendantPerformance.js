@@ -6,6 +6,8 @@ import { Star } from '@mui/icons-material';
 const AttendantPerformance = ({ performanceData }) => {
     const theme = useTheme();
 
+    console.log("AttendantPerformance - performanceData:", performanceData);
+
     if (!performanceData || performanceData.length === 0) {
         return (
             <Paper sx={{ p: 3, textAlign: 'center', borderRadius: '16px', boxShadow: '0 4px 12px 0 rgba(0,0,0,0.05)', height: '100%' }}>
@@ -30,6 +32,8 @@ const AttendantPerformance = ({ performanceData }) => {
         NPS: attendant.currentNPS,
         Respostas: attendant.responses 
     }));
+
+    console.log("AttendantPerformance - chartData:", chartData);
 
     return (
         <Paper sx={{ p: 3, borderRadius: '16px', boxShadow: '0 4px 12px 0 rgba(0,0,0,0.05)', height: '100%' }}>

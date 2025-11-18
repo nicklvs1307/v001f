@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, Box, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { WordCloud } from '@isoterik/react-word-cloud';
+import WordCloud from 'react-wordcloud';
 import CloudQueueIcon from '@mui/icons-material/CloudQueue';
 
 const WordCloudComponent = ({ data }) => {
@@ -33,22 +33,25 @@ const WordCloudComponent = ({ data }) => {
     theme.palette.warning.main,
   ];
 
+  const options = {
+    colors,
+    fontFamily: 'Arial',
+    fontWeights: 'bold',
+    padding: 2,
+    rotations: 1,
+    rotationAngles: [0, 0],
+    scale: 'sqrt',
+    spiral: 'archimedean',
+  };
+
   return (
     <Card elevation={3}>
       <CardHeader title="Nuvem de Palavras" subheader="Termos mais frequentes nas respostas de texto" avatar={<CloudQueueIcon />} />
       <CardContent>
         <Box sx={{ height: 400, width: '100%' }}>
           <WordCloud
-            data={wordCloudData}
-            width={500}
-            height={400}
-            font="Arial"
-            fontWeight="bold"
-            fontSize={(word) => (word.value ? Math.sqrt(word.value) * 5 : 10)}
-            spiral="archimedean"
-            rotate={0}
-            padding={2}
-            colors={colors}
+            words={wordCloudData}
+            options={options}
           />
         </Box>
       </CardContent>

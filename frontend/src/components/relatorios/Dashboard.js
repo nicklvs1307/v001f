@@ -6,7 +6,7 @@ import {
 import {
     ComposedChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, Area
 } from 'recharts';
-import { WordCloud } from '@isoterik/react-word-cloud';
+import WordCloud from 'react-wordcloud';
 
 // Importando ícones
 import { TrendingUp, BarChart as BarChartIcon, People, Star, Cloud, CheckCircle, DonutLarge, Chat as ChatIcon } from '@mui/icons-material';
@@ -38,29 +38,11 @@ const NoData = () => (
 const Dashboard = ({ data }) => {
     const theme = useTheme();
 
-    const wordCloudData = data?.wordCloudData;
-
-    const processedWordCloudData = useMemo(() => {
-        if (!wordCloudData || wordCloudData.length === 0) {
-            return [];
-        }
-        const values = wordCloudData.map(w => w.value);
-        const min = Math.min(...values);
-        const max = Math.max(...values);
-
-        if (min === max) {
-            const newWords = [...wordCloudData];
-            newWords[0] = { ...newWords[0], value: newWords[0].value + 1 };
-            return newWords;
-        }
-        return wordCloudData;
-    }, [wordCloudData]);
-
     if (!data) {
         return <Typography>Nenhum dado disponível para o período selecionado.</Typography>;
     }
 
-    const { summary, responseChart, npsTrend, criteriaScores, attendantsPerformance, conversionChart, feedbacks, clientStatusCounts } = data;
+    const { summary, responseChart, npsTrend, criteriaScores, attendantsPerformance, conversionChart, feedbacks, clientStatusCounts, wordCloudData } = data;
 
     console.log("Dashboard - summary:", summary);
     console.log("Dashboard - responseChart:", responseChart);
@@ -70,7 +52,7 @@ const Dashboard = ({ data }) => {
     console.log("Dashboard - conversionChart:", conversionChart);
     console.log("Dashboard - feedbacks:", feedbacks);
     console.log("Dashboard - clientStatusCounts:", clientStatusCounts);
-    console.log("Dashboard - processedWordCloudData:", processedWordCloudData);
+    console.log("Dashboard - wordCloudData:", wordCloudData);
 
     const nps = summary?.nps;
     const totalResponses = summary?.totalResponses;
@@ -188,10 +170,10 @@ const Dashboard = ({ data }) => {
             {/* Word Cloud */}
             <Grid item xs={12} md={6}>
                 <StatCard title="Nuvem de Palavras" icon={<Cloud />}>
-                    {processedWordCloudData && processedWordCloudData.length > 0 ? (
+                    {wordCloudData && wordCloudData.length > 0 ? (
                         <Box sx={{ height: 300, width: '100%' }}>
                             <WordCloud
-                                words={processedWordCloudData}
+                                words={wordCloudData}
                                 options={{
                                     fontFamily: theme.typography.fontFamily,
                                     fontWeight: "bold",

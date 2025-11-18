@@ -29,8 +29,8 @@ const AttendantPerformance = ({ performanceData }) => {
     const bottomAttendants = sortedAttendants.length > 5 ? sortedAttendants.slice(-5).reverse() : [];
     const chartData = sortedAttendants.map(attendant => ({ 
         name: attendant.name, 
-        NPS: attendant.currentNPS,
-        Respostas: attendant.responses 
+        NPS: Number(attendant.currentNPS) || 0,
+        Respostas: Number(attendant.responses) || 0
     }));
 
     console.log("AttendantPerformance - chartData:", chartData);
@@ -53,13 +53,13 @@ const AttendantPerformance = ({ performanceData }) => {
                             margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
                         >
                             <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis type="number" yAxisId="left" domain={[-100, 100]} />
-                            <XAxis type="number" yAxisId="right" orientation="top" />
+                            <XAxis type="number" xAxisId="left" domain={[-100, 100]} />
+                            <XAxis type="number" xAxisId="right" orientation="top" />
                             <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 12 }} />
                             <Tooltip />
                             <Legend />
-                            <Bar yAxisId="left" dataKey="NPS" barSize={20} fill={theme.palette.primary.main} />
-                            <Line yAxisId="right" type="monotone" dataKey="Respostas" stroke={theme.palette.secondary.main} strokeWidth={2} />
+                            <Bar xAxisId="left" dataKey="NPS" barSize={20} fill={theme.palette.primary.main} />
+                            <Line xAxisId="right" type="monotone" dataKey="Respostas" stroke={theme.palette.secondary.main} strokeWidth={2} />
                         </ComposedChart>
                     </ResponsiveContainer>
                 </Grid>

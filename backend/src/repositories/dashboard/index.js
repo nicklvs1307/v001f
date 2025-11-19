@@ -5,7 +5,7 @@ const {
 } = require("./details");
 const { getAttendantDetails } = require("./attendants");
 const { getMonthlySummary: getMonthSummary } = require("./summary");
-const { getAllFeedbacksForPeriod } = require("./feedbacks");
+const { getAllFeedbacksForPeriod, getWordCloudData } = require("./feedbacks");
 
 module.exports = {
   getMainDashboard,
@@ -14,4 +14,5 @@ module.exports = {
   getResponseDetails,
   getMonthSummary,
   getAllFeedbacksForPeriod,
+  getWordCloudData,
 };

@@ -1,27 +1,6 @@
- => ERROR [build 6/6] RUN npm run build                                                      300.8s
-------
- > [build 6/6] RUN npm run build:
-0.878
-0.878 > frontend@0.1.0 build
-0.878 > react-scripts build
-0.878
-2.922 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-5.202 Creating an optimized production build...
-294.4 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-300.3 Failed to compile.
-300.3
-300.3 [eslint]
-300.3 src/pages/DashboardPage.js
-300.3 Syntax error: Expected corresponding JSX closing tag for <Container>. (537:12) (537:12)
-300.3
-300.3
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+{
+    "status": "error",
+    "code": "HTTP_500",
+    "message": "column reference \"createdAt\" is ambiguous",
+    "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.select (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:407:12)\n    at async Resposta.findAll (/usr/src/app/node_modules/sequelize/lib/model.js:1140:21)\n    at async Object.getMonthlySummary [as getMonthSummary] (/usr/src/app/src/repositories/dashboard/summary.js:240:19)\n    at async /usr/src/app/src/controllers/dashboardController.js:205:21"
+}

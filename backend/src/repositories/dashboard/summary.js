@@ -181,15 +181,15 @@ const getMonthlySummary = async (
   const query = {
     attributes: [
       [
-        sequelize.fn("DATE", sequelize.col("createdAt")),
+        sequelize.fn("DATE", sequelize.col("Resposta.createdAt")),
         "date",
       ],
       [
-        sequelize.literal("EXTRACT(HOUR FROM createdAt AT TIME ZONE 'UTC')"),
+        sequelize.literal("EXTRACT(HOUR FROM \"Resposta\".\"createdAt\" AT TIME ZONE 'UTC')"),
         "hour",
       ],
       [
-        sequelize.literal("EXTRACT(ISODOW FROM createdAt AT TIME ZONE 'UTC')"),
+        sequelize.literal("EXTRACT(ISODOW FROM \"Resposta\".\"createdAt\" AT TIME ZONE 'UTC')"),
         "weekday",
       ],
       [

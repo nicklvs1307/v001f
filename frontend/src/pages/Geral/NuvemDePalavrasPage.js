@@ -245,7 +245,7 @@ const NuvemDePalavrasPage = () => {
                                 </TableRow>
                             ) : filteredFeedbacks.map((fb, index) => (
                                 <TableRow key={index}>
-                                    <TableCell>{format(new Date(fb.date), 'dd/MM/yy HH:mm')}</TableCell>
+                                    <TableCell>{fb.date ? format(new Date(fb.date), 'dd/MM/yy HH:mm') : 'N/A'}</TableCell>
                                     <TableCell>{fb.client}</TableCell>
                                     <TableCell>{fb.comment}</TableCell>
                                     <TableCell>{fb.rating}</TableCell>

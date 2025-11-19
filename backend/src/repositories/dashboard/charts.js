@@ -87,30 +87,58 @@ const getResponseChart = async (
 
 const getConversionChart = async (
   tenantId = null,
-  startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null,   // Changed parameter name
+  startOfDayUtc = null,
+  endOfDayUtc = null,
   surveyId = null,
 ) => {
-  const whereClause = tenantId ? { tenantId } : {};
-  if (surveyId) whereClause.pesquisaId = surveyId;
-
-  // Use the already processed UTC Date objects
+  const responseWhere = tenantId ? { tenantId } : {};
+  if (surveyId) responseWhere.pesquisaId = surveyId;
   if (startOfDayUtc && endOfDayUtc) {
-    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
+    responseWhere.createdAt = { [Op.between]: [startOfDayUtc, endOfDayUtc] };
   }
 
   const totalResponses = await Resposta.count({
-    where: whereClause,
+    where: responseWhere,
     distinct: true,
     col: "respondentSessionId",
   });
-  const totalUsers = await Client.count({ where: whereClause });
-  const couponsGenerated = await Cupom.count({ where: whereClause });
+
+  let totalUsers = 0;
+  if (surveyId) {
+    const responses = await Resposta.findAll({
+      attributes: [[fn("DISTINCT", col("respondentSessionId")), "sessionId"]],
+      where: {
+        pesquisaId: surveyId,
+        tenantId: tenantId,
+        ...(responseWhere.createdAt && { createdAt: responseWhere.createdAt }),
+      },
+      raw: true,
+    });
+    const sessionIds = responses.map((r) => r.sessionId);
+    if (sessionIds.length > 0) {
+      totalUsers = await Client.count({
+        where: {
+          tenantId: tenantId,
+          respondentSessionId: { [Op.in]: sessionIds },
+        },
+      });
+    }
+  } else {
+    const clientWhere = tenantId ? { tenantId } : {};
+    if (responseWhere.createdAt) {
+      clientWhere.createdAt = responseWhere.createdAt;
+    }
+    totalUsers = await Client.count({ where: clientWhere });
+  }
+
+  const cupomWhere = { ...responseWhere };
+  const couponsGenerated = await Cupom.count({ where: cupomWhere });
 
   const couponsUsedWhere = { status: "used" };
   if (tenantId) couponsUsedWhere.tenantId = tenantId;
-  if (whereClause.createdAt) {
-    couponsUsedWhere.updatedAt = whereClause.createdAt;
+  if (surveyId) couponsUsedWhere.pesquisaId = surveyId;
+  if (responseWhere.createdAt) {
+    couponsUsedWhere.updatedAt = responseWhere.createdAt;
   }
 
   const couponsUsed = await Cupom.count({ where: couponsUsedWhere });

@@ -6,6 +6,7 @@ const {
 const { getAttendantDetails } = require("./attendants");
 const { getMonthlySummary: getMonthSummary } = require("./summary");
 const { getAllFeedbacksForPeriod, getWordCloudData } = require("./feedbacks");
+const { getEvolutionDashboard } = require("./charts");
 
 module.exports = {
   getMainDashboard,
@@ -15,4 +16,5 @@ module.exports = {
   getMonthSummary,
   getAllFeedbacksForPeriod,
   getWordCloudData,
+  getEvolutionDashboard,
 };

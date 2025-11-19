@@ -199,10 +199,10 @@ const dashboardController = {
     res.status(200).json(details);
   }),
 
-  getMonthlySummary: asyncHandler(async (req, res) => {
+  getMonthSummary: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
     const { startDate, endDate } = req.query;
-    const summary = await dashboardRepository.getMonthlySummary(
+    const summary = await dashboardRepository.getMonthSummary(
       tenantId,
       startDate,
       endDate,

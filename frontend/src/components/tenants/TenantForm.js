@@ -3,7 +3,8 @@ import {
     Box, 
     TextField, 
     Button, 
-    Typography 
+    Typography,
+    Input
 } from '@mui/material';
 import tenantService from '../../services/tenantService';
 import { useNotification } from '../../context/NotificationContext'; // Import useNotification
@@ -15,6 +16,7 @@ const TenantForm = ({ initialData, onTenantCreated, onTenantUpdated, onClose }) 
     const [email, setEmail] = useState(initialData ? initialData.email : '');
     const [cnpj, setCnpj] = useState(initialData ? initialData.cnpj : '');
     const [description, setDescription] = useState(initialData ? initialData.description : '');
+    const [logo, setLogo] = useState(null);
     const [loading, setLoading] = useState(false);
     const { showNotification } = useNotification(); // Get showNotification
 
@@ -29,22 +31,34 @@ const TenantForm = ({ initialData, onTenantCreated, onTenantUpdated, onClose }) 
         }
     }, [initialData]);
 
+    const handleLogoChange = (event) => {
+        setLogo(event.target.files[0]);
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         setLoading(true);
         try {
             const tenantData = { name, address, phone, email, cnpj, description };
+            let tenantId;
             if (initialData) {
                 // Modo de Edição
                 const updatedTenant = await tenantService.updateTenant(initialData.id, tenantData);
+                tenantId = updatedTenant.tenant.id;
                 onTenantUpdated(updatedTenant); 
                 showNotification('Restaurante atualizado com sucesso!', 'success'); // Success notification
             } else {
                 // Modo de Criação
                 const newTenant = await tenantService.createTenant(tenantData);
+                tenantId = newTenant.tenant.id;
                 onTenantCreated(newTenant.tenant); 
                 showNotification('Restaurante criado com sucesso!', 'success'); // Success notification
             }
+
+            if (logo) {
+                await tenantService.uploadLogo(tenantId, logo);
+            }
+
             onClose(); // Fecha o modal após sucesso
         } catch (err) {
             showNotification(err.message || 'Falha na operação.', 'error'); // Use global notification
@@ -114,6 +128,12 @@ const TenantForm = ({ initialData, onTenantCreated, onTenantUpdated, onClose }) 
                 rows={3}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+            />
+            <Input
+                type="file"
+                onChange={handleLogoChange}
+                fullWidth
+                sx={{ mt: 2 }}
             />
             <Button
                 type="submit"

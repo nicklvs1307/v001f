@@ -44,7 +44,7 @@ class CupomRepository {
     return Cupom.findAll({
       where: whereClause,
       include: include,
-      order: [["createdAt", "DESC"]],
+      order: [["dataGeracao", "DESC"]],
     });
   }
 
@@ -56,37 +56,46 @@ class CupomRepository {
       today.getTime() + 7 * 24 * 60 * 60 * 1000,
     );
 
-    const totalCupons = await Cupom.count({ where: whereClause });
-
-    const usedCupons = await Cupom.count({
-      where: { ...whereClause, status: "used" },
-    });
-
-    const expiredCupons = await Cupom.count({
-      where: {
-        ...whereClause,
-        status: { [Op.ne]: "used" }, // Considera 'pending' e outros que não foram usados
-        dataValidade: { [Op.lt]: today },
-      },
-    });
-
-    const activeCupons = await Cupom.count({
-      where: {
-        ...whereClause,
-        status: "active",
-        dataValidade: { [Op.gte]: today },
-      },
-    });
-
-    const expiringSoonCupons = await Cupom.count({
-      where: {
-        ...whereClause,
-        status: "active",
-        dataValidade: {
-          [Op.gte]: today,
-          [Op.lt]: sevenDaysFromNow,
-        },
-      },
+    const summary = await Cupom.findOne({
+      where: whereClause,
+      attributes: [
+        [fn("COUNT", col("id")), "totalCupons"],
+        [
+          fn("SUM", fn("CASE", "WHEN status = 'used' THEN 1 ELSE 0 END")),
+          "usedCupons",
+        ],
+        [
+          fn(
+            "SUM",
+            fn(
+              "CASE",
+              "WHEN status != 'used' AND dataValidade < CURRENT_DATE THEN 1 ELSE 0 END",
+            ),
+          ),
+          "expiredCupons",
+        ],
+        [
+          fn(
+            "SUM",
+            fn(
+              "CASE",
+              "WHEN status = 'active' AND dataValidade >= CURRENT_DATE THEN 1 ELSE 0 END",
+            ),
+          ),
+          "activeCupons",
+        ],
+        [
+          fn(
+            "SUM",
+            fn(
+              "CASE",
+              "WHEN status = 'active' AND dataValidade >= CURRENT_DATE AND dataValidade < CURRENT_DATE + INTERVAL '7 day' THEN 1 ELSE 0 END",
+            ),
+          ),
+          "expiringSoonCupons",
+        ],
+      ],
+      raw: true,
     });
 
     const cuponsByType = await Cupom.findAll({
@@ -112,23 +121,23 @@ class CupomRepository {
     const dailyGenerated = await Cupom.findAll({
       where: {
         ...whereClause,
-        createdAt: {
+        dataGeracao: {
           [Op.gte]: thirtyDaysAgo,
         },
       },
       attributes: [
-        [fn("DATE", col("createdAt")), "date"],
+        [fn("DATE", col("dataGeracao")), "date"],
         [fn("COUNT", col("id")), "count"],
       ],
-      group: [fn("DATE", col("createdAt"))],
-      order: [[fn("DATE", col("createdAt")), "ASC"]],
+      group: [fn("DATE", col("dataGeracao"))],
+      order: [[fn("DATE", col("dataGeracao")), "ASC"]],
       raw: true,
     });
 
     const recentCupons = await Cupom.findAll({
       where: whereClause,
       limit: 10,
-      order: [["createdAt", "DESC"]],
+      order: [["dataGeracao", "DESC"]],
       include: [
         { model: Recompensa, as: "recompensa", attributes: ["name"] },
         { model: Client, as: "client", attributes: ["name"] },
@@ -136,11 +145,11 @@ class CupomRepository {
     });
 
     return {
-      totalCupons,
-      usedCupons,
-      expiredCupons,
-      activeCupons,
-      expiringSoonCupons,
+      totalCupons: summary.totalCupons,
+      usedCupons: summary.usedCupons,
+      expiredCupons: summary.expiredCupons,
+      activeCupons: summary.activeCupons,
+      expiringSoonCupons: summary.expiringSoonCupons,
       cuponsByType: formattedCuponsByType,
       dailyGenerated,
       recentCupons,

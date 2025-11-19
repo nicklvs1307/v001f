@@ -191,7 +191,7 @@ const dashboardController = {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
     const { sessionId } = req.params;
     const { surveyId } = req.query;
-    const details = await dashboardRepository.getResponseDetailsBySessionId(
+    const details = await dashboardRepository.getResponseDetails(
       tenantId,
       sessionId,
       surveyId,
@@ -199,14 +199,13 @@ const dashboardController = {
     res.status(200).json(details);
   }),
 
-  getMonthSummary: asyncHandler(async (req, res) => {
+  getMonthlySummary: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { surveyId, startDate, endDate } = req.query;
-    const summary = await dashboardRepository.getMonthSummary(
+    const { startDate, endDate } = req.query;
+    const summary = await dashboardRepository.getMonthlySummary(
       tenantId,
       startDate,
       endDate,
-      surveyId,
     );
     res.status(200).json(summary);
   }),

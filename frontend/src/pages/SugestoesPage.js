@@ -122,7 +122,6 @@ const SugestoesPage = () => {
   };
 
   const handleViewQuestions = (template) => {
-    console.log("Visualizar perguntas do template:", template.templateData);
     setSnackbarMessage('Funcionalidade de visualização de perguntas em desenvolvimento. Verifique o console.');
     setSnackbarSeverity('info');
     setSnackbarOpen(true);

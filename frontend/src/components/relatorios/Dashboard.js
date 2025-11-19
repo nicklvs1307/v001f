@@ -44,16 +44,6 @@ const Dashboard = ({ data }) => {
 
     const { summary, responseChart, npsTrend, criteriaScores, attendantsPerformance, conversionChart, feedbacks, clientStatusCounts, wordCloudData } = data;
 
-    console.log("Dashboard - summary:", summary);
-    console.log("Dashboard - responseChart:", responseChart);
-    console.log("Dashboard - npsTrend:", npsTrend);
-    console.log("Dashboard - criteriaScores:", criteriaScores);
-    console.log("Dashboard - attendantsPerformance:", attendantsPerformance);
-    console.log("Dashboard - conversionChart:", conversionChart);
-    console.log("Dashboard - feedbacks:", feedbacks);
-    console.log("Dashboard - clientStatusCounts:", clientStatusCounts);
-    console.log("Dashboard - wordCloudData:", wordCloudData);
-
     const nps = summary?.nps;
     const totalResponses = summary?.totalResponses;
     const csat = summary?.csat;

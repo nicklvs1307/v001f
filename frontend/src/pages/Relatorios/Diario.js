@@ -35,7 +35,6 @@ const RelatorioDiario = () => {
             try {
                 const startDateUTC = getStartOfDayUTC(selectedDate);
                 const endDateUTC = getEndOfDayUTC(selectedDate);
-                console.log('Fetching daily report with dates:', { startDateUTC, endDateUTC });
                 const data = await dashboardService.getMainDashboard({
                     tenantId: tenantId,
                     startDate: startDateUTC,
@@ -43,7 +42,6 @@ const RelatorioDiario = () => {
                 });
                 setReportData(data);
             } catch (error) {
-                console.error("Erro ao buscar relatório diário:", error);
                 setReportData(null);
             } finally {
                 setLoading(false);

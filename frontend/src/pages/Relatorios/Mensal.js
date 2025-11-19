@@ -36,7 +36,6 @@ const RelatorioMensal = () => {
                 });
                 setReportData(data);
             } catch (error) {
-                console.error("Erro ao buscar relatório mensal:", error);
                 setReportData(null);
             } finally {
                 setLoading(false);

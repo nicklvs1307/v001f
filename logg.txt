@@ -1,21 +1,17 @@
- => ERROR [build 6/6] RUN npm run build                                                      199.3s
+ => ERROR [build 6/6] RUN npm run build                                                       18.6s
 ------
  > [build 6/6] RUN npm run build:
-0.904
-0.904 > frontend@0.1.0 build
-0.904 > react-scripts build
-0.904
-5.324 Creating an optimized production build...
-198.9 Failed to compile.
-198.9
-198.9 [eslint]
-198.9 src/pages/CampaignFormPage.js
-198.9   Line 539:50:  'parseISO' is not defined  no-undef
-198.9   Line 547:47:  'parseISO' is not defined  no-undef
-198.9
-198.9 Search for the keywords to learn more about each error.
-198.9
-198.9
+0.559
+0.559 > frontend@0.1.0 build
+0.559 > react-scripts build
+0.559
+1.564 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+3.014 Creating an optimized production build...
+18.37 Failed to compile.
+18.37
+18.37 Module not found: Error: Can't resolve '@isoterik/react-word-cloud' in '/app/src/pages/Geral'
+18.37
+18.37
 ------
 Dockerfile:14
 --------------------

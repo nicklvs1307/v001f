@@ -208,7 +208,6 @@ const WhatsappConnectPage = () => {
     if (!socket) return;
 
     const handleStatusUpdate = (payload) => {
-      console.log('Socket event received: whatsapp:status', payload);
       // Atualiza o status apenas se a configuração já foi carregada e o tenantId corresponde
       if (config && config.tenantId === payload.tenantId) {
         setConfig(prevConfig => ({ ...prevConfig, status: payload.status }));

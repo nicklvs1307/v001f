@@ -58,7 +58,6 @@ const SenderPoolPage = () => {
       }
     } catch (error) {
       if (isMounted.current) {
-        console.error("Failed to fetch senders", error);
         setError("Falha ao carregar a lista de disparadores. Tente novamente mais tarde.");
       }
     } finally {
@@ -115,7 +114,6 @@ const SenderPoolPage = () => {
       fetchSenders();
       handleCloseModal();
     } catch (err) {
-      console.error("Failed to save sender", err);
       setSnackbar({ open: true, message: err.response?.data?.message || "Falha ao salvar o disparador.", severity: 'error' });
     }
   };

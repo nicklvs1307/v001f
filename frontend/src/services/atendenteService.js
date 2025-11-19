@@ -10,7 +10,6 @@ const atendenteService = {
       return response.data || []; // Ensure it always returns an array
     } catch (error) {
       // Handle error, e.g., log it or rethrow a more specific error
-      console.error('Error fetching atendentes:', error);
       throw error; // Re-throw the error so the component can handle it
     }
   },

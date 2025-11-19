@@ -10,7 +10,6 @@ const getPublicSurveyById = asyncHandler(async (req, res) => {
   if (!survey) {
     throw new ApiError(404, "Pesquisa não encontrada.");
   }
-  console.log("DEBUG: Survey object in publicSurveyController:", survey);
   res.json(survey);
 });
 

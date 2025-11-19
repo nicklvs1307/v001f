@@ -1,23 +1,12 @@
-const summaryFunctions = require("./summary");
-const chartsFunctions = require("./charts");
-const attendantsFunctions = require("./attendants");
-const feedbacksFunctions = require("./feedbacks");
-const detailsFunctions = require("./details");
-const npsFunctions = require("./nps");
-const criteriaFunctions = require("./criteria");
-const overallFunctions = require("./overall");
-const mainFunctions = require("./main");
-const clientsFunctions = require("./clients");
+const { getMainDashboard } = require("./main");
+const { getDetails, getResponseDetailsBySessionId: getResponseDetails } = require("./details");
+const { getAttendantDetails } = require("./attendants");
+const { getMonthlySummary } = require("./summary");
 
 module.exports = {
-  ...summaryFunctions,
-  ...chartsFunctions,
-  ...attendantsFunctions,
-  ...feedbacksFunctions,
-  ...detailsFunctions,
-  ...npsFunctions,
-  ...criteriaFunctions,
-  ...overallFunctions,
-  ...mainFunctions,
-  ...clientsFunctions,
+  getMainDashboard,
+  getDetails,
+  getAttendantDetails,
+  getResponseDetails,
+  getMonthlySummary,
 };

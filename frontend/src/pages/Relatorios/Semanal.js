@@ -36,7 +36,6 @@ const RelatorioSemanal = () => {
                 });
                 setReportData(data);
             } catch (error) {
-                console.error("Erro ao buscar relatório semanal:", error);
                 setReportData(null);
             } finally {
                 setLoading(false);

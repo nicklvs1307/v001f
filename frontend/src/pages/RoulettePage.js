@@ -115,7 +115,6 @@ const RoulettePage = ({ spinData }) => {
                   setDynamicTheme(theme);
 
     } catch (err) {
-      console.error("Erro ao buscar dados iniciais:", err);
       setError(err.message || 'Erro ao carregar dados da pesquisa ou roleta.');
     } finally {
       setLoading(false);
@@ -161,11 +160,8 @@ const RoulettePage = ({ spinData }) => {
     setTimeout(async () => {
       if (spinResultRef.current && spinResultRef.current.cupom) {
         try {
-          console.log('Enviando solicitação para mensagem de prêmio...');
           await publicRoletaService.sendPrizeMessage(spinResultRef.current.cupom.id);
-          console.log('Solicitação de mensagem de prêmio enviada com sucesso.');
         } catch (error) {
-          console.error('Falha ao enviar solicitação de mensagem de prêmio:', error);
           // Continua a navegação mesmo se o envio da mensagem falhar
         }
         navigate('/parabens', { state: { premio: spinResultRef.current.premio, cupom: spinResultRef.current.cupom, tenantId: tenant.id } });

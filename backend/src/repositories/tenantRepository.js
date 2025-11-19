@@ -78,6 +78,7 @@ const updateTenant = async (id, tenantData) => {
       "email",
       "cnpj",
       "description",
+      "logoUrl",
       "createdAt",
       "updatedAt",
     ],

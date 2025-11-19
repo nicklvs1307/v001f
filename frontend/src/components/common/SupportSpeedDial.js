@@ -73,7 +73,6 @@ const SupportSpeedDial = () => {
               if (action.name === 'Chat') {
                 handleOpenHelpBot();
               } else {
-                console.log(`${action.name} clicado`);
               }
               handleClose();
             }}

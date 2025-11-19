@@ -80,7 +80,6 @@ const TenantList = () => {
         try {
             setLoading(true);
             const response = await tenantService.getAllTenants();
-            console.log("Dados retornados por getAllTenants:", response.data);
             setTenants(response.data);
             // setError(''); // Removed
         } catch (err) {

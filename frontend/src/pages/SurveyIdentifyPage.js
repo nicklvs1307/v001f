@@ -12,12 +12,9 @@ const SurveyIdentifyPage = () => {
     useEffect(() => {
         const fetchTenant = async () => {
             try {
-                console.log('Fetching tenant data...');
                 const tenantData = await publicSurveyService.getPublicTenantById(tenantId);
                 setTenant(tenantData);
-                console.log('Tenant data loaded:', tenantData);
             } catch (error) {
-                console.error("Erro ao buscar tenant:", error);
             } finally {
                 setLoading(false);
             }
@@ -26,12 +23,10 @@ const SurveyIdentifyPage = () => {
     }, [tenantId]);
 
     const handleRegister = () => {
-        console.log('handleRegister called');
         navigate(`/cadastro-cliente/${tenantId}/${pesquisaId}`);
     };
 
     const handleIdentify = () => {
-        console.log('handleIdentify called');
         const storedState = sessionStorage.getItem('surveyState');
         if (!storedState) {
             alert("Ocorreu um erro ao recuperar os dados da sua pesquisa. Por favor, tente novamente.");

@@ -27,11 +27,12 @@ const cupomController = {
 
     const codigo = uuidv4(); // Gerar um código único para o cupom
 
-    const cupom = await cupomRepository.createCupom({
+    const cupom = await cupomRepository.create({
       tenantId: targetTenantId,
       recompensaId,
       codigo,
       clienteId,
+      dataGeracao: convertFromTimeZone(new Date()),
       dataValidade,
     });
 

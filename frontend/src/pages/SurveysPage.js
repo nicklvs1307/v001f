@@ -79,7 +79,6 @@ const SurveyListPage = () => {
                 showNotification('Link copiado para a área de transferência!', 'success'); // Use global notification
             })
             .catch(err => {
-                console.error('Erro ao copiar o link:', err);
                 showNotification('Falha ao copiar o link.', 'error'); // Use global notification
             });
     };
@@ -94,7 +93,6 @@ const SurveyListPage = () => {
             setQrCodeDataUrl(qrCodeResponse.qrCode);
         } catch (err) {
             showNotification('Falha ao gerar o QR Code.', 'error'); // Use global notification
-            console.error('Erro ao gerar QR Code:', err);
         } finally {
             setQrCodeLoading(false);
         }

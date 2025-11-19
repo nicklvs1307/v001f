@@ -11,7 +11,6 @@ const aiService = {
       });
       return response.data.spintax;
     } catch (error) {
-      console.error('Error generating AI variations:', error);
       throw error;
     }
   },
@@ -23,7 +22,6 @@ const aiService = {
       });
       return response.data.response;
     } catch (error) {
-      console.error('Error getting AI chat completion:', error);
       throw error;
     }
   },

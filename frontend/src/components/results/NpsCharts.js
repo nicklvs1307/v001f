@@ -5,10 +5,6 @@ import CriteriaRadarChart from './CriteriaRadarChart';
 import NpsByDayOfWeekChart from './NpsByDayOfWeekChart';
 
 const NpsCharts = ({ npsTrend, criteriaScores, npsByDayOfWeek }) => {
-    console.log("NpsCharts - npsTrend:", npsTrend);
-    console.log("NpsCharts - criteriaScores:", criteriaScores);
-    console.log("NpsCharts - npsByDayOfWeek:", npsByDayOfWeek);
-
     const hasNpsTrendData = npsTrend && npsTrend.length > 0;
     const hasCriteriaData = criteriaScores && criteriaScores.length > 0;
     const hasDayOfWeekData = npsByDayOfWeek && npsByDayOfWeek.length > 0;

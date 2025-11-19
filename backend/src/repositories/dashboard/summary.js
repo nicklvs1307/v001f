@@ -30,37 +30,37 @@ const getSummary = async (
     attributes: [
       [
         sequelize.literal(
-          "SUM(CASE WHEN Pergunta.type = 'rating_0_10' THEN 1 ELSE 0 END)",
+          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_0_10' THEN 1 ELSE 0 END)",
         ),
         "npsCount",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN Pergunta.type = 'rating_0_10' AND Resposta.ratingValue >= 9 THEN 1 ELSE 0 END)",
+          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_0_10' AND \"Resposta\".\"ratingValue\" >= 9 THEN 1 ELSE 0 END)",
         ),
         "promoters",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN Pergunta.type = 'rating_0_10' AND Resposta.ratingValue >= 7 AND Resposta.ratingValue <= 8 THEN 1 ELSE 0 END)",
+          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_0_10' AND \"Resposta\".\"ratingValue\" >= 7 AND \"Resposta\".\"ratingValue\" <= 8 THEN 1 ELSE 0 END)",
         ),
         "neutrals",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN Pergunta.type = 'rating_0_10' AND Resposta.ratingValue <= 6 THEN 1 ELSE 0 END)",
+          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_0_10' AND \"Resposta\".\"ratingValue\" <= 6 THEN 1 ELSE 0 END)",
         ),
         "detractors",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN Pergunta.type = 'rating_1_5' THEN 1 ELSE 0 END)",
+          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_1_5' THEN 1 ELSE 0 END)",
         ),
         "csatCount",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN Pergunta.type = 'rating_1_5' THEN Resposta.ratingValue ELSE 0 END)",
+          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_1_5' THEN \"Resposta\".\"ratingValue\" ELSE 0 END)",
         ),
         "csatSum",
       ],
@@ -169,29 +169,29 @@ const getMonthlySummary = async (
         "weekday",
       ],
       [
-        sequelize.literal("SUM(CASE WHEN Pergunta.type = 'rating_0_10' THEN 1 ELSE 0 END)"),
+        sequelize.literal("SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_0_10' THEN 1 ELSE 0 END)"),
         "npsCount",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN Pergunta.type = 'rating_0_10' AND Resposta.ratingValue >= 9 THEN 1 ELSE 0 END)",
+          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_0_10' AND \"Resposta\".\"ratingValue\" >= 9 THEN 1 ELSE 0 END)",
         ),
         "promoters",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN Pergunta.type = 'rating_0_10' AND Resposta.ratingValue >= 7 AND Resposta.ratingValue <= 8 THEN 1 ELSE 0 END)",
+          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_0_10' AND \"Resposta\".\"ratingValue\" >= 7 AND \"Resposta\".\"ratingValue\" <= 8 THEN 1 ELSE 0 END)",
         ),
         "neutrals",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN Pergunta.type = 'rating_0_10' AND Resposta.ratingValue <= 6 THEN 1 ELSE 0 END)",
+          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_0_10' AND \"Resposta\".\"ratingValue\" <= 6 THEN 1 ELSE 0 END)",
         ),
         "detractors",
       ],
       [
-        sequelize.literal("COUNT(CASE WHEN client.id IS NOT NULL THEN 1 END)"),
+        sequelize.literal("COUNT(CASE WHEN \"client\".\"id\" IS NOT NULL THEN 1 END)"),
         "registeredResponses",
       ],
     ],

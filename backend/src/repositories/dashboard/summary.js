@@ -65,6 +65,24 @@ const getSummary = async (
         "csatSum",
       ],
       [
+        sequelize.literal(
+          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_1_5' AND \"Resposta\".\"ratingValue\" >= 4 THEN 1 ELSE 0 END)",
+        ),
+        "csatSatisfied",
+      ],
+      [
+        sequelize.literal(
+          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_1_5' AND \"Resposta\".\"ratingValue\" = 3 THEN 1 ELSE 0 END)",
+        ),
+        "csatNeutral",
+      ],
+      [
+        sequelize.literal(
+          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_1_5' AND \"Resposta\".\"ratingValue\" <= 2 THEN 1 ELSE 0 END)",
+        ),
+        "csatUnsatisfied",
+      ],
+      [
         sequelize.fn("COUNT", sequelize.fn("DISTINCT", sequelize.col("respondentSessionId"))),
         "totalResponses",
       ],
@@ -104,13 +122,15 @@ const getSummary = async (
 
   const npsScore =
     summaryData.npsCount > 0
-      ? ((summaryData.promoters - summaryData.detractors) / summaryData.npsCount) * 100
+      ? Math.round(((summaryData.promoters - summaryData.detractors) / summaryData.npsCount) * 100)
       : 0;
 
   const csatScore =
     summaryData.csatCount > 0
-      ? (summaryData.csatSum / summaryData.csatCount) * 20
+      ? (summaryData.csatSum / summaryData.csatCount)
       : 0;
+      
+  const csatSatisfactionRate = csatScore * 20;
 
   return {
     nps: {
@@ -121,7 +141,11 @@ const getSummary = async (
       total: summaryData.npsCount,
     },
     csat: {
-      satisfactionRate: csatScore,
+      averageScore: csatScore,
+      satisfactionRate: csatSatisfactionRate,
+      satisfied: summaryData.csatSatisfied,
+      neutral: summaryData.csatNeutral,
+      unsatisfied: summaryData.csatUnsatisfied,
       total: summaryData.csatCount,
     },
     registrations: totalUsers,

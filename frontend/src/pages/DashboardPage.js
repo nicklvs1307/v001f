@@ -263,7 +263,7 @@ const DashboardPage = () => {
                             NPS Geral
                         </Typography>
                         <Typography variant="h4" component="div" fontWeight="bold" textAlign="center" color="primary" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {summary?.nps?.score}
+                            {summary?.nps?.score?.toFixed(0)}
                         </Typography>
                     </Paper>
                 </Grid>
@@ -275,9 +275,18 @@ const DashboardPage = () => {
                             Média de Satisfação
                         </Typography>
                         <Typography variant="h4" component="div" fontWeight="bold" textAlign="center" color="secondary.main" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {summary?.csat?.averageScore}
+                            {summary?.csat?.averageScore?.toFixed(1)}
                         </Typography>
                     </Paper>
+                </Grid>
+
+                {/* Total de Respostas */}
+                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
+                    <MetricCard
+                        title="Total de Respostas"
+                        value={summary?.totalResponses}
+                        color={theme.palette.info.main}
+                    />
                 </Grid>
 
                 {/* Promotores */}

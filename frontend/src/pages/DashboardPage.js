@@ -225,7 +225,7 @@ const DashboardPage = () => {
             </Container>
         );
     }
-    const { summary, responseChart = [], attendantsPerformance = [], criteriaScores = [], feedbacks = [], conversionChart = [], overallResults = {}, npsTrend = [] } = dashboardData || {};
+    const { summary, responseChart = [], attendantsPerformance = [], feedbacks = [], conversionChart = [], overallResults = {}, npsTrend = [] } = dashboardData || {};
 
 
 
@@ -485,86 +485,9 @@ const DashboardPage = () => {
                 </Grid>
             </Grid>
 
-            <Grid container spacing={2} sx={{ mb: 4 }}>
-                {/* NPS por Critério */}
-                <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 }, display: 'flex', flexDirection: 'column' }}>
-                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
-                            NPS por Critério
-                        </Typography>
-                        <TableContainer sx={{ flexGrow: 1, overflowY: 'auto' }}>
-                            <Table size="small" stickyHeader>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Critério</TableCell>
-                                        <TableCell>NPS</TableCell>
-                                        <TableCell>Promotores</TableCell>
-                                        <TableCell>Neutros</TableCell>
-                                        <TableCell>Detratores</TableCell>
-                                        <TableCell>Total</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {criteriaScores && criteriaScores.filter(c => c.scoreType === 'NPS').map((row, index) => (
-                                        <TableRow
-                                            key={index}
-                                            sx={{
-                                                backgroundColor: index % 2 === 0 ? theme.palette.action.hover : 'inherit',
-                                            }}
-                                        >
-                                            <TableCell>{row.criterion}</TableCell>
-                                            <TableCell>{row.score}</TableCell>
-                                            <TableCell>{row.promoters}</TableCell>
-                                            <TableCell>{row.neutrals}</TableCell>
-                                            <TableCell>{row.detractors}</TableCell>
-                                            <TableCell>{row.total}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Paper>
-                </Grid>
 
-                {/* Satisfação por Critério */}
-                <Grid item xs={12} md={6}>
-                    <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 }, display: 'flex', flexDirection: 'column' }}>
-                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
-                            Satisfação por Critério
-                        </Typography>
-                        <TableContainer sx={{ flexGrow: 1, overflowY: 'auto' }}>
-                            <Table size="small" stickyHeader>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Critério</TableCell>
-                                        <TableCell>Média</TableCell>
-                                        <TableCell>Satisfeitos</TableCell>
-                                        <TableCell>Neutros</TableCell>
-                                        <TableCell>Insatisfeitos</TableCell>
-                                        <TableCell>Total</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {criteriaScores && criteriaScores.filter(c => c.scoreType === 'CSAT').map((row, index) => (
-                                        <TableRow
-                                            key={index}
-                                            sx={{
-                                                backgroundColor: index % 2 === 0 ? theme.palette.action.hover : 'inherit',
-                                            }}
-                                        >
-                                            <TableCell>{row.criterion}</TableCell>
-                                            <TableCell>{row.average}</TableCell>
-                                            <TableCell>{row.satisfied}</TableCell>
-                                            <TableCell>{row.neutral}</TableCell>
-                                            <TableCell>{row.unsatisfied}</TableCell>
-                                            <TableCell>{row.total}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Paper>
-                </Grid>
+
+
 
                 {/* Feedbacks Recentes */}
                 <Grid item xs={12} md={6}>

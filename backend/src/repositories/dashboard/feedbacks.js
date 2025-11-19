@@ -51,6 +51,51 @@ const getFeedbacks = async (
   }));
 };
 
+const getAllFeedbacksForPeriod = async (
+  tenantId = null,
+  startOfDayUtc = null,
+  endOfDayUtc = null,
+  surveyId = null,
+) => {
+  const whereClause = tenantId
+    ? { tenantId, textValue: { [Op.ne]: null, [Op.ne]: "" } }
+    : { textValue: { [Op.ne]: null, [Op.ne]: "" } };
+
+  if (startOfDayUtc && endOfDayUtc) {
+    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
+  }
+  if (surveyId) {
+    whereClause.pesquisaId = surveyId;
+  }
+  const feedbacksData = await Resposta.findAll({
+    where: whereClause,
+    attributes: [
+      "textValue",
+      "ratingValue",
+      "respondentSessionId",
+      ["createdAt", "date"],
+    ],
+    order: [["createdAt", "DESC"]],
+    include: [
+      {
+        model: Client,
+        as: "client",
+        attributes: ["name"],
+        foreignKey: "respondentSessionId",
+        targetKey: "respondentSessionId",
+      },
+    ],
+  });
+
+  return feedbacksData.map((feedback) => ({
+    respondentSessionId: feedback.respondentSessionId,
+    date: feedback.date,
+    client: feedback.client ? feedback.client.name : "Anônimo",
+    rating: feedback.ratingValue !== null ? feedback.ratingValue : null,
+    comment: feedback.textValue,
+  }));
+};
+
 const getWordCloudData = async (
   tenantId = null,
   startOfDayUtc = null, // Changed parameter name
@@ -99,5 +144,6 @@ const getWordCloudData = async (
 
 module.exports = {
   getFeedbacks,
+  getAllFeedbacksForPeriod,
   getWordCloudData,
 };

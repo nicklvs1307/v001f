@@ -209,6 +209,18 @@ const dashboardController = {
     );
     res.status(200).json(summary);
   }),
+
+  getAllFeedbacks: asyncHandler(async (req, res) => {
+    const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
+    const { startDate, endDate, surveyId } = req.query;
+    const feedbacks = await dashboardRepository.getAllFeedbacksForPeriod(
+      tenantId,
+      startDate,
+      endDate,
+      surveyId,
+    );
+    res.status(200).json(feedbacks);
+  }),
 };
 
 module.exports = dashboardController;

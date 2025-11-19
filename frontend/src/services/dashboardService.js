@@ -40,6 +40,11 @@ const dashboardService = {
         const response = await apiAuthenticated.get('/dashboard/evolution', { params });
         return response.data;
     },
+
+    getAllFeedbacks: async (params) => {
+        const response = await apiAuthenticated.get('/dashboard/all-feedbacks', { params });
+        return response.data;
+    },
 };
 
 export default dashboardService;

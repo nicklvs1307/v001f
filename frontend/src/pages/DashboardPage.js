@@ -485,10 +485,7 @@ const DashboardPage = () => {
                 </Grid>
             </Grid>
 
-
-
-
-
+            <Grid container spacing={2} sx={{ mb: 4 }}>
                 {/* Feedbacks Recentes */}
                 <Grid item xs={12} md={6}>
                     <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 }, display: 'flex', flexDirection: 'column' }}>

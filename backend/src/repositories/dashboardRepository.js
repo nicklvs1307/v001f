@@ -1119,4 +1119,119 @@ const dashboardRepository = {
   },
 };
 
-module.exports = dashboardRepository;
+module.exports = {
+  ...dashboardRepository,
+
+  /**
+   * Retorna um resumo de dados para um determinado período.
+   */
+  getMonthSummary: async (tenantId = null, startDate = null, endDate = null) => {
+    const whereClause = tenantId ? { tenantId } : {};
+    const dateFilter = {};
+    if (startDate) dateFilter[Op.gte] = startDate;
+    if (endDate) dateFilter[Op.lte] = endDate;
+
+    if (Object.keys(dateFilter).length > 0) {
+      whereClause.createdAt = dateFilter;
+    }
+
+    const totalResponses = await Resposta.count({ where: whereClause });
+    const totalClients = await Client.count({ where: whereClause });
+    const couponsGenerated = await Cupom.count({ where: whereClause });
+    const couponsUsed = await Cupom.count({ where: { ...whereClause, status: "used" } });
+
+    const ratingResponses = await Resposta.findAll({
+      where: {
+        ...whereClause,
+        ratingValue: { [Op.ne]: null },
+      },
+      include: [
+        {
+          model: Pergunta,
+          as: "pergunta",
+          attributes: ["type"],
+          required: true,
+        },
+      ],
+    });
+
+    let promoters = 0;
+    let detractors = 0;
+    ratingResponses.forEach((response) => {
+      const rating = response.ratingValue;
+      const questionType = response.pergunta.type;
+      if (questionType === "rating_0_10") {
+        if (rating >= 9) promoters++;
+        else if (rating <= 6) detractors++;
+      }
+    });
+
+    const totalRatingResponses = ratingResponses.length;
+    let npsScore = 0;
+    if (totalRatingResponses > 0) {
+      npsScore = (promoters / totalRatingResponses) * 100 - (detractors / totalRatingResponses) * 100;
+    }
+
+    return {
+      totalResponses,
+      totalClients,
+      couponsGenerated,
+      couponsUsed,
+      npsScore: parseFloat(npsScore.toFixed(1)),
+    };
+  },
+
+  /**
+   * Retorna todos os feedbacks com comentários para um determinado período.
+   */
+  getAllFeedbacksForPeriod: async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
+    const whereClause = {
+      tenantId,
+      textValue: { [Op.ne]: null, [Op.ne]: "" },
+    };
+    
+    if (surveyId) {
+      whereClause.pesquisaId = surveyId;
+    }
+
+    const dateFilter = {};
+    if (startDate) dateFilter[Op.gte] = startDate;
+    if (endDate) dateFilter[Op.lte] = endDate;
+
+    if (Object.keys(dateFilter).length > 0) {
+      whereClause.createdAt = dateFilter;
+    }
+
+    const feedbacksData = await Resposta.findAll({
+      where: whereClause,
+      attributes: [
+        "createdAt",
+        "textValue",
+        "ratingValue",
+        "respondentSessionId",
+      ],
+      order: [["createdAt", "DESC"]],
+      include: [
+        {
+          model: Client,
+          as: "client",
+          attributes: ["name"],
+        },
+        {
+          model: Atendente,
+          as: 'atendente',
+          attributes: ['name'],
+        }
+      ],
+    });
+
+    return feedbacksData.map((feedback) => ({
+      date: formatInTimeZone(feedback.createdAt, "dd/MM/yyyy HH:mm"),
+      client: feedback.client ? feedback.client.name : "Anônimo",
+      attendant: feedback.atendente ? feedback.atendente.name : "N/A",
+      nps: feedback.ratingValue !== null ? feedback.ratingValue : null,
+      comment: feedback.textValue,
+    }));
+  },
+};
+

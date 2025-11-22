@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import dashboardService from '../../services/dashboardService';
 import { useAuth } from '../../context/AuthContext';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { startOfMonth, endOfMonth } from 'date-fns';
 import { getStartOfDayUTC, getEndOfDayUTC, getNowInLocalTimezone } from '../../utils/dateUtils';
 import ChartCard from '../../components/charts/ChartCard';

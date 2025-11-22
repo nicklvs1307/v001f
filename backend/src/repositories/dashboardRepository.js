@@ -12,6 +12,7 @@ const {
 } = require("../../models");
 const { Sequelize, Op } = require("sequelize");
 const { now, formatInTimeZone } = require("../utils/dateUtils");
+const { startOfMonth } = require("date-fns");
 
 const { fn, col, literal } = Sequelize;
 
@@ -81,6 +82,37 @@ const dashboardRepository = {
       npsScore = promotersPercentage - detractorsPercentage;
     }
 
+    const startOfCurrentMonth = startOfMonth(now());
+
+    const newClientsThisMonth = await Client.findAll({
+      where: {
+        ...whereClause,
+        createdAt: {
+          [Op.gte]: startOfCurrentMonth,
+        },
+      },
+      attributes: ['id'],
+    });
+
+    const newClientIds = newClientsThisMonth.map((client) => client.id);
+
+    const ambassadorResponses = await Resposta.count({
+      where: {
+        ...whereClause,
+        clienteId: {
+          [Op.in]: newClientIds,
+        },
+        ratingValue: {
+          [Op.gte]: 9,
+        },
+        createdAt: {
+          [Op.gte]: startOfCurrentMonth,
+        },
+      },
+      distinct: true,
+      col: 'clienteId',
+    });
+
     const totalResponses = await Resposta.count({ where: whereClause });
     const totalUsers = await Client.count({ where: whereClause });
     const totalTenants = tenantId ? 1 : await Tenant.count();
@@ -104,9 +136,9 @@ const dashboardRepository = {
         totalResponses > 0
           ? parseFloat(((totalUsers / totalResponses) * 100).toFixed(2))
           : 0,
-      ambassadorsMonth: 0, // Manter como 0 por enquanto
+      ambassadorsMonth: ambassadorResponses, 
       couponsGenerated,
-      couponsGeneratedPeriod: "N/A",
+      couponsGeneratedPeriod: startDate && endDate ? `${formatInTimeZone(startDate, 'dd/MM')} - ${formatInTimeZone(endDate, 'dd/MM')}` : "N/A",
       couponsUsed,
       couponsUsedConversion:
         couponsGenerated > 0
@@ -654,6 +686,36 @@ const dashboardRepository = {
     };
   },
 
+  getMainDashboard: async (tenantId = null, startDate = null, endDate = null) => {
+    const [
+      summary,
+      responseChart,
+      attendantsPerformance,
+      feedbacks,
+      conversionChart,
+      overallResults,
+      npsTrend,
+    ] = await Promise.all([
+      dashboardRepository.getSummary(tenantId, startDate, endDate),
+      dashboardRepository.getResponseChart(tenantId, startDate, endDate),
+      dashboardRepository.getAttendantsPerformanceWithGoals(tenantId),
+      dashboardRepository.getFeedbacks(tenantId, startDate, endDate),
+      dashboardRepository.getConversionChart(tenantId, startDate, endDate),
+      dashboardRepository.getOverallResults(tenantId),
+      dashboardRepository.getNpsTrendData(tenantId),
+    ]);
+
+    return {
+      summary,
+      responseChart,
+      attendantsPerformance,
+      feedbacks,
+      conversionChart,
+      overallResults,
+      npsTrend,
+    };
+  },
+
   getWordCloudData: async (tenantId = null) => {
     const whereClause = tenantId
       ? { tenantId, textValue: { [Op.ne]: null, [Op.ne]: "" } }
@@ -1057,4 +1119,7 @@ const dashboardRepository = {
   },
 };
 
-module.exports = dashboardRepository;
+module.exports = {
+  ...dashboardRepository,
+  getMainDashboard: dashboardRepository.getMainDashboard,
+};

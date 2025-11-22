@@ -538,6 +538,25 @@ const DashboardPage = () => {
                         </List>
                     </Paper>
                 </Grid>
+
+                {/* Gráfico de Tendência de NPS */}
+                <Grid item xs={12} md={6}>
+                    <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 } }}>
+                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
+                            Tendência de NPS
+                        </Typography>
+                        <ResponsiveContainer width="100%" height={280}>
+                            <LineChart data={npsTrend}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="period" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Line type="monotone" dataKey="nps" name="NPS" stroke={theme.palette.primary.main} />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </Paper>
+                </Grid>
             </Grid>
 
 
@@ -571,6 +590,44 @@ const DashboardPage = () => {
                         </ResponsiveContainer>
                     </Paper>
                 </Grid>
+            </Grid>
+
+            {/* Scores por Critério */}
+            <Grid container spacing={2} sx={{ mt: 4 }}>
+                <Grid item xs={12}>
+                    <Typography variant="h5" component="h2" gutterBottom>
+                        Scores por Critério
+                    </Typography>
+                </Grid>
+                {overallResults?.scoresByCriteria?.map((criterion, index) => {
+                    if (criterion.total === 0) return null;
+
+                    const chartData = criterion.scoreType === 'NPS' ? [
+                        { name: 'Promotores', value: criterion.promoters || 0 },
+                        { name: 'Neutros', value: criterion.neutrals || 0 },
+                        { name: 'Detratores', value: criterion.detractors || 0 },
+                    ] : [
+                        { name: 'Satisfeitos', value: criterion.satisfied || 0 },
+                        { name: 'Neutros', value: criterion.neutral || 0 },
+                        { name: 'Insatisfeitos', value: criterion.unsatisfied || 0 },
+                    ];
+
+                    const score = criterion.scoreType === 'NPS'
+                        ? criterion.npsScore?.toFixed(1) ?? 0
+                        : `${criterion.satisfactionRate?.toFixed(1) ?? 0}%`;
+
+                    return (
+                        <Grid item xs={12} md={6} key={index}>
+                            <ChartCard
+                                title={criterion.criterion}
+                                score={score}
+                                data={chartData}
+                                colors={criterion.scoreType === 'NPS' ? ['#4CAF50', '#FFC107', '#F44336'] : ['#2196F3', '#FFC107', '#F44336']}
+                                loading={loading}
+                            />
+                        </Grid>
+                    );
+                })}
             </Grid>
         </Container>
     );

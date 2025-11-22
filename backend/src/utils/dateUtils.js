@@ -1,6 +1,6 @@
 const { toDate, subDays, startOfDay, endOfDay } = require("date-fns");
 const { ptBR } = require("date-fns/locale");
-const { utcToZonedTime, zonedTimeToUtc, format } = require("date-fns-tz");
+const { toZonedTime, fromZonedTime, format } = require("date-fns-tz");
 
 const TIMEZONE = "America/Sao_Paulo";
 
@@ -9,7 +9,7 @@ const TIMEZONE = "America/Sao_Paulo";
  * @returns {Date} A data e hora atual em São Paulo.
  */
 const now = () => {
-  return utcToZonedTime(new Date(), TIMEZONE);
+  return toZonedTime(new Date(), TIMEZONE);
 };
 
 /**
@@ -18,7 +18,7 @@ const now = () => {
  * @returns {Date} A data convertida para o fuso de São Paulo.
  */
 const convertToTimeZone = (date) => {
-  return utcToZonedTime(date, TIMEZONE);
+  return toZonedTime(date, TIMEZONE);
 };
 
 /**
@@ -27,7 +27,7 @@ const convertToTimeZone = (date) => {
  * @returns {Date} A data convertida para UTC.
  */
 const convertToUtc = (date) => {
-  return zonedTimeToUtc(date, TIMEZONE);
+  return fromZonedTime(date, TIMEZONE);
 };
 
 /**

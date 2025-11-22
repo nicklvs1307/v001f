@@ -97,11 +97,20 @@ const dashboardRepository = {
     const newClientIds = newClientsThisMonth.map((client) => client.id);
 
     const ambassadorResponses = await Resposta.count({
+      distinct: true,
+      col: 'id',
+      include: [{
+        model: Client,
+        as: 'client',
+        where: {
+          id: {
+            [Op.in]: newClientIds,
+          },
+        },
+        attributes: [],
+      }],
       where: {
         ...whereClause,
-        clienteId: {
-          [Op.in]: newClientIds,
-        },
         ratingValue: {
           [Op.gte]: 9,
         },
@@ -109,8 +118,6 @@ const dashboardRepository = {
           [Op.gte]: startOfCurrentMonth,
         },
       },
-      distinct: true,
-      col: 'clienteId',
     });
 
     const totalResponses = await Resposta.count({ where: whereClause });

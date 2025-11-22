@@ -285,13 +285,13 @@ const getSurveyTenantIdAndCreatorId = async (id, tenantId = null) => {
 const getSurveyStats = async (tenantId = null) => {
   const whereClause = tenantId ? { tenantId } : {};
   const today = now();
-  const startOfMonth = startOfMonth(today);
+  const startOfCurrentMonth = startOfMonth(today);
   const activeSurveys = await Pesquisa.count({
     where: { ...whereClause, status: "active" },
   });
 
   const responsesMonth = await Resposta.count({
-    where: { ...whereClause, createdAt: { [Op.gte]: startOfMonth } },
+    where: { ...whereClause, createdAt: { [Op.gte]: startOfCurrentMonth } },
     distinct: true,
     col: "respondentSessionId",
   });

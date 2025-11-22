@@ -36,9 +36,9 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
     pesquisaId,
   );
   if (latestCupom) {
-    const now = now();
+    const currentTime = now();
     const lastSpinTime = new Date(latestCupom.dataGeracao);
-    const timeDiff = now.getTime() - lastSpinTime.getTime();
+    const timeDiff = currentTime.getTime() - lastSpinTime.getTime();
     const hoursDiff = timeDiff / (1000 * 3600);
 
     if (hoursDiff < 24) {
@@ -219,9 +219,9 @@ exports.getRoletaConfig = asyncHandler(async (req, res) => {
   );
   let hasSpunRecently = false;
   if (latestCupom) {
-    const now = now();
+    const currentTime = now();
     const lastSpinTime = new Date(latestCupom.dataGeracao);
-    const timeDiff = now.getTime() - lastSpinTime.getTime();
+    const timeDiff = currentTime.getTime() - lastSpinTime.getTime();
     const hoursDiff = timeDiff / (1000 * 3600);
     if (hoursDiff < 24) {
       hasSpunRecently = true;

@@ -299,22 +299,8 @@ const dashboardRepository = {
 
     const npsData = await Pergunta.findAll({
       attributes: [
-        "id",
-        "text",
-        [
-          fn(
-            "SUM",
-            literal(`CASE WHEN "respostas"."ratingValue" >= 9 THEN 1 ELSE 0 END`),
-          ),
-          "promoters",
-        ],
-        [
-          fn(
-            "SUM",
-            literal(`CASE WHEN "respostas"."ratingValue" <= 6 THEN 1 ELSE 0 END`),
-          ),
-          "detractors",
-        ],
+        [fn("SUM", literal(`CASE WHEN "respostas"."ratingValue" >= 9 THEN 1 ELSE 0 END`)), "promoters"],
+        [fn("SUM", literal(`CASE WHEN "respostas"."ratingValue" <= 6 THEN 1 ELSE 0 END`)), "detractors"],
         [fn("COUNT", col("respostas.id")), "total"],
       ],
       include: [
@@ -324,54 +310,34 @@ const dashboardRepository = {
           attributes: [],
           where: responseWhereClause,
           required: true,
-          include: [
-            {
-              model: Criterio,
-              as: "criterio",
-              attributes: ["name"],
-            },
-          ],
+        },
+        {
+          model: Criterio,
+          as: "criterio",
+          attributes: ["name"],
+          required: true,
         },
       ],
-      group: ["Pergunta.id", "Pergunta.text", "respostas->criterio.id"],
+      group: ["criterio.id"],
       where: {
         type: { [Op.like]: "rating%" },
         criterioId: { [Op.ne]: null },
       },
     });
 
-    const criteriaMap = new Map();
-    npsData.forEach((item) => {
-      const criterioName =
-        item.respostas?.[0]?.criterio?.name || "Sem Critério";
-      if (!criteriaMap.has(criterioName)) {
-        criteriaMap.set(criterioName, {
-          promoters: 0,
-          detractors: 0,
-          total: 0,
-        });
-      }
-      const stats = criteriaMap.get(criterioName);
-      stats.promoters += parseInt(item.dataValues.promoters) || 0;
-      stats.detractors += parseInt(item.dataValues.detractors) || 0;
-      stats.total += parseInt(item.dataValues.total) || 0;
-    });
-
-    const result = [];
-    criteriaMap.forEach((stats, name) => {
+    return npsData.map((item) => {
+      const promoters = parseInt(item.dataValues.promoters) || 0;
+      const detractors = parseInt(item.dataValues.detractors) || 0;
+      const total = parseInt(item.dataValues.total) || 0;
       let nps = 0;
-      if (stats.total > 0) {
-        nps =
-          (stats.promoters / stats.total) * 100 -
-          (stats.detractors / stats.total) * 100;
+      if (total > 0) {
+        nps = (promoters / total) * 100 - (detractors / total) * 100;
       }
-      result.push({
-        name,
+      return {
+        name: item.criterio.name,
         nps: parseFloat(nps.toFixed(1)),
-      });
+      };
     });
-
-    return result;
   },
 
   getNpsDistribution: async (

@@ -1,5 +1,5 @@
 const surveyRepository = require("../repositories/surveyRepository");
-const { convertFromTimeZone } = require("../utils/dateUtils");
+const { convertFromTimeZone, now } = require("../utils/dateUtils");
 const resultRepository = require("../repositories/resultRepository");
 const ApiError = require("../errors/ApiError");
 const ratingService = require("./ratingService"); // Importar o ratingService

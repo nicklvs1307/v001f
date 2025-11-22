@@ -3,7 +3,7 @@ const { toDate, subDays, startOfDay, endOfDay } = require("date-fns");
 const { ptBR } = require("date-fns/locale");
 
 // Correção para interoperabilidade CJS/ESM: as funções estão no objeto 'default'.
-const { utcToZonedTime, zonedTimeToUtc, format } = dateFnsTz.default || dateFnsTz;
+const { utcToZonedTime, zonedTimeToUtc, format } = require("date-fns-tz");
 
 const TIMEZONE = "America/Sao_Paulo";
 

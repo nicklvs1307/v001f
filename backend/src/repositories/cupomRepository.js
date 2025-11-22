@@ -1,6 +1,6 @@
 const { Cupom, Recompensa, Client } = require("../../models");
 const { now } = require("../utils/dateUtils");
-const { Op, fn, col } = require("sequelize");
+const { Op, fn, col, literal } = require("sequelize");
 const { subDays, addDays } = require("date-fns");
 
 class CupomRepository {
@@ -59,40 +59,10 @@ class CupomRepository {
       where: whereClause,
       attributes: [
         [fn("COUNT", col("id")), "totalCupons"],
-        [
-          fn("SUM", fn("CASE", "WHEN status = 'used' THEN 1 ELSE 0 END")),
-          "usedCupons",
-        ],
-        [
-          fn(
-            "SUM",
-            fn(
-              "CASE",
-              "WHEN status != 'used' AND dataValidade < CURRENT_DATE THEN 1 ELSE 0 END",
-            ),
-          ),
-          "expiredCupons",
-        ],
-        [
-          fn(
-            "SUM",
-            fn(
-              "CASE",
-              "WHEN status = 'active' AND dataValidade >= CURRENT_DATE THEN 1 ELSE 0 END",
-            ),
-          ),
-          "activeCupons",
-        ],
-        [
-          fn(
-            "SUM",
-            fn(
-              "CASE",
-              "WHEN status = 'active' AND dataValidade >= CURRENT_DATE AND dataValidade < CURRENT_DATE + INTERVAL '7 day' THEN 1 ELSE 0 END",
-            ),
-          ),
-          "expiringSoonCupons",
-        ],
+        [literal("SUM(CASE WHEN status = 'used' THEN 1 ELSE 0 END)"), "usedCupons"],
+        [literal("SUM(CASE WHEN status != 'used' AND dataValidade < CURRENT_DATE THEN 1 ELSE 0 END)"), "expiredCupons"],
+        [literal("SUM(CASE WHEN status = 'active' AND dataValidade >= CURRENT_DATE THEN 1 ELSE 0 END)"), "activeCupons"],
+        [literal("SUM(CASE WHEN status = 'active' AND dataValidade >= CURRENT_DATE AND dataValidade < CURRENT_DATE + INTERVAL '7 day' THEN 1 ELSE 0 END)"), "expiringSoonCupons"],
       ],
       raw: true,
     });

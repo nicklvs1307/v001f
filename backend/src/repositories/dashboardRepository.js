@@ -297,32 +297,41 @@ const dashboardRepository = {
       responseWhereClause.createdAt = dateFilter;
     }
 
-    const npsData = await Pergunta.findAll({
+    const npsData = await Criterio.findAll({
       attributes: [
-        [fn("SUM", literal(`CASE WHEN "respostas"."ratingValue" >= 9 THEN 1 ELSE 0 END`)), "promoters"],
-        [fn("SUM", literal(`CASE WHEN "respostas"."ratingValue" <= 6 THEN 1 ELSE 0 END`)), "detractors"],
-        [fn("COUNT", col("respostas.id")), "total"],
+        "id",
+        "name",
+        [
+          fn("SUM", literal(`CASE WHEN "perguntas->respostas"."ratingValue" >= 9 THEN 1 ELSE 0 END`)),
+          "promoters",
+        ],
+        [
+          fn("SUM", literal(`CASE WHEN "perguntas->respostas"."ratingValue" <= 6 THEN 1 ELSE 0 END`)),
+          "detractors",
+        ],
+        [fn("COUNT", col("perguntas->respostas.id")), "total"],
       ],
       include: [
         {
-          model: Resposta,
-          as: "respostas",
+          model: Pergunta,
+          as: "perguntas",
           attributes: [],
-          where: responseWhereClause,
           required: true,
-        },
-        {
-          model: Criterio,
-          as: "criterio",
-          attributes: ["name"],
-          required: true,
+          where: {
+            type: { [Op.like]: "rating%" },
+          },
+          include: [
+            {
+              model: Resposta,
+              as: "respostas",
+              attributes: [],
+              where: responseWhereClause,
+              required: true,
+            },
+          ],
         },
       ],
-      group: ["criterio.id", "criterio.name"],
-      where: {
-        type: { [Op.like]: "rating%" },
-        criterioId: { [Op.ne]: null },
-      },
+      group: ["Criterio.id", "Criterio.name"],
     });
 
     return npsData.map((item) => {
@@ -334,8 +343,12 @@ const dashboardRepository = {
         nps = (promoters / total) * 100 - (detractors / total) * 100;
       }
       return {
-        name: item.criterio.name,
+        name: item.name,
         nps: parseFloat(nps.toFixed(1)),
+        promoters,
+        detractors,
+        neutrals: total - promoters - detractors,
+        total,
       };
     });
   },
@@ -433,6 +446,137 @@ const dashboardRepository = {
     });
   },
 
+  getConversionChartData: async (tenantId = null, startDate = null, endDate = null) => {
+    const whereClause = {};
+    if (tenantId) whereClause.tenantId = tenantId;
+
+    const dateFilter = {};
+    if (startDate) dateFilter[Op.gte] = startDate;
+    if (endDate) dateFilter[Op.lte] = endDate;
+    if (Object.keys(dateFilter).length > 0) {
+        whereClause.createdAt = dateFilter;
+    }
+
+    const totalResponses = await Resposta.count({ where: whereClause });
+    const totalRegistrations = await Client.count({ where: whereClause });
+    const couponsGenerated = await Cupom.count({ where: whereClause });
+    
+    // Para cupons utilizados, o filtro de data deve ser no `updatedAt`
+    const usedWhereClause = { tenantId, status: 'used' };
+    const usedDateFilter = {};
+    if (startDate) usedDateFilter[Op.gte] = startDate;
+    if (endDate) usedDateFilter[Op.lte] = endDate;
+    if (Object.keys(usedDateFilter).length > 0) {
+        usedWhereClause.updatedAt = usedDateFilter;
+    }
+    const couponsUsed = await Cupom.count({ where: usedWhereClause });
+
+    return [
+        { name: 'Respostas', value: totalResponses },
+        { name: 'Cadastros', value: totalRegistrations },
+        { name: 'Cupons Gerados', value: couponsGenerated },
+        { name: 'Cupons Utilizados', value: couponsUsed },
+    ];
+  },
+
+  getWordCloudData: async (tenantId = null, startDate = null, endDate = null) => {
+    const whereClause = {
+      textValue: { [Op.ne]: null, [Op.ne]: "" },
+    };
+    if (tenantId) {
+        whereClause.tenantId = tenantId;
+    }
+    const dateFilter = {};
+    if (startDate) dateFilter[Op.gte] = startDate;
+    if (endDate) dateFilter[Op.lte] = endDate;
+    if (Object.keys(dateFilter).length > 0) {
+      whereClause.createdAt = dateFilter;
+    }
+
+    const responses = await Resposta.findAll({
+      where: whereClause,
+      attributes: ["textValue"],
+    });
+
+    if (!responses.length) {
+      return [];
+    }
+
+    const stopwords = new Set([
+        "de", "a", "o", "que", "e", "do", "da", "em", "um", "para", "com", "não", "uma", "os", "no", "na", "por", "mais", "as", "dos", "como", "mas", "foi", "ao", "ele", "das", "tem", "à", "seu", "sua", "ou", "ser", "quando", "muito", "há", "nos", "já", "está", "eu", "também", "só", "pelo", "pela", "até", "isso", "ela", "entre", "era", "depois", "sem", "mesmo", "aos", "ter", "seus", "quem", "nas", "me", "esse", "eles", "estão", "você", "tinha", "foram", "essa", "num", "nem", "suas", "meu", "às", "minha", "têm", "numa", "pelos", "elas", "havia", "seja", "qual", "será", "nós", "tenho", "lhe", "deles", "essas", "esses", "pelas", "este", "fosse", "dele", "tu", "te", "vocês", "vos", "lhes", "meus", "minhas", "teu", "tua", "teus", "tuas", "nosso", "nossa", "nossos", "nossas", "dela", "delas", "esta", "estes", "estas", "aquele", "aquela", "aqueles", "aquelas", "isto", "aquilo", "estou", "está", "estamos", "estão", "estive", "esteve", "estivemos", "estiveram", "estava", "estávamos", "estavam", "estivera", "estivéramos", "esteja", "estejamos", "estejam", "estivesse", "estivéssemos", "estivessem", "estiver", "estivermos", "estiverem", "hei", "há", "havemos", "hão", "houve", "houvemos", "houveram", "houvera", "houvéramos", "haja", "hajamos", "hajam", "houvesse", "houvéssemos", "houvessem", "houver", "houvermos", "houverem", "houverei", "houverá", "houveremos", "houverão", "houveria", "houveríamos", "houveriam", "sou", "somos", "são", "era", "éramos", "eram", "fui", "foi", "fomos", "foram", "fora", "fôramos", "seja", "sejamos", "sejam", "fosse", "fôssemos", "fossem", "for", "formos", "forem", "serei", "será", "seremos", "serão", "seria", "seríamos", "seriam", "bom", "ótimo", "excelente", "gostei", "muito", "atendimento", "comida"
+    ]);
+
+    const wordCounts = {};
+    responses.forEach(response => {
+      const words = response.textValue
+        .toLowerCase()
+        .replace(/[^\w\s]/g, '')
+        .split(/\s+/);
+        
+      words.forEach(word => {
+        if (word && !stopwords.has(word) && word.length > 2) {
+          wordCounts[word] = (wordCounts[word] || 0) + 1;
+        }
+      });
+    });
+
+    return Object.entries(wordCounts)
+      .map(([text, value]) => ({ text, value }))
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 100); // Limita a 100 palavras
+  },
+
+  getAttendantsPerformance: async (tenantId, startDate, endDate) => {
+    const whereClause = { tenantId };
+    const dateFilter = {};
+    if (startDate) dateFilter[Op.gte] = startDate;
+    if (endDate) dateFilter[Op.lte] = endDate;
+    if (Object.keys(dateFilter).length > 0) {
+      whereClause.createdAt = dateFilter;
+    }
+
+    const attendants = await Atendente.findAll({
+      where: { tenantId, status: 'active' },
+      include: [{
+        model: AtendenteMeta,
+        as: 'meta'
+      }]
+    });
+
+    const performanceData = [];
+    for (const attendant of attendants) {
+      const responses = await Resposta.findAll({
+        where: { ...whereClause, atendenteId: attendant.id }
+      });
+
+      const ratingResponses = responses.filter(r => r.ratingValue !== null);
+      let promoters = 0;
+      let detractors = 0;
+      ratingResponses.forEach(r => {
+        if (r.ratingValue >= 9) promoters++;
+        else if (r.ratingValue <= 6) detractors++;
+      });
+
+      const totalResponses = responses.length;
+      const nps = totalResponses > 0 ? ((promoters / totalResponses) * 100) - ((detractors / totalResponses) * 100) : 0;
+      
+      const uniqueRespondentIds = [...new Set(responses.map(r => r.respondentSessionId))];
+      const registrations = uniqueRespondentIds.length;
+
+      performanceData.push({
+        id: attendant.id,
+        name: attendant.name,
+        nps: parseFloat(nps.toFixed(1)),
+        npsGoal: attendant.meta ? parseFloat(attendant.meta.npsGoal) : 0,
+        responses: totalResponses,
+        responsesGoal: attendant.meta ? attendant.meta.responsesGoal : 0,
+        registrations: registrations,
+        registrationsGoal: attendant.meta ? attendant.meta.registrationsGoal : 0,
+      });
+    }
+    return performanceData;
+  },
+  
   getMainDashboard: async (
     tenantId = null,
     startDate = null,
@@ -445,6 +589,9 @@ const dashboardRepository = {
       npsDistribution,
       npsByCriteria,
       feedbacks,
+      attendantsPerformance,
+      wordCloud,
+      conversionChart,
     ] = await Promise.all([
       dashboardRepository.getSummary(tenantId, startDate, endDate),
       dashboardRepository.getResponseChart(tenantId, startDate, endDate),
@@ -457,16 +604,36 @@ const dashboardRepository = {
       dashboardRepository.getNpsDistribution(tenantId, startDate, endDate),
       dashboardRepository.getNpsByCriteria(tenantId, startDate, endDate),
       dashboardRepository.getFeedbacks(tenantId, startDate, endDate),
+      dashboardRepository.getAttendantsPerformance(tenantId, startDate, endDate),
+      dashboardRepository.getWordCloudData(tenantId, startDate, endDate),
+      dashboardRepository.getConversionChartData(tenantId, startDate, endDate),
     ]);
 
-    return {
+    // Adaptar a estrutura de dados para o que o frontend espera
+    const dashboardData = {
       summary,
       responseChart,
       npsTrend,
       npsDistribution,
-      npsByCriteria,
       feedbacks,
+      attendantsPerformance,
+      wordCloud,
+      conversionChart,
+      overallResults: {
+        scoresByCriteria: npsByCriteria.map(item => ({
+          criterion: item.name,
+          npsScore: item.nps,
+          scoreType: 'NPS',
+          // Incluindo outros campos que o frontend pode esperar, mesmo que não sejam usados no cálculo principal
+          promoters: item.promoters,
+          neutrals: item.neutrals,
+          detractors: item.detractors,
+          total: item.total,
+        }))
+      },
     };
+
+    return dashboardData;
   },
 };
 

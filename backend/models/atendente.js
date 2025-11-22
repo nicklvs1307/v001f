@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Atendente.belongsTo(models.Tenant, { foreignKey: 'tenantId', as: 'tenant' });
       Atendente.hasMany(models.Resposta, { foreignKey: 'atendenteId', as: 'respostas' });
+      Atendente.hasOne(models.AtendenteMeta, { foreignKey: 'atendenteId', as: 'meta' });
     }
   }
   Atendente.init({

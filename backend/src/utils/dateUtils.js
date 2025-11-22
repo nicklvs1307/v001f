@@ -1,4 +1,10 @@
+// Traz as funções do date-fns-tz de uma forma mais robusta,
+// que funciona tanto em ambientes CJS quanto em possíveis interops ESM.
 const dateFnsTz = require("date-fns-tz");
+const utcToZonedTime = dateFnsTz.utcToZonedTime || (dateFnsTz.default && dateFnsTz.default.utcToZonedTime);
+const zonedTimeToUtc = dateFnsTz.zonedTimeToUtc || (dateFnsTz.default && dateFnsTz.default.zonedTimeToUtc);
+const format = dateFnsTz.format || (dateFnsTz.default && dateFnsTz.default.format);
+
 const { toDate, subDays, startOfDay, endOfDay } = require("date-fns");
 const { ptBR } = require("date-fns/locale");
 
@@ -9,7 +15,10 @@ const TIMEZONE = "America/Sao_Paulo";
  * @returns {Date} A data e hora atual em São Paulo.
  */
 const now = () => {
-  return dateFnsTz.utcToZonedTime(new Date(), TIMEZONE);
+  if (typeof utcToZonedTime !== 'function') {
+    throw new Error('utcToZonedTime não é uma função. Verifique a instalação e a versão do date-fns-tz.');
+  }
+  return utcToZonedTime(new Date(), TIMEZONE);
 };
 
 /**
@@ -18,7 +27,10 @@ const now = () => {
  * @returns {Date} A data convertida para o fuso de São Paulo.
  */
 const convertToTimeZone = (date) => {
-  return dateFnsTz.utcToZonedTime(date, TIMEZONE);
+  if (typeof utcToZonedTime !== 'function') {
+    throw new Error('utcToZonedTime não é uma função. Verifique a instalação e a versão do date-fns-tz.');
+  }
+  return utcToZonedTime(date, TIMEZONE);
 };
 
 /**
@@ -27,7 +39,10 @@ const convertToTimeZone = (date) => {
  * @returns {Date} A data convertida para UTC.
  */
 const convertToUtc = (date) => {
-  return dateFnsTz.zonedTimeToUtc(date, TIMEZONE);
+  if (typeof zonedTimeToUtc !== 'function') {
+    throw new Error('zonedTimeToUtc não é uma função. Verifique a instalação e a versão do date-fns-tz.');
+  }
+  return zonedTimeToUtc(date, TIMEZONE);
 };
 
 /**
@@ -37,8 +52,11 @@ const convertToUtc = (date) => {
  * @returns {string} A data formatada.
  */
 const formatInTimeZone = (date, formatString) => {
+  if (typeof format !== 'function') {
+    throw new Error('format não é uma função. Verifique a instalação e a versão do date-fns-tz.');
+  }
   const dateObj = toDate(date);
-  return dateFnsTz.format(dateObj, formatString, {
+  return format(dateObj, formatString, {
     timeZone: TIMEZONE,
     locale: ptBR,
   });

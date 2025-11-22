@@ -1119,7 +1119,4 @@ const dashboardRepository = {
   },
 };
 
-module.exports = {
-  ...dashboardRepository,
-  getMainDashboard: dashboardRepository.getMainDashboard,
-};
+module.exports = dashboardRepository;

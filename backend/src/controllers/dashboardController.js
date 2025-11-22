@@ -1,82 +1,20 @@
 const asyncHandler = require("express-async-handler");
 const dashboardRepository = require("../repositories/dashboardRepository");
 
+// Objeto que mapeia as rotas para as funções do repositório
 const dashboardController = {
-  // Rota principal que agrega a maioria dos dados
   getMainDashboard: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? req.query.tenantId : req.user.tenantId;
-    const { startDate, endDate } = req.query;
+    const { startDate, endDate, period } = req.query;
     const dashboardData = await dashboardRepository.getMainDashboard(
       tenantId,
       startDate,
       endDate,
+      period,
     );
     res.status(200).json(dashboardData);
   }),
 
-  getWordCloud: asyncHandler(async (req, res) => {
-    const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { startDate, endDate } = req.query;
-    const wordCloudData = await dashboardRepository.getWordCloudData(
-      tenantId,
-      startDate,
-      endDate,
-    );
-    res.status(200).json(wordCloudData);
-  }),
-
-  // Mapeada para a nova função getSummary
-  getMonthSummary: asyncHandler(async (req, res) => {
-    const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { startDate, endDate } = req.query;
-    const summary = await dashboardRepository.getSummary(
-      tenantId,
-      startDate,
-      endDate,
-    );
-    res.status(200).json(summary);
-  }),
-
-  // Mapeada para a nova função getNpsTrendData
-  getEvolutionDashboard: asyncHandler(async (req, res) => {
-    const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { period, startDate, endDate } = req.query;
-    const evolutionData = await dashboardRepository.getNpsTrendData(
-      tenantId,
-      period,
-      startDate,
-      endDate,
-    );
-    res.status(200).json(evolutionData);
-  }),
-  
-  // Mapeada para a nova função getFeedbacks
-  getAllFeedbacks: asyncHandler(async (req, res) => {
-    const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { startDate, endDate } = req.query;
-    // A nova função getFeedbacks retorna um número limitado de feedbacks.
-    // Se for necessário retornar TODOS, a função no repositório precisa ser ajustada.
-    const feedbacks = await dashboardRepository.getFeedbacks(
-      tenantId,
-      startDate,
-      endDate,
-    );
-    res.status(200).json(feedbacks);
-  }),
-
-  getAttendantsPerformance: asyncHandler(async (req, res) => {
-    const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { startDate, endDate } = req.query;
-    const attendantsPerformance =
-      await dashboardRepository.getAttendantsPerformance(
-        tenantId,
-        startDate,
-        endDate,
-      );
-    res.status(200).json(attendantsPerformance);
-  }),
-
-  // O restante das rotas permanece, pois correspondem a funções que ainda existem no novo repositório
   getSummary: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
     const { startDate, endDate } = req.query;
@@ -90,16 +28,22 @@ const dashboardController = {
 
   getResponseChart: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
-    const { startDate, endDate } = req.query;
+    const { startDate, endDate, period } = req.query;
     const chartData = await dashboardRepository.getResponseChart(
       tenantId,
       startDate,
       endDate,
+      period,
     );
     res.status(200).json(chartData);
   }),
 
-  getNpsByCriteria: asyncHandler(async (req, res) => {
+  // FIX: Função de ranking não existe no novo repositório
+  getRanking: asyncHandler(async (req, res) => {
+    res.status(200).json([]);
+  }),
+
+  getCriteriaScores: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
     const { startDate, endDate } = req.query;
     const criteriaScores = await dashboardRepository.getNpsByCriteria(
@@ -120,16 +64,103 @@ const dashboardController = {
     );
     res.status(200).json(feedbacks);
   }),
-  
-  getNpsDistribution: asyncHandler(async (req, res) => {
+
+  getConversionChart: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
     const { startDate, endDate } = req.query;
-    const distribution = await dashboardRepository.getNpsDistribution(
+    const chartData = await dashboardRepository.getConversionChartData(
       tenantId,
       startDate,
       endDate,
     );
-    res.status(200).json(distribution);
+    res.status(200).json(chartData);
+  }),
+
+  // FIX: Função de resultados gerais não existe como uma chamada única
+  getOverallResults: asyncHandler(async (req, res) => {
+    res.status(200).json({});
+  }),
+
+  getNpsTrend: asyncHandler(async (req, res) => {
+    const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
+    const { period, startDate, endDate } = req.query;
+    const trendData = await dashboardRepository.getNpsTrendData(
+      tenantId,
+      period,
+      startDate,
+      endDate,
+    );
+    res.status(200).json(trendData);
+  }),
+  
+  getEvolutionDashboard: asyncHandler(async (req, res) => {
+    const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
+    const { period, startDate, endDate } = req.query;
+    const evolutionData = await dashboardRepository.getNpsTrendData(
+      tenantId,
+      period,
+      startDate,
+      endDate,
+    );
+    res.status(200).json(evolutionData);
+  }),
+
+  getWordCloud: asyncHandler(async (req, res) => {
+    const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
+    const { startDate, endDate } = req.query;
+    const wordCloudData = await dashboardRepository.getWordCloudData(
+      tenantId,
+      startDate,
+      endDate,
+    );
+    res.status(200).json(wordCloudData);
+  }),
+
+  getAttendantsPerformance: asyncHandler(async (req, res) => {
+    const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
+    const { startDate, endDate } = req.query;
+    const attendantsPerformance =
+      await dashboardRepository.getAttendantsPerformance(
+        tenantId,
+        startDate,
+        endDate,
+      );
+    res.status(200).json(attendantsPerformance);
+  }),
+
+  // FIX: Funções de detalhes não existem no novo repositório
+  getDetails: asyncHandler(async (req, res) => {
+    res.status(200).json([]);
+  }),
+
+  getAttendantDetails: asyncHandler(async (req, res) => {
+    res.status(200).json({});
+  }),
+
+  getResponseDetails: asyncHandler(async (req, res) => {
+    res.status(200).json({});
+  }),
+  
+  getMonthSummary: asyncHandler(async (req, res) => {
+    const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
+    const { startDate, endDate } = req.query;
+    const summary = await dashboardRepository.getSummary(
+      tenantId,
+      startDate,
+      endDate,
+    );
+    res.status(200).json(summary);
+  }),
+  
+  getAllFeedbacks: asyncHandler(async (req, res) => {
+    const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
+    const { startDate, endDate } = req.query;
+    const feedbacks = await dashboardRepository.getFeedbacks(
+      tenantId,
+      startDate,
+      endDate,
+    );
+    res.status(200).json(feedbacks);
   }),
 };
 

@@ -52,34 +52,45 @@ const dashboardRepository = {
       ],
     });
 
-    let promoters = 0,
-      neutrals = 0,
-      detractors = 0;
+    let npsPromoters = 0,
+      npsNeutrals = 0,
+      npsDetractors = 0;
+    let csatSatisfied = 0,
+      csatTotalScore = 0,
+      csatCount = 0;
+
     ratingResponses.forEach((response) => {
       const { ratingValue, pergunta } = response;
       if (!pergunta) return;
 
+      // NPS Calculation
+      if (pergunta.type === "rating_0_10") {
+        if (ratingValue >= 9) npsPromoters++;
+        else if (ratingValue >= 7) npsNeutrals++;
+        else npsDetractors++;
+      }
+      
+      // CSAT Calculation (assuming 1-5 scale)
       if (pergunta.type === "rating_1_5" || pergunta.type === "rating") {
-        if (ratingValue === 5) promoters++;
-        else if (ratingValue === 4) neutrals++;
-        else detractors++;
-      } else if (pergunta.type === "rating_0_10") {
-        if (ratingValue >= 9) promoters++;
-        else if (ratingValue >= 7) neutrals++;
-        else detractors++;
+        csatTotalScore += ratingValue;
+        csatCount++;
+        if (ratingValue >= 4) csatSatisfied++; // 4 and 5 are satisfied
       }
     });
 
-    const totalRatingResponses = ratingResponses.length;
-    let npsScore = 0,
-      promotersPercentage = 0,
-      neutralsPercentage = 0,
-      detractorsPercentage = 0;
-    if (totalRatingResponses > 0) {
-      promotersPercentage = (promoters / totalRatingResponses) * 100;
-      neutralsPercentage = (neutrals / totalRatingResponses) * 100;
-      detractorsPercentage = (detractors / totalRatingResponses) * 100;
-      npsScore = promotersPercentage - detractorsPercentage;
+    const totalNpsResponses = npsPromoters + npsNeutrals + npsDetractors;
+    let npsScore = 0;
+    if (totalNpsResponses > 0) {
+      const npsPromotersPercentage = (npsPromoters / totalNpsResponses) * 100;
+      const npsDetractorsPercentage = (npsDetractors / totalNpsResponses) * 100;
+      npsScore = npsPromotersPercentage - npsDetractorsPercentage;
+    }
+
+    let csatAverageScore = 0;
+    let csatSatisfactionRate = 0;
+    if (csatCount > 0) {
+        csatAverageScore = csatTotalScore / csatCount;
+        csatSatisfactionRate = (csatSatisfied / csatCount) * 100;
     }
 
     // --- CÁLCULOS (Mês Atual) ---
@@ -95,7 +106,7 @@ const dashboardRepository = {
       col: "id",
       where: {
         ...monthWhere,
-        ratingValue: { [Op.gte]: 9 },
+        ratingValue: { [Op.gte]: 9 }, // Ambassadors are typically promoters (NPS >= 9)
       },
       include: [
         {
@@ -124,13 +135,20 @@ const dashboardRepository = {
     const totalTenants = tenantId ? 1 : await Tenant.count();
 
     return {
-      npsScore: parseFloat(npsScore.toFixed(1)),
-      promoters,
-      promotersPercentage: parseFloat(promotersPercentage.toFixed(2)),
-      neutrals,
-      neutralsPercentage: parseFloat(neutralsPercentage.toFixed(2)),
-      detractors,
-      detractorsPercentage: parseFloat(detractorsPercentage.toFixed(2)),
+      nps: {
+        score: parseFloat(npsScore.toFixed(1)),
+        promoters: npsPromoters,
+        neutrals: npsNeutrals,
+        detractors: npsDetractors,
+        total: totalNpsResponses,
+      },
+      csat: {
+        averageScore: parseFloat(csatAverageScore.toFixed(1)),
+        satisfactionRate: parseFloat(csatSatisfactionRate.toFixed(1)),
+        satisfied: csatSatisfied,
+        unsatisfied: csatCount - csatSatisfied,
+        total: csatCount,
+      },
       registrations: registrationsInPeriod,
       registrationsConversion:
         totalResponsesInPeriod > 0
@@ -168,68 +186,32 @@ const dashboardRepository = {
     tenantId = null,
     startDate = null,
     endDate = null,
+    period = "day",
   ) => {
     const whereClause = tenantId ? { tenantId } : {};
 
-    const { dateFilter, daysInRange, start } = (() => {
-      if (startDate && endDate) {
-        const startDt = new Date(startDate);
-        const endDt = new Date(endDate);
-        const diffTime = Math.abs(endDt - startDt);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-        return {
-          dateFilter: { [Op.gte]: startDt, [Op.lte]: endDt },
-          daysInRange: diffDays,
-          start: startDt,
-        };
-      } else {
-        const endDt = now();
-        const startDt = now();
-        startDt.setDate(startDt.getDate() - 6);
-        return {
-          dateFilter: { [Op.gte]: startDt, [Op.lte]: endDt },
-          daysInRange: 7,
-          start: startDt,
-        };
-      }
-    })();
+    const dateFilter = {};
+    if (startDate) dateFilter[Op.gte] = startDate;
+    if (endDate) dateFilter[Op.lte] = endDate;
 
     if (Object.keys(dateFilter).length > 0) {
       whereClause.createdAt = dateFilter;
     }
 
-    const responsesByDay = await Resposta.findAll({
+    const responsesByPeriod = await Resposta.findAll({
       where: whereClause,
       attributes: [
-        [fn("date_trunc", "day", col("createdAt")), "date"],
+        [fn("date_trunc", period, col("createdAt")), "period"],
         [fn("COUNT", col("id")), "count"],
       ],
-      group: [fn("date_trunc", "day", col("createdAt"))],
-      order: [[fn("date_trunc", "day", col("createdAt")), "ASC"]],
+      group: [fn("date_trunc", period, col("createdAt"))],
+      order: [[fn("date_trunc", period, col("createdAt")), "ASC"]],
     });
 
-    const chartData = [];
-    const daysOfWeek = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
-    const responseMap = new Map(
-      responsesByDay.map((item) => [
-        formatInTimeZone(item.dataValues.date, "yyyy-MM-dd"),
-        parseInt(item.dataValues.count),
-      ]),
-    );
-
-    for (let i = 0; i < daysInRange; i++) {
-      const date = new Date(start);
-      date.setUTCDate(start.getUTCDate() + i);
-      const dayName = daysOfWeek[date.getUTCDay()];
-      const formattedDate = formatInTimeZone(date, "yyyy-MM-dd");
-
-      chartData.push({
-        name: dayName,
-        Respostas: responseMap.get(formattedDate) || 0,
-      });
-    }
-
-    return chartData;
+    return responsesByPeriod.map((item) => ({
+      name: formatInTimeZone(item.dataValues.period, period === "day" ? "dd/MM" : period === "week" ? "ww/yyyy" : "MM/yyyy"),
+      Respostas: parseInt(item.dataValues.count),
+    }));
   },
 
   getFeedbacks: async (tenantId = null, startDate = null, endDate = null) => {
@@ -526,6 +508,49 @@ const dashboardRepository = {
       .slice(0, 100); // Limita a 100 palavras
   },
 
+  getNpsByDayOfWeek: async (tenantId = null, startDate = null, endDate = null) => {
+    const whereClause = { ratingValue: { [Op.ne]: null } };
+    if (tenantId) {
+        whereClause.tenantId = tenantId;
+    }
+
+    const dateFilter = {};
+    if (startDate) dateFilter[Op.gte] = startDate;
+    if (endDate) dateFilter[Op.lte] = endDate;
+    if (Object.keys(dateFilter).length > 0) {
+        whereClause.createdAt = dateFilter;
+    }
+
+    const npsData = await Resposta.findAll({
+        where: whereClause,
+        attributes: [
+            [Sequelize.fn('EXTRACT', Sequelize.literal('DOW FROM "Resposta"."createdAt"')), 'dayOfWeek'], // DOW = Day Of Week (0=Sunday, 1=Monday...)
+            [fn("SUM", literal(`CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END`)), "promoters"],
+            [fn("SUM", literal(`CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END`)), "detractors"],
+            [fn("COUNT", col("id")), "total"],
+        ],
+        group: [Sequelize.fn('EXTRACT', Sequelize.literal('DOW FROM "Resposta"."createdAt"'))],
+        order: [[Sequelize.fn('EXTRACT', Sequelize.literal('DOW FROM "Resposta"."createdAt"')), 'ASC']],
+    });
+
+    const daysOfWeekNames = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+
+    return npsData.map(item => {
+        const data = item.dataValues;
+        const promoters = parseInt(data.promoters) || 0;
+        const detractors = parseInt(data.detractors) || 0;
+        const total = parseInt(data.total) || 0;
+        let nps = 0;
+        if (total > 0) {
+            nps = (promoters / total) * 100 - (detractors / total) * 100;
+        }
+        return {
+            dayOfWeek: daysOfWeekNames[data.dayOfWeek],
+            nps: parseFloat(nps.toFixed(1)),
+        };
+    });
+  },
+
   getAttendantsPerformance: async (tenantId, startDate, endDate) => {
     const whereClause = { tenantId };
     const dateFilter = {};
@@ -581,6 +606,7 @@ const dashboardRepository = {
     tenantId = null,
     startDate = null,
     endDate = null,
+    period = "day", // Adicionando o parâmetro period
   ) => {
     const [
       summary,
@@ -592,12 +618,13 @@ const dashboardRepository = {
       attendantsPerformance,
       wordCloud,
       conversionChart,
+      npsByDayOfWeek, // Adicionando aqui
     ] = await Promise.all([
       dashboardRepository.getSummary(tenantId, startDate, endDate),
-      dashboardRepository.getResponseChart(tenantId, startDate, endDate),
+      dashboardRepository.getResponseChart(tenantId, startDate, endDate, period), // Repassando o period
       dashboardRepository.getNpsTrendData(
         tenantId,
-        "day",
+        period, // Repassando o period
         startDate,
         endDate,
       ),
@@ -607,6 +634,7 @@ const dashboardRepository = {
       dashboardRepository.getAttendantsPerformance(tenantId, startDate, endDate),
       dashboardRepository.getWordCloudData(tenantId, startDate, endDate),
       dashboardRepository.getConversionChartData(tenantId, startDate, endDate),
+      dashboardRepository.getNpsByDayOfWeek(tenantId, startDate, endDate), // Adicionando a chamada
     ]);
 
     // Adaptar a estrutura de dados para o que o frontend espera
@@ -619,18 +647,31 @@ const dashboardRepository = {
       attendantsPerformance,
       wordCloud,
       conversionChart,
-      overallResults: {
+      npsByDayOfWeek, // Adicionando aqui
+      criteriaScores: npsByCriteria.map(item => ({ // Adicionando criteriaScores aqui
+        criterion: item.name,
+        npsScore: item.nps,
+        scoreType: 'NPS',
+        promoters: item.promoters,
+        neutrals: item.neutrals,
+        detractors: item.detractors,
+        total: item.total,
+      })),
+      overallResults: { // Manter overallResults para o DashboardPage.js
         scoresByCriteria: npsByCriteria.map(item => ({
           criterion: item.name,
           npsScore: item.nps,
           scoreType: 'NPS',
-          // Incluindo outros campos que o frontend pode esperar, mesmo que não sejam usados no cálculo principal
           promoters: item.promoters,
           neutrals: item.neutrals,
           detractors: item.detractors,
           total: item.total,
         }))
       },
+      demographics: { // Adicionando objeto demographics vazio para evitar crash no frontend
+        ageDistribution: [],
+        genderDistribution: [],
+      }
     };
 
     return dashboardData;

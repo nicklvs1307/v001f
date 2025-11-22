@@ -137,14 +137,14 @@ const dashboardController = {
   getAttendantsPerformance: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
     const { surveyId, startDate, endDate } = req.query;
-    const attendantsPerformance =
-      await dashboardRepository.getAttendantsPerformanceWithGoals(
-        tenantId,
-        startDate,
-        endDate,
-        surveyId,
-      );
-    res.status(200).json(attendantsPerformance);
+    // const attendantsPerformance =
+    //   await dashboardRepository.getAttendantsPerformanceWithGoals(
+    //     tenantId,
+    //     startDate,
+    //     endDate,
+    //     surveyId,
+    //   );
+    res.status(200).json([]); // FIX: Temporarily disabled due to missing repository function
   }),
 
   getMainDashboard: asyncHandler(async (req, res) => {

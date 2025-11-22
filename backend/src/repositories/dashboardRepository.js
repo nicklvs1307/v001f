@@ -318,7 +318,7 @@ const dashboardRepository = {
           required: true,
         },
       ],
-      group: ["criterio.id"],
+      group: ["criterio.id", "criterio.name"],
       where: {
         type: { [Op.like]: "rating%" },
         criterioId: { [Op.ne]: null },

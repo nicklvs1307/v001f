@@ -176,7 +176,7 @@ exports.sendPrizeMessage = asyncHandler(async (req, res) => {
     if (!whatsappConfig) {
     } else if (!whatsappConfig.sendPrizeMessage) {
     } else if (whatsappConfig.instanceStatus !== "connected") {
-    } else if (!cliente.phone) {
+    } else if (!cliente || !cliente.phone) {
     } else {
       let message = whatsappConfig.prizeMessageTemplate;
       message = message.replace("{{cliente}}", cliente.name.split(" ")[0]);

@@ -426,6 +426,47 @@ const dashboardRepository = {
     ];
   },
 
+  getNpsTrendData: async (tenantId = null, period = "day", startDate = null, endDate = null) => {
+    const whereClause = { ratingValue: { [Op.ne]: null } };
+    if (tenantId) {
+        whereClause.tenantId = tenantId;
+    }
+
+    const dateFilter = {};
+    if (startDate) dateFilter[Op.gte] = startDate;
+    if (endDate) dateFilter[Op.lte] = endDate;
+    if (Object.keys(dateFilter).length > 0) {
+        whereClause.createdAt = dateFilter;
+    }
+
+    const trendData = await Resposta.findAll({
+        where: whereClause,
+        attributes: [
+            [fn("date_trunc", period, col("createdAt")), "period"],
+            [fn("SUM", literal(`CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END`)), "promoters"],
+            [fn("SUM", literal(`CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END`)), "detractors"],
+            [fn("COUNT", col("id")), "total"],
+        ],
+        group: [fn("date_trunc", period, col("createdAt"))],
+        order: [[fn("date_trunc", period, col("createdAt")), "ASC"]],
+    });
+
+    return trendData.map((item) => {
+        const data = item.dataValues;
+        const promoters = parseInt(data.promoters) || 0;
+        const detractors = parseInt(data.detractors) || 0;
+        const total = parseInt(data.total) || 0;
+        let nps = 0;
+        if (total > 0) {
+            nps = (promoters / total) * 100 - (detractors / total) * 100;
+        }
+        return {
+            period: formatInTimeZone(data.period, 'dd/MM'),
+            nps: parseFloat(nps.toFixed(1)),
+        };
+    });
+  },
+
   getMainDashboard: async (
     tenantId = null,
     startDate = null,

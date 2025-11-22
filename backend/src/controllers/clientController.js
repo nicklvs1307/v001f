@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const { convertFromTimeZone } = require("../utils/dateUtils");
+const { now } = require("../utils/dateUtils");
 const clientRepository = require("../repositories/clientRepository");
 const publicSurveyRepository = require("../repositories/publicSurveyRepository");
 const { sequelize } = require("../database");
@@ -328,7 +328,7 @@ exports.getClientDashboard = asyncHandler(async (req, res) => {
 // @access  Private (Admin)
 exports.getBirthdayClients = asyncHandler(async (req, res) => {
   const tenantId = req.user.tenantId;
-  const currentMonth = convertFromTimeZone(new Date()).getMonth() + 1; // getMonth() retorna de 0 a 11
+  const currentMonth = now().getMonth() + 1; // getMonth() retorna de 0 a 11
   const birthdayClients = await clientRepository.findByBirthMonth(
     currentMonth,
     tenantId,

@@ -1,5 +1,5 @@
 const cron = require("node-cron");
-const { convertToZonedTime } = require("../utils/dateUtils");
+const { convertToTimeZone, now } = require("../utils/dateUtils");
 const {
   startOfDay,
   addDays,
@@ -33,7 +33,7 @@ const birthdayAutomationJob = cron.schedule(
           continue; // Pula se a automação não estiver habilitada ou sem recompensa configurada
         }
 
-        const today = startOfDay(convertToZonedTime(new Date()));
+        const today = startOfDay(now());
         const birthdayDate = addDays(today, config.birthdayDaysBefore);
 
         const clients = await clientRepository.findClientsByBirthdayMonthAndDay(
@@ -55,10 +55,7 @@ const birthdayAutomationJob = cron.schedule(
               rewardName = recompensa.name;
               cupomCode = uuidv4().substring(0, 8).toUpperCase(); // Gera um código de cupom único
               const expiryDate = endOfDay(
-                addDays(
-                  convertToZonedTime(new Date()),
-                  config.birthdayCouponValidityDays,
-                ),
+                addDays(now(), config.birthdayCouponValidityDays),
               );
               await cupomRepository.create({
                 code: cupomCode,
@@ -77,10 +74,7 @@ const birthdayAutomationJob = cron.schedule(
               rewardName = roleta.name; // Ou outro campo relevante da roleta
               cupomCode = uuidv4().substring(0, 8).toUpperCase(); // Gera um código de cupom único
               const expiryDate = endOfDay(
-                addDays(
-                  convertToZonedTime(new Date()),
-                  config.birthdayCouponValidityDays,
-                ),
+                addDays(now(), config.birthdayCouponValidityDays),
               );
               await cupomRepository.create({
                 code: cupomCode,

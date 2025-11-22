@@ -46,6 +46,7 @@ import { debounce } from 'lodash';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { ptBR } from 'date-fns/locale';
+import { formatDateForDisplay } from '../utils/dateUtils';
 
 const CupomListPage = () => {
   const [cupons, setCupons] = useState([]);
@@ -211,83 +212,155 @@ const CupomListPage = () => {
         </Button>
       </Box>
 
-      <Paper elevation={2} sx={{ p: 2, mb: 3 }}>
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} md={4}>
-              <TextField
-                fullWidth
-                label="Pesquisar por prêmio ou cliente"
-                name="search"
-                value={filters.search}
-                onChange={handleFilterChange}
-                variant="outlined"
-                size="small"
-              />
-            </Grid>
-            <Grid item xs={12} md={2}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Status</InputLabel>
-                <Select
-                  name="status"
-                  value={filters.status}
-                  onChange={handleFilterChange}
-                  label="Status"
-                >
-                  <MenuItem value="">Todos</MenuItem>
-                  <MenuItem value="active">Ativo</MenuItem>
-                  <MenuItem value="used">Utilizado</MenuItem>
-                  <MenuItem value="expired">Expirado</MenuItem>
-                  <MenuItem value="pending">Pendente</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Recompensa</InputLabel>
-                <Select
-                  name="recompensaId"
-                  value={filters.recompensaId}
-                  onChange={handleFilterChange}
-                  label="Recompensa"
-                >
-                  <MenuItem value="">Todas</MenuItem>
-                  {recompensas.map((r) => (
-                    <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <DatePicker
-                label="Data Início"
-                value={filters.startDate}
-                onChange={(date) => handleDateChange('startDate', date)}
-                inputFormat="dd/MM/yyyy"
-                renderInput={(params) => <TextField {...params} fullWidth size="small" />}
-              />
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <DatePicker
-                label="Data Fim"
-                value={filters.endDate}
-                onChange={(date) => handleDateChange('endDate', date)}
-                inputFormat="dd/MM/yyyy"
-                renderInput={(params) => <TextField {...params} fullWidth size="small" />}
-              />
-            </Grid>
-            <Grid item xs={12} md={2}>
-              <Button
-                fullWidth
-                variant="outlined"
-                onClick={handleClearFilters}
-              >
-                Limpar Filtros
-              </Button>
-            </Grid>
-          </Grid>
-        </LocalizationProvider>
-      </Paper>
+            <Paper elevation={2} sx={{ p: 2, mb: 3 }}>
+
+              <Grid container spacing={2} alignItems="center">
+
+                <Grid item xs={12} md={4}>
+
+                  <TextField
+
+                    fullWidth
+
+                    label="Pesquisar por prêmio ou cliente"
+
+                    name="search"
+
+                    value={filters.search}
+
+                    onChange={handleFilterChange}
+
+                    variant="outlined"
+
+                    size="small"
+
+                  />
+
+                </Grid>
+
+                <Grid item xs={12} md={2}>
+
+                  <FormControl fullWidth size="small">
+
+                    <InputLabel>Status</InputLabel>
+
+                    <Select
+
+                      name="status"
+
+                      value={filters.status}
+
+                      onChange={handleFilterChange}
+
+                      label="Status"
+
+                    >
+
+                      <MenuItem value="">Todos</MenuItem>
+
+                      <MenuItem value="active">Ativo</MenuItem>
+
+                      <MenuItem value="used">Utilizado</MenuItem>
+
+                      <MenuItem value="expired">Expirado</MenuItem>
+
+                      <MenuItem value="pending">Pendente</MenuItem>
+
+                    </Select>
+
+                  </FormControl>
+
+                </Grid>
+
+                <Grid item xs={12} md={3}>
+
+                  <FormControl fullWidth size="small">
+
+                    <InputLabel>Recompensa</InputLabel>
+
+                    <Select
+
+                      name="recompensaId"
+
+                      value={filters.recompensaId}
+
+                      onChange={handleFilterChange}
+
+                      label="Recompensa"
+
+                    >
+
+                      <MenuItem value="">Todas</MenuItem>
+
+                      {recompensas.map((r) => (
+
+                        <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
+
+                      ))}
+
+                    </Select>
+
+                  </FormControl>
+
+                </Grid>
+
+                <Grid item xs={12} md={3}>
+
+                  <DatePicker
+
+                    label="Data Início"
+
+                    value={filters.startDate}
+
+                    onChange={(date) => handleDateChange('startDate', date)}
+
+                    inputFormat="dd/MM/yyyy"
+
+                    renderInput={(params) => <TextField {...params} fullWidth size="small" />}
+
+                  />
+
+                </Grid>
+
+                <Grid item xs={12} md={3}>
+
+                  <DatePicker
+
+                    label="Data Fim"
+
+                    value={filters.endDate}
+
+                    onChange={(date) => handleDateChange('endDate', date)}
+
+                    inputFormat="dd/MM/yyyy"
+
+                    renderInput={(params) => <TextField {...params} fullWidth size="small" />}
+
+                  />
+
+                </Grid>
+
+                <Grid item xs={12} md={2}>
+
+                  <Button
+
+                    fullWidth
+
+                    variant="outlined"
+
+                    onClick={handleClearFilters}
+
+                  >
+
+                    Limpar Filtros
+
+                  </Button>
+
+                </Grid>
+
+              </Grid>
+
+            </Paper>
 
       <Paper elevation={2}>
         <TableContainer>
@@ -312,9 +385,9 @@ const CupomListPage = () => {
                   <TableCell>{cupom.recompensa?.name}</TableCell>
                   <TableCell>{cupom.cliente?.name || 'N/A'}</TableCell>
                   <TableCell>{cupom.tenant?.name || 'N/A'}</TableCell>
-                  <TableCell>{new Date(cupom.dataGeracao).toLocaleDateString()}</TableCell>
-                  <TableCell>{cupom.dataUtilizacao ? new Date(cupom.dataUtilizacao).toLocaleDateString() : 'N/A'}</TableCell>
-                  <TableCell>{new Date(cupom.dataValidade).toLocaleDateString()}</TableCell>
+                  <TableCell>{formatDateForDisplay(cupom.dataGeracao, 'dd/MM/yyyy')}</TableCell>
+                  <TableCell>{cupom.dataUtilizacao ? formatDateForDisplay(cupom.dataUtilizacao, 'dd/MM/yyyy') : 'N/A'}</TableCell>
+                  <TableCell>{formatDateForDisplay(cupom.dataValidade, 'dd/MM/yyyy')}</TableCell>
                   <TableCell>{getStatusChip(cupom.status)}</TableCell>
                   <TableCell align="right">
                     {/* Ações como reenviar, editar validade, etc. */}
@@ -368,19 +441,19 @@ const CupomListPage = () => {
                 <Typography variant="subtitle1" component="div">
                   <CalendarTodayIcon sx={{ verticalAlign: 'middle', mr: 1 }} /> Data de Geração
                 </Typography>
-                <Typography variant="body2" color="text.secondary">{new Date(selectedCupom.dataGeracao).toLocaleString()}</Typography>
+                <Typography variant="body2" color="text.secondary">{formatDateForDisplay(selectedCupom.dataGeracao, 'dd/MM/yyyy HH:mm')}</Typography>
               </Grid>
               <Grid item xs={6}>
                 <Typography variant="subtitle1" component="div">
                   <CalendarTodayIcon sx={{ verticalAlign: 'middle', mr: 1 }} /> Data de Validade
                 </Typography>
-                <Typography variant="body2" color="text.secondary">{new Date(selectedCupom.dataValidade).toLocaleString()}</Typography>
+                <Typography variant="body2" color="text.secondary">{formatDateForDisplay(selectedCupom.dataValidade, 'dd/MM/yyyy HH:mm')}</Typography>
               </Grid>
               <Grid item xs={6}>
                 <Typography variant="subtitle1" component="div">
                   {selectedCupom.status === 'used' ? <CheckCircleIcon sx={{ verticalAlign: 'middle', mr: 1 }} /> : <CancelIcon sx={{ verticalAlign: 'middle', mr: 1 }} />} Data de Utilização
                 </Typography>
-                <Typography variant="body2" color="text.secondary">{selectedCupom.dataUtilizacao ? new Date(selectedCupom.dataUtilizacao).toLocaleString() : 'N/A'}</Typography>
+                <Typography variant="body2" color="text.secondary">{selectedCupom.dataUtilizacao ? formatDateForDisplay(selectedCupom.dataUtilizacao, 'dd/MM/yyyy HH:mm') : 'N/A'}</Typography>
               </Grid>
               <Grid item xs={12}>
                 <Typography variant="subtitle1" component="div">
@@ -427,18 +500,22 @@ const CupomListPage = () => {
             value={newCupomData.clienteId}
             onChange={handleGenerateCupomChange}
           />
-          <TextField
-            margin="dense"
-            name="dataValidade"
+          <DatePicker
             label="Data de Validade"
-            type="date"
-            fullWidth
-            variant="outlined"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            value={newCupomData.dataValidade}
-            onChange={handleGenerateCupomChange}
+            value={newCupomData.dataValidade || null}
+            onChange={(date) => handleGenerateCupomChange({ target: { name: 'dataValidade', value: date } })}
+            inputFormat="dd/MM/yyyy"
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                margin="dense"
+                fullWidth
+                variant="outlined"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            )}
           />
         </DialogContent>
         <DialogActions>

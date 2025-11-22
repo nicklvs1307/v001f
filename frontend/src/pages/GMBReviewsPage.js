@@ -19,6 +19,7 @@ import gmbConfigService from '../services/gmbConfigService';
 import gmbReviewService from '../services/gmbReviewService';
 import AuthContext from '../context/AuthContext';
 import { useContext } from 'react';
+import { formatDateForDisplay } from '../utils/dateUtils';
 
 const ReputacaoPage = () => {
   const { user } = useContext(AuthContext);
@@ -171,7 +172,7 @@ const ReputacaoPage = () => {
                         secondary={
                           <>
                             <Typography component="span" variant="body2" color="text.primary">{review.comment}</Typography>
-                            {review.repliedAt && <Typography variant="caption" display="block" color="text.secondary">Respondido em: {new Date(review.repliedAt).toLocaleDateString()}</Typography>}
+                            {review.repliedAt && <Typography variant="caption" display="block" color="text.secondary">Respondido em: {formatDateForDisplay(review.repliedAt, 'dd/MM/yyyy')}</Typography>}
                             {review.replyComment && <Typography variant="caption" display="block" color="text.secondary">Sua resposta: {review.replyComment}</Typography>}
                           </>
                         }

@@ -33,6 +33,7 @@ import surveyService from '../services/surveyService';
 import AuthContext from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from '../context/NotificationContext';
+import { formatDateForDisplay } from '../utils/dateUtils';
 
 const SurveyListPage = () => {
     const theme = useTheme();
@@ -332,7 +333,7 @@ const SurveyListPage = () => {
                                 <Grid item xs={6} md={3}>
                                     <Typography variant="body2">
                                         <CalendarTodayIcon fontSize="small" sx={{ verticalAlign: 'middle', mr: 0.5 }} />
-                                        {new Date(survey.dueDate).toLocaleDateString() || 'N/A'}
+                                        {formatDateForDisplay(survey.dueDate, 'dd/MM/yyyy') || 'N/A'}
                                     </Typography>
                                     <Typography variant="caption" color="text.secondary">Data limite</Typography>
                                 </Grid>

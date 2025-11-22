@@ -1,5 +1,28 @@
-import { format, parseISO, isValid, startOfDay, endOfDay } from 'date-fns';
+import { format, parseISO, isValid, startOfDay, endOfDay, parse } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+
+/**
+ * Retorna a data e hora atual no fuso horário local do navegador.
+ * Equivalente ao `now()` do backend, mas para o lado do cliente.
+ * @returns {Date} A data e hora atual no fuso horário local.
+ */
+export const getNowInLocalTimezone = () => {
+  return new Date();
+};
+
+/**
+ * Analisa uma string de data no formato DD/MM/YYYY para um objeto Date,
+ * considerando o fuso horário local.
+ * @param {string} dateString - A string de data no formato DD/MM/YYYY.
+ * @returns {Date | null} O objeto Date ou null se a string for inválida.
+ */
+export const parseBrazilianDate = (dateString) => {
+  if (!dateString) {
+    return null;
+  }
+  const parsed = parse(dateString, 'dd/MM/yyyy', getNowInLocalTimezone(), { locale: ptBR });
+  return isValid(parsed) ? parsed : null;
+};
 
 /**
  * Formata uma string de data (preferencialmente ISO) para exibição ao usuário.

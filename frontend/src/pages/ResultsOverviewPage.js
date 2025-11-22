@@ -98,7 +98,6 @@ const ResultsOverviewPage = () => {
                         </Typography>
                     </Grid>
                     <Grid item sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
                             <DatePicker
                                 label="Data de Início"
                                 value={startDate}
@@ -113,7 +112,6 @@ const ResultsOverviewPage = () => {
                                 inputFormat="dd/MM/yyyy"
                                 renderInput={(params) => <TextField {...params} />}
                             />
-                        </LocalizationProvider>
                     </Grid>
                 </Grid>
             </Paper>

@@ -1,6 +1,6 @@
 const cron = require("node-cron");
 const { format, subDays, startOfDay, endOfDay } = require("date-fns");
-const { convertToZonedTime, TIMEZONE } = require("../utils/dateUtils");
+const { now } = require("../utils/dateUtils");
 const whatsappService = require("../services/whatsappService");
 const whatsappConfigRepository = require("../repositories/whatsappConfigRepository");
 const tenantRepository = require("../repositories/tenantRepository");
@@ -41,11 +41,7 @@ const dailyReportTask = cron.schedule(
           continue;
         }
 
-        const timeZone = "America/Sao_Paulo";
-        const now = new Date();
-
-        // We get the current date in the SP timezone to correctly determine "yesterday"
-        const zonedNow = convertToZonedTime(now);
+        const zonedNow = now();
         const yesterdayZoned = subDays(zonedNow, 1);
         const twoDaysAgoZoned = subDays(zonedNow, 2);
 
@@ -85,9 +81,9 @@ const dailyReportTask = cron.schedule(
           `*Relatorio Diario ${tenant.name}*\n\n` +
           `Aqui está o resumo da experiência dos seus clientes no dia ${formattedDate}!\n` +
           `📊 Total de respostas: ${yesterdaySummary.totalResponses} ${diffText}\n` +
-          `🟢 Número de Promotores: ${yesterdaySummary.nps.promoters}\n` +
-          `🟡 Número de Neutros: ${yesterdaySummary.nps.neutrals}\n` +
-          `🔴 Número de Detratores: ${yesterdaySummary.nps.detractors}\n\n` +
+          `🟢 Número de Promotores: ${yesterdaySummary.promoters}\n` +
+          `🟡 Número de Neutros: ${yesterdaySummary.neutrals}\n` +
+          `🔴 Número de Detratores: ${yesterdaySummary.detractors}\n\n` +
           `🔗 Para acessar o sistema, visite ${reportUrl}`;
 
         // Send to each configured number using sendTenantMessage

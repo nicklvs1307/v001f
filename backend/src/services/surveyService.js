@@ -322,7 +322,7 @@ const getSurveyResultsById = async (surveyId, tenantId = null) => {
       "45-54": 0,
       "55+": 0,
     };
-    const currentYear = convertFromTimeZone(new Date()).getFullYear();
+    const currentYear = now().getFullYear();
 
     birthDates.forEach((dob) => {
       const age = currentYear - dob.getFullYear();

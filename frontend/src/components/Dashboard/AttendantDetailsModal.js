@@ -15,6 +15,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import MessageIcon from '@mui/icons-material/Message';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import { formatDateForDisplay } from '../../utils/dateUtils';
 
 const AttendantDetailsModal = ({ open, handleClose, data, loading, error }) => {
     const style = {
@@ -71,7 +72,7 @@ const AttendantDetailsModal = ({ open, handleClose, data, loading, error }) => {
                                         <Typography variant="body1"><strong>Cliente:</strong> {row.client?.name || 'N/A'}</Typography>
                                     </Grid>
                                     <Grid item xs={12} sm={4}>
-                                        <Typography variant="body2" color="text.secondary"><strong>Data:</strong> {new Date(row.createdAt).toLocaleDateString()}</Typography>
+                                        <Typography variant="body2" color="text.secondary"><strong>Data:</strong> {formatDateForDisplay(row.createdAt, 'dd/MM/yyyy')}</Typography>
                                     </Grid>
                                     <Grid item xs={12} sm={4}>
                                         <Typography variant="body2" color="text.secondary"><strong>Nota:</strong> {row.ratingValue}</Typography>

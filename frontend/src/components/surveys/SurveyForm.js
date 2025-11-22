@@ -153,46 +153,40 @@ const SurveyForm = ({ initialData = {}, onSubmit, loading = false, error = null 
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                label="Data de Início (Opcional)"
-                value={survey.startDate ? new Date(survey.startDate) : null}
-                onChange={(newValue) => formActions.handleDateChange('startDate', newValue)}
-                inputFormat="dd/MM/yyyy"
-                renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
-              />
-            </LocalizationProvider>
+            <DatePicker
+              label="Data de Início (Opcional)"
+              value={survey.startDate ? new Date(survey.startDate) : null}
+              onChange={(newValue) => formActions.handleDateChange('startDate', newValue)}
+              inputFormat="dd/MM/yyyy"
+              renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                label="Data de Término"
-                value={survey.endDate ? new Date(survey.endDate) : null}
-                onChange={(newValue) => formActions.handleDateChange('endDate', newValue)}
-                inputFormat="dd/MM/yyyy"
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    fullWidth
-                    margin="normal"
-                    required
-                    error={!!errors.endDate}
-                    helperText={errors.endDate}
-                  />
-                )}
-              />
-            </LocalizationProvider>
+            <DatePicker
+              label="Data de Término"
+              value={survey.endDate ? new Date(survey.endDate) : null}
+              onChange={(newValue) => formActions.handleDateChange('endDate', newValue)}
+              inputFormat="dd/MM/yyyy"
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  margin="normal"
+                  required
+                  error={!!errors.endDate}
+                  helperText={errors.endDate}
+                />
+              )}
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                label="Data de Vencimento (Opcional)"
-                value={survey.dueDate ? new Date(survey.dueDate) : null}
-                onChange={(newValue) => formActions.handleDateChange('dueDate', newValue)}
-                inputFormat="dd/MM/yyyy"
-                renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
-              />
-            </LocalizationProvider>
+            <DatePicker
+              label="Data de Vencimento (Opcional)"
+              value={survey.dueDate ? new Date(survey.dueDate) : null}
+              onChange={(newValue) => formActions.handleDateChange('dueDate', newValue)}
+              inputFormat="dd/MM/yyyy"
+              renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth margin="normal">

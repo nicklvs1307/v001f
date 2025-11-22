@@ -9,6 +9,7 @@ import {
   IconButton,
 } from '@mui/material';
 import { CheckCircle } from '@mui/icons-material';
+import { formatDateForDisplay } from '../../utils/dateUtils';
 
 const NotificationPanel = ({ notifications, onMarkAsRead }) => {
   return (
@@ -36,7 +37,7 @@ const NotificationPanel = ({ notifications, onMarkAsRead }) => {
             >
               <ListItemText
                 primary={notification.message}
-                secondary={new Date(notification.createdAt).toLocaleString()}
+                secondary={formatDateForDisplay(notification.createdAt, 'dd/MM/yyyy HH:mm')}
                 sx={{ pr: 4, opacity: notification.read ? 0.5 : 1 }}
               />
             </ListItem>

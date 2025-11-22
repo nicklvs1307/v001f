@@ -27,6 +27,7 @@ import {
 import EditIcon from '@mui/icons-material/Edit'; 
 import DeleteIcon from '@mui/icons-material/Delete'; 
 import { useNotification } from '../../context/NotificationContext'; // Import useNotification
+import { formatDateForDisplay } from '../../utils/dateUtils';
 
 const modalStyle = {
     position: 'absolute',
@@ -174,7 +175,7 @@ const TenantList = () => {
                                         <TableCell>{tenant.email || 'N/A'}</TableCell>
                                         <TableCell>{tenant.cnpj || 'N/A'}</TableCell>
                                         <TableCell>{tenant.description || 'N/A'}</TableCell>
-                                        <TableCell>{new Date(tenant.createdAt).toLocaleDateString()}</TableCell>
+                                        <TableCell>{formatDateForDisplay(tenant.createdAt, 'dd/MM/yyyy')}</TableCell>
                                         <TableCell align="right">
                                             <IconButton edge="end" aria-label="edit" onClick={() => handleOpenEditModal(tenant)}>
                                                 <EditIcon />

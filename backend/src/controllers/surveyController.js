@@ -25,41 +25,12 @@ exports.getSurveyById = asyncHandler(async (req, res) => {
   res.status(200).json(survey);
 });
 
-((exports.updateSurvey = asyncHandler(async (req, res) => {
+exports.updateSurvey = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const {
-    title,
-    description,
-    questions,
-    startDate,
-    endDate,
-    isOpen,
-    askForAttendant,
-    status,
-    expectedRespondents,
-    dueDate,
-    recompensaId,
-    roletaId,
-  } = req.body;
-  const tenantId = req.user.tenantId;
-
-  const updatedSurvey = await surveyRepository.updateSurvey(
+  const updatedSurvey = await surveyService.updateSurvey(
     id,
-    {
-      title,
-      description,
-      questions,
-      startDate,
-      endDate,
-      isOpen,
-      askForAttendant,
-      status,
-      expectedRespondents,
-      dueDate,
-      recompensaId,
-      roletaId,
-    },
-    tenantId,
+    req.body,
+    req.user,
   );
 
   if (!updatedSurvey) {
@@ -67,12 +38,13 @@ exports.getSurveyById = asyncHandler(async (req, res) => {
   }
 
   res.status(200).json(updatedSurvey);
-})),
-  (exports.deleteSurvey = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    await surveyService.deleteSurvey(id, req.user);
-    res.status(200).json({ message: "Pesquisa deletada com sucesso." });
-  })));
+});
+
+exports.deleteSurvey = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  await surveyService.deleteSurvey(id, req.user);
+  res.status(200).json({ message: "Pesquisa deletada com sucesso." });
+});
 
 exports.getSurveyStats = asyncHandler(async (req, res) => {
   const stats = await surveyService.getSurveyStats(req.user);

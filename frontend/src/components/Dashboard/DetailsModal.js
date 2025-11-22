@@ -15,6 +15,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import MessageIcon from '@mui/icons-material/Message';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import { formatDateForDisplay } from '../../utils/dateUtils';
 
 const DetailsModal = ({ open, handleClose, title, data, loading, error }) => {
     const style = {
@@ -63,7 +64,7 @@ const DetailsModal = ({ open, handleClose, title, data, loading, error }) => {
                             <Grid container spacing={2} alignItems="center">
                                 <Grid item xs={12} sm={6}>
                                     <Typography variant="body1"><strong>Cliente:</strong> {row.client?.name || 'N/A'}</Typography>
-                                    <Typography variant="body2" color="text.secondary"><strong>Data:</strong> {new Date(row.createdAt).toLocaleDateString()}</Typography>
+                                    <Typography variant="body2" color="text.secondary"><strong>Data:</strong> {formatDateForDisplay(row.createdAt, 'dd/MM/yyyy')}</Typography>
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <Typography variant="body1"><strong>Nota:</strong> {row.ratingValue}</Typography>
@@ -88,7 +89,7 @@ const DetailsModal = ({ open, handleClose, title, data, loading, error }) => {
                     <Card key={row.id} sx={{ mb: 2 }}>
                         <CardContent>
                             <Typography variant="body1"><strong>Nome:</strong> {row.name}</Typography>
-                            <Typography variant="body2" color="text.secondary"><strong>Data de Cadastro:</strong> {new Date(row.createdAt).toLocaleDateString()}</Typography>
+                            <Typography variant="body2" color="text.secondary"><strong>Data de Cadastro:</strong> {formatDateForDisplay(row.createdAt, 'dd/MM/yyyy')}</Typography>
                         </CardContent>
                     </Card>
                 ));
@@ -99,7 +100,7 @@ const DetailsModal = ({ open, handleClose, title, data, loading, error }) => {
                     <Card key={row.id} sx={{ mb: 2 }}>
                         <CardContent>
                             <Typography variant="body1"><strong>Cliente:</strong> {row.client?.name || 'N/A'}</Typography>
-                            <Typography variant="body2" color="text.secondary"><strong>Data de Geração:</strong> {new Date(row.createdAt).toLocaleDateString()}</Typography>
+                            <Typography variant="body2" color="text.secondary"><strong>Data de Geração:</strong> {formatDateForDisplay(row.createdAt, 'dd/MM/yyyy')}</Typography>
                             <Typography variant="body2"><strong>Cupom:</strong> {row.code}</Typography>
                         </CardContent>
                     </Card>
@@ -111,7 +112,7 @@ const DetailsModal = ({ open, handleClose, title, data, loading, error }) => {
                     <Card key={row.id} sx={{ mb: 2 }}>
                         <CardContent>
                             <Typography variant="body1"><strong>Cliente:</strong> {row.client?.name || 'N/A'}</Typography>
-                            <Typography variant="body2" color="text.secondary"><strong>Data de Utilização:</strong> {new Date(row.updatedAt).toLocaleDateString()}</Typography>
+                            <Typography variant="body2" color="text.secondary"><strong>Data de Utilização:</strong> {formatDateForDisplay(row.updatedAt, 'dd/MM/yyyy')}</Typography>
                             <Typography variant="body2"><strong>Cupom:</strong> {row.code}</Typography>
                         </CardContent>
                     </Card>

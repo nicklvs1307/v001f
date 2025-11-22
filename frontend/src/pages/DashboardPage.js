@@ -235,7 +235,6 @@ const DashboardPage = () => {
                 <Typography variant="h4" component="h1" gutterBottom>
                     Dashboard de Análise
                 </Typography>
-                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
                     <Box sx={{ display: 'flex', gap: 2 }}>
                         <DatePicker
                             label="Data de Início"
@@ -252,7 +251,6 @@ const DashboardPage = () => {
                             renderInput={(params) => <TextField {...params} />}
                         />
                     </Box>
-                </LocalizationProvider>
             </Box>
 
             <Grid container spacing={2} sx={{ mb: 4 }}>

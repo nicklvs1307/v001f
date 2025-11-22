@@ -27,7 +27,7 @@ import { startOfMonth, endOfMonth } from 'date-fns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
+import { getStartOfDayUTC, getEndOfDayUTC, getNowInLocalTimezone } from '../../utils/dateUtils';
 import StatCard from '../../components/common/StatCard';
 import { FaChartLine, FaChartBar, FaChartPie, FaUsers } from 'react-icons/fa';
 
@@ -52,8 +52,8 @@ const ResumoMesPage = () => {
     const [summary, setSummary] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [startDate, setStartDate] = useState(startOfMonth(new Date()));
-    const [endDate, setEndDate] = useState(endOfMonth(new Date()));
+    const [startDate, setStartDate] = useState(startOfMonth(getNowInLocalTimezone()));
+    const [endDate, setEndDate] = useState(endOfMonth(getNowInLocalTimezone()));
 
     const fetchSummary = useCallback(async () => {
         try {
@@ -92,26 +92,22 @@ const ResumoMesPage = () => {
                 </Typography>
                 <Grid container spacing={2} alignItems="center">
                     <Grid item xs={12} sm={6}>
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                                label="Data de Início"
-                                views={['month', 'year']}
-                                value={startDate}
-                                onChange={(newValue) => setStartDate(newValue)}
-                                renderInput={(params) => <TextField {...params} fullWidth />}
-                            />
-                        </LocalizationProvider>
+                        <DatePicker
+                            label="Data de Início"
+                            views={['month', 'year']}
+                            value={startDate}
+                            onChange={(newValue) => setStartDate(newValue)}
+                            renderInput={(params) => <TextField {...params} fullWidth />}
+                        />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                                label="Data de Fim"
-                                views={['month', 'year']}
-                                value={endDate}
-                                onChange={(newValue) => setEndDate(newValue)}
-                                renderInput={(params) => <TextField {...params} fullWidth />}
-                            />
-                        </LocalizationProvider>
+                        <DatePicker
+                            label="Data de Fim"
+                            views={['month', 'year']}
+                            value={endDate}
+                            onChange={(newValue) => setEndDate(newValue)}
+                            renderInput={(params) => <TextField {...params} fullWidth />}
+                        />
                     </Grid>
                 </Grid>
             </Paper>

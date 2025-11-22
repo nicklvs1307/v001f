@@ -1,5 +1,5 @@
 const { parse } = require("date-fns");
-const { convertFromTimeZone } = require("../utils/dateUtils");
+const { now } = require("../utils/dateUtils");
 const ApiError = require("../errors/ApiError");
 const campanhaRepository = require("../repositories/campanhaRepository");
 const clientRepository = require("../repositories/clientRepository");
@@ -35,7 +35,7 @@ class CampanhaController {
 
     if (rewardType && rewardType !== "NONE") {
       const parsedDataValidade = dataValidade
-        ? parse(dataValidade, dateFormat, convertFromTimeZone(new Date()))
+        ? parse(dataValidade, dateFormat, now())
         : null;
 
       if (!parsedDataValidade || isNaN(parsedDataValidade.getTime())) {
@@ -55,11 +55,7 @@ class CampanhaController {
         data[dateField] = null;
         return;
       }
-      const parsedDate = parse(
-        dateValue,
-        dateFormat,
-        convertFromTimeZone(new Date()),
-      );
+      const parsedDate = parse(dateValue, dateFormat, now());
       if (isNaN(parsedDate.getTime())) {
         data[dateField] = null;
       } else {

@@ -11,6 +11,8 @@ const {
 const { sequelize } = require("../database");
 const { Op } = require("sequelize");
 const ApiError = require("../errors/ApiError");
+const { now } = require("../utils/dateUtils");
+const { startOfMonth } = require("date-fns");
 
 const createSurvey = async (surveyData) => {
   const {
@@ -282,9 +284,8 @@ const getSurveyTenantIdAndCreatorId = async (id, tenantId = null) => {
 
 const getSurveyStats = async (tenantId = null) => {
   const whereClause = tenantId ? { tenantId } : {};
-  const today = new Date();
-  const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-
+  const today = now();
+  const startOfMonth = startOfMonth(today);
   const activeSurveys = await Pesquisa.count({
     where: { ...whereClause, status: "active" },
   });

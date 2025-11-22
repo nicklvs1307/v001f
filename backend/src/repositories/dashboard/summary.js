@@ -30,60 +30,63 @@ const getSummary = async (
     attributes: [
       [
         sequelize.literal(
-          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_0_10' THEN 1 ELSE 0 END)",
+          'SUM(CASE WHEN "pergunta"."type" = \'rating_0_10\' THEN 1 ELSE 0 END)',
         ),
         "npsCount",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_0_10' AND \"Resposta\".\"ratingValue\" >= 9 THEN 1 ELSE 0 END)",
+          'SUM(CASE WHEN "pergunta"."type" = \'rating_0_10\' AND "Resposta"."ratingValue" >= 9 THEN 1 ELSE 0 END)',
         ),
         "promoters",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_0_10' AND \"Resposta\".\"ratingValue\" >= 7 AND \"Resposta\".\"ratingValue\" <= 8 THEN 1 ELSE 0 END)",
+          'SUM(CASE WHEN "pergunta"."type" = \'rating_0_10\' AND "Resposta"."ratingValue" >= 7 AND "Resposta"."ratingValue" <= 8 THEN 1 ELSE 0 END)',
         ),
         "neutrals",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_0_10' AND \"Resposta\".\"ratingValue\" <= 6 THEN 1 ELSE 0 END)",
+          'SUM(CASE WHEN "pergunta"."type" = \'rating_0_10\' AND "Resposta"."ratingValue" <= 6 THEN 1 ELSE 0 END)',
         ),
         "detractors",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_1_5' THEN 1 ELSE 0 END)",
+          'SUM(CASE WHEN "pergunta"."type" = \'rating_1_5\' THEN 1 ELSE 0 END)',
         ),
         "csatCount",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_1_5' THEN \"Resposta\".\"ratingValue\" ELSE 0 END)",
+          'SUM(CASE WHEN "pergunta"."type" = \'rating_1_5\' THEN "Resposta"."ratingValue" ELSE 0 END)',
         ),
         "csatSum",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_1_5' AND \"Resposta\".\"ratingValue\" >= 4 THEN 1 ELSE 0 END)",
+          'SUM(CASE WHEN "pergunta"."type" = \'rating_1_5\' AND "Resposta"."ratingValue" >= 4 THEN 1 ELSE 0 END)',
         ),
         "csatSatisfied",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_1_5' AND \"Resposta\".\"ratingValue\" = 3 THEN 1 ELSE 0 END)",
+          'SUM(CASE WHEN "pergunta"."type" = \'rating_1_5\' AND "Resposta"."ratingValue" = 3 THEN 1 ELSE 0 END)',
         ),
         "csatNeutral",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_1_5' AND \"Resposta\".\"ratingValue\" <= 2 THEN 1 ELSE 0 END)",
+          'SUM(CASE WHEN "pergunta"."type" = \'rating_1_5\' AND "Resposta"."ratingValue" <= 2 THEN 1 ELSE 0 END)',
         ),
         "csatUnsatisfied",
       ],
       [
-        sequelize.fn("COUNT", sequelize.fn("DISTINCT", sequelize.col("respondentSessionId"))),
+        sequelize.fn(
+          "COUNT",
+          sequelize.fn("DISTINCT", sequelize.col("respondentSessionId")),
+        ),
         "totalResponses",
       ],
     ],
@@ -101,10 +104,7 @@ const getSummary = async (
 
   const couponsQuery = {
     attributes: [
-      [
-        sequelize.fn("COUNT", sequelize.col("id")),
-        "couponsGenerated",
-      ],
+      [sequelize.fn("COUNT", sequelize.col("id")), "couponsGenerated"],
       [
         sequelize.literal("SUM(CASE WHEN status = 'used' THEN 1 ELSE 0 END)"),
         "couponsUsed",
@@ -122,14 +122,16 @@ const getSummary = async (
 
   const npsScore =
     summaryData.npsCount > 0
-      ? Math.round(((summaryData.promoters - summaryData.detractors) / summaryData.npsCount) * 100)
+      ? Math.round(
+          ((summaryData.promoters - summaryData.detractors) /
+            summaryData.npsCount) *
+            100,
+        )
       : 0;
 
   const csatScore =
-    summaryData.csatCount > 0
-      ? (summaryData.csatSum / summaryData.csatCount)
-      : 0;
-      
+    summaryData.csatCount > 0 ? summaryData.csatSum / summaryData.csatCount : 0;
+
   const csatSatisfactionRate = csatScore * 20;
 
   return {
@@ -151,13 +153,20 @@ const getSummary = async (
     registrations: totalUsers,
     registrationsConversion:
       summaryData.totalResponses > 0
-        ? parseFloat(((totalUsers / summaryData.totalResponses) * 100).toFixed(2))
+        ? parseFloat(
+            ((totalUsers / summaryData.totalResponses) * 100).toFixed(2),
+          )
         : 0,
     couponsGenerated: couponsData.couponsGenerated,
     couponsUsed: couponsData.couponsUsed,
     couponsUsedConversion:
       couponsData.couponsGenerated > 0
-        ? parseFloat(((couponsData.couponsUsed / couponsData.couponsGenerated) * 100).toFixed(2))
+        ? parseFloat(
+            (
+              (couponsData.couponsUsed / couponsData.couponsGenerated) *
+              100
+            ).toFixed(2),
+          )
         : 0,
     totalResponses: summaryData.totalResponses,
     totalUsers,
@@ -180,42 +189,47 @@ const getMonthlySummary = async (
 
   const query = {
     attributes: [
+      [sequelize.fn("DATE", sequelize.col("Resposta.createdAt")), "date"],
       [
-        sequelize.fn("DATE", sequelize.col("Resposta.createdAt")),
-        "date",
-      ],
-      [
-        sequelize.literal("EXTRACT(HOUR FROM \"Resposta\".\"createdAt\" AT TIME ZONE 'UTC')"),
+        sequelize.literal(
+          'EXTRACT(HOUR FROM "Resposta"."createdAt" AT TIME ZONE \'UTC\')',
+        ),
         "hour",
       ],
       [
-        sequelize.literal("EXTRACT(ISODOW FROM \"Resposta\".\"createdAt\" AT TIME ZONE 'UTC')"),
+        sequelize.literal(
+          'EXTRACT(ISODOW FROM "Resposta"."createdAt" AT TIME ZONE \'UTC\')',
+        ),
         "weekday",
       ],
       [
-        sequelize.literal("SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_0_10' THEN 1 ELSE 0 END)"),
+        sequelize.literal(
+          'SUM(CASE WHEN "pergunta"."type" = \'rating_0_10\' THEN 1 ELSE 0 END)',
+        ),
         "npsCount",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_0_10' AND \"Resposta\".\"ratingValue\" >= 9 THEN 1 ELSE 0 END)",
+          'SUM(CASE WHEN "pergunta"."type" = \'rating_0_10\' AND "Resposta"."ratingValue" >= 9 THEN 1 ELSE 0 END)',
         ),
         "promoters",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_0_10' AND \"Resposta\".\"ratingValue\" >= 7 AND \"Resposta\".\"ratingValue\" <= 8 THEN 1 ELSE 0 END)",
+          'SUM(CASE WHEN "pergunta"."type" = \'rating_0_10\' AND "Resposta"."ratingValue" >= 7 AND "Resposta"."ratingValue" <= 8 THEN 1 ELSE 0 END)',
         ),
         "neutrals",
       ],
       [
         sequelize.literal(
-          "SUM(CASE WHEN \"pergunta\".\"type\" = 'rating_0_10' AND \"Resposta\".\"ratingValue\" <= 6 THEN 1 ELSE 0 END)",
+          'SUM(CASE WHEN "pergunta"."type" = \'rating_0_10\' AND "Resposta"."ratingValue" <= 6 THEN 1 ELSE 0 END)',
         ),
         "detractors",
       ],
       [
-        sequelize.literal("COUNT(CASE WHEN \"client\".\"id\" IS NOT NULL THEN 1 END)"),
+        sequelize.literal(
+          'COUNT(CASE WHEN "client"."id" IS NOT NULL THEN 1 END)',
+        ),
         "registeredResponses",
       ],
     ],
@@ -286,8 +300,7 @@ const getMonthlySummary = async (
 
   const dailyNpsArray = Object.keys(dailyNps).map((date) => {
     const { promoters, neutrals, detractors, total } = dailyNps[date];
-    const npsScore =
-      total > 0 ? ((promoters - detractors) / total) * 100 : 0;
+    const npsScore = total > 0 ? ((promoters - detractors) / total) * 100 : 0;
     return {
       date,
       promoters,

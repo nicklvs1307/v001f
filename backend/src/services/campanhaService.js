@@ -99,10 +99,7 @@ class CampanhaService {
       );
     }
 
-    if (
-      campanha.startDate &&
-      new Date(campanha.startDate) > convertFromTimeZone(new Date())
-    ) {
+    if (campanha.startDate && new Date(campanha.startDate) > now()) {
       await this.campanhaRepository.update(
         id,
         { status: "scheduled" },

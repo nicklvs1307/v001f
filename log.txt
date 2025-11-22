@@ -1,6 +1,0 @@
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "dateFnsTz.zonedTimeToUtc is not a function",
-    "details": "TypeError: dateFnsTz.zonedTimeToUtc is not a function\n    at convertToTimeZone (/usr/src/app/src/utils/dateUtils.js:13:20)\n    at getResponseChart (/usr/src/app/src/repositories/dashboard/charts.js:48:15)\n    at Object.getMainDashboard (/usr/src/app/src/repositories/dashboard/main.js:36:31)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async /usr/src/app/src/controllers/dashboardController.js:153:27"
-}

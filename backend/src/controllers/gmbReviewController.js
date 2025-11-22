@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const { convertFromTimeZone } = require("../utils/dateUtils");
+const { now } = require("../utils/dateUtils");
 const gmbReviewRepository = require("../repositories/gmbReviewRepository");
 const ApiError = require("../errors/ApiError");
 
@@ -30,7 +30,7 @@ const gmbReviewController = {
     const updatedRows = await gmbReviewRepository.updateReview(
       id,
       requestingUser.tenantId,
-      { replyComment, repliedAt: convertFromTimeZone(new Date()) },
+      { replyComment, repliedAt: now() },
     );
 
     if (updatedRows === 0) {

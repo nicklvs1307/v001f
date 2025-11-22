@@ -46,6 +46,7 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import EventIcon from '@mui/icons-material/Event';
 import campanhaService from '../services/campanhaService';
 import AuthContext from '../context/AuthContext';
+import { formatDateForDisplay } from '../utils/dateUtils';
 
 const CampaignDetailsPage = () => {
   const { id } = useParams();
@@ -229,7 +230,7 @@ const CampaignDetailsPage = () => {
                               </Typography>
                             </MuiTooltip>
                           </TableCell>
-                          <TableCell>{new Date(log.sentAt).toLocaleString()}</TableCell>
+                          <TableCell>{formatDateForDisplay(log.sentAt, 'dd/MM/yyyy HH:mm')}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -252,18 +253,18 @@ const CampaignDetailsPage = () => {
                   <List dense>
                     <ListItem>
                       <ListItemIcon><EventIcon /></ListItemIcon>
-                      <ListItemText primary="Criada em" secondary={new Date(campaign.createdAt).toLocaleString()} />
+                      <ListItemText primary="Criada em" secondary={formatDateForDisplay(campaign.createdAt, 'dd/MM/yyyy HH:mm')} />
                     </ListItem>
                     {campaign.startDate && (
                       <ListItem>
                         <ListItemIcon><ScheduleIcon /></ListItemIcon>
-                        <ListItemText primary="Início agendado" secondary={new Date(campaign.startDate).toLocaleString()} />
+                        <ListItemText primary="Início agendado" secondary={formatDateForDisplay(campaign.startDate, 'dd/MM/yyyy HH:mm')} />
                       </ListItem>
                     )}
                     {campaign.dataValidade && (
                       <ListItem>
                         <ListItemIcon><EventIcon color="error" /></ListItemIcon>
-                        <ListItemText primary="Data de Validade" secondary={new Date(campaign.dataValidade).toLocaleString()} />
+                        <ListItemText primary="Data de Validade" secondary={formatDateForDisplay(campaign.dataValidade, 'dd/MM/yyyy HH:mm')} />
                       </ListItem>
                     )}
                   </List>

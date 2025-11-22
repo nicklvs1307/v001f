@@ -19,6 +19,7 @@ import useSurveys from '../../hooks/useSurveys';
 import usePermissions from '../../hooks/usePermissions';
 import SurveyModal from './SurveyModal';
 import ConfirmationDialog from '../layout/ConfirmationDialog';
+import { formatDateForDisplay } from '../../utils/dateUtils';
 
 const SurveyList = () => {
     const { surveys, loading, error, createSurvey, updateSurvey, deleteSurvey } = useSurveys();
@@ -134,7 +135,7 @@ const SurveyList = () => {
                         >
                             <ListItemText
                                 primary={survey.title}
-                                secondary={`Criado por: ${survey.creator_name} | Tenant: ${survey.tenant_name} | Em: ${new Date(survey.created_at).toLocaleDateString()}`}
+                                secondary={`Criado por: ${survey.creator_name} | Tenant: ${survey.tenant_name} | Em: ${formatDateForDisplay(survey.created_at, 'dd/MM/yyyy')}`}
                             />
                         </ListItem>
                     ))

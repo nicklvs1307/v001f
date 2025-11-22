@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const { convertFromTimeZone } = require("../utils/dateUtils");
+const { now } = require("../utils/dateUtils");
 const cupomRepository = require("../repositories/cupomRepository");
 const recompensaRepository = require("../repositories/recompensaRepository");
 const ApiError = require("../errors/ApiError");
@@ -32,7 +32,7 @@ const cupomController = {
       recompensaId,
       codigo,
       clienteId,
-      dataGeracao: convertFromTimeZone(new Date()),
+      dataGeracao: now(),
       dataValidade,
     });
 
@@ -96,7 +96,7 @@ const cupomController = {
       throw new ApiError(400, "Cupom já utilizado.");
     }
 
-    if (new Date(cupom.dataValidade) < convertFromTimeZone(new Date())) {
+    if (new Date(cupom.dataValidade) < now()) {
       throw new ApiError(400, "Cupom expirado.");
     }
 
@@ -106,7 +106,7 @@ const cupomController = {
       cupom.tenantId,
       {
         status: "used",
-        dataUtilizacao: convertFromTimeZone(new Date()),
+        dataUtilizacao: now(),
       },
     );
 
@@ -126,7 +126,7 @@ const cupomController = {
 
         if (logEntry && !logEntry.convertedAt) {
           await logEntry.update({
-            convertedAt: convertFromTimeZone(new Date()),
+            convertedAt: now(),
           });
         }
       } catch (error) {

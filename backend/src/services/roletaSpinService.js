@@ -24,10 +24,7 @@ class RoletaSpinService {
       throw ApiError.badRequest("Este token já foi utilizado.");
     }
 
-    if (
-      roletaSpin.expiresAt &&
-      convertFromTimeZone(new Date()) > roletaSpin.expiresAt
-    ) {
+    if (roletaSpin.expiresAt && now() > roletaSpin.expiresAt) {
       throw ApiError.badRequest("Este token expirou.");
     }
 
@@ -58,10 +55,7 @@ class RoletaSpinService {
       throw ApiError.badRequest("Este token já foi utilizado.");
     }
 
-    if (
-      roletaSpin.expiresAt &&
-      convertFromTimeZone(new Date()) > roletaSpin.expiresAt
-    ) {
+    if (roletaSpin.expiresAt && now() > roletaSpin.expiresAt) {
       throw ApiError.badRequest("Este token expirou.");
     }
 

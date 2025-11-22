@@ -1,7 +1,7 @@
 const { Client, Cupom, Resposta } = require("../../models");
 const sequelize = require("sequelize");
 const { Op } = sequelize;
-const { convertFromTimeZone } = require("../utils/dateUtils");
+const { now, formatInTimeZone } = require("../utils/dateUtils");
 const ApiError = require("../errors/ApiError");
 
 class ClientRepository {
@@ -49,7 +49,7 @@ class ClientRepository {
   }
 
   async findInativos(tenantId) {
-    const threeMonthsAgo = convertFromTimeZone(new Date());
+    const threeMonthsAgo = now();
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
     return Client.findAll({
@@ -77,7 +77,7 @@ class ClientRepository {
   }
 
   async findNovatos(tenantId) {
-    const threeMonthsAgo = convertFromTimeZone(new Date());
+    const threeMonthsAgo = now();
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
     return Client.findAll({
@@ -101,7 +101,7 @@ class ClientRepository {
   }
 
   async findFieis(tenantId) {
-    const threeMonthsAgo = convertToTimeZone(new Date());
+    const threeMonthsAgo = now();
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
     return Client.findAll({
@@ -125,7 +125,7 @@ class ClientRepository {
   }
 
   async findSuperClientes(tenantId) {
-    const threeMonthsAgo = convertToTimeZone(new Date());
+    const threeMonthsAgo = now();
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
     return Client.findAll({
@@ -301,10 +301,7 @@ class ClientRepository {
 
     // Gráfico de comparecimento (visitas por mês)
     const attendance = visits.reduce((acc, visit) => {
-      const month = new Date(visit.createdAt).toLocaleString("default", {
-        month: "long",
-        year: "numeric",
-      });
+      const month = formatInTimeZone(visit.createdAt, "MMMM yyyy");
       acc[month] = (acc[month] || 0) + 1;
       return acc;
     }, {});
@@ -335,7 +332,7 @@ class ClientRepository {
     const totalClients = await Client.count({ where: whereClause });
 
     // 2. Aniversariantes do Mês
-    const currentMonth = convertFromTimeZone(new Date()).getMonth() + 1;
+    const currentMonth = now().getMonth() + 1;
     const birthdayCount = await Client.count({
       where: {
         ...whereClause,
@@ -360,7 +357,7 @@ class ClientRepository {
     // 3. Média de Idade
     let totalAge = 0;
     let clientsWithAge = 0;
-    const currentYear = convertFromTimeZone(new Date()).getFullYear();
+    const currentYear = now().getFullYear();
     clients.forEach((client) => {
       if (client.birthDate) {
         const birthYear = new Date(client.birthDate).getFullYear();

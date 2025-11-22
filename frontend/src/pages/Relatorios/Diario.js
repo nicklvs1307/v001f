@@ -6,13 +6,13 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { formatDateForDisplay, getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
+import { formatDateForDisplay, getStartOfDayUTC, getEndOfDayUTC, getNowInLocalTimezone } from '../../utils/dateUtils';
 import { useAuth } from '../../context/AuthContext';
 import dashboardService from '../../services/dashboardService';
 import Dashboard from '../../components/relatorios/Dashboard';
 
 const RelatorioDiario = () => {
-    const [selectedDate, setSelectedDate] = useState(new Date()); 
+    const [selectedDate, setSelectedDate] = useState(getNowInLocalTimezone()); 
     const [reportData, setReportData] = useState(null);
     const [loading, setLoading] = useState(false);
     const { user } = useAuth();
@@ -55,15 +55,13 @@ const RelatorioDiario = () => {
         <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 3 }}>
             <Typography variant="h4" gutterBottom>Relatório Diário</Typography>
             <Box mb={3}>
-                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
-                    <DatePicker
-                        label="Selecione a Data"
-                        value={selectedDate}
-                        onChange={(newValue) => setSelectedDate(newValue)}
-                        inputFormat="dd/MM/yyyy"
-                        renderInput={(params) => <TextField {...params} />}
-                    />
-                </LocalizationProvider>
+                <DatePicker
+                    label="Selecione a Data"
+                    value={selectedDate}
+                    onChange={(newValue) => setSelectedDate(newValue)}
+                    inputFormat="dd/MM/yyyy"
+                    renderInput={(params) => <TextField {...params} />}
+                />
             </Box>
 
             {loading ? (

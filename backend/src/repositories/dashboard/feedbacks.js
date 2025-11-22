@@ -8,7 +8,7 @@ const stopwords = require("../../utils/stopwords");
 const getFeedbacks = async (
   tenantId = null,
   startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null,   // Changed parameter name
+  endOfDayUtc = null, // Changed parameter name
   surveyId = null,
 ) => {
   const whereClause = tenantId
@@ -99,7 +99,7 @@ const getAllFeedbacksForPeriod = async (
 const getWordCloudData = async (
   tenantId = null,
   startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null,   // Changed parameter name
+  endOfDayUtc = null, // Changed parameter name
   surveyId = null,
 ) => {
   const whereClause = tenantId
@@ -127,11 +127,7 @@ const getWordCloudData = async (
 
   const frequencies = {};
   for (const word of words) {
-    if (
-      word &&
-      word.length > 2 &&
-      !stopwords.has(word)
-    ) {
+    if (word && word.length > 2 && !stopwords.has(word)) {
       frequencies[word] = (frequencies[word] || 0) + 1;
     }
   }

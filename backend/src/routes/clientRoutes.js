@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { check } = require("express-validator");
+const { parse } = require("date-fns");
+const { ptBR } = require("date-fns/locale");
+const { now } = require("../utils/dateUtils");
 const {
   getClientDetails,
   ...clientController
@@ -29,12 +32,10 @@ const birthDateValidator = check("birthDate", "Data de nascimento inválida")
   .optional({ checkFalsy: true })
   .customSanitizer((value) => {
     if (!value || value === "") return null;
-    const parts = value.split("/");
-    if (parts.length === 3 && parts[2].length === 4) {
-      const date = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-      if (!isNaN(date.getTime())) {
-        return `${parts[2]}-${parts[1]}-${parts[0]}`;
-      }
+    const parsedDate = parse(value, "dd/MM/yyyy", now(), { locale: ptBR });
+    if (!isNaN(parsedDate.getTime())) {
+      // Retorna a data no formato ISO para ser consistente com o isISO8601 que será verificado depois
+      return parsedDate.toISOString();
     }
     return null;
   })

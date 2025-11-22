@@ -1,5 +1,5 @@
 const cron = require("node-cron");
-const { convertFromTimeZone } = require("../utils/dateUtils");
+const { now } = require("../utils/dateUtils");
 const { Campanha, WhatsappSender, sequelize } = require("../../models");
 const { Op } = require("sequelize");
 const { scheduleCampaign } = require("./campaignScheduler");
@@ -70,7 +70,7 @@ async function checkPausedCampaigns() {
       // Update status and set start date to now to trigger immediate (or near-immediate) processing
       await campaign.update({
         status: "scheduled",
-        startDate: convertFromTimeZone(new Date()),
+        startDate: now(),
       });
       // Use the existing scheduler to restart the campaign
       scheduleCampaign(campaign, service._processCampaign.bind(service));

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Paper, Typography, Card, CardMedia } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { formatDateForDisplay, getNowInLocalTimezone } from '../utils/dateUtils';
 
 const PreviewContainer = styled(Box)(({ theme }) => ({
   backgroundColor: '#e5ddd5',
@@ -86,7 +87,7 @@ const WhatsappPreview = ({ message, imagePreview }) => {
               dangerouslySetInnerHTML={{ __html: formatWhatsappText(message || '') }}
             />
             <TimeStamp>
-              {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+              {formatDateForDisplay(getNowInLocalTimezone(), 'HH:mm')}
             </TimeStamp>
           </MessageBubble>
         </Box>

@@ -7,7 +7,7 @@ const {
 } = require("../../../models");
 const { Sequelize, Op } = require("sequelize");
 const { eachDayOfInterval, format, subDays } = require("date-fns"); // Keep eachDayOfInterval and format
-const { TIMEZONE } = require("../../utils/dateUtils"); // Only TIMEZONE is needed now
+const { TIMEZONE, now } = require("../../utils/dateUtils");
 
 const { fn, col, literal } = Sequelize;
 
@@ -38,7 +38,7 @@ const formatDateTz = (period, column) => {
 const getResponseChart = async (
   tenantId = null,
   startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null,   // Changed parameter name
+  endOfDayUtc = null, // Changed parameter name
   surveyId = null,
 ) => {
   const whereClause = tenantId ? { tenantId } : {};
@@ -46,7 +46,7 @@ const getResponseChart = async (
 
   // Default to the last 30 days if no date range is provided
   if (!startOfDayUtc || !endOfDayUtc) {
-    const now = new Date();
+    const now = now();
     endOfDayUtc = now;
     startOfDayUtc = subDays(now, 30);
   }
@@ -72,7 +72,10 @@ const getResponseChart = async (
   );
 
   // Use startOfDayUtc and endOfDayUtc for intervalDays
-  const intervalDays = eachDayOfInterval({ start: startOfDayUtc, end: endOfDayUtc });
+  const intervalDays = eachDayOfInterval({
+    start: startOfDayUtc,
+    end: endOfDayUtc,
+  });
 
   const chartData = intervalDays.map((day) => {
     const key = format(day, "dd/MM/yyyy");
@@ -155,7 +158,7 @@ const getNpsTrendData = async (
   tenantId = null,
   period = "day",
   startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null,   // Changed parameter name
+  endOfDayUtc = null, // Changed parameter name
   surveyId = null,
 ) => {
   const whereClause = tenantId
@@ -213,7 +216,7 @@ const getCsatTrendData = async (
   tenantId = null,
   period = "day",
   startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null,   // Changed parameter name
+  endOfDayUtc = null, // Changed parameter name
   surveyId = null,
 ) => {
   const whereClause = tenantId
@@ -265,7 +268,7 @@ const getResponseCountTrendData = async (
   tenantId = null,
   period = "day",
   startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null,   // Changed parameter name
+  endOfDayUtc = null, // Changed parameter name
   surveyId = null,
 ) => {
   const whereClause = tenantId ? { tenantId } : {};
@@ -297,7 +300,7 @@ const getRegistrationTrendData = async (
   tenantId = null,
   period = "day",
   startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null,   // Changed parameter name
+  endOfDayUtc = null, // Changed parameter name
   surveyId = null,
 ) => {
   const whereClause = tenantId ? { tenantId } : {};
@@ -328,9 +331,14 @@ const getEvolutionDashboard = async function (
   tenantId = null,
   period = "day",
   startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null,   // Changed parameter name
+  endOfDayUtc = null, // Changed parameter name
 ) {
-  const npsTrend = await getNpsTrendData(tenantId, period, startOfDayUtc, endOfDayUtc);
+  const npsTrend = await getNpsTrendData(
+    tenantId,
+    period,
+    startOfDayUtc,
+    endOfDayUtc,
+  );
   const csatTrend = await getCsatTrendData(
     tenantId,
     period,

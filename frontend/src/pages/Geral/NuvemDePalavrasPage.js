@@ -28,7 +28,8 @@ import WordCloud from 'react-wordcloud';
 import { ResponsiveContainer } from 'recharts';
 import dashboardService from '../../services/dashboardService';
 import surveyService from '../../services/surveyService';
-import { startOfMonth, endOfMonth, format } from 'date-fns';
+import { startOfMonth, endOfMonth } from 'date-fns';
+import { getNowInLocalTimezone, formatDateForDisplay } from '../../utils/dateUtils';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -39,8 +40,8 @@ const NuvemDePalavrasPage = () => {
     const [feedbacks, setFeedbacks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [startDate, setStartDate] = useState(startOfMonth(new Date()));
-    const [endDate, setEndDate] = useState(endOfMonth(new Date()));
+    const [startDate, setStartDate] = useState(startOfMonth(getNowInLocalTimezone()));
+    const [endDate, setEndDate] = useState(endOfMonth(getNowInLocalTimezone()));
     const [surveys, setSurveys] = useState([]);
     const [selectedSurveyId, setSelectedSurveyId] = useState('');
     const [wordFilter, setWordFilter] = useState('');
@@ -138,26 +139,22 @@ const NuvemDePalavrasPage = () => {
                     </Typography>
                     <Grid container spacing={2} sx={{ mt: 2 }}>
                         <Grid item xs={12} sm={4}>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DatePicker
-                                    label="Data de Início"
-                                    value={startDate}
-                                    onChange={(newValue) => setStartDate(newValue)}
-                                    inputFormat="dd/MM/yyyy"
-                                    renderInput={(params) => <TextField {...params} fullWidth />}
-                                />
-                            </LocalizationProvider>
+                            <DatePicker
+                                label="Data de Início"
+                                value={startDate}
+                                onChange={(newValue) => setStartDate(newValue)}
+                                inputFormat="dd/MM/yyyy"
+                                renderInput={(params) => <TextField {...params} fullWidth />}
+                            />
                         </Grid>
                         <Grid item xs={12} sm={4}>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DatePicker
-                                    label="Data de Fim"
-                                    value={endDate}
-                                    onChange={(newValue) => setEndDate(newValue)}
-                                    inputFormat="dd/MM/yyyy"
-                                    renderInput={(params) => <TextField {...params} fullWidth />}
-                                />
-                            </LocalizationProvider>
+                            <DatePicker
+                                label="Data de Fim"
+                                value={endDate}
+                                onChange={(newValue) => setEndDate(newValue)}
+                                inputFormat="dd/MM/yyyy"
+                                renderInput={(params) => <TextField {...params} fullWidth />}
+                            />
                         </Grid>
                         <Grid item xs={12} sm={4}>
                             <FormControl fullWidth>
@@ -245,7 +242,7 @@ const NuvemDePalavrasPage = () => {
                                 </TableRow>
                             ) : filteredFeedbacks.map((fb, index) => (
                                 <TableRow key={index}>
-                                    <TableCell>{fb.date ? format(new Date(fb.date), 'dd/MM/yy HH:mm') : 'N/A'}</TableCell>
+                                    <TableCell>{fb.date ? formatDateForDisplay(fb.date, 'dd/MM/yy HH:mm') : 'N/A'}</TableCell>
                                     <TableCell>{fb.client}</TableCell>
                                     <TableCell>{fb.comment}</TableCell>
                                     <TableCell>{fb.rating}</TableCell>

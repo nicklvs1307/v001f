@@ -2,17 +2,14 @@ const models = require("../../../models");
 // const { subDays } = require("date-fns"); // No longer needed here
 const sequelize = require("sequelize");
 const { Op } = sequelize;
-const {
-  // convertToTimeZone, // No longer needed here
-  convertFromTimeZone,
-} = require("../../utils/dateUtils");
+const { now } = require("../../utils/dateUtils");
 const ratingService = require("../../services/ratingService");
 const { getResponseChart } = require("./charts");
 
 const getOverallResults = async function (
   tenantId = null,
   startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null,   // Changed parameter name
+  endOfDayUtc = null, // Changed parameter name
   surveyId = null,
 ) {
   const whereClause = tenantId ? { tenantId } : {};
@@ -147,7 +144,7 @@ const getOverallResults = async function (
       "45-54": 0,
       "55+": 0,
     };
-    const currentYear = convertFromTimeZone(new Date()).getFullYear();
+    const currentYear = now().getFullYear();
     birthDates.forEach((dob) => {
       const age = currentYear - dob.getFullYear();
       if (age >= 18 && age <= 24) ageGroups["18-24"]++;
@@ -215,7 +212,7 @@ const getOverallResults = async function (
   const responseChartData = await getResponseChart(
     tenantId,
     startOfDayUtc, // Pass the Date object
-    endOfDayUtc,   // Pass the Date object
+    endOfDayUtc, // Pass the Date object
     surveyId,
   );
 

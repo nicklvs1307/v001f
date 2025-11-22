@@ -48,7 +48,7 @@ class SenderPoolService {
       }
 
       // Immediately mark this sender as "in-use" by updating its lastUsedAt
-      sender.lastUsedAt = convertFromTimeZone(new Date());
+      sender.lastUsedAt = now();
       await sender.save({ transaction: t });
 
       return sender;

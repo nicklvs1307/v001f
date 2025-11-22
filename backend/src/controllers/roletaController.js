@@ -1,5 +1,5 @@
 "use strict";
-const { convertFromTimeZone } = require("../utils/dateUtils");
+const { now } = require("../utils/dateUtils");
 const crypto = require("crypto");
 const asyncHandler = require("express-async-handler");
 const { Pesquisa } = require("../../models");
@@ -36,7 +36,7 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
     pesquisaId,
   );
   if (latestCupom) {
-    const now = convertFromTimeZone(new Date());
+    const now = now();
     const lastSpinTime = new Date(latestCupom.dataGeracao);
     const timeDiff = now.getTime() - lastSpinTime.getTime();
     const hoursDiff = timeDiff / (1000 * 3600);
@@ -115,7 +115,7 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
   const randomDigits = Math.floor(1000 + Math.random() * 9000);
   const codigoCupom = `${clienteNome.toUpperCase()}${randomDigits}`;
 
-  const dataValidade = convertFromTimeZone(new Date());
+  const dataValidade = now();
   dataValidade.setDate(dataValidade.getDate() + 30);
 
   const cupomData = {
@@ -219,7 +219,7 @@ exports.getRoletaConfig = asyncHandler(async (req, res) => {
   );
   let hasSpunRecently = false;
   if (latestCupom) {
-    const now = convertFromTimeZone(new Date());
+    const now = now();
     const lastSpinTime = new Date(latestCupom.dataGeracao);
     const timeDiff = now.getTime() - lastSpinTime.getTime();
     const hoursDiff = timeDiff / (1000 * 3600);

@@ -14,10 +14,7 @@ import {
 import dashboardService from '../../services/dashboardService';
 import { useAuth } from '../../context/AuthContext';
 import { startOfMonth, endOfMonth } from 'date-fns';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
+import { getStartOfDayUTC, getEndOfDayUTC, getNowInLocalTimezone } from '../../utils/dateUtils';
 import ChartCard from '../../components/charts/ChartCard';
 import KeyMetrics from '../../components/results/KeyMetrics'; // Assuming this component will be created
 
@@ -28,8 +25,8 @@ const SatisfacaoPage = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const { user } = useAuth();
-    const [startDate, setStartDate] = useState(startOfMonth(new Date()));
-    const [endDate, setEndDate] = useState(endOfMonth(new Date()));
+    const [startDate, setStartDate] = useState(startOfMonth(getNowInLocalTimezone()));
+    const [endDate, setEndDate] = useState(endOfMonth(getNowInLocalTimezone()));
     const [error, setError] = useState(null);
     useEffect(() => {
         const fetchData = async () => {
@@ -179,26 +176,22 @@ const SatisfacaoPage = () => {
                     </Typography>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item xs={12} sm={4}>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DatePicker
-                                    label="Data de Início"
-                                    value={startDate}
-                                    onChange={(newValue) => setStartDate(newValue)}
-                                    inputFormat="dd/MM/yyyy"
-                                    renderInput={(params) => <TextField {...params} fullWidth />}
-                                />
-                            </LocalizationProvider>
+                            <DatePicker
+                                label="Data de Início"
+                                value={startDate}
+                                onChange={(newValue) => setStartDate(newValue)}
+                                inputFormat="dd/MM/yyyy"
+                                renderInput={(params) => <TextField {...params} fullWidth />}
+                            />
                         </Grid>
                         <Grid item xs={12} sm={4}>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DatePicker
-                                    label="Data de Fim"
-                                    value={endDate}
-                                    onChange={(newValue) => setEndDate(newValue)}
-                                    inputFormat="dd/MM/yyyy"
-                                    renderInput={(params) => <TextField {...params} fullWidth />}
-                                />
-                            </LocalizationProvider>
+                            <DatePicker
+                                label="Data de Fim"
+                                value={endDate}
+                                onChange={(newValue) => setEndDate(newValue)}
+                                inputFormat="dd/MM/yyyy"
+                                renderInput={(params) => <TextField {...params} fullWidth />}
+                            />
                         </Grid>
                     </Grid>
                 </CardContent>

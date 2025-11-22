@@ -5,13 +5,13 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { format, startOfMonth, endOfMonth } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
+import { getStartOfDayUTC, getEndOfDayUTC, getNowInLocalTimezone } from '../../utils/dateUtils';
 import { useAuth } from '../../context/AuthContext';
 import dashboardService from '../../services/dashboardService';
 import Dashboard from '../../components/relatorios/Dashboard';
 
 const RelatorioMensal = () => {
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState(getNowInLocalTimezone());
     const [reportData, setReportData] = useState(null);
     const [loading, setLoading] = useState(false);
     const { user } = useAuth();
@@ -49,15 +49,13 @@ const RelatorioMensal = () => {
         <Paper sx={{ p: 3, borderRadius: 4, boxShadow: 3 }}>
             <Typography variant="h4" gutterBottom>Relatório Mensal</Typography>
             <Box mb={3}>
-                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
-                    <DatePicker
-                        label="Selecione o Mês"
-                        views={['year', 'month']}
-                        value={selectedDate}
-                        onChange={(newValue) => setSelectedDate(newValue)}
-                        renderInput={(params) => <TextField {...params} helperText={null} />}
-                    />
-                </LocalizationProvider>
+                <DatePicker
+                    label="Selecione o Mês"
+                    views={['year', 'month']}
+                    value={selectedDate}
+                    onChange={(newValue) => setSelectedDate(newValue)}
+                    renderInput={(params) => <TextField {...params} helperText={null} />}
+                />
             </Box>
 
             {loading ? (

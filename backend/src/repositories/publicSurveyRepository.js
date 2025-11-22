@@ -3,6 +3,7 @@ const whatsappService = require("../services/whatsappService");
 const { sequelize } = require("../database"); // Importa a instância do Sequelize para transações
 const ApiError = require("../errors/ApiError"); // Importar ApiError para validações
 const { v4: uuidv4 } = require("uuid"); // Adicionar import do uuid
+const { now } = require("../utils/dateUtils"); // Importar now
 
 const getAtendentesByTenantId = async (tenantId) => {
   const atendentes = await models.Atendente.findAll({
@@ -365,8 +366,8 @@ const linkResponsesToClient = async (
 
       if (!existingCoupon) {
         const codigo = uuidv4().substring(0, 8).toUpperCase();
-        const dataGeracao = new Date();
-        const dataValidade = new Date();
+        const dataGeracao = now();
+        const dataValidade = now();
         dataValidade.setDate(dataValidade.getDate() + 30); // Set expiration to 30 days
 
         const cupomData = {

@@ -7,7 +7,7 @@ const ratingService = require("../../services/ratingService");
 const getCriteriaScores = async (
   tenantId = null,
   startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null,   // Changed parameter name
+  endOfDayUtc = null, // Changed parameter name
   surveyId = null,
 ) => {
   const responseWhereClause = { ratingValue: { [Op.ne]: null } };
@@ -19,7 +19,10 @@ const getCriteriaScores = async (
   }
   // Use the already processed UTC Date objects
   if (startOfDayUtc && endOfDayUtc) {
-    responseWhereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
+    responseWhereClause.createdAt = {
+      [Op.gte]: startOfDayUtc,
+      [Op.lte]: endOfDayUtc,
+    };
   }
 
   const allRatingResponses = await Resposta.findAll({

@@ -14,7 +14,7 @@ const ratingService = require("../../services/ratingService");
 const getRanking = async (
   tenantId = null,
   startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null,   // Changed parameter name
+  endOfDayUtc = null, // Changed parameter name
   surveyId = null,
 ) => {
   const whereClause = tenantId ? { tenantId } : {};
@@ -63,7 +63,7 @@ const getRanking = async (
 const getAttendantsPerformanceWithGoals = async (
   tenantId = null,
   startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null,   // Changed parameter name
+  endOfDayUtc = null, // Changed parameter name
   surveyId = null,
 ) => {
   const whereClause = tenantId ? { tenantId } : {};
@@ -145,7 +145,7 @@ const getAttendantDetailsById = async (
   tenantId,
   attendantId,
   startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null,   // Changed parameter name
+  endOfDayUtc = null, // Changed parameter name
 ) => {
   const whereClause = { atendenteId: attendantId };
   if (tenantId) {

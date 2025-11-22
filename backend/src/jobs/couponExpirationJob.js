@@ -1,5 +1,5 @@
 const cron = require("node-cron");
-const { convertFromTimeZone } = require("../utils/dateUtils");
+const { now } = require("../utils/dateUtils");
 const { startOfDay } = require("date-fns");
 const { Op } = require("sequelize");
 const { Cupom } = require("../../models");
@@ -13,7 +13,7 @@ const task = cron.schedule(
     console.log("[Job] Iniciando verificação de cupons expirados...");
 
     try {
-      const today = convertFromTimeZone(new Date());
+      const today = now();
       const startOfToday = startOfDay(today);
 
       const [updateCount] = await Cupom.update(

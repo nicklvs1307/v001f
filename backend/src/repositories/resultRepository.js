@@ -1,5 +1,6 @@
 const { Pesquisa, Pergunta, Resposta } = require("../../models"); // Importa os modelos do Sequelize
-const { convertFromTimeZone } = require("../utils/dateUtils");
+const { now } = require("../utils/dateUtils");
+const { startOfDay, endOfDay } = require("date-fns");
 const { Op, Sequelize } = require("sequelize");
 
 const getSurveyDetails = async (surveyId, tenantId = null) => {
@@ -57,11 +58,9 @@ const getResponsesBySurveyId = async (
 };
 
 const getDailyStats = async (tenantId) => {
-  const yesterday = convertFromTimeZone(new Date());
-  yesterday.setDate(yesterday.getDate() - 1);
-  const startOfYesterday = new Date(yesterday.setHours(0, 0, 0, 0));
-  const endOfYesterday = new Date(yesterday.setHours(23, 59, 59, 999));
-
+  const yesterday = now();
+  const startOfYesterday = startOfDay(yesterday);
+  const endOfYesterday = endOfDay(yesterday);
   const stats = await Resposta.findAll({
     where: {
       tenantId,

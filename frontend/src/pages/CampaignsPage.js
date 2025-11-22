@@ -36,6 +36,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 import campanhaService from '../services/campanhaService';
 import AuthContext from '../context/AuthContext';
+import { formatDateForDisplay } from '../utils/dateUtils';
 
 const statusStyles = {
   draft: { label: 'Rascunho', color: 'grey.500' },
@@ -248,7 +249,7 @@ const CampaignsPage = () => {
                           </Typography>
                         </Box>
                         <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 1.5 }}>
-                          Criada em: {new Date(campaign.createdAt).toLocaleDateString()}
+                          Criada em: {formatDateForDisplay(campaign.createdAt, 'dd/MM/yyyy')}
                         </Typography>
                       </CardContent>
                       <CardActions sx={{ justifyContent: 'flex-end', pt: 0 }}>

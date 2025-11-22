@@ -1,5 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
+import { addDays } from 'date-fns';
+import { getNowInLocalTimezone, formatDateForDisplay } from '../utils/dateUtils';
 import {
     Container, Typography, Box, CircularProgress, Alert, Grid, Card, CardContent, Avatar, Button,
     Dialog, DialogTitle, DialogContent, DialogActions, TextField, Snackbar, Select, MenuItem, FormControl, InputLabel
@@ -96,8 +98,7 @@ const BirthdayClientsPage = () => {
         try {
             const cupomData = {
                 recompensaId: selectedRecompensa,
-                clienteId: selectedClient.id,
-                dataValidade: new Date(new Date().setDate(new Date().getDate() + 30)), // 30 dias de validade
+                dataValidade: addDays(getNowInLocalTimezone(), 30), // 30 dias de validade
             };
 
             const cupom = await cupomService.generateCupom(cupomData);
@@ -164,7 +165,7 @@ const BirthdayClientsPage = () => {
                 const cupomData = {
                     recompensaId: selectedRecompensa,
                     clienteId: client.id,
-                    dataValidade: new Date(new Date().setDate(new Date().getDate() + 30)), // 30 dias de validade
+                    dataValidade: addDays(getNowInLocalTimezone(), 30), // 30 dias de validade
                 };
                 const cupom = await cupomService.generateCupom(cupomData);
                 const message = `Feliz aniversário, ${client.name}! Você ganhou um cupom de ${recompensa.name}: ${cupom.codigo}`;
@@ -225,7 +226,7 @@ const BirthdayClientsPage = () => {
                                         <Box>
                                             <Typography variant="h6">{client.name}</Typography>
                                             <Typography variant="body2" color="text.secondary">
-                                                Aniversário: {new Date(client.birthDate).toLocaleDateString('pt-BR', { month: 'long', day: 'numeric' })}
+                                                Aniversário: {formatDateForDisplay(client.birthDate, 'LLLL d', 'pt-BR')}
                                             </Typography>
                                         </Box>
                                     </Box>

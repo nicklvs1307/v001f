@@ -80,7 +80,7 @@ const sendSystemMessage = async (number, message) => {
   }
 };
 
-const sendTenantMessage = async (tenantId, number, message) => {
+const getTenantWhatsappConfig = async (tenantId) => {
   const config = await WhatsappConfig.findOne({ where: { tenantId } });
 
   if (!config || !config.url || !config.apiKey || !config.instanceName) {
@@ -91,6 +91,11 @@ const sendTenantMessage = async (tenantId, number, message) => {
   if (config.instanceStatus !== "connected") {
     throw new Error("A instância do WhatsApp desta loja não está conectada.");
   }
+  return config;
+};
+
+const sendTenantMessage = async (tenantId, number, message) => {
+  const config = await getTenantWhatsappConfig(tenantId);
   const finalNumber = normalizeNumber(number);
   console.log(
     `[WhatsApp Service] Enviando mensagem de tenant ${tenantId} para: ${finalNumber}`,
@@ -129,16 +134,7 @@ const sendTenantMessage = async (tenantId, number, message) => {
 };
 
 const sendTenantMediaMessage = async (tenantId, number, mediaUrl, caption) => {
-  const config = await WhatsappConfig.findOne({ where: { tenantId } });
-
-  if (!config || !config.url || !config.apiKey || !config.instanceName) {
-    throw new Error(
-      "A configuração do WhatsApp para esta loja não foi encontrada ou está incompleta.",
-    );
-  }
-  if (config.instanceStatus !== "connected") {
-    throw new Error("A instância do WhatsApp desta loja não está conectada.");
-  }
+  const config = await getTenantWhatsappConfig(tenantId);
   const finalNumber = normalizeNumber(number);
   console.log(
     `[WhatsApp Service] Enviando mensagem com mídia de tenant ${tenantId} para: ${finalNumber}`,
@@ -192,16 +188,7 @@ const sendTenantMediaMessage = async (tenantId, number, mediaUrl, caption) => {
 };
 
 const sendTenantAudioMessage = async (tenantId, number, mediaUrl) => {
-  const config = await WhatsappConfig.findOne({ where: { tenantId } });
-
-  if (!config || !config.url || !config.apiKey || !config.instanceName) {
-    throw new Error(
-      "A configuração do WhatsApp para esta loja não foi encontrada ou está incompleta.",
-    );
-  }
-  if (config.instanceStatus !== "connected") {
-    throw new Error("A instância do WhatsApp desta loja não está conectada.");
-  }
+  const config = await getTenantWhatsappConfig(tenantId);
   const finalNumber = normalizeNumber(number);
   console.log(
     `[WhatsApp Service] Enviando mensagem de áudio de tenant ${tenantId} para: ${finalNumber}`,
@@ -242,20 +229,11 @@ const sendTenantAudioMessage = async (tenantId, number, mediaUrl) => {
 
 // --- NEW METHODS FOR CAMPAIGN SENDER POOL ---
 
-const sendCampaignMessage = async (sender, number, message, delay = 1200) => {
-  const finalNumber = normalizeNumber(number);
-  console.log(
-    `[WhatsApp Service] Enviando mensagem de CAMPANHA com disparador ${sender.name} para: ${finalNumber}`,
-  );
-
+const sendCampaignRequest = async (sender, endpoint, payload) => {
   try {
     const response = await axios.post(
-      `${sender.apiUrl}/message/sendText/${sender.instanceName}`,
-      {
-        number: finalNumber,
-        text: message,
-        options: { delay, presence: "composing" },
-      },
+      `${sender.apiUrl}/${endpoint}/${sender.instanceName}`,
+      payload,
       {
         headers: { "Content-Type": "application/json", apikey: sender.apiKey },
       },
@@ -278,6 +256,21 @@ const sendCampaignMessage = async (sender, number, message, delay = 1200) => {
     }
     throw error; // Re-throw to be handled by campaignService
   }
+};
+
+const sendCampaignMessage = async (sender, number, message, delay = 1200) => {
+  const finalNumber = normalizeNumber(number);
+  console.log(
+    `[WhatsApp Service] Enviando mensagem de CAMPANHA com disparador ${sender.name} para: ${finalNumber}`,
+  );
+
+  const payload = {
+    number: finalNumber,
+    text: message,
+    options: { delay, presence: "composing" },
+  };
+
+  return sendCampaignRequest(sender, "message/sendText", payload);
 };
 
 const sendCampaignMediaMessage = async (
@@ -304,39 +297,16 @@ const sendCampaignMediaMessage = async (
     return sendCampaignAudioMessage(sender, number, mediaUrl, delay);
   }
 
-  try {
-    const response = await axios.post(
-      `${sender.apiUrl}/message/sendMedia/${sender.instanceName}`,
-      {
-        number: finalNumber,
-        mediatype: "image",
-        mimetype: mimetype,
-        caption: caption,
-        media: fullMediaUrl,
-        fileName: fileName,
-      },
-      {
-        headers: { "Content-Type": "application/json", apikey: sender.apiKey },
-      },
-    );
-    return response.data;
-  } catch (error) {
-    console.error(
-      `[WhatsApp Service] Falha ao enviar mensagem de CAMPANHA com mídia com disparador ${sender.name}.`,
-    );
-    if (error.response) {
-      console.error(
-        "[WhatsApp Service] Erro detalhado da API:",
-        JSON.stringify(error.response.data, null, 2),
-      );
-    } else {
-      console.error(
-        "[WhatsApp Service] Erro sem resposta da API:",
-        error.message,
-      );
-    }
-    throw error; // Re-throw to be handled by campaignService
-  }
+  const payload = {
+    number: finalNumber,
+    mediatype: "image",
+    mimetype: mimetype,
+    caption: caption,
+    media: fullMediaUrl,
+    fileName: fileName,
+  };
+
+  return sendCampaignRequest(sender, "message/sendMedia", payload);
 };
 
 const sendCampaignAudioMessage = async (
@@ -352,36 +322,13 @@ const sendCampaignAudioMessage = async (
 
   const fullMediaUrl = `${process.env.BACKEND_URL}${mediaUrl}`;
 
-  try {
-    const response = await axios.post(
-      `${sender.apiUrl}/message/sendWhatsAppAudio/${sender.instanceName}`,
-      {
-        number: finalNumber,
-        audio: fullMediaUrl,
-        options: { delay },
-      },
-      {
-        headers: { "Content-Type": "application/json", apikey: sender.apiKey },
-      },
-    );
-    return response.data;
-  } catch (error) {
-    console.error(
-      `[WhatsApp Service] Falha ao enviar mensagem de CAMPANHA com áudio com disparador ${sender.name}.`,
-    );
-    if (error.response) {
-      console.error(
-        "[WhatsApp Service] Erro detalhado da API:",
-        JSON.stringify(error.response.data, null, 2),
-      );
-    } else {
-      console.error(
-        "[WhatsApp Service] Erro sem resposta da API:",
-        error.message,
-      );
-    }
-    throw error; // Re-throw to be handled by campaignService
-  }
+  const payload = {
+    number: finalNumber,
+    audio: fullMediaUrl,
+    options: { delay },
+  };
+
+  return sendCampaignRequest(sender, "message/sendWhatsAppAudio", payload);
 };
 
 const sendInstanteDetractorMessage = async (tenant, detractorResponse) => {

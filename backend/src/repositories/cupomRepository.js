@@ -1,6 +1,7 @@
 const { Cupom, Recompensa, Client } = require("../../models");
-const { convertFromTimeZone } = require("../utils/dateUtils");
+const { now } = require("../utils/dateUtils");
 const { Op, fn, col } = require("sequelize");
+const { subDays, addDays } = require("date-fns");
 
 class CupomRepository {
   async bulkCreate(cupons) {
@@ -50,11 +51,9 @@ class CupomRepository {
 
   async getCuponsSummary(tenantId = null) {
     const whereClause = tenantId ? { tenantId } : {};
-    const today = convertFromTimeZone(new Date());
-    const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
-    const sevenDaysFromNow = new Date(
-      today.getTime() + 7 * 24 * 60 * 60 * 1000,
-    );
+    const today = now();
+    const thirtyDaysAgo = subDays(today, 30);
+    const sevenDaysFromNow = addDays(today, 7);
 
     const summary = await Cupom.findOne({
       where: whereClause,

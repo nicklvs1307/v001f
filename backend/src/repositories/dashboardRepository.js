@@ -1119,13 +1119,8 @@ const dashboardRepository = {
   },
 };
 
-module.exports = {
-  ...dashboardRepository,
-
-  /**
-   * Retorna um resumo de dados para um determinado período.
-   */
-  getMonthSummary: async (tenantId = null, startDate = null, endDate = null) => {
+// Adiciona as funções que faltavam
+dashboardRepository.getMonthSummary = async (tenantId = null, startDate = null, endDate = null) => {
     const whereClause = tenantId ? { tenantId } : {};
     const dateFilter = {};
     if (startDate) dateFilter[Op.gte] = startDate;
@@ -1179,12 +1174,9 @@ module.exports = {
       couponsUsed,
       npsScore: parseFloat(npsScore.toFixed(1)),
     };
-  },
+  };
 
-  /**
-   * Retorna todos os feedbacks com comentários para um determinado período.
-   */
-  getAllFeedbacksForPeriod: async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
+dashboardRepository.getAllFeedbacksForPeriod = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
     const whereClause = {
       tenantId,
       textValue: { [Op.ne]: null, [Op.ne]: "" },
@@ -1232,6 +1224,7 @@ module.exports = {
       nps: feedback.ratingValue !== null ? feedback.ratingValue : null,
       comment: feedback.textValue,
     }));
-  },
-};
+  };
+
+module.exports = dashboardRepository;
 

@@ -1,23 +1,22 @@
- => ERROR [build 6/6] RUN npm run build                                                      216.4s
+ => ERROR [build 6/6] RUN npm run build                                                      210.8s
 ------
  > [build 6/6] RUN npm run build:
-0.612
-0.612 > frontend@0.1.0 build
-0.612 > react-scripts build
-0.612
-2.312 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-4.391 Creating an optimized production build...
-208.2 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-216.0 Failed to compile.
-216.0
-216.0 [eslint]
-216.0 src/pages/Geral/SatisfacaoPage.js
-216.0   Line 179:30:  'DatePicker' is not defined  react/jsx-no-undef
-216.0   Line 188:30:  'DatePicker' is not defined  react/jsx-no-undef
-216.0
-216.0 Search for the keywords to learn more about each error.
-216.0
-216.0
+0.925
+0.925 > frontend@0.1.0 build
+0.925 > react-scripts build
+0.925
+2.897 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+4.949 Creating an optimized production build...
+204.6 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+210.4 Failed to compile.
+210.4
+210.4 [eslint]
+210.4 src/pages/DashboardPage.js
+210.4   Line 621:30:  'ChartCard' is not defined  react/jsx-no-undef
+210.4
+210.4 Search for the keywords to learn more about each error.
+210.4
+210.4
 ------
 Dockerfile:14
 --------------------

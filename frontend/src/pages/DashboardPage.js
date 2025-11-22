@@ -47,6 +47,7 @@ import { formatDateForDisplay, getStartOfDayUTC, getEndOfDayUTC } from '../utils
 import dashboardService from '../services/dashboardService';
 import DetailsModal from '../components/Dashboard/DetailsModal';
 import AttendantDetailsModal from '../components/Dashboard/AttendantDetailsModal';
+import ChartCard from '../components/charts/ChartCard';
 
 import { keyframes } from '@mui/system';
 

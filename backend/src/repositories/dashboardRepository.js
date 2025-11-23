@@ -99,11 +99,11 @@ const dashboardRepository = {
     // A lógica foi ajustada para contar clientes únicos que foram promotores no período selecionado.
     const uniquePromoterClientsInPeriod = await Resposta.count({
       distinct: true,
-      col: "clientId",
+      col: "respondentSessionId",
       where: {
         ...periodWhere,
         ratingValue: { [Op.gte]: 9 },
-        clientId: { [Op.ne]: null },
+        respondentSessionId: { [Op.ne]: null },
       },
     });
 

@@ -1,27 +1,6 @@
- => ERROR [build 6/6] RUN npm run build                                                      216.6s
-------
- > [build 6/6] RUN npm run build:
-0.739
-0.739 > frontend@0.1.0 build
-0.739 > react-scripts build
-0.739
-2.534 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-4.546 Creating an optimized production build...
-208.0 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-216.1 Failed to compile.
-216.1
-216.2 [eslint]
-216.2 src/pages/DashboardPage.js
-216.2 Syntax error: Expected corresponding JSX closing tag for <Typography>. (627:24) (627:24)
-216.2
-216.2
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+{
+    "status": "error",
+    "code": "HTTP_500",
+    "message": "column \"clientId\" does not exist",
+    "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.rawSelect (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:434:18)\n    at async Resposta.aggregate (/usr/src/app/node_modules/sequelize/lib/model.js:1277:19)\n    at async Resposta.count (/usr/src/app/node_modules/sequelize/lib/model.js:1306:20)\n    at async Object.getSummary (/usr/src/app/src/repositories/dashboardRepository.js:100:43)\n    at async Promise.all (index 0)\n    at async Object.getMainDashboard (/usr/src/app/src/repositories/dashboardRepository.js:779:9)\n    at async /usr/src/app/src/controllers/dashboardController.js:9:27"
+}

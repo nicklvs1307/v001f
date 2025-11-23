@@ -81,9 +81,9 @@ const dailyReportTask = cron.schedule(
           `*Relatorio Diario ${tenant.name}*\n\n` +
           `Aqui está o resumo da experiência dos seus clientes no dia ${formattedDate}!\n` +
           `📊 Total de respostas: ${yesterdaySummary.totalResponses} ${diffText}\n` +
-          `🟢 Número de Promotores: ${yesterdaySummary.promoters}\n` +
-          `🟡 Número de Neutros: ${yesterdaySummary.neutrals}\n` +
-          `🔴 Número de Detratores: ${yesterdaySummary.detractors}\n\n` +
+          `🟢 Número de Promotores: ${yesterdaySummary.nps.promoters}\n` +
+          `🟡 Número de Neutros: ${yesterdaySummary.nps.neutrals}\n` +
+          `🔴 Número de Detratores: ${yesterdaySummary.nps.detractors}\n\n` +
           `🔗 Para acessar o sistema, visite ${reportUrl}`;
 
         // Send to each configured number using sendTenantMessage

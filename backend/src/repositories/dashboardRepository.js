@@ -56,6 +56,8 @@ const dashboardRepository = {
       npsNeutrals = 0,
       npsDetractors = 0;
     let csatSatisfied = 0,
+      csatNeutrals = 0,
+      csatUnsatisfied = 0,
       csatTotalScore = 0,
       csatCount = 0;
 
@@ -70,11 +72,17 @@ const dashboardRepository = {
         else npsDetractors++;
       }
       
-      // CSAT Calculation (assuming 1-5 scale)
+      // CSAT Calculation (1-5 scale)
       if (pergunta.type === "rating_1_5" || pergunta.type === "rating") {
         csatTotalScore += ratingValue;
         csatCount++;
-        if (ratingValue >= 4) csatSatisfied++; // 4 and 5 are satisfied
+        if (ratingValue >= 4) {
+            csatSatisfied++; // 4 and 5 are satisfied
+        } else if (ratingValue === 3) {
+            csatNeutrals++; // 3 is neutral
+        } else {
+            csatUnsatisfied++; // 1 and 2 are unsatisfied
+        }
       }
     });
 
@@ -135,7 +143,8 @@ const dashboardRepository = {
         averageScore: parseFloat(csatAverageScore.toFixed(1)),
         satisfactionRate: parseFloat(csatSatisfactionRate.toFixed(1)),
         satisfied: csatSatisfied,
-        unsatisfied: csatCount - csatSatisfied,
+        neutral: csatNeutrals,
+        unsatisfied: csatUnsatisfied,
         total: csatCount,
       },
       registrations: registrationsInPeriod,
@@ -816,7 +825,7 @@ const dashboardRepository = {
         detractors: item.detractors,
         total: item.total,
       })),
-      overallResults: { // Manter overallResults para o DashboardPage.js
+      overallResults: {
         scoresByCriteria: npsByCriteria.map(item => ({
           criterion: item.name,
           npsScore: item.nps,
@@ -825,7 +834,9 @@ const dashboardRepository = {
           neutrals: item.neutrals,
           detractors: item.detractors,
           total: item.total,
-        }))
+        })),
+        overallNPS: summary.nps,
+        overallCSAT: summary.csat,
       },
       demographics: { // Adicionando objeto demographics vazio para evitar crash no frontend
         ageDistribution: [],

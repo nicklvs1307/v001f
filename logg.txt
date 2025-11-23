@@ -1,17 +1,17 @@
- => ERROR [build 6/6] RUN npm run build                                                       21.9s
+ => ERROR [build 6/6] RUN npm run build                                                       24.6s
 ------
  > [build 6/6] RUN npm run build:
-0.824
-0.824 > frontend@0.1.0 build
-0.824 > react-scripts build
-0.824
-2.706 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-4.710 Creating an optimized production build...
-21.65 Failed to compile.
-21.65
-21.65 Module not found: Error: Can't resolve '../components/dashboard/CriteriaBarChart' in '/app/src/pages'
-21.65
-21.65
+0.878
+0.878 > frontend@0.1.0 build
+0.878 > react-scripts build
+0.878
+2.899 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+5.051 Creating an optimized production build...
+24.38 Failed to compile.
+24.38
+24.38 Module not found: Error: Can't resolve '../../components/relatorios/RelatorioDiarioDashboard' in '/app/src/pages/Relatorios'
+24.38
+24.38
 ------
 Dockerfile:14
 --------------------

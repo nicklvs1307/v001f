@@ -18,7 +18,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { ptBR } from 'date-fns/locale';
 import dashboardService from '../../services/dashboardService';
 import { useAuth } from '../../context/AuthContext';
-import RelatorioDiarioDashboard from '../../components/relatorios/RelatorioDiarioDashboard';
+import RelatorioDiarioDashboard from '../../components/relatorios/Dashboard';
 
 const RelatorioDiario = () => {
     const [reportData, setReportData] = useState(null);

@@ -5,12 +5,13 @@ const dashboardRepository = require("../repositories/dashboardRepository");
 const dashboardController = {
   getMainDashboard: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? req.query.tenantId : req.user.tenantId;
-    const { startDate, endDate, period } = req.query;
+    const { startDate, endDate, period, surveyId } = req.query;
     const dashboardData = await dashboardRepository.getMainDashboard(
       tenantId,
       startDate,
       endDate,
       period,
+      surveyId
     );
     res.status(200).json(dashboardData);
   }),
@@ -96,7 +97,7 @@ const dashboardController = {
   getEvolutionDashboard: asyncHandler(async (req, res) => {
     const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
     const { period, startDate, endDate } = req.query;
-    const evolutionData = await dashboardRepository.getNpsTrendData(
+    const evolutionData = await dashboardRepository.getEvolutionData(
       tenantId,
       period,
       startDate,

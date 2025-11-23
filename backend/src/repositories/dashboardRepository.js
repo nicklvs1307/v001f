@@ -16,9 +16,13 @@ const { startOfMonth } = require("date-fns");
 
 const { fn, col, literal } = Sequelize;
 
-const getSummary = async (tenantId = null, startDate = null, endDate = null) => {
+const getSummary = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
   // --- FILTROS ---
   const baseWhere = tenantId ? { tenantId } : {};
+  if (surveyId) {
+    baseWhere.pesquisaId = surveyId;
+  }
+
 
   const periodDateFilter = {};
   if (startDate) periodDateFilter[Op.gte] = startDate;
@@ -273,7 +277,7 @@ const getFeedbacks = async (tenantId = null, startDate = null, endDate = null) =
   }));
 };
 
-const getNpsByCriteria = async (tenantId = null, startDate = null, endDate = null) => {
+const getNpsByCriteria = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
   const whereClause = { tenantId: tenantId || { [Op.ne]: null } };
 
   const dateFilter = {};
@@ -286,6 +290,9 @@ const getNpsByCriteria = async (tenantId = null, startDate = null, endDate = nul
   }
   if (tenantId) {
     responseWhere.tenantId = tenantId;
+  }
+  if (surveyId) {
+    responseWhere.pesquisaId = surveyId;
   }
 
   const criterios = await Criterio.findAll({
@@ -379,9 +386,8 @@ const getNpsDistribution = async (tenantId = null, startDate = null, endDate = n
   ];
 };
 
-const getNpsTrendData = async (tenantId = null, period = "day", startDate = null, endDate = null) => {
-  const whereClause = { ratingValue: { [Op.ne]: null } };
-  if (tenantId) whereClause.tenantId = tenantId;
+const getEvolutionData = async (tenantId = null, period = "day", startDate = null, endDate = null) => {
+  const whereClause = { tenantId: tenantId || { [Op.ne]: null } };
   const dateFilter = {};
   if (startDate) dateFilter[Op.gte] = startDate;
   if (endDate) dateFilter[Op.lte] = endDate;
@@ -389,30 +395,69 @@ const getNpsTrendData = async (tenantId = null, period = "day", startDate = null
     whereClause.createdAt = dateFilter;
   }
 
-  const trendData = await Resposta.findAll({
+  const responseTrends = await Resposta.findAll({
     where: whereClause,
-    include: [{ model: Pergunta, as: 'pergunta', attributes: [], where: { type: 'rating_0_10' }, required: true }],
     attributes: [
       [fn("date_trunc", period, col("Resposta.createdAt")), "period"],
-      [fn("SUM", literal(`CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END`)), "promoters"],
-      [fn("SUM", literal(`CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END`)), "detractors"],
-      [fn("COUNT", col("Resposta.id")), "total"],
+      [fn("SUM", literal(`CASE WHEN "pergunta"."type" = 'rating_0_10' AND "ratingValue" >= 9 THEN 1 ELSE 0 END`)), "promoters"],
+      [fn("SUM", literal(`CASE WHEN "pergunta"."type" = 'rating_0_10' AND "ratingValue" <= 6 THEN 1 ELSE 0 END`)), "detractors"],
+      [fn("SUM", literal(`CASE WHEN "pergunta"."type" = 'rating_0_10' THEN 1 ELSE 0 END`)), "nps_total"],
+      [fn("SUM", literal(`CASE WHEN "pergunta"."type" IN ('rating_1_5', 'rating') AND "ratingValue" >= 4 THEN 1 ELSE 0 END`)), "satisfied"],
+      [fn("SUM", literal(`CASE WHEN "pergunta"."type" IN ('rating_1_5', 'rating') THEN 1 ELSE 0 END`)), "csat_total"],
+      [fn("COUNT", col("Resposta.id")), "responses"],
     ],
+    include: [{ model: Pergunta, as: "pergunta", attributes: [] }],
     group: [fn("date_trunc", period, col("Resposta.createdAt"))],
     order: [[fn("date_trunc", period, col("Resposta.createdAt")), "ASC"]],
+    raw: true,
   });
 
-  return trendData.map((item) => {
-    const { period, promoters: p, detractors: d, total: t } = item.dataValues;
-    const promoters = parseInt(p) || 0;
-    const detractors = parseInt(d) || 0;
-    const total = parseInt(t) || 0;
-    const nps = total > 0 ? ((promoters - detractors) / total) * 100 : 0;
-    return {
-      period: formatInTimeZone(period, 'dd/MM'),
-      nps: parseFloat(nps.toFixed(1)),
-    };
+  const registrationTrends = await Client.findAll({
+    where: whereClause,
+    attributes: [
+      [fn("date_trunc", period, col("createdAt")), "period"],
+      [fn("COUNT", col("id")), "registrations"],
+    ],
+    group: [fn("date_trunc", period, col("createdAt"))],
+    order: [[fn("date_trunc", period, col("createdAt")), "ASC"]],
+    raw: true,
   });
+
+  const mergedData = {};
+
+  const processItems = (items, key, valueCallback) => {
+    items.forEach(item => {
+      const periodKey = new Date(item.period).toISOString();
+      if (!mergedData[periodKey]) {
+        mergedData[periodKey] = {
+          period: formatInTimeZone(item.period, 'dd/MM/yyyy'),
+          nps: 0,
+          satisfaction: 0,
+          responses: 0,
+          registrations: 0,
+        };
+      }
+      mergedData[periodKey][key] = valueCallback(item);
+    });
+  };
+
+  processItems(responseTrends, 'nps', item => {
+    const promoters = parseInt(item.promoters) || 0;
+    const detractors = parseInt(item.detractors) || 0;
+    const total = parseInt(item.nps_total) || 0;
+    return total > 0 ? parseFloat((((promoters - detractors) / total) * 100).toFixed(1)) : 0;
+  });
+
+  processItems(responseTrends, 'satisfaction', item => {
+    const satisfied = parseInt(item.satisfied) || 0;
+    const total = parseInt(item.csat_total) || 0;
+    return total > 0 ? parseFloat(((satisfied / total) * 100).toFixed(1)) : 0;
+  });
+
+  processItems(responseTrends, 'responses', item => parseInt(item.responses) || 0);
+  processItems(registrationTrends, 'registrations', item => parseInt(item.registrations) || 0);
+
+  return Object.values(mergedData).sort((a, b) => new Date(a.period.split('/').reverse().join('-')) - new Date(b.period.split('/').reverse().join('-')));
 };
 
 const getConversionChartData = async (tenantId = null, startDate = null, endDate = null) => {
@@ -834,7 +879,7 @@ const getDetails = async (tenantId, startDate, endDate, category) => {
     }
 };
 
-const getMainDashboard = async (tenantId = null, startDate = null, endDate = null, period = "day") => {
+const getMainDashboard = async (tenantId = null, startDate = null, endDate = null, period = "day", surveyId = null) => {
   const [
     summary,
     responseChart,
@@ -850,11 +895,11 @@ const getMainDashboard = async (tenantId = null, startDate = null, endDate = nul
     demographics,
     clientStatusCounts,
   ] = await Promise.all([
-    getSummary(tenantId, startDate, endDate),
+    getSummary(tenantId, startDate, endDate, surveyId),
     getResponseChart(tenantId, startDate, endDate, period),
     getNpsTrendData(tenantId, period, startDate, endDate),
     getNpsDistribution(tenantId, startDate, endDate),
-    getNpsByCriteria(tenantId, startDate, endDate), // This now returns the new shape
+    getNpsByCriteria(tenantId, startDate, endDate, surveyId), // This now returns the new shape
     getFeedbacks(tenantId, startDate, endDate),
     getAttendantsPerformance(tenantId, startDate, endDate),
     getWordCloudData(tenantId, startDate, endDate),
@@ -923,7 +968,7 @@ const dashboardRepository = {
   getFeedbacks,
   getNpsByCriteria,
   getNpsDistribution,
-  getNpsTrendData,
+  getEvolutionData,
   getConversionChartData,
   getWordCloudData,
   getNpsByDayOfWeek,
@@ -931,7 +976,7 @@ const dashboardRepository = {
   getAttendantDetails,
   getResponseDetails,
   getDemographicsData,
-  getMonthSummary,
+getMonthSummary,
   getDetails,
   getClientStatusCounts,
   getMainDashboard,

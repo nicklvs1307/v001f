@@ -273,56 +273,73 @@ const getFeedbacks = async (tenantId = null, startDate = null, endDate = null) =
 };
 
 const getNpsByCriteria = async (tenantId = null, startDate = null, endDate = null) => {
-  const responseWhereClause = { ratingValue: { [Op.ne]: null } };
-  if (tenantId) {
-    responseWhereClause.tenantId = tenantId;
-  }
+  const whereClause = { tenantId: tenantId || { [Op.ne]: null } };
+
   const dateFilter = {};
   if (startDate) dateFilter[Op.gte] = startDate;
   if (endDate) dateFilter[Op.lte] = endDate;
+  
+  const responseWhere = { ratingValue: { [Op.ne]: null } };
   if (Object.keys(dateFilter).length > 0) {
-    responseWhereClause.createdAt = dateFilter;
+    responseWhere.createdAt = dateFilter;
+  }
+  if (tenantId) {
+    responseWhere.tenantId = tenantId;
   }
 
-  const npsData = await Criterio.findAll({
-    attributes: [
-      "id",
-      "name",
-      [fn("SUM", literal(`CASE WHEN "perguntas->respostas"."ratingValue" >= 9 THEN 1 ELSE 0 END`)), "promoters"],
-      [fn("SUM", literal(`CASE WHEN "perguntas->respostas"."ratingValue" <= 6 THEN 1 ELSE 0 END`)), "detractors"],
-      [fn("COUNT", col("perguntas->respostas.id")), "total"],
-    ],
+  const criterios = await Criterio.findAll({
+    where: whereClause,
     include: [{
       model: Pergunta,
-      as: "perguntas",
-      attributes: [],
-      required: true,
-      where: { type: "rating_0_10" },
+      as: 'perguntas',
+      where: {
+        type: { [Op.in]: ['rating_0_10', 'rating_1_5', 'rating'] }
+      },
       include: [{
         model: Resposta,
-        as: "respostas",
-        attributes: [],
-        where: responseWhereClause,
-        required: true,
-      }],
-    }],
-    group: ["Criterio.id", "Criterio.name"],
+        as: 'respostas',
+        where: responseWhere,
+        required: false, // Use left join to get all questions, even without answers in the period
+      }]
+    }]
   });
 
-  return npsData.map((item) => {
-    const promoters = parseInt(item.dataValues.promoters) || 0;
-    const detractors = parseInt(item.dataValues.detractors) || 0;
-    const total = parseInt(item.dataValues.total) || 0;
-    const nps = total > 0 ? ((promoters - detractors) / total) * 100 : 0;
-    return {
-      name: item.name,
-      nps: parseFloat(nps.toFixed(1)),
-      promoters,
-      detractors,
-      neutrals: total - promoters - detractors,
-      total,
+  const results = criterios.map(criterio => {
+    const result = {
+      criterion: criterio.name,
+      good: 0,
+      neutral: 0,
+      bad: 0,
     };
+
+    if (!criterio.perguntas || criterio.perguntas.length === 0) {
+      return result;
+    }
+
+    // Assuming one rating question per criterion for simplicity
+    const pergunta = criterio.perguntas[0];
+    
+    if (!pergunta || !pergunta.respostas) {
+      return result;
+    }
+
+    pergunta.respostas.forEach(resposta => {
+      const value = resposta.ratingValue;
+      if (pergunta.type === 'rating_0_10') {
+        if (value >= 9) result.good++;
+        else if (value >= 7) result.neutral++;
+        else if (value <= 6) result.bad++;
+      } else if (pergunta.type === 'rating_1_5' || pergunta.type === 'rating') {
+        if (value >= 4) result.good++;
+        else if (value === 3) result.neutral++;
+        else if (value <= 2) result.bad++;
+      }
+    });
+
+    return result;
   });
+
+  return results.filter(r => r.good > 0 || r.neutral > 0 || r.bad > 0); // Only return criteria with responses
 };
 
 const getNpsDistribution = async (tenantId = null, startDate = null, endDate = null) => {
@@ -822,7 +839,7 @@ const getMainDashboard = async (tenantId = null, startDate = null, endDate = nul
     responseChart,
     npsTrend,
     npsDistribution,
-    npsByCriteria,
+    scoresByCriteriaData,
     feedbacks,
     attendantsPerformance,
     wordCloudData,
@@ -836,7 +853,7 @@ const getMainDashboard = async (tenantId = null, startDate = null, endDate = nul
     getResponseChart(tenantId, startDate, endDate, period),
     getNpsTrendData(tenantId, period, startDate, endDate),
     getNpsDistribution(tenantId, startDate, endDate),
-    getNpsByCriteria(tenantId, startDate, endDate),
+    getNpsByCriteria(tenantId, startDate, endDate), // This now returns the new shape
     getFeedbacks(tenantId, startDate, endDate),
     getAttendantsPerformance(tenantId, startDate, endDate),
     getWordCloudData(tenantId, startDate, endDate),
@@ -846,6 +863,14 @@ const getMainDashboard = async (tenantId = null, startDate = null, endDate = nul
     getDemographicsData(tenantId, startDate, endDate),
     getClientStatusCounts(tenantId, startDate, endDate),
   ]);
+
+  const mappedScoresByCriteria = scoresByCriteriaData.map(item => ({
+      criterion: item.criterion,
+      promoters: item.good,
+      neutrals: item.neutral,
+      detractors: item.bad,
+      total: item.good + item.neutral + item.bad
+  }));
 
   return {
     summary,
@@ -859,25 +884,9 @@ const getMainDashboard = async (tenantId = null, startDate = null, endDate = nul
     npsByDayOfWeek,
     surveysRespondedChart,
     clientStatusCounts,
-    criteriaScores: npsByCriteria.map(item => ({
-      criterion: item.name,
-      npsScore: item.nps,
-      scoreType: 'NPS',
-      promoters: item.promoters,
-      neutrals: item.neutrals,
-      detractors: item.detractors,
-      total: item.total,
-    })),
+    criteriaScores: mappedScoresByCriteria,
     overallResults: {
-      scoresByCriteria: npsByCriteria.map(item => ({
-        criterion: item.name,
-        npsScore: item.nps,
-        scoreType: 'NPS',
-        promoters: item.promoters,
-        neutrals: item.neutrals,
-        detractors: item.detractors,
-        total: item.total,
-      })),
+      scoresByCriteria: mappedScoresByCriteria,
       overallNPS: summary.nps,
       overallCSAT: summary.csat,
     },

@@ -698,6 +698,98 @@ const dashboardRepository = {
     return { genderDistribution, ageDistribution };
   },
 
+  getMonthSummary: async (tenantId, startDate, endDate) => {
+    const whereClause = { tenantId: tenantId || { [Op.ne]: null } };
+    const dateFilter = {};
+    if (startDate) dateFilter[Op.gte] = startDate;
+    if (endDate) dateFilter[Op.lte] = endDate;
+    if (Object.keys(dateFilter).length > 0) {
+      whereClause.createdAt = dateFilter;
+    }
+
+    const responses = await Resposta.findAll({
+      where: whereClause,
+      attributes: ['id', 'createdAt', 'respondentSessionId', 'ratingValue'],
+      include: [{ model: Pergunta, as: 'pergunta', attributes: ['type']}],
+      order: [['createdAt', 'ASC']],
+    });
+
+    const totalResponses = responses.length;
+
+    // Daily NPS
+    const npsByDate = {};
+    responses.forEach(r => {
+      if(r.pergunta?.type !== 'rating_0_10') return;
+      
+      const date = formatInTimeZone(r.createdAt, 'yyyy-MM-dd');
+      if (!npsByDate[date]) {
+        npsByDate[date] = { promoters: 0, detractors: 0, total: 0 };
+      }
+      if (r.ratingValue >= 9) npsByDate[date].promoters++;
+      if (r.ratingValue <= 6) npsByDate[date].detractors++;
+      npsByDate[date].total++;
+    });
+
+    let accumulatedPromoters = 0;
+    let accumulatedDetractors = 0;
+    let accumulatedTotal = 0;
+    const dailyNps = Object.keys(npsByDate).map(date => {
+      const day = npsByDate[date];
+      accumulatedPromoters += day.promoters;
+      accumulatedDetractors += day.detractors;
+      accumulatedTotal += day.total;
+      
+      const dailyNpsScore = day.total > 0 ? ((day.promoters / day.total) * 100) - ((day.detractors / day.total) * 100) : 0;
+      const accumulatedNpsScore = accumulatedTotal > 0 ? ((accumulatedPromoters / accumulatedTotal) * 100) - ((accumulatedDetractors / accumulatedTotal) * 100) : 0;
+      
+      return {
+        date: formatInTimeZone(new Date(date), 'dd/MM'),
+        nps: parseFloat(dailyNpsScore.toFixed(1)),
+        accumulatedNps: parseFloat(accumulatedNpsScore.toFixed(1)),
+      }
+    });
+
+    // Peak Hours
+    const peakHours = {};
+    for(let i = 0; i < 24; i++) { peakHours[i.toString().padStart(2, '0')] = 0; }
+    responses.forEach(r => {
+      const hour = formatInTimeZone(r.createdAt, 'HH');
+      if(peakHours[hour] !== undefined) {
+        peakHours[hour]++;
+      }
+    });
+    const peakHoursData = Object.keys(peakHours).map(hour => ({ hour, count: peakHours[hour] }));
+
+    // Weekday Distribution
+    const daysOfWeekNames = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+    const weekdayDistribution = Array(7).fill(0).map((_, i) => ({ day: daysOfWeekNames[i], count: 0 }));
+    responses.forEach(r => {
+        const dayIndex = new Date(r.createdAt).getDay();
+        weekdayDistribution[dayIndex].count++;
+    });
+
+    // Client Proportion
+    const respondentSessionIds = [...new Set(responses.map(r => r.respondentSessionId))];
+    const registeredClients = await Client.count({
+        where: {
+            tenantId,
+            respondentSessionId: { [Op.in]: respondentSessionIds }
+        }
+    });
+    const clientProportion = {
+        registered: registeredClients,
+        unregistered: respondentSessionIds.length - registeredClients,
+    };
+
+    return {
+      totalResponses,
+      dailyNps,
+      peakHours: peakHoursData,
+      weekdayDistribution,
+      clientProportion
+    };
+  },
+
   getDetails: async (tenantId, startDate, endDate, category) => {
     const where = { tenantId: tenantId || { [Op.ne]: null } };
     const dateFilter = {};

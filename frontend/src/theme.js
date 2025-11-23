@@ -11,6 +11,12 @@ const theme = createTheme({
       main: '#1EBFAE',
       contrastText: '#FFFFFF',
     },
+    gender: {
+      masculino: '#2196f3',
+      feminino: '#e91e63',
+      outro: '#9e9e9e',
+      'não informado': '#bdbdbd',
+    },
     success: {
       main: '#B7E66F',
     },

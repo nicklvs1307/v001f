@@ -128,9 +128,17 @@ const dashboardController = {
     res.status(200).json(attendantsPerformance);
   }),
 
-  // FIX: Funções de detalhes não existem no novo repositório
   getDetails: asyncHandler(async (req, res) => {
-    res.status(200).json([]);
+    const tenantId = req.user.role === "Super Admin" ? req.query.tenantId : req.user.tenantId;
+    const { category } = req.params;
+    const { startDate, endDate } = req.query;
+    const detailsData = await dashboardRepository.getDetails(
+      tenantId,
+      startDate,
+      endDate,
+      category,
+    );
+    res.status(200).json(detailsData);
   }),
 
   getAttendantDetails: asyncHandler(async (req, res) => {

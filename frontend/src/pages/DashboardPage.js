@@ -226,7 +226,7 @@ const DashboardPage = () => {
             </Container>
         );
     }
-    const { summary, responseChart = [], attendantsPerformance = [], feedbacks = [], conversionChart = [], overallResults = {}, npsTrend = [] } = dashboardData || {};
+    const { summary, responseChart = [], surveysRespondedChart = [], attendantsPerformance = [], feedbacks = [], conversionChart = [], overallResults = {}, npsTrend = [] } = dashboardData || {};
 
 
 
@@ -257,26 +257,22 @@ const DashboardPage = () => {
             <Grid container spacing={2} sx={{ mb: 4 }}>
                 {/* Card NPS Score */}
                 <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <Paper elevation={2} sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
-                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
-                            NPS Geral
-                        </Typography>
-                        <Typography variant="h4" component="div" fontWeight="bold" textAlign="center" color="primary" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {summary?.nps?.score?.toFixed(0)}
-                        </Typography>
-                    </Paper>
+                    <MetricCard
+                        title="NPS Geral"
+                        value={summary?.nps?.score?.toFixed(0)}
+                        color={theme.palette.primary.main}
+                        onClick={() => handleCardClick('nps-geral', 'Detalhes de NPS Geral')}
+                    />
                 </Grid>
 
                 {/* Card CSAT Score */}
                 <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <Paper elevation={2} sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
-                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
-                            Média de Satisfação
-                        </Typography>
-                        <Typography variant="h4" component="div" fontWeight="bold" textAlign="center" color="secondary.main" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {summary?.csat?.averageScore?.toFixed(1)}
-                        </Typography>
-                    </Paper>
+                    <MetricCard
+                        title="Média de Satisfação"
+                        value={summary?.csat?.averageScore?.toFixed(1)}
+                        color={theme.palette.secondary.main}
+                        onClick={() => handleCardClick('csat-geral', 'Detalhes de Média de Satisfação')}
+                    />
                 </Grid>
 
                 {/* Total de Respostas */}
@@ -285,6 +281,7 @@ const DashboardPage = () => {
                         title="Total de Respostas"
                         value={summary?.totalResponses}
                         color={theme.palette.info.main}
+                        onClick={() => handleCardClick('total-respostas', 'Detalhes de Total de Respostas')}
                     />
                 </Grid>
 
@@ -350,7 +347,7 @@ const DashboardPage = () => {
                         value={summary?.registrations}
                         percentage={summary?.registrationsConversion}
                         arrow="up"
-                        onClick={() => handleCardClick('Cadastros')}
+                        onClick={() => handleCardClick('cadastros', 'Detalhes de Cadastros')}
                     >
                         <Typography variant="caption" color="text.secondary">conversão</Typography>
                     </MetricCard>
@@ -359,14 +356,14 @@ const DashboardPage = () => {
                     <MetricCard
                         title="Aniversariantes do Mês"
                         value={summary?.ambassadorsMonth}
-                        onClick={() => handleCardClick('Aniversariantes do Mês')}
+                        onClick={() => handleCardClick('aniversariantes', 'Detalhes de Aniversariantes do Mês')}
                     />
                 </Grid>
                 <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <MetricCard
                         title="Cupons Gerados"
                         value={summary?.couponsGenerated}
-                        onClick={() => handleCardClick('Cupons Gerados')}
+                        onClick={() => handleCardClick('cupons-gerados', 'Detalhes de Cupons Gerados')}
                     >
                         <Typography variant="caption" color="text.secondary">{summary?.couponsGeneratedPeriod}</Typography>
                     </MetricCard>
@@ -377,7 +374,7 @@ const DashboardPage = () => {
                         value={summary?.couponsUsed}
                         percentage={summary?.couponsUsedConversion}
                         arrow="down"
-                        onClick={() => handleCardClick('Cupons Utilizados')}
+                        onClick={() => handleCardClick('cupons-utilizados', 'Detalhes de Cupons Utilizados')}
                     >
                         <Typography variant="caption" color="text.secondary">conversão</Typography>
                     </MetricCard>
@@ -410,7 +407,7 @@ const DashboardPage = () => {
                             Respostas por Período
                         </Typography>
                         <Typography variant="subtitle2" color="text.secondary" mb={2}>
-                            Respostas agrupadas por período selecionado.
+                            Total de perguntas respondidas por período.
                         </Typography>
                         <ResponsiveContainer width="100%" height={280}>
                             <BarChart data={responseChart}>
@@ -426,6 +423,62 @@ const DashboardPage = () => {
                                 <Tooltip />
                                 <Legend />
                                 <Bar dataKey="Respostas" fill="url(#colorUv)" />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </Paper>
+                </Grid>
+
+                {/* Gráfico de Pesquisas Respondidas por Período */}
+                <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
+                    <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 } }}>
+                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
+                            Pesquisas Respondidas por Período
+                        </Typography>
+                        <Typography variant="subtitle2" color="text.secondary" mb={2}>
+                            Número de clientes únicos que responderam por período.
+                        </Typography>
+                        <ResponsiveContainer width="100%" height={280}>
+                            <BarChart data={surveysRespondedChart}>
+                                <defs>
+                                    <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor={theme.palette.secondary.main} stopOpacity={0.8}/>
+                                        <stop offset="95%" stopColor={theme.palette.secondary.main} stopOpacity={0}/>
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Bar dataKey="Pesquisas Respondidas" fill="url(#colorPv)" />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </Paper>
+                </Grid>
+
+                {/* Gráfico de Pesquisas Respondidas por Período */}
+                <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
+                    <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 } }}>
+                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
+                            Pesquisas Respondidas por Período
+                        </Typography>
+                        <Typography variant="subtitle2" color="text.secondary" mb={2}>
+                            Número de clientes únicos que responderam por período.
+                        </Typography>
+                        <ResponsiveContainer width="100%" height={280}>
+                            <BarChart data={surveysRespondedChart}>
+                                <defs>
+                                    <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor={theme.palette.secondary.main} stopOpacity={0.8}/>
+                                        <stop offset="95%" stopColor={theme.palette.secondary.main} stopOpacity={0}/>
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Bar dataKey="Pesquisas Respondidas" fill="url(#colorPv)" />
                             </BarChart>
                         </ResponsiveContainer>
                     </Paper>
@@ -571,7 +624,7 @@ const DashboardPage = () => {
                         </Typography>
                         <Typography variant="subtitle2" color="text.secondary" mb={2}>
                             Análise da conversão em cada etapa, desde as respostas coletadas até os cupons utilizados.
-                        </Typography>
+                        </GradiTypography>
                         <ResponsiveContainer width="100%" height={280}>
                             <LineChart
                                 data={conversionChart}

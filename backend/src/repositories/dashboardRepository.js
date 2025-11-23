@@ -93,29 +93,18 @@ const dashboardRepository = {
         csatSatisfactionRate = (csatSatisfied / csatCount) * 100;
     }
 
-    // --- CÁLCULOS (Mês Atual) ---
-    const newClientsThisMonthIds = (
-      await Client.findAll({
-        where: monthWhere,
-        attributes: ["id"],
-      })
-    ).map((c) => c.id);
-
-    const ambassadorsMonth = await Resposta.count({
+    // --- CÁLCULOS ADICIONAIS (Período Selecionado) ---
+    // OBS: A métrica 'ambassadorsMonth' é usada pelo frontend como "Aniversariantes do Mês",
+    // mas a lógica original contava respostas de promotores no mês.
+    // A lógica foi ajustada para contar clientes únicos que foram promotores no período selecionado.
+    const uniquePromoterClientsInPeriod = await Resposta.count({
       distinct: true,
-      col: "id",
+      col: "clientId",
       where: {
-        ...monthWhere,
-        ratingValue: { [Op.gte]: 9 }, // Ambassadors are typically promoters (NPS >= 9)
+        ...periodWhere,
+        ratingValue: { [Op.gte]: 9 },
+        clientId: { [Op.ne]: null },
       },
-      include: [
-        {
-          model: Client,
-          as: "client",
-          where: { id: { [Op.in]: newClientsThisMonthIds } },
-          attributes: [],
-        },
-      ],
     });
 
     // --- CÁLCULOS (Período Selecionado) ---
@@ -158,7 +147,7 @@ const dashboardRepository = {
               ),
             )
           : 0,
-      ambassadorsMonth: ambassadorsMonth,
+      ambassadorsMonth: uniquePromoterClientsInPeriod,
       couponsGenerated: couponsGeneratedInPeriod,
       couponsGeneratedPeriod:
         startDate && endDate
@@ -180,6 +169,42 @@ const dashboardRepository = {
       totalUsers: totalClients,
       totalTenants,
     };
+  },
+
+  getSurveysRespondedChart: async (
+    tenantId = null,
+    startDate = null,
+    endDate = null,
+    period = "day",
+  ) => {
+    const whereClause = tenantId ? { tenantId } : {};
+
+    const dateFilter = {};
+    if (startDate) dateFilter[Op.gte] = startDate;
+    if (endDate) dateFilter[Op.lte] = endDate;
+
+    if (Object.keys(dateFilter).length > 0) {
+      whereClause.createdAt = dateFilter;
+    }
+    
+    // Adiciona uma verificação para garantir que estamos contando apenas sessões que de fato existem
+    whereClause.respondentSessionId = { [Op.ne]: null };
+
+    const surveysByPeriod = await Resposta.findAll({
+      where: whereClause,
+      attributes: [
+        [fn("date_trunc", period, col("createdAt")), "period"],
+        // Conta as sessões de resposta distintas em vez de cada resposta individual
+        [fn("COUNT", fn("DISTINCT", col("respondentSessionId"))), "count"],
+      ],
+      group: [fn("date_trunc", period, col("createdAt"))],
+      order: [[fn("date_trunc", period, col("createdAt")), "ASC"]],
+    });
+
+    return surveysByPeriod.map((item) => ({
+      name: formatInTimeZone(item.dataValues.period, period === "day" ? "dd/MM" : period === "week" ? "ww/yyyy" : "MM/yyyy"),
+      "Pesquisas Respondidas": parseInt(item.dataValues.count),
+    }));
   },
 
   getResponseChart: async (
@@ -601,6 +626,137 @@ const dashboardRepository = {
     }
     return performanceData;
   },
+
+  getDetails: async (tenantId, startDate, endDate, category) => {
+    const where = { tenantId: tenantId || { [Op.ne]: null } };
+    const dateFilter = {};
+    if (startDate) dateFilter[Op.gte] = startDate;
+    if (endDate) dateFilter[Op.lte] = endDate;
+    if (Object.keys(dateFilter).length > 0) {
+      where.createdAt = dateFilter;
+    }
+
+    const includeClient = {
+      model: Client,
+      as: 'client',
+      attributes: ['name', 'phone'],
+      required: false,
+    };
+
+    const formatResponse = r => ({
+        id: r.id,
+        Data: formatInTimeZone(r.createdAt, 'dd/MM/yyyy HH:mm'),
+        Cliente: r.client?.name || 'Anônimo',
+        Telefone: r.client?.phone,
+        Nota: r.ratingValue,
+        Comentário: r.textValue,
+    });
+
+    switch (category) {
+      case 'total-respostas': {
+        const responses = await Resposta.findAll({ where, include: [includeClient], order: [['createdAt', 'DESC']] });
+        return responses.map(formatResponse);
+      }
+      case 'nps-geral':
+      case 'promotores':
+      case 'neutros':
+      case 'detratores': {
+        const npsWhere = { ...where, ratingValue: { [Op.ne]: null } };
+        if (category === 'promotores') npsWhere.ratingValue = { [Op.gte]: 9 };
+        if (category === 'neutros') npsWhere.ratingValue = { [Op.between]: [7, 8] };
+        if (category === 'detratores') npsWhere.ratingValue = { [Op.lte]: 6 };
+        
+        const responses = await Resposta.findAll({
+          where: npsWhere,
+          include: [
+            includeClient,
+            { model: Pergunta, as: 'pergunta', where: { type: 'rating_0_10' }, attributes: [], required: true }
+          ],
+          order: [['createdAt', 'DESC']]
+        });
+        return responses.map(formatResponse);
+      }
+      case 'csat-geral':
+      case 'satisfeitos':
+      case 'insatisfeitos': {
+        const csatWhere = { ...where, ratingValue: { [Op.ne]: null } };
+        if (category === 'satisfeitos') csatWhere.ratingValue = { [Op.gte]: 4 };
+        if (category === 'insatisfeitos') csatWhere.ratingValue = { [Op.lte]: 3 };
+
+        const responses = await Resposta.findAll({
+          where: csatWhere,
+          include: [
+            includeClient,
+            { model: Pergunta, as: 'pergunta', where: { type: { [Op.in]: ['rating_1_5', 'rating'] } }, attributes: [], required: true }
+          ],
+          order: [['createdAt', 'DESC']]
+        });
+        return responses.map(formatResponse);
+      }
+      case 'cadastros': {
+        const clients = await Client.findAll({ where, order: [['createdAt', 'DESC']] });
+        return clients.map(c => ({
+            id: c.id,
+            Data: formatInTimeZone(c.createdAt, 'dd/MM/yyyy HH:mm'),
+            Nome: c.name,
+            Telefone: c.phone,
+            Email: c.email,
+            Aniversário: c.birthday ? formatInTimeZone(c.birthday, 'dd/MM/yyyy') : null,
+        }));
+      }
+      case 'aniversariantes': {
+        const Op = Sequelize.Op;
+        const today = new Date();
+        const currentMonth = today.getMonth() + 1;
+        const birthdayWhere = {
+            tenantId: tenantId || { [Op.ne]: null },
+            [Op.and]: [
+                Sequelize.where(Sequelize.fn('EXTRACT', 'MONTH FROM birthday'), currentMonth)
+            ]
+        };
+        const clients = await Client.findAll({ where: birthdayWhere, order: [['name', 'ASC']] });
+        return clients.map(c => ({
+            id: c.id,
+            Nome: c.name,
+            Telefone: c.phone,
+            Aniversário: c.birthday ? formatInTimeZone(c.birthday, 'dd/MM') : null,
+        }));
+      }
+      case 'cupons-gerados': {
+        const coupons = await Cupom.findAll({ where, include: [{ model: Client, as: 'client', attributes: ['name']}], order: [['createdAt', 'DESC']] });
+        return coupons.map(c => ({
+            id: c.id,
+            'Data de Geração': formatInTimeZone(c.createdAt, 'dd/MM/yyyy HH:mm'),
+            'Cliente': c.client?.name || 'N/A',
+            'Código': c.code,
+            'Status': c.status,
+            'Validade': formatInTimeZone(c.expiresAt, 'dd/MM/yyyy'),
+        }));
+      }
+      case 'cupons-utilizados': {
+        const usedWhere = {
+            tenantId: tenantId || { [Op.ne]: null },
+            status: 'used'
+        };
+        const usedDateFilter = {};
+        if (startDate) usedDateFilter[Op.gte] = startDate;
+        if (endDate) usedDateFilter[Op.lte] = endDate;
+        if (Object.keys(usedDateFilter).length > 0) {
+            usedWhere.updatedAt = usedDateFilter; // Filtra pela data de utilização
+        }
+        const coupons = await Cupom.findAll({ where: usedWhere, include: [{ model: Client, as: 'client', attributes: ['name']}], order: [['updatedAt', 'DESC']] });
+        return coupons.map(c => ({
+            id: c.id,
+            'Data de Utilização': formatInTimeZone(c.updatedAt, 'dd/MM/yyyy HH:mm'),
+            'Cliente': c.client?.name || 'N/A',
+            'Código': c.code,
+            'Status': c.status,
+        }));
+      }
+      default:
+        return [];
+    }
+  },
   
   getMainDashboard: async (
     tenantId = null,
@@ -619,6 +775,7 @@ const dashboardRepository = {
       wordCloud,
       conversionChart,
       npsByDayOfWeek, // Adicionando aqui
+      surveysRespondedChart,
     ] = await Promise.all([
       dashboardRepository.getSummary(tenantId, startDate, endDate),
       dashboardRepository.getResponseChart(tenantId, startDate, endDate, period), // Repassando o period
@@ -635,6 +792,7 @@ const dashboardRepository = {
       dashboardRepository.getWordCloudData(tenantId, startDate, endDate),
       dashboardRepository.getConversionChartData(tenantId, startDate, endDate),
       dashboardRepository.getNpsByDayOfWeek(tenantId, startDate, endDate), // Adicionando a chamada
+      dashboardRepository.getSurveysRespondedChart(tenantId, startDate, endDate, period),
     ]);
 
     // Adaptar a estrutura de dados para o que o frontend espera
@@ -648,6 +806,7 @@ const dashboardRepository = {
       wordCloud,
       conversionChart,
       npsByDayOfWeek, // Adicionando aqui
+      surveysRespondedChart,
       criteriaScores: npsByCriteria.map(item => ({ // Adicionando criteriaScores aqui
         criterion: item.name,
         npsScore: item.nps,

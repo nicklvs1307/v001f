@@ -265,10 +265,11 @@ const getFeedbacks = async (tenantId = null, startDate = null, endDate = null) =
   });
 
   return feedbacksData.map((feedback) => ({
-    date: feedback.createdAt ? formatInTimeZone(feedback.createdAt, "dd/MM/yyyy HH:mm") : "Data indisponível",
+    date: feedback.createdAt,
     client: feedback.client ? feedback.client.name : "Anônimo",
     comment: feedback.textValue,
     nps: feedback.ratingValue !== null ? feedback.ratingValue : undefined,
+    respondentSessionId: feedback.respondentSessionId
   }));
 };
 
@@ -762,7 +763,7 @@ const getDetails = async (tenantId, startDate, endDate, category) => {
       where.createdAt = dateFilter;
     }
 
-    const includeClient = { model: Client, as: 'client', attributes: ['name', 'phone'], required: false };
+    const includeClient = { model: Client, as: 'client', attributes: ['id', 'name', 'phone'], required: false };
     const formatResponse = r => ({
         id: r.id,
         Data: formatInTimeZone(r.createdAt, 'dd/MM/yyyy HH:mm'),
@@ -788,10 +789,10 @@ const getDetails = async (tenantId, startDate, endDate, category) => {
         
         const responses = await Resposta.findAll({
           where: npsWhere,
-          include: [includeClient, { model: Pergunta, as: 'pergunta', where: { type: 'rating_0_10' }, attributes: [], required: true }],
+          include: [includeClient, { model: Pergunta, as: 'pergunta', where: { type: 'rating_0_10' }, attributes: ['text', 'id'], required: true }],
           order: [['createdAt', 'DESC']]
         });
-        return responses.map(formatResponse);
+        return responses;
       }
       case 'csat-geral':
       case 'satisfeitos':
@@ -802,10 +803,10 @@ const getDetails = async (tenantId, startDate, endDate, category) => {
 
         const responses = await Resposta.findAll({
           where: csatWhere,
-          include: [includeClient, { model: Pergunta, as: 'pergunta', where: { type: { [Op.in]: ['rating_1_5', 'rating'] } }, attributes: [], required: true }],
+          include: [includeClient, { model: Pergunta, as: 'pergunta', where: { type: { [Op.in]: ['rating_1_5', 'rating'] } }, attributes: ['text', 'id'], required: true }],
           order: [['createdAt', 'DESC']]
         });
-        return responses.map(formatResponse);
+        return responses;
       }
       case 'cadastros': {
         const clients = await Client.findAll({ where, order: [['createdAt', 'DESC']] });
@@ -864,13 +865,18 @@ const getMainDashboard = async (tenantId = null, startDate = null, endDate = nul
     getClientStatusCounts(tenantId, startDate, endDate),
   ]);
 
-  const mappedScoresByCriteria = scoresByCriteriaData.map(item => ({
-      criterion: item.criterion,
-      promoters: item.good,
-      neutrals: item.neutral,
-      detractors: item.bad,
-      total: item.good + item.neutral + item.bad
-  }));
+  const mappedScoresByCriteria = scoresByCriteriaData.map(item => {
+      const total = item.good + item.neutral + item.bad;
+      const npsScore = total > 0 ? ((item.good - item.bad) / total) * 100 : 0;
+      return {
+          criterion: item.criterion,
+          promoters: item.good,
+          neutrals: item.neutral,
+          detractors: item.bad,
+          total: total,
+          npsScore: npsScore,
+      };
+  });
 
   return {
     summary,
@@ -894,6 +900,22 @@ const getMainDashboard = async (tenantId = null, startDate = null, endDate = nul
   };
 };
 
+
+const getDailyReport = async (tenantId = null, startDate = null, endDate = null) => {
+  const [
+    summary,
+    feedbacks,
+  ] = await Promise.all([
+    getSummary(tenantId, startDate, endDate),
+    getFeedbacks(tenantId, startDate, endDate),
+  ]);
+
+  return {
+    summary,
+    feedbacks,
+  };
+};
+
 const dashboardRepository = {
   getSummary,
   getSurveysRespondedChart,
@@ -913,6 +935,7 @@ const dashboardRepository = {
   getDetails,
   getClientStatusCounts,
   getMainDashboard,
+  getDailyReport,
 };
 
 module.exports = dashboardRepository;

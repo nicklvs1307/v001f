@@ -6,6 +6,11 @@ const dashboardService = {
         return response.data;
     },
 
+    getDailyReport: async (params) => {
+        const response = await apiAuthenticated.get('/dashboard/daily-report', { params });
+        return response.data;
+    },
+
     getDetails: async (category, params) => {
         const response = await apiAuthenticated.get(`/dashboard/details/${category}`, { params });
         return response.data;

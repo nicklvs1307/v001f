@@ -185,6 +185,17 @@ const dashboardController = {
     );
     res.status(200).json(feedbacks);
   }),
+
+  getDailyReport: asyncHandler(async (req, res) => {
+    const tenantId = req.user.role === "Super Admin" ? req.query.tenantId : req.user.tenantId;
+    const { startDate, endDate } = req.query;
+    const reportData = await dashboardRepository.getDailyReport(
+      tenantId,
+      startDate,
+      endDate,
+    );
+    res.status(200).json(reportData);
+  }),
 };
 
 module.exports = dashboardController;

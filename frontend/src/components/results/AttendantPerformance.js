@@ -1,23 +1,26 @@
 import React from 'react';
-import { Grid, Paper, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box, useTheme, Chip } from '@mui/material';
-import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
-import { Star, TrendingUp, TrendingDown } from '@mui/icons-material';
+import { Paper, Typography, Box, useTheme } from '@mui/material';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell, LabelList } from 'recharts';
+import { Star } from '@mui/icons-material';
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
+        const data = payload[0].payload;
         return (
             <Paper elevation={3} sx={{ p: 2 }}>
-                <Typography variant="body2">{`Atendente: ${label}`}</Typography>
-                {payload.map(pld => (
-                     <Typography key={pld.dataKey} variant="body2" sx={{ color: pld.color }}>
-                        {`${pld.name}: ${pld.value}`}
-                    </Typography>
-                ))}
+                <Typography variant="body2" sx={{ mb: 1 }}>{`Atendente: ${label}`}</Typography>
+                <Typography variant="body2" sx={{ color: payload[0].fill }}>
+                    {`NPS: ${data.currentNPS}`}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    {`Respostas: ${data.responses}`}
+                </Typography>
             </Paper>
         );
     }
     return null;
 };
+
 
 const AttendantPerformance = ({ performanceData }) => {
     const theme = useTheme();
@@ -38,102 +41,35 @@ const AttendantPerformance = ({ performanceData }) => {
         );
     }
 
-    const sortedAttendants = [...performanceData].sort((a, b) => (b.currentNPS || -101) - (a.currentNPS || -101));
-    const topAttendants = sortedAttendants.slice(0, 5);
-    const bottomAttendants = sortedAttendants.length > 5 ? sortedAttendants.slice(-5).reverse() : [];
-    const chartData = sortedAttendants.map(attendant => ({ 
-        name: attendant.name, 
-        NPS: Number(attendant.currentNPS) || 0,
-        Respostas: Number(attendant.responses) || 0
-    }));
-
-    const renderScoreChip = (score) => {
-        if (score >= 50) return <Chip label={score} color="success" size="small" />;
-        if (score >= 0) return <Chip label={score} color="warning" size="small" />;
-        return <Chip label={score} color="error" size="small" />;
-    }
+    const chartData = [...performanceData].sort((a, b) => (a.currentNPS || -101) - (b.currentNPS || -101));
 
     return (
-        <Paper sx={{ p: 3, borderRadius: '16px', boxShadow: '0 8px 32px 0 rgba(0,0,0,0.1)', height: '100%' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        <Paper sx={{ p: 3, borderRadius: '16px', boxShadow: '0 8px 32px 0 rgba(0,0,0,0.1)', height: '100%', minHeight: 400 }}>
+             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Star sx={{ mr: 1, color: 'primary.main' }} />
                 <Typography variant="h6" gutterBottom component="div" sx={{ fontWeight: 'bold' }}>
-                    Desempenho dos Atendentes
+                    Desempenho dos Atendentes por NPS
                 </Typography>
             </Box>
-            <Grid container spacing={4}>
-                <Grid item xs={12}>
-                    <Typography variant="subtitle1" gutterBottom>NPS e Volume de Respostas por Atendente</Typography>
-                    <ResponsiveContainer width="100%" height={400}>
-                        <ComposedChart 
-                            data={chartData} 
-                            layout="vertical" 
-                            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
-                            <XAxis type="number" xAxisId="left" domain={[-100, 100]} tick={{ fill: theme.palette.text.secondary }} />
-                            <XAxis type="number" xAxisId="right" orientation="top" tick={{ fill: theme.palette.text.secondary }} />
-                            <YAxis type="category" dataKey="name" width={120} tick={{ fill: theme.palette.text.secondary, fontSize: 12 }} />
-                            <Tooltip content={<CustomTooltip />} />
-                            <Legend />
-                            <Bar xAxisId="left" dataKey="NPS" barSize={20} >
-                                {chartData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.NPS >= 0 ? theme.palette.success.light : theme.palette.error.light} />
-                                ))}
-                            </Bar>
-                            <Line xAxisId="right" type="monotone" dataKey="Respostas" stroke={theme.palette.secondary.main} strokeWidth={2} />
-                        </ComposedChart>
-                    </ResponsiveContainer>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                        <TrendingUp color="success" sx={{ mr: 1 }} />
-                        <Typography variant="subtitle1" gutterBottom>Top 5 Atendentes (por NPS)</Typography>
-                    </Box>
-                    <TableContainer>
-                        <Table size="small">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Atendente</TableCell>
-                                    <TableCell align="right">NPS</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {topAttendants.map((attendant, index) => (
-                                    <TableRow key={`top-${index}`} sx={{ '&:nth-of-type(odd)': { backgroundColor: theme.palette.action.hover } }}>
-                                        <TableCell>{attendant.name}</TableCell>
-                                        <TableCell align="right">{renderScoreChip(attendant.currentNPS)}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                        <TrendingDown color="error" sx={{ mr: 1 }} />
-                        <Typography variant="subtitle1" gutterBottom>Últimos 5 Atendentes (por NPS)</Typography>
-                    </Box>
-                    <TableContainer>
-                        <Table size="small">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Atendente</TableCell>
-                                    <TableCell align="right">NPS</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {bottomAttendants.map((attendant, index) => (
-                                    <TableRow key={`bottom-${index}`} sx={{ '&:nth-of-type(odd)': { backgroundColor: theme.palette.action.hover } }}>
-                                        <TableCell>{attendant.name}</TableCell>
-                                        <TableCell align="right">{renderScoreChip(attendant.currentNPS)}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Grid>
-            </Grid>
+            <ResponsiveContainer width="100%" height={350}>
+                <BarChart
+                    layout="vertical"
+                    data={chartData}
+                    margin={{ top: 5, right: 30, left: 30, bottom: 5 }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
+                    <XAxis type="number" domain={[-100, 100]} tick={{ fill: theme.palette.text.secondary, fontSize: 12 }} />
+                    <YAxis type="category" dataKey="name" width={120} tick={{ fill: theme.palette.text.secondary, fontSize: 12 }} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend />
+                    <Bar dataKey="currentNPS" name="NPS">
+                        <LabelList dataKey="responses" position="insideRight" fill="#fff" fontSize={12} formatter={(value) => `${value} resp.`} />
+                        {chartData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.currentNPS >= 50 ? theme.palette.success.main : entry.currentNPS >= 0 ? theme.palette.warning.main : theme.palette.error.main} />
+                        ))}
+                    </Bar>
+                </BarChart>
+            </ResponsiveContainer>
         </Paper>
     );
 };

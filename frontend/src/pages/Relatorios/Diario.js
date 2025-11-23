@@ -18,7 +18,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { ptBR } from 'date-fns/locale';
 import dashboardService from '../../services/dashboardService';
 import { useAuth } from '../../context/AuthContext';
-import Dashboard from '../../components/relatorios/Dashboard';
+import RelatorioDiarioDashboard from '../../components/relatorios/RelatorioDiarioDashboard';
 
 const RelatorioDiario = () => {
     const [reportData, setReportData] = useState(null);
@@ -44,7 +44,7 @@ const RelatorioDiario = () => {
                 params.startDate = getStartOfDayUTC(selectedDate);
                 params.endDate = getEndOfDayUTC(selectedDate);
             }
-            const resultData = await dashboardService.getMainDashboard(params);
+            const resultData = await dashboardService.getDailyReport(params);
             setReportData(resultData);
         } catch (err) {
             setError(err.message || 'Falha ao carregar os resultados.');
@@ -109,7 +109,7 @@ const RelatorioDiario = () => {
                     </Grid>
                 </Paper>
                 
-                <Dashboard data={reportData} />
+                <RelatorioDiarioDashboard data={reportData} />
 
             </Box>
         </LocalizationProvider>

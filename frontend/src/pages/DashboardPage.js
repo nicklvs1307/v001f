@@ -90,6 +90,8 @@ const DashboardPage = () => {
     const [attendantSearch, setAttendantSearch] = useState('');
 
     useEffect(() => {
+        let isActive = true;
+
         const fetchDashboardData = async () => {
             try {
                 setLoading(true);
@@ -102,15 +104,25 @@ const DashboardPage = () => {
                     params.endDate = getEndOfDayUTC(endDate);
                 }
                 const data = await dashboardService.getMainDashboard(params);
-                setDashboardData(data);
+                if (isActive) {
+                    setDashboardData(data);
+                }
             } catch (err) {
-                setError(err.message || 'Falha ao carregar os dados do dashboard.');
+                if (isActive) {
+                    setError(err.message || 'Falha ao carregar os dados do dashboard.');
+                }
             } finally {
-                setLoading(false);
+                if (isActive) {
+                    setLoading(false);
+                }
             }
         };
 
         fetchDashboardData();
+
+        return () => {
+            isActive = false;
+        };
     }, [startDate, endDate]);
 
     const handleCardClick = async (category, title) => {

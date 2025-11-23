@@ -255,4 +255,19 @@ router.get(
   dashboardController.getAllFeedbacks,
 );
 
+
+router.get(
+  "/daily-report",
+  [
+    check("startDate", "Data de início inválida")
+      .optional()
+      .isISO8601()
+      .toDate(),
+    check("endDate", "Data de fim inválida").optional().isISO8601(),
+  ],
+  validate,
+  authorize("dashboard:read"),
+  dashboardController.getDailyReport,
+);
+
 module.exports = router;

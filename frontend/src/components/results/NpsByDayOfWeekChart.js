@@ -27,29 +27,33 @@ const NpsByDayOfWeekChart = ({ data }) => {
         );
     }
     
-    const chartData = data.map(item => ({ ...item, nps: Number(item.nps) || 0 }));
+    // Ensure NPS is a number and sort data for better visualization
+    const chartData = data
+        .map(item => ({ ...item, nps: Number(item.nps) || 0 }))
+        .sort((a, b) => a.nps - b.nps);
 
     return (
         <Box sx={{ height: 300 }}>
             <Typography variant="h6" gutterBottom>NPS por Dia da Semana</Typography>
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart
+                    layout="vertical"
                     data={chartData}
                     margin={{
                         top: 5,
                         right: 30,
-                        left: -10,
+                        left: 20,
                         bottom: 5,
                     }}
                 >
                     <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
-                    <XAxis dataKey="dayOfWeek" tick={{ fill: theme.palette.text.secondary }} />
-                    <YAxis domain={[-100, 100]} tick={{ fill: theme.palette.text.secondary }} />
+                    <XAxis type="number" domain={[-100, 100]} tick={{ fill: theme.palette.text.secondary }} />
+                    <YAxis dataKey="dayOfWeek" type="category" width={80} tick={{ fill: theme.palette.text.secondary, fontSize: 12 }} />
                     <Tooltip content={<CustomTooltip />} />
                     <Legend />
                     <Bar dataKey="nps" name="NPS">
                         {chartData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.nps >= 0 ? theme.palette.success.light : theme.palette.error.light} />
+                            <Cell key={`cell-${index}`} fill={entry.nps >= 0 ? theme.palette.primary.main : theme.palette.error.main} />
                         ))}
                     </Bar>
                 </BarChart>

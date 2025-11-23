@@ -386,6 +386,42 @@ const getNpsDistribution = async (tenantId = null, startDate = null, endDate = n
   ];
 };
 
+const getNpsTrendData = async (tenantId = null, period = "day", startDate = null, endDate = null) => {
+  const whereClause = { ratingValue: { [Op.ne]: null } };
+  if (tenantId) whereClause.tenantId = tenantId;
+  const dateFilter = {};
+  if (startDate) dateFilter[Op.gte] = startDate;
+  if (endDate) dateFilter[Op.lte] = endDate;
+  if (Object.keys(dateFilter).length > 0) {
+    whereClause.createdAt = dateFilter;
+  }
+
+  const trendData = await Resposta.findAll({
+    where: whereClause,
+    include: [{ model: Pergunta, as: 'pergunta', attributes: [], where: { type: 'rating_0_10' }, required: true }],
+    attributes: [
+      [fn("date_trunc", period, col("Resposta.createdAt")), "period"],
+      [fn("SUM", literal(`CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END`)), "promoters"],
+      [fn("SUM", literal(`CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END`)), "detractors"],
+      [fn("COUNT", col("Resposta.id")), "total"],
+    ],
+    group: [fn("date_trunc", period, col("Resposta.createdAt"))],
+    order: [[fn("date_trunc", period, col("Resposta.createdAt")), "ASC"]],
+  });
+
+  return trendData.map((item) => {
+    const { period, promoters: p, detractors: d, total: t } = item.dataValues;
+    const promoters = parseInt(p) || 0;
+    const detractors = parseInt(d) || 0;
+    const total = parseInt(t) || 0;
+    const nps = total > 0 ? ((promoters - detractors) / total) * 100 : 0;
+    return {
+      period: formatInTimeZone(period, 'dd/MM'),
+      nps: parseFloat(nps.toFixed(1)),
+    };
+  });
+};
+
 const getEvolutionData = async (tenantId = null, period = "day", startDate = null, endDate = null) => {
   const whereClause = { tenantId: tenantId || { [Op.ne]: null } };
   const dateFilter = {};
@@ -968,6 +1004,7 @@ const dashboardRepository = {
   getFeedbacks,
   getNpsByCriteria,
   getNpsDistribution,
+  getNpsTrendData,
   getEvolutionData,
   getConversionChartData,
   getWordCloudData,
@@ -976,7 +1013,7 @@ const dashboardRepository = {
   getAttendantDetails,
   getResponseDetails,
   getDemographicsData,
-getMonthSummary,
+  getMonthSummary,
   getDetails,
   getClientStatusCounts,
   getMainDashboard,

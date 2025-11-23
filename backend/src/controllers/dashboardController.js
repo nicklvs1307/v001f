@@ -142,11 +142,26 @@ const dashboardController = {
   }),
 
   getAttendantDetails: asyncHandler(async (req, res) => {
-    res.status(200).json({});
+    const tenantId = req.user.role === "Super Admin" ? req.query.tenantId : req.user.tenantId;
+    const { id } = req.params;
+    const { startDate, endDate } = req.query;
+    const detailsData = await dashboardRepository.getAttendantDetails(
+      tenantId,
+      id,
+      startDate,
+      endDate,
+    );
+    res.status(200).json(detailsData);
   }),
 
   getResponseDetails: asyncHandler(async (req, res) => {
-    res.status(200).json({});
+    const tenantId = req.user.role === "Super Admin" ? req.query.tenantId : req.user.tenantId;
+    const { sessionId } = req.params;
+    const detailsData = await dashboardRepository.getResponseDetails(
+      tenantId,
+      sessionId,
+    );
+    res.status(200).json(detailsData);
   }),
   
   getMonthSummary: asyncHandler(async (req, res) => {

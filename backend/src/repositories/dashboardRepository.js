@@ -334,7 +334,7 @@ const dashboardRepository = {
           attributes: [],
           required: true,
           where: {
-            type: { [Op.like]: "rating%" },
+            type: "rating_0_10",
           },
           include: [
             {
@@ -436,11 +436,20 @@ const dashboardRepository = {
 
     const trendData = await Resposta.findAll({
         where: whereClause,
+        include: [
+          {
+            model: Pergunta,
+            as: 'pergunta',
+            attributes: [],
+            where: { type: 'rating_0_10' },
+            required: true
+          }
+        ],
         attributes: [
             [fn("date_trunc", period, col("createdAt")), "period"],
             [fn("SUM", literal(`CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END`)), "promoters"],
             [fn("SUM", literal(`CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END`)), "detractors"],
-            [fn("COUNT", col("id")), "total"],
+            [fn("COUNT", col("Resposta.id")), "total"],
         ],
         group: [fn("date_trunc", period, col("createdAt"))],
         order: [[fn("date_trunc", period, col("createdAt")), "ASC"]],
@@ -602,38 +611,162 @@ const dashboardRepository = {
       }]
     });
 
-    const performanceData = [];
-    for (const attendant of attendants) {
-      const responses = await Resposta.findAll({
-        where: { ...whereClause, atendenteId: attendant.id }
-      });
+    const attendantIds = attendants.map(a => a.id);
 
-      const ratingResponses = responses.filter(r => r.ratingValue !== null);
+    const allResponses = await Resposta.findAll({
+      where: {
+        ...whereClause,
+        atendenteId: { [Op.in]: attendantIds }
+      },
+      include: [{ model: Pergunta, as: 'pergunta', attributes: ['type'] }]
+    });
+
+    const responsesByAttendant = allResponses.reduce((acc, response) => {
+      const id = response.atendenteId;
+      if (!acc[id]) {
+        acc[id] = [];
+      }
+      acc[id].push(response);
+      return acc;
+    }, {});
+
+    const performanceData = attendants.map(attendant => {
+      const responses = responsesByAttendant[attendant.id] || [];
+      
+      const ratingResponses = responses.filter(r => r.ratingValue !== null && r.pergunta.type === 'rating_0_10');
       let promoters = 0;
       let detractors = 0;
       ratingResponses.forEach(r => {
         if (r.ratingValue >= 9) promoters++;
         else if (r.ratingValue <= 6) detractors++;
       });
-
-      const totalResponses = responses.length;
-      const nps = totalResponses > 0 ? ((promoters / totalResponses) * 100) - ((detractors / totalResponses) * 100) : 0;
       
-      const uniqueRespondentIds = [...new Set(responses.map(r => r.respondentSessionId))];
-      const registrations = uniqueRespondentIds.length;
+      const npsTotal = ratingResponses.length;
+      const nps = npsTotal > 0 ? ((promoters / npsTotal) * 100) - ((detractors / npsTotal) * 100) : 0;
 
-      performanceData.push({
+      const csatResponses = responses.filter(r => r.ratingValue !== null && (r.pergunta.type === 'rating_1_5' || r.pergunta.type === 'rating'));
+      const csatTotalScore = csatResponses.reduce((sum, r) => sum + r.ratingValue, 0);
+      const csatAverage = csatResponses.length > 0 ? csatTotalScore / csatResponses.length : 0;
+
+      return {
         id: attendant.id,
         name: attendant.name,
-        nps: parseFloat(nps.toFixed(1)),
+        responses: responses.length,
+        currentNPS: parseFloat(nps.toFixed(1)),
+        currentCSAT: parseFloat(csatAverage.toFixed(1)),
         npsGoal: attendant.meta ? parseFloat(attendant.meta.npsGoal) : 0,
-        responses: totalResponses,
-        responsesGoal: attendant.meta ? attendant.meta.responsesGoal : 0,
-        registrations: registrations,
-        registrationsGoal: attendant.meta ? attendant.meta.registrationsGoal : 0,
-      });
-    }
+        csatGoal: 0, // Assuming no csat goal in meta
+      };
+    });
+
     return performanceData;
+  },
+
+  getAttendantDetails: async (tenantId, attendantId, startDate, endDate) => {
+    const whereClause = { tenantId, atendenteId: attendantId };
+    const dateFilter = {};
+    if (startDate) dateFilter[Op.gte] = startDate;
+    if (endDate) dateFilter[Op.lte] = endDate;
+    if (Object.keys(dateFilter).length > 0) {
+      whereClause.createdAt = dateFilter;
+    }
+
+    const attendant = await Atendente.findByPk(attendantId, {
+      include: [{ model: AtendenteMeta, as: 'meta' }]
+    });
+
+    if (!attendant) {
+      throw new Error('Atendente não encontrado.');
+    }
+
+    const responses = await Resposta.findAll({
+      where: whereClause,
+      include: [{ model: Pergunta, as: 'pergunta', attributes: ['type'] }]
+    });
+
+    let npsPromoters = 0, npsNeutrals = 0, npsDetractors = 0;
+    let csatTotalScore = 0, csatCount = 0;
+
+    responses.forEach(response => {
+      const { ratingValue, pergunta } = response;
+      if (!pergunta || ratingValue === null) return;
+
+      if (pergunta.type === 'rating_0_10') {
+        if (ratingValue >= 9) npsPromoters++;
+        else if (ratingValue >= 7) npsNeutrals++;
+        else npsDetractors++;
+      } else if (pergunta.type === 'rating_1_5' || pergunta.type === 'rating') {
+        csatTotalScore += ratingValue;
+        csatCount++;
+      }
+    });
+
+    const totalNpsResponses = npsPromoters + npsNeutrals + npsDetractors;
+    const npsScore = totalNpsResponses > 0 ? ((npsPromoters / totalNpsResponses) * 100) - ((npsDetractors / totalNpsResponses) * 100) : 0;
+    const csatAverageScore = csatCount > 0 ? csatTotalScore / csatCount : 0;
+
+    const recentFeedbacks = await Resposta.findAll({
+        where: { ...whereClause, textValue: { [Op.ne]: null, [Op.ne]: "" } },
+        order: [['createdAt', 'DESC']],
+        limit: 10,
+        include: [{ model: Client, as: 'client', attributes: ['name'] }]
+    });
+
+    return {
+      attendant: {
+        id: attendant.id,
+        name: attendant.name,
+        npsGoal: attendant.meta ? attendant.meta.npsGoal : 0,
+        csatGoal: 0, // Assuming no csat goal in meta
+        responsesGoal: attendant.meta ? attendant.meta.responsesGoal : 0,
+      },
+      performance: {
+        nps: parseFloat(npsScore.toFixed(1)),
+        csat: parseFloat(csatAverageScore.toFixed(1)),
+        totalResponses: responses.length,
+      },
+      recentFeedbacks: recentFeedbacks.map(fb => ({
+        date: formatInTimeZone(fb.createdAt, 'dd/MM/yyyy HH:mm'),
+        client: fb.client ? fb.client.name : 'Anônimo',
+        rating: fb.ratingValue,
+        comment: fb.textValue,
+        respondentSessionId: fb.respondentSessionId
+      }))
+    };
+  },
+
+  getResponseDetails: async (tenantId, sessionId) => {
+    const responses = await Resposta.findAll({
+      where: {
+        tenantId,
+        respondentSessionId: sessionId
+      },
+      include: [
+        {
+          model: Pergunta,
+          as: 'pergunta',
+          attributes: ['text', 'type', 'options']
+        }
+      ],
+      order: [['createdAt', 'ASC']]
+    });
+
+    if (!responses || responses.length === 0) {
+        return [];
+    }
+
+    return responses.map(r => {
+        let answer = r.textValue || r.selectedOption;
+        if (r.ratingValue !== null) {
+            answer = r.ratingValue.toString();
+        }
+
+        return {
+            'Pergunta': r.pergunta.text,
+            'Resposta': answer,
+            'Data': formatInTimeZone(r.createdAt, 'dd/MM/yyyy HH:mm')
+        }
+    });
   },
 
   getDemographicsData: async (tenantId, startDate, endDate) => {
@@ -874,7 +1007,7 @@ const dashboardRepository = {
         const birthdayWhere = {
             tenantId: tenantId || { [Op.ne]: null },
             [Op.and]: [
-                Sequelize.where(Sequelize.fn('EXTRACT', 'MONTH FROM birthday'), currentMonth)
+                Sequelize.literal(`EXTRACT(MONTH FROM "birthday") = ${currentMonth}`)
             ]
         };
         const clients = await Client.findAll({ where: birthdayWhere, order: [['name', 'ASC']] });
@@ -893,7 +1026,7 @@ const dashboardRepository = {
             'Cliente': c.client?.name || 'N/A',
             'Código': c.code,
             'Status': c.status,
-            'Validade': formatInTimeZone(c.expiresAt, 'dd/MM/yyyy'),
+            'Validade': c.dataValidade ? formatInTimeZone(c.dataValidade, 'dd/MM/yyyy') : 'N/A',
         }));
       }
       case 'cupons-utilizados': {

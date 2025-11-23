@@ -49,7 +49,7 @@ import DetailsModal from '../components/Dashboard/DetailsModal';
 import AttendantDetailsModal from '../components/Dashboard/AttendantDetailsModal';
 import ChartCard from '../components/charts/ChartCard';
 
-import CriteriaBarChart from '../components/dashboard/CriteriaBarChart';
+import CriteriaBarChart from '../components/Dashboard/CriteriaBarChart';
 
 import { keyframes } from '@mui/system';
 

@@ -17,13 +17,13 @@ import MessageIcon from '@mui/icons-material/Message';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { formatDateForDisplay } from '../../utils/dateUtils';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const AttendantDetailsModal = ({ open, handleClose, data, loading, error }) => {
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const handleViewClient = (clientId) => {
-        history.push(`/clients/${clientId}`);
+        navigate(`/clients/${clientId}`);
     };
     const style = {
         position: 'absolute',

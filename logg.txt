@@ -1,18 +1,25 @@
-Postgres is up - executing command
-Server.js is being executed!
-/usr/src/app/node_modules/express/lib/router/route.js:216
-        throw new Error(msg);
-
-^
-Error: Route.post() requires a callback function but got a [object Undefined]
-    at Route.<computed> [as post] (/usr/src/app/node_modules/express/lib/router/route.js:216:15)
-    at proto.<computed> [as post] (/usr/src/app/node_modules/express/lib/router/index.js:521:19)
-    at Object.<anonymous> (/usr/src/app/src/routes/roletaRoutes.js:33:8)
-    at Module._compile (node:internal/modules/cjs/loader:1364:14)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
-    at Module.load (node:internal/modules/cjs/loader:1203:32)
-    at Module._load (node:internal/modules/cjs/loader:1019:12)
-    at Module.require (node:internal/modules/cjs/loader:1231:19)
-    at require (node:internal/modules/helpers:177:18)
-    at Object.<anonymous> (/usr/src/app/src/routes/index.js:28:22)
-Node.js v18.20.8
+ => ERROR [build 6/6] RUN npm run build                                                      208.8s
+------
+ > [build 6/6] RUN npm run build:
+0.894
+0.894 > frontend@0.1.0 build
+0.894 > react-scripts build
+0.894
+2.722 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+4.736 Creating an optimized production build...
+202.9 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+208.5 Failed to compile.
+208.5
+208.5 Attempted import error: 'useHistory' is not exported from 'react-router-dom' (imported as 'useHistory').
+208.5
+208.5
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

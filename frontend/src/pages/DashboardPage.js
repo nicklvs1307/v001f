@@ -49,6 +49,8 @@ import DetailsModal from '../components/Dashboard/DetailsModal';
 import AttendantDetailsModal from '../components/Dashboard/AttendantDetailsModal';
 import ChartCard from '../components/charts/ChartCard';
 
+import CriteriaBarChart from '../components/dashboard/CriteriaBarChart';
+
 import { keyframes } from '@mui/system';
 
 const fadeIn = keyframes`
@@ -540,6 +542,10 @@ const DashboardPage = () => {
                         </Box>
                     </Paper>
                 </Grid>
+
+                <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
+                    <CriteriaBarChart data={dashboardData?.overallResults?.scoresByCriteria || []} />
+                </Grid>
             </Grid>
 
             <Grid container spacing={2} sx={{ mb: 4 }}>
@@ -642,43 +648,7 @@ const DashboardPage = () => {
                 </Grid>
             </Grid>
 
-            {/* Scores por Critério */}
-            <Grid container spacing={2} sx={{ mt: 4 }}>
-                <Grid item xs={12}>
-                    <Typography variant="h5" component="h2" gutterBottom>
-                        Scores por Critério
-                    </Typography>
-                </Grid>
-                {overallResults?.scoresByCriteria?.map((criterion, index) => {
-                    if (criterion.total === 0) return null;
 
-                    const chartData = criterion.scoreType === 'NPS' ? [
-                        { name: 'Promotores', value: criterion.promoters || 0 },
-                        { name: 'Neutros', value: criterion.neutrals || 0 },
-                        { name: 'Detratores', value: criterion.detractors || 0 },
-                    ] : [
-                        { name: 'Satisfeitos', value: criterion.satisfied || 0 },
-                        { name: 'Neutros', value: criterion.neutral || 0 },
-                        { name: 'Insatisfeitos', value: criterion.unsatisfied || 0 },
-                    ];
-
-                    const score = criterion.scoreType === 'NPS'
-                        ? criterion.npsScore?.toFixed(1) ?? 0
-                        : `${criterion.satisfactionRate?.toFixed(1) ?? 0}%`;
-
-                    return (
-                        <Grid item xs={12} md={6} key={index}>
-                            <ChartCard
-                                title={criterion.criterion}
-                                score={score}
-                                data={chartData}
-                                colors={criterion.scoreType === 'NPS' ? ['#4CAF50', '#FFC107', '#F44336'] : ['#2196F3', '#FFC107', '#F44336']}
-                                loading={loading}
-                            />
-                        </Grid>
-                    );
-                })}
-            </Grid>
         </Container>
     );
 };

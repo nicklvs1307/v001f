@@ -17,15 +17,10 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { ptBR } from 'date-fns/locale';
 import dashboardService from '../../services/dashboardService';
 import { useAuth } from '../../context/AuthContext';
-
-import KeyMetrics from '../../components/results/KeyMetrics';
-import NpsCharts from '../../components/results/NpsCharts';
-import CustomerFeedback from '../../components/results/CustomerFeedback';
-import Demographics from '../../components/results/Demographics';
-import AttendantPerformance from '../../components/results/AttendantPerformance';
+import Dashboard from '../../components/relatorios/Dashboard';
 
 const RelatorioSemanal = () => {
-    const [data, setData] = useState(null);
+    const [reportData, setReportData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const { user } = useAuth();
@@ -52,7 +47,7 @@ const RelatorioSemanal = () => {
             };
 
             const resultData = await dashboardService.getMainDashboard(params);
-            setData(resultData);
+            setReportData(resultData);
         } catch (err) {
             setError(err.message || 'Falha ao carregar os resultados.');
         } finally {
@@ -81,15 +76,6 @@ const RelatorioSemanal = () => {
         );
     }
 
-    const keyMetricsData = data && data.summary ? [
-        { title: 'NPS Geral', value: data.summary.nps?.score?.toFixed(1) ?? 'N/A' },
-        { title: 'CSAT Geral (%)', value: data.summary.csat?.satisfactionRate?.toFixed(1) ?? 'N/A' },
-        { title: 'Total de Respostas', value: data.summary.totalResponses ?? 0 },
-        { title: 'Total de Cadastros', value: data.summary.registrations ?? 0 },
-        { title: 'Cupons Gerados', value: data.summary.couponsGenerated ?? 0 },
-        { title: 'Cupons Utilizados', value: data.summary.couponsUsed ?? 0 },
-    ] : [];
-
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
             <Box sx={{ flexGrow: 1, p: 3, backgroundColor: '#f4f6f8' }}>
@@ -111,40 +97,8 @@ const RelatorioSemanal = () => {
                     </Grid>
                 </Paper>
                 
-                {!data ? (
-                    <Typography variant="h6" align="center" sx={{ mt: 4 }}>
-                        Não há dados para o período selecionado.
-                    </Typography>
-                ) : (
-                    <Grid container spacing={3}>
-                        <Grid item xs={12}>
-                            <KeyMetrics metrics={keyMetricsData} />
-                        </Grid>
+                <Dashboard data={reportData} />
 
-                        <Grid item xs={12} lg={8}>
-                            <NpsCharts 
-                                npsTrend={data.npsTrend} 
-                                criteriaScores={data.criteriaScores} 
-                                npsByDayOfWeek={data.npsByDayOfWeek} 
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} lg={4}>
-                            <CustomerFeedback latestComments={data.feedbacks} />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <Demographics 
-                                ageDistribution={data.demographics?.ageDistribution} 
-                                genderDistribution={data.demographics?.genderDistribution} 
-                            />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <AttendantPerformance performanceData={data.attendantsPerformance} />
-                        </Grid>
-                    </Grid>
-                )}
             </Box>
         </LocalizationProvider>
     );

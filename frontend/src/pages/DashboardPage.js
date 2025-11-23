@@ -624,7 +624,7 @@ const DashboardPage = () => {
                         </Typography>
                         <Typography variant="subtitle2" color="text.secondary" mb={2}>
                             Análise da conversão em cada etapa, desde as respostas coletadas até os cupons utilizados.
-                        </GradiTypography>
+                        </Typography>
                         <ResponsiveContainer width="100%" height={280}>
                             <LineChart
                                 data={conversionChart}

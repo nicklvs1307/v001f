@@ -13,7 +13,7 @@ const CriteriaRadarChart = ({ data }) => {
         .filter(item => item.criterion !== 'Recomendação')
         .map(item => ({
             subject: item.criterion,
-            NPS: typeof item.score === 'number' ? item.score : 0,
+            NPS: typeof item.npsScore === 'number' ? item.npsScore : 0,
             fullMark: 100,
         }));
 

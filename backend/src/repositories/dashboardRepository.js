@@ -636,6 +636,68 @@ const dashboardRepository = {
     return performanceData;
   },
 
+  getDemographicsData: async (tenantId, startDate, endDate) => {
+    const whereClause = { tenantId };
+    const dateFilter = {};
+    if (startDate) dateFilter[Op.gte] = startDate;
+    if (endDate) dateFilter[Op.lte] = endDate;
+    if (Object.keys(dateFilter).length > 0) {
+      whereClause.createdAt = dateFilter;
+    }
+
+    const clients = await Client.findAll({
+      where: whereClause,
+      attributes: ['gender', 'birthDate'],
+    });
+
+    const genderDistribution = {
+        'Masculino': 0,
+        'Feminino': 0,
+        'Outro': 0,
+        'Não informado': 0
+    };
+    const ageDistribution = {
+        '0-17': 0,
+        '18-24': 0,
+        '25-34': 0,
+        '35-44': 0,
+        '45-54': 0,
+        '55+': 0,
+        'N/A': 0
+    };
+
+    clients.forEach(client => {
+        // Gender
+        if (client.gender && (client.gender.toLowerCase() === 'masculino' || client.gender.toLowerCase() === 'm')) {
+            genderDistribution['Masculino']++;
+        } else if (client.gender && (client.gender.toLowerCase() === 'feminino' || client.gender.toLowerCase() === 'f')) {
+            genderDistribution['Feminino']++;
+        } else if (client.gender) {
+            genderDistribution['Outro']++;
+        } else {
+            genderDistribution['Não informado']++;
+        }
+
+        // Age
+        if (client.birthDate) {
+            const birthDate = new Date(client.birthDate);
+            const age = new Date().getFullYear() - birthDate.getFullYear();
+            
+            if (age <= 17) ageDistribution['0-17']++;
+            else if (age >= 18 && age <= 24) ageDistribution['18-24']++;
+            else if (age >= 25 && age <= 34) ageDistribution['25-34']++;
+            else if (age >= 35 && age <= 44) ageDistribution['35-44']++;
+            else if (age >= 45 && age <= 54) ageDistribution['45-54']++;
+            else if (age >= 55) ageDistribution['55+']++;
+
+        } else {
+            ageDistribution['N/A']++;
+        }
+    });
+
+    return { genderDistribution, ageDistribution };
+  },
+
   getDetails: async (tenantId, startDate, endDate, category) => {
     const where = { tenantId: tenantId || { [Op.ne]: null } };
     const dateFilter = {};
@@ -785,6 +847,7 @@ const dashboardRepository = {
       conversionChart,
       npsByDayOfWeek, // Adicionando aqui
       surveysRespondedChart,
+      demographics,
     ] = await Promise.all([
       dashboardRepository.getSummary(tenantId, startDate, endDate),
       dashboardRepository.getResponseChart(tenantId, startDate, endDate, period), // Repassando o period
@@ -802,6 +865,7 @@ const dashboardRepository = {
       dashboardRepository.getConversionChartData(tenantId, startDate, endDate),
       dashboardRepository.getNpsByDayOfWeek(tenantId, startDate, endDate), // Adicionando a chamada
       dashboardRepository.getSurveysRespondedChart(tenantId, startDate, endDate, period),
+      dashboardRepository.getDemographicsData(tenantId, startDate, endDate),
     ]);
 
     // Adaptar a estrutura de dados para o que o frontend espera
@@ -838,10 +902,7 @@ const dashboardRepository = {
         overallNPS: summary.nps,
         overallCSAT: summary.csat,
       },
-      demographics: { // Adicionando objeto demographics vazio para evitar crash no frontend
-        ageDistribution: [],
-        genderDistribution: [],
-      }
+      demographics,
     };
 
     return dashboardData;

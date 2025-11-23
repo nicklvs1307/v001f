@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Paper, Typography, Box } from '@mui/material';
 import NpsTrendChart from './NpsTrendChart';
-import CriteriaRadarChart from './CriteriaRadarChart';
+import CriteriaBarChart from './CriteriaBarChart';
 import NpsByDayOfWeekChart from './NpsByDayOfWeekChart';
 
 const NpsCharts = ({ npsTrend, criteriaScores, npsByDayOfWeek }) => {
@@ -31,7 +31,7 @@ const NpsCharts = ({ npsTrend, criteriaScores, npsByDayOfWeek }) => {
                 )}
                 {hasCriteriaData && (
                     <Grid item xs={12} md={6}>
-                        <CriteriaRadarChart data={criteriaScores} />
+                        <CriteriaBarChart data={criteriaScores} />
                     </Grid>
                 )}
                 {hasDayOfWeekData && (

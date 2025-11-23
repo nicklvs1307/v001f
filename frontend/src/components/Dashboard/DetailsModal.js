@@ -15,9 +15,16 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import MessageIcon from '@mui/icons-material/Message';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { formatDateForDisplay } from '../../utils/dateUtils';
+import { useHistory } from 'react-router-dom';
 
 const DetailsModal = ({ open, handleClose, title, data, loading, error }) => {
+    const history = useHistory();
+
+    const handleViewClient = (clientId) => {
+        history.push(`/clients/${clientId}`);
+    };
     const style = {
         position: 'absolute',
         top: '50%',
@@ -44,10 +51,21 @@ const DetailsModal = ({ open, handleClose, title, data, loading, error }) => {
                     <MessageIcon sx={{ mr: 0.5 }} fontSize="small" />
                     Enviar Mensagem
                 </Button>
-                <Button variant="contained" size="small">
+                <Button variant="contained" size="small" sx={{ mr: 1 }}>
                     <ConfirmationNumberIcon sx={{ mr: 0.5 }} fontSize="small" />
                     Enviar Cupom
                 </Button>
+                {row.client?.id && (
+                    <Button
+                        variant="contained"
+                        size="small"
+                        color="info"
+                        onClick={() => handleViewClient(row.client.id)}
+                    >
+                        <AccountCircleIcon sx={{ mr: 0.5 }} fontSize="small" />
+                        Ver Cliente
+                    </Button>
+                )}
             </Box>
         );
 

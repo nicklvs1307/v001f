@@ -85,6 +85,7 @@ const DashboardPage = () => {
     const [attendantModalData, setAttendantModalData] = useState(null);
     const [attendantModalLoading, setAttendantModalLoading] = useState(false);
     const [attendantModalError, setAttendantModalError] = useState('');
+    const [attendantSearch, setAttendantSearch] = useState('');
 
     useEffect(() => {
         const fetchDashboardData = async () => {
@@ -115,7 +116,14 @@ const DashboardPage = () => {
         setModalOpen(true);
         setModalLoading(true);
         try {
-            const data = await dashboardService.getDetails(category);
+            const params = {};
+            if (startDate) {
+                params.startDate = getStartOfDayUTC(startDate);
+            }
+            if (endDate) {
+                params.endDate = getEndOfDayUTC(endDate);
+            }
+            const data = await dashboardService.getDetails(category, params);
             setModalData(data);
         } catch (err) {
             setModalError(err.message || 'Falha ao carregar os detalhes.');
@@ -135,7 +143,14 @@ const DashboardPage = () => {
         setAttendantModalOpen(true);
         setAttendantModalLoading(true);
         try {
-            const data = await dashboardService.getAttendantDetails(attendantId);
+            const params = {};
+            if (startDate) {
+                params.startDate = getStartOfDayUTC(startDate);
+            }
+            if (endDate) {
+                params.endDate = getEndOfDayUTC(endDate);
+            }
+            const data = await dashboardService.getAttendantDetails(attendantId, params);
             setAttendantModalData(data);
         } catch (err) {
             setAttendantModalError(err.message || 'Falha ao carregar os detalhes do atendente.');
@@ -219,6 +234,14 @@ const DashboardPage = () => {
         );
     }
 
+    const { summary, responseChart, surveysRespondedChart, attendantsPerformance = [], feedbacks = [], conversionChart, overallResults, npsTrend } = dashboardData || { summary: {}, responseChart: [], surveysRespondedChart: [], attendantsPerformance: [], feedbacks: [], conversionChart: [], overallResults: {}, npsTrend: [] };
+    const handleSearchChange = (event) => {
+        setAttendantSearch(event.target.value);
+    };
+
+    const filteredAttendants = dashboardData?.attendantsPerformance?.filter((attendant) =>
+        attendant.name.toLowerCase().includes(attendantSearch.toLowerCase())
+    ) || [];
     if (!dashboardData) {
         return (
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
@@ -226,7 +249,6 @@ const DashboardPage = () => {
             </Container>
         );
     }
-    const { summary, responseChart = [], surveysRespondedChart = [], attendantsPerformance = [], feedbacks = [], conversionChart = [], overallResults = {}, npsTrend = [] } = dashboardData || {};
 
 
 
@@ -236,22 +258,22 @@ const DashboardPage = () => {
                 <Typography variant="h4" component="h1" gutterBottom>
                     Dashboard de Análise
                 </Typography>
-                    <Box sx={{ display: 'flex', gap: 2 }}>
-                        <DatePicker
-                            label="Data de Início"
-                            value={startDate}
-                            onChange={(newValue) => setStartDate(newValue)}
-                            inputFormat="dd/MM/yyyy"
-                            renderInput={(params) => <TextField {...params} />}
-                        />
-                        <DatePicker
-                            label="Data de Fim"
-                            value={endDate}
-                            onChange={(newValue) => setEndDate(newValue)}
-                            inputFormat="dd/MM/yyyy"
-                            renderInput={(params) => <TextField {...params} />}
-                        />
-                    </Box>
+                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
+                        <Box sx={{ display: 'flex', gap: 2 }}>
+                            <DatePicker
+                                label="Data de Início"
+                                value={startDate}
+                                onChange={(newValue) => setStartDate(newValue)}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                            <DatePicker
+                                label="Data de Fim"
+                                value={endDate}
+                                onChange={(newValue) => setEndDate(newValue)}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                        </Box>
+                    </LocalizationProvider>
             </Box>
 
             <Grid container spacing={2} sx={{ mb: 4 }}>
@@ -456,34 +478,6 @@ const DashboardPage = () => {
                     </Paper>
                 </Grid>
 
-                {/* Gráfico de Pesquisas Respondidas por Período */}
-                <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 } }}>
-                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
-                            Pesquisas Respondidas por Período
-                        </Typography>
-                        <Typography variant="subtitle2" color="text.secondary" mb={2}>
-                            Número de clientes únicos que responderam por período.
-                        </Typography>
-                        <ResponsiveContainer width="100%" height={280}>
-                            <BarChart data={surveysRespondedChart}>
-                                <defs>
-                                    <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor={theme.palette.secondary.main} stopOpacity={0.8}/>
-                                        <stop offset="95%" stopColor={theme.palette.secondary.main} stopOpacity={0}/>
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Bar dataKey="Pesquisas Respondidas" fill="url(#colorPv)" />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </Paper>
-                </Grid>
-
                 {/* Performance dos Atendentes */}
                 <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
                     <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 }, display: 'flex', flexDirection: 'column' }}>
@@ -496,6 +490,8 @@ const DashboardPage = () => {
                             placeholder="Pesquisar"
                             size="small"
                             sx={{ mb: 2 }}
+                            value={attendantSearch}
+                            onChange={handleSearchChange}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
@@ -517,7 +513,7 @@ const DashboardPage = () => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {attendantsPerformance && attendantsPerformance.map((row, index) => (
+                                    {filteredAttendants.map((row, index) => (
                                         <TableRow
                                             key={index}
                                             hover
@@ -540,7 +536,7 @@ const DashboardPage = () => {
                         </TableContainer>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
                             <Typography variant="body2">Itens por página: 5</Typography>
-                            <Typography variant="body2">1 - 5 de {attendantsPerformance?.length || 0}</Typography>
+                            <Typography variant="body2">1 - 5 de {filteredAttendants.length}</Typography>
                         </Box>
                     </Paper>
                 </Grid>

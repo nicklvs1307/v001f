@@ -89,68 +89,68 @@ const ResultsOverviewPage = () => {
     ] : [];
 
     return (
-        <Box sx={{ flexGrow: 1, p: 3, backgroundColor: '#f4f6f8' }}>
-            <Paper elevation={2} sx={{ p: 3, mb: 3, borderRadius: '16px' }}>
-                <Grid container spacing={2} justifyContent="space-between" alignItems="center">
-                    <Grid item>
-                        <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-                            Dashboard de Resultados
-                        </Typography>
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
+            <Box sx={{ flexGrow: 1, p: 3, backgroundColor: '#f4f6f8' }}>
+                <Paper elevation={2} sx={{ p: 3, mb: 3, borderRadius: '16px' }}>
+                    <Grid container spacing={2} justifyContent="space-between" alignItems="center">
+                        <Grid item>
+                            <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+                                Dashboard de Resultados
+                            </Typography>
+                        </Grid>
+                        <Grid item sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                                <DatePicker
+                                    label="Data de Início"
+                                    value={startDate}
+                                    onChange={(newValue) => setStartDate(newValue)}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                                <DatePicker
+                                    label="Data de Fim"
+                                    value={endDate}
+                                    onChange={(newValue) => setEndDate(newValue)}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                        </Grid>
                     </Grid>
-                    <Grid item sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                            <DatePicker
-                                label="Data de Início"
-                                value={startDate}
-                                onChange={(newValue) => setStartDate(newValue)}
-                                inputFormat="dd/MM/yyyy"
-                                renderInput={(params) => <TextField {...params} />}
+                </Paper>
+                
+                {!data ? (
+                    <Typography variant="h6" align="center" sx={{ mt: 4 }}>
+                        Não há dados para o período selecionado.
+                    </Typography>
+                ) : (
+                    <Grid container spacing={3}>
+                        <Grid item xs={12}>
+                            <KeyMetrics metrics={keyMetricsData} />
+                        </Grid>
+
+                        <Grid item xs={12} lg={8}>
+                            <NpsCharts 
+                                npsTrend={data.npsTrend} 
+                                criteriaScores={data.criteriaScores} 
+                                npsByDayOfWeek={data.npsByDayOfWeek} 
                             />
-                            <DatePicker
-                                label="Data de Fim"
-                                value={endDate}
-                                onChange={(newValue) => setEndDate(newValue)}
-                                inputFormat="dd/MM/yyyy"
-                                renderInput={(params) => <TextField {...params} />}
+                        </Grid>
+
+                        <Grid item xs={12} lg={4}>
+                            <CustomerFeedback latestComments={data.feedbacks} />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Demographics 
+                                ageDistribution={data.demographics?.ageDistribution} 
+                                genderDistribution={data.demographics?.genderDistribution} 
                             />
-                    </Grid>
-                </Grid>
-            </Paper>
-            
-            {!data ? (
-                <Typography variant="h6" align="center" sx={{ mt: 4 }}>
-                    Não há dados para o período selecionado.
-                </Typography>
-            ) : (
-                <Grid container spacing={3}>
-                    <Grid item xs={12}>
-                        <KeyMetrics metrics={keyMetricsData} />
-                    </Grid>
+                        </Grid>
 
-                    <Grid item xs={12} lg={8}>
-                        <NpsCharts 
-                            npsTrend={data.npsTrend} 
-                            criteriaScores={data.criteriaScores} 
-                            npsByDayOfWeek={data.npsByDayOfWeek} 
-                        />
+                        <Grid item xs={12}>
+                            <AttendantPerformance performanceData={data.attendantsPerformance} />
+                        </Grid>
                     </Grid>
-
-                    <Grid item xs={12} lg={4}>
-                        <CustomerFeedback latestComments={data.feedbacks} />
-                    </Grid>
-
-                    <Grid item xs={12} lg={6}>
-                        <Demographics 
-                            ageDistribution={data.demographics?.ageDistribution} 
-                            genderDistribution={data.demographics?.genderDistribution} 
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} lg={6}>
-                        <AttendantPerformance performanceData={data.attendantsPerformance} />
-                    </Grid>
-                </Grid>
-            )}
-        </Box>
+                )}
+            </Box>
+        </LocalizationProvider>
     );
 };
 

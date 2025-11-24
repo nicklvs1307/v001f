@@ -1,27 +1,37 @@
 const express = require("express");
 const router = express.Router();
 const automationController = require("../controllers/automationController");
-const { protect, authorize } = require("../middlewares/authMiddleware");
+const authMiddleware = require("../middlewares/authMiddleware");
+const authorize = require("../middlewares/authorizeMiddleware");
 
-router.get(
-  "/",
-  protect,
-  authorize(["Admin"]),
-  automationController.getAutomations,
-);
-
-router.put(
-  "/",
-  protect,
-  authorize(["Admin"]),
-  automationController.updateAutomations,
+// Aqui ficarão as rotas de teste para as automações
+router.post(
+  "/test/daily-report",
+  authMiddleware,
+  authorize(["admin", "superadmin"]),
+  automationController.testDailyReport,
 );
 
 router.post(
-  "/daily-report/test",
-  protect,
-  authorize(["Admin"]),
-  automationController.sendDailyReportTest,
+  "/test/birthday",
+  authMiddleware,
+  authorize(["admin", "superadmin"]),
+  automationController.testBirthday,
 );
+
+router.post(
+  "/test/coupon-reminder",
+  authMiddleware,
+  authorize(["admin", "superadmin"]),
+  automationController.testCouponReminder,
+);
+
+router.post(
+  "/test/roleta-prize",
+  authMiddleware,
+  authorize(["admin", "superadmin"]),
+  automationController.testRoletaPrize,
+);
+
 
 module.exports = router;

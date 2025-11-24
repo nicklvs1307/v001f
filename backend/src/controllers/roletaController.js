@@ -134,9 +134,12 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
   // Envio da mensagem de prêmio em segundo plano
   (async () => {
     try {
+      console.log(`[RoletaController] Iniciando envio de mensagem de prêmio para o tenant ${tenantId}.`);
       const whatsappConfig = await WhatsappConfig.findOne({
         where: { tenantId },
       });
+
+      console.log(`[RoletaController] Config do WhatsApp para o tenant ${tenantId}:`, whatsappConfig ? whatsappConfig.toJSON() : "Não encontrada");
 
       if (
         whatsappConfig &&
@@ -145,6 +148,9 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
         cliente &&
         cliente.phone
       ) {
+
+        console.log(`[RoletaController] Todas as condições para enviar a mensagem de prêmio foram atendidas para o tenant ${tenantId}.`);
+
         let message =
           whatsappConfig.prizeMessageTemplate ||
           "Parabéns, {{cliente}}! Você ganhou um prêmio: {{premio}}. Use o cupom {{cupom}} para resgatar.";
@@ -157,6 +163,12 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
           cliente.phone,
           message,
         );
+        
+        console.log(`[RoletaController] Mensagem de prêmio enviada com sucesso para ${cliente.phone} no tenant ${tenantId}.`);
+
+      } else {
+        console.log(`[RoletaController] As condições para enviar a mensagem de prêmio não foram atendidas para o tenant ${tenantId}.`);
+        console.log(`[RoletaController] Detalhes: sendPrizeMessage=${whatsappConfig?.sendPrizeMessage}, instanceStatus=${whatsappConfig?.instanceStatus}, cliente.phone=${cliente?.phone}`);
       }
     } catch (error) {
       console.error(

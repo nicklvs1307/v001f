@@ -15,7 +15,7 @@ const roletaRepository = require("../repositories/roletaRepository");
 const whatsappService = require("../services/whatsappService");
 const { v4: uuidv4 } = require("uuid");
 
-const birthdayAutomationJob = cron.schedule(
+const birthdayTask = cron.schedule(
   "0 9 * * *",
   async () => {
     // Executa todo dia às 9h da manhã
@@ -90,19 +90,36 @@ const birthdayAutomationJob = cron.schedule(
 
           // 2. Enviar Mensagem
           if (client.phone && cupomCode) {
-            let message = config.birthdayMessageTemplate;
-            message = message.replace(/{{cliente}}/g, client.name);
-            message = message.replace(/{{recompensa}}/g, rewardName);
-            message = message.replace(/{{cupom}}/g, cupomCode);
-
-            await whatsappService.sendTenantMessage(
+            const whatsappConfig = await whatsappConfigRepository.findByTenantId(
               config.tenantId,
-              client.phone,
-              message,
             );
-            console.log(
-              `Mensagem de aniversário enviada para ${client.name} (${client.phone}) do tenant ${config.tenantId}`,
-            );
+
+            if (
+              whatsappConfig &&
+              whatsappConfig.birthdayAutomationEnabled &&
+              whatsappConfig.instanceStatus === "connected"
+            ) {
+              let message = whatsappConfig.birthdayMessageTemplate;
+              message = message.replace(/{{cliente}}/g, client.name);
+              message = message.replace(/{{recompensa}}/g, rewardName);
+              message = message.replace(/{{cupom}}/g, cupomCode);
+
+              await whatsappService.sendTenantMessage(
+                config.tenantId,
+                client.phone,
+                message,
+              );
+              console.log(
+                `[BirthdayJob] Mensagem de aniversário enviada para ${client.name} (${client.phone}) do tenant ${config.tenantId}`,
+              );
+            } else {
+              console.log(
+                `[BirthdayJob] As condições para enviar a mensagem de aniversário não foram atendidas para o tenant ${config.tenantId}.`,
+              );
+              console.log(
+                `[BirthdayJob] Detalhes: birthdayAutomationEnabled=${whatsappConfig?.birthdayAutomationEnabled}, instanceStatus=${whatsappConfig?.instanceStatus}, client.phone=${client?.phone}`,
+              );
+            }
           }
         }
       }
@@ -116,4 +133,16 @@ const birthdayAutomationJob = cron.schedule(
   },
 );
 
-module.exports = birthdayAutomationJob;
+module.exports = {
+  start: () => {
+    console.log(
+      "Agendador de automação de aniversário iniciado. A tarefa será executada todos os dias às 9:00.",
+    );
+    birthdayTask.start();
+  },
+  stop: () => {
+    console.log("Agendador de automação de aniversário parado.");
+    birthdayTask.stop();
+  },
+};
+

@@ -16,8 +16,6 @@ import {
   AppBar,
   Toolbar,
   Snackbar,
-  IconButton,
-  Tooltip,
   Select,
   MenuItem,
   FormControl,
@@ -30,17 +28,17 @@ import MarkunreadMailboxOutlinedIcon from '@mui/icons-material/MarkunreadMailbox
 import UpcomingOutlinedIcon from '@mui/icons-material/UpcomingOutlined';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import SaveIcon from '@mui/icons-material/Save';
-import CloseIcon from '@mui/icons-material/Close';
-import CakeIcon from '@mui/icons-material/Cake'; // Ícone para aniversário
+import CakeIcon from '@mui/icons-material/Cake';
 
 import automationService from '../services/automationService';
-import recompensaService from '../services/recompensaService'; // Novo serviço
-import roletaService from '../services/roletaService'; // Novo serviço
+import recompensaService from '../services/recompensaService';
+import roletaService from '../services/roletaService';
+import AutomationTester from '../components/AutomationTester';
 
 const initialAutomationState = {
-  prizeRoulette: { enabled: false, template: '' },
+  dailyReport: { enabled: false, reportPhoneNumbers: '' },
+  prizeMessage: { enabled: false, template: '' },
   couponReminder: { enabled: false, daysBefore: 0, template: '' },
-  dailyReport: { enabled: false, phoneNumbers: '' },
   birthdayAutomation: {
     enabled: false,
     messageTemplate: 'Feliz aniversário, {{cliente}}! Ganhe {{recompensa}} com o cupom {{cupom}}.',
@@ -64,14 +62,13 @@ const AutomationItem = styled(Paper)(({ theme }) => ({
 const AutomationsPage = () => {
   const [automations, setAutomations] = useState(initialAutomationState);
   const [originalAutomations, setOriginalAutomations] = useState(initialAutomationState);
-  const [open, setOpen] = useState({ prizeRoulette: false, couponReminder: false, dailyReport: false, birthdayAutomation: false });
+  const [open, setOpen] = useState({ dailyReport: false, prizeMessage: false, couponReminder: false, birthdayAutomation: false });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [recompensas, setRecompensas] = useState([]);
   const [roletas, setRoletas] = useState([]);
-  const [sendingTest, setSendingTest] = useState(false);
 
   const isDirty = JSON.stringify(automations) !== JSON.stringify(originalAutomations);
 
@@ -84,8 +81,12 @@ const AutomationsPage = () => {
         recompensaService.getAll(),
         roletaService.getAll(),
       ]);
-      setAutomations(automationsResponse.data);
-      setOriginalAutomations(automationsResponse.data);
+      const mergedAutomations = {
+        ...initialAutomationState,
+        ...automationsResponse.data,
+      };
+      setAutomations(mergedAutomations);
+      setOriginalAutomations(mergedAutomations);
       setRecompensas(Array.isArray(recompensasResponse.data) ? recompensasResponse.data : []);
       setRoletas(Array.isArray(roletasResponse.data) ? roletasResponse.data : []);
     } catch (err) {
@@ -118,8 +119,12 @@ const AutomationsPage = () => {
       setSaving(true);
       setError('');
       const response = await automationService.updateAutomations(automations);
-      setAutomations(response.data);
-      setOriginalAutomations(response.data);
+      const mergedAutomations = {
+        ...initialAutomationState,
+        ...response.data,
+      };
+      setAutomations(mergedAutomations);
+      setOriginalAutomations(mergedAutomations);
       setSnackbar({ open: true, message: 'Automações salvas com sucesso!', severity: 'success' });
     } catch (err) {
       console.error('Falha ao salvar:', err);
@@ -130,17 +135,12 @@ const AutomationsPage = () => {
     }
   };
 
-  const handleSendDailyReportTest = async () => {
-    setSendingTest(true);
-    try {
-      await automationService.sendDailyReportTest({ phoneNumbers: automations.dailyReport.phoneNumbers });
-      setSnackbar({ open: true, message: 'Relatório de teste enviado com sucesso!', severity: 'success' });
-    } catch (err) {
-      console.error('Falha ao enviar relatório de teste:', err);
-      setSnackbar({ open: true, message: 'Erro ao enviar relatório de teste.', severity: 'error' });
-    } finally {
-      setSendingTest(false);
-    }
+  const handleTestSent = ({ success, message }) => {
+    setSnackbar({
+      open: true,
+      message: message,
+      severity: success ? 'success' : 'error',
+    });
   };
 
   const handleCancel = () => {
@@ -156,7 +156,7 @@ const AutomationsPage = () => {
   }
 
   return (
-    <Box sx={{ p: 3, pb: 15 /* Padding extra para a barra de ações */ }}>
+    <Box sx={{ p: 3, pb: 15 }}>
       <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
         Automações do WhatsApp
       </Typography>
@@ -180,54 +180,48 @@ const AutomationsPage = () => {
           <Collapse in={open.dailyReport} timeout="auto" unmountOnExit>
             <Box sx={{ p: 2, pl: 4, borderTop: '1px solid #eee' }}>
               <TextField
-                label="Números de Telefone"
-                value={automations.dailyReport.phoneNumbers}
-                onChange={(e) => handleChange('dailyReport', 'phoneNumbers', e.target.value)}
+                label="Números de Telefone para Relatórios"
+                value={automations.dailyReport.reportPhoneNumbers || ''}
+                onChange={(e) => handleChange('dailyReport', 'reportPhoneNumbers', e.target.value)}
                 fullWidth
                 multiline
                 rows={2}
-                helperText="Insira os números com DDI e DDD, separados por vírgula. Ex: 5511999998888, 5521988887777"
+                helperText="Insira os números com DDI e DDD, separados por vírgula."
                 margin="normal"
                 disabled={!automations.dailyReport.enabled}
               />
-              <Button
-                variant="outlined"
-                onClick={handleSendDailyReportTest}
-                disabled={!automations.dailyReport.enabled || sendingTest}
-                sx={{ mt: 2 }}
-              >
-                {sendingTest ? <CircularProgress size={24} /> : 'Enviar Teste'}
-              </Button>
+              <AutomationTester automationType="daily-report" onTestSent={handleTestSent} />
             </Box>
           </Collapse>
         </AutomationItem>
 
         {/* Prêmio da Roleta */}
         <AutomationItem>
-          <ListItem onClick={() => setOpen(prev => ({ ...prev, prizeRoulette: !prev.prizeRoulette }))} sx={{ cursor: 'pointer' }}>
+          <ListItem onClick={() => setOpen(prev => ({ ...prev, prizeMessage: !prev.prizeMessage }))} sx={{ cursor: 'pointer' }}>
             <ListItemIcon><MarkunreadMailboxOutlinedIcon /></ListItemIcon>
             <ListItemText primary="Prêmio da Roleta" secondary="Enviar mensagem automática ao cliente após ganhar na roleta." />
             <Switch
               edge="end"
-              onChange={() => handleToggle('prizeRoulette')}
-              checked={automations.prizeRoulette.enabled}
+              onChange={() => handleToggle('prizeMessage')}
+              checked={automations.prizeMessage.enabled}
               onClick={(e) => e.stopPropagation()}
             />
-            {open.prizeRoulette ? <ExpandLess /> : <ExpandMore />}
+            {open.prizeMessage ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
-          <Collapse in={open.prizeRoulette} timeout="auto" unmountOnExit>
+          <Collapse in={open.prizeMessage} timeout="auto" unmountOnExit>
             <Box sx={{ p: 2, pl: 4, borderTop: '1px solid #eee' }}>
               <TextField
                 label="Mensagem de Premiação"
-                value={automations.prizeRoulette.template}
-                onChange={(e) => handleChange('prizeRoulette', 'template', e.target.value)}
+                value={automations.prizeMessage.template}
+                onChange={(e) => handleChange('prizeMessage', 'template', e.target.value)}
                 fullWidth
                 multiline
                 rows={4}
                 helperText="Variáveis: {{cliente}}, {{premio}}, {{cupom}}"
                 margin="normal"
-                disabled={!automations.prizeRoulette.enabled}
+                disabled={!automations.prizeMessage.enabled}
               />
+              <AutomationTester automationType="roleta-prize" onTestSent={handleTestSent} />
             </Box>
           </Collapse>
         </AutomationItem>
@@ -263,10 +257,11 @@ const AutomationsPage = () => {
                 fullWidth
                 multiline
                 rows={4}
-                helperText="Variáveis: {{nome_cliente}}, {{codigo_cupom}}, {{data_validade}}"
+                helperText="Variáveis: {{cliente}}, {{recompensa}}, {{cupom}}, {{data_validade}}"
                 margin="normal"
                 disabled={!automations.couponReminder.enabled}
               />
+              <AutomationTester automationType="coupon-reminder" onTestSent={handleTestSent} />
             </Box>
           </Collapse>
         </AutomationItem>
@@ -303,7 +298,7 @@ const AutomationsPage = () => {
                 value={automations.birthdayAutomation.daysBefore}
                 onChange={(e) => handleChange('birthdayAutomation', 'daysBefore', e.target.value)}
                 margin="normal"
-                sx={{ mb: 2 }}
+                sx={{ mb: 2, mr: 2 }}
                 disabled={!automations.birthdayAutomation.enabled}
               />
               <TextField
@@ -345,12 +340,12 @@ const AutomationsPage = () => {
                   </Select>
                 </FormControl>
               )}
+              <AutomationTester automationType="birthday" onTestSent={handleTestSent} />
             </Box>
           </Collapse>
         </AutomationItem>
       </List>
 
-      {/* Barra de Ações Salvar/Cancelar */}
       <AppBar position="fixed" color="inherit" sx={{ top: 'auto', bottom: 0, background: '#fff', borderTop: '1px solid #ddd' }}>
         <Toolbar sx={{ justifyContent: 'flex-end' }}>
           {isDirty && (

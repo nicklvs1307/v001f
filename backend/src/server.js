@@ -13,7 +13,7 @@ const config = require("./config");
 const { connectDB } = require("./database"); // Importa a função connectDB
 
 const app = express();
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: false }));
 const path = require("path"); // Importar o módulo path
 
 // Middlewares

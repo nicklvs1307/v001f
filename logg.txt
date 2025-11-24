@@ -1,6 +1,15 @@
-{
-    "status": "error",
-    "code": "HTTP_500",
-    "message": "column Client.pesquisaId does not exist",
-    "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.rawSelect (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:434:18)\n    at async Client.aggregate (/usr/src/app/node_modules/sequelize/lib/model.js:1277:19)\n    at async Client.count (/usr/src/app/node_modules/sequelize/lib/model.js:1306:20)\n    at async getSummary (/usr/src/app/src/repositories/dashboardRepository.js:105:33)\n    at async Promise.all (index 0)\n    at async Object.getMainDashboard (/usr/src/app/src/repositories/dashboardRepository.js:969:7)\n    at async /usr/src/app/src/controllers/dashboardController.js:8:27"
-}
+apivoltaki.towersfy.com
+:method
+GET
+:path
+/uploads/logos/3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1758996127619.png
+:scheme
+https
+accept
+image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+accept-encoding
+gzip, deflate, br, zstd
+accept-language
+pt-PT,pt;q=0.9,en-US;q=0.8,en;q=0.7
+cookie
+rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX19sJHEy0Ggee4Fl8HJx%2BJikqD8QNvKbbxI%3D; rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX187eSeooY5I%2FQk3hdYVv%2B8u3mSWT5plPig%3D; rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX19pZUbUlyKZQWtt%2BHU8Y2agTCbqcv%2BCckbfsI2BxqHb4jupn%2B8%2FRZACDmrYrF7KqGmUhDjUhndrHA%3D%3D; rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2B8Ym7kscBN6MQ2ebnF8zPdVnPNGz%2FJZtm1gDLaZCbEc65Y4ERsW6OkiXhsh33F9QsRc0roEDGmUqEEIJrsQPOM8J2hqzH2plUPzKObdgKmedUtC%2FTq%2Bl1nr5HebgJHLUP7JVml4sqKOF5f9569%2BopkWNpR0MC47sY%3D; rl_trait=RudderEncrypt%3AU2FsdGVkX1%2BkYUyRYRgJd5gF9M1xyVg3EjaACVE%2BWvQvua0fmjA3eqeoAQcA0x20o0HEvpOht3l2srbhG66pP%2F101RXy9zOw1SjAXZu1WOTL4yLn6GTnrLxiqo6KLocdWBzJyeVdqgug%2FpRk%2FTRRKw%3D%3D; ph_phc_4URIAm1uYfJO7j8kWSe0J8lc8IqnstRLS7Jx8NcakHo_posthog=%7B%22distinct_id%22%3A%22449cbcea2808803e9cfb25e96d6a67b3bf02fdf2ca434e33fb23a85de435da14%237e7754c7-92fd-4502-bbc7-8105c69a1a7f%22%2C%22%24sesid%22%3A%5B1762955623852%2C%22019a7857-fe08-7796-8d65-35fd6fdecbb0%22%2C1762955623852%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22https%3A%2F%2Fn8n.towersfy.com%2Fsignin%3Fredirect%3D%25252F%22%7D%7D; rl_session=RudderEncrypt%3AU2FsdGVkX1%2Bf3ugncDE9wlKNtAN1j6GMkpijJYKNcYC%2FHR4lw1m35N98ClzOGyhwqaBSmWQR4L%2Flf6mNsSztqZqgaL%2BozSacTdUsYFKtf9bFgoJlXOF2yR8u5VLRu3iCBR%2FnZCli6DxX%2B%2FKbSIdC4w%3D%3D

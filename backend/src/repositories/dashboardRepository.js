@@ -948,7 +948,7 @@ const getDetails = async (tenantId, startDate, endDate, category) => {
         const currentMonth = today.getMonth() + 1;
         const birthdayWhere = { tenantId: tenantId || { [Op.ne]: null }, [Op.and]: [Sequelize.literal(`EXTRACT(MONTH FROM "birthDate") = ${currentMonth}`)] };
         const clients = await Client.findAll({ where: birthdayWhere, order: [['name', 'ASC']] });
-        return clients.map(c => ({ id: c.id, Nome: c.name, Telefone: c.phone, Aniversário: c.birthDate ? formatInTimeZone(c.birthDate, 'dd/MM') : null }));
+        return clients.map(c => ({ id: c.id, name: c.name, phone: c.phone, birthDate: c.birthDate }));
       }
       case 'cupons-gerados': {
         const coupons = await Cupom.findAll({ where, include: [{ model: Client, as: 'client', attributes: ['name']}], order: [['createdAt', 'DESC']] });

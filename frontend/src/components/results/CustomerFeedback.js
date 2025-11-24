@@ -22,7 +22,7 @@ const CustomerFeedback = ({ latestComments }) => {
                     Últimos Comentários
                 </Typography>
             </Box>
-            <List sx={{ maxHeight: 400, overflow: 'auto', p: 0 }}>
+            <List sx={{ p: 0 }}>
                 {latestComments && latestComments.length > 0 ? (
                     latestComments.map((comment, index) => (
                         <React.Fragment key={index}>

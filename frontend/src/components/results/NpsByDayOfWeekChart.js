@@ -27,7 +27,7 @@ const NpsByDayOfWeekChart = ({ data }) => {
         );
     }
     
-    const dayOrder = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+    const dayOrder = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
     
     // Ensure NPS is a number and sort data for better visualization
     const chartData = data

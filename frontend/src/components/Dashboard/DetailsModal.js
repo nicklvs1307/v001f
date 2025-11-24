@@ -97,6 +97,7 @@ const DetailsModal = ({ open, handleClose, title, data, loading, error }) => {
             case 'Detalhes de Detratores (NPS)':
             case 'Detalhes de Satisfeitos (CSAT)':
             case 'Detalhes de Insatisfeitos (CSAT)':
+            case 'Detalhes de Neutros (NPS)':
                 items = data.map((row) => (
                     <Paper key={row.id} elevation={2} sx={{ mb: 2, '&:hover': { boxShadow: 6 } }}>
                         <CardContent>
@@ -120,6 +121,24 @@ const DetailsModal = ({ open, handleClose, title, data, loading, error }) => {
                                         <Typography variant="body1"><strong>Comentário:</strong> {row.textValue}</Typography>
                                     </Grid>
                                 )}
+                                <Grid item xs={12}>
+                                    {renderActions(row)}
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Paper>
+                ));
+                break;
+
+            case 'Detalhes de Aniversariantes do Mês':
+                items = data.map((row) => (
+                    <Paper key={row.id} elevation={2} sx={{ mb: 2, '&:hover': { boxShadow: 6 } }}>
+                        <CardContent>
+                            <Grid container spacing={2} alignItems="center">
+                                <Grid item xs={12} md={6}>
+                                    <Typography variant="subtitle1" component="strong">{row.name || 'Cliente Anônimo'}</Typography>
+                                    <Typography variant="body2" color="text.secondary">{`Aniversário em: ${formatDateForDisplay(row.birthDate, 'dd/MM')}`}</Typography>
+                                </Grid>
                                 <Grid item xs={12}>
                                     {renderActions(row)}
                                 </Grid>

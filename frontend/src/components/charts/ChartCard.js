@@ -54,13 +54,22 @@ const ChartCard = ({ title, score, scoreLabel, data, colors, loading }) => {
                                         <Legend iconSize={10} />
                                     </>
                                 ) : (
-                                    <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" fill="#888">
-                                        Sem dados no período
-                                    </text>
+                                    <Pie
+                                        data={[{ value: 1 }]}
+                                        cx="50%"
+                                        cy="50%"
+                                        outerRadius={'80%'}
+                                        innerRadius={'60%'}
+                                        fill="#E0E0E0"
+                                        dataKey="value"
+                                        isAnimationActive={false}
+                                    >
+                                        <Cell fill="#E0E0E0" />
+                                    </Pie>
                                 )}
                             </PieChart>
                         </ResponsiveContainer>
-                        {hasData && (
+                        {hasData ? (
                             <Box
                                 sx={{
                                     position: 'absolute',
@@ -74,6 +83,19 @@ const ChartCard = ({ title, score, scoreLabel, data, colors, loading }) => {
                                     {score}
                                 </Typography>
                                 {scoreLabel && <Typography variant="caption">{scoreLabel}</Typography>}
+                            </Box>
+                        ) : (
+                            <Box
+                                sx={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    textAlign: 'center',
+                                    color: 'text.secondary',
+                                }}
+                            >
+                                <Typography variant="body1">Sem dados</Typography>
                             </Box>
                         )}
                     </Box>

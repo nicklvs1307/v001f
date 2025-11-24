@@ -149,7 +149,7 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
 
   return {
     nps: {
-      score: parseFloat(npsScore.toFixed(1)),
+      npsScore: parseFloat(npsScore.toFixed(1)),
       promoters: npsPromoters,
       neutrals: npsNeutrals,
       detractors: npsDetractors,
@@ -333,53 +333,73 @@ const getNpsByCriteria = async (tenantId = null, startDate = null, endDate = nul
     include: [{
       model: Pergunta,
       as: 'perguntas',
-      where: {
-        type: { [Op.in]: ['rating_0_10', 'rating_1_5', 'rating'] }
-      },
+      attributes: ['id', 'type'],
       include: [{
         model: Resposta,
         as: 'respostas',
-        required: false, // Use left join to get all questions, even without answers in the period
+        where: responseWhere,
+        required: false, // Left join to get all questions
+        attributes: ['ratingValue']
       }]
-    }]
+    }],
+    order: [['name', 'ASC']]
   });
 
-  const results = criterios.map(criterio => {
+  return criterios.map(criterio => {
     const result = {
       criterion: criterio.name,
-      good: 0,
+      scoreType: null,
+      promoters: 0,
+      neutrals: 0,
+      detractors: 0,
+      satisfied: 0,
       neutral: 0,
-      bad: 0,
+      unsatisfied: 0,
+      total: 0,
+      npsScore: 0,
+      satisfactionRate: 0,
     };
 
     if (!criterio.perguntas || criterio.perguntas.length === 0) {
       return result;
     }
 
-    // Assuming one rating question per criterion for simplicity
+    // Assuming one rating question per criterion
     const pergunta = criterio.perguntas[0];
+    if (!pergunta) return result;
+
+    result.scoreType = pergunta.type === 'rating_0_10' ? 'NPS' : 'CSAT';
     
-    if (!pergunta || !pergunta.respostas) {
+    if (!pergunta.respostas || pergunta.respostas.length === 0) {
       return result;
     }
 
     pergunta.respostas.forEach(resposta => {
       const value = resposta.ratingValue;
+      if (value === null) return;
+
+      result.total++;
       if (pergunta.type === 'rating_0_10') {
-        if (value >= 9) result.good++;
-        else if (value >= 7) result.neutral++;
-        else if (value <= 6) result.bad++;
+        if (value >= 9) result.promoters++;
+        else if (value >= 7) result.neutrals++;
+        else result.detractors++;
       } else if (pergunta.type === 'rating_1_5' || pergunta.type === 'rating') {
-        if (value >= 4) result.good++;
+        if (value >= 4) result.satisfied++;
         else if (value === 3) result.neutral++;
-        else if (value <= 2) result.bad++;
+        else result.unsatisfied++;
       }
     });
 
+    if (result.total > 0) {
+      if (result.scoreType === 'NPS') {
+        result.npsScore = parseFloat((((result.promoters - result.detractors) / result.total) * 100).toFixed(1));
+      } else {
+        result.satisfactionRate = parseFloat(((result.satisfied / result.total) * 100).toFixed(1));
+      }
+    }
+
     return result;
   });
-
-  return results.filter(r => r.good > 0 || r.neutral > 0 || r.bad > 0); // Only return criteria with responses
 };
 
 const getNpsDistribution = async (tenantId = null, startDate = null, endDate = null) => {
@@ -1004,7 +1024,7 @@ const getMainDashboard = async (tenantId = null, startDate = null, endDate = nul
     getResponseChart(tenantId, startDate, endDate, period),
     getNpsTrendData(tenantId, period, startDate, endDate),
     getNpsDistribution(tenantId, startDate, endDate),
-    getNpsByCriteria(tenantId, startDate, endDate, surveyId), // This now returns the new shape
+    getNpsByCriteria(tenantId, startDate, endDate, surveyId),
     getFeedbacks(tenantId, startDate, endDate),
     getAttendantsPerformance(tenantId, startDate, endDate),
     getWordCloudData(tenantId, startDate, endDate),
@@ -1014,19 +1034,6 @@ const getMainDashboard = async (tenantId = null, startDate = null, endDate = nul
     getDemographicsData(tenantId, startDate, endDate),
     getClientStatusCounts(tenantId, startDate, endDate),
   ]);
-
-  const mappedScoresByCriteria = scoresByCriteriaData.map(item => {
-      const total = item.good + item.neutral + item.bad;
-      const npsScore = total > 0 ? ((item.good - item.bad) / total) * 100 : 0;
-      return {
-          criterion: item.criterion,
-          promoters: item.good,
-          neutrals: item.neutral,
-          detractors: item.bad,
-          total: total,
-          npsScore: npsScore,
-      };
-  });
 
   return {
     summary,
@@ -1040,9 +1047,9 @@ const getMainDashboard = async (tenantId = null, startDate = null, endDate = nul
     npsByDayOfWeek,
     surveysRespondedChart,
     clientStatusCounts,
-    criteriaScores: mappedScoresByCriteria,
+    criteriaScores: scoresByCriteriaData,
     overallResults: {
-      scoresByCriteria: mappedScoresByCriteria,
+      scoresByCriteria: scoresByCriteriaData,
       overallNPS: summary.nps,
       overallCSAT: summary.csat,
     },

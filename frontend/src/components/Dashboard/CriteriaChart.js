@@ -25,22 +25,8 @@ const CriteriaChart = ({ startDate, endDate }) => {
                 }
                 const data = await dashboardService.getCriteriaScores(params);
 
-                // Mapeamento similar ao feito em getMainDashboard no backend
-                const mappedScoresByCriteria = data.map(item => {
-                    const total = item.good + item.neutral + item.bad;
-                    const npsScore = total > 0 ? ((item.good - item.bad) / total) * 100 : 0;
-                    return {
-                        criterion: item.criterion,
-                        promoters: item.good,
-                        neutrals: item.neutral,
-                        detractors: item.bad,
-                        total: total,
-                        npsScore: parseFloat(npsScore.toFixed(1)),
-                    };
-                });
-
                 if (isActive) {
-                    setCriteriaScores(mappedScoresByCriteria);
+                    setCriteriaScores(data);
                 }
             } catch (err) {
                 if (isActive) {

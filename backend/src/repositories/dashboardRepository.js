@@ -17,30 +17,23 @@ const { startOfMonth } = require("date-fns");
 const { fn, col, literal } = Sequelize;
 
 const getSummary = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
-  // FORÇAR DATAS PARA TESTE
-  startDate = '2025-09-01T00:00:00.000Z';
-  endDate = '2025-09-30T23:59:59.999Z';
-
   // --- FILTROS ---
-  const baseWhere = tenantId ? { tenantId } : {};
-  if (surveyId) {
-    baseWhere.pesquisaId = surveyId;
-  }
+  const whereClause = {};
+  if (tenantId) whereClause.tenantId = tenantId;
+  if (surveyId) whereClause.pesquisaId = surveyId;
 
-
-  const periodDateFilter = {};
-  if (startDate) periodDateFilter[Op.gte] = startDate;
-  if (endDate) periodDateFilter[Op.lte] = endDate;
-
-  const periodWhere = { ...baseWhere };
-  if (Object.keys(periodDateFilter).length > 0) {
-    periodWhere.createdAt = periodDateFilter;
+  if (startDate && endDate) {
+    whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+  } else if (startDate) {
+    whereClause.createdAt = { [Op.gte]: startDate };
+  } else if (endDate) {
+    whereClause.createdAt = { [Op.lte]: endDate };
   }
 
   // --- CÁLCULOS NPS (Período Selecionado) ---
   const ratingResponses = await Resposta.findAll({
     where: {
-      ...periodWhere,
+      ...whereClause,
       ratingValue: { [Op.ne]: null },
     },
     include: [
@@ -102,24 +95,33 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
     distinct: true,
     col: "respondentSessionId",
     where: {
-      ...periodWhere,
+      ...whereClause,
       ratingValue: { [Op.gte]: 9 },
       respondentSessionId: { [Op.ne]: null },
     },
   });
 
-  const totalResponsesInPeriod = await Resposta.count({ where: periodWhere });
-  const registrationsInPeriod = await Client.count({ where: periodWhere });
-  const couponsGeneratedInPeriod = await Cupom.count({ where: periodWhere });
+  const totalResponsesInPeriod = await Resposta.count({ where: whereClause });
+  const registrationsInPeriod = await Client.count({ where: whereClause });
+  const couponsGeneratedInPeriod = await Cupom.count({ where: whereClause });
 
-  const couponsUsedWhere = { ...baseWhere, status: "used" };
-  if (Object.keys(periodDateFilter).length > 0) {
-      couponsUsedWhere.updatedAt = periodDateFilter;
+  // Lógica separada para cupons usados, filtrando por updatedAt
+  const couponsUsedWhere = { status: "used" };
+  if (tenantId) couponsUsedWhere.tenantId = tenantId;
+  if (startDate && endDate) {
+    couponsUsedWhere.updatedAt = { [Op.between]: [startDate, endDate] };
+  } else if (startDate) {
+    couponsUsedWhere.updatedAt = { [Op.gte]: startDate };
+  } else if (endDate) {
+    couponsUsedWhere.updatedAt = { [Op.lte]: endDate };
   }
   const couponsUsedInPeriod = await Cupom.count({ where: couponsUsedWhere });
 
-  const totalClients = await Client.count({ where: baseWhere });
+  const totalClientsWhere = {};
+  if (tenantId) totalClientsWhere.tenantId = tenantId;
+  const totalClients = await Client.count({ where: totalClientsWhere });
   const totalTenants = tenantId ? 1 : await Tenant.count();
+
 
   return {
     nps: {
@@ -161,11 +163,12 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
 
 const getClientStatusCounts = async (tenantId = null, startDate = null, endDate = null) => {
     const whereClause = { tenantId };
-    const dateFilter = {};
-    if (startDate) dateFilter[Op.gte] = startDate;
-    if (endDate) dateFilter[Op.lte] = endDate;
-    if (Object.keys(dateFilter).length > 0) {
-      whereClause.createdAt = dateFilter;
+    if (startDate && endDate) {
+      whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+    } else if (startDate) {
+      whereClause.createdAt = { [Op.gte]: startDate };
+    } else if (endDate) {
+      whereClause.createdAt = { [Op.lte]: endDate };
     }
 
     const responses = await Resposta.findAll({
@@ -196,11 +199,12 @@ const getClientStatusCounts = async (tenantId = null, startDate = null, endDate 
 
 const getSurveysRespondedChart = async (tenantId = null, startDate = null, endDate = null, period = "day") => {
     const whereClause = tenantId ? { tenantId } : {};
-    const dateFilter = {};
-    if (startDate) dateFilter[Op.gte] = startDate;
-    if (endDate) dateFilter[Op.lte] = endDate;
-    if (Object.keys(dateFilter).length > 0) {
-      whereClause.createdAt = dateFilter;
+    if (startDate && endDate) {
+      whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+    } else if (startDate) {
+      whereClause.createdAt = { [Op.gte]: startDate };
+    } else if (endDate) {
+      whereClause.createdAt = { [Op.lte]: endDate };
     }
     whereClause.respondentSessionId = { [Op.ne]: null };
 
@@ -222,11 +226,12 @@ const getSurveysRespondedChart = async (tenantId = null, startDate = null, endDa
 
 const getResponseChart = async (tenantId = null, startDate = null, endDate = null, period = "day") => {
     const whereClause = tenantId ? { tenantId } : {};
-    const dateFilter = {};
-    if (startDate) dateFilter[Op.gte] = startDate;
-    if (endDate) dateFilter[Op.lte] = endDate;
-    if (Object.keys(dateFilter).length > 0) {
-      whereClause.createdAt = dateFilter;
+    if (startDate && endDate) {
+      whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+    } else if (startDate) {
+      whereClause.createdAt = { [Op.gte]: startDate };
+    } else if (endDate) {
+      whereClause.createdAt = { [Op.lte]: endDate };
     }
 
     const responsesByPeriod = await Resposta.findAll({
@@ -249,11 +254,13 @@ const getFeedbacks = async (tenantId = null, startDate = null, endDate = null) =
   const whereClause = tenantId
     ? { tenantId, textValue: { [Op.ne]: null, [Op.ne]: "" } }
     : { textValue: { [Op.ne]: null, [Op.ne]: "" } };
-  const dateFilter = {};
-  if (startDate) dateFilter[Op.gte] = startDate;
-  if (endDate) dateFilter[Op.lte] = endDate;
-  if (Object.keys(dateFilter).length > 0) {
-    whereClause.createdAt = dateFilter;
+  
+  if (startDate && endDate) {
+    whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+  } else if (startDate) {
+    whereClause.createdAt = { [Op.gte]: startDate };
+  } else if (endDate) {
+    whereClause.createdAt = { [Op.lte]: endDate };
   }
 
   const feedbacksData = await Resposta.findAll({
@@ -284,14 +291,15 @@ const getFeedbacks = async (tenantId = null, startDate = null, endDate = null) =
 const getNpsByCriteria = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
   const whereClause = { tenantId: tenantId || { [Op.ne]: null } };
 
-  const dateFilter = {};
-  if (startDate) dateFilter[Op.gte] = startDate;
-  if (endDate) dateFilter[Op.lte] = endDate;
-  
   const responseWhere = { ratingValue: { [Op.ne]: null } };
-  if (Object.keys(dateFilter).length > 0) {
-    responseWhere.createdAt = dateFilter;
+  if (startDate && endDate) {
+    responseWhere.createdAt = { [Op.between]: [startDate, endDate] };
+  } else if (startDate) {
+    responseWhere.createdAt = { [Op.gte]: startDate };
+  } else if (endDate) {
+    responseWhere.createdAt = { [Op.lte]: endDate };
   }
+
   if (tenantId) {
     responseWhere.tenantId = tenantId;
   }
@@ -357,11 +365,13 @@ const getNpsByCriteria = async (tenantId = null, startDate = null, endDate = nul
 const getNpsDistribution = async (tenantId = null, startDate = null, endDate = null) => {
   const whereClause = { ratingValue: { [Op.ne]: null } };
   if (tenantId) whereClause.tenantId = tenantId;
-  const dateFilter = {};
-  if (startDate) dateFilter[Op.gte] = startDate;
-  if (endDate) dateFilter[Op.lte] = endDate;
-  if (Object.keys(dateFilter).length > 0) {
-    whereClause.createdAt = dateFilter;
+  
+  if (startDate && endDate) {
+    whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+  } else if (startDate) {
+    whereClause.createdAt = { [Op.gte]: startDate };
+  } else if (endDate) {
+    whereClause.createdAt = { [Op.lte]: endDate };
   }
 
   const ratingResponses = await Resposta.findAll({
@@ -393,11 +403,13 @@ const getNpsDistribution = async (tenantId = null, startDate = null, endDate = n
 const getNpsTrendData = async (tenantId = null, period = "day", startDate = null, endDate = null) => {
   const whereClause = { ratingValue: { [Op.ne]: null } };
   if (tenantId) whereClause.tenantId = tenantId;
-  const dateFilter = {};
-  if (startDate) dateFilter[Op.gte] = startDate;
-  if (endDate) dateFilter[Op.lte] = endDate;
-  if (Object.keys(dateFilter).length > 0) {
-    whereClause.createdAt = dateFilter;
+
+  if (startDate && endDate) {
+    whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+  } else if (startDate) {
+    whereClause.createdAt = { [Op.gte]: startDate };
+  } else if (endDate) {
+    whereClause.createdAt = { [Op.lte]: endDate };
   }
 
   const trendData = await Resposta.findAll({
@@ -428,11 +440,12 @@ const getNpsTrendData = async (tenantId = null, period = "day", startDate = null
 
 const getEvolutionData = async (tenantId = null, period = "day", startDate = null, endDate = null) => {
   const whereClause = { tenantId: tenantId || { [Op.ne]: null } };
-  const dateFilter = {};
-  if (startDate) dateFilter[Op.gte] = startDate;
-  if (endDate) dateFilter[Op.lte] = endDate;
-  if (Object.keys(dateFilter).length > 0) {
-    whereClause.createdAt = dateFilter;
+  if (startDate && endDate) {
+    whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+  } else if (startDate) {
+    whereClause.createdAt = { [Op.gte]: startDate };
+  } else if (endDate) {
+    whereClause.createdAt = { [Op.lte]: endDate };
   }
 
   const responseTrends = await Resposta.findAll({
@@ -503,11 +516,12 @@ const getEvolutionData = async (tenantId = null, period = "day", startDate = nul
 const getConversionChartData = async (tenantId = null, startDate = null, endDate = null) => {
   const whereClause = {};
   if (tenantId) whereClause.tenantId = tenantId;
-  const dateFilter = {};
-  if (startDate) dateFilter[Op.gte] = startDate;
-  if (endDate) dateFilter[Op.lte] = endDate;
-  if (Object.keys(dateFilter).length > 0) {
-    whereClause.createdAt = dateFilter;
+  if (startDate && endDate) {
+    whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+  } else if (startDate) {
+    whereClause.createdAt = { [Op.gte]: startDate };
+  } else if (endDate) {
+    whereClause.createdAt = { [Op.lte]: endDate };
   }
 
   const totalResponses = await Resposta.count({ where: whereClause });
@@ -515,8 +529,12 @@ const getConversionChartData = async (tenantId = null, startDate = null, endDate
   const couponsGenerated = await Cupom.count({ where: whereClause });
   
   const usedWhereClause = { tenantId, status: 'used' };
-  if (Object.keys(dateFilter).length > 0) {
-    usedWhereClause.updatedAt = dateFilter;
+  if (startDate && endDate) {
+    usedWhereClause.updatedAt = { [Op.between]: [startDate, endDate] };
+  } else if (startDate) {
+    usedWhereClause.updatedAt = { [Op.gte]: startDate };
+  } else if (endDate) {
+    usedWhereClause.updatedAt = { [Op.lte]: endDate };
   }
   const couponsUsed = await Cupom.count({ where: usedWhereClause });
 
@@ -533,11 +551,13 @@ const getWordCloudData = async (tenantId = null, startDate = null, endDate = nul
     textValue: { [Op.ne]: null, [Op.ne]: "" },
   };
   if (tenantId) whereClause.tenantId = tenantId;
-  const dateFilter = {};
-  if (startDate) dateFilter[Op.gte] = startDate;
-  if (endDate) dateFilter[Op.lte] = endDate;
-  if (Object.keys(dateFilter).length > 0) {
-    whereClause.createdAt = dateFilter;
+  
+  if (startDate && endDate) {
+    whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+  } else if (startDate) {
+    whereClause.createdAt = { [Op.gte]: startDate };
+  } else if (endDate) {
+    whereClause.createdAt = { [Op.lte]: endDate };
   }
 
   const responses = await Resposta.findAll({ where: whereClause, attributes: ["textValue"] });
@@ -563,11 +583,13 @@ const getWordCloudData = async (tenantId = null, startDate = null, endDate = nul
 const getNpsByDayOfWeek = async (tenantId = null, startDate = null, endDate = null) => {
   const whereClause = { ratingValue: { [Op.ne]: null } };
   if (tenantId) whereClause.tenantId = tenantId;
-  const dateFilter = {};
-  if (startDate) dateFilter[Op.gte] = startDate;
-  if (endDate) dateFilter[Op.lte] = endDate;
-  if (Object.keys(dateFilter).length > 0) {
-    whereClause.createdAt = dateFilter;
+  
+  if (startDate && endDate) {
+    whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+  } else if (startDate) {
+    whereClause.createdAt = { [Op.gte]: startDate };
+  } else if (endDate) {
+    whereClause.createdAt = { [Op.lte]: endDate };
   }
 
   const npsData = await Resposta.findAll({
@@ -598,11 +620,12 @@ const getNpsByDayOfWeek = async (tenantId = null, startDate = null, endDate = nu
 
 const getAttendantsPerformance = async (tenantId, startDate, endDate) => {
   const whereClause = { tenantId };
-  const dateFilter = {};
-  if (startDate) dateFilter[Op.gte] = startDate;
-  if (endDate) dateFilter[Op.lte] = endDate;
-  if (Object.keys(dateFilter).length > 0) {
-    whereClause.createdAt = dateFilter;
+  if (startDate && endDate) {
+    whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+  } else if (startDate) {
+    whereClause.createdAt = { [Op.gte]: startDate };
+  } else if (endDate) {
+    whereClause.createdAt = { [Op.lte]: endDate };
   }
 
   const attendants = await Atendente.findAll({
@@ -647,11 +670,12 @@ const getAttendantsPerformance = async (tenantId, startDate, endDate) => {
 
 const getAttendantDetails = async (tenantId, attendantId, startDate, endDate) => {
     const whereClause = { tenantId, atendenteId: attendantId };
-    const dateFilter = {};
-    if (startDate) dateFilter[Op.gte] = startDate;
-    if (endDate) dateFilter[Op.lte] = endDate;
-    if (Object.keys(dateFilter).length > 0) {
-      whereClause.createdAt = dateFilter;
+    if (startDate && endDate) {
+      whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+    } else if (startDate) {
+      whereClause.createdAt = { [Op.gte]: startDate };
+    } else if (endDate) {
+      whereClause.createdAt = { [Op.lte]: endDate };
     }
 
     const attendant = await Atendente.findByPk(attendantId, {
@@ -776,11 +800,12 @@ const getDemographicsData = async (tenantId, startDate, endDate) => {
 
 const getMonthSummary = async (tenantId, startDate, endDate) => {
   const whereClause = { tenantId: tenantId || { [Op.ne]: null } };
-  const dateFilter = {};
-  if (startDate) dateFilter[Op.gte] = startDate;
-  if (endDate) dateFilter[Op.lte] = endDate;
-  if (Object.keys(dateFilter).length > 0) {
-    whereClause.createdAt = dateFilter;
+  if (startDate && endDate) {
+    whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+  } else if (startDate) {
+    whereClause.createdAt = { [Op.gte]: startDate };
+  } else if (endDate) {
+    whereClause.createdAt = { [Op.lte]: endDate };
   }
 
   const responses = await Resposta.findAll({
@@ -841,11 +866,12 @@ const getMonthSummary = async (tenantId, startDate, endDate) => {
 
 const getDetails = async (tenantId, startDate, endDate, category) => {
     const where = { tenantId: tenantId || { [Op.ne]: null } };
-    const dateFilter = {};
-    if (startDate) dateFilter[Op.gte] = startDate;
-    if (endDate) dateFilter[Op.lte] = endDate;
-    if (Object.keys(dateFilter).length > 0) {
-      where.createdAt = dateFilter;
+    if (startDate && endDate) {
+      where.createdAt = { [Op.between]: [startDate, endDate] };
+    } else if (startDate) {
+      where.createdAt = { [Op.gte]: startDate };
+    } else if (endDate) {
+      where.createdAt = { [Op.lte]: endDate };
     }
 
     const includeClient = { model: Client, as: 'client', attributes: ['id', 'name', 'phone'], required: false };
@@ -910,7 +936,13 @@ const getDetails = async (tenantId, startDate, endDate, category) => {
       }
       case 'cupons-utilizados': {
         const usedWhere = { tenantId: tenantId || { [Op.ne]: null }, status: 'used' };
-        if (Object.keys(dateFilter).length > 0) usedWhere.updatedAt = dateFilter;
+        if (startDate && endDate) {
+          usedWhere.updatedAt = { [Op.between]: [startDate, endDate] };
+        } else if (startDate) {
+          usedWhere.updatedAt = { [Op.gte]: startDate };
+        } else if (endDate) {
+          usedWhere.updatedAt = { [Op.lte]: endDate };
+        }
         const coupons = await Cupom.findAll({ where: usedWhere, include: [{ model: Client, as: 'client', attributes: ['name']}], order: [['updatedAt', 'DESC']] });
         return coupons.map(c => ({ id: c.id, 'Data de Utilização': formatInTimeZone(c.updatedAt, 'dd/MM/yyyy HH:mm'), 'Cliente': c.client?.name || 'N/A', 'Código': c.code, 'Status': c.status }));
       }

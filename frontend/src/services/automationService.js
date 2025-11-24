@@ -1,10 +1,10 @@
 import apiAuthenticated from "./apiAuthenticated";
 
 const automationService = {
-  getAutomations: () => apiAuthenticated.get("/config/whatsapp"), // Endpoint atualizado
-  updateAutomations: (data) => apiAuthenticated.put("/config/whatsapp", data), // Endpoint atualizado
+  getAutomations: () => apiAuthenticated.get("/whatsapp-config/instance"),
+  updateAutomations: (data) => apiAuthenticated.put("/whatsapp-config/instance", data),
 
-  // Novas funções de teste
+  // Funções de teste
   testDailyReport: (data) => apiAuthenticated.post("/automations/test/daily-report", data),
   testBirthday: (data) => apiAuthenticated.post("/automations/test/birthday", data),
   testCouponReminder: (data) => apiAuthenticated.post("/automations/test/coupon-reminder", data),
@@ -12,3 +12,4 @@ const automationService = {
 };
 
 export default automationService;
+

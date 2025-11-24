@@ -43,83 +43,81 @@ const birthdayTask = cron.schedule(
         );
 
         for (const client of clients) {
-          let rewardName = "";
-          let cupomCode = "";
+          try {
+            let rewardName = "";
+            let cupomCode = "";
+            let novoCupom = null;
 
-          // 1. Gerar Cupom
-          if (config.birthdayRewardType === "recompensa") {
-            const recompensa = await recompensaRepository.findById(
-              config.birthdayRewardId,
-            );
-            if (recompensa) {
-              rewardName = recompensa.name;
-              cupomCode = uuidv4().substring(0, 8).toUpperCase(); // Gera um código de cupom único
-              const expiryDate = endOfDay(
-                addDays(now(), config.birthdayCouponValidityDays),
+            // 1. Gerar Cupom
+            if (config.birthdayRewardType === "recompensa") {
+              const recompensa = await recompensaRepository.findById(
+                config.birthdayRewardId,
               );
-              await cupomRepository.create({
-                code: cupomCode,
-                recompensaId: recompensa.id,
-                clientId: client.id,
-                tenantId: config.tenantId,
-                expiresAt: expiryDate,
-                isUsed: false,
-              });
+              if (recompensa) {
+                rewardName = recompensa.name;
+                cupomCode = uuidv4().substring(0, 8).toUpperCase(); // Gera um código de cupom único
+                const expiryDate = endOfDay(
+                  addDays(now(), config.birthdayCouponValidityDays),
+                );
+                novoCupom = await cupomRepository.create({
+                  codigo: cupomCode,
+                  recompensaId: recompensa.id,
+                  clienteId: client.id,
+                  tenantId: config.tenantId,
+                  dataValidade: expiryDate,
+                  dataGeracao: new Date(),
+                  status: 'active',
+                });
+              }
+            } else if (config.birthdayRewardType === "roleta") {
+              const roleta = await roletaRepository.findById(
+                config.birthdayRewardId,
+              );
+              if (roleta) {
+                rewardName = roleta.name; // Ou outro campo relevante da roleta
+                cupomCode = uuidv4().substring(0, 8).toUpperCase(); // Gera um código de cupom único
+                const expiryDate = endOfDay(
+                  addDays(now(), config.birthdayCouponValidityDays),
+                );
+                novoCupom = await cupomRepository.create({
+                  codigo: cupomCode,
+                  roletaId: roleta.id,
+                  clienteId: client.id,
+                  tenantId: config.tenantId,
+                  dataValidade: expiryDate,
+                  dataGeracao: new Date(),
+                  status: 'active',
+                });
+              }
             }
-          } else if (config.birthdayRewardType === "roleta") {
-            const roleta = await roletaRepository.findById(
-              config.birthdayRewardId,
-            );
-            if (roleta) {
-              rewardName = roleta.name; // Ou outro campo relevante da roleta
-              cupomCode = uuidv4().substring(0, 8).toUpperCase(); // Gera um código de cupom único
-              const expiryDate = endOfDay(
-                addDays(now(), config.birthdayCouponValidityDays),
-              );
-              await cupomRepository.create({
-                code: cupomCode,
-                recompensaId: null, // Roleta não tem recompensaId diretamente
-                roletaId: roleta.id,
-                clientId: client.id,
-                tenantId: config.tenantId,
-                expiresAt: expiryDate,
-                isUsed: false,
-              });
+
+            // 2. Enviar Mensagem
+            if (client.phone && novoCupom) {
+              const whatsappConfig =
+                await whatsappConfigRepository.findByTenantId(config.tenantId);
+
+              if (whatsappConfig && whatsappConfig.birthdayAutomationEnabled) {
+                let message = whatsappConfig.birthdayMessageTemplate;
+                message = message.replace(/{{cliente}}/g, client.name);
+                message = message.replace(/{{recompensa}}/g, rewardName);
+                message = message.replace(/{{cupom}}/g, cupomCode);
+
+                await whatsappService.sendTenantMessage(
+                  config.tenantId,
+                  client.phone,
+                  message,
+                );
+                console.log(
+                  `[BirthdayJob] Mensagem de aniversário enviada para ${client.name} (${client.phone}) do tenant ${config.tenantId}`,
+                );
+              } else {
+                console.log(
+                  `[BirthdayJob] As condições para enviar a mensagem de aniversário não foram atendidas para o tenant ${config.tenantId} ou cliente ${client.name}.`,
+                );
+              }
             }
-          }
-
-          // 2. Enviar Mensagem
-          if (client.phone && cupomCode) {
-            const whatsappConfig = await whatsappConfigRepository.findByTenantId(
-              config.tenantId,
-            );
-
-            if (
-              whatsappConfig &&
-              whatsappConfig.birthdayAutomationEnabled &&
-              whatsappConfig.instanceStatus === "connected"
-            ) {
-              let message = whatsappConfig.birthdayMessageTemplate;
-              message = message.replace(/{{cliente}}/g, client.name);
-              message = message.replace(/{{recompensa}}/g, rewardName);
-              message = message.replace(/{{cupom}}/g, cupomCode);
-
-              await whatsappService.sendTenantMessage(
-                config.tenantId,
-                client.phone,
-                message,
-              );
-              console.log(
-                `[BirthdayJob] Mensagem de aniversário enviada para ${client.name} (${client.phone}) do tenant ${config.tenantId}`,
-              );
-            } else {
-              console.log(
-                `[BirthdayJob] As condições para enviar a mensagem de aniversário não foram atendidas para o tenant ${config.tenantId}.`,
-              );
-              console.log(
-                `[BirthdayJob] Detalhes: birthdayAutomationEnabled=${whatsappConfig?.birthdayAutomationEnabled}, instanceStatus=${whatsappConfig?.instanceStatus}, client.phone=${client?.phone}`,
-              );
-            }
+          } catch (clientError) {
+            console.error(`[BirthdayJob] Falha ao processar aniversário para o cliente ${client.id} do tenant ${config.tenantId}:`, clientError);
           }
         }
       }

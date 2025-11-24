@@ -36,9 +36,9 @@ import roletaService from '../services/roletaService';
 import AutomationTester from '../components/AutomationTester';
 
 const initialAutomationState = {
-  dailyReport: { enabled: false, reportPhoneNumbers: '' },
-  prizeMessage: { enabled: false, template: '' },
-  couponReminder: { enabled: false, daysBefore: 0, template: '' },
+  dailyReport: { enabled: false, phoneNumbers: '' },
+  prizeRoulette: { enabled: false, template: '' },
+  couponReminder: { enabled: false, daysBefore: 0, message: '' },
   birthdayAutomation: {
     enabled: false,
     messageTemplate: 'Feliz aniversário, {{cliente}}! Ganhe {{recompensa}} com o cupom {{cupom}}.',
@@ -62,7 +62,7 @@ const AutomationItem = styled(Paper)(({ theme }) => ({
 const AutomationsPage = () => {
   const [automations, setAutomations] = useState(initialAutomationState);
   const [originalAutomations, setOriginalAutomations] = useState(initialAutomationState);
-  const [open, setOpen] = useState({ dailyReport: false, prizeMessage: false, couponReminder: false, birthdayAutomation: false });
+  const [open, setOpen] = useState({ dailyReport: false, prizeRoulette: false, couponReminder: false, birthdayAutomation: false });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -197,29 +197,29 @@ const AutomationsPage = () => {
 
         {/* Prêmio da Roleta */}
         <AutomationItem>
-          <ListItem onClick={() => setOpen(prev => ({ ...prev, prizeMessage: !prev.prizeMessage }))} sx={{ cursor: 'pointer' }}>
+          <ListItem onClick={() => setOpen(prev => ({ ...prev, prizeRoulette: !prev.prizeRoulette }))} sx={{ cursor: 'pointer' }}>
             <ListItemIcon><MarkunreadMailboxOutlinedIcon /></ListItemIcon>
             <ListItemText primary="Prêmio da Roleta" secondary="Enviar mensagem automática ao cliente após ganhar na roleta." />
             <Switch
               edge="end"
-              onChange={() => handleToggle('prizeMessage')}
-              checked={automations.prizeMessage.enabled}
+              onChange={() => handleToggle('prizeRoulette')}
+              checked={automations.prizeRoulette.enabled}
               onClick={(e) => e.stopPropagation()}
             />
-            {open.prizeMessage ? <ExpandLess /> : <ExpandMore />}
+            {open.prizeRoulette ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
-          <Collapse in={open.prizeMessage} timeout="auto" unmountOnExit>
+          <Collapse in={open.prizeRoulette} timeout="auto" unmountOnExit>
             <Box sx={{ p: 2, pl: 4, borderTop: '1px solid #eee' }}>
               <TextField
                 label="Mensagem de Premiação"
-                value={automations.prizeMessage.template}
-                onChange={(e) => handleChange('prizeMessage', 'template', e.target.value)}
+                value={automations.prizeRoulette.template}
+                onChange={(e) => handleChange('prizeRoulette', 'template', e.target.value)}
                 fullWidth
                 multiline
                 rows={4}
                 helperText="Variáveis: {{cliente}}, {{premio}}, {{cupom}}"
                 margin="normal"
-                disabled={!automations.prizeMessage.enabled}
+                disabled={!automations.prizeRoulette.enabled}
               />
               <AutomationTester automationType="roleta-prize" onTestSent={handleTestSent} />
             </Box>
@@ -252,8 +252,8 @@ const AutomationsPage = () => {
               />
               <TextField
                 label="Mensagem do Lembrete"
-                value={automations.couponReminder.template}
-                onChange={(e) => handleChange('couponReminder', 'template', e.target.value)}
+                value={automations.couponReminder.message}
+                onChange={(e) => handleChange('couponReminder', 'message', e.target.value)}
                 fullWidth
                 multiline
                 rows={4}

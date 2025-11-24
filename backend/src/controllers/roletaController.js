@@ -144,7 +144,6 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
       if (
         whatsappConfig &&
         whatsappConfig.sendPrizeMessage &&
-        whatsappConfig.instanceStatus === "connected" &&
         cliente &&
         cliente.phone
       ) {

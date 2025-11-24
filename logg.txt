@@ -1,26 +1,6 @@
-URL da solicitação
-https://apivoltaki.towersfy.com/api/automations/test/daily-report
-Método da solicitação
-POST
-Código de status
-403 Forbidden
-Endereço remoto
-95.217.16.187:443
-{"message":"Você não tem permissão para acessar este recurso."}
-
-URL da solicitação
-https://apivoltaki.towersfy.com/api/whatsapp-config/instance
-Método da solicitação
-PUT
-Código de status
-404 Not Found
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Error</title>
-</head>
-<body>
-<pre>Cannot PUT /api/whatsapp-config/instance</pre>
-</body>
-</html>
+{
+    "status": "error",
+    "code": "HTTP_500",
+    "message": "whatsappConfigRepository.findByTenantId is not a function",
+    "details": "TypeError: whatsappConfigRepository.findByTenantId is not a function\n    at /usr/src/app/src/controllers/automationController.js:86:57\n    at asyncUtilWrap (/usr/src/app/node_modules/express-async-handler/index.js:3:20)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at /usr/src/app/src/middlewares/authMiddleware.js:75:18\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at protect (/usr/src/app/src/middlewares/authMiddleware.js:37:5)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
+}

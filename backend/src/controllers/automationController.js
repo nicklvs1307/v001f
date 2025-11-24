@@ -83,7 +83,7 @@ exports.testBirthday = asyncHandler(async (req, res) => {
     throw new ApiError(400, "tenantId e phoneNumber são obrigatórios.");
   }
 
-  const whatsappConfig = await whatsappConfigRepository.findByTenantId(tenantId);
+  const whatsappConfig = await whatsappConfigRepository.findByTenant(tenantId);
   if (!whatsappConfig || !whatsappConfig.birthdayAutomationEnabled) {
     throw new ApiError(
       400,
@@ -142,7 +142,7 @@ exports.testCouponReminder = asyncHandler(async (req, res) => {
     throw new ApiError(400, "tenantId e phoneNumber são obrigatórios.");
   }
 
-  const whatsappConfig = await whatsappConfigRepository.findByTenantId(tenantId);
+  const whatsappConfig = await whatsappConfigRepository.findByTenant(tenantId);
   if (!whatsappConfig || !whatsappConfig.couponReminderEnabled) {
     throw new ApiError(
       400,
@@ -180,7 +180,7 @@ exports.testRoletaPrize = asyncHandler(async (req, res) => {
     throw new ApiError(400, "tenantId e phoneNumber são obrigatórios.");
   }
 
-  const whatsappConfig = await whatsappConfigRepository.findByTenantId(tenantId);
+  const whatsappConfig = await whatsappConfigRepository.findByTenant(tenantId);
   if (!whatsappConfig || !whatsappConfig.sendPrizeMessage) {
     throw new ApiError(
       400,

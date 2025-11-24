@@ -1,4 +1,5 @@
 const asyncHandler = require("express-async-handler");
+const { WhatsappTemplate } = require("../../models");
 const whatsappConfigRepository = require("../repositories/whatsappConfigRepository");
 const tenantRepository = require("../repositories/tenantRepository"); // Importar tenantRepository
 const whatsappService = require("../services/whatsappService");
@@ -11,6 +12,10 @@ const whatsappConfigController = {
   getInstanceConfig: asyncHandler(async (req, res) => {
     const { tenantId } = req.user;
     const config = await whatsappConfigRepository.findByTenant(tenantId);
+    
+    const couponReminderTemplate = await WhatsappTemplate.findOne({
+      where: { tenantId, type: 'COUPON_REMINDER' }
+    });
 
     if (!config) {
       return res.json({ status: "unconfigured" });
@@ -18,13 +23,74 @@ const whatsappConfigController = {
 
     const currentStatus = await whatsappService.getInstanceStatus(tenantId);
 
-    // Retorna o objeto de configuração completo do banco de dados, com o status atualizado
+    // Unifica os dados de WhatsappConfig e WhatsappTemplate
     const response = {
       ...config.get({ plain: true }),
       status: currentStatus,
+      // Mapeia os dados para a estrutura esperada pelo frontend
+      dailyReport: {
+        enabled: config.dailyReportEnabled,
+        reportPhoneNumbers: config.reportPhoneNumbers,
+      },
+      prizeRoulette: {
+        enabled: config.sendPrizeMessage,
+        template: config.prizeMessageTemplate,
+      },
+      couponReminder: {
+        enabled: couponReminderTemplate?.isEnabled || false,
+        daysBefore: couponReminderTemplate?.daysBefore || 0,
+        message: couponReminderTemplate?.message || '',
+      },
+      birthdayAutomation: {
+        enabled: config.birthdayAutomationEnabled,
+        messageTemplate: config.birthdayMessageTemplate,
+        daysBefore: config.birthdayDaysBefore,
+        rewardType: config.birthdayRewardType,
+        rewardId: config.birthdayRewardId,
+        couponValidityDays: config.birthdayCouponValidityDays,
+      },
     };
 
     res.json(response);
+  }),
+
+  updateInstanceConfig: asyncHandler(async (req, res) => {
+    const { tenantId } = req.user;
+    const data = req.body;
+
+    const config = await whatsappConfigRepository.findByTenant(tenantId);
+    if (!config) {
+      throw new ApiError(404, 'Configuração do WhatsApp não encontrada. Crie uma instância primeiro.');
+    }
+
+    // 1. Atualizar a tabela principal WhatsappConfig
+    const configUpdateData = {
+      // Mapeamento para dailyReport
+      dailyReportEnabled: data.dailyReport.enabled,
+      reportPhoneNumbers: data.dailyReport.reportPhoneNumbers,
+      // Mapeamento para prizeRoulette (note a mudança de nome dos campos)
+      sendPrizeMessage: data.prizeRoulette.enabled,
+      prizeMessageTemplate: data.prizeRoulette.template,
+      // Mapeamento para birthdayAutomation
+      birthdayAutomationEnabled: data.birthdayAutomation.enabled,
+      birthdayMessageTemplate: data.birthdayAutomation.messageTemplate,
+      birthdayDaysBefore: data.birthdayAutomation.daysBefore,
+      birthdayRewardType: data.birthdayAutomation.rewardType,
+      birthdayRewardId: data.birthdayAutomation.rewardId,
+      birthdayCouponValidityDays: data.birthdayAutomation.couponValidityDays,
+    };
+    await config.update(configUpdateData);
+
+    // 2. Criar ou atualizar o WhatsappTemplate para couponReminder
+    await WhatsappTemplate.upsert({
+      tenantId: tenantId,
+      type: 'COUPON_REMINDER',
+      isEnabled: data.couponReminder.enabled,
+      daysBefore: data.couponReminder.daysBefore,
+      message: data.couponReminder.message,
+    });
+    
+    res.status(200).json({ message: 'Configurações de automação salvas com sucesso.' });
   }),
 
   getConnectionInfo: asyncHandler(async (req, res) => {

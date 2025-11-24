@@ -7,28 +7,28 @@ const { protect, authorize } = require("../middlewares/authMiddleware");
 router.post(
   "/test/daily-report",
   protect,
-  authorize(["admin", "superadmin"]),
+  authorize(["Admin", "Super Admin"]),
   automationController.testDailyReport,
 );
 
 router.post(
   "/test/birthday",
   protect,
-  authorize(["admin", "superadmin"]),
+  authorize(["Admin", "Super Admin"]),
   automationController.testBirthday,
 );
 
 router.post(
   "/test/coupon-reminder",
   protect,
-  authorize(["admin", "superadmin"]),
+  authorize(["Admin", "Super Admin"]),
   automationController.testCouponReminder,
 );
 
 router.post(
   "/test/roleta-prize",
   protect,
-  authorize(["admin", "superadmin"]),
+  authorize(["Admin", "Super Admin"]),
   automationController.testRoletaPrize,
 );
 

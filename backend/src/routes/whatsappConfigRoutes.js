@@ -63,6 +63,12 @@ router.delete(
 );
 
 // Salva ou atualiza as configurações de automação do tenant logado
+router.put(
+  "/instance",
+  protect,
+  authorize(["Admin"]),
+  whatsappConfigController.updateInstanceConfig,
+);
 
 // --- Rotas para o Super Admin configurar os tenants ---
 

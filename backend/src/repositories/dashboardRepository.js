@@ -952,7 +952,14 @@ const getDetails = async (tenantId, startDate, endDate, category) => {
       }
       case 'cupons-gerados': {
         const coupons = await Cupom.findAll({ where, include: [{ model: Client, as: 'client', attributes: ['name']}], order: [['createdAt', 'DESC']] });
-        return coupons.map(c => ({ id: c.id, 'Data de Geração': formatInTimeZone(c.createdAt, 'dd/MM/yyyy HH:mm'), 'Cliente': c.client?.name || 'N/A', 'Código': c.code, 'Status': c.status, 'Validade': c.dataValidade ? formatInTimeZone(c.dataValidade, 'dd/MM/yyyy') : 'N/A' }));
+        return coupons.map(c => ({
+            id: c.id,
+            createdAt: c.createdAt,
+            client: c.client,
+            code: c.code,
+            status: c.status,
+            dataValidade: c.dataValidade,
+        }));
       }
       case 'cupons-utilizados': {
         const usedWhere = { tenantId: tenantId || { [Op.ne]: null }, status: 'used' };
@@ -964,7 +971,13 @@ const getDetails = async (tenantId, startDate, endDate, category) => {
           usedWhere.updatedAt = { [Op.lte]: endDate };
         }
         const coupons = await Cupom.findAll({ where: usedWhere, include: [{ model: Client, as: 'client', attributes: ['name']}], order: [['updatedAt', 'DESC']] });
-        return coupons.map(c => ({ id: c.id, 'Data de Utilização': formatInTimeZone(c.updatedAt, 'dd/MM/yyyy HH:mm'), 'Cliente': c.client?.name || 'N/A', 'Código': c.code, 'Status': c.status }));
+        return coupons.map(c => ({
+            id: c.id,
+            updatedAt: c.updatedAt,
+            client: c.client,
+            code: c.code,
+            status: c.status,
+        }));
       }
       default:
         return [];

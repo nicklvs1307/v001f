@@ -10,7 +10,10 @@ import {
     Card,
     CardContent,
     Grid,
-    Button
+    Button,
+    Divider,
+    Paper,
+    useTheme,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import MessageIcon from '@mui/icons-material/Message';
@@ -19,57 +22,75 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { formatDateForDisplay } from '../../utils/dateUtils';
 import { useNavigate } from 'react-router-dom';
 
+const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '90%',
+    maxWidth: '900px',
+    bgcolor: 'background.paper',
+    borderRadius: '8px',
+    boxShadow: 24,
+    display: 'flex',
+    flexDirection: 'column',
+};
+
 const DetailsModal = ({ open, handleClose, title, data, loading, error }) => {
     const navigate = useNavigate();
+    const theme = useTheme();
 
     const handleViewClient = (clientId) => {
         navigate(`/clients/${clientId}`);
+        handleClose(); // Fecha o modal ao navegar
     };
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '90%',
-        maxWidth: '900px',
-        bgcolor: 'background.paper',
-        border: '2px solid #000',
-        boxShadow: 24,
-        p: 4,
-        display: 'flex',
-        flexDirection: 'column',
-    };
+
+    const renderActions = (row) => (
+        <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+            <Button variant="outlined" size="small" startIcon={<MessageIcon />}>
+                Enviar Mensagem
+            </Button>
+            <Button variant="contained" size="small" startIcon={<ConfirmationNumberIcon />}>
+                Enviar Cupom
+            </Button>
+            {row.client?.id && (
+                <Button
+                    variant="contained"
+                    size="small"
+                    color="info"
+                    onClick={() => handleViewClient(row.client.id)}
+                    startIcon={<AccountCircleIcon />}
+                >
+                    Ver Cliente
+                </Button>
+            )}
+        </Box>
+    );
 
     const renderContent = () => {
-        if (loading) return <CircularProgress />;
-        if (error) return <Alert severity="error">{error}</Alert>;
-        if (!data || data.length === 0) return <Typography>Nenhum dado encontrado.</Typography>;
+        if (loading) {
+            return (
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+                    <CircularProgress />
+                </Box>
+            );
+        }
+        if (error) {
+            return (
+                <Alert severity="error" sx={{ m: 2 }}>
+                    {error}
+                </Alert>
+            );
+        }
+        if (!data || data.length === 0) {
+            return (
+                <Typography sx={{ p: 3, textAlign: 'center' }}>
+                    Nenhum dado encontrado.
+                </Typography>
+            );
+        }
 
-        const renderActions = (row) => (
-            <Box sx={{ mt: 2 }}>
-                <Button variant="outlined" size="small" sx={{ mr: 1 }}>
-                    <MessageIcon sx={{ mr: 0.5 }} fontSize="small" />
-                    Enviar Mensagem
-                </Button>
-                <Button variant="contained" size="small" sx={{ mr: 1 }}>
-                    <ConfirmationNumberIcon sx={{ mr: 0.5 }} fontSize="small" />
-                    Enviar Cupom
-                </Button>
-                {row.client?.id && (
-                    <Button
-                        variant="contained"
-                        size="small"
-                        color="info"
-                        onClick={() => handleViewClient(row.client.id)}
-                    >
-                        <AccountCircleIcon sx={{ mr: 0.5 }} fontSize="small" />
-                        Ver Cliente
-                    </Button>
-                )}
-            </Box>
-        );
-
-        let items = [];
+        let items;
 
         switch (title) {
             case 'Detalhes de Promotores (NPS)':
@@ -77,20 +98,26 @@ const DetailsModal = ({ open, handleClose, title, data, loading, error }) => {
             case 'Detalhes de Satisfeitos (CSAT)':
             case 'Detalhes de Insatisfeitos (CSAT)':
                 items = data.map((row) => (
-                    <Card key={row.id} sx={{ mb: 2 }}>
+                    <Paper key={row.id} elevation={2} sx={{ mb: 2, '&:hover': { boxShadow: 6 } }}>
                         <CardContent>
                             <Grid container spacing={2} alignItems="center">
-                                <Grid item xs={12} sm={6}>
-                                    <Typography variant="body1"><strong>Cliente:</strong> {row.client?.name || 'N/A'}</Typography>
-                                    <Typography variant="body2" color="text.secondary"><strong>Data:</strong> {formatDateForDisplay(row.createdAt, 'dd/MM/yyyy')}</Typography>
+                                <Grid item xs={12} md={6}>
+                                    <Typography variant="subtitle1" component="strong">{row.client?.name || 'Cliente Anônimo'}</Typography>
+                                    <Typography variant="body2" color="text.secondary">{`Respondido em: ${formatDateForDisplay(row.createdAt, 'dd/MM/yyyy HH:mm')}`}</Typography>
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <Typography variant="body1"><strong>Nota:</strong> {row.ratingValue}</Typography>
-                                    <Typography variant="body2" color="text.secondary"><strong>Pergunta:</strong> {row.pergunta?.text || 'N/A'}</Typography>
+                                <Grid item xs={12} md={6}>
+                                    <Typography variant="h6" component="div" textAlign={{ xs: 'left', md: 'right' }}>
+                                        Nota: {row.ratingValue}
+                                    </Typography>
                                 </Grid>
+                                {row.pergunta?.text && (
+                                    <Grid item xs={12}>
+                                        <Typography variant="body2" fontStyle="italic">"{row.pergunta.text}"</Typography>
+                                    </Grid>
+                                )}
                                 {row.textValue && (
                                     <Grid item xs={12}>
-                                        <Typography variant="body2"><strong>Comentário:</strong> {row.textValue}</Typography>
+                                        <Typography variant="body1"><strong>Comentário:</strong> {row.textValue}</Typography>
                                     </Grid>
                                 )}
                                 <Grid item xs={12}>
@@ -98,79 +125,74 @@ const DetailsModal = ({ open, handleClose, title, data, loading, error }) => {
                                 </Grid>
                             </Grid>
                         </CardContent>
-                    </Card>
+                    </Paper>
                 ));
                 break;
 
             case 'Detalhes de Cadastros':
                 items = data.map((row) => (
-                    <Card key={row.id} sx={{ mb: 2 }}>
-                        <CardContent>
-                            <Typography variant="body1"><strong>Nome:</strong> {row.name}</Typography>
-                            <Typography variant="body2" color="text.secondary"><strong>Data de Cadastro:</strong> {formatDateForDisplay(row.createdAt, 'dd/MM/yyyy')}</Typography>
-                        </CardContent>
-                    </Card>
+                    <Paper key={row.id} elevation={2} sx={{ p: 2, mb: 2, '&:hover': { boxShadow: 6 } }}>
+                        <Typography variant="subtitle1"><strong>Nome:</strong> {row.name}</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Data de Cadastro: {formatDateForDisplay(row.createdAt, 'dd/MM/yyyy HH:mm')}
+                        </Typography>
+                    </Paper>
                 ));
                 break;
 
             case 'Detalhes de Cupons Gerados':
-                items = data.map((row) => (
-                    <Card key={row.id} sx={{ mb: 2 }}>
-                        <CardContent>
-                            <Typography variant="body1"><strong>Cliente:</strong> {row.client?.name || 'N/A'}</Typography>
-                            <Typography variant="body2" color="text.secondary"><strong>Data de Geração:</strong> {formatDateForDisplay(row.createdAt, 'dd/MM/yyyy')}</Typography>
-                            <Typography variant="body2"><strong>Cupom:</strong> {row.code}</Typography>
-                        </CardContent>
-                    </Card>
-                ));
-                break;
-
             case 'Detalhes de Cupons Utilizados':
                 items = data.map((row) => (
-                    <Card key={row.id} sx={{ mb: 2 }}>
-                        <CardContent>
-                            <Typography variant="body1"><strong>Cliente:</strong> {row.client?.name || 'N/A'}</Typography>
-                            <Typography variant="body2" color="text.secondary"><strong>Data de Utilização:</strong> {formatDateForDisplay(row.updatedAt, 'dd/MM/yyyy')}</Typography>
-                            <Typography variant="body2"><strong>Cupom:</strong> {row.code}</Typography>
-                        </CardContent>
-                    </Card>
+                    <Paper key={row.id} elevation={2} sx={{ p: 2, mb: 2, '&:hover': { boxShadow: 6 } }}>
+                        <Grid container spacing={2} alignItems="center">
+                            <Grid item xs={12} sm={8}>
+                                <Typography variant="subtitle1"><strong>Cliente:</strong> {row.client?.name || 'N/A'}</Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    {title === 'Detalhes de Cupons Gerados' ? 'Gerado em:' : 'Utilizado em:'} {formatDateForDisplay(row.updatedAt, 'dd/MM/yyyy HH:mm')}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={12} sm={4} textAlign="right">
+                                <Typography variant="h6" component="div" color="primary">{row.code}</Typography>
+                            </Grid>
+                        </Grid>
+                    </Paper>
                 ));
                 break;
-
+                
             default:
-                return <Typography>Categoria não reconhecida.</Typography>;
+                return (
+                    <Typography sx={{ p: 3, textAlign: 'center' }}>
+                        Categoria de dados não reconhecida.
+                    </Typography>
+                );
         }
 
-        return <Box sx={{ maxHeight: '70vh', overflowY: 'auto', p: 1 }}>{items}</Box>;
+        return <Box sx={{ p: 1, maxHeight: '70vh', overflowY: 'auto' }}>{items}</Box>;
     };
 
     return (
-        <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="details-modal-title"
-            aria-describedby="details-modal-description"
-        >
-            <Box sx={style}>
-                <IconButton
-                    aria-label="close"
-                    onClick={handleClose}
-                    sx={{
-                        position: 'absolute',
-                        right: 8,
-                        top: 8,
-                        color: (theme) => theme.palette.grey[500],
-                    }}
-                >
-                    <CloseIcon />
-                </IconButton>
-                <Typography id="details-modal-title" variant="h6" component="h2" gutterBottom>
-                    {title}
-                </Typography>
-                {renderContent()}
+        <Modal open={open} onClose={handleClose} aria-labelledby="details-modal-title">
+            <Box sx={modalStyle}>
+                <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography id="details-modal-title" variant="h6" component="h2">
+                        {title}
+                    </Typography>
+                    <IconButton aria-label="close" onClick={handleClose}>
+                        <CloseIcon />
+                    </IconButton>
+                </Box>
+                <Divider />
+                <Box sx={{ flex: 1, overflowY: 'auto' }}>
+                    {renderContent()}
+                </Box>
+                <Divider />
+                <Box sx={{ p: 2, display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button onClick={handleClose}>Fechar</Button>
+                </Box>
             </Box>
         </Modal>
     );
 };
 
 export default DetailsModal;
+

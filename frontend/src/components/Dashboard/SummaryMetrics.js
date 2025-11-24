@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, useTheme, CircularProgress, Alert } from '@mui/material';
+import { Grid, useTheme, CircularProgress, Alert, Typography } from '@mui/material';
 import MetricCard from './MetricCard';
 import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
 import dashboardService from '../../services/dashboardService';

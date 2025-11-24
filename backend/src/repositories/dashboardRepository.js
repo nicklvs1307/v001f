@@ -339,7 +339,6 @@ const getNpsByCriteria = async (tenantId = null, startDate = null, endDate = nul
       include: [{
         model: Resposta,
         as: 'respostas',
-        where: responseWhere,
         required: false, // Use left join to get all questions, even without answers in the period
       }]
     }]

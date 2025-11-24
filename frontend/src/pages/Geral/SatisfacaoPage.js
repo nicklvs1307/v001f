@@ -181,7 +181,7 @@ const SatisfacaoPage = () => {
                                 label="Data de Início"
                                 value={startDate}
                                 onChange={(newValue) => setStartDate(newValue)}
-                                inputFormat="dd/MM/yyyy"
+                                format="dd/MM/yyyy"
                                 renderInput={(params) => <TextField {...params} fullWidth />}
                             />
                         </Grid>
@@ -190,7 +190,7 @@ const SatisfacaoPage = () => {
                                 label="Data de Fim"
                                 value={endDate}
                                 onChange={(newValue) => setEndDate(newValue)}
-                                inputFormat="dd/MM/yyyy"
+                                format="dd/MM/yyyy"
                                 renderInput={(params) => <TextField {...params} fullWidth />}
                             />
                         </Grid>

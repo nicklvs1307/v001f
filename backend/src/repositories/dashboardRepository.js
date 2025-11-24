@@ -20,7 +20,6 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
   // --- FILTROS ---
   const whereClause = {};
   if (tenantId) whereClause.tenantId = tenantId;
-  if (surveyId) whereClause.pesquisaId = surveyId;
 
   if (startDate && endDate) {
     whereClause.createdAt = { [Op.between]: [startDate, endDate] };
@@ -29,11 +28,17 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
   } else if (endDate) {
     whereClause.createdAt = { [Op.lte]: endDate };
   }
+  
+  // Condição para a tabela Resposta, que pode ter pesquisaId
+  const responseWhereClause = { ...whereClause };
+  if (surveyId) {
+    responseWhereClause.pesquisaId = surveyId;
+  }
 
   // --- CÁLCULOS NPS (Período Selecionado) ---
   const ratingResponses = await Resposta.findAll({
     where: {
-      ...whereClause,
+      ...responseWhereClause,
       ratingValue: { [Op.ne]: null },
     },
     include: [
@@ -95,14 +100,33 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
     distinct: true,
     col: "respondentSessionId",
     where: {
-      ...whereClause,
+      ...responseWhereClause,
       ratingValue: { [Op.gte]: 9 },
       respondentSessionId: { [Op.ne]: null },
     },
   });
 
-  const totalResponsesInPeriod = await Resposta.count({ where: whereClause });
-  const registrationsInPeriod = await Client.count({ where: whereClause });
+  // A contagem de cadastros depende se um surveyId foi passado
+  let registrationsInPeriod;
+  if (surveyId) {
+    // Conta clientes distintos que responderam a ESTA pesquisa
+    registrationsInPeriod = await Client.count({
+      distinct: true,
+      col: 'id',
+      include: [{
+        model: Resposta,
+        as: 'respostas',
+        required: true,
+        where: { pesquisaId: surveyId }
+      }],
+      where: whereClause
+    });
+  } else {
+    // Conta todos os novos clientes no período
+    registrationsInPeriod = await Client.count({ where: whereClause });
+  }
+
+  const totalResponsesInPeriod = await Resposta.count({ where: responseWhereClause });
   const couponsGeneratedInPeriod = await Cupom.count({ where: whereClause });
 
   // Lógica separada para cupons usados, filtrando por updatedAt
@@ -300,9 +324,6 @@ const getNpsByCriteria = async (tenantId = null, startDate = null, endDate = nul
     responseWhere.createdAt = { [Op.lte]: endDate };
   }
 
-  if (tenantId) {
-    responseWhere.tenantId = tenantId;
-  }
   if (surveyId) {
     responseWhere.pesquisaId = surveyId;
   }
@@ -926,9 +947,9 @@ const getDetails = async (tenantId, startDate, endDate, category) => {
       case 'aniversariantes': {
         const today = new Date();
         const currentMonth = today.getMonth() + 1;
-        const birthdayWhere = { tenantId: tenantId || { [Op.ne]: null }, [Op.and]: [Sequelize.literal(`EXTRACT(MONTH FROM "birthday") = ${currentMonth}`)] };
+        const birthdayWhere = { tenantId: tenantId || { [Op.ne]: null }, [Op.and]: [Sequelize.literal(`EXTRACT(MONTH FROM "birthDate") = ${currentMonth}`)] };
         const clients = await Client.findAll({ where: birthdayWhere, order: [['name', 'ASC']] });
-        return clients.map(c => ({ id: c.id, Nome: c.name, Telefone: c.phone, Aniversário: c.birthday ? formatInTimeZone(c.birthday, 'dd/MM') : null }));
+        return clients.map(c => ({ id: c.id, Nome: c.name, Telefone: c.phone, Aniversário: c.birthDate ? formatInTimeZone(c.birthDate, 'dd/MM') : null }));
       }
       case 'cupons-gerados': {
         const coupons = await Cupom.findAll({ where, include: [{ model: Client, as: 'client', attributes: ['name']}], order: [['createdAt', 'DESC']] });

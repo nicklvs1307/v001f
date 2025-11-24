@@ -3,9 +3,8 @@ const { check } = require("express-validator");
 const validateDateFilters = [
   check("startDate", "Data de início inválida")
     .optional()
-    .isISO8601()
-    .toDate(),
-  check("endDate", "Data de fim inválida").optional().isISO8601().toDate(),
+    .isISO8601(),
+  check("endDate", "Data de fim inválida").optional().isISO8601(),
   check("surveyId", "ID da pesquisa inválido").optional().isUUID(),
 ];
 

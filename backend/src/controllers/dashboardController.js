@@ -90,6 +90,17 @@ const dashboardController = {
     );
     res.status(200).json(trendData);
   }),
+
+  getSurveysRespondedChart: asyncHandler(async (req, res) => {
+    const { startDate, endDate, period } = req.query;
+    const chartData = await dashboardRepository.getSurveysRespondedChart(
+      req.tenantId,
+      startDate,
+      endDate,
+      period,
+    );
+    res.status(200).json(chartData);
+  }),
   
   getEvolutionDashboard: asyncHandler(async (req, res) => {
     const { period, startDate, endDate } = req.query;

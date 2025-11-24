@@ -31,6 +31,11 @@ const dashboardService = {
         return response.data;
     },
 
+    getSurveysRespondedChart: async (params) => {
+        const response = await apiAuthenticated.get('/dashboard/surveys-responded-chart', { params });
+        return response.data;
+    },
+
     getMainDashboard: async (params) => {
         const response = await apiAuthenticated.get('/dashboard/main', { params });
         return response.data;

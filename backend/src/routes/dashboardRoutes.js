@@ -67,6 +67,14 @@ router.get(
 );
 
 router.get(
+  "/surveys-responded-chart",
+  validateDateFilters,
+  validate,
+  authorize("dashboard:read"),
+  dashboardController.getSurveysRespondedChart,
+);
+
+router.get(
   "/evolution",
   validatePeriodFilter,
   validate,

@@ -76,7 +76,7 @@ const SummaryMetrics = ({ startDate, endDate, handleCardClick }) => {
             <Grid item xs={12} md={6} lg={3}>
                 <MetricCard
                     title="NPS Geral"
-                    value={summary?.nps?.score?.toFixed(0)}
+                    value={summary?.nps?.npsScore?.toFixed(0)}
                     color={theme.palette.primary.main}
                     onClick={() => handleCardClick('nps-geral', 'Detalhes de NPS Geral')}
                 />

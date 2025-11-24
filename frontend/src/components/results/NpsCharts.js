@@ -21,26 +21,29 @@ const NpsCharts = ({ npsTrend, criteriaScores, npsByDayOfWeek }) => {
     }
 
     return (
-        <Paper sx={{ p: 3, borderRadius: '16px', boxShadow: '0 4px 12px 0 rgba(0,0,0,0.05)' }}>
-            <Typography variant="h6" gutterBottom>Análise de NPS</Typography>
-            <Grid container spacing={3}>
-                {hasNpsTrendData && (
-                    <Grid item xs={12}>
+        <Grid container spacing={3}>
+            {hasNpsTrendData && (
+                <Grid item xs={12}>
+                    <Paper sx={{ p: 3, borderRadius: '16px', boxShadow: '0 4px 12px 0 rgba(0,0,0,0.05)', height: '100%' }}>
                         <NpsTrendChart data={npsTrend} />
-                    </Grid>
-                )}
-                {hasCriteriaData && (
-                    <Grid item xs={12} md={6}>
+                    </Paper>
+                </Grid>
+            )}
+            {hasCriteriaData && (
+                <Grid item xs={12} md={6}>
+                    <Paper sx={{ p: 3, borderRadius: '16px', boxShadow: '0 4px 12px 0 rgba(0,0,0,0.05)', height: '100%' }}>
                         <CriteriaBarChart data={criteriaScores} />
-                    </Grid>
-                )}
-                {hasDayOfWeekData && (
-                    <Grid item xs={12} md={6}>
+                    </Paper>
+                </Grid>
+            )}
+            {hasDayOfWeekData && (
+                <Grid item xs={12} md={6}>
+                    <Paper sx={{ p: 3, borderRadius: '16px', boxShadow: '0 4px 12px 0 rgba(0,0,0,0.05)', height: '100%' }}>
                         <NpsByDayOfWeekChart data={npsByDayOfWeek} />
-                    </Grid>
-                )}
-            </Grid>
-        </Paper>
+                    </Paper>
+                </Grid>
+            )}
+        </Grid>
     );
 };
 

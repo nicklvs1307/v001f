@@ -1,0 +1,87 @@
+import React, { useState, useEffect } from 'react';
+import { Grid, CircularProgress, Alert } from '@mui/material';
+import dashboardService from '../../services/dashboardService';
+import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
+import CriteriaBarChart from './CriteriaBarChart'; // Assuming CriteriaBarChart is a separate component
+
+const CriteriaChart = ({ startDate, endDate }) => {
+    const [criteriaScores, setCriteriaScores] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        let isActive = true;
+
+        const fetchCriteriaScores = async () => {
+            try {
+                setLoading(true);
+                setError('');
+                const params = {};
+                if (startDate) {
+                    params.startDate = getStartOfDayUTC(startDate);
+                }
+                if (endDate) {
+                    params.endDate = getEndOfDayUTC(endDate);
+                }
+                const data = await dashboardService.getCriteriaScores(params);
+
+                // Mapeamento similar ao feito em getMainDashboard no backend
+                const mappedScoresByCriteria = data.map(item => {
+                    const total = item.good + item.neutral + item.bad;
+                    const npsScore = total > 0 ? ((item.good - item.bad) / total) * 100 : 0;
+                    return {
+                        criterion: item.criterion,
+                        promoters: item.good,
+                        neutrals: item.neutral,
+                        detractors: item.bad,
+                        total: total,
+                        npsScore: parseFloat(npsScore.toFixed(1)),
+                    };
+                });
+
+                if (isActive) {
+                    setCriteriaScores(mappedScoresByCriteria);
+                }
+            } catch (err) {
+                if (isActive) {
+                    setError(err.message || 'Falha ao carregar os dados de critérios.');
+                }
+            } finally {
+                if (isActive) {
+                    setLoading(false);
+                }
+            }
+        };
+
+        fetchCriteriaScores();
+
+        return () => {
+            isActive = false;
+        };
+    }, [startDate, endDate]);
+
+    if (loading) {
+        return (
+            <Grid item xs={12} md={6}>
+                <CircularProgress />
+                <Alert severity="info">Carregando scores de critérios...</Alert>
+            </Grid>
+        );
+    }
+
+    if (error) {
+        return (
+            <Grid item xs={12} md={6}>
+                <Alert severity="error">{error}</Alert>
+            </Grid>
+        );
+    }
+
+    return (
+        <Grid item xs={12} md={6}>
+            <CriteriaBarChart data={criteriaScores} />
+        </Grid>
+    );
+};
+
+export default CriteriaChart;

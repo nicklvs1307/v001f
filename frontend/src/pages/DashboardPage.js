@@ -26,18 +26,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import AuthContext from '../context/AuthContext';
-import {
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    Legend,
-    ResponsiveContainer,
-    LineChart,
-    Line
-} from 'recharts';
+
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -48,29 +37,20 @@ import dashboardService from '../services/dashboardService';
 import DetailsModal from '../components/Dashboard/DetailsModal';
 import AttendantDetailsModal from '../components/Dashboard/AttendantDetailsModal';
 import ChartCard from '../components/charts/ChartCard';
+import MetricCard from '../components/Dashboard/MetricCard'; // Importa o MetricCard
+import SummaryMetrics from '../components/Dashboard/SummaryMetrics'; // Importa o SummaryMetrics
+import ResponseCharts from '../components/Dashboard/ResponseCharts'; // Importa o ResponseCharts
+import AttendantPerformance from '../components/Dashboard/AttendantPerformance'; // Importa o AttendantPerformance
+import CriteriaChart from '../components/Dashboard/CriteriaChart'; // Importa o CriteriaChart
+import RecentFeedbacks from '../components/Dashboard/RecentFeedbacks'; // Importa o RecentFeedbacks
+import NpsTrendChart from '../components/Dashboard/NpsTrendChart'; // Importa o NpsTrendChart
+import ConversionChart from '../components/Dashboard/ConversionChart'; // Importa o ConversionChart
 
-import CriteriaBarChart from '../components/Dashboard/CriteriaBarChart';
 
-import { keyframes } from '@mui/system';
-
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
 
 const DashboardPage = () => {
     const { user } = useContext(AuthContext);
     const theme = useTheme();
-
-    const [dashboardData, setDashboardData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
 
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
@@ -88,42 +68,6 @@ const DashboardPage = () => {
     const [attendantModalLoading, setAttendantModalLoading] = useState(false);
     const [attendantModalError, setAttendantModalError] = useState('');
     const [attendantSearch, setAttendantSearch] = useState('');
-
-    useEffect(() => {
-        let isActive = true;
-
-        const fetchDashboardData = async () => {
-            try {
-                setLoading(true);
-                setError('');
-                const params = {};
-                if (startDate) {
-                    params.startDate = getStartOfDayUTC(startDate);
-                }
-                if (endDate) {
-                    params.endDate = getEndOfDayUTC(endDate);
-                }
-                const data = await dashboardService.getMainDashboard(params);
-                if (isActive) {
-                    setDashboardData(data);
-                }
-            } catch (err) {
-                if (isActive) {
-                    setError(err.message || 'Falha ao carregar os dados do dashboard.');
-                }
-            } finally {
-                if (isActive) {
-                    setLoading(false);
-                }
-            }
-        };
-
-        fetchDashboardData();
-
-        return () => {
-            isActive = false;
-        };
-    }, [startDate, endDate]);
 
     const handleCardClick = async (category, title) => {
         setModalTitle(title || `Detalhes de ${category}`);
@@ -193,79 +137,6 @@ const DashboardPage = () => {
         setAttendantModalError('');
     };
 
-    const MetricCard = ({ title, value, percentage, arrow, color, children, onClick }) => (
-        <Paper elevation={2} sx={{
-            p: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            height: '100%',
-            borderLeft: `4px solid ${color || theme.palette.primary.main}`,
-            backgroundColor: 'white',
-            cursor: onClick ? 'pointer' : 'default',
-            transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
-            '&:hover': {
-                transform: onClick ? 'scale(1.02)' : 'none',
-                boxShadow: onClick ? theme.shadows[4] : theme.shadows[2],
-            }
-        }}
-        onClick={onClick}
-        >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                <Typography variant="subtitle2" color="text.secondary" textTransform="uppercase">
-                    {title}
-                </Typography>
-                {children}
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', mt: 1 }}>
-                <Typography variant="h6" component="div" fontWeight="bold">
-                    {value} {arrow === 'up' && <ArrowUpwardIcon color="success" fontSize="small" />}
-                    {arrow === 'down' && <ArrowDownwardIcon color="error" fontSize="small" />}
-                </Typography>
-                {percentage && (
-                    <Typography variant="body2" color="text.secondary">
-                        {percentage}%
-                    </Typography>
-                )}
-            </Box>
-        </Paper>
-    );
-
-    if (loading) {
-        return (
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
-                <CircularProgress />
-                <Typography>Carregando dashboard...</Typography>
-            </Container>
-        );
-    }
-
-    if (error) {
-        return (
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
-                <Alert severity="error">{error}</Alert>
-            </Container>
-        );
-    }
-
-    const { summary, responseChart, surveysRespondedChart, attendantsPerformance = [], feedbacks = [], conversionChart, overallResults, npsTrend } = dashboardData || { summary: {}, responseChart: [], surveysRespondedChart: [], attendantsPerformance: [], feedbacks: [], conversionChart: [], overallResults: {}, npsTrend: [] };
-    const handleSearchChange = (event) => {
-        setAttendantSearch(event.target.value);
-    };
-
-    const filteredAttendants = dashboardData?.attendantsPerformance?.filter((attendant) =>
-        attendant.name.toLowerCase().includes(attendantSearch.toLowerCase())
-    ) || [];
-    if (!dashboardData) {
-        return (
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
-                <Typography>Nenhum dado de dashboard encontrado.</Typography>
-            </Container>
-        );
-    }
-
-
-
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -290,132 +161,7 @@ const DashboardPage = () => {
                     </LocalizationProvider>
             </Box>
 
-            <Grid container spacing={2} sx={{ mb: 4 }}>
-                {/* Card NPS Score */}
-                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <MetricCard
-                        title="NPS Geral"
-                        value={summary?.nps?.score?.toFixed(0)}
-                        color={theme.palette.primary.main}
-                        onClick={() => handleCardClick('nps-geral', 'Detalhes de NPS Geral')}
-                    />
-                </Grid>
-
-                {/* Card CSAT Score */}
-                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <MetricCard
-                        title="Média de Satisfação"
-                        value={summary?.csat?.averageScore?.toFixed(1)}
-                        color={theme.palette.secondary.main}
-                        onClick={() => handleCardClick('csat-geral', 'Detalhes de Média de Satisfação')}
-                    />
-                </Grid>
-
-                {/* Total de Respostas */}
-                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <MetricCard
-                        title="Total de Respostas"
-                        value={summary?.totalResponses}
-                        color={theme.palette.info.main}
-                        onClick={() => handleCardClick('total-respostas', 'Detalhes de Total de Respostas')}
-                    />
-                </Grid>
-
-                {/* Promotores */}
-                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <MetricCard
-                        title="Promotores (NPS)"
-                        value={summary?.nps?.promoters}
-                        percentage={summary?.nps?.total > 0 ? ((summary?.nps?.promoters / summary?.nps?.total) * 100).toFixed(1) : 0}
-                        color={theme.palette.success.main}
-                        onClick={() => handleCardClick('promotores', 'Detalhes de Promotores (NPS)')}
-                    />
-                </Grid>
-
-                {/* Detratores */}
-                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <MetricCard
-                        title="Detratores (NPS)"
-                        value={summary?.nps?.detractors}
-                        percentage={summary?.nps?.total > 0 ? ((summary?.nps?.detractors / summary?.nps?.total) * 100).toFixed(1) : 0}
-                        color={theme.palette.error.main}
-                        onClick={() => handleCardClick('detratores', 'Detalhes de Detratores (NPS)')}
-                    />
-                </Grid>
-
-                {/* Neutros */}
-                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <MetricCard
-                        title="Neutros (NPS)"
-                        value={summary?.nps?.neutrals}
-                        percentage={summary?.nps?.total > 0 ? ((summary?.nps?.neutrals / summary?.nps?.total) * 100).toFixed(1) : 0}
-                        color={theme.palette.secondary.main}
-                        onClick={() => handleCardClick('neutros', 'Detalhes de Neutros (NPS)')}
-                    />
-                </Grid>
-
-                {/* Satisfeitos (CSAT) */}
-                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <MetricCard
-                        title="Satisfeitos (CSAT)"
-                        value={summary?.csat?.satisfied}
-                        percentage={summary?.csat?.total > 0 ? ((summary?.csat?.satisfied / summary?.csat?.total) * 100).toFixed(1) : 0}
-                        color={theme.palette.success.main}
-                        onClick={() => handleCardClick('satisfeitos', 'Detalhes de Satisfeitos (CSAT)')}
-                    />
-                </Grid>
-
-                {/* Insatisfeitos (CSAT) */}
-                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <MetricCard
-                        title="Insatisfeitos (CSAT)"
-                        value={summary?.csat?.unsatisfied}
-                        percentage={summary?.csat?.total > 0 ? ((summary?.csat?.unsatisfied / summary?.csat?.total) * 100).toFixed(1) : 0}
-                        color={theme.palette.error.main}
-                        onClick={() => handleCardClick('insatisfeitos', 'Detalhes de Insatisfeitos (CSAT)')}
-                    />
-                </Grid>
-
-                {/* Outras Métricas */}
-                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <MetricCard
-                        title="Cadastros"
-                        value={summary?.registrations}
-                        percentage={summary?.registrationsConversion}
-                        arrow="up"
-                        onClick={() => handleCardClick('cadastros', 'Detalhes de Cadastros')}
-                    >
-                        <Typography variant="caption" color="text.secondary">conversão</Typography>
-                    </MetricCard>
-                </Grid>
-                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <MetricCard
-                        title="Aniversariantes do Mês"
-                        value={summary?.ambassadorsMonth}
-                        onClick={() => handleCardClick('aniversariantes', 'Detalhes de Aniversariantes do Mês')}
-                    />
-                </Grid>
-                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <MetricCard
-                        title="Cupons Gerados"
-                        value={summary?.couponsGenerated}
-                        onClick={() => handleCardClick('cupons-gerados', 'Detalhes de Cupons Gerados')}
-                    >
-                        <Typography variant="caption" color="text.secondary">{summary?.couponsGeneratedPeriod}</Typography>
-                    </MetricCard>
-                </Grid>
-                <Grid item xs={12} md={6} lg={3} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <MetricCard
-                        title="Cupons Utilizados"
-                        value={summary?.couponsUsed}
-                        percentage={summary?.couponsUsedConversion}
-                        arrow="down"
-                        onClick={() => handleCardClick('cupons-utilizados', 'Detalhes de Cupons Utilizados')}
-                    >
-                        <Typography variant="caption" color="text.secondary">conversão</Typography>
-                    </MetricCard>
-                </Grid>
-            </Grid>
+            <SummaryMetrics startDate={startDate} endDate={endDate} handleCardClick={handleCardClick} />
 
             <DetailsModal
                 open={modalOpen}
@@ -434,231 +180,34 @@ const DashboardPage = () => {
                 error={attendantModalError}
             />
 
-
             <Grid container spacing={2} sx={{ mb: 4 }}>
-                {/* Gráfico de Respostas por Período */}
-                <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 } }}>
-                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
-                            Respostas por Período
-                        </Typography>
-                        <Typography variant="subtitle2" color="text.secondary" mb={2}>
-                            Total de perguntas respondidas por período.
-                        </Typography>
-                        <ResponsiveContainer width="100%" height={280}>
-                            <BarChart data={responseChart}>
-                                <defs>
-                                    <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor={theme.palette.primary.main} stopOpacity={0.8}/>
-                                        <stop offset="95%" stopColor={theme.palette.primary.main} stopOpacity={0}/>
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Bar dataKey="Respostas" fill="url(#colorUv)" />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </Paper>
-                </Grid>
-
-                {/* Gráfico de Pesquisas Respondidas por Período */}
-                <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 } }}>
-                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
-                            Pesquisas Respondidas por Período
-                        </Typography>
-                        <Typography variant="subtitle2" color="text.secondary" mb={2}>
-                            Número de clientes únicos que responderam por período.
-                        </Typography>
-                        <ResponsiveContainer width="100%" height={280}>
-                            <BarChart data={surveysRespondedChart}>
-                                <defs>
-                                    <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor={theme.palette.secondary.main} stopOpacity={0.8}/>
-                                        <stop offset="95%" stopColor={theme.palette.secondary.main} stopOpacity={0}/>
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Bar dataKey="Pesquisas Respondidas" fill="url(#colorPv)" />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </Paper>
-                </Grid>
-
-                {/* Performance dos Atendentes */}
-                <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 }, display: 'flex', flexDirection: 'column' }}>
-                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
-                            Performance dos Atendentes
-                        </Typography>
-                        <TextField
-                            fullWidth
-                            variant="outlined"
-                            placeholder="Pesquisar"
-                            size="small"
-                            sx={{ mb: 2 }}
-                            value={attendantSearch}
-                            onChange={handleSearchChange}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <SearchIcon />
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                        <TableContainer sx={{ flexGrow: 1, overflowY: 'auto' }}>
-                            <Table size="small" stickyHeader>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Atendente</TableCell>
-                                        <TableCell>Respostas</TableCell>
-                                        <TableCell>NPS</TableCell>
-                                        <TableCell>Média CSAT</TableCell>
-                                        <TableCell>Meta NPS</TableCell>
-                                        <TableCell>Meta CSAT</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {filteredAttendants.map((row, index) => (
-                                        <TableRow
-                                            key={index}
-                                            hover
-                                            onClick={() => handleAttendantClick(row.id)}
-                                            sx={{
-                                                cursor: 'pointer',
-                                                backgroundColor: index % 2 === 0 ? theme.palette.action.hover : 'inherit',
-                                            }}
-                                        >
-                                            <TableCell>{row.name}</TableCell>
-                                            <TableCell>{row.responses}</TableCell>
-                                            <TableCell>{row.currentNPS}</TableCell>
-                                            <TableCell>{row.currentCSAT}</TableCell>
-                                            <TableCell>{row.npsGoal}</TableCell>
-                                            <TableCell>{row.csatGoal}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
-                            <Typography variant="body2">Itens por página: 5</Typography>
-                            <Typography variant="body2">1 - 5 de {filteredAttendants.length}</Typography>
-                        </Box>
-                    </Paper>
-                </Grid>
-
-                <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                    <CriteriaBarChart data={dashboardData?.overallResults?.scoresByCriteria || []} />
-                </Grid>
+              <ResponseCharts startDate={startDate} endDate={endDate} />
             </Grid>
 
             <Grid container spacing={2} sx={{ mb: 4 }}>
-                {/* Feedbacks Recentes */}
-                <Grid item xs={12} md={6}>
-                    <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 }, display: 'flex', flexDirection: 'column' }}>
-                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
-                            Feedbacks Recentes
-                        </Typography>
-                        <List sx={{ flexGrow: 1, overflowY: 'auto' }}>
-                            {feedbacks.map((feedback, index) => (
-                                <ListItem
-                                    key={index}
-                                    divider
-                                    button
-                                    onClick={() => handleFeedbackClick(feedback.respondentSessionId)}
-                                >
-                                    <ListItemText
-                                        primary={
-                                            <Box>
-                                                <Typography component="span" variant="body2" color="text.secondary" mr={1}>
-                                                    {formatDateForDisplay(feedback.date)}
-                                                </Typography>
-                                                {feedback.client && (
-                                                    <Typography component="span" variant="body2" fontWeight="bold">
-                                                        {feedback.client}
-                                                    </Typography>
-                                                )}
-                                            </Box>
-                                        }
-                                        secondary={
-                                            <Box sx={{ mt: 0.5 }}>
-                                                <Typography component="span" variant="caption" sx={{ backgroundColor: theme.palette.primary.main, color: 'white', p: '2px 8px', borderRadius: '12px', mr: 1 }}>
-                                                    Nota: {feedback.rating}
-                                                </Typography>
-                                                {feedback.comment && (
-                                                    <Typography component="span" variant="body2" color="text.primary">
-                                                        {feedback.comment}
-                                                    </Typography>
-                                                )}
-                                            </Box>
-                                        }
-                                    />
-                                </ListItem>
-                            ))}
-                        </List>
-                    </Paper>
-                </Grid>
+                <AttendantPerformance
+                  startDate={startDate}
+                  endDate={endDate}
+                  handleAttendantClick={handleAttendantClick}
+                />
 
-                {/* Gráfico de Tendência de NPS */}
-                <Grid item xs={12} md={6}>
-                    <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 } }}>
-                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
-                            Tendência de NPS
-                        </Typography>
-                        <ResponsiveContainer width="100%" height={280}>
-                            <LineChart data={npsTrend}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="period" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Line type="monotone" dataKey="nps" name="NPS" stroke={theme.palette.primary.main} />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </Paper>
-                </Grid>
+
+                <CriteriaChart startDate={startDate} endDate={endDate} />
+            </Grid>
+
+            <Grid container spacing={2} sx={{ mb: 4 }}>
+                <RecentFeedbacks
+                  startDate={startDate}
+                  endDate={endDate}
+                  handleFeedbackClick={handleFeedbackClick}
+                />
+
+                <NpsTrendChart startDate={startDate} endDate={endDate} />
             </Grid>
 
 
 
-            {/* Gráfico de Conversão */}
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 } }}>
-                        <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
-                            Gráfico de Conversão
-                        </Typography>
-                        <Typography variant="subtitle2" color="text.secondary" mb={2}>
-                            Análise da conversão em cada etapa, desde as respostas coletadas até os cupons utilizados.
-                        </Typography>
-                        <ResponsiveContainer width="100%" height={280}>
-                            <LineChart
-                                data={conversionChart}
-                                onClick={(e) => {
-                                    if (e && e.activePayload && e.activePayload.length > 0) {
-                                        handleCardClick(e.activePayload[0].payload.name);
-                                    }
-                                }}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Line type="monotone" dataKey="value" stroke={theme.palette.success.main} activeDot={{ r: 8 }} />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </Paper>
-                </Grid>
-            </Grid>
+            <ConversionChart startDate={startDate} endDate={endDate} handleCardClick={handleCardClick} />
 
 
         </Container>

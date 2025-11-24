@@ -27,28 +27,29 @@ const NpsByDayOfWeekChart = ({ data }) => {
         );
     }
     
+    const dayOrder = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+    
     // Ensure NPS is a number and sort data for better visualization
     const chartData = data
         .map(item => ({ ...item, nps: Number(item.nps) || 0 }))
-        .sort((a, b) => a.nps - b.nps);
+        .sort((a, b) => dayOrder.indexOf(a.dayOfWeek) - dayOrder.indexOf(b.dayOfWeek));
 
     return (
         <Box sx={{ height: 300 }}>
             <Typography variant="h6" gutterBottom>NPS por Dia da Semana</Typography>
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                    layout="vertical"
                     data={chartData}
                     margin={{
                         top: 5,
                         right: 30,
-                        left: 20,
+                        left: -10,
                         bottom: 5,
                     }}
                 >
                     <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
-                    <XAxis type="number" domain={[-100, 100]} tick={{ fill: theme.palette.text.secondary }} />
-                    <YAxis dataKey="dayOfWeek" type="category" width={80} tick={{ fill: theme.palette.text.secondary, fontSize: 12 }} />
+                    <XAxis dataKey="dayOfWeek" type="category" tick={{ fill: theme.palette.text.secondary, fontSize: 12 }} />
+                    <YAxis type="number" domain={[-100, 100]} tick={{ fill: theme.palette.text.secondary }} />
                     <Tooltip content={<CustomTooltip />} />
                     <Legend />
                     <Bar dataKey="nps" name="NPS">

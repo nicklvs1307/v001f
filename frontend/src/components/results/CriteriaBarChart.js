@@ -34,18 +34,17 @@ const CriteriaBarChart = ({ data }) => {
             <Typography variant="h6" gutterBottom>NPS por Critério</Typography>
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                    layout="vertical"
                     data={chartData}
                     margin={{
                         top: 5,
                         right: 30,
-                        left: 20,
-                        bottom: 5,
+                        left: -10,
+                        bottom: 75,
                     }}
                 >
                     <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
-                    <XAxis type="number" domain={[-100, 100]} tick={{ fill: theme.palette.text.secondary }} />
-                    <YAxis dataKey="criterion" type="category" width={100} tick={{ fill: theme.palette.text.secondary }} />
+                    <XAxis dataKey="criterion" type="category" angle={-45} textAnchor="end" height={100} tick={{ fill: theme.palette.text.secondary }} />
+                    <YAxis type="number" domain={[-100, 100]} tick={{ fill: theme.palette.text.secondary }} />
                     <Tooltip content={<CustomTooltip />} />
                     <Legend />
                     <Bar dataKey="npsScore" name="NPS">

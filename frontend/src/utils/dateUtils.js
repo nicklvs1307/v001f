@@ -47,7 +47,7 @@ export const formatDateForDisplay = (dateInput, formatString = 'dd/MM/yyyy HH:mm
 
 /**
  * Pega uma data (geralmente de um seletor de data) e retorna o início do dia
- * (00:00:00) em UTC, como uma string ISO 8601.
+ * (00:00:00) no fuso horário local, convertido para uma string ISO 8601 em UTC.
  * Essencial para criar filtros de data consistentes para o backend.
  * @param {Date | number | null} date - O objeto Date do seletor.
  * @returns {string | null} A string ISO 8601 em UTC ou null se a entrada for nula.
@@ -56,15 +56,14 @@ export const getStartOfDayUTC = (date) => {
   if (!date) {
     return null;
   }
-  const d = new Date(date);
-  // Cria uma nova data em UTC usando os componentes da data local
-  const utcDate = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0));
-  return utcDate.toISOString();
+  // startOfDay cria a data à meia-noite no fuso local do usuário
+  // toISOString converte para o padrão UTC
+  return startOfDay(date).toISOString();
 };
 
 /**
  * Pega uma data (geralmente de um seletor de data) e retorna o fim do dia
- * (23:59:59.999) em UTC, como uma string ISO 8601.
+ * (23:59:59.999) no fuso horário local, convertido para uma string ISO 8601 em UTC.
  * Essencial para criar filtros de data consistentes para o backend.
  * @param {Date | number | null} date - O objeto Date do seletor.
  * @returns {string | null} A string ISO 8601 em UTC ou null se a entrada for nula.
@@ -73,8 +72,7 @@ export const getEndOfDayUTC = (date) => {
   if (!date) {
     return null;
   }
-  const d = new Date(date);
-  // Cria uma nova data em UTC usando os componentes da data local
-  const utcDate = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999));
-  return utcDate.toISOString();
+  // endOfDay cria a data no último milissegundo do dia no fuso local do usuário
+  // toISOString converte para o padrão UTC
+  return endOfDay(date).toISOString();
 };

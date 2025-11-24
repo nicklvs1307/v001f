@@ -17,6 +17,10 @@ const { startOfMonth } = require("date-fns");
 const { fn, col, literal } = Sequelize;
 
 const getSummary = async (tenantId = null, startDate = null, endDate = null, surveyId = null) => {
+  // FORÇAR DATAS PARA TESTE
+  startDate = '2025-09-01T00:00:00.000Z';
+  endDate = '2025-09-30T23:59:59.999Z';
+
   // --- FILTROS ---
   const baseWhere = tenantId ? { tenantId } : {};
   if (surveyId) {

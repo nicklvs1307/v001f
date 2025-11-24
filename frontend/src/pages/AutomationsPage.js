@@ -87,8 +87,8 @@ const AutomationsPage = () => {
       };
       setAutomations(mergedAutomations);
       setOriginalAutomations(mergedAutomations);
-      setRecompensas(Array.isArray(recompensasResponse.data) ? recompensasResponse.data : []);
-      setRoletas(Array.isArray(roletasResponse.data) ? roletasResponse.data : []);
+      setRecompensas(Array.isArray(recompensasResponse) ? recompensasResponse : []);
+      setRoletas(Array.isArray(roletasResponse) ? roletasResponse : []);
     } catch (err) {
       setError('Falha ao carregar as configurações de automação.');
     } finally {

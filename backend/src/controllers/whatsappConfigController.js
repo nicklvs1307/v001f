@@ -82,13 +82,22 @@ const whatsappConfigController = {
     await config.update(configUpdateData);
 
     // 2. Criar ou atualizar o WhatsappTemplate para couponReminder
-    await WhatsappTemplate.upsert({
-      tenantId: tenantId,
-      type: 'COUPON_REMINDER',
-      isEnabled: data.couponReminder.enabled,
-      daysBefore: data.couponReminder.daysBefore,
-      message: data.couponReminder.message,
+    const [template, created] = await WhatsappTemplate.findOrCreate({
+      where: { tenantId: tenantId, type: 'COUPON_REMINDER' },
+      defaults: {
+        isEnabled: data.couponReminder.enabled,
+        daysBefore: data.couponReminder.daysBefore,
+        message: data.couponReminder.message,
+      }
     });
+
+    if (!created) {
+      await template.update({
+        isEnabled: data.couponReminder.enabled,
+        daysBefore: data.couponReminder.daysBefore,
+        message: data.couponReminder.message,
+      });
+    }
     
     res.status(200).json({ message: 'Configurações de automação salvas com sucesso.' });
   }),

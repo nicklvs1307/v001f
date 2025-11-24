@@ -1,6 +1,6 @@
 "use strict";
 const asyncHandler = require("express-async-handler");
-const { format, subDays, startOfDay, endOfDay } = require("date-fns");
+const { format, addDays, startOfDay, endOfDay } = require("date-fns");
 const { now } = require("../utils/dateUtils");
 const whatsappService = require("../services/whatsappService");
 const tenantRepository = require("../repositories/tenantRepository");
@@ -8,6 +8,7 @@ const dashboardRepository = require("../repositories/dashboardRepository");
 const whatsappConfigRepository = require("../repositories/whatsappConfigRepository");
 const recompensaRepository = require("../repositories/recompensaRepository");
 const roletaRepository = require("../repositories/roletaRepository");
+const { WhatsappTemplate } = require("../../models");
 const ApiError = require("../errors/ApiError");
 
 // @desc    Enviar um teste de mensagem de relatório diário
@@ -142,8 +143,11 @@ exports.testCouponReminder = asyncHandler(async (req, res) => {
     throw new ApiError(400, "tenantId e phoneNumber são obrigatórios.");
   }
 
-  const whatsappConfig = await whatsappConfigRepository.findByTenant(tenantId);
-  if (!whatsappConfig || !whatsappConfig.couponReminderEnabled) {
+  const couponReminderTemplate = await WhatsappTemplate.findOne({
+    where: { tenantId, type: 'COUPON_REMINDER' },
+  });
+  
+  if (!couponReminderTemplate || !couponReminderTemplate.isEnabled) {
     throw new ApiError(
       400,
       "A automação de lembrete de cupom não está habilitada para este tenant.",
@@ -153,9 +157,9 @@ exports.testCouponReminder = asyncHandler(async (req, res) => {
   const clientName = "Cliente de Teste";
   const cupomCode = "EXPIRA123";
   const rewardName = "Prêmio de Teste";
-  const expirationDate = format(addDays(now(), 3), "dd/MM/yyyy");
+  const expirationDate = format(addDays(now(), couponReminderTemplate.daysBefore || 3), "dd/MM/yyyy");
 
-  let message = whatsappConfig.couponReminderMessageTemplate;
+  let message = couponReminderTemplate.message;
   message = message.replace(/{{cliente}}/g, clientName);
   message = message.replace(/{{cupom}}/g, cupomCode);
   message = message.replace(/{{recompensa}}/g, rewardName);

@@ -41,8 +41,7 @@ const RelatorioDiario = () => {
             setError('');
             const params = { tenantId };
             if (selectedDate) {
-                params.startDate = getStartOfDayUTC(selectedDate);
-                params.endDate = getEndOfDayUTC(selectedDate);
+                params.date = selectedDate.toISOString(); // Passa a data selecionada para o backend
             }
             const resultData = await dashboardService.getDailyReport(params);
             setReportData(resultData);
@@ -90,8 +89,8 @@ const RelatorioDiario = () => {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
-            <Box sx={{ flexGrow: 1, p: 3, backgroundColor: '#f4f6f8' }}>
-                <Paper elevation={2} sx={{ p: 3, mb: 3, borderRadius: '16px' }}>
+            <Box sx={{ flexGrow: 1, p: 3, backgroundColor: (theme) => theme.palette.background.default, minHeight: '100vh' }}>
+                <Paper elevation={0} sx={{ p: 2, mb: 3, borderRadius: '16px', backgroundColor: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(10px)' }}>
                     <Grid container spacing={2} justifyContent="space-between" alignItems="center">
                         <Grid item>
                             <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>

@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { 
     Container, 
     Typography, 
@@ -9,15 +10,15 @@ import {
     Paper,
     TextField
 } from '@mui/material';
-import { startOfWeek, endOfWeek } from 'date-fns';
-import { getStartOfDayUTC, getEndOfDayUTC, getNowInLocalTimezone } from '../../utils/dateUtils';
+import { format, startOfWeek, endOfWeek } from 'date-fns';
+import { getNowInLocalTimezone } from '../../utils/dateUtils';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { ptBR } from 'date-fns/locale';
 import dashboardService from '../../services/dashboardService';
 import { useAuth } from '../../context/AuthContext';
-import Dashboard from '../../components/relatorios/Dashboard';
+import RelatorioSemanalDashboard from '../../components/relatorios/Dashboard'; // Reutiliza o componente Dashboard
 
 const RelatorioSemanal = () => {
     const [reportData, setReportData] = useState(null);
@@ -25,6 +26,8 @@ const RelatorioSemanal = () => {
     const [error, setError] = useState('');
     const { user } = useAuth();
     const tenantId = user?.tenantId;
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const [selectedDate, setSelectedDate] = useState(getNowInLocalTimezone());
 
@@ -36,17 +39,11 @@ const RelatorioSemanal = () => {
         try {
             setLoading(true);
             setError('');
-            
-            const start = startOfWeek(selectedDate, { weekStartsOn: 1 }); // Monday
-            const end = endOfWeek(selectedDate, { weekStartsOn: 1 });
-
-            const params = { 
-                tenantId,
-                startDate: getStartOfDayUTC(start),
-                endDate: getEndOfDayUTC(end)
-            };
-
-            const resultData = await dashboardService.getMainDashboard(params);
+            const params = { tenantId };
+            if (selectedDate) {
+                params.date = selectedDate.toISOString(); // Passa a data selecionada para o backend
+            }
+            const resultData = await dashboardService.getWeeklyReport(params);
             setReportData(resultData);
         } catch (err) {
             setError(err.message || 'Falha ao carregar os resultados.');
@@ -56,8 +53,29 @@ const RelatorioSemanal = () => {
     }, [tenantId, selectedDate]);
 
     useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const dateParam = queryParams.get('date');
+        if (dateParam) {
+            setSelectedDate(new Date(`${dateParam}T00:00:00`));
+        }
+    }, [location.search]);
+
+    useEffect(() => {
         fetchResults();
     }, [fetchResults]);
+    
+    const handleDateChange = (newValue) => {
+        setSelectedDate(newValue);
+        const formattedDate = format(newValue, 'yyyy-MM-dd');
+        navigate(`?date=${formattedDate}`);
+    };
+
+    const renderDateValue = (date) => {
+        if (!date) return '';
+        const start = startOfWeek(date, { weekStartsOn: 1 }); // Segunda-feira
+        const end = endOfWeek(date, { weekStartsOn: 1 }); // Domingo
+        return `${format(start, 'dd/MM/yyyy', { locale: ptBR })} - ${format(end, 'dd/MM/yyyy', { locale: ptBR })}`;
+    };
 
     if (loading) {
         return (
@@ -78,8 +96,8 @@ const RelatorioSemanal = () => {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
-            <Box sx={{ flexGrow: 1, p: 3, backgroundColor: '#f4f6f8' }}>
-                <Paper elevation={2} sx={{ p: 3, mb: 3, borderRadius: '16px' }}>
+            <Box sx={{ flexGrow: 1, p: 3, backgroundColor: (theme) => theme.palette.background.default, minHeight: '100vh' }}>
+                <Paper elevation={0} sx={{ p: 2, mb: 3, borderRadius: '16px', backgroundColor: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(10px)' }}>
                     <Grid container spacing={2} justifyContent="space-between" alignItems="center">
                         <Grid item>
                             <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
@@ -87,17 +105,19 @@ const RelatorioSemanal = () => {
                             </Typography>
                         </Grid>
                         <Grid item sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                            <DatePicker
-                                label="Selecione uma data na semana"
-                                value={selectedDate}
-                                onChange={(newValue) => setSelectedDate(newValue)}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
+                                <DatePicker
+                                    label="Selecione a Semana"
+                                    value={selectedDate}
+                                    onChange={handleDateChange}
+                                    renderInput={(params) => <TextField {...params} value={renderDateValue(selectedDate)} />}
+                                    views={['year', 'month', 'day']}
+                                    openTo="day"
+                                />
                         </Grid>
                     </Grid>
                 </Paper>
                 
-                <Dashboard data={reportData} />
+                <RelatorioSemanalDashboard data={reportData} />
 
             </Box>
         </LocalizationProvider>

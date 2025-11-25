@@ -141,6 +141,16 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 30,
+    },
+    sendDetractorMessageToClient: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    detractorMessageTemplate: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      defaultValue: 'Olá, {{cliente}}. Vimos que você teve um problema conosco e gostaríamos de entender melhor. Podemos ajudar de alguma forma?',
     }
   }, {
     sequelize,

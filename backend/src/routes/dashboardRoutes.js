@@ -131,14 +131,6 @@ router.get(
 );
 
 router.get(
-  "/month-summary",
-  validateDateFilters,
-  validate,
-  authorize("dashboard:read"),
-  dashboardController.getMonthSummary,
-);
-
-router.get(
   "/all-feedbacks",
   validateDateFilters,
   validate,
@@ -152,6 +144,30 @@ router.get(
   validate,
   authorize("dashboard:read"),
   dashboardController.getDailyReport,
+);
+
+router.get(
+  "/weekly-report",
+  validateDateFilters,
+  validate,
+  authorize("dashboard:read"),
+  dashboardController.getWeeklyReport,
+);
+
+router.get(
+  "/monthly-report",
+  validateDateFilters,
+  validate,
+  authorize("dashboard:read"),
+  dashboardController.getMonthlyReport,
+);
+
+router.get(
+  "/main",
+  validateDateFilters,
+  validate,
+  authorize("dashboard:read"),
+  dashboardController.getDashboardData,
 );
 
 module.exports = router;

@@ -1,4 +1,14 @@
-const { toDate, subDays, startOfDay, endOfDay } = require("date-fns");
+const {
+  toDate,
+  subDays,
+  startOfDay,
+  endOfDay,
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+  addDays,
+} = require("date-fns");
 const { ptBR } = require("date-fns/locale");
 const { toZonedTime, fromZonedTime, format } = require("date-fns-tz");
 
@@ -45,34 +55,45 @@ const formatInTimeZone = (date, formatString) => {
 };
 
 /**
- * Processa strings de data de início e fim (que devem ser ISO 8601 UTC) e retorna objetos Date.
- * Se as strings não forem fornecidas, aplica valores padrão usando o fuso horário correto.
+ * Processa strings de data de início e fim ou um período e uma data,
+ * e retorna os objetos Date de início e fim no fuso horário correto,
+ * convertidos para UTC.
  * @param {string | null} startDateStr - A string da data de início em formato ISO 8601 UTC.
  * @param {string | null} endDateStr - A string da data de fim em formato ISO 8601 UTC.
- * @returns {{startDate: Date, endDate: Date}} Um objeto contendo as datas.
+ * @param {string} period - O período para o qual calcular as datas ('day', 'week', 'month').
+ * @param {Date | string | null} date - Uma data de referência para o cálculo do período.
+ * @returns {{startDate: Date, endDate: Date}} Um objeto contendo as datas de início e fim em UTC.
  */
-const getUtcDateRange = (startDateStr, endDateStr) => {
-  const currentTimeInZone = now();
-
-  let endDate;
-  if (endDateStr) {
-    const parsed = toDate(new Date(endDateStr));
-    endDate = !isNaN(parsed.getTime()) ? parsed : endOfDay(currentTimeInZone);
-  } else {
-    endDate = endOfDay(currentTimeInZone);
-  }
-
+const getPeriodDateRange = (startDateStr, endDateStr, period = "day", date = now()) => {
   let startDate;
-  if (startDateStr) {
-    const parsed = toDate(new Date(startDateStr));
-    startDate = !isNaN(parsed.getTime())
-      ? parsed
-      : startOfDay(subDays(endDate, 6));
+  let endDate;
+  let referenceDate = toZonedTime(date, TIMEZONE);
+
+  if (startDateStr && endDateStr) {
+    startDate = toDate(new Date(startDateStr));
+    endDate = toDate(new Date(endDateStr));
   } else {
-    startDate = startOfDay(subDays(endDate, 6));
+    switch (period) {
+      case "day":
+        startDate = startOfDay(referenceDate);
+        endDate = endOfDay(referenceDate);
+        break;
+      case "week":
+        startDate = startOfWeek(referenceDate, { weekStartsOn: 1 }); // Segunda-feira
+        endDate = endOfWeek(referenceDate, { weekStartsOn: 1 }); // Domingo
+        break;
+      case "month":
+        startDate = startOfMonth(referenceDate);
+        endDate = endOfMonth(referenceDate);
+        break;
+      default:
+        startDate = startOfDay(referenceDate);
+        endDate = endOfDay(referenceDate);
+        break;
+    }
   }
 
-  return { startDate, endDate };
+  return { startDate: convertToUtc(startDate), endDate: convertToUtc(endDate) };
 };
 
 module.exports = {
@@ -81,5 +102,13 @@ module.exports = {
   convertToTimeZone,
   convertToUtc,
   formatInTimeZone,
-  getUtcDateRange,
+  getPeriodDateRange,
+  getStartOfDayUTC: (date) => convertToUtc(startOfDay(toZonedTime(date, TIMEZONE))),
+  getEndOfDayUTC: (date) => convertToUtc(endOfDay(toZonedTime(date, TIMEZONE))),
+  getNowInLocalTimezone: now,
+  startOfWeek: (date) => startOfWeek(toZonedTime(date, TIMEZONE), { weekStartsOn: 1 }),
+  endOfWeek: (date) => endOfWeek(toZonedTime(date, TIMEZONE), { weekStartsOn: 1 }),
+  startOfMonth: (date) => startOfMonth(toZonedTime(date, TIMEZONE)),
+  endOfMonth: (date) => endOfMonth(toZonedTime(date, TIMEZONE)),
+  addDays: (date, days) => addDays(toZonedTime(date, TIMEZONE), days),
 };

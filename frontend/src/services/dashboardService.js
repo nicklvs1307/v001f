@@ -61,13 +61,8 @@ const dashboardService = {
         return response.data;
     },
 
-    getAttendantsPerformance: async () => {
-        const response = await apiAuthenticated.get('/dashboard/attendants-performance');
-        return response.data;
-    },
-
-    getMonthSummary: async (params) => {
-        const response = await apiAuthenticated.get('/dashboard/month-summary', { params });
+    getAttendantsPerformance: async (params) => {
+        const response = await apiAuthenticated.get('/dashboard/attendants-performance', { params });
         return response.data;
     },
 
@@ -83,6 +78,21 @@ const dashboardService = {
 
     getAllFeedbacks: async (params) => {
         const response = await apiAuthenticated.get('/dashboard/all-feedbacks', { params });
+        return response.data;
+    },
+
+    getDailyReport: async (params) => {
+        const response = await apiAuthenticated.get('/dashboard/daily-report', { params });
+        return response.data;
+    },
+
+    getWeeklyReport: async (params) => {
+        const response = await apiAuthenticated.get('/dashboard/weekly-report', { params });
+        return response.data;
+    },
+
+    getMonthlyReport: async (params) => {
+        const response = await apiAuthenticated.get('/dashboard/monthly-report', { params });
         return response.data;
     },
 };

@@ -3,6 +3,7 @@ import {
   Container, Typography, Box, Button, CircularProgress, Snackbar, Alert, Paper,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton,
   Chip, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Tooltip,
+  FormGroup, FormControlLabel, Switch, Divider,
 } from '@mui/material';
 import { Edit, Delete, Refresh, VpnKey, PowerSettingsNew, LinkOff } from '@mui/icons-material';
 import AuthContext from '../context/AuthContext';
@@ -17,40 +18,134 @@ const statusMap = {
 };
 
 const EditConfigDialog = ({ open, onClose, config, onSave, saving }) => {
-  const [url, setUrl] = useState('');
-  const [apiKey, setApiKey] = useState('');
+  const [formData, setFormData] = useState({
+    url: '',
+    apiKey: '',
+    dailyReportEnabled: false,
+    reportPhoneNumbers: '',
+    sendPrizeMessage: false,
+    prizeMessageTemplate: '',
+  });
 
   useEffect(() => {
     if (config) {
-      setUrl(config.url || '');
-      setApiKey(config.apiKey || '');
+      setFormData({
+        url: config.url || '',
+        apiKey: config.apiKey || '',
+        dailyReportEnabled: config.dailyReportEnabled || false,
+        reportPhoneNumbers: config.reportPhoneNumbers || '',
+        sendPrizeMessage: config.sendPrizeMessage || false,
+        prizeMessageTemplate: config.prizeMessageTemplate || '',
+      });
     }
   }, [config]);
 
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
+
   const handleSave = () => {
-    onSave(config.tenantId, { url, apiKey });
+    onSave(config.tenantId, formData);
   };
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>Editar Configuração de {config?.Tenant?.name}</DialogTitle>
       <DialogContent>
+        <Typography variant="h6" gutterBottom>Configurações da API</Typography>
         <TextField
           fullWidth
           label="URL da Instância da API"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
+          name="url"
+          value={formData.url}
+          onChange={handleChange}
           margin="normal"
           required
         />
         <TextField
           fullWidth
           label="Chave de API (API Key)"
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
+          name="apiKey"
+          value={formData.apiKey}
+          onChange={handleChange}
           margin="normal"
           required
         />
+        <Divider sx={{ my: 2 }} />
+        <Typography variant="h6" gutterBottom>Automações</Typography>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={formData.dailyReportEnabled}
+                onChange={handleChange}
+                name="dailyReportEnabled"
+              />
+            }
+            label="Enviar Relatório Diário"
+          />
+          <TextField
+            fullWidth
+            label="Números para Relatório Diário (separados por vírgula)"
+            name="reportPhoneNumbers"
+            value={formData.reportPhoneNumbers}
+            onChange={handleChange}
+            margin="normal"
+            disabled={!formData.dailyReportEnabled}
+          />
+        </FormGroup>
+        <FormGroup sx={{ mt: 2 }}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={formData.sendPrizeMessage}
+                onChange={handleChange}
+                name="sendPrizeMessage"
+              />
+            }
+            label="Enviar Mensagem de Prêmio (Roleta)"
+          />
+          <TextField
+            fullWidth
+            label="Template da Mensagem de Prêmio"
+            name="prizeMessageTemplate"
+            value={formData.prizeMessageTemplate}
+            onChange={handleChange}
+            margin="normal"
+            multiline
+            rows={3}
+            disabled={!formData.sendPrizeMessage}
+            helperText="Use {{cliente}}, {{premio}}, e {{cupom}} como variáveis."
+          />
+        </FormGroup>
+        <FormGroup sx={{ mt: 2 }}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={formData.sendDetractorMessageToClient}
+                onChange={handleChange}
+                name="sendDetractorMessageToClient"
+              />
+            }
+            label="Enviar Mensagem para Detratores (Cliente)"
+          />
+          <TextField
+            fullWidth
+            label="Template da Mensagem de Detrator"
+            name="detractorMessageTemplate"
+            value={formData.detractorMessageTemplate}
+            onChange={handleChange}
+            margin="normal"
+            multiline
+            rows={3}
+            disabled={!formData.sendDetractorMessageToClient}
+            helperText="Use {{cliente}} como variável."
+          />
+        </FormGroup>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancelar</Button>

@@ -838,71 +838,7 @@ const getDemographicsData = async (tenantId, startDate, endDate) => {
   return { genderDistribution, ageDistribution };
 };
 
-const getMonthSummary = async (tenantId, startDate, endDate) => {
-  const whereClause = { tenantId: tenantId || { [Op.ne]: null } };
-  if (startDate && endDate) {
-    whereClause.createdAt = { [Op.between]: [startDate, endDate] };
-  } else if (startDate) {
-    whereClause.createdAt = { [Op.gte]: startDate };
-  } else if (endDate) {
-    whereClause.createdAt = { [Op.lte]: endDate };
-  }
 
-  const responses = await Resposta.findAll({
-    where: whereClause,
-    attributes: ['id', 'createdAt', 'respondentSessionId', 'ratingValue'],
-    include: [{ model: Pergunta, as: 'pergunta', attributes: ['type']}],
-    order: [['createdAt', 'ASC']],
-  });
-
-  const totalResponses = responses.length;
-  const npsByDate = {};
-  responses.forEach(r => {
-    if (r.pergunta?.type !== 'rating_0_10') return;
-    const date = formatInTimeZone(r.createdAt, 'yyyy-MM-dd');
-    if (!npsByDate[date]) npsByDate[date] = { promoters: 0, detractors: 0, total: 0 };
-    if (r.ratingValue >= 9) npsByDate[date].promoters++;
-    if (r.ratingValue <= 6) npsByDate[date].detractors++;
-    npsByDate[date].total++;
-  });
-
-  let accumulatedPromoters = 0, accumulatedDetractors = 0, accumulatedTotal = 0;
-  const dailyNps = Object.keys(npsByDate).map(date => {
-    const day = npsByDate[date];
-    accumulatedPromoters += day.promoters;
-    accumulatedDetractors += day.detractors;
-    accumulatedTotal += day.total;
-    const dailyNpsScore = day.total > 0 ? ((day.promoters - day.detractors) / day.total) * 100 : 0;
-    const accumulatedNpsScore = accumulatedTotal > 0 ? ((accumulatedPromoters - accumulatedDetractors) / accumulatedTotal) * 100 : 0;
-    return {
-      date: formatInTimeZone(new Date(date), 'dd/MM'),
-      nps: parseFloat(dailyNpsScore.toFixed(1)),
-      accumulatedNps: parseFloat(accumulatedNpsScore.toFixed(1)),
-    };
-  });
-
-  const peakHours = Array(24).fill(0).reduce((acc, _, i) => ({ ...acc, [i.toString().padStart(2, '0')]: 0 }), {});
-  responses.forEach(r => {
-    const hour = formatInTimeZone(r.createdAt, 'HH');
-    if (peakHours[hour] !== undefined) peakHours[hour]++;
-  });
-  const peakHoursData = Object.keys(peakHours).map(hour => ({ hour, count: peakHours[hour] }));
-  
-  const daysOfWeekNames = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
-  const weekdayDistribution = Array(7).fill(0).map((_, i) => ({ day: daysOfWeekNames[i], count: 0 }));
-  responses.forEach(r => weekdayDistribution[new Date(r.createdAt).getDay()].count++);
-
-  const respondentSessionIds = [...new Set(responses.map(r => r.respondentSessionId))];
-  const registeredClients = await Client.count({
-    where: { tenantId, respondentSessionId: { [Op.in]: respondentSessionIds } }
-  });
-  const clientProportion = {
-    registered: registeredClients,
-    unregistered: respondentSessionIds.length - registeredClients,
-  };
-
-  return { totalResponses, dailyNps, peakHours: peakHoursData, weekdayDistribution, clientProportion };
-};
 
 const getDetails = async (tenantId, startDate, endDate, category) => {
     const where = { tenantId: tenantId || { [Op.ne]: null } };
@@ -1004,7 +940,7 @@ const getDetails = async (tenantId, startDate, endDate, category) => {
     }
 };
 
-const getMainDashboard = async (tenantId = null, startDate = null, endDate = null, period = "day", surveyId = null) => {
+const getDashboardData = async (tenantId = null, startDate = null, endDate = null, period = "day", surveyId = null) => {
   const [
     summary,
     responseChart,
@@ -1058,20 +994,7 @@ const getMainDashboard = async (tenantId = null, startDate = null, endDate = nul
 };
 
 
-const getDailyReport = async (tenantId = null, startDate = null, endDate = null) => {
-  const [
-    summary,
-    feedbacks,
-  ] = await Promise.all([
-    getSummary(tenantId, startDate, endDate),
-    getFeedbacks(tenantId, startDate, endDate),
-  ]);
 
-  return {
-    summary,
-    feedbacks,
-  };
-};
 
 const dashboardRepository = {
   getSummary,
@@ -1089,11 +1012,9 @@ const dashboardRepository = {
   getAttendantDetails,
   getResponseDetails,
   getDemographicsData,
-  getMonthSummary,
   getDetails,
   getClientStatusCounts,
-  getMainDashboard,
-  getDailyReport,
+  getDashboardData,
 };
 
 module.exports = dashboardRepository;

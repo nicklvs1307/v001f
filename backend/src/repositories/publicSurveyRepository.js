@@ -262,13 +262,17 @@ const submitSurveyResponses = async (
       // Não quebrar a execução principal se essa lógica falhar
     }
 
-    // Lógica para notificação de detratores via WhatsApp
+    // Lógica para notificação de detratores e envio para cliente
     (async () => {
       try {
-        const tenant = await models.Tenant.findByPk(survey.tenantId);
-        if (!tenant || !tenant.reportPhoneNumber) {
-          return;
-        }
+        const whatsappConfig = await models.WhatsappConfig.findOne({
+          where: { tenantId: survey.tenantId },
+        });
+
+        // Se não houver configuração, não há nada a fazer.
+        if (!whatsappConfig) return;
+
+        const client = clienteId ? await models.Client.findByPk(clienteId) : null;
 
         for (const res of responsesToCreate) {
           const question = questionsMap.get(res.perguntaId);
@@ -289,22 +293,43 @@ const submitSurveyResponses = async (
           }
 
           if (isDetractor) {
-            const detractorResponse = {
-              ...res,
-              pesquisa: { title: survey.title },
-            };
-            await whatsappService.sendInstanteDetractorMessage(
-              tenant,
-              detractorResponse,
-            );
-            break;
+            // Ação 1: Notificar a equipe/administradores
+            if (whatsappConfig.dailyReportEnabled && whatsappConfig.reportPhoneNumbers) {
+              const numbersToNotify = whatsappConfig.reportPhoneNumbers.split(',').map(n => n.trim()).filter(n => n);
+              const messageToAdmin = `
+*Alerta de Detrator!* 😡
+Um cliente deu uma nota baixa na pesquisa "${survey.title}".
+- *Nota:* ${res.ratingValue}
+- *Comentário:* ${res.textValue || "Nenhum comentário."}
+- *Cliente:* ${client ? client.name : 'Não identificado'}
+              `.trim();
+              
+              for (const number of numbersToNotify) {
+                try {
+                  await whatsappService.sendTenantMessage(survey.tenantId, number, messageToAdmin);
+                } catch (adminError) {
+                  console.error(`Falha ao enviar notificação de detrator para o admin ${number}:`, adminError);
+                }
+              }
+            }
+
+            // Ação 2: Enviar mensagem para o cliente detrator
+            if (whatsappConfig.sendDetractorMessageToClient && client && client.phone) {
+              let messageToClient = whatsappConfig.detractorMessageTemplate || "Olá, {{cliente}}. Vimos que você teve um problema conosco e gostaríamos de entender melhor. Podemos ajudar de alguma forma?";
+              messageToClient = messageToClient.replace("{{cliente}}", client.name.split(" ")[0]);
+              
+              try {
+                await whatsappService.sendTenantMessage(survey.tenantId, client.phone, messageToClient);
+              } catch (clientError) {
+                console.error(`Falha ao enviar mensagem para o cliente detrator ${client.phone}:`, clientError);
+              }
+            }
+            
+            break; // Parar após encontrar o primeiro detrator e processar as ações
           }
         }
       } catch (error) {
-        console.error(
-          "submitSurveyResponses: Error sending WhatsApp detractor notification:",
-          error,
-        );
+        console.error("submitSurveyResponses: Error in detractor notification logic:", error);
       }
     })();
 

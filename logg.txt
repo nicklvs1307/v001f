@@ -1,29 +1,18 @@
- => ERROR [build 6/6] RUN npm run build                                                      232.0s
-------
- > [build 6/6] RUN npm run build:
-1.048
-1.048 > frontend@0.1.0 build
-1.048 > react-scripts build
-1.048
-2.896 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-5.049 Creating an optimized production build...
-223.0 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-231.6 Failed to compile.
-231.6
-231.6 [eslint]
-231.6 src/components/relatorios/Dashboard.js
-231.6   Line 67:14:  'Paper' is not defined  react/jsx-no-undef
-231.6
-231.6 Search for the keywords to learn more about each error.
-231.6
-231.6
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+Postgres is up - executing command
+Server.js is being executed!
+/usr/src/app/node_modules/express/lib/router/route.js:216
+        throw new Error(msg);
+
+^
+Error: Route.get() requires a callback function but got a [object Undefined]
+    at Route.<computed> [as get] (/usr/src/app/node_modules/express/lib/router/route.js:216:15)
+    at proto.<computed> [as get] (/usr/src/app/node_modules/express/lib/router/index.js:521:19)
+    at Object.<anonymous> (/usr/src/app/src/routes/dashboardRoutes.js:101:8)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at Object.<anonymous> (/usr/src/app/src/routes/index.js:17:25)
+Node.js v18.20.8

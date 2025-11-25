@@ -3,7 +3,7 @@ const dashboardRepository = require("../repositories/dashboardRepository");
 const { getPeriodDateRange } = require("../utils/dateUtils");
 
 // Objeto que mapeia as rotas para as funções do repositório
-const dashboardController = {
+module.exports = {
   getDashboardData: asyncHandler(async (req, res) => {
     const { startDate, endDate, period, surveyId } = req.query;
     const dashboardData = await dashboardRepository.getDashboardData(
@@ -217,6 +217,4 @@ const dashboardController = {
     res.status(200).json(reportData);
   }),
 };
-
-module.exports = dashboardController;
 

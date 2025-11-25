@@ -1,14 +1,6 @@
-refactor(dashboard): Padroniza tratamento de fuso horário nos repositórios
+feat(automations): Adiciona automação de detratores e melhora relatórios
 
-- Substitui a função local 'buildDateFilter' em todos os repositórios do dashboard por uma lógica robusta que utiliza 'zonedTimeToUtc' da biblioteca 'date-fns-tz'.
-- Garante que todos os filtros de data baseados em 'createdAt' sejam consistentes com o fuso horário da aplicação ('America/Sao_Paulo'), tratando corretamente a conversão de datas locais para UTC antes de consultar o banco de dados.
-- Esta refatoração resolve a causa raiz de múltiplos bugs relacionados a datas, incluindo o gráfico de "Respostas por Período" e todos os relatórios (diário, semanal, mensal).
-
-Arquivos afetados:
-- repositories/dashboard/summary.js
-- repositories/dashboard/overall.js
-- repositories/dashboard/nps.js
-- repositories/dashboard/criteria.js
-- repositories/dashboard/clients.js
-- repositories/dashboard/charts.js
-- repositories/dashboard/attendants.js
+- Implementa a automação "Pós Venda - Detratores", permitindo o envio de mensagens para clientes com nota baixa e a notificação da equipe, com configuração via painel.
+- Corrige a automação de prêmio da roleta, que não era enviada, expondo sua configuração no painel de administração.
+- Padroniza e corrige as páginas de relatórios (diário, semanal, mensal), unificando a busca de dados no backend e resolvendo problemas de dados faltantes e lentidão.
+- Melhora a interface e a experiência do usuário das páginas de relatório com um design mais moderno e organizado.

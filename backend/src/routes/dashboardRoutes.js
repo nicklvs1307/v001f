@@ -98,13 +98,7 @@ router.get(
   dashboardController.getAttendantsPerformance,
 );
 
-router.get(
-  "/main",
-  validateDateFilters,
-  validate,
-  authorize("dashboard:read"),
-  dashboardController.getMainDashboard,
-);
+
 
 router.get(
   "/details/:category",

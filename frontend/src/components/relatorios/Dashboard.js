@@ -110,7 +110,7 @@ const Dashboard = ({ data }) => {
 
             <Grid item xs={12} sm={6} md={3}>
                 <StatCard title="NPS Geral" icon={<TrendingUp color="primary" />}>
-                    {nps && nps.score !== null ? (
+                    {nps && typeof nps.score === 'number' ? (
                         <Typography variant="h3" component="div" sx={{ textAlign: 'center', fontWeight: 'bold', color: 'primary.dark', mt: 2 }}>
                             {nps.score.toFixed(1)}
                         </Typography>
@@ -120,7 +120,7 @@ const Dashboard = ({ data }) => {
 
             <Grid item xs={12} sm={6} md={3}>
                 <StatCard title="CSAT Geral" icon={<Star color="primary" />}>
-                    {csat && csat.satisfactionRate !== null ? (
+                    {csat && typeof csat.satisfactionRate === 'number' ? (
                         <Typography variant="h3" component="div" sx={{ textAlign: 'center', fontWeight: 'bold', color: 'primary.dark', mt: 2 }}>
                             {csat.satisfactionRate.toFixed(1)}%
                         </Typography>

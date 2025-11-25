@@ -838,106 +838,66 @@ const getDemographicsData = async (tenantId, startDate, endDate) => {
   return { genderDistribution, ageDistribution };
 };
 
+const getMonthSummaryData = async (tenantId, startDate, endDate) => {
+  const whereClause = { tenantId: tenantId || { [Op.ne]: null } };
+  if (startDate && endDate) {
+    whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+  }
 
+  const responses = await Resposta.findAll({
+    where: whereClause,
+    attributes: ['id', 'createdAt', 'respondentSessionId', 'ratingValue'],
+    include: [{ model: Pergunta, as: 'pergunta', attributes: ['type'] }],
+    order: [['createdAt', 'ASC']],
+  });
 
-const getDetails = async (tenantId, startDate, endDate, category) => {
-    const where = { tenantId: tenantId || { [Op.ne]: null } };
-    if (startDate && endDate) {
-      where.createdAt = { [Op.between]: [startDate, endDate] };
-    } else if (startDate) {
-      where.createdAt = { [Op.gte]: startDate };
-    } else if (endDate) {
-      where.createdAt = { [Op.lte]: endDate };
-    }
+  const totalResponses = responses.length;
+  const npsByDate = {};
+  responses.forEach(r => {
+    if (r.pergunta?.type !== 'rating_0_10') return;
+    const date = formatInTimeZone(r.createdAt, 'yyyy-MM-dd');
+    if (!npsByDate[date]) npsByDate[date] = { promoters: 0, detractors: 0, total: 0 };
+    if (r.ratingValue >= 9) npsByDate[date].promoters++;
+    if (r.ratingValue <= 6) npsByDate[date].detractors++;
+    npsByDate[date].total++;
+  });
 
-    const includeClient = { model: Client, as: 'client', attributes: ['id', 'name', 'phone'], required: false };
-    const formatResponse = r => ({
-        id: r.id,
-        Data: formatInTimeZone(r.createdAt, 'dd/MM/yyyy HH:mm'),
-        Cliente: r.client?.name || 'Anônimo',
-        Telefone: r.client?.phone,
-        Nota: r.ratingValue,
-        Comentário: r.textValue,
-    });
+  let accumulatedPromoters = 0, accumulatedDetractors = 0, accumulatedTotal = 0;
+  const dailyNps = Object.keys(npsByDate).sort().map(date => {
+    const day = npsByDate[date];
+    accumulatedPromoters += day.promoters;
+    accumulatedDetractors += day.detractors;
+    accumulatedTotal += day.total;
+    const dailyNpsScore = day.total > 0 ? ((day.promoters - day.detractors) / day.total) * 100 : 0;
+    const accumulatedNpsScore = accumulatedTotal > 0 ? ((accumulatedPromoters - accumulatedDetractors) / accumulatedTotal) * 100 : 0;
+    return {
+      date: formatInTimeZone(new Date(date), 'dd/MM'),
+      nps: parseFloat(dailyNpsScore.toFixed(1)),
+      accumulatedNps: parseFloat(accumulatedNpsScore.toFixed(1)),
+    };
+  });
 
-    switch (category) {
-      case 'total-respostas': {
-        const responses = await Resposta.findAll({ where, include: [includeClient], order: [['createdAt', 'DESC']] });
-        return responses.map(formatResponse);
-      }
-      case 'nps-geral':
-      case 'promotores':
-      case 'neutros':
-      case 'detratores': {
-        const npsWhere = { ...where, ratingValue: { [Op.ne]: null } };
-        if (category === 'promotores') npsWhere.ratingValue = { [Op.gte]: 9 };
-        if (category === 'neutros') npsWhere.ratingValue = { [Op.between]: [7, 8] };
-        if (category === 'detratores') npsWhere.ratingValue = { [Op.lte]: 6 };
-        
-        const responses = await Resposta.findAll({
-          where: npsWhere,
-          include: [includeClient, { model: Pergunta, as: 'pergunta', where: { type: 'rating_0_10' }, attributes: ['text', 'id'], required: true }],
-          order: [['createdAt', 'DESC']]
-        });
-        return responses;
-      }
-      case 'csat-geral':
-      case 'satisfeitos':
-      case 'insatisfeitos': {
-        const csatWhere = { ...where, ratingValue: { [Op.ne]: null } };
-        if (category === 'satisfeitos') csatWhere.ratingValue = { [Op.gte]: 4 };
-        if (category === 'insatisfeitos') csatWhere.ratingValue = { [Op.lte]: 3 };
+  const peakHours = Array(24).fill(0).reduce((acc, _, i) => ({ ...acc, [i.toString().padStart(2, '0')]: 0 }), {});
+  responses.forEach(r => {
+    const hour = formatInTimeZone(r.createdAt, 'HH');
+    if (peakHours[hour] !== undefined) peakHours[hour]++;
+  });
+  const peakHoursData = Object.keys(peakHours).map(hour => ({ hour, count: peakHours[hour] }));
 
-        const responses = await Resposta.findAll({
-          where: csatWhere,
-          include: [includeClient, { model: Pergunta, as: 'pergunta', where: { type: { [Op.in]: ['rating_1_5', 'rating'] } }, attributes: ['text', 'id'], required: true }],
-          order: [['createdAt', 'DESC']]
-        });
-        return responses;
-      }
-      case 'cadastros': {
-        const clients = await Client.findAll({ where, order: [['createdAt', 'DESC']] });
-        return clients.map(c => ({ id: c.id, Data: formatInTimeZone(c.createdAt, 'dd/MM/yyyy HH:mm'), Nome: c.name, Telefone: c.phone, Email: c.email, Aniversário: c.birthday ? formatInTimeZone(c.birthday, 'dd/MM/yyyy') : null }));
-      }
-      case 'aniversariantes': {
-        const today = new Date();
-        const currentMonth = today.getMonth() + 1;
-        const birthdayWhere = { tenantId: tenantId || { [Op.ne]: null }, [Op.and]: [Sequelize.literal(`EXTRACT(MONTH FROM "birthDate") = ${currentMonth}`)] };
-        const clients = await Client.findAll({ where: birthdayWhere, order: [['name', 'ASC']] });
-        return clients.map(c => ({ id: c.id, name: c.name, phone: c.phone, birthDate: c.birthDate }));
-      }
-      case 'cupons-gerados': {
-        const coupons = await Cupom.findAll({ where, include: [{ model: Client, as: 'client', attributes: ['name']}], order: [['createdAt', 'DESC']] });
-        return coupons.map(c => ({
-            id: c.id,
-            createdAt: c.createdAt,
-            client: c.client,
-            code: c.code,
-            status: c.status,
-            dataValidade: c.dataValidade,
-        }));
-      }
-      case 'cupons-utilizados': {
-        const usedWhere = { tenantId: tenantId || { [Op.ne]: null }, status: 'used' };
-        if (startDate && endDate) {
-          usedWhere.updatedAt = { [Op.between]: [startDate, endDate] };
-        } else if (startDate) {
-          usedWhere.updatedAt = { [Op.gte]: startDate };
-        } else if (endDate) {
-          usedWhere.updatedAt = { [Op.lte]: endDate };
-        }
-        const coupons = await Cupom.findAll({ where: usedWhere, include: [{ model: Client, as: 'client', attributes: ['name']}], order: [['updatedAt', 'DESC']] });
-        return coupons.map(c => ({
-            id: c.id,
-            updatedAt: c.updatedAt,
-            client: c.client,
-            code: c.code,
-            status: c.status,
-        }));
-      }
-      default:
-        return [];
-    }
+  const daysOfWeekNames = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+  const weekdayDistribution = Array(7).fill(0).map((_, i) => ({ day: daysOfWeekNames[i], count: 0 }));
+  responses.forEach(r => weekdayDistribution[new Date(r.createdAt).getUTCDay()].count++);
+
+  const respondentSessionIds = [...new Set(responses.map(r => r.respondentSessionId).filter(id => id))];
+  const registeredClients = respondentSessionIds.length > 0 ? await Client.count({
+    where: { tenantId, respondentSessionId: { [Op.in]: respondentSessionIds } }
+  }) : 0;
+  const clientProportion = {
+    registered: registeredClients,
+    unregistered: respondentSessionIds.length - registeredClients,
+  };
+
+  return { totalResponses, dailyNps, peakHours: peakHoursData, weekdayDistribution, clientProportion };
 };
 
 const getDashboardData = async (tenantId = null, startDate = null, endDate = null, period = "day", surveyId = null) => {
@@ -955,6 +915,7 @@ const getDashboardData = async (tenantId = null, startDate = null, endDate = nul
     surveysRespondedChart,
     demographics,
     clientStatusCounts,
+    monthSummary,
   ] = await Promise.all([
     getSummary(tenantId, startDate, endDate, surveyId),
     getResponseChart(tenantId, startDate, endDate, period),
@@ -969,6 +930,7 @@ const getDashboardData = async (tenantId = null, startDate = null, endDate = nul
     getSurveysRespondedChart(tenantId, startDate, endDate, period),
     getDemographicsData(tenantId, startDate, endDate),
     getClientStatusCounts(tenantId, startDate, endDate),
+    getMonthSummaryData(tenantId, startDate, endDate),
   ]);
 
   return {
@@ -990,6 +952,7 @@ const getDashboardData = async (tenantId = null, startDate = null, endDate = nul
       overallCSAT: summary.csat,
     },
     demographics,
+    monthSummary,
   };
 };
 

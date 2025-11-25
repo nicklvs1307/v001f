@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
     Grid, Typography, Box, useTheme, Card, CardContent,
-    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, alpha,
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, alpha, Paper,
 } from '@mui/material';
 import {
     ComposedChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, Area,

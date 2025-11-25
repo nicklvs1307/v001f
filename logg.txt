@@ -1,22 +1,17 @@
-ResumoMesPage.js:69 TypeError: C.A.getMonthSummary is not a function
-    at ResumoMesPage.js:61:49
-    at ResumoMesPage.js:76:9
-    at rl (react-dom.production.min.js:243:332)
-    at wc (react-dom.production.min.js:285:111)
-    at lc (react-dom.production.min.js:272:185)
-    at qo (react-dom.production.min.js:127:105)
-    at react-dom.production.min.js:282:470
-    at Ac (react-dom.production.min.js:280:398)
-    at oc (react-dom.production.min.js:269:269)
-    at w (scheduler.production.min.js:13:203)
-(anônimo) @ ResumoMesPage.js:69
-(anônimo) @ ResumoMesPage.js:76
-rl @ react-dom.production.min.js:243
-wc @ react-dom.production.min.js:285
-lc @ react-dom.production.min.js:272
-qo @ react-dom.production.min.js:127
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-R @ scheduler.production.min.js:14
+Postgres is up - executing command
+Server.js is being executed!
+/usr/src/app/src/repositories/dashboardRepository.js:978
+  getDetails,
+  ^
+ReferenceError: getDetails is not defined
+    at Object.<anonymous> (/usr/src/app/src/repositories/dashboardRepository.js:978:3)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+    at Object.<anonymous> (/usr/src/app/src/controllers/dashboardController.js:2:29)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+Node.js v18.20.8

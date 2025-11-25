@@ -838,6 +838,106 @@ const getDemographicsData = async (tenantId, startDate, endDate) => {
   return { genderDistribution, ageDistribution };
 };
 
+const getDetails = async (tenantId, startDate, endDate, category) => {
+    const where = { tenantId: tenantId || { [Op.ne]: null } };
+    if (startDate && endDate) {
+      where.createdAt = { [Op.between]: [startDate, endDate] };
+    } else if (startDate) {
+      where.createdAt = { [Op.gte]: startDate };
+    } else if (endDate) {
+      where.createdAt = { [Op.lte]: endDate };
+    }
+
+    const includeClient = { model: Client, as: 'client', attributes: ['id', 'name', 'phone'], required: false };
+    const formatResponse = r => ({
+        id: r.id,
+        Data: formatInTimeZone(r.createdAt, 'dd/MM/yyyy HH:mm'),
+        Cliente: r.client?.name || 'Anônimo',
+        Telefone: r.client?.phone,
+        Nota: r.ratingValue,
+        Comentário: r.textValue,
+    });
+
+    switch (category) {
+      case 'total-respostas': {
+        const responses = await Resposta.findAll({ where, include: [includeClient], order: [['createdAt', 'DESC']] });
+        return responses.map(formatResponse);
+      }
+      case 'nps-geral':
+      case 'promotores':
+      case 'neutros':
+      case 'detratores': {
+        const npsWhere = { ...where, ratingValue: { [Op.ne]: null } };
+        if (category === 'promotores') npsWhere.ratingValue = { [Op.gte]: 9 };
+        if (category === 'neutros') npsWhere.ratingValue = { [Op.between]: [7, 8] };
+        if (category === 'detratores') npsWhere.ratingValue = { [Op.lte]: 6 };
+        
+        const responses = await Resposta.findAll({
+          where: npsWhere,
+          include: [includeClient, { model: Pergunta, as: 'pergunta', where: { type: 'rating_0_10' }, attributes: ['text', 'id'], required: true }],
+          order: [['createdAt', 'DESC']]
+        });
+        return responses;
+      }
+      case 'csat-geral':
+      case 'satisfeitos':
+      case 'insatisfeitos': {
+        const csatWhere = { ...where, ratingValue: { [Op.ne]: null } };
+        if (category === 'satisfeitos') csatWhere.ratingValue = { [Op.gte]: 4 };
+        if (category === 'insatisfeitos') csatWhere.ratingValue = { [Op.lte]: 3 };
+
+        const responses = await Resposta.findAll({
+          where: csatWhere,
+          include: [includeClient, { model: Pergunta, as: 'pergunta', where: { type: { [Op.in]: ['rating_1_5', 'rating'] } }, attributes: ['text', 'id'], required: true }],
+          order: [['createdAt', 'DESC']]
+        });
+        return responses;
+      }
+      case 'cadastros': {
+        const clients = await Client.findAll({ where, order: [['createdAt', 'DESC']] });
+        return clients.map(c => ({ id: c.id, Data: formatInTimeZone(c.createdAt, 'dd/MM/yyyy HH:mm'), Nome: c.name, Telefone: c.phone, Email: c.email, Aniversário: c.birthday ? formatInTimeZone(c.birthday, 'dd/MM/yyyy') : null }));
+      }
+      case 'aniversariantes': {
+        const today = new Date();
+        const currentMonth = today.getMonth() + 1;
+        const birthdayWhere = { tenantId: tenantId || { [Op.ne]: null }, [Op.and]: [Sequelize.literal(`EXTRACT(MONTH FROM "birthDate") = ${currentMonth}`)] };
+        const clients = await Client.findAll({ where: birthdayWhere, order: [['name', 'ASC']] });
+        return clients.map(c => ({ id: c.id, name: c.name, phone: c.phone, birthDate: c.birthDate }));
+      }
+      case 'cupons-gerados': {
+        const coupons = await Cupom.findAll({ where, include: [{ model: Client, as: 'client', attributes: ['name']}], order: [['createdAt', 'DESC']] });
+        return coupons.map(c => ({
+            id: c.id,
+            createdAt: c.createdAt,
+            client: c.client,
+            code: c.code,
+            status: c.status,
+            dataValidade: c.dataValidade,
+        }));
+      }
+      case 'cupons-utilizados': {
+        const usedWhere = { tenantId: tenantId || { [Op.ne]: null }, status: 'used' };
+        if (startDate && endDate) {
+          usedWhere.updatedAt = { [Op.between]: [startDate, endDate] };
+        } else if (startDate) {
+          usedWhere.updatedAt = { [Op.gte]: startDate };
+        } else if (endDate) {
+          usedWhere.updatedAt = { [Op.lte]: endDate };
+        }
+        const coupons = await Cupom.findAll({ where: usedWhere, include: [{ model: Client, as: 'client', attributes: ['name']}], order: [['updatedAt', 'DESC']] });
+        return coupons.map(c => ({
+            id: c.id,
+            updatedAt: c.updatedAt,
+            client: c.client,
+            code: c.code,
+            status: c.status,
+        }));
+      }
+      default:
+        return [];
+    }
+};
+
 const getMonthSummaryData = async (tenantId, startDate, endDate) => {
   const whereClause = { tenantId: tenantId || { [Op.ne]: null } };
   if (startDate && endDate) {

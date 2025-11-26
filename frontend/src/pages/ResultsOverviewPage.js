@@ -80,7 +80,7 @@ const ResultsOverviewPage = () => {
     }
 
     const keyMetricsData = data && data.summary ? [
-        { title: 'NPS Geral', value: data.summary.nps?.score?.toFixed(1) ?? 'N/A' },
+        { title: 'NPS Geral', value: data.summary.nps?.npsScore?.toFixed(1) ?? 'N/A' },
         { title: 'CSAT Geral (%)', value: data.summary.csat?.satisfactionRate?.toFixed(1) ?? 'N/A' },
         { title: 'Total de Respostas', value: data.summary.totalResponses ?? 0 },
         { title: 'Total de Cadastros', value: data.summary.totalUsers ?? 0 },

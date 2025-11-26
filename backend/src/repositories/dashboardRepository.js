@@ -35,7 +35,13 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
     responseWhereClause.pesquisaId = surveyId;
   }
 
-  // --- CÁLCULOS NPS (Período Selecionado) ---
+  // Encontra o critério principal de NPS (Recomendação)
+  const recomendacaoCriterion = await Criterio.findOne({
+    where: { tenantId, name: 'Recomendação' },
+    attributes: ['id'],
+  });
+
+  // --- CÁLCULOS (Período Selecionado) ---
   const ratingResponses = await Resposta.findAll({
     where: {
       ...responseWhereClause,
@@ -45,7 +51,7 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
       {
         model: Pergunta,
         as: "pergunta",
-        attributes: ["type"],
+        attributes: ["type", "criterioId"], // Inclui o criterioId para filtragem
         required: true,
       },
     ],
@@ -64,12 +70,18 @@ const getSummary = async (tenantId = null, startDate = null, endDate = null, sur
     const { ratingValue, pergunta } = response;
     if (!pergunta) return;
 
-    if (pergunta.type === "rating_0_10") {
+    // Lógica de NPS, agora filtrando pelo critério de Recomendação
+    if (
+      pergunta.type === "rating_0_10" &&
+      recomendacaoCriterion &&
+      pergunta.criterioId === recomendacaoCriterion.id
+    ) {
       if (ratingValue >= 9) npsPromoters++;
       else if (ratingValue >= 7) npsNeutrals++;
       else npsDetractors++;
     }
     
+    // Lógica de CSAT (permanece inalterada)
     if (pergunta.type === "rating_1_5" || pergunta.type === "rating") {
       csatTotalScore += ratingValue;
       csatCount++;
@@ -291,7 +303,7 @@ const getFeedbacks = async (tenantId = null, startDate = null, endDate = null) =
     where: whereClause,
     attributes: ["createdAt", "textValue", "ratingValue", "respondentSessionId"],
     order: [["createdAt", "DESC"]],
-    limit: 7,
+    limit: 11,
     include: [
       {
         model: Client,

@@ -70,6 +70,11 @@ const SystemReportsPage = React.lazy(() => import('../pages/SystemReportsPage'))
 const TenantReportsPage = React.lazy(() => import('../pages/TenantReportsPage'));
 const SuperAdminDashboardPage = React.lazy(() => import('../pages/SuperAdminDashboardPage'));
 
+const RespostasPainelPage = React.lazy(() => import('../pages/Respostas/PainelPage'));
+const RespostasGestaoPage = React.lazy(() => import('../pages/Respostas/GestaoPage'));
+const RespostasReplicasPage = React.lazy(() => import('../pages/Respostas/ReplicasPage'));
+const RespostasTratativasPage = React.lazy(() => import('../pages/Respostas/TratativasPage'));
+
 
 const AppRoutes = () => {
   return (
@@ -139,6 +144,12 @@ const AppRoutes = () => {
             <Route path="metas-atendentes" element={<AttendantGoalsPage />} />
             <Route path="atendentes-dashboard" element={<AtendenteDashboardPage />} />
             <Route path="resultados" element={<ResultsOverviewPage />} />
+
+            <Route path="respostas/painel" element={<RespostasPainelPage />} />
+            <Route path="respostas/gestao" element={<RespostasGestaoPage />} />
+            <Route path="respostas/replicas" element={<RespostasReplicasPage />} />
+            <Route path="respostas/tratativas" element={<RespostasTratativasPage />} />
+
             <Route path="reputacao" element={<GMBReviewsPage />} />
             <Route path="config-gmb" element={<GMBConfigsPage />} />
             <Route path="reviews-gmb" element={<GMBReviewsPage />} />

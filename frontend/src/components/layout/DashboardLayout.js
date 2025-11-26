@@ -29,6 +29,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import StarsIcon from '@mui/icons-material/Stars'; // New import
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 import { ROLES } from '../../constants/roles';
@@ -104,6 +105,15 @@ const DashboardLayout = () => {
                 { text: 'Listar Pesquisas', path: '/dashboard/pesquisas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
                 { text: 'Criar Nova Pesquisa', path: '/dashboard/pesquisas/create', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
                 { text: 'Critérios', path: '/dashboard/criterios', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+            ],
+        },
+        {
+            text: 'Respostas', icon: <QuestionAnswerIcon />, roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
+            children: [
+                { text: 'Painel', path: '/dashboard/respostas/painel', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Gestão de Respostas', path: '/dashboard/respostas/gestao', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Replicas', path: '/dashboard/respostas/replicas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Tratativas', path: '/dashboard/respostas/tratativas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
             ],
         },
         { text: 'Resultados', icon: <BarChartIcon />, path: '/dashboard/resultados', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },

@@ -12,6 +12,10 @@ import {
     IconButton,
     TablePagination,
     Tooltip,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem
 } from '@mui/material';
 import { WhatsApp, Visibility, Lightbulb } from '@mui/icons-material';
 import { subDays } from 'date-fns';
@@ -30,6 +34,7 @@ const GestaoPage = () => {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [startDate, setStartDate] = useState(subDays(new Date(), 30));
     const [endDate, setEndDate] = useState(new Date());
+    const [npsClassification, setNpsClassification] = useState('all');
 
     const fetchFeedbacks = useCallback(async () => {
         if (!user?.tenantId) return;
@@ -42,6 +47,7 @@ const GestaoPage = () => {
                 limit: rowsPerPage,
                 startDate: getStartOfDayUTC(startDate),
                 endDate: getEndOfDayUTC(endDate),
+                npsClassification,
             };
             const data = await dashboardService.getAllFeedbacks(params);
             
@@ -53,7 +59,7 @@ const GestaoPage = () => {
         } finally {
             setLoading(false);
         }
-    }, [user, page, rowsPerPage, startDate, endDate]);
+    }, [user, page, rowsPerPage, startDate, endDate, npsClassification]);
 
     useEffect(() => {
         fetchFeedbacks();
@@ -68,6 +74,27 @@ const GestaoPage = () => {
         setPage(0);
     };
 
+    const handleClassificationChange = (event) => {
+        setNpsClassification(event.target.value);
+        setPage(0);
+    };
+
+    const filters = (
+        <FormControl variant="outlined" sx={{ minWidth: 150 }}>
+            <InputLabel>Classificação</InputLabel>
+            <Select
+                value={npsClassification}
+                onChange={handleClassificationChange}
+                label="Classificação"
+            >
+                <MenuItem value="all">Todos</MenuItem>
+                <MenuItem value="promoters">Promotores</MenuItem>
+                <MenuItem value="neutrals">Neutros</MenuItem>
+                <MenuItem value="detractors">Detratores</MenuItem>
+            </Select>
+        </FormControl>
+    );
+
     return (
         <PageLayout
             title="Gestão de Respostas"
@@ -75,6 +102,7 @@ const GestaoPage = () => {
             endDate={endDate}
             onStartDateChange={setStartDate}
             onEndDateChange={setEndDate}
+            headerChildren={filters}
         >
             {loading ? (
                 <Typography>Carregando...</Typography>

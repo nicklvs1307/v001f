@@ -169,11 +169,14 @@ module.exports = {
   }),
 
   getAllFeedbacks: asyncHandler(async (req, res) => {
-    const { startDate, endDate } = req.query;
+    const { startDate, endDate, npsClassification, page, limit } = req.query;
     const feedbacks = await dashboardRepository.getFeedbacks(
       req.tenantId,
       startDate,
       endDate,
+      npsClassification,
+      page,
+      limit,
     );
     res.status(200).json(feedbacks);
   }),

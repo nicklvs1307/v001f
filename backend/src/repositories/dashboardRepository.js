@@ -322,6 +322,9 @@ const getFeedbacks = async (
   tenantId = null,
   startDate = null,
   endDate = null,
+  npsClassification = 'all',
+  page = 1,
+  limit = 10,
 ) => {
   const whereClause = tenantId
     ? { tenantId, textValue: { [Op.ne]: null, [Op.ne]: "" } }
@@ -335,7 +338,17 @@ const getFeedbacks = async (
     whereClause.createdAt = { [Op.lte]: endDate };
   }
 
-  const feedbacksData = await Resposta.findAll({
+  if (npsClassification === 'promoters') {
+    whereClause.ratingValue = { [Op.gte]: 9 };
+  } else if (npsClassification === 'neutrals') {
+    whereClause.ratingValue = { [Op.between]: [7, 8] };
+  } else if (npsClassification === 'detractors') {
+    whereClause.ratingValue = { [Op.lte]: 6 };
+  }
+
+  const offset = (page - 1) * limit;
+
+  const { count, rows: feedbacksData } = await Resposta.findAndCountAll({
     where: whereClause,
     attributes: [
       "createdAt",
@@ -344,7 +357,8 @@ const getFeedbacks = async (
       "respondentSessionId",
     ],
     order: [["createdAt", "DESC"]],
-    limit: 11,
+    limit,
+    offset,
     include: [
       {
         model: Client,
@@ -356,13 +370,19 @@ const getFeedbacks = async (
     ],
   });
 
-  return feedbacksData.map((feedback) => ({
-    date: feedback.createdAt,
-    client: feedback.client ? feedback.client.name : "Anônimo",
+  const formattedFeedbacks = feedbacksData.map((feedback) => ({
+    id: feedback.id,
+    createdAt: feedback.createdAt,
+    client: feedback.client ? { name: feedback.client.name } : null,
+    npsScore: feedback.ratingValue,
     comment: feedback.textValue,
-    nps: feedback.ratingValue !== null ? feedback.ratingValue : undefined,
-    respondentSessionId: feedback.respondentSessionId,
+    lastContact: null, // You might want to add this logic if needed
   }));
+
+  return {
+    count,
+    rows: formattedFeedbacks,
+  };
 };
 
 const getNpsByCriteria = async (

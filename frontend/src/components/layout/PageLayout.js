@@ -18,7 +18,8 @@ const PageLayout = ({
     startDate,
     endDate,
     onStartDateChange,
-    onEndDateChange
+    onEndDateChange,
+    headerChildren
 }) => {
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
@@ -30,22 +31,25 @@ const PageLayout = ({
                                 {title}
                             </Typography>
                         </Grid>
-                        {showDateFilters && (
-                            <Grid item sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                                    <DatePicker
-                                        label="Data de Início"
-                                        value={startDate}
-                                        onChange={onStartDateChange}
-                                        renderInput={(params) => <TextField {...params} />}
-                                    />
-                                    <DatePicker
-                                        label="Data de Fim"
-                                        value={endDate}
-                                        onChange={onEndDateChange}
-                                        renderInput={(params) => <TextField {...params} />}
-                                    />
-                            </Grid>
-                        )}
+                        <Grid item sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                                {headerChildren}
+                                {showDateFilters && (
+                                    <>
+                                        <DatePicker
+                                            label="Data de Início"
+                                            value={startDate}
+                                            onChange={onStartDateChange}
+                                            renderInput={(params) => <TextField {...params} />}
+                                        />
+                                        <DatePicker
+                                            label="Data de Fim"
+                                            value={endDate}
+                                            onChange={onEndDateChange}
+                                            renderInput={(params) => <TextField {...params} />}
+                                        />
+                                    </>
+                                )}
+                        </Grid>
                     </Grid>
                 </Paper>
                 {children}

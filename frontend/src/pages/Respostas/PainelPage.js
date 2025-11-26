@@ -27,20 +27,11 @@ const PainelPage = () => {
                 endDate: getEndOfDayUTC(endDate),
             };
             
-            const [summaryData, dailyChartData, weeklyChartData] = await Promise.all([
-                dashboardService.getSummary(params),
-                dashboardService.getResponseChart(params),
-                dashboardService.getWeeklyReport(params)
-            ]);
+            const data = await dashboardService.getMainDashboard(params);
 
-            setSummary(summaryData);
-            setDailyData(dailyChartData);
-
-            const adaptedWeeklyData = weeklyChartData.days.map(day => ({
-                day: day.dayOfWeek.substring(0, 3),
-                value: day.count
-            }));
-            setWeeklyData(adaptedWeeklyData);
+            setSummary(data.summary || {});
+            setDailyData(data.monthSummary?.peakHours || []);
+            setWeeklyData(data.monthSummary?.weekdayDistribution || []);
 
         } catch (error) {
             console.error("Failed to fetch dashboard data", error);
@@ -54,10 +45,11 @@ const PainelPage = () => {
     }, [fetchData]);
 
     const metrics = [
+        { title: 'NPS Geral', value: summary.nps?.npsScore?.toFixed(1) ?? 'N/A' },
         { title: 'Total de Respostas', value: summary.totalResponses || 0 },
-        { title: 'Promotores', value: summary.promoters || 0 },
-        { title: 'Neutros', value: summary.neutrals || 0 },
-        { title: 'Detratores', value: summary.detractors || 0 },
+        { title: 'Promotores', value: summary.nps?.promoters || 0 },
+        { title: 'Neutros', value: summary.nps?.neutrals || 0 },
+        { title: 'Detratores', value: summary.nps?.detractors || 0 },
     ];
 
     return (
@@ -108,7 +100,7 @@ const PainelPage = () => {
                                     <YAxis />
                                     <Tooltip />
                                     <Legend />
-                                    <Bar dataKey="value" fill="#82ca9d" name="Respostas" />
+                                    <Bar dataKey="count" fill="#82ca9d" name="Respostas" />
                                 </BarChart>
                             </ResponsiveContainer>
                         </Paper>

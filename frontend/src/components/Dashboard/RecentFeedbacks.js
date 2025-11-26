@@ -107,7 +107,7 @@ const RecentFeedbacks = ({ startDate, endDate, handleFeedbackClick }) => {
                                         </Typography>
                                         {feedback.client && (
                                             <Typography component="span" variant="body2" fontWeight="bold">
-                                                {feedback.client}
+                                                {feedback.client.name}
                                             </Typography>
                                         )}
                                     </Box>

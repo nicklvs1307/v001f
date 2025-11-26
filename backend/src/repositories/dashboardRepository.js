@@ -374,6 +374,7 @@ const getFeedbacks = async (
   const { count, rows: feedbacksData } = await Resposta.findAndCountAll({
     where: whereClause,
     attributes: [
+      "id",
       "createdAt",
       "textValue",
       "ratingValue",

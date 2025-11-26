@@ -1,6 +1,24 @@
-main.75294ee3.js:2 [Violation] 'message' handler took 192ms
-[Violation] Forced reflow while executing JavaScript took 35ms
-main.75294ee3.js:2 [Violation] 'click' handler took 153ms
+main.51b5c02d.js:2 [Violation] 'message' handler took 242ms
+main.51b5c02d.js:2 [Violation] 'message' handler took 157ms
+main.51b5c02d.js:2 [Violation] 'click' handler took 161ms
+TratativasPage.js:46 Failed to fetch feedbacks TypeError: Cannot read properties of undefined (reading 'toString')
+    at TratativasPage.js:38:90
+    at Array.map (<anonymous>)
+    at TratativasPage.js:38:48
+(anônimo) @ TratativasPage.js:46
+await in (anônimo)
+(anônimo) @ TratativasPage.js:52
+rl @ react-dom.production.min.js:243
+wc @ react-dom.production.min.js:285
+lc @ react-dom.production.min.js:272
+qo @ react-dom.production.min.js:127
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+main.51b5c02d.js:2 [Violation] 'message' handler took 171ms
+[Violation] Forced reflow while executing JavaScript took 32ms
 react-dom.production.min.js:188 TypeError: a.map is not a function
     at Z (FeedbacksList.js:52:32)
     at gi (react-dom.production.min.js:160:137)

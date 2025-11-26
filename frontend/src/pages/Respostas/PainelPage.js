@@ -47,6 +47,7 @@ const PainelPage = () => {
     const metrics = [
         { title: 'NPS Geral', value: summary.nps?.npsScore?.toFixed(1) ?? 'N/A' },
         { title: 'Total de Respostas', value: summary.totalResponses || 0 },
+        { title: 'Total de Pesquisas Realizadas', value: summary.totalSurveysResponded || 0 },
         { title: 'Promotores', value: summary.nps?.promoters || 0 },
         { title: 'Neutros', value: summary.nps?.neutrals || 0 },
         { title: 'Detratores', value: summary.nps?.detractors || 0 },

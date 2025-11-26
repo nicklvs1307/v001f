@@ -214,7 +214,7 @@ const DashboardLayout = () => {
                             onClick={() => item.children ? handleSubMenuClick(item.text) : navigate(item.path)}
                             selected={!item.children && location.pathname === item.path}
                         >
-                            <ListItemIcon sx={{ color: 'text.primary' }}>
+                            <ListItemIcon sx={{ color: 'white' }}>
                                 {item.icon}
                             </ListItemIcon>
                             <ListItemText

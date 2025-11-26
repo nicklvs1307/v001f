@@ -40,13 +40,6 @@ const getSummary = async (
     responseWhereClause.pesquisaId = surveyId;
   }
 
-  // Encontra o critério principal de NPS (Recomendação)
-  const recomendacaoCriterion = await Criterio.findOne({
-    where: { tenantId, name: "Recomendação" },
-    attributes: ["id"],
-  });
-
-  // --- CÁLCULOS (Período Selecionado) ---
   const ratingResponses = await Resposta.findAll({
     where: {
       ...responseWhereClause,
@@ -76,11 +69,7 @@ const getSummary = async (
     if (!pergunta) return;
 
     // Lógica de NPS, agora filtrando pelo critério de Recomendação
-    if (
-      pergunta.type === "rating_0_10" &&
-      recomendacaoCriterion &&
-      pergunta.criterioId === recomendacaoCriterion.id
-    ) {
+    if (pergunta.type === "rating_0_10") {
       if (ratingValue >= 9) npsPromoters++;
       else if (ratingValue >= 7) npsNeutrals++;
       else npsDetractors++;
@@ -148,6 +137,11 @@ const getSummary = async (
   const totalResponsesInPeriod = await Resposta.count({
     where: responseWhereClause,
   });
+  const totalSurveysResponded = await Resposta.count({ 
+    distinct: true, 
+    col: "respondentSessionId", 
+    where: { ...responseWhereClause, respondentSessionId: { [Op.ne]: null } } 
+  });
   const couponsGeneratedInPeriod = await Cupom.count({ where: whereClause });
 
   // Lógica separada para cupons usados, filtrando por updatedAt
@@ -204,6 +198,7 @@ const getSummary = async (
           )
         : 0,
     totalResponses: totalResponsesInPeriod,
+    totalSurveysResponded,
     totalUsers: totalClients,
     totalTenants,
   };
@@ -338,12 +333,40 @@ const getFeedbacks = async (
     whereClause.createdAt = { [Op.lte]: endDate };
   }
 
+  const includeClause = [
+    {
+      model: Client,
+      as: "client",
+      attributes: ["name"],
+      foreignKey: "respondentSessionId",
+      targetKey: "respondentSessionId",
+    },
+  ];
+
   if (npsClassification === 'promoters') {
     whereClause.ratingValue = { [Op.gte]: 9 };
+    includeClause.push({
+      model: Pergunta,
+      as: "pergunta",
+      where: { type: 'rating_0_10' },
+      required: true,
+    });
   } else if (npsClassification === 'neutrals') {
     whereClause.ratingValue = { [Op.between]: [7, 8] };
+    includeClause.push({
+      model: Pergunta,
+      as: "pergunta",
+      where: { type: 'rating_0_10' },
+      required: true,
+    });
   } else if (npsClassification === 'detractors') {
     whereClause.ratingValue = { [Op.lte]: 6 };
+    includeClause.push({
+      model: Pergunta,
+      as: "pergunta",
+      where: { type: 'rating_0_10' },
+      required: true,
+    });
   }
 
   const offset = (page - 1) * limit;
@@ -359,15 +382,7 @@ const getFeedbacks = async (
     order: [["createdAt", "DESC"]],
     limit,
     offset,
-    include: [
-      {
-        model: Client,
-        as: "client",
-        attributes: ["name"],
-        foreignKey: "respondentSessionId",
-        targetKey: "respondentSessionId",
-      },
-    ],
+    include: includeClause,
   });
 
   const formattedFeedbacks = feedbacksData.map((feedback) => ({

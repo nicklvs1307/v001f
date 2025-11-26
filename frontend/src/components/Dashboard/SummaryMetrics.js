@@ -4,8 +4,16 @@ import MetricCard from './MetricCard';
 import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
 import dashboardService from '../../services/dashboardService';
 
-const SummaryMetrics = ({ startDate, endDate, handleCardClick }) => {
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Grid, useTheme, CircularProgress, Alert, Typography } from '@mui/material';
+import MetricCard from './MetricCard';
+import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
+import dashboardService from '../../services/dashboardService';
+
+const SummaryMetrics = ({ startDate, endDate }) => {
     const theme = useTheme();
+    const navigate = useNavigate();
     const [summary, setSummary] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -78,7 +86,6 @@ const SummaryMetrics = ({ startDate, endDate, handleCardClick }) => {
                     title="NPS Geral"
                     value={summary?.nps?.npsScore?.toFixed(0)}
                     color={theme.palette.primary.main}
-                    onClick={() => handleCardClick('nps-geral', 'Detalhes de NPS Geral')}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
@@ -86,7 +93,6 @@ const SummaryMetrics = ({ startDate, endDate, handleCardClick }) => {
                     title="Média de Satisfação"
                     value={summary?.csat?.averageScore?.toFixed(1)}
                     color={theme.palette.secondary.main}
-                    onClick={() => handleCardClick('csat-geral', 'Detalhes de Média de Satisfação')}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
@@ -94,7 +100,7 @@ const SummaryMetrics = ({ startDate, endDate, handleCardClick }) => {
                     title="Total de Respostas"
                     value={summary?.totalResponses}
                     color={theme.palette.info.main}
-                    onClick={() => handleCardClick('total-respostas', 'Detalhes de Total de Respostas')}
+                    onClick={() => navigate('/dashboard/respostas/gestao?npsClassification=all')}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
@@ -103,7 +109,7 @@ const SummaryMetrics = ({ startDate, endDate, handleCardClick }) => {
                     value={summary?.nps?.promoters}
                     percentage={summary?.nps?.total > 0 ? ((summary?.nps?.promoters / summary?.nps?.total) * 100).toFixed(1) : 0}
                     color={theme.palette.success.main}
-                    onClick={() => handleCardClick('promotores', 'Detalhes de Promotores (NPS)')}
+                    onClick={() => navigate('/dashboard/respostas/gestao?npsClassification=promoters')}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
@@ -112,7 +118,7 @@ const SummaryMetrics = ({ startDate, endDate, handleCardClick }) => {
                     value={summary?.nps?.detractors}
                     percentage={summary?.nps?.total > 0 ? ((summary?.nps?.detractors / summary?.nps?.total) * 100).toFixed(1) : 0}
                     color={theme.palette.error.main}
-                    onClick={() => handleCardClick('detratores', 'Detalhes de Detratores (NPS)')}
+                    onClick={() => navigate('/dashboard/respostas/gestao?npsClassification=detractors')}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
@@ -121,7 +127,7 @@ const SummaryMetrics = ({ startDate, endDate, handleCardClick }) => {
                     value={summary?.nps?.neutrals}
                     percentage={summary?.nps?.total > 0 ? ((summary?.nps?.neutrals / summary?.nps?.total) * 100).toFixed(1) : 0}
                     color={theme.palette.secondary.main}
-                    onClick={() => handleCardClick('neutros', 'Detalhes de Neutros (NPS)')}
+                    onClick={() => navigate('/dashboard/respostas/gestao?npsClassification=neutrals')}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
@@ -130,7 +136,6 @@ const SummaryMetrics = ({ startDate, endDate, handleCardClick }) => {
                     value={summary?.csat?.satisfied}
                     percentage={summary?.csat?.total > 0 ? ((summary?.csat?.satisfied / summary?.csat?.total) * 100).toFixed(1) : 0}
                     color={theme.palette.success.main}
-                    onClick={() => handleCardClick('satisfeitos', 'Detalhes de Satisfeitos (CSAT)')}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
@@ -139,7 +144,6 @@ const SummaryMetrics = ({ startDate, endDate, handleCardClick }) => {
                     value={summary?.csat?.unsatisfied}
                     percentage={summary?.csat?.total > 0 ? ((summary?.csat?.unsatisfied / summary?.csat?.total) * 100).toFixed(1) : 0}
                     color={theme.palette.error.main}
-                    onClick={() => handleCardClick('insatisfeitos', 'Detalhes de Insatisfeitos (CSAT)')}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
@@ -148,7 +152,6 @@ const SummaryMetrics = ({ startDate, endDate, handleCardClick }) => {
                     value={summary?.registrations}
                     percentage={summary?.registrationsConversion}
                     arrow="up"
-                    onClick={() => handleCardClick('cadastros', 'Detalhes de Cadastros')}
                 >
                     <Typography variant="caption" color="text.secondary">conversão</Typography>
                 </MetricCard>
@@ -157,14 +160,12 @@ const SummaryMetrics = ({ startDate, endDate, handleCardClick }) => {
                 <MetricCard
                     title="Aniversariantes do Mês"
                     value={summary?.ambassadorsMonth}
-                    onClick={() => handleCardClick('aniversariantes', 'Detalhes de Aniversariantes do Mês')}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <MetricCard
                     title="Cupons Gerados"
                     value={summary?.couponsGenerated}
-                    onClick={() => handleCardClick('cupons-gerados', 'Detalhes de Cupons Gerados')}
                 >
                     <Typography variant="caption" color="text.secondary">{summary?.couponsGeneratedPeriod}</Typography>
                 </MetricCard>
@@ -175,7 +176,6 @@ const SummaryMetrics = ({ startDate, endDate, handleCardClick }) => {
                     value={summary?.couponsUsed}
                     percentage={summary?.couponsUsedConversion}
                     arrow="down"
-                    onClick={() => handleCardClick('cupons-utilizados', 'Detalhes de Cupons Utilizados')}
                 >
                     <Typography variant="caption" color="text.secondary">conversão</Typography>
                 </MetricCard>

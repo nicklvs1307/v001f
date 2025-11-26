@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
     Typography,
     Box,
@@ -25,8 +26,13 @@ import AuthContext from '../../context/AuthContext';
 import { format } from 'date-fns';
 import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
 
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
+
 const GestaoPage = () => {
     const { user } = useContext(AuthContext);
+    const query = useQuery();
     const [feedbacks, setFeedbacks] = useState([]);
     const [totalFeedbacks, setTotalFeedbacks] = useState(0);
     const [loading, setLoading] = useState(true);
@@ -34,7 +40,7 @@ const GestaoPage = () => {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [startDate, setStartDate] = useState(subDays(new Date(), 30));
     const [endDate, setEndDate] = useState(new Date());
-    const [npsClassification, setNpsClassification] = useState('all');
+    const [npsClassification, setNpsClassification] = useState(query.get('npsClassification') || 'all');
 
     const fetchFeedbacks = useCallback(async () => {
         if (!user?.tenantId) return;

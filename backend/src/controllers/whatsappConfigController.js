@@ -12,9 +12,9 @@ const whatsappConfigController = {
   getInstanceConfig: asyncHandler(async (req, res) => {
     const { tenantId } = req.user;
     const config = await whatsappConfigRepository.findByTenant(tenantId);
-    
+
     const couponReminderTemplate = await WhatsappTemplate.findOne({
-      where: { tenantId, type: 'COUPON_REMINDER' }
+      where: { tenantId, type: "COUPON_REMINDER" },
     });
 
     if (!config) {
@@ -39,7 +39,7 @@ const whatsappConfigController = {
       couponReminder: {
         enabled: couponReminderTemplate?.isEnabled || false,
         daysBefore: couponReminderTemplate?.daysBefore || 0,
-        message: couponReminderTemplate?.message || '',
+        message: couponReminderTemplate?.message || "",
       },
       birthdayAutomation: {
         enabled: config.birthdayAutomationEnabled,
@@ -60,7 +60,10 @@ const whatsappConfigController = {
 
     const config = await whatsappConfigRepository.findByTenant(tenantId);
     if (!config) {
-      throw new ApiError(404, 'Configuração do WhatsApp não encontrada. Crie uma instância primeiro.');
+      throw new ApiError(
+        404,
+        "Configuração do WhatsApp não encontrada. Crie uma instância primeiro.",
+      );
     }
 
     // 1. Atualizar a tabela principal WhatsappConfig
@@ -83,12 +86,12 @@ const whatsappConfigController = {
 
     // 2. Criar ou atualizar o WhatsappTemplate para couponReminder
     const [template, created] = await WhatsappTemplate.findOrCreate({
-      where: { tenantId: tenantId, type: 'COUPON_REMINDER' },
+      where: { tenantId: tenantId, type: "COUPON_REMINDER" },
       defaults: {
         isEnabled: data.couponReminder.enabled,
         daysBefore: data.couponReminder.daysBefore,
         message: data.couponReminder.message,
-      }
+      },
     });
 
     if (!created) {
@@ -98,8 +101,10 @@ const whatsappConfigController = {
         message: data.couponReminder.message,
       });
     }
-    
-    res.status(200).json({ message: 'Configurações de automação salvas com sucesso.' });
+
+    res
+      .status(200)
+      .json({ message: "Configurações de automação salvas com sucesso." });
   }),
 
   getConnectionInfo: asyncHandler(async (req, res) => {

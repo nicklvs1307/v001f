@@ -66,7 +66,7 @@ const birthdayTask = cron.schedule(
                   tenantId: config.tenantId,
                   dataValidade: expiryDate,
                   dataGeracao: new Date(),
-                  status: 'active',
+                  status: "active",
                 });
               }
             } else if (config.birthdayRewardType === "roleta") {
@@ -86,7 +86,7 @@ const birthdayTask = cron.schedule(
                   tenantId: config.tenantId,
                   dataValidade: expiryDate,
                   dataGeracao: new Date(),
-                  status: 'active',
+                  status: "active",
                 });
               }
             }
@@ -117,7 +117,10 @@ const birthdayTask = cron.schedule(
               }
             }
           } catch (clientError) {
-            console.error(`[BirthdayJob] Falha ao processar aniversário para o cliente ${client.id} do tenant ${config.tenantId}:`, clientError);
+            console.error(
+              `[BirthdayJob] Falha ao processar aniversário para o cliente ${client.id} do tenant ${config.tenantId}:`,
+              clientError,
+            );
           }
         }
       }
@@ -143,4 +146,3 @@ module.exports = {
     birthdayTask.stop();
   },
 };
-

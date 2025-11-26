@@ -103,7 +103,10 @@ const dailyReportTask = cron.schedule(
             );
           }
         } catch (tenantError) {
-          console.error(`Falha ao gerar relatório para o tenant ${config.tenantId}:`, tenantError);
+          console.error(
+            `Falha ao gerar relatório para o tenant ${config.tenantId}:`,
+            tenantError,
+          );
         }
       }
 

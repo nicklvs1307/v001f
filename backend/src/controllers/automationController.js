@@ -113,7 +113,10 @@ exports.testBirthday = asyncHandler(async (req, res) => {
   }
 
   if (!rewardName) {
-    throw new ApiError(404, "A recompensa de aniversário configurada não foi encontrada.");
+    throw new ApiError(
+      404,
+      "A recompensa de aniversário configurada não foi encontrada.",
+    );
   }
 
   const clientName = "Cliente de Teste";
@@ -144,9 +147,9 @@ exports.testCouponReminder = asyncHandler(async (req, res) => {
   }
 
   const couponReminderTemplate = await WhatsappTemplate.findOne({
-    where: { tenantId, type: 'COUPON_REMINDER' },
+    where: { tenantId, type: "COUPON_REMINDER" },
   });
-  
+
   if (!couponReminderTemplate || !couponReminderTemplate.isEnabled) {
     throw new ApiError(
       400,
@@ -157,7 +160,10 @@ exports.testCouponReminder = asyncHandler(async (req, res) => {
   const clientName = "Cliente de Teste";
   const cupomCode = "EXPIRA123";
   const rewardName = "Prêmio de Teste";
-  const expirationDate = format(addDays(now(), couponReminderTemplate.daysBefore || 3), "dd/MM/yyyy");
+  const expirationDate = format(
+    addDays(now(), couponReminderTemplate.daysBefore || 3),
+    "dd/MM/yyyy",
+  );
 
   let message = couponReminderTemplate.message;
   message = message.replace(/{{cliente}}/g, clientName);

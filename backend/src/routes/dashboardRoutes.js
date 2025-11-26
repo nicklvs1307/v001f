@@ -98,8 +98,6 @@ router.get(
   dashboardController.getAttendantsPerformance,
 );
 
-
-
 router.get(
   "/details/:category",
   validateDateFilters,

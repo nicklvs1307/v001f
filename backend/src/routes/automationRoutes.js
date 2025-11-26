@@ -32,5 +32,4 @@ router.post(
   automationController.testRoletaPrize,
 );
 
-
 module.exports = router;

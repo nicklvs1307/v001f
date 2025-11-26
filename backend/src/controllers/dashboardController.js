@@ -11,7 +11,7 @@ module.exports = {
       startDate,
       endDate,
       period,
-      surveyId
+      surveyId,
     );
     res.status(200).json(dashboardData);
   }),
@@ -102,7 +102,7 @@ module.exports = {
     );
     res.status(200).json(chartData);
   }),
-  
+
   getEvolutionDashboard: asyncHandler(async (req, res) => {
     const { period, startDate, endDate } = req.query;
     const evolutionData = await dashboardRepository.getEvolutionData(
@@ -167,7 +167,7 @@ module.exports = {
     );
     res.status(200).json(detailsData);
   }),
-  
+
   getAllFeedbacks: asyncHandler(async (req, res) => {
     const { startDate, endDate } = req.query;
     const feedbacks = await dashboardRepository.getFeedbacks(
@@ -179,42 +179,71 @@ module.exports = {
   }),
 
   getDailyReport: asyncHandler(async (req, res) => {
-    const { date, startDate: queryStartDate, endDate: queryEndDate, surveyId } = req.query;
-    const { startDate, endDate } = getPeriodDateRange(queryStartDate, queryEndDate, 'day', date);
+    const {
+      date,
+      startDate: queryStartDate,
+      endDate: queryEndDate,
+      surveyId,
+    } = req.query;
+    const { startDate, endDate } = getPeriodDateRange(
+      queryStartDate,
+      queryEndDate,
+      "day",
+      date,
+    );
     const reportData = await dashboardRepository.getDashboardData(
       req.tenantId,
       startDate,
       endDate,
-      'day',
-      surveyId
+      "day",
+      surveyId,
     );
     res.status(200).json(reportData);
   }),
 
   getWeeklyReport: asyncHandler(async (req, res) => {
-    const { date, startDate: queryStartDate, endDate: queryEndDate, surveyId } = req.query;
-    const { startDate, endDate } = getPeriodDateRange(queryStartDate, queryEndDate, 'week', date);
+    const {
+      date,
+      startDate: queryStartDate,
+      endDate: queryEndDate,
+      surveyId,
+    } = req.query;
+    const { startDate, endDate } = getPeriodDateRange(
+      queryStartDate,
+      queryEndDate,
+      "week",
+      date,
+    );
     const reportData = await dashboardRepository.getDashboardData(
       req.tenantId,
       startDate,
       endDate,
-      'week',
-      surveyId
+      "week",
+      surveyId,
     );
     res.status(200).json(reportData);
   }),
 
   getMonthlyReport: asyncHandler(async (req, res) => {
-    const { date, startDate: queryStartDate, endDate: queryEndDate, surveyId } = req.query;
-    const { startDate, endDate } = getPeriodDateRange(queryStartDate, queryEndDate, 'month', date);
+    const {
+      date,
+      startDate: queryStartDate,
+      endDate: queryEndDate,
+      surveyId,
+    } = req.query;
+    const { startDate, endDate } = getPeriodDateRange(
+      queryStartDate,
+      queryEndDate,
+      "month",
+      date,
+    );
     const reportData = await dashboardRepository.getDashboardData(
       req.tenantId,
       startDate,
       endDate,
-      'month',
-      surveyId
+      "month",
+      surveyId,
     );
     res.status(200).json(reportData);
   }),
 };
-

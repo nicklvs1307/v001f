@@ -64,7 +64,12 @@ const formatInTimeZone = (date, formatString) => {
  * @param {Date | string | null} date - Uma data de referência para o cálculo do período.
  * @returns {{startDate: Date, endDate: Date}} Um objeto contendo as datas de início e fim em UTC.
  */
-const getPeriodDateRange = (startDateStr, endDateStr, period = "day", date = now()) => {
+const getPeriodDateRange = (
+  startDateStr,
+  endDateStr,
+  period = "day",
+  date = now(),
+) => {
   let startDate;
   let endDate;
   let referenceDate = toZonedTime(date, TIMEZONE);
@@ -103,11 +108,14 @@ module.exports = {
   convertToUtc,
   formatInTimeZone,
   getPeriodDateRange,
-  getStartOfDayUTC: (date) => convertToUtc(startOfDay(toZonedTime(date, TIMEZONE))),
+  getStartOfDayUTC: (date) =>
+    convertToUtc(startOfDay(toZonedTime(date, TIMEZONE))),
   getEndOfDayUTC: (date) => convertToUtc(endOfDay(toZonedTime(date, TIMEZONE))),
   getNowInLocalTimezone: now,
-  startOfWeek: (date) => startOfWeek(toZonedTime(date, TIMEZONE), { weekStartsOn: 1 }),
-  endOfWeek: (date) => endOfWeek(toZonedTime(date, TIMEZONE), { weekStartsOn: 1 }),
+  startOfWeek: (date) =>
+    startOfWeek(toZonedTime(date, TIMEZONE), { weekStartsOn: 1 }),
+  endOfWeek: (date) =>
+    endOfWeek(toZonedTime(date, TIMEZONE), { weekStartsOn: 1 }),
   startOfMonth: (date) => startOfMonth(toZonedTime(date, TIMEZONE)),
   endOfMonth: (date) => endOfMonth(toZonedTime(date, TIMEZONE)),
   addDays: (date, days) => addDays(toZonedTime(date, TIMEZONE), days),

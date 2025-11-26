@@ -20,7 +20,9 @@ const task = cron.schedule(
         },
       });
 
-      console.log(`[Job] Templates de lembrete de cupom encontrados: ${templates.length}`);
+      console.log(
+        `[Job] Templates de lembrete de cupom encontrados: ${templates.length}`,
+      );
 
       if (templates.length === 0) {
         console.log(
@@ -31,18 +33,20 @@ const task = cron.schedule(
 
       for (const template of templates) {
         const { tenantId, daysBefore, message } = template;
-        console.log(`[Job] Processando template para o tenant ${tenantId} com daysBefore: ${daysBefore}`);
-
+        console.log(
+          `[Job] Processando template para o tenant ${tenantId} com daysBefore: ${daysBefore}`,
+        );
 
         if (!daysBefore || daysBefore <= 0) {
-          console.log(`[Job] Template para o tenant ${tenantId} não tem um daysBefore válido.`);
+          console.log(
+            `[Job] Template para o tenant ${tenantId} não tem um daysBefore válido.`,
+          );
           continue;
         }
 
         const todayInZone = now();
         const targetDate = addDays(todayInZone, daysBefore);
         console.log(`[Job] Data alvo para o tenant ${tenantId}: ${targetDate}`);
-
 
         const couponsToRemind = await Cupom.findAll({
           where: {
@@ -56,8 +60,9 @@ const task = cron.schedule(
           include: [{ model: Client, as: "client", required: true }],
         });
 
-        console.log(`[Job] Cupons encontrados para o tenant ${tenantId}: ${couponsToRemind.length}`);
-
+        console.log(
+          `[Job] Cupons encontrados para o tenant ${tenantId}: ${couponsToRemind.length}`,
+        );
 
         if (couponsToRemind.length > 0) {
           console.log(

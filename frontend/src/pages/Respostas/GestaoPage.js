@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import {
     Typography,
     Box,
@@ -14,9 +14,12 @@ import {
     Tooltip,
 } from '@mui/material';
 import { WhatsApp, Visibility, Lightbulb } from '@mui/icons-material';
+import { subDays } from 'date-fns';
+import PageLayout from '../../components/layout/PageLayout';
 import dashboardService from '../../services/dashboardService';
 import AuthContext from '../../context/AuthContext';
 import { format } from 'date-fns';
+import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
 
 const GestaoPage = () => {
     const { user } = useContext(AuthContext);
@@ -25,28 +28,36 @@ const GestaoPage = () => {
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [startDate, setStartDate] = useState(subDays(new Date(), 30));
+    const [endDate, setEndDate] = useState(new Date());
+
+    const fetchFeedbacks = useCallback(async () => {
+        if (!user?.tenantId) return;
+
+        try {
+            setLoading(true);
+            const params = { 
+                tenantId: user.tenantId, 
+                page: page + 1, 
+                limit: rowsPerPage,
+                startDate: getStartOfDayUTC(startDate),
+                endDate: getEndOfDayUTC(endDate),
+            };
+            const data = await dashboardService.getAllFeedbacks(params);
+            
+            setFeedbacks(data.rows);
+            setTotalFeedbacks(data.count);
+
+        } catch (error) {
+            console.error("Failed to fetch feedbacks", error);
+        } finally {
+            setLoading(false);
+        }
+    }, [user, page, rowsPerPage, startDate, endDate]);
 
     useEffect(() => {
-        const fetchFeedbacks = async () => {
-            if (!user?.tenantId) return;
-
-            try {
-                setLoading(true);
-                const params = { tenantId: user.tenantId, page: page + 1, limit: rowsPerPage };
-                const data = await dashboardService.getAllFeedbacks(params);
-                
-                setFeedbacks(data.rows);
-                setTotalFeedbacks(data.count);
-
-            } catch (error) {
-                console.error("Failed to fetch feedbacks", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchFeedbacks();
-    }, [user, page, rowsPerPage]);
+    }, [fetchFeedbacks]);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -58,11 +69,13 @@ const GestaoPage = () => {
     };
 
     return (
-        <Box>
-            <Typography variant="h4" gutterBottom>
-                Gestão de Respostas
-            </Typography>
-
+        <PageLayout
+            title="Gestão de Respostas"
+            startDate={startDate}
+            endDate={endDate}
+            onStartDateChange={setStartDate}
+            onEndDateChange={setEndDate}
+        >
             {loading ? (
                 <Typography>Carregando...</Typography>
             ) : (
@@ -120,7 +133,7 @@ const GestaoPage = () => {
                     />
                 </Paper>
             )}
-        </Box>
+        </PageLayout>
     );
 };
 

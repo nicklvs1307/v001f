@@ -1,8 +1,11 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { Typography, Box, Grid, Card, CardContent, Paper } from '@mui/material';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
+import { Typography, Box, Grid, Card, CardContent, Paper, TextField } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { subDays } from 'date-fns';
+import PageLayout from '../../components/layout/PageLayout';
 import dashboardService from '../../services/dashboardService';
 import AuthContext from '../../context/AuthContext';
+import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
 
 const PainelPage = () => {
     const { user } = useContext(AuthContext);
@@ -10,40 +13,44 @@ const PainelPage = () => {
     const [dailyData, setDailyData] = useState([]);
     const [weeklyData, setWeeklyData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [startDate, setStartDate] = useState(subDays(new Date(), 30));
+    const [endDate, setEndDate] = useState(new Date());
+
+    const fetchData = useCallback(async () => {
+        if (!user?.tenantId) return;
+        try {
+            setLoading(true);
+            const params = { 
+                tenantId: user.tenantId,
+                startDate: getStartOfDayUTC(startDate),
+                endDate: getEndOfDayUTC(endDate),
+            };
+            
+            const [summaryData, dailyChartData, weeklyChartData] = await Promise.all([
+                dashboardService.getSummary(params),
+                dashboardService.getResponseChart(params),
+                dashboardService.getWeeklyReport(params)
+            ]);
+
+            setSummary(summaryData);
+            setDailyData(dailyChartData);
+
+            const adaptedWeeklyData = weeklyChartData.days.map(day => ({
+                day: day.dayOfWeek.substring(0, 3),
+                value: day.count
+            }));
+            setWeeklyData(adaptedWeeklyData);
+
+        } catch (error) {
+            console.error("Failed to fetch dashboard data", error);
+        } finally {
+            setLoading(false);
+        }
+    }, [user, startDate, endDate]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            if (!user?.tenantId) return;
-            try {
-                setLoading(true);
-                const params = { tenantId: user.tenantId };
-                
-                const [summaryData, dailyChartData, weeklyChartData] = await Promise.all([
-                    dashboardService.getSummary(params),
-                    dashboardService.getResponseChart(params),
-                    dashboardService.getWeeklyReport(params)
-                ]);
-
-                setSummary(summaryData);
-                setDailyData(dailyChartData);
-
-                // Adapt weekly data
-                const adaptedWeeklyData = weeklyChartData.days.map(day => ({
-                    day: day.dayOfWeek.substring(0, 3),
-                    value: day.count
-                }));
-                setWeeklyData(adaptedWeeklyData);
-
-
-            } catch (error) {
-                console.error("Failed to fetch dashboard data", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchData();
-    }, [user]);
+    }, [fetchData]);
 
     const StatCard = ({ title, value, color }) => (
         <Card sx={{ backgroundColor: color, color: 'white' }}>
@@ -59,11 +66,13 @@ const PainelPage = () => {
     );
 
     return (
-        <Box>
-            <Typography variant="h4" gutterBottom>
-                Painel de Respostas
-            </Typography>
-
+        <PageLayout 
+            title="Painel de Respostas"
+            startDate={startDate}
+            endDate={endDate}
+            onStartDateChange={setStartDate}
+            onEndDateChange={setEndDate}
+        >
             {loading ? (
                 <Typography>Carregando...</Typography>
             ) : (
@@ -121,7 +130,7 @@ const PainelPage = () => {
                     </Grid>
                 </Grid>
             )}
-        </Box>
+        </PageLayout>
     );
 };
 

@@ -1,45 +1,47 @@
-main.5226a9e8.js:sourcemap:2 [Violation] 'message' handler took 173ms
-main.5226a9e8.js:sourcemap:2 TypeError: Cannot read properties of undefined (reading 'map')
-    at S (GestaoPage.js:96:44)
-    at gi (main.5226a9e8.js:sourcemap:2:549753)
-    at js (main.5226a9e8.js:sourcemap:2:563975)
-    at Sl (main.5226a9e8.js:sourcemap:2:610277)
-    at bc (main.5226a9e8.js:sourcemap:2:598502)
-    at vc (main.5226a9e8.js:sourcemap:2:598430)
-    at gc (main.5226a9e8.js:sourcemap:2:598293)
-    at ac (main.5226a9e8.js:sourcemap:2:595073)
-    at oc (main.5226a9e8.js:sourcemap:2:593624)
-    at w (main.5226a9e8.js:sourcemap:2:145075)
-ds @ main.5226a9e8.js:sourcemap:2
-n.callback @ main.5226a9e8.js:sourcemap:2
-Ha @ main.5226a9e8.js:sourcemap:2
-xl @ main.5226a9e8.js:sourcemap:2
-bl @ main.5226a9e8.js:sourcemap:2
-yl @ main.5226a9e8.js:sourcemap:2
-(anônimo) @ main.5226a9e8.js:sourcemap:2
-Ac @ main.5226a9e8.js:sourcemap:2
-oc @ main.5226a9e8.js:sourcemap:2
-w @ main.5226a9e8.js:sourcemap:2
-T @ main.5226a9e8.js:sourcemap:2
-main.5226a9e8.js:sourcemap:2 Uncaught TypeError: Cannot read properties of undefined (reading 'map')
-    at S (GestaoPage.js:96:44)
-    at gi (main.5226a9e8.js:sourcemap:2:549753)
-    at js (main.5226a9e8.js:sourcemap:2:563975)
-    at Sl (main.5226a9e8.js:sourcemap:2:610277)
-    at bc (main.5226a9e8.js:sourcemap:2:598502)
-    at vc (main.5226a9e8.js:sourcemap:2:598430)
-    at gc (main.5226a9e8.js:sourcemap:2:598293)
-    at ac (main.5226a9e8.js:sourcemap:2:595073)
-    at oc (main.5226a9e8.js:sourcemap:2:593624)
-    at w (main.5226a9e8.js:sourcemap:2:145075)
-S @ GestaoPage.js:96
-gi @ main.5226a9e8.js:sourcemap:2
-js @ main.5226a9e8.js:sourcemap:2
-Sl @ main.5226a9e8.js:sourcemap:2
-bc @ main.5226a9e8.js:sourcemap:2
-vc @ main.5226a9e8.js:sourcemap:2
-gc @ main.5226a9e8.js:sourcemap:2
-ac @ main.5226a9e8.js:sourcemap:2
-oc @ main.5226a9e8.js:sourcemap:2
-w @ main.5226a9e8.js:sourcemap:2
-T @ main.5226a9e8.js:sourcemap:2
+main.54f39aa7.js:2 [Violation] 'message' handler took 150ms
+main.54f39aa7.js:2 [Violation] 'message' handler took 202ms
+[Violation] Forced reflow while executing JavaScript took 31ms
+react-dom.production.min.js:188 TypeError: d.map is not a function
+    at ue (RecentFeedbacks.js:95:32)
+    at gi (react-dom.production.min.js:160:137)
+    at js (react-dom.production.min.js:196:258)
+    at Sl (react-dom.production.min.js:291:88)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+    at oc (react-dom.production.min.js:267:429)
+    at w (scheduler.production.min.js:13:203)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+react-dom.production.min.js:282 Uncaught TypeError: d.map is not a function
+    at ue (RecentFeedbacks.js:95:32)
+    at gi (react-dom.production.min.js:160:137)
+    at js (react-dom.production.min.js:196:258)
+    at Sl (react-dom.production.min.js:291:88)
+    at bc (react-dom.production.min.js:279:389)
+    at vc (react-dom.production.min.js:279:320)
+    at gc (react-dom.production.min.js:279:180)
+    at ac (react-dom.production.min.js:270:88)
+    at oc (react-dom.production.min.js:267:429)
+    at w (scheduler.production.min.js:13:203)
+ue @ RecentFeedbacks.js:95
+gi @ react-dom.production.min.js:160
+js @ react-dom.production.min.js:196
+Sl @ react-dom.production.min.js:291
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+ac @ react-dom.production.min.js:270
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14

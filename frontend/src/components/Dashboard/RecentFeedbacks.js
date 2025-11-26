@@ -48,7 +48,7 @@ const RecentFeedbacks = ({ startDate, endDate, handleFeedbackClick }) => {
                 }
                 const data = await dashboardService.getFeedbacks(params);
                 if (isActive) {
-                    setFeedbacks(data);
+                    setFeedbacks(data.rows || []);
                 }
             } catch (err) {
                 if (isActive) {

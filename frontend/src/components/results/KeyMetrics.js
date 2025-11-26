@@ -7,6 +7,8 @@ import {
     PersonAdd,
     ConfirmationNumber,
     LocalActivity,
+    SentimentNeutral,
+    SentimentVeryDissatisfied,
 } from '@mui/icons-material';
 
 const getIcon = (title) => {
@@ -23,6 +25,12 @@ const getIcon = (title) => {
             return <ConfirmationNumber fontSize="large" />;
         case 'Cupons Utilizados':
             return <LocalActivity fontSize="large" />;
+        case 'Promotores':
+            return <SentimentSatisfiedAlt fontSize="large" />;
+        case 'Neutros':
+            return <SentimentNeutral fontSize="large" />;
+        case 'Detratores':
+            return <SentimentVeryDissatisfied fontSize="large" />;
         default:
             return null;
     }

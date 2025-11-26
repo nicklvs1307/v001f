@@ -1,15 +1,16 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
-import { Typography, Box, Grid, Card, CardContent, Paper, TextField } from '@mui/material';
+import { Typography, Box, Grid, Paper } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { subDays } from 'date-fns';
 import PageLayout from '../../components/layout/PageLayout';
+import KeyMetrics from '../../components/results/KeyMetrics';
 import dashboardService from '../../services/dashboardService';
 import AuthContext from '../../context/AuthContext';
 import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
 
 const PainelPage = () => {
     const { user } = useContext(AuthContext);
-    const [summary, setSummary] = useState({ total: 0, promoters: 0, neutrals: 0, detractors: 0 });
+    const [summary, setSummary] = useState({});
     const [dailyData, setDailyData] = useState([]);
     const [weeklyData, setWeeklyData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -52,18 +53,12 @@ const PainelPage = () => {
         fetchData();
     }, [fetchData]);
 
-    const StatCard = ({ title, value, color }) => (
-        <Card sx={{ backgroundColor: color, color: 'white' }}>
-            <CardContent>
-                <Typography variant="h5" component="div">
-                    {value}
-                </Typography>
-                <Typography variant="body2">
-                    {title}
-                </Typography>
-            </CardContent>
-        </Card>
-    );
+    const metrics = [
+        { title: 'Total de Respostas', value: summary.totalResponses || 0 },
+        { title: 'Promotores', value: summary.promoters || 0 },
+        { title: 'Neutros', value: summary.neutrals || 0 },
+        { title: 'Detratores', value: summary.detractors || 0 },
+    ];
 
     return (
         <PageLayout 
@@ -77,23 +72,13 @@ const PainelPage = () => {
                 <Typography>Carregando...</Typography>
             ) : (
                 <Grid container spacing={3}>
-                    {/* Stat Cards */}
-                    <Grid item xs={12} sm={6} md={3}>
-                        <StatCard title="Total de Respostas" value={summary.totalResponses} color="primary.main" />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <StatCard title="Promotores" value={summary.promoters} color="success.main" />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <StatCard title="Neutros" value={summary.neutrals} color="warning.main" />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <StatCard title="Detratores" value={summary.detractors} color="error.main" />
+                    <Grid item xs={12}>
+                        <KeyMetrics metrics={metrics} />
                     </Grid>
 
                     {/* Daily Chart */}
                     <Grid item xs={12} md={6}>
-                        <Paper sx={{ p: 2, height: 300 }}>
+                        <Paper sx={{ p: 3, borderRadius: '16px', boxShadow: '0 4px 12px 0 rgba(0,0,0,0.05)', height: 300 }}>
                             <Typography variant="h6" gutterBottom>
                                 Respostas ao Longo do Dia
                             </Typography>
@@ -112,7 +97,7 @@ const PainelPage = () => {
 
                     {/* Weekly Chart */}
                     <Grid item xs={12} md={6}>
-                        <Paper sx={{ p: 2, height: 300 }}>
+                        <Paper sx={{ p: 3, borderRadius: '16px', boxShadow: '0 4px 12px 0 rgba(0,0,0,0.05)', height: 300 }}>
                             <Typography variant="h6" gutterBottom>
                                 Respostas por Dia da Semana
                             </Typography>

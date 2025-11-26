@@ -45,8 +45,8 @@ const GestaoPage = () => {
             };
             const data = await dashboardService.getAllFeedbacks(params);
             
-            setFeedbacks(data.rows);
-            setTotalFeedbacks(data.count);
+            setFeedbacks(data.rows || []);
+            setTotalFeedbacks(data.count || 0);
 
         } catch (error) {
             console.error("Failed to fetch feedbacks", error);

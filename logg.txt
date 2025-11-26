@@ -1,17 +1,45 @@
-Postgres is up - executing command
-Server.js is being executed!
-/usr/src/app/src/repositories/dashboardRepository.js:978
-  getDetails,
-  ^
-ReferenceError: getDetails is not defined
-    at Object.<anonymous> (/usr/src/app/src/repositories/dashboardRepository.js:978:3)
-    at Module._compile (node:internal/modules/cjs/loader:1364:14)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
-    at Module.load (node:internal/modules/cjs/loader:1203:32)
-    at Module._load (node:internal/modules/cjs/loader:1019:12)
-    at Module.require (node:internal/modules/cjs/loader:1231:19)
-    at require (node:internal/modules/helpers:177:18)
-    at Object.<anonymous> (/usr/src/app/src/controllers/dashboardController.js:2:29)
-    at Module._compile (node:internal/modules/cjs/loader:1364:14)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
-Node.js v18.20.8
+main.5226a9e8.js:sourcemap:2 [Violation] 'message' handler took 173ms
+main.5226a9e8.js:sourcemap:2 TypeError: Cannot read properties of undefined (reading 'map')
+    at S (GestaoPage.js:96:44)
+    at gi (main.5226a9e8.js:sourcemap:2:549753)
+    at js (main.5226a9e8.js:sourcemap:2:563975)
+    at Sl (main.5226a9e8.js:sourcemap:2:610277)
+    at bc (main.5226a9e8.js:sourcemap:2:598502)
+    at vc (main.5226a9e8.js:sourcemap:2:598430)
+    at gc (main.5226a9e8.js:sourcemap:2:598293)
+    at ac (main.5226a9e8.js:sourcemap:2:595073)
+    at oc (main.5226a9e8.js:sourcemap:2:593624)
+    at w (main.5226a9e8.js:sourcemap:2:145075)
+ds @ main.5226a9e8.js:sourcemap:2
+n.callback @ main.5226a9e8.js:sourcemap:2
+Ha @ main.5226a9e8.js:sourcemap:2
+xl @ main.5226a9e8.js:sourcemap:2
+bl @ main.5226a9e8.js:sourcemap:2
+yl @ main.5226a9e8.js:sourcemap:2
+(anônimo) @ main.5226a9e8.js:sourcemap:2
+Ac @ main.5226a9e8.js:sourcemap:2
+oc @ main.5226a9e8.js:sourcemap:2
+w @ main.5226a9e8.js:sourcemap:2
+T @ main.5226a9e8.js:sourcemap:2
+main.5226a9e8.js:sourcemap:2 Uncaught TypeError: Cannot read properties of undefined (reading 'map')
+    at S (GestaoPage.js:96:44)
+    at gi (main.5226a9e8.js:sourcemap:2:549753)
+    at js (main.5226a9e8.js:sourcemap:2:563975)
+    at Sl (main.5226a9e8.js:sourcemap:2:610277)
+    at bc (main.5226a9e8.js:sourcemap:2:598502)
+    at vc (main.5226a9e8.js:sourcemap:2:598430)
+    at gc (main.5226a9e8.js:sourcemap:2:598293)
+    at ac (main.5226a9e8.js:sourcemap:2:595073)
+    at oc (main.5226a9e8.js:sourcemap:2:593624)
+    at w (main.5226a9e8.js:sourcemap:2:145075)
+S @ GestaoPage.js:96
+gi @ main.5226a9e8.js:sourcemap:2
+js @ main.5226a9e8.js:sourcemap:2
+Sl @ main.5226a9e8.js:sourcemap:2
+bc @ main.5226a9e8.js:sourcemap:2
+vc @ main.5226a9e8.js:sourcemap:2
+gc @ main.5226a9e8.js:sourcemap:2
+ac @ main.5226a9e8.js:sourcemap:2
+oc @ main.5226a9e8.js:sourcemap:2
+w @ main.5226a9e8.js:sourcemap:2
+T @ main.5226a9e8.js:sourcemap:2

@@ -260,7 +260,7 @@ const RoletaFormPage = () => {
                         }}
                         renderInput={(params) => <TextField {...params} label="Recompensa" />}
                         renderOption={(props, option) => (
-                            <Box component="li" {...props} key={option.id}>
+                            <Box component="li" {...props} color="text.primary">
                                 {option.nome}
                             </Box>
                         )}

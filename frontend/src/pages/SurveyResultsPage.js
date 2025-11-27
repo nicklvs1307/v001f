@@ -51,16 +51,7 @@ import WcIcon from '@mui/icons-material/Wc';
 import WordCloudComponent from '../components/results/WordCloud';
 import RadarChartComponent from '../components/results/RadarChart';
 import QuestionResult from '../components/results/QuestionResult';
-
-const MetricCard = ({ title, value, icon, color }) => (
-    <Paper elevation={3} sx={{ p: 2, display: 'flex', alignItems: 'center', height: '100%' }}>
-        <Box sx={{ mr: 2, color: color || 'text.secondary' }}>{icon}</Box>
-        <Box>
-            <Typography variant="h4" component="div" fontWeight="bold">{value}</Typography>
-            <Typography variant="body1" color="text.secondary">{title}</Typography>
-        </Box>
-    </Paper>
-);
+import MetricCard from '../components/common/MetricCard';
 
 const SurveyResultsPage = () => {
     const { id } = useParams();

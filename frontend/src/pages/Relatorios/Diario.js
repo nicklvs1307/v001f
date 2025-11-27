@@ -8,10 +8,11 @@ import {
     Alert, 
     Grid,
     Paper,
-    TextField
+    TextField,
+    useTheme
 } from '@mui/material';
 import { format } from 'date-fns';
-import { getStartOfDayUTC, getEndOfDayUTC, getNowInLocalTimezone } from '../../utils/dateUtils';
+import { getNowInLocalTimezone } from '../../utils/dateUtils';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -19,6 +20,8 @@ import { ptBR } from 'date-fns/locale';
 import dashboardService from '../../services/dashboardService';
 import { useAuth } from '../../context/AuthContext';
 import RelatorioDiarioDashboard from '../../components/relatorios/Dashboard';
+import MetricCard from '../../components/common/MetricCard';
+import { TrendingUp, BarChart as BarChartIcon, People, Star, CheckCircle } from '@mui/icons-material';
 
 const RelatorioDiario = () => {
     const [reportData, setReportData] = useState(null);
@@ -28,6 +31,7 @@ const RelatorioDiario = () => {
     const tenantId = user?.tenantId;
     const location = useLocation();
     const navigate = useNavigate();
+    const theme = useTheme();
 
     const [selectedDate, setSelectedDate] = useState(getNowInLocalTimezone());
 
@@ -41,7 +45,7 @@ const RelatorioDiario = () => {
             setError('');
             const params = { tenantId };
             if (selectedDate) {
-                params.date = selectedDate.toISOString(); // Passa a data selecionada para o backend
+                params.date = selectedDate.toISOString();
             }
             const resultData = await dashboardService.getDailyReport(params);
             setReportData(resultData);
@@ -72,45 +76,74 @@ const RelatorioDiario = () => {
 
     if (loading) {
         return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                <CircularProgress size={60} />
-                <Typography sx={{ ml: 2 }}>Carregando relatório...</Typography>
-            </Box>
+            <Container sx={{ mt: 8, textAlign: 'center' }}>
+                <CircularProgress />
+                <Typography>Carregando relatório...</Typography>
+            </Container>
         );
     }
 
     if (error) {
         return (
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
+            <Container sx={{ mt: 8, textAlign: 'center' }}>
                 <Alert severity="error">{error}</Alert>
             </Container>
         );
     }
+    
+    if (!reportData) {
+        return (
+            <Container sx={{ mt: 8, textAlign: 'center' }}>
+                <Typography>Nenhum resultado encontrado para esta pesquisa.</Typography>
+            </Container>
+        );
+    }
+
+    const { summary, clientStatusCounts, ...chartData } = reportData;
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
-            <Box sx={{ flexGrow: 1, p: 3, backgroundColor: (theme) => theme.palette.background.default, minHeight: '100vh' }}>
-                <Paper elevation={0} sx={{ p: 2, mb: 3, borderRadius: '16px', backgroundColor: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(10px)' }}>
+            <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+                <Paper elevation={2} sx={{ p: { xs: 2, md: 3 }, mb: 4, backgroundColor: theme.palette.primary.main, color: 'white' }}>
                     <Grid container spacing={2} justifyContent="space-between" alignItems="center">
                         <Grid item>
-                            <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-                                Relatório Diário
-                            </Typography>
+                            <Typography variant="h4" component="h1" gutterBottom fontWeight="bold">Relatório Diário</Typography>
+                            <Typography variant="h6" sx={{ opacity: 0.9 }}>{`Dados referentes a ${format(selectedDate, 'dd/MM/yyyy', { locale: ptBR })}`}</Typography>
                         </Grid>
-                        <Grid item sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                                <DatePicker
-                                    label="Selecione a Data"
-                                    value={selectedDate}
-                                    onChange={handleDateChange}
-                                    renderInput={(params) => <TextField {...params} />}
-                                />
+                        <Grid item>
+                            <DatePicker
+                                label="Selecione a Data"
+                                value={selectedDate}
+                                onChange={handleDateChange}
+                                renderInput={(params) => <TextField {...params} sx={{ 
+                                    bgcolor: 'white', 
+                                    borderRadius: 1,
+                                    '& .MuiInputBase-input': { color: 'black' },
+                                    '& .MuiSvgIcon-root': { color: 'black' } 
+                                }} />}
+                            />
                         </Grid>
                     </Grid>
                 </Paper>
-                
-                <RelatorioDiarioDashboard data={reportData} />
 
-            </Box>
+                <Grid container spacing={3} sx={{ mb: 4 }}>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <MetricCard title="NPS Geral" value={summary?.nps?.score.toFixed(1) || 0} icon={<TrendingUp fontSize="large" />} color={theme.palette.primary.dark} />
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <MetricCard title="CSAT Geral" value={`${summary?.csat?.satisfactionRate.toFixed(1) || 0}%`} icon={<Star fontSize="large" />} color={theme.palette.secondary.main} />
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <MetricCard title="Total de Respostas" value={summary?.totalResponses || 0} icon={<BarChartIcon fontSize="large" />} />
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <MetricCard title="Respostas com Cadastro" value={clientStatusCounts?.withClient || 0} icon={<CheckCircle fontSize="large" />} />
+                    </Grid>
+                </Grid>
+                
+                <RelatorioDiarioDashboard data={chartData} />
+
+            </Container>
         </LocalizationProvider>
     );
 };

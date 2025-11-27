@@ -569,7 +569,14 @@ const getNpsTrendData = async (
     const total = parseInt(t) || 0;
     const nps = total > 0 ? ((promoters - detractors) / total) * 100 : 0;
     return {
-      period: formatInTimeZone(period, "dd/MM"),
+      period: formatInTimeZone(
+        period,
+        period === "day"
+          ? "dd/MM"
+          : period === "week"
+            ? "ww/yyyy"
+            : "MM/yyyy",
+      ),
       nps: parseFloat(nps.toFixed(1)),
     };
   });

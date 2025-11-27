@@ -1,10 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, useTheme, CircularProgress, Alert, Typography } from '@mui/material';
-import MetricCard from './MetricCard';
-import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
-import dashboardService from '../../services/dashboardService';
-
-import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, useTheme, CircularProgress, Alert, Typography } from '@mui/material';
 import MetricCard from './MetricCard';

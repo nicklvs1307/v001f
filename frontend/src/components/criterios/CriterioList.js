@@ -4,9 +4,6 @@ import AuthContext from '../../context/AuthContext';
 import {
   Box,
   Typography,
-  List,
-  ListItem,
-  ListItemText,
   CircularProgress,
   Alert,
   Button,
@@ -19,6 +16,14 @@ import {
   Modal,
   Backdrop,
   Fade,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -33,9 +38,10 @@ const modalStyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: '90%',
+  maxWidth: 500,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  borderRadius: '8px',
   boxShadow: 24,
   p: 4,
   maxHeight: '90vh',
@@ -49,10 +55,10 @@ const CriterioList = () => {
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
-  const [openHelpModal, setOpenHelpModal] = useState(false); // State for the help modal
+  const [openHelpModal, setOpenHelpModal] = useState(false);
   const [selectedCriterio, setSelectedCriterio] = useState(null);
-  const [formData, setFormData] = useState({});
-  const [formLoading, setFormLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const { showNotification } = useNotification();
 
   const handleOpenCreateModal = () => setOpenCreateModal(true);
@@ -60,7 +66,6 @@ const CriterioList = () => {
 
   const handleOpenEditModal = (criterio) => {
     setSelectedCriterio(criterio);
-    setFormData(criterio);
     setOpenEditModal(true);
   };
   const handleCloseEditModal = () => {
@@ -91,12 +96,12 @@ const CriterioList = () => {
 
   useEffect(() => {
     fetchCriterios();
-  }, [showNotification]);
+  }, []);
 
   const handleCriterioCreated = async (criterioData) => {
     try {
       const newCriterio = await criterioService.createCriterio(criterioData);
-      setCriterios((prevCriterios) => [...prevCriterios, newCriterio]);
+      setCriterios((prev) => [newCriterio, ...prev]);
       handleCloseCreateModal();
       showNotification('Critério criado com sucesso!', 'success');
     } catch (err) {
@@ -106,11 +111,9 @@ const CriterioList = () => {
 
   const handleCriterioUpdated = async (criterioData) => {
     try {
-      await criterioService.updateCriterio(selectedCriterio.id, criterioData);
-      setCriterios((prevCriterios) =>
-        prevCriterios.map((criterio) =>
-          criterio.id === selectedCriterio.id ? { ...criterio, ...criterioData } : criterio
-        )
+      const updated = await criterioService.updateCriterio(selectedCriterio.id, criterioData);
+      setCriterios((prev) =>
+        prev.map((c) => (c.id === selectedCriterio.id ? updated : c))
       );
       handleCloseEditModal();
       showNotification('Critério atualizado com sucesso!', 'success');
@@ -122,9 +125,7 @@ const CriterioList = () => {
   const handleCriterioDeleted = async () => {
     try {
       await criterioService.deleteCriterio(selectedCriterio.id);
-      setCriterios((prevCriterios) =>
-        prevCriterios.filter((criterio) => criterio.id !== selectedCriterio.id)
-      );
+      setCriterios((prev) => prev.filter((c) => c.id !== selectedCriterio.id));
       handleCloseDeleteConfirm();
       showNotification('Critério deletado com sucesso!', 'success');
     } catch (err) {
@@ -132,68 +133,99 @@ const CriterioList = () => {
     }
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   if (loading) {
     return <CircularProgress />;
   }
 
+  const canManageCriteria = currentUser.role === ROLES.SUPER_ADMIN || currentUser.role === ROLES.ADMIN || currentUser.role === ROLES.TENANT_ADMIN;
+
   return (
-    <Box sx={{ mt: 4 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-        <Typography variant="h5" gutterBottom sx={{ mb: 0 }}>
-          Gerenciamento de Critérios
-        </Typography>
-        <IconButton onClick={() => setOpenHelpModal(true)} color="primary" aria-label="ajuda sobre critérios">
-          <InfoOutlinedIcon />
-        </IconButton>
+    <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Typography variant="h5" component="h2" fontWeight="bold">
+            Gerenciamento de Critérios
+          </Typography>
+          <IconButton onClick={() => setOpenHelpModal(true)} color="primary" aria-label="ajuda sobre critérios">
+            <InfoOutlinedIcon />
+          </IconButton>
+        </Box>
+        {canManageCriteria && (
+          <Button
+            variant="contained"
+            onClick={handleOpenCreateModal}
+            startIcon={<AddIcon />}
+          >
+            Criar Novo Critério
+          </Button>
+        )}
       </Box>
 
-      {(currentUser.role === ROLES.SUPER_ADMIN || currentUser.role === ROLES.ADMIN) && (
-        <Button
-          variant="contained"
-          sx={{ mb: 2 }}
-          onClick={handleOpenCreateModal}
-          startIcon={<AddIcon />}
-        >
-          Criar Novo Critério
-        </Button>
+      {criterios.length > 0 ? (
+        <>
+          <TableContainer>
+            <Table stickyHeader aria-label="tabela de critérios">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Nome</TableCell>
+                  <TableCell>Tipo</TableCell>
+                  <TableCell>Descrição</TableCell>
+                  <TableCell align="right">Ações</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {criterios.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((criterio) => (
+                  <TableRow hover key={criterio.id}>
+                    <TableCell component="th" scope="row">
+                      {criterio.name}
+                    </TableCell>
+                    <TableCell>{criterio.type}</TableCell>
+                    <TableCell>{criterio.description || 'N/A'}</TableCell>
+                    <TableCell align="right">
+                      {canManageCriteria && (
+                        <>
+                          <IconButton size="small" aria-label="edit" onClick={() => handleOpenEditModal(criterio)}>
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton size="small" aria-label="delete" onClick={() => handleOpenDeleteConfirm(criterio)}>
+                            <DeleteIcon />
+                          </IconButton>
+                        </>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={criterios.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            labelRowsPerPage="Itens por página:"
+          />
+        </>
+      ) : (
+        <Alert severity="info" sx={{ mt: 3 }}>
+          Nenhum critério encontrado. Clique em "Criar Novo Critério" para começar.
+        </Alert>
       )}
 
-      <List>
-        {criterios.length > 0 ? (
-          criterios.map((criterio) => (
-            <ListItem
-              key={criterio.id}
-              divider
-              secondaryAction={
-                <>
-                  {(currentUser.role === ROLES.SUPER_ADMIN ||
-                    (currentUser.role === ROLES.ADMIN && criterio.tenantId === currentUser.tenantId)) && (
-                      <IconButton edge="end" aria-label="edit" onClick={() => handleOpenEditModal(criterio)}>
-                        <EditIcon />
-                      </IconButton>
-                    )}
-                  {(currentUser.role === ROLES.SUPER_ADMIN ||
-                    (currentUser.role === ROLES.TENANT_ADMIN && criterio.tenantId === currentUser.tenantId)) && (
-                      <IconButton edge="end" aria-label="delete" onClick={() => handleOpenDeleteConfirm(criterio)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    )}
-                </>
-              }
-            >
-              <ListItemText
-                primary={`${criterio.name} (${criterio.type})`}
-                secondary={criterio.description}
-              />
-            </ListItem>
-          ))
-        ) : (
-          <Typography>Nenhum critério encontrado.</Typography>
-        )}
-      </List>
-
       {/* Help Modal */}
-      <Dialog open={openHelpModal} onClose={() => setOpenHelpModal(false)} maxWidth="md">
+       <Dialog open={openHelpModal} onClose={() => setOpenHelpModal(false)} maxWidth="md">
         <DialogTitle>Ajuda: Entendendo e Cadastrando Critérios</DialogTitle>
         <DialogContent>
           <DialogContentText component="div">
@@ -230,7 +262,7 @@ const CriterioList = () => {
                 <strong>Exemplo de Pergunta:</strong> "O quão fácil foi fazer o seu pedido?" (com respostas de "Muito Difícil" a "Muito Fácil").
               </Typography>
             </Box>
-            <Box sx={{ mt: 1 }}>
+             <Box sx={{ mt: 1 }}>
               <Typography variant="subtitle1" component="div"><strong>Star (Avaliação por Estrelas)</strong></Typography>
               <Typography variant="body2" color="text.secondary" sx={{ pl: 2 }}>
                 <strong>Uso:</strong> Uma avaliação visual simples, geralmente de 1 a 5 estrelas.<br />
@@ -251,83 +283,41 @@ const CriterioList = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Modal para criar novo critério */}
-      <Modal
-        aria-labelledby="create-criterio-modal-title"
-        aria-describedby="create-criterio-modal-description"
-        open={openCreateModal}
-        onClose={handleCloseCreateModal}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
-      >
-        <Fade in={openCreateModal}>
+      {/* Create/Edit Modals */}
+      <Modal open={openCreateModal || openEditModal} onClose={openCreateModal ? handleCloseCreateModal : handleCloseEditModal}>
+        <Fade in={openCreateModal || openEditModal}>
           <Box sx={modalStyle}>
+            <Typography variant="h6" component="h2" mb={2}>
+              {openCreateModal ? 'Criar Novo Critério' : 'Editar Critério'}
+            </Typography>
             <CriterioForm
-              formData={formData}
-              setFormData={setFormData}
-              onSubmit={handleCriterioCreated}
-              loading={formLoading}
+              criterioToEdit={openEditModal ? selectedCriterio : null}
+              onSubmit={openCreateModal ? handleCriterioCreated : handleCriterioUpdated}
+              onCancel={openCreateModal ? handleCloseCreateModal : handleCloseEditModal}
             />
           </Box>
         </Fade>
       </Modal>
 
-      {/* Modal para editar critério */}
-      <Modal
-        aria-labelledby="edit-criterio-modal-title"
-        aria-describedby="edit-criterio-modal-description"
-        open={openEditModal}
-        onClose={handleCloseEditModal}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
-      >
-        <Fade in={openEditModal}>
-          <Box sx={modalStyle}>
-            {selectedCriterio && (
-              <CriterioForm
-                formData={formData}
-                setFormData={setFormData}
-                onSubmit={handleCriterioUpdated}
-                loading={formLoading}
-              />
-            )}
-          </Box>
-        </Fade>
-      </Modal>
-
-      {/* Diálogo de Confirmação para Deleção */}
+      {/* Delete Confirmation Dialog */}
       <Dialog
         open={openDeleteConfirm}
         onClose={handleCloseDeleteConfirm}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {"Confirmar Deleção"}
-        </DialogTitle>
+        <DialogTitle>Confirmar Deleção</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Tem certeza que deseja deletar o critério "{selectedCriterio?.name}"? Esta ação é irreversível.
+          <DialogContentText>
+            Tem certeza que deseja deletar o critério "{selectedCriterio?.name}"? Esta ação não pode ser desfeita.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDeleteConfirm}>Cancelar</Button>
-          <Button onClick={handleCriterioDeleted} autoFocus color="error">
+          <Button onClick={handleCriterioDeleted} color="error">
             Deletar
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </Paper>
   );
 };
 

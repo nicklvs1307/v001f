@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const resultRepository = require("../repositories/resultRepository");
+const resultService = require("../services/resultService");
 const ApiError = require("../errors/ApiError");
-const { getUtcDateRange } = require("../utils/dateUtils");
 
 // @desc    Obter resultados agregados de uma pesquisa
 // @route   GET /api/surveys/:id/results
@@ -11,10 +11,6 @@ exports.getSurveyResults = asyncHandler(async (req, res) => {
   const requestingUser = req.user;
   const tenantId =
     requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
-  const { startDate, endDate } = adjustDateRange(
-    req.query.startDate,
-    req.query.endDate,
-  );
 
   // 1. Obter detalhes da pesquisa para verificação de permissão
   const survey = await resultRepository.getSurveyDetails(id, tenantId);
@@ -36,66 +32,17 @@ exports.getSurveyResults = asyncHandler(async (req, res) => {
     );
   }
 
-  // 2. Obter todas as perguntas da pesquisa
-  const questions = await resultRepository.getQuestionsBySurveyId(id, tenantId);
-
-  // 3. Obter todas as respostas para esta pesquisa, aplicando o filtro de data
-  const allResponses = await resultRepository.getResponsesBySurveyId(
+  // 2. Chamar o serviço para obter os resultados agregados
+  const aggregatedResults = await resultService.aggregateSurveyResults(
     id,
     tenantId,
-    startDate,
-    endDate,
   );
 
-  // 4. Processar e agregar os resultados
-  const aggregatedResults = {
+  // 3. Combinar detalhes da pesquisa com os resultados e enviar a resposta
+  res.status(200).json({
     surveyId: survey.id,
     surveyTitle: survey.title,
     surveyDescription: survey.description,
-    totalResponsesCount: 0,
-    questionsResults: [],
-  };
-
-  const respondentSessionIds = new Set(
-    allResponses.map((r) => r.respondentSessionId),
-  );
-  aggregatedResults.totalResponsesCount = respondentSessionIds.size;
-
-  for (const question of questions) {
-    const questionResponses = allResponses.filter(
-      (r) => r.perguntaId === question.id,
-    );
-    const result = {
-      questionId: question.id,
-      questionText: question.text,
-      questionType: question.type,
-      responseCount: new Set(
-        questionResponses.map((r) => r.respondentSessionId),
-      ).size,
-    };
-
-    if (question.type === "free_text") {
-      result.answers = questionResponses.map((r) => r.textValue);
-    } else if (question.type.startsWith("rating")) {
-      const ratings = questionResponses
-        .map((r) => r.ratingValue)
-        .filter((v) => v !== null);
-      const sum = ratings.reduce((acc, curr) => acc + curr, 0);
-      result.averageRating =
-        ratings.length > 0 ? parseFloat((sum / ratings.length).toFixed(2)) : 0;
-      result.allRatings = ratings;
-    } else if (question.type === "multiple_choice") {
-      const optionsCount = {};
-      question.options.forEach((opt) => (optionsCount[opt] = 0));
-      questionResponses.forEach((r) => {
-        if (r.selectedOption && optionsCount.hasOwnProperty(r.selectedOption)) {
-          optionsCount[r.selectedOption]++;
-        }
-      });
-      result.optionsCount = optionsCount;
-    }
-    aggregatedResults.questionsResults.push(result);
-  }
-
-  res.status(200).json(aggregatedResults);
+    ...aggregatedResults,
+  });
 });

@@ -9,7 +9,7 @@ const QuestionResult = ({ question, chartColors }) => {
         switch (question.type) {
             case 'rating_0_10':
             case 'rating_1_5':
-                const ratingCounts = (question.results.allRatings || []).reduce((acc, rating) => {
+                const ratingCounts = (question.allRatings || []).reduce((acc, rating) => {
                     const key = String(rating);
                     acc[key] = (acc[key] || 0) + 1;
                     return acc;
@@ -22,7 +22,7 @@ const QuestionResult = ({ question, chartColors }) => {
                 return (
                     <Box sx={{ height: 300 }}>
                         <Typography variant="body2" color="text.secondary" gutterBottom>
-                            Avaliação Média: {question.results.averageRating}
+                            Avaliação Média: {question.averageRating}
                         </Typography>
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
@@ -38,7 +38,7 @@ const QuestionResult = ({ question, chartColors }) => {
 
             case 'multiple_choice':
             case 'checkbox':
-                const pieData = Object.entries(question.results || {}).map(([name, value], idx) => ({
+                const pieData = Object.entries(question.optionsCount || {}).map(([name, value], idx) => ({
                     name,
                     value: Number(value) || 0,
                 }));
@@ -63,10 +63,10 @@ const QuestionResult = ({ question, chartColors }) => {
                 return (
                     <Box sx={{ height: 300, overflowY: 'auto' }}>
                         <List dense>
-                            {(question.results.responses || []).length > 0 ? (
-                                question.results.responses.map((answer, idx) => (
+                            {(question.answers || []).length > 0 ? (
+                                question.answers.map((answer, idx) => (
                                     <ListItem key={idx} divider>
-                                        <ListItemText primary={answer.text} secondary={`Por: ${answer.clientName || 'Anônimo'}`} />
+                                        <ListItemText primary={answer} />
                                     </ListItem>
                                 ))
                             ) : (

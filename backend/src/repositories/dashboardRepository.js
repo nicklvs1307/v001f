@@ -13,6 +13,7 @@ const {
 const { Sequelize, Op } = require("sequelize");
 const { now, formatInTimeZone } = require("../utils/dateUtils");
 const { startOfMonth } = require("date-fns");
+const ratingService = require("../services/ratingService");
 
 const { fn, col, literal } = Sequelize;
 
@@ -55,9 +56,11 @@ const getSummary = async (
     ],
   });
 
-  let npsPromoters = 0,
-    npsNeutrals = 0,
-    npsDetractors = 0;
+  const npsResponses = ratingResponses.filter(
+    (r) => r.pergunta.type === "rating_0_10",
+  );
+  const npsResult = ratingService.calculateNPS(npsResponses);
+
   let csatSatisfied = 0,
     csatNeutrals = 0,
     csatUnsatisfied = 0,
@@ -67,13 +70,6 @@ const getSummary = async (
   ratingResponses.forEach((response) => {
     const { ratingValue, pergunta } = response;
     if (!pergunta) return;
-
-    // Lógica de NPS, agora filtrando pelo critério de Recomendação
-    if (pergunta.type === "rating_0_10") {
-      if (ratingValue >= 9) npsPromoters++;
-      else if (ratingValue >= 7) npsNeutrals++;
-      else npsDetractors++;
-    }
 
     // Lógica de CSAT (permanece inalterada)
     if (pergunta.type === "rating_1_5" || pergunta.type === "rating") {
@@ -88,12 +84,6 @@ const getSummary = async (
       }
     }
   });
-
-  const totalNpsResponses = npsPromoters + npsNeutrals + npsDetractors;
-  let npsScore = 0;
-  if (totalNpsResponses > 0) {
-    npsScore = ((npsPromoters - npsDetractors) / totalNpsResponses) * 100;
-  }
 
   let csatAverageScore = 0;
   let csatSatisfactionRate = 0;
@@ -160,11 +150,11 @@ const getSummary = async (
 
   return {
     nps: {
-      npsScore: parseFloat(npsScore.toFixed(1)),
-      promoters: npsPromoters,
-      neutrals: npsNeutrals,
-      detractors: npsDetractors,
-      total: totalNpsResponses,
+      npsScore: npsResult.npsScore,
+      promoters: npsResult.promoters,
+      neutrals: npsResult.neutrals,
+      detractors: npsResult.detractors,
+      total: npsResult.total,
     },
     csat: {
       averageScore: parseFloat(csatAverageScore.toFixed(1)),
@@ -457,11 +447,8 @@ const getScoresByCriteria = async (
 
     if (questionType === "rating_0_10") {
       result.scoreType = "NPS";
-      const promoters = allResponses.filter(r => r.ratingValue >= 9).length;
-      const detractors = allResponses.filter(r => r.ratingValue <= 6).length;
-      if (result.total > 0) {
-        result.score = parseFloat((((promoters - detractors) / result.total) * 100).toFixed(1));
-      }
+      const npsResult = ratingService.calculateNPS(allResponses);
+      result.score = npsResult.npsScore;
     } else if (questionType === "rating_1_5" || questionType === "rating") {
       result.scoreType = "CSAT";
       const satisfied = allResponses.filter(r => r.ratingValue >= 4).length;
@@ -499,26 +486,15 @@ const getNpsDistribution = async (
     ],
   });
 
-  let promoters = 0,
-    neutrals = 0,
-    detractors = 0;
-  ratingResponses.forEach(({ ratingValue, pergunta }) => {
-    if (!pergunta) return;
-    if (pergunta.type === "rating_0_10") {
-      if (ratingValue >= 9) promoters++;
-      else if (ratingValue >= 7) neutrals++;
-      else detractors++;
-    } else if (pergunta.type === "rating_1_5" || pergunta.type === "rating") {
-      if (ratingValue === 5) promoters++;
-      else if (ratingValue === 4) neutrals++;
-      else detractors++;
-    }
-  });
+  const npsResponses = ratingResponses.filter(
+    (r) => r.pergunta.type === "rating_0_10",
+  );
+  const npsResult = ratingService.calculateNPS(npsResponses);
 
   return [
-    { name: "Promotores", value: promoters },
-    { name: "Neutros", value: neutrals },
-    { name: "Detratores", value: detractors },
+    { name: "Promotores", value: npsResult.promoters },
+    { name: "Neutros", value: npsResult.neutrals },
+    { name: "Detratores", value: npsResult.detractors },
   ];
 };
 
@@ -1110,10 +1086,9 @@ const getAttendantsPerformance = async (tenantId, startDate, endDate) => {
     const ratingResponses = responses.filter(
       (r) => r.ratingValue !== null && r.pergunta.type === "rating_0_10",
     );
-    const promoters = ratingResponses.filter((r) => r.ratingValue >= 9).length;
-    const detractors = ratingResponses.filter((r) => r.ratingValue <= 6).length;
-    const npsTotal = ratingResponses.length;
-    const nps = npsTotal > 0 ? ((promoters - detractors) / npsTotal) * 100 : 0;
+    
+    const npsResult = ratingService.calculateNPS(ratingResponses);
+
     const csatResponses = responses.filter(
       (r) =>
         r.ratingValue !== null &&
@@ -1130,7 +1105,7 @@ const getAttendantsPerformance = async (tenantId, startDate, endDate) => {
       id: attendant.id,
       name: attendant.name,
       responses: responses.length,
-      currentNPS: parseFloat(nps.toFixed(1)),
+      currentNPS: npsResult.npsScore,
       currentCSAT: parseFloat(csatAverage.toFixed(1)),
       npsGoal: attendant.meta?.npsGoal ? parseFloat(attendant.meta.npsGoal) : 0,
       csatGoal: 0,
@@ -1167,30 +1142,21 @@ const getAttendantDetails = async (
     include: [{ model: Pergunta, as: "pergunta", attributes: ["type"] }],
   });
 
-  let npsPromoters = 0,
-    npsNeutrals = 0,
-    npsDetractors = 0;
-  let csatTotalScore = 0,
-    csatCount = 0;
-
   responses.forEach((response) => {
     const { ratingValue, pergunta } = response;
     if (!pergunta || ratingValue === null) return;
-    if (pergunta.type === "rating_0_10") {
-      if (ratingValue >= 9) npsPromoters++;
-      else if (ratingValue >= 7) npsNeutrals++;
-      else npsDetractors++;
-    } else if (pergunta.type === "rating_1_5" || pergunta.type === "rating") {
+    if (pergunta.type === "rating_1_5" || pergunta.type === "rating") {
       csatTotalScore += ratingValue;
       csatCount++;
     }
   });
 
-  const totalNpsResponses = npsPromoters + npsNeutrals + npsDetractors;
-  const npsScore =
-    totalNpsResponses > 0
-      ? ((npsPromoters - npsDetractors) / totalNpsResponses) * 100
-      : 0;
+  const npsResponses = responses.filter(
+    (r) => r.pergunta?.type === "rating_0_10" && r.ratingValue !== null,
+  );
+  const npsResult = ratingService.calculateNPS(npsResponses);
+  const npsScore = npsResult.npsScore;
+
   const csatAverageScore = csatCount > 0 ? csatTotalScore / csatCount : 0;
 
   const recentFeedbacks = await Resposta.findAll({
@@ -1487,40 +1453,38 @@ const getMonthSummaryData = async (tenantId, startDate, endDate) => {
   });
 
   const totalResponses = responses.length;
-  const npsByDate = {};
+  const responsesByDate = {};
   responses.forEach((r) => {
     if (r.pergunta?.type !== "rating_0_10") return;
     const date = formatInTimeZone(r.createdAt, "yyyy-MM-dd");
-    if (!npsByDate[date])
-      npsByDate[date] = { promoters: 0, detractors: 0, total: 0 };
-    if (r.ratingValue >= 9) npsByDate[date].promoters++;
-    if (r.ratingValue <= 6) npsByDate[date].detractors++;
-    npsByDate[date].total++;
+    if (!responsesByDate[date]) responsesByDate[date] = [];
+    responsesByDate[date].push(r);
   });
 
   let accumulatedPromoters = 0,
     accumulatedDetractors = 0,
     accumulatedTotal = 0;
-  const dailyNps = Object.keys(npsByDate)
+  const dailyNps = Object.keys(responsesByDate)
     .sort()
     .map((date) => {
-      const day = npsByDate[date];
-      accumulatedPromoters += day.promoters;
-      accumulatedDetractors += day.detractors;
-      accumulatedTotal += day.total;
-      const dailyNpsScore =
-        day.total > 0
-          ? ((day.promoters - day.detractors) / day.total) * 100
-          : 0;
+      const dailyResponses = responsesByDate[date];
+      const dayResult = ratingService.calculateNPS(dailyResponses);
+      
+      accumulatedPromoters += dayResult.promoters;
+      accumulatedDetractors += dayResult.detractors;
+      accumulatedTotal += dayResult.total;
+
+      const dailyNpsScore = dayResult.npsScore;
       const accumulatedNpsScore =
         accumulatedTotal > 0
           ? ((accumulatedPromoters - accumulatedDetractors) /
               accumulatedTotal) *
             100
           : 0;
+
       return {
         date: formatInTimeZone(new Date(date), "dd/MM"),
-        nps: parseFloat(dailyNpsScore.toFixed(1)),
+        nps: dailyNpsScore,
         accumulatedNps: parseFloat(accumulatedNpsScore.toFixed(1)),
       };
     });

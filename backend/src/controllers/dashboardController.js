@@ -53,7 +53,7 @@ module.exports = {
 
   getCriteriaScores: asyncHandler(async (req, res) => {
     const { startDate, endDate } = req.query;
-    const criteriaScores = await dashboardRepository.getNpsByCriteria(
+    const criteriaScores = await dashboardRepository.getScoresByCriteria(
       req.tenantId,
       startDate,
       endDate,

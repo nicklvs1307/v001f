@@ -1129,7 +1129,7 @@ const getAttendantsPerformance = async (tenantId, startDate, endDate) => {
     return acc;
   }, {});
 
-  return attendants.map((attendant) => {
+  const attendantsData = attendants.map((attendant) => {
     const responses = responsesByAttendant[attendant.id] || [];
     const ratingResponses = responses.filter(
       (r) => r.ratingValue !== null && r.pergunta.type === "rating_0_10",
@@ -1160,6 +1160,9 @@ const getAttendantsPerformance = async (tenantId, startDate, endDate) => {
       csatGoal: 0,
     };
   });
+
+  // Sort by currentNPS descending before returning
+  return attendantsData.sort((a, b) => b.currentNPS - a.currentNPS);
 };
 
 const getAttendantDetails = async (

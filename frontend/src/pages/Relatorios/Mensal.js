@@ -133,16 +133,16 @@ const RelatorioMensal = () => {
 
                 <Grid container spacing={3} sx={{ mb: 4 }}>
                     <Grid item xs={12} sm={6} md={3}>
-                        <MetricCard title="NPS no Mês" value={summary?.nps?.score.toFixed(1) || 0} icon={<TrendingUp fontSize="large" />} color={theme.palette.primary.dark} />
+                        <MetricCard title="NPS no Mês" value={summary?.nps?.score?.toFixed(1) ?? 0} icon={<TrendingUp fontSize="large" />} color={theme.palette.primary.dark} />
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
-                        <MetricCard title="CSAT no Mês" value={`${summary?.csat?.satisfactionRate.toFixed(1) || 0}%`} icon={<Star fontSize="large" />} color={theme.palette.secondary.main} />
+                        <MetricCard title="CSAT no Mês" value={`${summary?.csat?.satisfactionRate?.toFixed(1) ?? '0.0'}%`} icon={<Star fontSize="large" />} color={theme.palette.secondary.main} />
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
-                        <MetricCard title="Total de Respostas" value={summary?.totalResponses || 0} icon={<BarChartIcon fontSize="large" />} />
+                        <MetricCard title="Total de Respostas" value={summary?.totalResponses ?? 0} icon={<BarChartIcon fontSize="large" />} />
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
-                        <MetricCard title="Respostas com Cadastro" value={clientStatusCounts?.withClient || 0} icon={<CheckCircle fontSize="large" />} />
+                        <MetricCard title="Respostas com Cadastro" value={clientStatusCounts?.withClient ?? 0} icon={<CheckCircle fontSize="large" />} />
                     </Grid>
                 </Grid>
                 

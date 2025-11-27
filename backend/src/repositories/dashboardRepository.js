@@ -453,17 +453,21 @@ const getScoresByCriteria = async (
     }
     
     result.total = allResponses.length;
-    const questionType = criterio.perguntas[0].type; // Assume all questions for a criterion have the same type
+    const questionType = criterio.perguntas[0].type;
 
     if (questionType === "rating_0_10") {
       result.scoreType = "NPS";
       const promoters = allResponses.filter(r => r.ratingValue >= 9).length;
       const detractors = allResponses.filter(r => r.ratingValue <= 6).length;
-      result.score = parseFloat((((promoters - detractors) / result.total) * 100).toFixed(1));
+      if (result.total > 0) {
+        result.score = parseFloat((((promoters - detractors) / result.total) * 100).toFixed(1));
+      }
     } else if (questionType === "rating_1_5" || questionType === "rating") {
       result.scoreType = "CSAT";
       const satisfied = allResponses.filter(r => r.ratingValue >= 4).length;
-      result.score = parseFloat(((satisfied / result.total) * 100).toFixed(1));
+      if (result.total > 0) {
+        result.score = parseFloat(((satisfied / result.total) * 100).toFixed(1));
+      }
     } else {
         result.scoreType = "Outro";
     }

@@ -134,9 +134,6 @@ const getSummary = async (
     registrationsInPeriod = await Client.count({ where: whereClause });
   }
 
-  const totalResponsesInPeriod = await Resposta.count({
-    where: responseWhereClause,
-  });
   const totalSurveysResponded = await Resposta.count({ 
     distinct: true, 
     col: "respondentSessionId", 
@@ -179,9 +176,9 @@ const getSummary = async (
     },
     registrations: registrationsInPeriod,
     registrationsConversion:
-      totalResponsesInPeriod > 0
+    totalSurveysResponded > 0
         ? parseFloat(
-            ((registrationsInPeriod / totalResponsesInPeriod) * 100).toFixed(2),
+            ((registrationsInPeriod / totalSurveysResponded) * 100).toFixed(2),
           )
         : 0,
     ambassadorsMonth: uniquePromoterClientsInPeriod,
@@ -197,7 +194,7 @@ const getSummary = async (
             ((couponsUsedInPeriod / couponsGeneratedInPeriod) * 100).toFixed(2),
           )
         : 0,
-    totalResponses: totalResponsesInPeriod,
+    totalResponses: totalSurveysResponded, // Alterado para refletir pesquisas únicas
     totalSurveysResponded,
     totalUsers: totalClients,
     totalTenants,
@@ -401,7 +398,7 @@ const getFeedbacks = async (
   };
 };
 
-const getNpsByCriteria = async (
+const getScoresByCriteria = async (
   tenantId = null,
   startDate = null,
   endDate = null,
@@ -412,12 +409,7 @@ const getNpsByCriteria = async (
   const responseWhere = { ratingValue: { [Op.ne]: null } };
   if (startDate && endDate) {
     responseWhere.createdAt = { [Op.between]: [startDate, endDate] };
-  } else if (startDate) {
-    responseWhere.createdAt = { [Op.gte]: startDate };
-  } else if (endDate) {
-    responseWhere.createdAt = { [Op.lte]: endDate };
   }
-
   if (surveyId) {
     responseWhere.pesquisaId = surveyId;
   }
@@ -434,7 +426,7 @@ const getNpsByCriteria = async (
             model: Resposta,
             as: "respostas",
             where: responseWhere,
-            required: false, // Left join to get all questions
+            required: false,
             attributes: ["ratingValue"],
           },
         ],
@@ -447,60 +439,33 @@ const getNpsByCriteria = async (
     const result = {
       criterion: criterio.name,
       scoreType: null,
-      promoters: 0,
-      neutrals: 0,
-      detractors: 0,
-      satisfied: 0,
-      neutral: 0,
-      unsatisfied: 0,
+      score: 0,
       total: 0,
-      npsScore: 0,
-      satisfactionRate: 0,
     };
 
     if (!criterio.perguntas || criterio.perguntas.length === 0) {
       return result;
     }
 
-    // Assuming one rating question per criterion
-    const pergunta = criterio.perguntas[0];
-    if (!pergunta) return result;
-
-    result.scoreType = pergunta.type === "rating_0_10" ? "NPS" : "CSAT";
-
-    if (!pergunta.respostas || pergunta.respostas.length === 0) {
+    let allResponses = criterio.perguntas.flatMap(p => p.respostas || []);
+    if (allResponses.length === 0) {
       return result;
     }
+    
+    result.total = allResponses.length;
+    const questionType = criterio.perguntas[0].type; // Assume all questions for a criterion have the same type
 
-    pergunta.respostas.forEach((resposta) => {
-      const value = resposta.ratingValue;
-      if (value === null) return;
-
-      result.total++;
-      if (pergunta.type === "rating_0_10") {
-        if (value >= 9) result.promoters++;
-        else if (value >= 7) result.neutrals++;
-        else result.detractors++;
-      } else if (pergunta.type === "rating_1_5" || pergunta.type === "rating") {
-        if (value >= 4) result.satisfied++;
-        else if (value === 3) result.neutral++;
-        else result.unsatisfied++;
-      }
-    });
-
-    if (result.total > 0) {
-      if (result.scoreType === "NPS") {
-        result.npsScore = parseFloat(
-          (
-            ((result.promoters - result.detractors) / result.total) *
-            100
-          ).toFixed(1),
-        );
-      } else {
-        result.satisfactionRate = parseFloat(
-          ((result.satisfied / result.total) * 100).toFixed(1),
-        );
-      }
+    if (questionType === "rating_0_10") {
+      result.scoreType = "NPS";
+      const promoters = allResponses.filter(r => r.ratingValue >= 9).length;
+      const detractors = allResponses.filter(r => r.ratingValue <= 6).length;
+      result.score = parseFloat((((promoters - detractors) / result.total) * 100).toFixed(1));
+    } else if (questionType === "rating_1_5" || questionType === "rating") {
+      result.scoreType = "CSAT";
+      const satisfied = allResponses.filter(r => r.ratingValue >= 4).length;
+      result.score = parseFloat(((satisfied / result.total) * 100).toFixed(1));
+    } else {
+        result.scoreType = "Outro";
     }
 
     return result;
@@ -1625,7 +1590,7 @@ const getDashboardData = async (
     getResponseChart(tenantId, startDate, endDate, period),
     getNpsTrendData(tenantId, period, startDate, endDate),
     getNpsDistribution(tenantId, startDate, endDate),
-    getNpsByCriteria(tenantId, startDate, endDate, surveyId),
+    getScoresByCriteria(tenantId, startDate, endDate, surveyId),
     getFeedbacks(tenantId, startDate, endDate),
     getAttendantsPerformance(tenantId, startDate, endDate),
     getWordCloudData(tenantId, startDate, endDate),
@@ -1665,7 +1630,7 @@ const dashboardRepository = {
   getSurveysRespondedChart,
   getResponseChart,
   getFeedbacks,
-  getNpsByCriteria,
+  getScoresByCriteria,
   getNpsDistribution,
   getNpsTrendData,
   getEvolutionData,

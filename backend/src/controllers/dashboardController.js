@@ -188,17 +188,18 @@ module.exports = {
       endDate: queryEndDate,
       surveyId,
     } = req.query;
+    // Fetches the last 7 days ending on the given date (or today)
     const { startDate, endDate } = getPeriodDateRange(
       queryStartDate,
       queryEndDate,
-      "day",
+      "week",
       date,
     );
     const reportData = await dashboardRepository.getDashboardData(
       req.tenantId,
       startDate,
       endDate,
-      "day",
+      "day", // Keep period as 'day' for daily grouping in the trend
       surveyId,
     );
     res.status(200).json(reportData);

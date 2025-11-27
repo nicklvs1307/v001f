@@ -216,11 +216,11 @@ const Dashboard = ({ data }) => {
                         <ResponsiveContainer width="100%" height={300}>
                             <BarChart data={criteriaScores} layout="vertical" margin={{ top: 20, right: 30, left: 30, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis type="number" />
+                                <XAxis type="number" domain={[0, 100]} />
                                 <YAxis type="category" dataKey="criterion" width={100} tick={{ fontSize: 12 }} />
                                 <Tooltip />
                                 <Legend />
-                                <Bar dataKey="npsScore" fill={theme.palette.primary.main} name="NPS" />
+                                <Bar dataKey="score" fill={theme.palette.primary.main} name="Score" />
                             </BarChart>
                         </ResponsiveContainer>
                     ) : <NoData />}

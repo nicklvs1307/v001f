@@ -170,7 +170,7 @@ class ClientRepository {
           sequelize.where(
             sequelize.fn(
               "EXTRACT",
-              sequelize.literal('MONTH FROM "birthDate"'),
+              sequelize.literal('MONTH FROM "birthDate" AT TIME ZONE \'UTC\''),
             ),
             month,
           ),
@@ -340,7 +340,7 @@ class ClientRepository {
           sequelize.where(
             sequelize.fn(
               "EXTRACT",
-              sequelize.literal('MONTH FROM "birthDate"'),
+              sequelize.literal('MONTH FROM "birthDate" AT TIME ZONE \'UTC\''),
             ),
             currentMonth,
           ),

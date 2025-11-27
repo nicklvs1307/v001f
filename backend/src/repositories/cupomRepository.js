@@ -55,53 +55,49 @@ class CupomRepository {
     const thirtyDaysAgo = subDays(today, 30);
     const sevenDaysFromNow = addDays(today, 7);
 
-    const summary = await Cupom.findOne({
-      where: whereClause,
-      attributes: [
-        [fn("COUNT", col("id")), "totalCupons"],
-        [
-          literal("SUM(CASE WHEN status = 'used' THEN 1 ELSE 0 END)"),
-          "usedCupons",
-        ],
-        [
-          literal(
-            "SUM(CASE WHEN status != 'used' AND \"dataValidade\" < CURRENT_DATE THEN 1 ELSE 0 END)",
-          ),
-          "expiredCupons",
-        ],
-        [
-          literal(
-            "SUM(CASE WHEN status = 'active' AND \"dataValidade\" >= CURRENT_DATE THEN 1 ELSE 0 END)",
-          ),
-          "activeCupons",
-        ],
-        [
-          literal(
-            "SUM(CASE WHEN status = 'active' AND \"dataValidade\" >= CURRENT_DATE AND \"dataValidade\" < CURRENT_DATE + INTERVAL '7 day' THEN 1 ELSE 0 END)",
-          ),
-          "expiringSoonCupons",
-        ],
-      ],
-      raw: true,
+    // 1. Separate counts for robustness
+    const totalCupons = await Cupom.count({ where: whereClause });
+    const usedCupons = await Cupom.count({ where: { ...whereClause, status: 'used' } });
+    const expiredCupons = await Cupom.count({
+      where: {
+        ...whereClause,
+        status: { [Op.ne]: 'used' },
+        dataValidade: { [Op.lt]: today },
+      },
+    });
+    const activeCupons = await Cupom.count({
+      where: {
+        ...whereClause,
+        status: 'active',
+        dataValidade: { [Op.gte]: today },
+      },
+    });
+    const expiringSoonCupons = await Cupom.count({
+        where: {
+            ...whereClause,
+            status: 'active',
+            dataValidade: { [Op.between]: [today, sevenDaysFromNow] },
+        },
     });
 
-    const cuponsByType = await Cupom.findAll({
+    // 2. Group by reward NAME instead of type
+    const cuponsByTypeData = await Cupom.findAll({
       where: whereClause,
       attributes: [[fn("COUNT", col("Cupom.id")), "count"]],
       include: [
         {
           model: Recompensa,
           as: "recompensa",
-          attributes: ["type"],
+          attributes: ["name"], // Use name for grouping
           required: true,
         },
       ],
-      group: ["recompensa.type"],
+      group: ["recompensa.name"],
       raw: true,
     });
 
-    const formattedCuponsByType = cuponsByType.map((item) => ({
-      type: item["recompensa.type"],
+    const formattedCuponsByType = cuponsByTypeData.map((item) => ({
+      name: item["recompensa.name"], // The key is now recompensa.name
       count: parseInt(item.count, 10),
     }));
 
@@ -132,12 +128,12 @@ class CupomRepository {
     });
 
     return {
-      totalCupons: summary.totalCupons,
-      usedCupons: summary.usedCupons,
-      expiredCupons: summary.expiredCupons,
-      activeCupons: summary.activeCupons,
-      expiringSoonCupons: summary.expiringSoonCupons,
-      cuponsByType: formattedCuponsByType,
+      totalCupons,
+      usedCupons,
+      expiredCupons,
+      activeCupons,
+      expiringSoonCupons,
+      cuponsByType: formattedCuponsByType, // Return the correctly grouped and formatted data
       dailyGenerated,
       recentCupons,
     };

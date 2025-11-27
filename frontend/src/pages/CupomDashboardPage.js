@@ -174,7 +174,7 @@ const CupomDashboardPage = () => {
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={cuponsByType}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="type" />
+                <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
                 <Legend />

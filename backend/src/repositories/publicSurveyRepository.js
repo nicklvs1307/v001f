@@ -297,20 +297,19 @@ const submitSurveyResponses = async (
           if (isDetractor) {
             // Ação 1: Notificar a equipe/administradores
             if (
-              whatsappConfig.dailyReportEnabled &&
-              whatsappConfig.reportPhoneNumbers
+              whatsappConfig.notifyDetractorToOwner &&
+              whatsappConfig.detractorOwnerPhoneNumbers
             ) {
-              const numbersToNotify = whatsappConfig.reportPhoneNumbers
+              const numbersToNotify = whatsappConfig.detractorOwnerPhoneNumbers
                 .split(",")
                 .map((n) => n.trim())
                 .filter((n) => n);
-              const messageToAdmin = `
-*Alerta de Detrator!* 😡
-Um cliente deu uma nota baixa na pesquisa "${survey.title}".
-- *Nota:* ${res.ratingValue}
-- *Comentário:* ${res.textValue || "Nenhum comentário."}
-- *Cliente:* ${client ? client.name : "Não identificado"}
-              `.trim();
+              
+              let messageToAdmin = whatsappConfig.detractorOwnerMessageTemplate;
+
+              messageToAdmin = messageToAdmin.replace(/{{cliente}}/g, client ? client.name : "Não identificado");
+              messageToAdmin = messageToAdmin.replace(/{{nota}}/g, res.ratingValue);
+              messageToAdmin = messageToAdmin.replace(/{{comentario}}/g, res.textValue || "Nenhum comentário.");
 
               for (const number of numbersToNotify) {
                 try {
@@ -334,13 +333,13 @@ Um cliente deu uma nota baixa na pesquisa "${survey.title}".
               client &&
               client.phone
             ) {
-              let messageToClient =
-                whatsappConfig.detractorMessageTemplate ||
-                "Olá, {{cliente}}. Vimos que você teve um problema conosco e gostaríamos de entender melhor. Podemos ajudar de alguma forma?";
+              let messageToClient = whatsappConfig.detractorMessageTemplate;
               messageToClient = messageToClient.replace(
-                "{{cliente}}",
+                /{{cliente}}/g,
                 client.name.split(" ")[0],
               );
+              messageToClient = messageToClient.replace(/{{nota}}/g, res.ratingValue);
+              messageToClient = messageToClient.replace(/{{comentario}}/g, res.textValue || "Nenhum comentário.");
 
               try {
                 await whatsappService.sendTenantMessage(

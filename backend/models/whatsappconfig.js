@@ -151,6 +151,20 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: true,
       defaultValue: 'Olá, {{cliente}}. Vimos que você teve um problema conosco e gostaríamos de entender melhor. Podemos ajudar de alguma forma?',
+    },
+    notifyDetractorToOwner: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+    },
+    detractorOwnerMessageTemplate: {
+      type: DataTypes.TEXT,
+      defaultValue: 'Alerta de Detrator: Cliente {{cliente}} deu a nota {{nota}}. Comentário: {{comentario}}',
+      allowNull: true,
+    },
+    detractorOwnerPhoneNumbers: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     }
   }, {
     sequelize,

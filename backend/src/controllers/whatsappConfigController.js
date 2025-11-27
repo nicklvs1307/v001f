@@ -49,6 +49,13 @@ const whatsappConfigController = {
         rewardId: config.birthdayRewardId,
         couponValidityDays: config.birthdayCouponValidityDays,
       },
+      detractorAutomation: {
+        enabled: config.sendDetractorMessageToClient,
+        messageTemplate: config.detractorMessageTemplate,
+        notifyOwner: config.notifyDetractorToOwner,
+        ownerMessageTemplate: config.detractorOwnerMessageTemplate,
+        ownerPhoneNumbers: config.detractorOwnerPhoneNumbers,
+      },
     };
 
     res.json(response);
@@ -81,6 +88,12 @@ const whatsappConfigController = {
       birthdayRewardType: data.birthdayAutomation.rewardType,
       birthdayRewardId: data.birthdayAutomation.rewardId,
       birthdayCouponValidityDays: data.birthdayAutomation.couponValidityDays,
+      // Mapeamento para detractorAutomation
+      sendDetractorMessageToClient: data.detractorAutomation.enabled,
+      detractorMessageTemplate: data.detractorAutomation.messageTemplate,
+      notifyDetractorToOwner: data.detractorAutomation.notifyOwner,
+      detractorOwnerMessageTemplate: data.detractorAutomation.ownerMessageTemplate,
+      detractorOwnerPhoneNumbers: data.detractorAutomation.ownerPhoneNumbers,
     };
     await config.update(configUpdateData);
 

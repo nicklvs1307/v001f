@@ -27,8 +27,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import MarkunreadMailboxOutlinedIcon from '@mui/icons-material/MarkunreadMailboxOutlined';
 import UpcomingOutlinedIcon from '@mui/icons-material/UpcomingOutlined';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
-import SaveIcon from '@mui/icons-material/Save';
-import CakeIcon from '@mui/icons-material/Cake';
+import SmsFailedOutlinedIcon from '@mui/icons-material/SmsFailedOutlined';
 
 import automationService from '../services/automationService';
 import recompensaService from '../services/recompensaService';
@@ -47,6 +46,13 @@ const initialAutomationState = {
     rewardId: '',
     couponValidityDays: 30,
   },
+  detractorAutomation: {
+    enabled: false,
+    messageTemplate: 'Olá, {{cliente}}. Vimos que você teve um problema conosco e gostaríamos de entender melhor. Podemos ajudar de alguma forma?',
+    notifyOwner: false,
+    ownerMessageTemplate: 'Alerta de Detrator: Cliente {{cliente}} deu a nota {{nota}}. Comentário: {{comentario}}',
+    ownerPhoneNumbers: '',
+  },
 };
 
 const AutomationItem = styled(Paper)(({ theme }) => ({
@@ -62,7 +68,7 @@ const AutomationItem = styled(Paper)(({ theme }) => ({
 const AutomationsPage = () => {
   const [automations, setAutomations] = useState(initialAutomationState);
   const [originalAutomations, setOriginalAutomations] = useState(initialAutomationState);
-  const [open, setOpen] = useState({ dailyReport: false, prizeRoulette: false, couponReminder: false, birthdayAutomation: false });
+  const [open, setOpen] = useState({ dailyReport: false, prizeRoulette: false, couponReminder: false, birthdayAutomation: false, detractorAutomation: false });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -341,6 +347,72 @@ const AutomationsPage = () => {
                 </FormControl>
               )}
               <AutomationTester automationType="birthday" onTestSent={handleTestSent} />
+            </Box>
+          </Collapse>
+        </AutomationItem>
+
+        {/* Automação de Detratores */}
+        <AutomationItem>
+          <ListItem onClick={() => setOpen(prev => ({ ...prev, detractorAutomation: !prev.detractorAutomation }))} sx={{ cursor: 'pointer' }}>
+            <ListItemIcon><SmsFailedOutlinedIcon /></ListItemIcon>
+            <ListItemText primary="Mensagem para Detratores" secondary="Enviar uma mensagem automática para clientes que deram uma nota baixa." />
+            <Switch
+              edge="end"
+              onChange={() => handleToggle('detractorAutomation')}
+              checked={automations.detractorAutomation.enabled}
+              onClick={(e) => e.stopPropagation()}
+            />
+            {open.detractorAutomation ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={open.detractorAutomation} timeout="auto" unmountOnExit>
+            <Box sx={{ p: 2, pl: 4, borderTop: '1px solid #eee' }}>
+              <Typography variant="subtitle2" gutterBottom>Para o Cliente</Typography>
+              <Switch
+                checked={automations.detractorAutomation.enabled}
+                onChange={() => handleToggle('detractorAutomation')}
+              />
+              <TextField
+                label="Mensagem para Detratores"
+                value={automations.detractorAutomation.messageTemplate}
+                onChange={(e) => handleChange('detractorAutomation', 'messageTemplate', e.target.value)}
+                fullWidth
+                multiline
+                rows={4}
+                helperText="Variáveis: {{cliente}}"
+                margin="normal"
+                disabled={!automations.detractorAutomation.enabled}
+              />
+              <AutomationTester automationType="detractor-message" onTestSent={handleTestSent} />
+              
+              <Divider sx={{ my: 3 }} />
+
+              <Typography variant="subtitle2" gutterBottom>Notificação para o Estabelecimento</Typography>
+              <Switch
+                checked={automations.detractorAutomation.notifyOwner}
+                onChange={(e) => handleChange('detractorAutomation', 'notifyOwner', e.target.checked)}
+              />
+              <TextField
+                label="Mensagem de Alerta para o Dono"
+                value={automations.detractorAutomation.ownerMessageTemplate}
+                onChange={(e) => handleChange('detractorAutomation', 'ownerMessageTemplate', e.target.value)}
+                fullWidth
+                multiline
+                rows={4}
+                helperText="Variáveis: {{cliente}}, {{nota}}, {{comentario}}"
+                margin="normal"
+                disabled={!automations.detractorAutomation.notifyOwner}
+              />
+              <TextField
+                label="Números para Notificação"
+                value={automations.detractorAutomation.ownerPhoneNumbers}
+                onChange={(e) => handleChange('detractorAutomation', 'ownerPhoneNumbers', e.target.value)}
+                fullWidth
+                multiline
+                rows={2}
+                helperText="Insira os números com DDI e DDD, separados por vírgula."
+                margin="normal"
+                disabled={!automations.detractorAutomation.notifyOwner}
+              />
             </Box>
           </Collapse>
         </AutomationItem>

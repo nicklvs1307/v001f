@@ -20,6 +20,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Divider,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ExpandLess from '@mui/icons-material/ExpandLess';
@@ -27,6 +28,8 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import MarkunreadMailboxOutlinedIcon from '@mui/icons-material/MarkunreadMailboxOutlined';
 import UpcomingOutlinedIcon from '@mui/icons-material/UpcomingOutlined';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
+import SaveIcon from '@mui/icons-material/Save';
+import CakeIcon from '@mui/icons-material/Cake';
 import SmsFailedOutlinedIcon from '@mui/icons-material/SmsFailedOutlined';
 
 import automationService from '../services/automationService';

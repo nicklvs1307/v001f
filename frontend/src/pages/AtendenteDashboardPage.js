@@ -9,6 +9,12 @@ import {
   useTheme,
   Box,
   Icon,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from '@mui/material';
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents'; // Trophy icon

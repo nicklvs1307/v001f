@@ -1,6 +1,6 @@
 "use strict";
 const asyncHandler = require("express-async-handler");
-const { format, addDays, startOfDay, endOfDay } = require("date-fns");
+const { format, addDays, startOfDay, endOfDay, subDays } = require("date-fns");
 const { now } = require("../utils/dateUtils");
 const whatsappService = require("../services/whatsappService");
 const tenantRepository = require("../repositories/tenantRepository");

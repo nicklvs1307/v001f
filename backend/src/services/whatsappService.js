@@ -3,6 +3,7 @@ const crypto = require("crypto");
 const dotenv = require("dotenv");
 const { WhatsappConfig, Tenant } = require("../../models"); // Import the model
 const whatsappConfigRepository = require("../repositories/whatsappConfigRepository");
+const tenantRepository = require("../repositories/tenantRepository");
 
 dotenv.config();
 
@@ -775,17 +776,40 @@ const deleteSenderInstance = async (sender) => {
 };
 
 const getAllInstanceStatuses = async () => {
-  const configs = await WhatsappConfig.findAll({
+  // 1. Busca todos os tenants e todas as configurações
+  const allTenants = await tenantRepository.getTenants();
+  const allConfigs = await WhatsappConfig.findAll({
     include: [{ model: Tenant, as: "tenant", attributes: ["id", "name"] }],
   });
 
+  // 2. Cria um mapa de configurações para facilitar a busca
+  const configsMap = new Map(allConfigs.map(config => [config.tenantId, config]));
+
+  // 3. Itera sobre TODOS os tenants e monta a resposta
   const statuses = await Promise.all(
-    configs.map(async (config) => {
-      const status = await getInstanceStatus(config.tenantId);
-      return {
-        ...config.get({ plain: true }),
-        status,
-      };
+    allTenants.map(async (tenant) => {
+      const config = configsMap.get(tenant.id);
+
+      if (config) {
+        // Se a configuração existe, busca o status real
+        const status = await getInstanceStatus(tenant.id);
+        return {
+          ...config.get({ plain: true }),
+          status,
+        };
+      } else {
+        // Se não existe, cria um objeto placeholder
+        return {
+          tenantId: tenant.id,
+          Tenant: {
+            id: tenant.id,
+            name: tenant.name,
+          },
+          status: 'unconfigured',
+          url: null,
+          apiKey: null,
+        };
+      }
     }),
   );
 

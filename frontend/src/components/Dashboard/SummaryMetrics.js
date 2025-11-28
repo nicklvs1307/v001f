@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, useTheme, CircularProgress, Alert, Typography } from '@mui/material';
-import MetricCard from './MetricCard';
+import MetricCard from './DashboardSummaryMetricCard';
 import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
 import dashboardService from '../../services/dashboardService';
 

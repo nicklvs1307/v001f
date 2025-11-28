@@ -11,92 +11,72 @@ const getCriteriaScores = async (
   surveyId = null,
 ) => {
   const dateRange = getUtcDateRange(startDateStr, endDateStr);
-  const responseWhereClause = buildWhereClause({
-    tenantId,
-    surveyId,
-    dateRange,
-  });
-  responseWhereClause.ratingValue = { [Op.ne]: null };
+  const responseWhere = buildWhereClause({ tenantId, surveyId, dateRange });
+  responseWhere.ratingValue = { [Op.ne]: null };
 
-  const allRatingResponses = await Resposta.findAll({
-    where: responseWhereClause,
+  const criterios = await Criterio.findAll({
+    where: { tenantId },
     include: [
       {
         model: Pergunta,
-        as: "pergunta",
-        attributes: ["id", "text", "type", "criterioId"],
-        where: { type: { [Op.like]: "rating%" } },
-        required: true,
+        as: "perguntas",
+        attributes: ["id", "type"],
         include: [
           {
-            model: Criterio,
-            as: "criterio",
-            attributes: ["name", "type"], // Include criterio type
+            model: Resposta,
+            as: "respostas",
+            where: responseWhere,
+            required: false, // LEFT JOIN para incluir critérios mesmo sem respostas
+            attributes: ["ratingValue", "perguntaId"],
           },
         ],
       },
     ],
+    order: [["name", "ASC"]],
   });
 
-  const responsesByCriteria = allRatingResponses.reduce((acc, response) => {
-    const criteriaName = response.pergunta.criterio
-      ? response.pergunta.criterio.name
-      : "Sem Critério";
-    if (!acc[criteriaName]) {
-      acc[criteriaName] = {
-        responses: [],
-        // Assuming all questions under a criterion have the same type, which they should.
-        // We can grab the type from the first response.
-        type: response.pergunta.criterio
-          ? response.pergunta.criterio.type
-          : null,
+  const scoresByCriteria = criterios.map((criterio) => {
+    const allResponses = criterio.perguntas.flatMap((p) => p.respostas);
+    const type = criterio.type;
+
+    if (type === "NPS") {
+      const npsResult = ratingService.calculateNPS(
+        // Adiciona o tipo da pergunta para o ratingService funcionar corretamente
+        allResponses.map(r => ({...r.get({ plain: true }), pergunta: { type: 'rating_0_10' }}))
+      );
+      return {
+        criterion: criterio.name,
+        scoreType: "NPS",
+        score: npsResult.npsScore,
+        promoters: npsResult.promoters,
+        neutrals: npsResult.neutrals,
+        detractors: npsResult.detractors,
+        total: npsResult.total,
+      };
+    } else if (type === "CSAT" || type === "Star") {
+      const csatResult = ratingService.calculateCSAT(
+        // Adiciona o tipo da pergunta para o ratingService funcionar corretamente
+        allResponses.map(r => ({...r.get({ plain: true }), pergunta: { type: 'rating_1_5' }}))
+      );
+      return {
+        criterion: criterio.name,
+        scoreType: "CSAT",
+        score: csatResult.satisfactionRate,
+        average: csatResult.averageScore,
+        satisfied: csatResult.satisfied,
+        neutral: csatResult.neutral,
+        unsatisfied: csatResult.unsatisfied,
+        total: csatResult.total,
+      };
+    } else {
+      return {
+        criterion: criterio.name,
+        scoreType: type,
+        score: 0,
+        total: allResponses.length,
       };
     }
-    acc[criteriaName].responses.push(response);
-    return acc;
-  }, {});
-
-  const scoresByCriteria = Object.entries(responsesByCriteria).map(
-    ([criteriaName, data]) => {
-      const { responses, type } = data;
-
-      if (type === "NPS") {
-        const npsResult = ratingService.calculateNPS(responses);
-        return {
-          criterion: criteriaName,
-          scoreType: "NPS",
-          score: npsResult.npsScore,
-          promoters: npsResult.promoters,
-          neutrals: npsResult.neutrals,
-          detractors: npsResult.detractors,
-          total: npsResult.total,
-        };
-      } else if (type === "CSAT" || type === "Star") {
-        const csatResult = ratingService.calculateCSAT(responses);
-        return {
-          criterion: criteriaName,
-          scoreType: "CSAT",
-          score: csatResult.satisfactionRate,
-          average: csatResult.averageScore,
-          satisfied: csatResult.satisfied,
-          neutral: csatResult.neutral,
-          unsatisfied: csatResult.unsatisfied,
-          total: csatResult.total,
-        };
-      } else {
-        // Handle other types or return a default structure
-        return {
-          criterion: criteriaName,
-          scoreType: type,
-          total: responses.length,
-          // Maybe calculate average for any rating type as a fallback
-          average:
-            responses.reduce((sum, r) => sum + r.ratingValue, 0) /
-            responses.length,
-        };
-      }
-    },
-  );
+  });
 
   return scoresByCriteria;
 };

@@ -1,6 +1,5 @@
 const { Client, Cupom, Resposta, CampanhaLog, sequelize } = require("../../models");
-const sequelize = require("sequelize");
-const { Op } = sequelize;
+const { Op } = require("sequelize");
 const { now, formatInTimeZone } = require("../utils/dateUtils");
 const { calculateAgeDistribution, calculateGenderDistribution } = require("../utils/demographicsUtils");
 const ApiError = require("../errors/ApiError");

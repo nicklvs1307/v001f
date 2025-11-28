@@ -14,7 +14,7 @@ const recompensaRepository = require("../repositories/recompensaRepository");
 const roletaRepository = require("../repositories/roletaRepository");
 const whatsappService = require("../services/whatsappService");
 const { v4: uuidv4 } = require("uuid");
-const { CampanhaLog } = require("../models");
+const { CampanhaLog } = require("../../models");
 
 const birthdayTask = cron.schedule(
   "0 9 * * *",

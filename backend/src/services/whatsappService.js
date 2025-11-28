@@ -431,11 +431,12 @@ const getInstanceStatus = async (tenantId) => {
       `${config.url}/instance/connectionState/${config.instanceName}`,
       getAxiosConfig(config),
     );
-    const newStatus =
-      response.data.instance.state === "CONNECTED" ||
-      response.data.instance.state === "open"
-        ? "connected"
-        : "disconnected";
+    // Log para depuração
+    console.log("[WhatsappService] Resposta da API de status da instância:", JSON.stringify(response.data, null, 2));
+
+    const instanceState = response.data?.instance?.state?.toLowerCase();
+    const newStatus = (instanceState === 'connected' || instanceState === 'open') ? 'connected' : 'disconnected';
+
     if (config.instanceStatus !== newStatus) {
       await config.update({ instanceStatus: newStatus });
     }

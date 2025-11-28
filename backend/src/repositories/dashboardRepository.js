@@ -429,8 +429,15 @@ const getScoresByCriteria = async (
     const result = {
       criterion: criterio.name,
       scoreType: null,
-      score: 0,
+      npsScore: 0,
+      satisfactionRate: 0,
       total: 0,
+      promoters: 0,
+      neutrals: 0,
+      detractors: 0,
+      satisfied: 0,
+      neutral: 0, // CSAT neutral
+      unsatisfied: 0,
     };
 
     if (!criterio.perguntas || criterio.perguntas.length === 0) {
@@ -448,12 +455,17 @@ const getScoresByCriteria = async (
     if (questionType === "rating_0_10") {
       result.scoreType = "NPS";
       const npsResult = ratingService.calculateNPS(allResponses);
-      result.score = npsResult.npsScore;
+      result.npsScore = npsResult.npsScore;
+      result.promoters = npsResult.promoters;
+      result.neutrals = npsResult.neutrals;
+      result.detractors = npsResult.detractors;
     } else if (questionType === "rating_1_5" || questionType === "rating") {
       result.scoreType = "CSAT";
-      const satisfied = allResponses.filter(r => r.ratingValue >= 4).length;
+      result.satisfied = allResponses.filter(r => r.ratingValue >= 4).length;
+      result.neutral = allResponses.filter(r => r.ratingValue === 3).length;
+      result.unsatisfied = allResponses.filter(r => r.ratingValue < 3).length;
       if (result.total > 0) {
-        result.score = parseFloat(((satisfied / result.total) * 100).toFixed(1));
+        result.satisfactionRate = parseFloat(((result.satisfied / result.total) * 100).toFixed(1));
       }
     } else {
         result.scoreType = "Outro";

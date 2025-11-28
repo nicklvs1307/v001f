@@ -88,9 +88,13 @@ const getTenantWhatsappConfig = async (tenantId) => {
       "A configuração do WhatsApp para esta loja não foi encontrada ou está incompleta.",
     );
   }
-  if (config.instanceStatus !== "connected") {
+
+  // Verificação em tempo real do status da instância
+  const currentStatus = await getInstanceStatus(tenantId);
+  if (currentStatus !== "connected") {
     throw new Error("A instância do WhatsApp desta loja não está conectada.");
   }
+
   return config;
 };
 

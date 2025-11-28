@@ -1,1 +1,13 @@
-/superadmin/whatsapp-config
+URL da solicitação
+https://apivoltaki.towersfy.com/api/whatsapp-config/instance
+Método da solicitação
+PUT
+Código de status
+500 Internal Server Error
+
+{
+    "status": "error",
+    "code": "HTTP_500",
+    "message": "invalid input syntax for type uuid: \"\"",
+    "details": "Error\n    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)\n    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async PostgresQueryInterface.update (/usr/src/app/node_modules/sequelize/lib/dialects/abstract/query-interface.js:355:12)\n    at async WhatsappConfig.save (/usr/src/app/node_modules/sequelize/lib/model.js:2490:35)\n    at async WhatsappConfig.update (/usr/src/app/node_modules/sequelize/lib/model.js:2598:12)\n    at async /usr/src/app/src/controllers/whatsappConfigController.js:98:5"
+}

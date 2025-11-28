@@ -86,7 +86,7 @@ const whatsappConfigController = {
       birthdayMessageTemplate: data.birthdayAutomation.messageTemplate,
       birthdayDaysBefore: data.birthdayAutomation.daysBefore,
       birthdayRewardType: data.birthdayAutomation.rewardType,
-      birthdayRewardId: data.birthdayAutomation.rewardId,
+      birthdayRewardId: data.birthdayAutomation.rewardId || null,
       birthdayCouponValidityDays: data.birthdayAutomation.couponValidityDays,
       // Mapeamento para detractorAutomation
       sendDetractorMessageToClient: data.detractorAutomation.enabled,

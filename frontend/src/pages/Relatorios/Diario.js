@@ -12,6 +12,7 @@ import {
     useTheme
 } from '@mui/material';
 import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import { getNowInLocalTimezone } from '../../utils/dateUtils';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';

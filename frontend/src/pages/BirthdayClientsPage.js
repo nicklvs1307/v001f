@@ -4,7 +4,8 @@ import { addDays, getMonth, getYear } from 'date-fns';
 import { getNowInLocalTimezone, formatDateForDisplay } from '../utils/dateUtils';
 import {
     Container, Typography, Box, CircularProgress, Alert, Grid, Card, CardContent, Avatar, Button,
-    Dialog, DialogTitle, DialogContent, DialogActions, TextField, Snackbar, Select, MenuItem, FormControl, InputLabel
+    Dialog, DialogTitle, DialogContent, DialogActions, TextField, Snackbar, Select, MenuItem, FormControl, InputLabel,
+    Chip, Tooltip, IconButton
 } from '@mui/material';
 import clientService from '../services/clientService';
 import recompensaService from '../services/recompensaService';

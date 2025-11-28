@@ -1,26 +1,19 @@
 // Repositório para cálculos de NPS para o dashboard.
 const { Resposta, Pergunta, sequelize } = require("../../../models");
 const { Op } = require("sequelize");
-// const { subDays } = require("date-fns"); // No longer needed here
-const { TIMEZONE } = require("../../utils/dateUtils"); // Only TIMEZONE is needed now
+const { TIMEZONE, getUtcDateRange } = require("../../utils/dateUtils");
+const { buildWhereClause } = require("../../utils/filterUtils");
 const ratingService = require("../../services/ratingService");
 
 const getNpsByDayOfWeek = async (
   tenantId = null,
-  startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null, // Changed parameter name
+  startDateStr = null,
+  endDateStr = null,
   surveyId = null,
 ) => {
-  const whereClause = tenantId
-    ? { tenantId, ratingValue: { [Op.ne]: null } }
-    : { ratingValue: { [Op.ne]: null } };
-  if (surveyId) {
-    whereClause.pesquisaId = surveyId;
-  }
-  // Use the already processed UTC Date objects
-  if (startOfDayUtc && endOfDayUtc) {
-    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
-  }
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  const whereClause = buildWhereClause({ tenantId, surveyId, dateRange });
+  whereClause.ratingValue = { [Op.ne]: null };
 
   const responses = await Resposta.findAll({
     where: whereClause,
@@ -84,15 +77,10 @@ const getNpsByDayOfWeek = async (
   });
 
   const result = Object.entries(npsByDay).map(([day, counts]) => {
-    let npsScore = 0;
-    if (counts.total > 0) {
-      npsScore =
-        (counts.promoters / counts.total) * 100 -
-        (counts.detractors / counts.total) * 100;
-    }
+    const npsScore = ratingService.calculateNPSFromCounts(counts);
     return {
       day,
-      nps: parseFloat(npsScore.toFixed(1)),
+      nps: npsScore,
     };
   });
 

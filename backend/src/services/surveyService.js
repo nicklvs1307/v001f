@@ -3,6 +3,7 @@ const { convertFromTimeZone, now } = require("../utils/dateUtils");
 const resultRepository = require("../repositories/resultRepository");
 const ApiError = require("../errors/ApiError");
 const ratingService = require("./ratingService"); // Importar o ratingService
+const { calculateAgeDistribution } = require("../utils/demographicsUtils");
 
 const createSurvey = async (surveyData, requestingUser) => {
   const { recompensaId, roletaId } = surveyData;
@@ -306,34 +307,9 @@ const getSurveyResultsById = async (surveyId, tenantId = null) => {
   });
 
   const birthDates = [];
-  survey.perguntas.forEach((pergunta) => {
-    pergunta.respostas.forEach((resposta) => {
-      if (resposta.client && resposta.client.birthDate) {
-        birthDates.push(new Date(resposta.client.birthDate));
-      }
-    });
-  });
-
-  if (birthDates.length > 0) {
-    const ageGroups = {
-      "18-24": 0,
-      "25-34": 0,
-      "35-44": 0,
-      "45-54": 0,
-      "55+": 0,
-    };
-    const currentYear = now().getFullYear();
-
-    birthDates.forEach((dob) => {
-      const age = currentYear - dob.getFullYear();
-      if (age >= 18 && age <= 24) ageGroups["18-24"]++;
-      else if (age >= 25 && age <= 34) ageGroups["25-34"]++;
-      else if (age >= 35 && age <= 44) ageGroups["35-44"]++;
-      else if (age >= 45 && age <= 54) ageGroups["45-54"]++;
-      else if (age >= 55) ageGroups["55+"]++;
-    });
-    formattedResults.demographics.ageDistribution = ageGroups;
-  }
+  const uniqueClients = [...new Map(allRatingResponses.map(r => [r.client?.id, r.client])).values()].filter(Boolean);
+  
+  formattedResults.demographics.ageDistribution = calculateAgeDistribution(uniqueClients);
 
   formattedResults.wordCloudData =
     await resultRepository.getWordCloudDataForSurvey(surveyId, tenantId);

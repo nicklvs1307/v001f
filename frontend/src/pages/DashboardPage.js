@@ -37,7 +37,7 @@ import dashboardService from '../services/dashboardService';
 import DetailsModal from '../components/Dashboard/DetailsModal';
 import AttendantDetailsModal from '../components/Dashboard/AttendantDetailsModal';
 import ChartCard from '../components/charts/ChartCard';
-import MetricCard from '../components/Dashboard/MetricCard'; // Importa o MetricCard
+import DashboardSummaryMetricCard from '../components/Dashboard/DashboardSummaryMetricCard'; // Importa o DashboardSummaryMetricCard
 import SummaryMetrics from '../components/Dashboard/SummaryMetrics'; // Importa o SummaryMetrics
 import ResponseCharts from '../components/Dashboard/ResponseCharts'; // Importa o ResponseCharts
 import AttendantPerformance from '../components/Dashboard/AttendantPerformance'; // Importa o AttendantPerformance

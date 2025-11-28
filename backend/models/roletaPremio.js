@@ -67,6 +67,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'RoletaPremio',
     tableName: 'roleta_premios',
+    timestamps: true,
   });
 
   return RoletaPremio;

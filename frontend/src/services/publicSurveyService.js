@@ -10,7 +10,7 @@ const getPublicSurveyById = async (id) => {
         const response = await publicApi.get(`/surveys/${id}`);
         return response.data;
     } catch (error) {
-        throw error.response.data;
+        throw error;
     }
 };
 
@@ -19,7 +19,7 @@ const getPublicAtendentes = async (tenantId) => {
         const response = await publicApi.get(`/tenants/${tenantId}/atendentes`);
         return response.data;
     } catch (error) {
-        throw error.response.data;
+        throw error;
     }
 };
 
@@ -28,7 +28,7 @@ const getPublicTenantById = async (tenantId) => {
         const response = await publicApi.get(`/tenants/${tenantId}`);
         return response.data;
     } catch (error) {
-        throw error.response.data;
+        throw error;
     }
 };
 
@@ -41,7 +41,7 @@ const submitSurveyResponses = async (surveyId, responses, atendenteId = null) =>
         const response = await publicApi.post(`/surveys/${surveyId}/responses`, submissionData);
         return response.data;
     } catch (error) {
-        throw error.response.data;
+        throw error;
     }
 };
 

@@ -1,18 +1,20 @@
 const { Resposta, Client, Cupom, Pergunta } = require("../../../models");
 const { Op } = require("sequelize");
+const { getUtcDateRange } = require("../../utils/dateUtils");
+const { buildWhereClause } = require("../../utils/filterUtils");
 
-const getDetailsByCategory = async (tenantId, category, startDate, endDate) => {
-  const whereClause = tenantId ? { tenantId } : {};
-  const dateFilter = {};
-  if (startDate) dateFilter[Op.gte] = startDate;
-  if (endDate) dateFilter[Op.lte] = endDate;
-
-  if (Object.keys(dateFilter).length > 0) {
-    whereClause.createdAt = dateFilter;
-  }
-
+const getDetailsByCategory = async (
+  tenantId,
+  category,
+  startDateStr,
+  endDateStr,
+) => {
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
   const categoryLower = category.toLowerCase();
   let ratingWhere = {};
+
+  // Build the base where clause for createdAt
+  const whereClause = buildWhereClause({ tenantId, dateRange });
 
   switch (categoryLower) {
     case "promotores":
@@ -63,11 +65,12 @@ const getDetailsByCategory = async (tenantId, category, startDate, endDate) => {
         order: [["createdAt", "DESC"]],
       });
     case "cupons utilizados":
-      const usedWhere = { ...whereClause, status: "used" };
-      if (whereClause.createdAt) {
-        usedWhere.updatedAt = whereClause.createdAt;
-        delete usedWhere.createdAt;
-      }
+      const usedWhere = buildWhereClause({
+        tenantId,
+        dateRange,
+        dateField: "updatedAt",
+      });
+      usedWhere.status = "used";
       return await Cupom.findAll({
         where: usedWhere,
         include: [{ model: Client, as: "client", attributes: ["name"] }],

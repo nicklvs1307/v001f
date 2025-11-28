@@ -1,26 +1,20 @@
 const { Resposta, Pergunta, Client, sequelize } = require("../../../models");
 const { Op } = require("sequelize");
-// const { subDays } = require("date-fns"); // No longer needed here
-// const { convertToTimeZone } = require("../../utils/dateUtils"); // No longer needed here
+const { getUtcDateRange } = require("../../utils/dateUtils");
+const { buildWhereClause } = require("../../utils/filterUtils");
 const { PorterStemmerPt } = require("natural");
 const stopwords = require("../../utils/stopwords");
 
 const getFeedbacks = async (
   tenantId = null,
-  startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null, // Changed parameter name
+  startDateStr = null,
+  endDateStr = null,
   surveyId = null,
 ) => {
-  const whereClause = tenantId
-    ? { tenantId, textValue: { [Op.ne]: null, [Op.ne]: "" } }
-    : { textValue: { [Op.ne]: null, [Op.ne]: "" } };
-  // Use the already processed UTC Date objects
-  if (startOfDayUtc && endOfDayUtc) {
-    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
-  }
-  if (surveyId) {
-    whereClause.pesquisaId = surveyId;
-  }
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  const whereClause = buildWhereClause({ tenantId, surveyId, dateRange });
+  whereClause.textValue = { [Op.ne]: null, [Op.ne]: "" };
+
   const feedbacksData = await Resposta.findAll({
     where: whereClause,
     attributes: [
@@ -53,20 +47,14 @@ const getFeedbacks = async (
 
 const getAllFeedbacksForPeriod = async (
   tenantId = null,
-  startOfDayUtc = null,
-  endOfDayUtc = null,
+  startDateStr = null,
+  endDateStr = null,
   surveyId = null,
 ) => {
-  const whereClause = tenantId
-    ? { tenantId, textValue: { [Op.ne]: null, [Op.ne]: "" } }
-    : { textValue: { [Op.ne]: null, [Op.ne]: "" } };
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  const whereClause = buildWhereClause({ tenantId, surveyId, dateRange });
+  whereClause.textValue = { [Op.ne]: null, [Op.ne]: "" };
 
-  if (startOfDayUtc && endOfDayUtc) {
-    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
-  }
-  if (surveyId) {
-    whereClause.pesquisaId = surveyId;
-  }
   const feedbacksData = await Resposta.findAll({
     where: whereClause,
     attributes: [
@@ -98,20 +86,14 @@ const getAllFeedbacksForPeriod = async (
 
 const getWordCloudData = async (
   tenantId = null,
-  startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null, // Changed parameter name
+  startDateStr = null,
+  endDateStr = null,
   surveyId = null,
 ) => {
-  const whereClause = tenantId
-    ? { tenantId, textValue: { [Op.ne]: null, [Op.ne]: "" } }
-    : { textValue: { [Op.ne]: null, [Op.ne]: "" } };
-  // Use the already processed UTC Date objects
-  if (startOfDayUtc && endOfDayUtc) {
-    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
-  }
-  if (surveyId) {
-    whereClause.pesquisaId = surveyId;
-  }
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  const whereClause = buildWhereClause({ tenantId, surveyId, dateRange });
+  whereClause.textValue = { [Op.ne]: null, [Op.ne]: "" };
+
   const feedbacks = await Resposta.findAll({
     where: whereClause,
     attributes: ["textValue"],

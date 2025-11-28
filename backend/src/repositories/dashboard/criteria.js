@@ -1,29 +1,22 @@
 const { Resposta, Pergunta, Criterio } = require("../../../models");
 const { Op } = require("sequelize");
-// const { subDays } = require("date-fns"); // No longer needed here
-// const { convertToTimeZone } = require("../../utils/dateUtils"); // No longer needed here
+const { getUtcDateRange } = require("../../utils/dateUtils");
+const { buildWhereClause } = require("../../utils/filterUtils");
 const ratingService = require("../../services/ratingService");
 
 const getCriteriaScores = async (
   tenantId = null,
-  startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null, // Changed parameter name
+  startDateStr = null,
+  endDateStr = null,
   surveyId = null,
 ) => {
-  const responseWhereClause = { ratingValue: { [Op.ne]: null } };
-  if (tenantId) {
-    responseWhereClause.tenantId = tenantId;
-  }
-  if (surveyId) {
-    responseWhereClause.pesquisaId = surveyId;
-  }
-  // Use the already processed UTC Date objects
-  if (startOfDayUtc && endOfDayUtc) {
-    responseWhereClause.createdAt = {
-      [Op.gte]: startOfDayUtc,
-      [Op.lte]: endOfDayUtc,
-    };
-  }
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  const responseWhereClause = buildWhereClause({
+    tenantId,
+    surveyId,
+    dateRange,
+  });
+  responseWhereClause.ratingValue = { [Op.ne]: null };
 
   const allRatingResponses = await Resposta.findAll({
     where: responseWhereClause,

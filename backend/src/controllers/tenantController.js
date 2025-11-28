@@ -185,12 +185,12 @@ exports.updateMe = asyncHandler(async (req, res) => {
   // Apenas campos permitidos podem ser atualizados por esta rota
   const allowedUpdates = { reportPhoneNumber };
 
-  const updatedRowCount = await tenantRepository.update(
+  const updatedTenant = await tenantRepository.updateTenant(
     tenantId,
     allowedUpdates,
   );
 
-  if (updatedRowCount === 0) {
+  if (!updatedTenant) {
     // Isso pode acontecer se o tenant não for encontrado, embora a verificação acima deva pegar isso.
     throw new ApiError(404, "Tenant não encontrado para atualização.");
   }

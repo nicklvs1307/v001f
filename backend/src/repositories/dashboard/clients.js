@@ -6,7 +6,9 @@ const {
   // convertToTimeZone, // No longer needed here
   convertFromTimeZone,
   now,
+  getUtcDateRange,
 } = require("../../utils/dateUtils");
+const { buildWhereClause } = require("../../utils/filterUtils");
 
 const getBirthdaysOfMonth = async (
   tenantId = null,
@@ -51,15 +53,11 @@ const getBirthdaysOfMonth = async (
 
 const getClientStatusCounts = async (
   tenantId = null,
-  startOfDayUtc,
-  endOfDayUtc,
+  startDateStr,
+  endDateStr,
 ) => {
-  const whereClause = tenantId ? { tenantId } : {};
-
-  // Use the already processed UTC Date objects
-  if (startOfDayUtc && endOfDayUtc) {
-    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
-  }
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  const whereClause = buildWhereClause({ tenantId, dateRange });
 
   const result = await Resposta.findOne({
     where: whereClause,

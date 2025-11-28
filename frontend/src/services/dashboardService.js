@@ -81,11 +81,6 @@ const dashboardService = {
         return response.data;
     },
 
-    getDailyReport: async (params) => {
-        const response = await apiAuthenticated.get('/dashboard/daily-report', { params });
-        return response.data;
-    },
-
     getWeeklyReport: async (params) => {
         const response = await apiAuthenticated.get('/dashboard/weekly-report', { params });
         return response.data;

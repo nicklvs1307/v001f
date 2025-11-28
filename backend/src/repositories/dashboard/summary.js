@@ -7,6 +7,7 @@ const {
 } = require("../../../models");
 const { Op } = require("sequelize");
 const { TIMEZONE, getUtcDateRange } = require("../../utils/dateUtils");
+const { buildWhereClause } = require("../../utils/filterUtils");
 const { getBirthdaysOfMonth } = require("./clients");
 const ratingService = require("../../services/ratingService");
 
@@ -16,15 +17,8 @@ const getSummary = async (
   endDateStr = null,
   surveyId = null,
 ) => {
-  const { startDate, endDate } = getUtcDateRange(startDateStr, endDateStr);
-
-  const where = { tenantId };
-  if (surveyId) {
-    where.pesquisaId = surveyId;
-  }
-  if (startDate && endDate) {
-    where.createdAt = { [Op.between]: [startDate, endDate] };
-  }
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  const where = buildWhereClause({ tenantId, surveyId, dateRange });
 
   const [summaryData] = await Resposta.findAll({
     attributes: [
@@ -116,23 +110,23 @@ const getSummary = async (
 
   const [couponsData, birthdays, totalUsers] = await Promise.all([
     Cupom.findOne(couponsQuery),
-    getBirthdaysOfMonth(tenantId, startDate, endDate),
+    getBirthdaysOfMonth(tenantId, dateRange.startDate, dateRange.endDate),
     Client.count({ where: { tenantId } }),
   ]);
 
-  const npsScore =
-    summaryData.npsCount > 0
-      ? Math.round(
-          ((summaryData.promoters - summaryData.detractors) /
-            summaryData.npsCount) *
-            100,
-        )
-      : 0;
+  const npsScore = ratingService.calculateNPSFromCounts({
+    promoters: summaryData.promoters,
+    detractors: summaryData.detractors,
+    total: summaryData.npsCount,
+  });
 
-  const csatScore =
-    summaryData.csatCount > 0 ? summaryData.csatSum / summaryData.csatCount : 0;
-
-  const csatSatisfactionRate = csatScore * 20;
+  const { averageScore: csatScore, satisfactionRate: csatSatisfactionRate } =
+    ratingService.calculateCSATFromCounts({
+      satisfied: summaryData.csatSatisfied,
+      neutral: summaryData.csatNeutral,
+      sum: summaryData.csatSum,
+      count: summaryData.csatCount,
+    });
 
   return {
     nps: {
@@ -180,12 +174,8 @@ const getMonthlySummary = async (
   startDateStr = null,
   endDateStr = null,
 ) => {
-  const { startDate, endDate } = getUtcDateRange(startDateStr, endDateStr);
-
-  const where = { tenantId };
-  if (startDate && endDate) {
-    where.createdAt = { [Op.between]: [startDate, endDate] };
-  }
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  const where = buildWhereClause({ tenantId, dateRange });
 
   const query = {
     attributes: [
@@ -250,7 +240,7 @@ const getMonthlySummary = async (
     group: ["date", "hour", "weekday"],
     raw: true,
   };
-
+  
   const results = await Resposta.findAll(query);
 
   const dailyNps = {};

@@ -116,7 +116,7 @@ const getSurveyResults = async (surveyId) => {
         const response = await apiAuthenticated.get(`/surveys/${surveyId}/results`);
         return response.data;
     } catch (error) {
-        throw error.response.data;
+        throw error;
     }
 };
 

@@ -5,7 +5,7 @@ const getClientDashboardData = async () => {
         const response = await apiAuthenticated.get('/clients/dashboard');
         return response.data;
     } catch (error) {
-        throw error.response.data;
+        throw error;
     }
 };
 
@@ -22,7 +22,7 @@ const getAllClients = async (page, rowsPerPage, orderBy, order, filterText) => {
         });
         return response.data;
     } catch (error) {
-        throw error.response.data;
+        throw error;
     }
 };
 
@@ -31,7 +31,7 @@ const createClient = async (clientData) => {
         const response = await apiAuthenticated.post('/clients', clientData);
         return response.data;
     } catch (error) {
-        throw error.response.data;
+        throw error;
     }
 };
 
@@ -39,8 +39,8 @@ const updateClient = async (id, clientData) => {
     try {
         const response = await apiAuthenticated.put(`/clients/${id}`, clientData);
         return response.data;
-    } catch (error) {
-        throw error.response.data;
+    }  catch (error) {
+        throw error;
     }
 };
 
@@ -49,7 +49,7 @@ const deleteClient = async (id) => {
         const response = await apiAuthenticated.delete(`/clients/${id}`);
         return response.data;
     } catch (error) {
-        throw error.response.data;
+        throw error;
     }
 };
 
@@ -63,7 +63,7 @@ const getBirthdayClients = async (month, search) => {
         });
         return response.data;
     } catch (error) {
-        throw error.response.data;
+        throw error;
     }
 };
 
@@ -81,7 +81,7 @@ const sendMessage = async (clientId, message) => {
         const response = await apiAuthenticated.post(`/clients/${clientId}/send-message`, { message });
         return response.data;
     } catch (error) {
-        throw error.response.data;
+        throw error;
     }
 };
 
@@ -90,7 +90,7 @@ const getClientDetails = async (id) => {
         const response = await apiAuthenticated.get(`/clients/${id}/details`);
         return response.data;
     } catch (error) {
-        throw error.response.data;
+        throw error;
     }
 };
 

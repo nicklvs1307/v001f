@@ -22,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       allowNull: true,
     },
+    campanhaId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
     tenantId: {
       type: DataTypes.UUID,
       allowNull: false

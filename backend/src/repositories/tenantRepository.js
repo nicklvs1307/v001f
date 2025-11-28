@@ -121,16 +121,6 @@ const findByName = async (name) => {
   return Tenant.findOne({ where: { name } });
 };
 
-const update = async (id, data) => {
-  const [updatedRows] = await Tenant.update(data, {
-    where: { id },
-    returning: true,
-  });
-  if (updatedRows > 0) {
-    return Tenant.findByPk(id, { raw: true });
-  }
-  return null;
-};
 module.exports = {
   createTenant,
   getTenants,
@@ -139,5 +129,4 @@ module.exports = {
   deleteTenant,
   getTenantLogoUrlById,
   findAllWithReportPhoneNumber,
-  update, // Adicionando a nova função
 };

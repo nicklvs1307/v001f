@@ -1,7 +1,9 @@
 const { Pesquisa, Pergunta, Resposta } = require("../../models"); // Importa os modelos do Sequelize
-const { now } = require("../utils/dateUtils");
+const { now, getUtcDateRange } = require("../utils/dateUtils");
 const { startOfDay, endOfDay } = require("date-fns");
 const { Op, Sequelize } = require("sequelize");
+const ratingService = require("../services/ratingService");
+const { buildWhereClause } = require("../utils/filterUtils");
 
 const getSurveyDetails = async (surveyId, tenantId = null) => {
   const whereClause = tenantId ? { id: surveyId, tenantId } : { id: surveyId };
@@ -25,16 +27,11 @@ const getQuestionsBySurveyId = async (surveyId, tenantId = null) => {
 const getResponsesBySurveyId = async (
   surveyId,
   tenantId = null,
-  startDate,
-  endDate,
+  startDateStr,
+  endDateStr,
 ) => {
-  const whereClause = tenantId ? { tenantId } : {};
-
-  if (startDate && endDate) {
-    whereClause.createdAt = {
-      [Op.between]: [startDate, endDate],
-    };
-  }
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  const whereClause = buildWhereClause({ tenantId, dateRange });
 
   return Resposta.findAll({
     attributes: [
@@ -59,15 +56,14 @@ const getResponsesBySurveyId = async (
 
 const getDailyStats = async (tenantId) => {
   const yesterday = now();
-  const startOfYesterday = startOfDay(yesterday);
-  const endOfYesterday = endOfDay(yesterday);
+  const dateRange = {
+    startDate: startOfDay(yesterday),
+    endDate: endOfDay(yesterday),
+  };
+  const whereClause = buildWhereClause({ tenantId, dateRange });
+
   const stats = await Resposta.findAll({
-    where: {
-      tenantId,
-      createdAt: {
-        [Op.between]: [startOfYesterday, endOfYesterday],
-      },
-    },
+    where: whereClause,
     include: [
       {
         model: Pergunta,
@@ -105,21 +101,29 @@ const getDailyStats = async (tenantId) => {
 
   // Como o resultado é um array com um objeto, retornamos o primeiro objeto ou um objeto zerado.
   const result = stats[0];
+  const promoters = parseInt(result.promoters, 10) || 0;
+  const neutrals = parseInt(result.neutrals, 10) || 0;
+  const detractors = parseInt(result.detractors, 10) || 0;
+  const total = promoters + neutrals + detractors;
+
+  const npsScore = ratingService.calculateNPSFromCounts({
+    promoters,
+    detractors,
+    total,
+  });
+
   return {
-    totalResponses: parseInt(result.totalResponses, 10) || 0,
-    promoters: parseInt(result.promoters, 10) || 0,
-    neutrals: parseInt(result.neutrals, 10) || 0,
-    detractors: parseInt(result.detractors, 10) || 0,
+    totalResponses: total,
+    promoters,
+    neutrals,
+    detractors,
+    npsScore,
   };
 };
 
 const getWordCloudDataForSurvey = async (surveyId, tenantId = null) => {
-  const whereClause = {
-    textValue: { [Op.ne]: null, [Op.ne]: "" },
-  };
-  if (tenantId) {
-    whereClause.tenantId = tenantId;
-  }
+  const whereClause = buildWhereClause({ tenantId });
+  whereClause.textValue = { [Op.ne]: null, [Op.ne]: "" };
 
   const feedbacks = await Resposta.findAll({
     where: whereClause,

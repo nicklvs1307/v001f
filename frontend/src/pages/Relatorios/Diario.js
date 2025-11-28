@@ -15,8 +15,6 @@ import { format } from 'date-fns';
 import { getNowInLocalTimezone } from '../../utils/dateUtils';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { ptBR } from 'date-fns/locale';
 import dashboardService from '../../services/dashboardService';
 import { useAuth } from '../../context/AuthContext';
 import RelatorioDiarioDashboard from '../../components/relatorios/Dashboard';
@@ -51,7 +49,8 @@ const RelatorioDiario = () => {
             setReportData(resultData);
         } catch (err) {
             setError(err.message || 'Falha ao carregar os resultados.');
-        } finally {
+        }
+        finally {
             setLoading(false);
         }
     }, [tenantId, selectedDate]);
@@ -102,7 +101,6 @@ const RelatorioDiario = () => {
     const { summary, clientStatusCounts, ...chartData } = reportData;
 
     return (
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
             <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
                 <Paper elevation={2} sx={{ p: { xs: 2, md: 3 }, mb: 4, backgroundColor: theme.palette.primary.main, color: 'white' }}>
                     <Grid container spacing={2} justifyContent="space-between" alignItems="center">
@@ -144,8 +142,5 @@ const RelatorioDiario = () => {
                 <RelatorioDiarioDashboard data={chartData} />
 
             </Container>
-        </LocalizationProvider>
     );
 };
-
-export default RelatorioDiario;

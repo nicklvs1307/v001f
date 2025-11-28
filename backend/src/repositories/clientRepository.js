@@ -2,6 +2,7 @@ const { Client, Cupom, Resposta, CampanhaLog, sequelize } = require("../../model
 const sequelize = require("sequelize");
 const { Op } = sequelize;
 const { now, formatInTimeZone } = require("../utils/dateUtils");
+const { calculateAgeDistribution, calculateGenderDistribution } = require("../utils/demographicsUtils");
 const ApiError = require("../errors/ApiError");
 
 class ClientRepository {
@@ -179,23 +180,13 @@ class ClientRepository {
         ];
     }
 
-    // A associação precisa ser definida no modelo Client para que o alias 'birthdayLog' funcione
-    // Se não estiver, o JOIN não será criado corretamente.
-    // Assumindo que a associação será adicionada ou já existe.
-    // Vamos definir a associação dinamicamente aqui para garantir.
-    if (!Client.associations.birthdayLog) {
-        Client.hasMany(require('../../models').CampanhaLog, {
-            foreignKey: 'clienteId',
-            as: 'birthdayLog',
-        });
-    }
-
+    // A associação agora está definida estaticamente no modelo Client
     return Client.findAll({
         where: whereClause,
         include: [
             {
-                model: require('../../models').CampanhaLog,
-                as: 'birthdayLog',
+                model: CampanhaLog,
+                as: 'campanhaLogs',
                 required: false, // LEFT JOIN
                 where: {
                     variant: `birthday-automation-${currentYear}`
@@ -206,7 +197,7 @@ class ClientRepository {
         attributes: {
             include: [
                 [
-                    sequelize.literal(`(CASE WHEN "birthdayLog"."id" IS NOT NULL THEN TRUE ELSE FALSE END)`),
+                    sequelize.literal(`(CASE WHEN "campanhaLogs"."id" IS NOT NULL THEN TRUE ELSE FALSE END)`),
                     'messageSent'
                 ]
             ]
@@ -216,7 +207,7 @@ class ClientRepository {
             [sequelize.fn('EXTRACT', sequelize.literal('DAY FROM "birthDate"')), 'ASC']
         ],
         subQuery: false,
-        group: ['Client.id', 'birthdayLog.id'] // Adicionar group by para evitar duplicatas
+        group: ['Client.id', 'campanhaLogs.id'] // Adicionar group by para evitar duplicatas
     });
   }
 
@@ -396,53 +387,23 @@ class ClientRepository {
     });
 
     // 3. Média de Idade
-    let totalAge = 0;
-    let clientsWithAge = 0;
-    const currentYear = now().getFullYear();
-    clients.forEach((client) => {
-      if (client.birthDate) {
+    const clientsWithBirthDate = clients.filter(c => c.birthDate);
+    const totalAge = clientsWithBirthDate.reduce((sum, client) => {
         const birthYear = new Date(client.birthDate).getFullYear();
-        totalAge += currentYear - birthYear;
-        clientsWithAge++;
-      }
-    });
+        return sum + (now().getFullYear() - birthYear);
+    }, 0);
     const averageAge =
-      clientsWithAge > 0 ? Math.round(totalAge / clientsWithAge) : 0;
+      clientsWithBirthDate.length > 0 ? Math.round(totalAge / clientsWithBirthDate.length) : 0;
 
-    // 4. Distribuição por Faixa Etária
-    const ageGroups = {
-      "18-24": 0,
-      "25-34": 0,
-      "35-44": 0,
-      "45-54": 0,
-      "55+": 0,
-      "N/A": 0,
-    };
-    clients.forEach((client) => {
-      if (client.birthDate) {
-        const age = currentYear - new Date(client.birthDate).getFullYear();
-        if (age >= 18 && age <= 24) ageGroups["18-24"]++;
-        else if (age >= 25 && age <= 34) ageGroups["25-34"]++;
-        else if (age >= 35 && age <= 44) ageGroups["35-44"]++;
-        else if (age >= 45 && age <= 54) ageGroups["45-54"]++;
-        else if (age >= 55) ageGroups["55+"]++;
-        else ageGroups["N/A"]++;
-      } else {
-        ageGroups["N/A"]++;
-      }
-    });
-    const ageDistribution = Object.entries(ageGroups).map(([name, count]) => ({
+    // 4. & 5. Distribuição por Faixa Etária e Gênero usando o utilitário
+    const ageDistributionData = calculateAgeDistribution(clients);
+    const ageDistribution = Object.entries(ageDistributionData).map(([name, count]) => ({
       name,
       count,
     }));
-
-    // 5. Distribuição por Gênero
-    const genderCounts = {};
-    clients.forEach((client) => {
-      const gender = client.gender || "Não informado";
-      genderCounts[gender] = (genderCounts[gender] || 0) + 1;
-    });
-    const genderDistribution = Object.entries(genderCounts).map(
+    
+    const genderDistributionData = calculateGenderDistribution(clients);
+    const genderDistribution = Object.entries(genderDistributionData).map(
       ([name, value]) => ({ name, value }),
     );
 

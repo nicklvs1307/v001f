@@ -37,8 +37,8 @@ class ConfigController {
 
     if (!updatedConfig) {
       throw new ApiError(
-        "Configurações do Tenant não encontradas para atualização.",
         404,
+        "Configurações do Tenant não encontradas para atualização.",
       );
     }
 

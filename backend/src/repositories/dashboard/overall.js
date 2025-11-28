@@ -2,24 +2,20 @@ const models = require("../../../models");
 // const { subDays } = require("date-fns"); // No longer needed here
 const sequelize = require("sequelize");
 const { Op } = sequelize;
-const { now } = require("../../utils/dateUtils");
+const { now, getUtcDateRange } = require("../../utils/dateUtils");
+const { buildWhereClause } = require("../../utils/filterUtils");
+const { calculateAgeDistribution, calculateGenderDistribution } = require("../../utils/demographicsUtils");
 const ratingService = require("../../services/ratingService");
 const { getResponseChart } = require("./charts");
 
 const getOverallResults = async function (
   tenantId = null,
-  startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null, // Changed parameter name
+  startDateStr = null,
+  endDateStr = null,
   surveyId = null,
 ) {
-  const whereClause = tenantId ? { tenantId } : {};
-  if (surveyId) {
-    whereClause.pesquisaId = surveyId;
-  }
-  // Use the already processed UTC Date objects
-  if (startOfDayUtc && endOfDayUtc) {
-    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
-  }
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  const whereClause = buildWhereClause({ tenantId, surveyId, dateRange });
 
   const allResponses = await models.Resposta.findAll({
     where: { ...whereClause, ratingValue: { [Op.ne]: null } },
@@ -125,46 +121,11 @@ const getOverallResults = async function (
   );
 
   // 4. Processar dados demográficos
-  const demographics = {};
-  const birthDates = [];
-  const genders = [];
-  allResponses.forEach((response) => {
-    if (response.client) {
-      if (response.client.birthDate)
-        birthDates.push(new Date(response.client.birthDate));
-      if (response.client.gender) genders.push(response.client.gender);
-    }
-  });
-
-  if (birthDates.length > 0) {
-    const ageGroups = {
-      "18-24": 0,
-      "25-34": 0,
-      "35-44": 0,
-      "45-54": 0,
-      "55+": 0,
-    };
-    const currentYear = now().getFullYear();
-    birthDates.forEach((dob) => {
-      const age = currentYear - dob.getFullYear();
-      if (age >= 18 && age <= 24) ageGroups["18-24"]++;
-      else if (age >= 25 && age <= 34) ageGroups["25-34"]++;
-      else if (age >= 35 && age <= 44) ageGroups["35-44"]++;
-      else if (age >= 45 && age <= 54) ageGroups["45-54"]++;
-      else if (age >= 55) ageGroups["55+"]++;
-    });
-    demographics.ageDistribution = ageGroups;
-  }
-
-  if (genders.length > 0) {
-    const genderDistribution = { masculino: 0, feminino: 0, outro: 0 };
-    genders.forEach((gender) => {
-      const g = gender.toLowerCase();
-      if (genderDistribution.hasOwnProperty(g)) genderDistribution[g]++;
-      else genderDistribution["outro"]++;
-    });
-    demographics.genderDistribution = genderDistribution;
-  }
+  const uniqueClients = [...new Map(allResponses.map(r => [r.client?.id, r.client])).values()].filter(Boolean);
+  const demographics = {
+    ageDistribution: calculateAgeDistribution(uniqueClients),
+    genderDistribution: calculateGenderDistribution(uniqueClients),
+  };
 
   // 5. Top e Bottom 5 Atendentes por performance
   const responsesByAttendant = allResponses.reduce((acc, response) => {
@@ -182,21 +143,28 @@ const getOverallResults = async function (
     return acc;
   }, {});
 
-  const attendantsArray = await Promise.all(
-    Object.values(responsesByAttendant).map(async (attendant) => {
+  const attendantIds = Object.keys(responsesByAttendant);
+  const allMetas = await models.AtendenteMeta.findAll({
+    where: {
+      atendenteId: { [Op.in]: attendantIds },
+      tenantId: tenantId,
+    },
+  });
+  const metasMap = new Map(allMetas.map((meta) => [meta.atendenteId, meta]));
+
+  const attendantsArray = Object.values(responsesByAttendant).map(
+    (attendant) => {
       const npsResult = ratingService.calculateNPS(attendant.responses);
       const csatResult = ratingService.calculateCSAT(attendant.responses);
-      const meta = await models.AtendenteMeta.findOne({
-        where: { atendenteId: attendant.id, tenantId: tenantId },
-      });
+      const meta = metasMap.get(attendant.id) || {};
       return {
         name: attendant.name,
         responses: attendant.responses.length,
         nps: npsResult,
         csat: csatResult,
-        meta: meta || {},
+        meta,
       };
-    }),
+    },
   );
 
   const sortedAttendants = attendantsArray.sort(

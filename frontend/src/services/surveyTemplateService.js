@@ -11,7 +11,7 @@ const surveyTemplateService = {
       });
       return response.data;
     } catch (error) {
-      throw error.response.data;
+      throw error;
     }
   },
 
@@ -21,7 +21,7 @@ const surveyTemplateService = {
       const response = await apiAuthenticated.get(`${SURVEY_TEMPLATE_API_URL}/${id}`);
       return response.data;
     } catch (error) {
-      throw error.response.data;
+      throw error;
     }
   },
 
@@ -31,7 +31,7 @@ const surveyTemplateService = {
       const response = await apiAuthenticated.post(SURVEY_TEMPLATE_API_URL, templateData);
       return response.data;
     } catch (error) {
-      throw error.response.data;
+      throw error;
     }
   },
 
@@ -41,7 +41,7 @@ const surveyTemplateService = {
       const response = await apiAuthenticated.put(`${SURVEY_TEMPLATE_API_URL}/${id}`, templateData);
       return response.data;
     } catch (error) {
-      throw error.response.data;
+      throw error;
     }
   },
 
@@ -51,7 +51,7 @@ const surveyTemplateService = {
       const response = await apiAuthenticated.delete(`${SURVEY_TEMPLATE_API_URL}/${id}`);
       return response.data;
     } catch (error) {
-      throw error.response.data;
+      throw error;
     }
   }
 };

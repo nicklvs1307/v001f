@@ -8,8 +8,6 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { ptBR } from 'date-fns/locale';
 
 const PageLayout = ({ 
     title, 
@@ -22,7 +20,6 @@ const PageLayout = ({
     headerChildren
 }) => {
     return (
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
             <Box sx={{ flexGrow: 1, p: 3, backgroundColor: '#f4f6f8' }}>
                 <Paper elevation={2} sx={{ p: 3, mb: 3, borderRadius: '16px' }}>
                     <Grid container spacing={2} justifyContent="space-between" alignItems="center">
@@ -54,7 +51,6 @@ const PageLayout = ({
                 </Paper>
                 {children}
             </Box>
-        </LocalizationProvider>
     );
 };
 

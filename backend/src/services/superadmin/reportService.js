@@ -81,51 +81,55 @@ class ReportService {
   async getTenantReports() {
     const tenants = await Tenant.findAll({
       attributes: ["id", "name"],
+      raw: true,
     });
 
-    const tenantReports = await Promise.all(
-      tenants.map(async (tenant) => {
-        const activeClients = await Client.count({
-          where: { tenantId: tenant.id },
-        });
-        const activeCampaigns = await Campanha.count({
-          where: {
-            tenantId: tenant.id,
-            status: { [Op.in]: ["processing", "scheduled"] },
-          },
-        });
-        const totalSurveys = await Pesquisa.count({
-          where: { tenantId: tenant.id },
-        });
+    const tenantIds = tenants.map((t) => t.id);
 
-        const totalResponses = await Resposta.count({
-          where: { tenantId: tenant.id },
-        });
-        const totalSurveyClients = await Client.count({
-          where: { tenantId: tenant.id },
-          include: [
-            {
-              model: Resposta,
-              as: "respostas",
-              attributes: [],
-              required: true,
-            },
-          ],
-          distinct: true,
-        });
-        const averageResponseRate =
-          totalSurveys > 0 ? totalResponses / totalSurveys : 0;
+    const countQuery = (model, where = {}) =>
+      model.count({
+        where: { tenantId: { [Op.in]: tenantIds }, ...where },
+        group: ["tenantId"],
+        raw: true,
+      });
 
-        return {
-          tenantId: tenant.id,
-          tenantName: tenant.name,
-          activeClients,
-          activeCampaigns,
-          totalSurveys,
-          averageResponseRate: averageResponseRate.toFixed(2),
-        };
+    const [
+      clientCounts,
+      campaignCounts,
+      surveyCounts,
+      responseCounts,
+    ] = await Promise.all([
+      countQuery(Client),
+      countQuery(Campanha, {
+        status: { [Op.in]: ["processing", "scheduled"] },
       }),
-    );
+      countQuery(Pesquisa),
+      countQuery(Resposta),
+    ]);
+
+    const createCountMap = (counts) =>
+      new Map(counts.map((c) => [c.tenantId, c.count]));
+
+    const clientMap = createCountMap(clientCounts);
+    const campaignMap = createCountMap(campaignCounts);
+    const surveyMap = createCountMap(surveyCounts);
+    const responseMap = createCountMap(responseCounts);
+
+    const tenantReports = tenants.map((tenant) => {
+      const totalSurveys = surveyMap.get(tenant.id) || 0;
+      const totalResponses = responseMap.get(tenant.id) || 0;
+      const averageResponseRate =
+        totalSurveys > 0 ? totalResponses / totalSurveys : 0;
+
+      return {
+        tenantId: tenant.id,
+        tenantName: tenant.name,
+        activeClients: clientMap.get(tenant.id) || 0,
+        activeCampaigns: campaignMap.get(tenant.id) || 0,
+        totalSurveys,
+        averageResponseRate: averageResponseRate.toFixed(2),
+      };
+    });
 
     return tenantReports;
   }

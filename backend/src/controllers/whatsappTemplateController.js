@@ -5,7 +5,7 @@ class WhatsappTemplateController {
     try {
       const { tenantId } = req.user;
       const { type } = req.query;
-      const template = await whatsappTemplateRepository.findOne(tenantId, type);
+      const template = await whatsappTemplateRepository.findByType(type, tenantId);
       if (!template) {
         return res.status(404).json({ message: "Template não encontrado." });
       }

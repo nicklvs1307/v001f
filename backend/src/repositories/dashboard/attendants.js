@@ -7,24 +7,18 @@ const {
   sequelize,
 } = require("../../../models");
 const { Op } = require("sequelize");
-// const { subDays } = require("date-fns"); // No longer needed here
-// const { convertToTimeZone } = require("../../utils/dateUtils"); // No longer needed here
+const { getUtcDateRange } = require("../../utils/dateUtils");
+const { buildWhereClause } = require("../../utils/filterUtils");
 const ratingService = require("../../services/ratingService");
 
 const getRanking = async (
   tenantId = null,
-  startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null, // Changed parameter name
+  startDateStr = null,
+  endDateStr = null,
   surveyId = null,
 ) => {
-  const whereClause = tenantId ? { tenantId } : {};
-  if (surveyId) {
-    whereClause.pesquisaId = surveyId;
-  }
-  // Use the already processed UTC Date objects
-  if (startOfDayUtc && endOfDayUtc) {
-    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
-  }
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  const whereClause = buildWhereClause({ tenantId, surveyId, dateRange });
 
   const rankingData = await Resposta.findAll({
     where: whereClause,
@@ -62,19 +56,12 @@ const getRanking = async (
 
 const getAttendantsPerformanceWithGoals = async (
   tenantId = null,
-  startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null, // Changed parameter name
+  startDateStr = null,
+  endDateStr = null,
   surveyId = null,
 ) => {
-  const whereClause = tenantId ? { tenantId } : {};
-  if (surveyId) {
-    whereClause.pesquisaId = surveyId;
-  }
-
-  // Use the already processed UTC Date objects
-  if (startOfDayUtc && endOfDayUtc) {
-    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
-  }
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  const whereClause = buildWhereClause({ tenantId, surveyId, dateRange });
 
   const allResponses = await Resposta.findAll({
     where: { ...whereClause, ratingValue: { [Op.ne]: null } },
@@ -144,18 +131,12 @@ const getAttendantsPerformanceWithGoals = async (
 const getAttendantDetailsById = async (
   tenantId,
   attendantId,
-  startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null, // Changed parameter name
+  startDateStr = null,
+  endDateStr = null,
 ) => {
-  const whereClause = { atendenteId: attendantId };
-  if (tenantId) {
-    whereClause.tenantId = tenantId;
-  }
-
-  // Use the already processed UTC Date objects
-  if (startOfDayUtc && endOfDayUtc) {
-    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
-  }
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  const whereClause = buildWhereClause({ tenantId, dateRange });
+  whereClause.atendenteId = attendantId;
 
   const responses = await Resposta.findAll({
     where: whereClause,

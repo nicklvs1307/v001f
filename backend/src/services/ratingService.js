@@ -134,6 +134,39 @@ const ratingService = {
       total,
     };
   },
+
+  /**
+   * Calculates NPS score from pre-aggregated counts.
+   * @param {Object} counts - An object containing { promoters, neutrals, detractors, total }.
+   * @returns {number} The final NPS score.
+   */
+  calculateNPSFromCounts(counts) {
+    const { promoters, detractors, total } = counts;
+    if (total === 0) {
+      return 0;
+    }
+    const npsScore = (promoters / total) * 100 - (detractors / total) * 100;
+    return parseFloat(npsScore.toFixed(1));
+  },
+
+  /**
+   * Calculates CSAT scores from pre-aggregated counts.
+   * @param {Object} counts - An object containing { satisfied, neutral, sum, count }.
+   * @returns {Object} An object with { averageScore, satisfactionRate }.
+   */
+  calculateCSATFromCounts(counts) {
+    const { satisfied, neutral, sum, count } = counts;
+    if (count === 0) {
+      return { averageScore: 0, satisfactionRate: 0 };
+    }
+    const averageScore = sum / count;
+    // Note: This logic matches the existing calculateCSAT. Review if it should only be 'satisfied'.
+    const satisfactionRate = ((satisfied + neutral) / count) * 100;
+    return {
+      averageScore: parseFloat(averageScore.toFixed(2)),
+      satisfactionRate: parseFloat(satisfactionRate.toFixed(1)),
+    };
+  },
 };
 
 module.exports = ratingService;

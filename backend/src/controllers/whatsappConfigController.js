@@ -219,6 +219,12 @@ const whatsappConfigController = {
 
   // --- Webhook ---
   handleWebhook: asyncHandler(async (req, res) => {
+    const { instance, event, data } = req.body;
+
+    if (!event) {
+      return res.sendStatus(200); // Apenas confirma o recebimento se não houver evento
+    }
+
     if (event === "connection.update") {
       const { state } = data;
       const newStatus = state === "CONNECTED" ? "connected" : "disconnected";

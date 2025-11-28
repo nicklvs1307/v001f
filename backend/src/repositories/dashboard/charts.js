@@ -6,8 +6,9 @@ const {
   Pergunta,
 } = require("../../../models");
 const { Sequelize, Op } = require("sequelize");
-const { eachDayOfInterval, format, subDays } = require("date-fns"); // Keep eachDayOfInterval and format
-const { TIMEZONE, now } = require("../../utils/dateUtils");
+const { eachDayOfInterval, format, subDays } = require("date-fns");
+const { TIMEZONE, now, getUtcDateRange } = require("../../utils/dateUtils");
+const { buildWhereClause } = require("../../utils/filterUtils");
 
 const { fn, col, literal } = Sequelize;
 
@@ -37,24 +38,19 @@ const formatDateTz = (period, column) => {
 
 const getResponseChart = async (
   tenantId = null,
-  startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null, // Changed parameter name
+  startDateStr = null,
+  endDateStr = null,
   surveyId = null,
 ) => {
-  const whereClause = tenantId ? { tenantId } : {};
-  if (surveyId) whereClause.pesquisaId = surveyId;
+  let dateRange = getUtcDateRange(startDateStr, endDateStr);
 
   // Default to the last 30 days if no date range is provided
-  if (!startOfDayUtc || !endOfDayUtc) {
-    const now = now();
-    endOfDayUtc = now;
-    startOfDayUtc = subDays(now, 30);
+  if (!dateRange.startDate || !dateRange.endDate) {
+    const thirtyDaysAgo = subDays(now(), 30);
+    dateRange = { startDate: thirtyDaysAgo, endDate: now() };
   }
 
-  // Use the already processed UTC Date objects
-  if (startOfDayUtc && endOfDayUtc) {
-    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
-  }
+  const whereClause = buildWhereClause({ tenantId, surveyId, dateRange });
 
   const responsesByPeriod = await Resposta.findAll({
     where: whereClause,
@@ -71,10 +67,9 @@ const getResponseChart = async (
     responsesByPeriod.map((item) => [item.period, parseInt(item.count, 10)]),
   );
 
-  // Use startOfDayUtc and endOfDayUtc for intervalDays
   const intervalDays = eachDayOfInterval({
-    start: startOfDayUtc,
-    end: endOfDayUtc,
+    start: dateRange.startDate,
+    end: dateRange.endDate,
   });
 
   const chartData = intervalDays.map((day) => {
@@ -90,15 +85,12 @@ const getResponseChart = async (
 
 const getConversionChart = async (
   tenantId = null,
-  startOfDayUtc = null,
-  endOfDayUtc = null,
+  startDateStr = null,
+  endDateStr = null,
   surveyId = null,
 ) => {
-  const responseWhere = tenantId ? { tenantId } : {};
-  if (surveyId) responseWhere.pesquisaId = surveyId;
-  if (startOfDayUtc && endOfDayUtc) {
-    responseWhere.createdAt = { [Op.between]: [startOfDayUtc, endOfDayUtc] };
-  }
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  const responseWhere = buildWhereClause({ tenantId, surveyId, dateRange });
 
   const totalResponses = await Resposta.count({
     where: responseWhere,
@@ -127,22 +119,20 @@ const getConversionChart = async (
       });
     }
   } else {
-    const clientWhere = tenantId ? { tenantId } : {};
-    if (responseWhere.createdAt) {
-      clientWhere.createdAt = responseWhere.createdAt;
-    }
+    const clientWhere = buildWhereClause({ tenantId, dateRange });
     totalUsers = await Client.count({ where: clientWhere });
   }
 
-  const cupomWhere = { ...responseWhere };
+  const cupomWhere = buildWhereClause({ tenantId, surveyId, dateRange });
   const couponsGenerated = await Cupom.count({ where: cupomWhere });
 
-  const couponsUsedWhere = { status: "used" };
-  if (tenantId) couponsUsedWhere.tenantId = tenantId;
-  if (surveyId) couponsUsedWhere.pesquisaId = surveyId;
-  if (responseWhere.createdAt) {
-    couponsUsedWhere.updatedAt = responseWhere.createdAt;
-  }
+  const couponsUsedWhere = buildWhereClause({
+    tenantId,
+    surveyId,
+    dateRange,
+    dateField: "updatedAt",
+  });
+  couponsUsedWhere.status = "used";
 
   const couponsUsed = await Cupom.count({ where: couponsUsedWhere });
 
@@ -157,19 +147,13 @@ const getConversionChart = async (
 const getNpsTrendData = async (
   tenantId = null,
   period = "day",
-  startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null, // Changed parameter name
+  startDateStr = null,
+  endDateStr = null,
   surveyId = null,
 ) => {
-  const whereClause = tenantId
-    ? { tenantId, ratingValue: { [Op.ne]: null } }
-    : { ratingValue: { [Op.ne]: null } };
-  if (surveyId) whereClause.pesquisaId = surveyId;
-
-  // Use the already processed UTC Date objects
-  if (startOfDayUtc && endOfDayUtc) {
-    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
-  }
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  const whereClause = buildWhereClause({ tenantId, surveyId, dateRange });
+  whereClause.ratingValue = { [Op.ne]: null };
 
   const trendData = await Resposta.findAll({
     where: whereClause,
@@ -215,19 +199,13 @@ const getNpsTrendData = async (
 const getCsatTrendData = async (
   tenantId = null,
   period = "day",
-  startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null, // Changed parameter name
+  startDateStr = null,
+  endDateStr = null,
   surveyId = null,
 ) => {
-  const whereClause = tenantId
-    ? { tenantId, ratingValue: { [Op.ne]: null } }
-    : { ratingValue: { [Op.ne]: null } };
-  if (surveyId) whereClause.pesquisaId = surveyId;
-
-  // Use the already processed UTC Date objects
-  if (startOfDayUtc && endOfDayUtc) {
-    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
-  }
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  const whereClause = buildWhereClause({ tenantId, surveyId, dateRange });
+  whereClause.ratingValue = { [Op.ne]: null };
 
   const trendData = await Resposta.findAll({
     where: whereClause,
@@ -267,17 +245,12 @@ const getCsatTrendData = async (
 const getResponseCountTrendData = async (
   tenantId = null,
   period = "day",
-  startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null, // Changed parameter name
+  startDateStr = null,
+  endDateStr = null,
   surveyId = null,
 ) => {
-  const whereClause = tenantId ? { tenantId } : {};
-  if (surveyId) whereClause.pesquisaId = surveyId;
-
-  // Use the already processed UTC Date objects
-  if (startOfDayUtc && endOfDayUtc) {
-    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
-  }
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  const whereClause = buildWhereClause({ tenantId, surveyId, dateRange });
 
   const trendData = await Resposta.findAll({
     where: whereClause,
@@ -299,16 +272,12 @@ const getResponseCountTrendData = async (
 const getRegistrationTrendData = async (
   tenantId = null,
   period = "day",
-  startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null, // Changed parameter name
+  startDateStr = null,
+  endDateStr = null,
   surveyId = null,
 ) => {
-  const whereClause = tenantId ? { tenantId } : {};
-
-  // Use the already processed UTC Date objects
-  if (startOfDayUtc && endOfDayUtc) {
-    whereClause.createdAt = { [Op.gte]: startOfDayUtc, [Op.lte]: endOfDayUtc };
-  }
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  const whereClause = buildWhereClause({ tenantId, surveyId, dateRange });
 
   const trendData = await Client.findAll({
     where: whereClause,
@@ -330,32 +299,34 @@ const getRegistrationTrendData = async (
 const getEvolutionDashboard = async function (
   tenantId = null,
   period = "day",
-  startOfDayUtc = null, // Changed parameter name
-  endOfDayUtc = null, // Changed parameter name
-) {
+  startDateStr = null,
+  endDateStr = null,
+) => {
+  const dateRange = getUtcDateRange(startDateStr, endDateStr);
+  
   const npsTrend = await getNpsTrendData(
     tenantId,
     period,
-    startOfDayUtc,
-    endOfDayUtc,
+    dateRange.startDate,
+    dateRange.endDate,
   );
   const csatTrend = await getCsatTrendData(
     tenantId,
     period,
-    startOfDayUtc,
-    endOfDayUtc,
+    dateRange.startDate,
+    dateRange.endDate,
   );
   const responseCountTrend = await getResponseCountTrendData(
     tenantId,
     period,
-    startOfDayUtc,
-    endOfDayUtc,
+    dateRange.startDate,
+    dateRange.endDate,
   );
   const registrationTrend = await getRegistrationTrendData(
     tenantId,
     period,
-    startOfDayUtc,
-    endOfDayUtc,
+    dateRange.startDate,
+    dateRange.endDate,
   );
 
   const evolutionData = {};

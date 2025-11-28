@@ -14,6 +14,7 @@ const recompensaRepository = require("../repositories/recompensaRepository");
 const roletaRepository = require("../repositories/roletaRepository");
 const whatsappService = require("../services/whatsappService");
 const { v4: uuidv4 } = require("uuid");
+const { CampanhaLog } = require("../models");
 
 const birthdayTask = cron.schedule(
   "0 9 * * *",
@@ -35,6 +36,7 @@ const birthdayTask = cron.schedule(
 
         const today = startOfDay(now());
         const birthdayDate = addDays(today, config.birthdayDaysBefore);
+        const currentYear = today.getFullYear();
 
         const clients = await clientRepository.findClientsByBirthdayMonthAndDay(
           getMonth(birthdayDate) + 1,
@@ -44,6 +46,18 @@ const birthdayTask = cron.schedule(
 
         for (const client of clients) {
           try {
+            // Verificar se o log de aniversário para este ano já existe
+            const existingLog = await CampanhaLog.findOne({
+              where: {
+                clienteId: client.id,
+                variant: `birthday-automation-${currentYear}`,
+              },
+            });
+            if (existingLog) {
+              console.log(`[BirthdayJob] Mensagem de aniversário para ${client.name} já foi enviada este ano. Pulando.`);
+              continue;
+            }
+
             let rewardName = "";
             let cupomCode = "";
             let novoCupom = null;
@@ -94,7 +108,7 @@ const birthdayTask = cron.schedule(
             // 2. Enviar Mensagem
             if (client.phone && novoCupom) {
               const whatsappConfig =
-                await whatsappConfigRepository.findByTenantId(config.tenantId);
+                await whatsappConfigRepository.findByTenant(config.tenantId);
 
               if (whatsappConfig && whatsappConfig.birthdayAutomationEnabled) {
                 let message = whatsappConfig.birthdayMessageTemplate;
@@ -107,6 +121,16 @@ const birthdayTask = cron.schedule(
                   client.phone,
                   message,
                 );
+                
+                // 3. Criar log de campanha
+                await CampanhaLog.create({
+                  campanhaId: null, // Nenhum ID de campanha formal
+                  clienteId: client.id,
+                  status: 'sent',
+                  variant: `birthday-automation-${currentYear}`,
+                  sentAt: new Date(),
+                });
+
                 console.log(
                   `[BirthdayJob] Mensagem de aniversário enviada para ${client.name} (${client.phone}) do tenant ${config.tenantId}`,
                 );

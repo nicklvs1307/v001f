@@ -1,33 +1,1500 @@
- => ERROR [build 6/6] RUN npm run build                                                      287.3s
-------
- > [build 6/6] RUN npm run build:
-0.850
-0.850 > frontend@0.1.0 build
-0.850 > react-scripts build
-0.850
-2.642 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-4.579 Creating an optimized production build...
-281.4 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-286.9 Failed to compile.
-286.9
-286.9 [eslint]
-286.9 src/components/relatorios/Dashboard.js
-286.9   Line 71:22:   'CardHeader' is not defined  react/jsx-no-undef
-286.9   Line 91:22:   'CardHeader' is not defined  react/jsx-no-undef
-286.9   Line 117:22:  'CardHeader' is not defined  react/jsx-no-undef
-286.9   Line 143:22:  'CardHeader' is not defined  react/jsx-no-undef
-286.9   Line 166:22:  'CardHeader' is not defined  react/jsx-no-undef
-286.9
-286.9 Search for the keywords to learn more about each error.
-286.9
-286.9
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."status" = 'used';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+[Auth Middleware] Request: POST /api/auth/verify-token
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+[Auth Middleware] Request: GET /api/dashboard/summary
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+[Auth Middleware] Request: GET /api/dashboard/response-chart
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+[Auth Middleware] Request: GET /api/dashboard/attendants-performance
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+[Auth Middleware] Request: GET /api/dashboard/surveys-responded-chart
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+[Auth Middleware] Request: GET /api/dashboard/nps-criteria
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+[Auth Middleware] Request: GET /api/dashboard/recent-feedbacks
+[Auth Middleware] Request: GET /api/dashboard/conversion-chart
+[Auth Middleware] Request: GET /api/dashboard/nps-trend?period=day
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT date_trunc('day', "createdAt") AS "period", COUNT("id") AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' GROUP BY date_trunc('day', "createdAt") ORDER BY date_trunc('day', "createdAt") ASC;
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT date_trunc('day', "createdAt") AS "period", COUNT(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."respondentSessionId" IS NOT NULL GROUP BY date_trunc('day', "createdAt") ORDER BY date_trunc('day', "createdAt") ASC;
+Executing (default): SELECT "Atendente"."id", "Atendente"."tenantId", "Atendente"."name", "Atendente"."code", "Atendente"."status", "Atendente"."createdAt", "Atendente"."updatedAt", "meta"."id" AS "meta.id", "meta"."atendenteId" AS "meta.atendenteId", "meta"."tenantId" AS "meta.tenantId", "meta"."npsGoal" AS "meta.npsGoal", "meta"."responsesGoal" AS "meta.responsesGoal", "meta"."registrationsGoal" AS "meta.registrationsGoal", "meta"."createdAt" AS "meta.createdAt", "meta"."updatedAt" AS "meta.updatedAt" FROM "atendentes" AS "Atendente" LEFT OUTER JOIN "atendente_metas" AS "meta" ON "Atendente"."id" = "meta"."atendenteId" WHERE "Atendente"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Atendente"."status" = 'active';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count("Resposta"."id") AS "count" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "clients" AS "client" ON "Resposta"."respondentSessionId" = "client"."respondentSessionId" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."textValue" != '';
+Executing (default): SELECT "Resposta"."id", "Resposta"."createdAt", "Resposta"."textValue", "Resposta"."ratingValue", "Resposta"."respondentSessionId", "client"."id" AS "client.id", "client"."name" AS "client.name" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "clients" AS "client" ON "Resposta"."respondentSessionId" = "client"."respondentSessionId" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."textValue" != '' ORDER BY "Resposta"."createdAt" DESC LIMIT 10 OFFSET 0;
+Executing (default): SELECT "Criterio"."id", "Criterio"."tenantId", "Criterio"."name", "Criterio"."description", "Criterio"."type", "Criterio"."createdAt", "Criterio"."updatedAt", "perguntas"."id" AS "perguntas.id", "perguntas"."type" AS "perguntas.type", "perguntas->respostas"."id" AS "perguntas.respostas.id", "perguntas->respostas"."ratingValue" AS "perguntas.respostas.ratingValue" FROM "criterios" AS "Criterio" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Criterio"."id" = "perguntas"."criterioId" LEFT OUTER JOIN "respostas" AS "perguntas->respostas" ON "perguntas"."id" = "perguntas->respostas"."perguntaId" AND "perguntas->respostas"."ratingValue" IS NOT NULL WHERE "Criterio"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' ORDER BY "Criterio"."name" ASC;
+Executing (default): SELECT count(*) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT date_trunc('day', "Resposta"."createdAt") AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' GROUP BY date_trunc('day', "Resposta"."createdAt") ORDER BY date_trunc('day', "Resposta"."createdAt") ASC;
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."atendenteId" IN ('87ccfbbd-4e8c-41ec-afc9-b3e14aacfdb0', '67781806-855c-4e48-bf39-d1305176420a', '4622ee0a-c73c-435e-9488-449479cb4bf5', 'c1592940-6ac2-4f9a-8108-b51731e055fe', '8ca6325c-8827-4cbf-982c-d734dcb66116', '03c09f2f-c16b-4b42-b992-b78bfdfc55d7', 'f7fbfea4-3fd0-4eba-9839-d3a024a26687', 'e1e57c66-5381-4734-a24c-ecddfa5d3d86', 'd1ec3ff8-81b0-4d89-9d7b-9da2f859fc07');
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."status" = 'used';
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+Running scheduled job: Reset Sender Daily Counts
+[SenderPoolService] Resetando contagem diária de mensagens...
+[Job] Iniciando verificação de cupons expirados...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): UPDATE "WhatsappSenders" SET "messagesSentToday"=$1,"updatedAt"=$2 WHERE "messagesSentToday" > 0
+Executing (default): UPDATE "cupons" SET "status"=$1,"updatedAt"=$2 WHERE "status" = $3 AND "dataValidade" < '2025-11-28 00:00:00.000 +00:00'
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SenderPoolService] Contagem diária resetada.
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[Job] 2 cupons foram atualizados para 'expirado'.
+[Job] Verificação de cupons expirados concluída.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[WARMING_UP_PROGRESS] Iniciando progressão de aquecimento dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" = 'warming_up';
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[WARMING_UP_PROGRESS] Nenhum disparador em aquecimento encontrado.
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[Auth Middleware] Request: POST /api/auth/verify-token
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executando a tarefa de relatório diário...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."dailyReportEnabled" = true AND ("WhatsappConfig"."reportPhoneNumbers" IS NOT NULL AND "WhatsappConfig"."reportPhoneNumbers" != '');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Encontradas 2 configurações para receber relatórios.
+Gerando relatório para o tenantId: eb629ea8-7d69-47a1-b1f1-f9dcb33475f4
+Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt", "reportPhoneNumber" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-11-27 00:00:00.000 +00:00' AND '2025-11-27 23:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-11-27 00:00:00.000 +00:00' AND '2025-11-27 23:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Client"."createdAt" BETWEEN '2025-11-27 00:00:00.000 +00:00' AND '2025-11-27 23:59:59.999 +00:00';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-11-27 00:00:00.000 +00:00' AND '2025-11-27 23:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."createdAt" BETWEEN '2025-11-27 00:00:00.000 +00:00' AND '2025-11-27 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."updatedAt" BETWEEN '2025-11-27 00:00:00.000 +00:00' AND '2025-11-27 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-11-26 00:00:00.000 +00:00' AND '2025-11-26 23:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-11-26 00:00:00.000 +00:00' AND '2025-11-26 23:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Client"."createdAt" BETWEEN '2025-11-26 00:00:00.000 +00:00' AND '2025-11-26 23:59:59.999 +00:00';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-11-26 00:00:00.000 +00:00' AND '2025-11-26 23:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."createdAt" BETWEEN '2025-11-26 00:00:00.000 +00:00' AND '2025-11-26 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."updatedAt" BETWEEN '2025-11-26 00:00:00.000 +00:00' AND '2025-11-26 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
+[WhatsApp Service] Enviando mensagem de tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4 para: 553591090766@s.whatsapp.net
+[WhatsApp Service] Falha ao enviar mensagem para o tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4. Número: 553591090766.
+[WhatsApp Service] Erro detalhado da API: {
+  "status": 400,
+  "error": "Bad Request",
+  "response": {
+    "message": [
+      "Error: Connection Closed"
+    ]
+  }
+}
+Gerando relatório para o tenantId: 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd
+Falha ao gerar relatório para o tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4: AxiosError: Request failed with status code 400
+    at settle (/usr/src/app/node_modules/axios/dist/node/axios.cjs:2106:12)
+    at IncomingMessage.handleStreamEnd (/usr/src/app/node_modules/axios/dist/node/axios.cjs:3491:11)
+    at IncomingMessage.emit (node:events:529:35)
+    at endReadableNT (node:internal/streams/readable:1400:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+    at Axios.request (/usr/src/app/node_modules/axios/dist/node/axios.cjs:4731:41)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Object.sendTenantMessage (/usr/src/app/src/services/whatsappService.js:105:22)
+    at async cron.schedule.scheduled (/usr/src/app/src/jobs/dailyReportJob.js:96:13)
+    at async Timeout._onTimeout (/usr/src/app/node_modules/node-cron/dist/cjs/scheduler/runner.js:70:44) {
+  code: 'ERR_BAD_REQUEST',
+  config: {
+    transitional: {
+      silentJSONParsing: true,
+      forcedJSONParsing: true,
+      clarifyTimeoutError: false
+    },
+    adapter: [ 'xhr', 'http', 'fetch' ],
+    transformRequest: [ [Function: transformRequest] ],
+    transformResponse: [ [Function: transformResponse] ],
+    timeout: 0,
+    xsrfCookieName: 'XSRF-TOKEN',
+    xsrfHeaderName: 'X-XSRF-TOKEN',
+    maxContentLength: -1,
+    maxBodyLength: -1,
+    env: { FormData: [Function], Blob: [class Blob] },
+    validateStatus: [Function: validateStatus],
+    headers: Object [AxiosHeaders] {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+      apikey: '9df82dcbee60ce08f6ca93aa4024ca6c',
+      'User-Agent': 'axios/1.13.2',
+      'Content-Length': '480',
+      'Accept-Encoding': 'gzip, compress, deflate, br'
+    },
+    method: 'post',
+    url: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+    data: '{"number":"553591090766@s.whatsapp.net","text":"*Relatorio Diario Roma Pizzaria & Chopperia*\\n\\nAqui está o resumo da experiência dos seus clientes no dia 27/11/2025!\\n📊 Total de respostas: 2 (⬆ 2 respostas em relação 26/11/2025)\\n🟢 Número de Promotores: 2\\n🟡 Número de Neutros: 0\\n🔴 Número de Detratores: 0\\n\\n🔗 Para acessar o sistema, visite https://voltaki.towersfy.com/relatorios/diario?date=2025-11-27","options":{"delay":1200,"presence":"composing"}}',
+    allowAbsoluteUrls: true
+  },
+  request: <ref *1> ClientRequest {
+    _events: [Object: null prototype] {
+      abort: [Function (anonymous)],
+      aborted: [Function (anonymous)],
+      connect: [Function (anonymous)],
+      error: [Function (anonymous)],
+      socket: [Function (anonymous)],
+      timeout: [Function (anonymous)],
+      finish: [Function: requestOnFinish]
+    },
+    _eventsCount: 7,
+    _maxListeners: undefined,
+    outputData: [],
+    outputSize: 0,
+    writable: true,
+    destroyed: false,
+    _last: true,
+    chunkedEncoding: false,
+    shouldKeepAlive: false,
+    maxRequestsOnConnectionReached: false,
+    _defaultKeepAlive: true,
+    useChunkedEncodingByDefault: true,
+    sendDate: false,
+    _removedConnection: false,
+    _removedContLen: false,
+    _removedTE: false,
+    strictContentLength: false,
+    _contentLength: '480',
+    _hasBody: true,
+    _trailer: '',
+    finished: true,
+    _headerSent: true,
+    _closed: false,
+    socket: TLSSocket {
+      _tlsOptions: [Object],
+      _secureEstablished: true,
+      _securePending: false,
+      _newSessionPending: false,
+      _controlReleased: true,
+      secureConnecting: false,
+      _SNICallback: null,
+      servername: 'evolution2.towersfy.com',
+      alpnProtocol: false,
+      authorized: true,
+      authorizationError: null,
+      encrypted: true,
+      _events: [Object: null prototype],
+      _eventsCount: 10,
+      connecting: false,
+      _hadError: false,
+      _parent: null,
+      _host: 'evolution2.towersfy.com',
+      _closeAfterHandlingError: false,
+      _readableState: [ReadableState],
+      _maxListeners: undefined,
+      _writableState: [WritableState],
+      allowHalfOpen: false,
+      _sockname: null,
+      _pendingData: null,
+      _pendingEncoding: '',
+      server: undefined,
+      _server: null,
+      ssl: [TLSWrap],
+      _requestCert: true,
+      _rejectUnauthorized: true,
+      parser: null,
+      _httpMessage: [Circular *1],
+      timeout: 0,
+      [Symbol(alpncallback)]: null,
+      [Symbol(res)]: [TLSWrap],
+      [Symbol(verified)]: true,
+      [Symbol(pendingSession)]: null,
+      [Symbol(async_id_symbol)]: 48987,
+      [Symbol(kHandle)]: [TLSWrap],
+      [Symbol(lastWriteQueueSize)]: 0,
+      [Symbol(timeout)]: null,
+      [Symbol(kBuffer)]: null,
+      [Symbol(kBufferCb)]: null,
+      [Symbol(kBufferGen)]: null,
+      [Symbol(kCapture)]: false,
+      [Symbol(kSetNoDelay)]: false,
+      [Symbol(kSetKeepAlive)]: true,
+      [Symbol(kSetKeepAliveInitialDelay)]: 60,
+      [Symbol(kBytesRead)]: 0,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(connect-options)]: [Object]
+    },
+    _header: 'POST /message/sendText/roma-pizzaria--chopperia HTTP/1.1\r\n' +
+      'Accept: application/json, text/plain, */*\r\n' +
+      'Content-Type: application/json\r\n' +
+      'apikey: 9df82dcbee60ce08f6ca93aa4024ca6c\r\n' +
+      'User-Agent: axios/1.13.2\r\n' +
+      'Content-Length: 480\r\n' +
+      'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+      'Host: evolution2.towersfy.com\r\n' +
+      'Connection: close\r\n' +
+      '\r\n',
+    _keepAliveTimeout: 0,
+    _onPendingData: [Function: nop],
+    agent: Agent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      defaultPort: 443,
+      protocol: 'https:',
+      options: [Object: null prototype],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      maxCachedSessions: 100,
+      _sessionCache: [Object],
+      [Symbol(kCapture)]: false
+    },
+    socketPath: undefined,
+    method: 'POST',
+    maxHeaderSize: undefined,
+    insecureHTTPParser: undefined,
+    joinDuplicateHeaders: undefined,
+    path: '/message/sendText/roma-pizzaria--chopperia',
+    _ended: true,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [TLSSocket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      rawHeaders: [Array],
+      rawTrailers: [],
+      joinDuplicateHeaders: undefined,
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 400,
+      statusMessage: 'Bad Request',
+      client: [TLSSocket],
+      _consuming: false,
+      _dumped: false,
+      req: [Circular *1],
+      responseUrl: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+      redirects: [],
+      [Symbol(kCapture)]: false,
+      [Symbol(kHeaders)]: [Object],
+      [Symbol(kHeadersCount)]: 16,
+      [Symbol(kTrailers)]: null,
+      [Symbol(kTrailersCount)]: 0
+    },
+    aborted: false,
+    timeoutCb: null,
+    upgradeOrConnect: false,
+    parser: null,
+    maxHeadersCount: null,
+    reusedSocket: false,
+    host: 'evolution2.towersfy.com',
+    protocol: 'https:',
+    _redirectable: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: true,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 480,
+      _requestBodyBuffers: [],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [Circular *1],
+      _currentUrl: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+      _timeout: null,
+      [Symbol(kCapture)]: false
+    },
+    [Symbol(kCapture)]: false,
+    [Symbol(kBytesWritten)]: 0,
+    [Symbol(kNeedDrain)]: false,
+    [Symbol(corked)]: 0,
+    [Symbol(kOutHeaders)]: [Object: null prototype] {
+      accept: [Array],
+      'content-type': [Array],
+      apikey: [Array],
+      'user-agent': [Array],
+      'content-length': [Array],
+      'accept-encoding': [Array],
+      host: [Array]
+    },
+    [Symbol(errored)]: null,
+    [Symbol(kHighWaterMark)]: 16384,
+    [Symbol(kRejectNonStandardBodyWrites)]: false,
+    [Symbol(kUniqueHeaders)]: null
+  },
+  response: {
+    status: 400,
+    statusText: 'Bad Request',
+    headers: Object [AxiosHeaders] {
+      'access-control-allow-credentials': 'true',
+      'content-length': '88',
+      'content-type': 'application/json; charset=utf-8',
+      date: 'Fri, 28 Nov 2025 11:00:01 GMT',
+      etag: 'W/"58-luORTrMNcYV78fp2NKBqCiXUnFo"',
+      vary: 'Origin, Accept-Encoding',
+      'x-powered-by': 'Express',
+      connection: 'close'
+    },
+    config: {
+      transitional: [Object],
+      adapter: [Array],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      env: [Object],
+      validateStatus: [Function: validateStatus],
+      headers: [Object [AxiosHeaders]],
+      method: 'post',
+      url: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+      data: '{"number":"553591090766@s.whatsapp.net","text":"*Relatorio Diario Roma Pizzaria & Chopperia*\\n\\nAqui está o resumo da experiência dos seus clientes no dia 27/11/2025!\\n📊 Total de respostas: 2 (⬆ 2 respostas em relação 26/11/2025)\\n🟢 Número de Promotores: 2\\n🟡 Número de Neutros: 0\\n🔴 Número de Detratores: 0\\n\\n🔗 Para acessar o sistema, visite https://voltaki.towersfy.com/relatorios/diario?date=2025-11-27","options":{"delay":1200,"presence":"composing"}}',
+      allowAbsoluteUrls: true
+    },
+    request: <ref *1> ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 7,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      destroyed: false,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      maxRequestsOnConnectionReached: false,
+      _defaultKeepAlive: true,
+      useChunkedEncodingByDefault: true,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      strictContentLength: false,
+      _contentLength: '480',
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      _closed: false,
+      socket: [TLSSocket],
+      _header: 'POST /message/sendText/roma-pizzaria--chopperia HTTP/1.1\r\n' +
+        'Accept: application/json, text/plain, */*\r\n' +
+        'Content-Type: application/json\r\n' +
+        'apikey: 9df82dcbee60ce08f6ca93aa4024ca6c\r\n' +
+        'User-Agent: axios/1.13.2\r\n' +
+        'Content-Length: 480\r\n' +
+        'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+        'Host: evolution2.towersfy.com\r\n' +
+        'Connection: close\r\n' +
+        '\r\n',
+      _keepAliveTimeout: 0,
+      _onPendingData: [Function: nop],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'POST',
+      maxHeaderSize: undefined,
+      insecureHTTPParser: undefined,
+      joinDuplicateHeaders: undefined,
+      path: '/message/sendText/roma-pizzaria--chopperia',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      host: 'evolution2.towersfy.com',
+      protocol: 'https:',
+      _redirectable: [Writable],
+      [Symbol(kCapture)]: false,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype],
+      [Symbol(errored)]: null,
+      [Symbol(kHighWaterMark)]: 16384,
+      [Symbol(kRejectNonStandardBodyWrites)]: false,
+      [Symbol(kUniqueHeaders)]: null
+    },
+    data: { status: 400, error: 'Bad Request', response: [Object] }
+  },
+  status: 400
+}
+Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt", "reportPhoneNumber" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Resposta"."createdAt" BETWEEN '2025-11-27 00:00:00.000 +00:00' AND '2025-11-27 23:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Resposta"."createdAt" BETWEEN '2025-11-27 00:00:00.000 +00:00' AND '2025-11-27 23:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Client"."createdAt" BETWEEN '2025-11-27 00:00:00.000 +00:00' AND '2025-11-27 23:59:59.999 +00:00';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Resposta"."createdAt" BETWEEN '2025-11-27 00:00:00.000 +00:00' AND '2025-11-27 23:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Cupom"."createdAt" BETWEEN '2025-11-27 00:00:00.000 +00:00' AND '2025-11-27 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Cupom"."updatedAt" BETWEEN '2025-11-27 00:00:00.000 +00:00' AND '2025-11-27 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Resposta"."createdAt" BETWEEN '2025-11-26 00:00:00.000 +00:00' AND '2025-11-26 23:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Resposta"."createdAt" BETWEEN '2025-11-26 00:00:00.000 +00:00' AND '2025-11-26 23:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Client"."createdAt" BETWEEN '2025-11-26 00:00:00.000 +00:00' AND '2025-11-26 23:59:59.999 +00:00';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Resposta"."createdAt" BETWEEN '2025-11-26 00:00:00.000 +00:00' AND '2025-11-26 23:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Cupom"."createdAt" BETWEEN '2025-11-26 00:00:00.000 +00:00' AND '2025-11-26 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Cupom"."updatedAt" BETWEEN '2025-11-26 00:00:00.000 +00:00' AND '2025-11-26 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
+[WhatsApp Service] Enviando mensagem de tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd para: 5535998374007@s.whatsapp.net
+[WhatsApp Service] Falha ao enviar mensagem para o tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd. Número: 5535998374007.
+[WhatsApp Service] Erro detalhado da API: {
+  "status": 400,
+  "error": "Bad Request",
+  "response": {
+    "message": [
+      "Error: Connection Closed"
+    ]
+  }
+}
+Tarefa de relatório diário concluída.
+Falha ao gerar relatório para o tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd: AxiosError: Request failed with status code 400
+    at settle (/usr/src/app/node_modules/axios/dist/node/axios.cjs:2106:12)
+    at IncomingMessage.handleStreamEnd (/usr/src/app/node_modules/axios/dist/node/axios.cjs:3491:11)
+    at IncomingMessage.emit (node:events:529:35)
+    at endReadableNT (node:internal/streams/readable:1400:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+    at Axios.request (/usr/src/app/node_modules/axios/dist/node/axios.cjs:4731:41)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Object.sendTenantMessage (/usr/src/app/src/services/whatsappService.js:105:22)
+    at async cron.schedule.scheduled (/usr/src/app/src/jobs/dailyReportJob.js:96:13)
+    at async Timeout._onTimeout (/usr/src/app/node_modules/node-cron/dist/cjs/scheduler/runner.js:70:44) {
+  code: 'ERR_BAD_REQUEST',
+  config: {
+    transitional: {
+      silentJSONParsing: true,
+      forcedJSONParsing: true,
+      clarifyTimeoutError: false
+    },
+    adapter: [ 'xhr', 'http', 'fetch' ],
+    transformRequest: [ [Function: transformRequest] ],
+    transformResponse: [ [Function: transformResponse] ],
+    timeout: 0,
+    xsrfCookieName: 'XSRF-TOKEN',
+    xsrfHeaderName: 'X-XSRF-TOKEN',
+    maxContentLength: -1,
+    maxBodyLength: -1,
+    env: { FormData: [Function], Blob: [class Blob] },
+    validateStatus: [Function: validateStatus],
+    headers: Object [AxiosHeaders] {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+      apikey: '9df82dcbee60ce08f6ca93aa4024ca6c',
+      'User-Agent': 'axios/1.13.2',
+      'Content-Length': '484',
+      'Accept-Encoding': 'gzip, compress, deflate, br'
+    },
+    method: 'post',
+    url: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperiaaa',
+    data: '{"number":"5535998374007@s.whatsapp.net","text":"*Relatorio Diario Roma Pizzaria & Chopperiaaa*\\n\\nAqui está o resumo da experiência dos seus clientes no dia 27/11/2025!\\n📊 Total de respostas: 0 (⬇ -2 respostas em relação 26/11/2025)\\n🟢 Número de Promotores: 0\\n🟡 Número de Neutros: 0\\n🔴 Número de Detratores: 0\\n\\n🔗 Para acessar o sistema, visite https://voltaki.towersfy.com/relatorios/diario?date=2025-11-27","options":{"delay":1200,"presence":"composing"}}',
+    allowAbsoluteUrls: true
+  },
+  request: <ref *1> ClientRequest {
+    _events: [Object: null prototype] {
+      abort: [Function (anonymous)],
+      aborted: [Function (anonymous)],
+      connect: [Function (anonymous)],
+      error: [Function (anonymous)],
+      socket: [Function (anonymous)],
+      timeout: [Function (anonymous)],
+      finish: [Function: requestOnFinish]
+    },
+    _eventsCount: 7,
+    _maxListeners: undefined,
+    outputData: [],
+    outputSize: 0,
+    writable: true,
+    destroyed: false,
+    _last: true,
+    chunkedEncoding: false,
+    shouldKeepAlive: false,
+    maxRequestsOnConnectionReached: false,
+    _defaultKeepAlive: true,
+    useChunkedEncodingByDefault: true,
+    sendDate: false,
+    _removedConnection: false,
+    _removedContLen: false,
+    _removedTE: false,
+    strictContentLength: false,
+    _contentLength: '484',
+    _hasBody: true,
+    _trailer: '',
+    finished: true,
+    _headerSent: true,
+    _closed: false,
+    socket: TLSSocket {
+      _tlsOptions: [Object],
+      _secureEstablished: true,
+      _securePending: false,
+      _newSessionPending: false,
+      _controlReleased: true,
+      secureConnecting: false,
+      _SNICallback: null,
+      servername: 'evolution2.towersfy.com',
+      alpnProtocol: false,
+      authorized: true,
+      authorizationError: null,
+      encrypted: true,
+      _events: [Object: null prototype],
+      _eventsCount: 10,
+      connecting: false,
+      _hadError: false,
+      _parent: null,
+      _host: 'evolution2.towersfy.com',
+      _closeAfterHandlingError: false,
+      _readableState: [ReadableState],
+      _maxListeners: undefined,
+      _writableState: [WritableState],
+      allowHalfOpen: false,
+      _sockname: null,
+      _pendingData: null,
+      _pendingEncoding: '',
+      server: undefined,
+      _server: null,
+      ssl: [TLSWrap],
+      _requestCert: true,
+      _rejectUnauthorized: true,
+      parser: null,
+      _httpMessage: [Circular *1],
+      timeout: 0,
+      [Symbol(alpncallback)]: null,
+      [Symbol(res)]: [TLSWrap],
+      [Symbol(verified)]: true,
+      [Symbol(pendingSession)]: null,
+      [Symbol(async_id_symbol)]: 49080,
+      [Symbol(kHandle)]: [TLSWrap],
+      [Symbol(lastWriteQueueSize)]: 0,
+      [Symbol(timeout)]: null,
+      [Symbol(kBuffer)]: null,
+      [Symbol(kBufferCb)]: null,
+      [Symbol(kBufferGen)]: null,
+      [Symbol(kCapture)]: false,
+      [Symbol(kSetNoDelay)]: false,
+      [Symbol(kSetKeepAlive)]: true,
+      [Symbol(kSetKeepAliveInitialDelay)]: 60,
+      [Symbol(kBytesRead)]: 0,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(connect-options)]: [Object]
+    },
+    _header: 'POST /message/sendText/roma-pizzaria--chopperiaaa HTTP/1.1\r\n' +
+      'Accept: application/json, text/plain, */*\r\n' +
+      'Content-Type: application/json\r\n' +
+      'apikey: 9df82dcbee60ce08f6ca93aa4024ca6c\r\n' +
+      'User-Agent: axios/1.13.2\r\n' +
+      'Content-Length: 484\r\n' +
+      'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+      'Host: evolution2.towersfy.com\r\n' +
+      'Connection: close\r\n' +
+      '\r\n',
+    _keepAliveTimeout: 0,
+    _onPendingData: [Function: nop],
+    agent: Agent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      defaultPort: 443,
+      protocol: 'https:',
+      options: [Object: null prototype],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      maxCachedSessions: 100,
+      _sessionCache: [Object],
+      [Symbol(kCapture)]: false
+    },
+    socketPath: undefined,
+    method: 'POST',
+    maxHeaderSize: undefined,
+    insecureHTTPParser: undefined,
+    joinDuplicateHeaders: undefined,
+    path: '/message/sendText/roma-pizzaria--chopperiaaa',
+    _ended: true,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [TLSSocket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      rawHeaders: [Array],
+      rawTrailers: [],
+      joinDuplicateHeaders: undefined,
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 400,
+      statusMessage: 'Bad Request',
+      client: [TLSSocket],
+      _consuming: false,
+      _dumped: false,
+      req: [Circular *1],
+      responseUrl: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperiaaa',
+      redirects: [],
+      [Symbol(kCapture)]: false,
+      [Symbol(kHeaders)]: [Object],
+      [Symbol(kHeadersCount)]: 16,
+      [Symbol(kTrailers)]: null,
+      [Symbol(kTrailersCount)]: 0
+    },
+    aborted: false,
+    timeoutCb: null,
+    upgradeOrConnect: false,
+    parser: null,
+    maxHeadersCount: null,
+    reusedSocket: false,
+    host: 'evolution2.towersfy.com',
+    protocol: 'https:',
+    _redirectable: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: true,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 484,
+      _requestBodyBuffers: [],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [Circular *1],
+      _currentUrl: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperiaaa',
+      _timeout: null,
+      [Symbol(kCapture)]: false
+    },
+    [Symbol(kCapture)]: false,
+    [Symbol(kBytesWritten)]: 0,
+    [Symbol(kNeedDrain)]: false,
+    [Symbol(corked)]: 0,
+    [Symbol(kOutHeaders)]: [Object: null prototype] {
+      accept: [Array],
+      'content-type': [Array],
+      apikey: [Array],
+      'user-agent': [Array],
+      'content-length': [Array],
+      'accept-encoding': [Array],
+      host: [Array]
+    },
+    [Symbol(errored)]: null,
+    [Symbol(kHighWaterMark)]: 16384,
+    [Symbol(kRejectNonStandardBodyWrites)]: false,
+    [Symbol(kUniqueHeaders)]: null
+  },
+  response: {
+    status: 400,
+    statusText: 'Bad Request',
+    headers: Object [AxiosHeaders] {
+      'access-control-allow-credentials': 'true',
+      'content-length': '88',
+      'content-type': 'application/json; charset=utf-8',
+      date: 'Fri, 28 Nov 2025 11:00:01 GMT',
+      etag: 'W/"58-luORTrMNcYV78fp2NKBqCiXUnFo"',
+      vary: 'Origin, Accept-Encoding',
+      'x-powered-by': 'Express',
+      connection: 'close'
+    },
+    config: {
+      transitional: [Object],
+      adapter: [Array],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      env: [Object],
+      validateStatus: [Function: validateStatus],
+      headers: [Object [AxiosHeaders]],
+      method: 'post',
+      url: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperiaaa',
+      data: '{"number":"5535998374007@s.whatsapp.net","text":"*Relatorio Diario Roma Pizzaria & Chopperiaaa*\\n\\nAqui está o resumo da experiência dos seus clientes no dia 27/11/2025!\\n📊 Total de respostas: 0 (⬇ -2 respostas em relação 26/11/2025)\\n🟢 Número de Promotores: 0\\n🟡 Número de Neutros: 0\\n🔴 Número de Detratores: 0\\n\\n🔗 Para acessar o sistema, visite https://voltaki.towersfy.com/relatorios/diario?date=2025-11-27","options":{"delay":1200,"presence":"composing"}}',
+      allowAbsoluteUrls: true
+    },
+    request: <ref *1> ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 7,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      destroyed: false,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      maxRequestsOnConnectionReached: false,
+      _defaultKeepAlive: true,
+      useChunkedEncodingByDefault: true,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      strictContentLength: false,
+      _contentLength: '484',
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      _closed: false,
+      socket: [TLSSocket],
+      _header: 'POST /message/sendText/roma-pizzaria--chopperiaaa HTTP/1.1\r\n' +
+        'Accept: application/json, text/plain, */*\r\n' +
+        'Content-Type: application/json\r\n' +
+        'apikey: 9df82dcbee60ce08f6ca93aa4024ca6c\r\n' +
+        'User-Agent: axios/1.13.2\r\n' +
+        'Content-Length: 484\r\n' +
+        'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+        'Host: evolution2.towersfy.com\r\n' +
+        'Connection: close\r\n' +
+        '\r\n',
+      _keepAliveTimeout: 0,
+      _onPendingData: [Function: nop],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'POST',
+      maxHeaderSize: undefined,
+      insecureHTTPParser: undefined,
+      joinDuplicateHeaders: undefined,
+      path: '/message/sendText/roma-pizzaria--chopperiaaa',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      host: 'evolution2.towersfy.com',
+      protocol: 'https:',
+      _redirectable: [Writable],
+      [Symbol(kCapture)]: false,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype],
+      [Symbol(errored)]: null,
+      [Symbol(kHighWaterMark)]: 16384,
+      [Symbol(kRejectNonStandardBodyWrites)]: false,
+      [Symbol(kUniqueHeaders)]: null
+    },
+    data: { status: 400, error: 'Bad Request', response: [Object] }
+  },
+  status: 400
+}
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+[Job] Iniciando verificação de lembretes de cupons...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Iniciando job de automação de aniversário...
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+Executing (default): SELECT "id", "tenantId", "type", "isEnabled", "daysBefore", "message", "createdAt", "updatedAt" FROM "whatsapp_templates" AS "WhatsappTemplate" WHERE "WhatsappTemplate"."type" = 'COUPON_REMINDER' AND "WhatsappTemplate"."isEnabled" = true;
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."birthdayAutomationEnabled" = true;
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+[Job] Templates de lembrete de cupom encontrados: 2
+[Job] Processando template para o tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd com daysBefore: 8
+[Job] Data alvo para o tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd: Sat Dec 06 2025 09:00:00 GMT+0000 (Coordinated Universal Time)
+Executing (default): SELECT "Cupom"."id", "Cupom"."pesquisaId", "Cupom"."tenantId", "Cupom"."recompensaId", "Cupom"."codigo", "Cupom"."clienteId", "Cupom"."dataGeracao", "Cupom"."dataUtilizacao", "Cupom"."dataValidade", "Cupom"."status", "Cupom"."ultimoContato", "Cupom"."createdAt", "Cupom"."updatedAt", "Cupom"."campanhaId", "client"."id" AS "client.id", "client"."tenantId" AS "client.tenantId", "client"."name" AS "client.name", "client"."email" AS "client.email", "client"."phone" AS "client.phone", "client"."birthDate" AS "client.birthDate", "client"."respondentSessionId" AS "client.respondentSessionId", "client"."gender" AS "client.gender", "client"."createdAt" AS "client.createdAt", "client"."updatedAt" AS "client.updatedAt" FROM "cupons" AS "Cupom" INNER JOIN "clients" AS "client" ON "Cupom"."clienteId" = "client"."id" WHERE "Cupom"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Cupom"."status" = 'active' AND ("Cupom"."dataValidade" >= '2025-12-06 00:00:00.000 +00:00' AND "Cupom"."dataValidade" < '2025-12-06 23:59:59.999 +00:00');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.
+Executing (default): SELECT "id", "name", "phone", "birthDate" FROM "clients" AS "Client" WHERE (EXTRACT(MONTH FROM "birthDate") = 12 AND EXTRACT(DAY FROM "birthDate") = 5) AND "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+[Job] Cupons encontrados para o tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd: 0
+[Job] Processando template para o tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4 com daysBefore: 7
+[Job] Data alvo para o tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4: Fri Dec 05 2025 09:00:00 GMT+0000 (Coordinated Universal Time)
+Executing (default): SELECT "Cupom"."id", "Cupom"."pesquisaId", "Cupom"."tenantId", "Cupom"."recompensaId", "Cupom"."codigo", "Cupom"."clienteId", "Cupom"."dataGeracao", "Cupom"."dataUtilizacao", "Cupom"."dataValidade", "Cupom"."status", "Cupom"."ultimoContato", "Cupom"."createdAt", "Cupom"."updatedAt", "Cupom"."campanhaId", "client"."id" AS "client.id", "client"."tenantId" AS "client.tenantId", "client"."name" AS "client.name", "client"."email" AS "client.email", "client"."phone" AS "client.phone", "client"."birthDate" AS "client.birthDate", "client"."respondentSessionId" AS "client.respondentSessionId", "client"."gender" AS "client.gender", "client"."createdAt" AS "client.createdAt", "client"."updatedAt" AS "client.updatedAt" FROM "cupons" AS "Cupom" INNER JOIN "clients" AS "client" ON "Cupom"."clienteId" = "client"."id" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."status" = 'active' AND ("Cupom"."dataValidade" >= '2025-12-05 00:00:00.000 +00:00' AND "Cupom"."dataValidade" < '2025-12-05 23:59:59.999 +00:00');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[Job] Cupons encontrados para o tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4: 0
+[Job] Verificação de lembretes de cupons concluída.
+Executing (default): SELECT "id", "tenantId", "name", "description", "pointsRequired", "type", "value", "imageUrl", "active", "createdAt", "updatedAt" FROM "recompensas" AS "Recompensa" WHERE "Recompensa"."id" = '17ea8117-07e1-4fca-944b-8454f78079ad';
+Executing (default): INSERT INTO "cupons" ("id","tenantId","recompensaId","codigo","clienteId","dataGeracao","dataValidade","status","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING "id","pesquisaId","tenantId","recompensaId","codigo","clienteId","dataGeracao","dataUtilizacao","dataValidade","status","ultimoContato","createdAt","updatedAt","campanhaId";
+[BirthdayJob] Falha ao processar aniversário para o cliente 2df7d043-9918-4bb4-a084-fb968ec654ce do tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4: TypeError: whatsappConfigRepository.findByTenantId is not a function
+    at cron.schedule.scheduled (/usr/src/app/src/jobs/birthdayAutomationJob.js:97:48)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Timeout._onTimeout (/usr/src/app/node_modules/node-cron/dist/cjs/scheduler/runner.js:70:44)
+[Auth Middleware] Request: POST /api/auth/verify-token
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+[Auth Middleware] Request: GET /api/dashboard/summary
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+[Auth Middleware] Request: GET /api/dashboard/conversion-chart
+[Auth Middleware] Request: GET /api/dashboard/recent-feedbacks
+[Auth Middleware] Request: GET /api/dashboard/nps-criteria
+[Auth Middleware] Request: GET /api/dashboard/attendants-performance
+[Auth Middleware] Request: GET /api/dashboard/nps-trend?period=day
+[Auth Middleware] Request: GET /api/dashboard/surveys-responded-chart
+[Auth Middleware] Request: GET /api/dashboard/response-chart
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'dashboard' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count("Resposta"."id") AS "count" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "clients" AS "client" ON "Resposta"."respondentSessionId" = "client"."respondentSessionId" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."textValue" != '';
+Executing (default): SELECT "Resposta"."id", "Resposta"."createdAt", "Resposta"."textValue", "Resposta"."ratingValue", "Resposta"."respondentSessionId", "client"."id" AS "client.id", "client"."name" AS "client.name" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "clients" AS "client" ON "Resposta"."respondentSessionId" = "client"."respondentSessionId" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."textValue" != '' ORDER BY "Resposta"."createdAt" DESC LIMIT 10 OFFSET 0;
+Executing (default): SELECT date_trunc('day', "Resposta"."createdAt") AS "period", SUM(CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END) AS "promoters", SUM(CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END) AS "detractors", COUNT("Resposta"."id") AS "total" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" AND "pergunta"."type" = 'rating_0_10' WHERE "Resposta"."ratingValue" IS NOT NULL AND "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' GROUP BY date_trunc('day', "Resposta"."createdAt") ORDER BY date_trunc('day', "Resposta"."createdAt") ASC;
+Executing (default): SELECT date_trunc('day', "createdAt") AS "period", COUNT(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."respondentSessionId" IS NOT NULL GROUP BY date_trunc('day', "createdAt") ORDER BY date_trunc('day', "createdAt") ASC;
+Executing (default): SELECT date_trunc('day', "createdAt") AS "period", COUNT("id") AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' GROUP BY date_trunc('day', "createdAt") ORDER BY date_trunc('day', "createdAt") ASC;
+Executing (default): SELECT "Criterio"."id", "Criterio"."tenantId", "Criterio"."name", "Criterio"."description", "Criterio"."type", "Criterio"."createdAt", "Criterio"."updatedAt", "perguntas"."id" AS "perguntas.id", "perguntas"."type" AS "perguntas.type", "perguntas->respostas"."id" AS "perguntas.respostas.id", "perguntas->respostas"."ratingValue" AS "perguntas.respostas.ratingValue" FROM "criterios" AS "Criterio" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Criterio"."id" = "perguntas"."criterioId" LEFT OUTER JOIN "respostas" AS "perguntas->respostas" ON "perguntas"."id" = "perguntas->respostas"."perguntaId" AND "perguntas->respostas"."ratingValue" IS NOT NULL WHERE "Criterio"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' ORDER BY "Criterio"."name" ASC;
+Executing (default): SELECT "Atendente"."id", "Atendente"."tenantId", "Atendente"."name", "Atendente"."code", "Atendente"."status", "Atendente"."createdAt", "Atendente"."updatedAt", "meta"."id" AS "meta.id", "meta"."atendenteId" AS "meta.atendenteId", "meta"."tenantId" AS "meta.tenantId", "meta"."npsGoal" AS "meta.npsGoal", "meta"."responsesGoal" AS "meta.responsesGoal", "meta"."registrationsGoal" AS "meta.registrationsGoal", "meta"."createdAt" AS "meta.createdAt", "meta"."updatedAt" AS "meta.updatedAt" FROM "atendentes" AS "Atendente" LEFT OUTER JOIN "atendente_metas" AS "meta" ON "Atendente"."id" = "meta"."atendenteId" WHERE "Atendente"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Atendente"."status" = 'active';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type" FROM "respostas" AS "Resposta" LEFT OUTER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."atendenteId" IN ('87ccfbbd-4e8c-41ec-afc9-b3e14aacfdb0', '67781806-855c-4e48-bf39-d1305176420a', '4622ee0a-c73c-435e-9488-449479cb4bf5', 'c1592940-6ac2-4f9a-8108-b51731e055fe', '8ca6325c-8827-4cbf-982c-d734dcb66116', '03c09f2f-c16b-4b42-b992-b78bfdfc55d7', 'f7fbfea4-3fd0-4eba-9839-d3a024a26687', 'e1e57c66-5381-4734-a24c-ecddfa5d3d86', 'd1ec3ff8-81b0-4d89-9d7b-9da2f859fc07');
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."status" = 'used';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+[Auth Middleware] Request: GET /api/whatsapp-config/instance
+[Auth Middleware] Request: GET /api/recompensas?active=false
+[Auth Middleware] Request: GET /api/roletas
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "id", "name", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "id", "tenantId", "type", "isEnabled", "daysBefore", "message", "createdAt", "updatedAt" FROM "whatsapp_templates" AS "WhatsappTemplate" WHERE "WhatsappTemplate"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "WhatsappTemplate"."type" = 'COUPON_REMINDER' LIMIT 1;
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'recompensas' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'roletas' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT "id", "tenantId", "name", "description", "pointsRequired", "type", "value", "imageUrl", "active", "createdAt", "updatedAt" FROM "recompensas" AS "Recompensa" WHERE "Recompensa"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Recompensa"."active" = false ORDER BY "Recompensa"."name" ASC;
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
+Executing (default): SELECT "Roleta"."id", "Roleta"."tenantId", "Roleta"."nome", "Roleta"."descricao", "Roleta"."active", "Roleta"."createdAt", "Roleta"."updatedAt", "premios"."id" AS "premios.id", "premios"."tenantId" AS "premios.tenantId", "premios"."nome" AS "premios.nome", "premios"."descricao" AS "premios.descricao", "premios"."porcentagem" AS "premios.porcentagem", "premios"."cor" AS "premios.cor", "premios"."recompensaId" AS "premios.recompensaId", "premios"."roletaId" AS "premios.roletaId", "premios"."imageUrl" AS "premios.imageUrl", "premios"."active" AS "premios.active", "premios"."createdAt" AS "premios.createdAt", "premios"."updatedAt" AS "premios.updatedAt" FROM "roletas" AS "Roleta" LEFT OUTER JOIN "roleta_premios" AS "premios" ON "Roleta"."id" = "premios"."roletaId" WHERE "Roleta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): UPDATE "whatsapp_configs" SET "instanceStatus"=$1,"updatedAt"=$2 WHERE "id" = $3
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[SENDER_MONITOR] Nenhum disparador inativo encontrado.

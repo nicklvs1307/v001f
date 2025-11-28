@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     campanhaId: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
     },
     clienteId: {
       type: DataTypes.UUID,

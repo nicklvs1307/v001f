@@ -1,4 +1,4 @@
-const { Client, Cupom, Resposta } = require("../../models");
+const { Client, Cupom, Resposta, CampanhaLog, sequelize } = require("../../models");
 const sequelize = require("sequelize");
 const { Op } = sequelize;
 const { now, formatInTimeZone } = require("../utils/dateUtils");
@@ -161,21 +161,62 @@ class ClientRepository {
     });
   }
 
-  async findByBirthMonth(month, tenantId) {
-    // Cuidado: esta query pode ser lenta em bancos de dados grandes sem um índice no mês de aniversário.
+  async findBirthdayClients(tenantId, { month, searchTerm }) {
+    const whereClause = { tenantId };
+    const currentYear = new Date().getFullYear();
+
+    if (month && month !== 'all') {
+        whereClause[Op.and] = [
+            sequelize.where(sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "birthDate"')), month)
+        ];
+    }
+
+    if (searchTerm) {
+        whereClause[Op.or] = [
+            { name: { [Op.iLike]: `%${searchTerm}%` } },
+            { email: { [Op.iLike]: `%${searchTerm}%` } },
+            { phone: { [Op.iLike]: `%${searchTerm}%` } }
+        ];
+    }
+
+    // A associação precisa ser definida no modelo Client para que o alias 'birthdayLog' funcione
+    // Se não estiver, o JOIN não será criado corretamente.
+    // Assumindo que a associação será adicionada ou já existe.
+    // Vamos definir a associação dinamicamente aqui para garantir.
+    if (!Client.associations.birthdayLog) {
+        Client.hasMany(require('../../models').CampanhaLog, {
+            foreignKey: 'clienteId',
+            as: 'birthdayLog',
+        });
+    }
+
     return Client.findAll({
-      where: {
-        tenantId,
-        [Op.and]: [
-          sequelize.where(
-            sequelize.fn(
-              "EXTRACT",
-              sequelize.literal('MONTH FROM "birthDate" AT TIME ZONE \'UTC\''),
-            ),
-            month,
-          ),
+        where: whereClause,
+        include: [
+            {
+                model: require('../../models').CampanhaLog,
+                as: 'birthdayLog',
+                required: false, // LEFT JOIN
+                where: {
+                    variant: `birthday-automation-${currentYear}`
+                },
+                attributes: []
+            }
         ],
-      },
+        attributes: {
+            include: [
+                [
+                    sequelize.literal(`(CASE WHEN "birthdayLog"."id" IS NOT NULL THEN TRUE ELSE FALSE END)`),
+                    'messageSent'
+                ]
+            ]
+        },
+        order: [
+            [sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "birthDate"')), 'ASC'],
+            [sequelize.fn('EXTRACT', sequelize.literal('DAY FROM "birthDate"')), 'ASC']
+        ],
+        subQuery: false,
+        group: ['Client.id', 'birthdayLog.id'] // Adicionar group by para evitar duplicatas
     });
   }
 

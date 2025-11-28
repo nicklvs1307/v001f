@@ -328,11 +328,17 @@ exports.getClientDashboard = asyncHandler(async (req, res) => {
 // @access  Private (Admin)
 exports.getBirthdayClients = asyncHandler(async (req, res) => {
   const tenantId = req.user.tenantId;
-  const currentMonth = now().getMonth() + 1; // getMonth() retorna de 0 a 11
-  const birthdayClients = await clientRepository.findByBirthMonth(
-    currentMonth,
-    tenantId,
-  );
+  const { month, search: searchTerm } = req.query;
+
+  // Se nenhum mês for fornecido, usa o mês atual. 
+  // 'all' é uma opção para o frontend solicitar todos os meses.
+  const filterMonth = month ? (month === 'all' ? null : parseInt(month, 10)) : now().getMonth() + 1;
+
+  const birthdayClients = await clientRepository.findBirthdayClients(tenantId, { 
+    month: filterMonth, 
+    searchTerm 
+  });
+  
   res.status(200).json(birthdayClients);
 });
 

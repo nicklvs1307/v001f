@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { addDays } from 'date-fns';
+import { addDays, getMonth, getYear } from 'date-fns';
 import { getNowInLocalTimezone, formatDateForDisplay } from '../utils/dateUtils';
 import {
     Container, Typography, Box, CircularProgress, Alert, Grid, Card, CardContent, Avatar, Button,
@@ -11,6 +11,14 @@ import recompensaService from '../services/recompensaService';
 import cupomService from '../services/cupomService';
 import MessageIcon from '@mui/icons-material/Message';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+
+const months = [
+    { value: 1, label: 'Janeiro' }, { value: 2, label: 'Fevereiro' }, { value: 3, label: 'Março' },
+    { value: 4, label: 'Abril' }, { value: 5, label: 'Maio' }, { value: 6, label: 'Junho' },
+    { value: 7, label: 'Julho' }, { value: 8, label: 'Agosto' }, { value: 9, label: 'Setembro' },
+    { value: 10, label: 'Outubro' }, { value: 11, label: 'Novembro' }, { value: 12, label: 'Dezembro' }
+];
 
 const BirthdayClientsPage = () => {
     const [birthdayClients, setBirthdayClients] = useState([]);
@@ -25,13 +33,15 @@ const BirthdayClientsPage = () => {
     const [recompensas, setRecompensas] = useState([]);
     const [selectedRecompensa, setSelectedRecompensa] = useState('');
     const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
+    const [selectedMonth, setSelectedMonth] = useState(getMonth(new Date()) + 1);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         const fetchBirthdayClients = async () => {
             try {
                 setLoading(true);
                 setError('');
-                const data = await clientService.getBirthdayClients();
+                const data = await clientService.getBirthdayClients(selectedMonth, searchTerm);
                 setBirthdayClients(data);
             } catch (err) {
                 setError(err.message || 'Falha ao carregar a lista de aniversariantes.');
@@ -40,8 +50,15 @@ const BirthdayClientsPage = () => {
             }
         };
 
-        fetchBirthdayClients();
-    }, []);
+        // Adiciona um debounce para a busca para não fazer requisições a cada tecla digitada
+        const handler = setTimeout(() => {
+            fetchBirthdayClients();
+        }, 500); // 500ms delay
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [selectedMonth, searchTerm]);
 
     const fetchRecompensas = async () => {
         try {
@@ -205,12 +222,36 @@ const BirthdayClientsPage = () => {
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h4" component="h1" gutterBottom>
-                    Aniversariantes do Mês
+                    Aniversariantes
                 </Typography>
                 <Box>
                     <Button variant="outlined" sx={{ mr: 1 }} onClick={handleOpenMessageAllModal}>Enviar Mensagem para Todos</Button>
                     <Button variant="contained" onClick={handleOpenCouponAllModal}>Enviar Cupom para Todos</Button>
                 </Box>
+            </Box>
+
+            <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+                <FormControl sx={{ minWidth: 200 }}>
+                    <InputLabel>Mês</InputLabel>
+                    <Select
+                        value={selectedMonth}
+                        onChange={(e) => setSelectedMonth(e.target.value)}
+                        label="Mês"
+                    >
+                        {months.map(month => (
+                            <MenuItem key={month.value} value={month.value}>
+                                {month.label}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+                <TextField
+                    label="Buscar por nome, email ou telefone"
+                    variant="outlined"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    sx={{ flexGrow: 1 }}
+                />
             </Box>
 
             <Grid container spacing={3} sx={{ mt: 3 }}>
@@ -223,31 +264,37 @@ const BirthdayClientsPage = () => {
                                         <Avatar sx={{ mr: 2, bgcolor: 'primary.main' }}>
                                             {client.name.charAt(0)}
                                         </Avatar>
-                                        <Box>
-                                            <Typography variant="h6">{client.name}</Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                Aniversário: {formatDateForDisplay(client.birthDate, 'LLLL d', 'pt-BR')}
-                                            </Typography>
-                                        </Box>
-                                    </Box>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Email: {client.email || 'N/A'}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Telefone: {client.phone || 'N/A'}
-                                    </Typography>
-                                    <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
-                                        <Button variant="outlined" size="small" startIcon={<MessageIcon />} onClick={() => handleOpenMessageModal(client)}>
-                                            Enviar Mensagem
-                                        </Button>
-                                        <Button variant="contained" size="small" startIcon={<ConfirmationNumberIcon />} onClick={() => handleOpenCouponModal(client)}>
-                                            Enviar Cupom
-                                        </Button>
-                                    </Box>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    ))
+                                                                                 <Box>
+                                                                                    <Typography variant="h6">{client.name}</Typography>
+                                                                                    <Typography variant="body2" color="text.secondary">
+                                                                                        Aniversário: {formatDateForDisplay(client.birthDate, 'LLLL d', 'pt-BR')}
+                                                                                    </Typography>
+                                                                                </Box>
+                                                                            </Box>
+                                                                            {client.messageSent && (
+                                                                                <Chip label="Mensagem da Automação Enviada" color="success" size="small" sx={{ mb: 1 }} />
+                                                                            )}
+                                                                            <Typography variant="body2" color="text.secondary">
+                                                                                Email: {client.email || 'N/A'}
+                                                                            </Typography>
+                                                                            <Typography variant="body2" color="text.secondary">
+                                                                                Telefone: {client.phone || 'N/A'}
+                                                                            </Typography>
+                                                                            <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
+                                                                                <Tooltip title="Enviar Mensagem via WhatsApp">
+                                                                                    <IconButton color="primary" onClick={() => handleOpenMessageModal(client)}>
+                                                                                        <WhatsAppIcon />
+                                                                                    </IconButton>
+                                                                                </Tooltip>
+                                                                                <Tooltip title="Enviar Cupom de Aniversário">
+                                                                                    <IconButton color="secondary" onClick={() => handleOpenCouponModal(client)}>
+                                                                                        <ConfirmationNumberIcon />
+                                                                                    </IconButton>
+                                                                                </Tooltip>
+                                                                            </Box>
+                                                                        </CardContent>
+                                                                    </Card>
+                                                                </Grid>                    ))
                 ) : (
                     <Grid item xs={12}>
                         <Typography variant="body1" sx={{ textAlign: 'center', py: 2 }}>

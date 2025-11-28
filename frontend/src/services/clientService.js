@@ -53,9 +53,14 @@ const deleteClient = async (id) => {
     }
 };
 
-const getBirthdayClients = async () => {
+const getBirthdayClients = async (month, search) => {
     try {
-        const response = await apiAuthenticated.get('/clients/birthdays');
+        const response = await apiAuthenticated.get('/clients/birthdays', {
+            params: {
+                month,
+                search
+            }
+        });
         return response.data;
     } catch (error) {
         throw error.response.data;

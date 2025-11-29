@@ -11,7 +11,7 @@ const {
   Criterio,
 } = require("../../models");
 const { Sequelize, Op } = require("sequelize");
-const { now, formatInTimeZone } = require("../utils/dateUtils");
+const { now, formatInTimeZone, TIMEZONE } = require("../utils/dateUtils");
 const { startOfMonth } = require("date-fns");
 const ratingService = require("../services/ratingService");
 
@@ -250,11 +250,11 @@ const getSurveysRespondedChart = async (
   const surveysByPeriod = await Resposta.findAll({
     where: whereClause,
     attributes: [
-      [fn("date_trunc", period, col("createdAt")), "period"],
+      [fn("date_trunc", period, literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`)), "period"],
       [fn("COUNT", fn("DISTINCT", col("respondentSessionId"))), "count"],
     ],
-    group: [fn("date_trunc", period, col("createdAt"))],
-    order: [[fn("date_trunc", period, col("createdAt")), "ASC"]],
+    group: [fn("date_trunc", period, literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`))],
+    order: [[fn("date_trunc", period, literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`)), "ASC"]],
   });
 
   return surveysByPeriod.map((item) => ({
@@ -284,11 +284,11 @@ const getResponseChart = async (
   const responsesByPeriod = await Resposta.findAll({
     where: whereClause,
     attributes: [
-      [fn("date_trunc", period, col("createdAt")), "period"],
+      [fn("date_trunc", period, literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`)), "period"],
       [fn("COUNT", col("id")), "count"],
     ],
-    group: [fn("date_trunc", period, col("createdAt"))],
-    order: [[fn("date_trunc", period, col("createdAt")), "ASC"]],
+    group: [fn("date_trunc", period, literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`))],
+    order: [[fn("date_trunc", period, literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`)), "ASC"]],
   });
 
   return responsesByPeriod.map((item) => ({
@@ -397,6 +397,9 @@ const getScoresByCriteria = async (
   const whereClause = { tenantId: tenantId || { [Op.ne]: null } };
 
   const responseWhere = { ratingValue: { [Op.ne]: null } };
+  if (tenantId) {
+    responseWhere.tenantId = tenantId;
+  }
   if (startDate && endDate) {
     responseWhere.createdAt = { [Op.between]: [startDate, endDate] };
   }
@@ -539,7 +542,7 @@ const getNpsTrendData = async (
       },
     ],
     attributes: [
-      [fn("date_trunc", period, col("Resposta.createdAt")), "period"],
+      [fn("date_trunc", period, literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`)), "period"],
       [
         fn("SUM", literal(`CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END`)),
         "promoters",
@@ -550,8 +553,8 @@ const getNpsTrendData = async (
       ],
       [fn("COUNT", col("Resposta.id")), "total"],
     ],
-    group: [fn("date_trunc", period, col("Resposta.createdAt"))],
-    order: [[fn("date_trunc", period, col("Resposta.createdAt")), "ASC"]],
+    group: [fn("date_trunc", period, literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`))],
+    order: [[fn("date_trunc", period, literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`)), "ASC"]],
   });
 
   return trendData.map((item) => {
@@ -592,7 +595,7 @@ const getEvolutionData = async (
   const responseTrends = await Resposta.findAll({
     where: whereClause,
     attributes: [
-      [fn("date_trunc", period, col("Resposta.createdAt")), "period"],
+      [fn("date_trunc", period, literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`)), "period"],
       [
         fn(
           "SUM",
@@ -641,8 +644,8 @@ const getEvolutionData = async (
       [fn("COUNT", col("Resposta.id")), "responses"],
     ],
     include: [{ model: Pergunta, as: "pergunta", attributes: [] }],
-    group: [fn("date_trunc", period, col("Resposta.createdAt"))],
-    order: [[fn("date_trunc", period, col("Resposta.createdAt")), "ASC"]],
+    group: [fn("date_trunc", period, literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`))],
+    order: [[fn("date_trunc", period, literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`)), "ASC"]],
     raw: true,
   });
 

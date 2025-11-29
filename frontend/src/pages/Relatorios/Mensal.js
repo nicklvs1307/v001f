@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React from 'react';
 import { 
     Container, 
     Typography, 
@@ -12,67 +11,16 @@ import {
     useTheme
 } from '@mui/material';
 import { format } from 'date-fns';
-import { getNowInLocalTimezone } from '../../utils/dateUtils';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { ptBR } from 'date-fns/locale';
-import dashboardService from '../../services/dashboardService';
-import { useAuth } from '../../context/AuthContext';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import useReportData from '../../hooks/useReportData';
 import RelatorioDashboard from '../../components/relatorios/Dashboard';
 import MetricCard from '../../components/common/MetricCard';
 import { TrendingUp, BarChart as BarChartIcon, People, Star, CheckCircle } from '@mui/icons-material';
 
 const RelatorioMensal = () => {
-    const [reportData, setReportData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const { user } = useAuth();
-    const tenantId = user?.tenantId;
-    const location = useLocation();
-    const navigate = useNavigate();
     const theme = useTheme();
-
-    const [selectedDate, setSelectedDate] = useState(getNowInLocalTimezone());
-
-    const fetchResults = useCallback(async () => {
-        if (!tenantId) {
-            setLoading(false);
-            return;
-        }
-        try {
-            setLoading(true);
-            setError('');
-            const params = { tenantId };
-            if (selectedDate) {
-                params.date = selectedDate.toISOString();
-            }
-            const resultData = await dashboardService.getMonthlyReport(params);
-            setReportData(resultData);
-        } catch (err) {
-            setError(err.message || 'Falha ao carregar os resultados.');
-        } finally {
-            setLoading(false);
-        }
-    }, [tenantId, selectedDate]);
-
-    useEffect(() => {
-        const queryParams = new URLSearchParams(location.search);
-        const dateParam = queryParams.get('date');
-        if (dateParam) {
-            setSelectedDate(new Date(`${dateParam}T00:00:00`));
-        }
-    }, [location.search]);
-
-    useEffect(() => {
-        fetchResults();
-    }, [fetchResults]);
-    
-    const handleDateChange = (newValue) => {
-        setSelectedDate(newValue);
-        const formattedDate = format(newValue, 'yyyy-MM-dd');
-        navigate(`?date=${formattedDate}`);
-    };
+    const { reportData, loading, error, selectedDate, handleDateChange } = useReportData('mensal');
 
     if (loading) {
         return (
@@ -104,7 +52,6 @@ const RelatorioMensal = () => {
     const capitalizedMonthName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
 
     return (
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
             <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
                 <Paper elevation={2} sx={{ p: { xs: 2, md: 3 }, mb: 4, backgroundColor: theme.palette.primary.main, color: 'white' }}>
                     <Grid container spacing={2} justifyContent="space-between" alignItems="center">
@@ -146,10 +93,9 @@ const RelatorioMensal = () => {
                     </Grid>
                 </Grid>
                 
-                <RelatorioDashboard data={chartData} />
+                <RelatorioDashboard data={chartData} reportType="mensal" />
 
             </Container>
-        </LocalizationProvider>
     );
 };
 

@@ -5,6 +5,9 @@ import { CustomThemeProvider } from './context/ThemeContext';
 import { NotificationProvider } from './context/NotificationContext';
 import { SocketProvider } from './context/SocketContext';
 import AppRoutes from './routes/AppRoutes'; // Importar o novo componente de rotas
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { ptBR } from 'date-fns/locale';
 
 function App() {
   return (
@@ -13,7 +16,9 @@ function App() {
         <SocketProvider>
           <CustomThemeProvider>
             <NotificationProvider>
-              <AppRoutes /> {/* Usar o componente AppRoutes */}
+              <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
+                <AppRoutes /> {/* Usar o componente AppRoutes */}
+              </LocalizationProvider>
             </NotificationProvider>
           </CustomThemeProvider>
         </SocketProvider>

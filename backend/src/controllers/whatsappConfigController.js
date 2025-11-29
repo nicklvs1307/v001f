@@ -1,6 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const { WhatsappTemplate } = require("../../models");
 const whatsappConfigRepository = require("../repositories/whatsappConfigRepository");
+const recompensaRepository = require("../repositories/recompensaRepository");
+const roletaRepository = require("../repositories/roletaRepository");
 const tenantRepository = require("../repositories/tenantRepository"); // Importar tenantRepository
 const whatsappService = require("../services/whatsappService");
 const ApiError = require("../errors/ApiError");
@@ -17,6 +19,14 @@ const whatsappConfigController = {
       where: { tenantId, type: "COUPON_REMINDER" },
     });
 
+    // Buscar todas as recompensas ativas
+    const recompensas = await recompensaRepository.getAllRecompensas(
+      tenantId,
+      true, // Apenas recompensas ativas
+    );
+
+    const roletas = await roletaRepository.getAllRoletas(tenantId);
+
     if (!config) {
       return res.json({ status: "unconfigured" });
     }
@@ -27,6 +37,8 @@ const whatsappConfigController = {
     const response = {
       ...config.get({ plain: true }),
       status: currentStatus,
+      recompensas, // Adiciona a lista de recompensas
+      roletas,
       // Mapeia os dados para a estrutura esperada pelo frontend
       dailyReport: {
         enabled: config.dailyReportEnabled,

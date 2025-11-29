@@ -1,7 +1,10 @@
 import apiAuthenticated from "./apiAuthenticated";
 
 const automationService = {
-  getAutomations: () => apiAuthenticated.get("/whatsapp-config/instance"),
+  getAutomations: async () => {
+    const response = await apiAuthenticated.get("/whatsapp-config/instance");
+    return response.data;
+  },
   updateAutomations: (data) => apiAuthenticated.put("/whatsapp-config/instance", data),
 
   // Funções de teste

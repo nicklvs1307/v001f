@@ -85,19 +85,16 @@ const AutomationsPage = () => {
     try {
       setLoading(true);
       setError('');
-      const [automationsResponse, recompensasResponse, roletasResponse] = await Promise.all([
-        automationService.getAutomations(),
-        recompensaService.getAll(),
-        roletaService.getAll(),
-      ]);
+      const automationsResponse = await automationService.getAutomations();
       const mergedAutomations = {
         ...initialAutomationState,
-        ...automationsResponse.data,
+        ...automationsResponse,
       };
       setAutomations(mergedAutomations);
       setOriginalAutomations(mergedAutomations);
-      setRecompensas(Array.isArray(recompensasResponse) ? recompensasResponse : []);
-      setRoletas(Array.isArray(roletasResponse) ? roletasResponse : []);
+      setRecompensas(Array.isArray(automationsResponse.recompensas) ? automationsResponse.recompensas : []);
+      // Assumindo que as roletas também podem vir da mesma resposta
+      setRoletas(Array.isArray(automationsResponse.roletas) ? automationsResponse.roletas : []);
     } catch (err) {
       setError('Falha ao carregar as configurações de automação.');
     } finally {
@@ -127,13 +124,8 @@ const AutomationsPage = () => {
     try {
       setSaving(true);
       setError('');
-      const response = await automationService.updateAutomations(automations);
-      const mergedAutomations = {
-        ...initialAutomationState,
-        ...response.data,
-      };
-      setAutomations(mergedAutomations);
-      setOriginalAutomations(mergedAutomations);
+      await automationService.updateAutomations(automations);
+      await loadData(); // Recarrega os dados
       setSnackbar({ open: true, message: 'Automações salvas com sucesso!', severity: 'success' });
     } catch (err) {
       console.error('Falha ao salvar:', err);

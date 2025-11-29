@@ -188,11 +188,10 @@ module.exports = {
       endDate: queryEndDate,
       surveyId,
     } = req.query;
-    // Fetches the last 7 days ending on the given date (or today)
     const { startDate, endDate } = getPeriodDateRange(
       queryStartDate,
       queryEndDate,
-      "week",
+      "day",
       date,
     );
     const reportData = await dashboardRepository.getDashboardData(

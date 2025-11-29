@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { 
     Grid, Typography, Box, useTheme, Card, CardContent, CardHeader,
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow, alpha, Paper,
+    CircularProgress,
 } from '@mui/material';
 import {
     ComposedChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, Area, Label,
@@ -199,22 +200,24 @@ const Dashboard = ({ data, reportType }) => {
                     <CardHeader title="Nuvem de Palavras" avatar={<Cloud />} />
                     <CardContent>
                         {wordCloudData && wordCloudData.length > 0 ? (
-                            <Box sx={{ height: 300, width: '100%' }}>
-                                <WordCloud
-                                    words={wordCloudData}
-                                    options={{
-                                        fontFamily: theme.typography.fontFamily,
-                                        fontWeight: "bold",
-                                        fontSizes: [20, 80],
-                                        padding: 5,
-                                        rotations: 2,
-                                        rotationAngles: [-90, 0],
-                                        colors: [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.primary.light, theme.palette.secondary.light],
-                                        spiral: 'archimedean',
-                                        deterministic: false
-                                    }}
-                                />
-                            </Box>
+                            <Suspense fallback={<CircularProgress />}>
+                                <Box sx={{ height: 300, width: '100%' }}>
+                                    <WordCloud
+                                        words={wordCloudData}
+                                        options={{
+                                            fontFamily: theme.typography.fontFamily,
+                                            fontWeight: "bold",
+                                            fontSizes: [20, 80],
+                                            padding: 5,
+                                            rotations: 2,
+                                            rotationAngles: [-90, 0],
+                                            colors: [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.primary.light, theme.palette.secondary.light],
+                                            spiral: 'archimedean',
+                                            deterministic: false
+                                        }}
+                                    />
+                                </Box>
+                            </Suspense>
                         ) : <NoData />}
                     </CardContent>
                 </Card>

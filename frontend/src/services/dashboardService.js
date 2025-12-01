@@ -90,6 +90,16 @@ const dashboardService = {
         const response = await apiAuthenticated.get('/dashboard/monthly-report', { params });
         return response.data;
     },
+
+    getTopClientsByResponses: async (params) => {
+        const response = await apiAuthenticated.get('/dashboard/reports/top-clients-by-responses', { params });
+        return response.data;
+    },
+
+    getTopClientsByRedemptions: async (params) => {
+        const response = await apiAuthenticated.get('/dashboard/reports/top-clients-by-redemptions', { params });
+        return response.data;
+    },
 };
 
 export default dashboardService;

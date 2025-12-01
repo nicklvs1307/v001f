@@ -249,4 +249,16 @@ module.exports = {
     );
     res.status(200).json(reportData);
   }),
+
+  getTopClientsByResponses: asyncHandler(async (req, res) => {
+    const { limit } = req.query;
+    const data = await dashboardRepository.getTopClientsByResponses(req.tenantId, limit);
+    res.status(200).json(data);
+  }),
+
+  getTopClientsByRedemptions: asyncHandler(async (req, res) => {
+    const { limit } = req.query;
+    const data = await dashboardRepository.getTopClientsByRedemptions(req.tenantId, limit);
+    res.status(200).json(data);
+  }),
 };

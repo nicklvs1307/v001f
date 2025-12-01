@@ -1647,6 +1647,59 @@ const getDashboardData = async (
   };
 };
 
+const getTopClientsByResponses = async (tenantId, limit = 10) => {
+  const whereClause = {};
+  if (tenantId) {
+    whereClause.tenantId = tenantId;
+  }
+
+  return Client.findAll({
+    where: whereClause,
+    attributes: {
+      include: [
+        [
+          Sequelize.literal(`(
+            SELECT COUNT(DISTINCT "respondentSessionId")
+            FROM "respostas" AS r
+            WHERE r."clienteId" = "Client"."id"
+          )`),
+          'responseCount'
+        ]
+      ]
+    },
+    order: [[Sequelize.literal('"responseCount" DESC')]],
+    limit,
+    subQuery: false,
+    group: ['Client.id'],
+  });
+};
+
+const getTopClientsByRedemptions = async (tenantId, limit = 10) => {
+    const whereClause = {
+        status: 'used'
+    };
+    if (tenantId) {
+        whereClause.tenantId = tenantId;
+    }
+
+    return Cupom.findAll({
+        where: whereClause,
+        attributes: [
+            'clienteId',
+            [Sequelize.fn('COUNT', Sequelize.col('id')), 'redemptionCount']
+        ],
+        include: [{
+            model: Client,
+            as: 'client',
+            attributes: ['name', 'phone'],
+            required: true
+        }],
+        group: ['clienteId', 'client.id'],
+        order: [[Sequelize.literal('"redemptionCount" DESC')]],
+        limit,
+    });
+};
+
 const dashboardRepository = {
   getSummary,
   getSurveysRespondedChart,
@@ -1666,6 +1719,8 @@ const dashboardRepository = {
   getDetails,
   getClientStatusCounts,
   getDashboardData,
+  getTopClientsByResponses,
+  getTopClientsByRedemptions,
 };
 
 module.exports = dashboardRepository;

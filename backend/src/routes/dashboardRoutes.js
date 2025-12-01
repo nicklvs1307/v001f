@@ -162,4 +162,16 @@ router.get(
   dashboardController.getDashboardData,
 );
 
+router.get(
+  "/reports/top-clients-by-responses",
+  authorize("dashboard:read"),
+  dashboardController.getTopClientsByResponses,
+);
+
+router.get(
+  "/reports/top-clients-by-redemptions",
+  authorize("dashboard:read"),
+  dashboardController.getTopClientsByRedemptions,
+);
+
 module.exports = router;

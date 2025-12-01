@@ -200,7 +200,6 @@ const Dashboard = ({ data, reportType }) => {
                     <CardHeader title="Nuvem de Palavras" avatar={<Cloud />} />
                     <CardContent>
                         {wordCloudData && wordCloudData.length > 0 ? (
-                            {wordCloudData && wordCloudData.length > 0 ? (
                             <Suspense fallback={<CircularProgress />}>
                                 <Box sx={{ height: 300, width: '100%' }}>
                                     <WordCloud
@@ -219,7 +218,6 @@ const Dashboard = ({ data, reportType }) => {
                                     />
                                 </Box>
                             </Suspense>
-                        ) : <NoData />}
                         ) : <NoData />}
                     </CardContent>
                 </Card>

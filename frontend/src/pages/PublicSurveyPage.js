@@ -228,42 +228,14 @@ const SurveyComponent = ({ survey, tenantId }) => {
                     </FormControl>
                 );
             case 'rating_1_5':
+            case 'rating_0_10':
+                const maxRating = question.type === 'rating_1_5' ? 5 : 10;
                 return (
                     <Box>
                         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, my: 2, flexWrap: 'wrap' }}>
-                            {[...Array(6).keys()].slice(1).map(value => ( // Stars 1 to 5
+                            {[...Array(maxRating + 1).keys()].slice(question.type === 'rating_1_5' ? 1 : 0).map(value => (
                                 <IconButton key={value} onClick={() => handleAnswerChange(question.id, value)} onMouseEnter={() => setHoverRatings({ ...hoverRatings, [question.id]: value })} onMouseLeave={() => setHoverRatings({ ...hoverRatings, [question.id]: 0 })} sx={{ color: (hoverRatings[question.id] || answer.valor) >= value ? '#ffc107' : '#ddd', transform: (hoverRatings[question.id] || answer.valor) === value ? 'scale(1.2)' : 'scale(1)', transition: 'all 0.2s ease' }}>
                                     {(hoverRatings[question.id] || answer.valor) >= value ? <Star sx={{ fontSize: { xs: '28px', sm: '40px' } }} /> : <StarBorder sx={{ fontSize: { xs: '28px', sm: '40px' } }} />}
-                                </IconButton>
-                            ))}
-                        </Box>
-                        <Box sx={{ width: '100%', textAlign: 'center', fontSize: '12px', color: '#777' }}>
-                            <span>onde 1 estrela é ruim e 5 é excelente</span>
-                        </Box>
-                    </Box>
-                );
-            case 'rating_0_10':
-                return (
-                    <Box>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, my: 2, flexWrap: 'wrap' }}>
-                            {[...Array(11).keys()].map(value => ( // Numbers 0 to 10
-                                <IconButton key={value} onClick={() => handleAnswerChange(question.id, value)} onMouseEnter={() => setHoverRatings({ ...hoverRatings, [question.id]: value })} onMouseLeave={() => setHoverRatings({ ...hoverRatings, [question.id]: 0 })} sx={{
-                                    width: { xs: 40, sm: 50 },
-                                    height: { xs: 40, sm: 50 },
-                                    borderRadius: '50%',
-                                    border: `2px solid ${(hoverRatings[question.id] || answer.valor) === value ? theme.palette.primary.main : '#ddd'}`,
-                                    backgroundColor: (hoverRatings[question.id] || answer.valor) === value ? theme.palette.primary.main : 'transparent',
-                                    color: (hoverRatings[question.id] || answer.valor) === value ? 'white' : theme.palette.text.primary,
-                                    fontSize: { xs: '1rem', sm: '1.2rem' },
-                                    fontWeight: 'bold',
-                                    transition: 'all 0.2s ease',
-                                    '&:hover': {
-                                        backgroundColor: theme.palette.primary.light,
-                                        color: 'white',
-                                        border: `2px solid ${theme.palette.primary.main}`,
-                                    }
-                                }}>
-                                    {value}
                                 </IconButton>
                             ))}
                         </Box>

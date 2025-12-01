@@ -398,7 +398,7 @@ const getScoresByCriteria = async (
 
   const responseWhere = { ratingValue: { [Op.ne]: null } };
   if (tenantId) {
-    whereClause.tenantId = tenantId;
+    responseWhere.tenantId = tenantId;
   }
   if (startDate && endDate) {
     responseWhere.createdAt = { [Op.between]: [startDate, endDate] };
@@ -1007,15 +1007,6 @@ const getNpsByDayOfWeek = async (
 
   const npsData = await Resposta.findAll({
     where: whereClause,
-    include: [
-      {
-        model: Pergunta,
-        as: "pergunta",
-        attributes: [],
-        where: { type: "rating_0_10" },
-        required: true,
-      },
-    ],
     attributes: [
       [
         Sequelize.fn(
@@ -1032,14 +1023,13 @@ const getNpsByDayOfWeek = async (
         fn("SUM", literal(`CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END`)),
         "detractors",
       ],
-      [fn("COUNT", col("Resposta.id")), "total"],
+      [fn("COUNT", col("id")), "total"],
     ],
     group: [
       Sequelize.fn(
         "EXTRACT",
         Sequelize.literal('DOW FROM "Resposta"."createdAt"'),
       ),
-      "pergunta.type",
     ],
     order: [
       [

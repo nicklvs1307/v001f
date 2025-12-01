@@ -250,6 +250,12 @@ module.exports = {
     res.status(200).json(reportData);
   }),
 
+  getDemographicsData: asyncHandler(async (req, res) => {
+    const { startDate, endDate } = req.query;
+    const data = await dashboardRepository.getDemographicsData(req.tenantId, startDate, endDate);
+    res.status(200).json(data);
+  }),
+
   getTopClientsByResponses: asyncHandler(async (req, res) => {
     const { limit } = req.query;
     const data = await dashboardRepository.getTopClientsByResponses(req.tenantId, limit);

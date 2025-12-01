@@ -163,6 +163,12 @@ router.get(
 );
 
 router.get(
+  "/client-demographics",
+  authorize("dashboard:read"),
+  dashboardController.getDemographicsData,
+);
+
+router.get(
   "/reports/top-clients-by-responses",
   authorize("dashboard:read"),
   dashboardController.getTopClientsByResponses,

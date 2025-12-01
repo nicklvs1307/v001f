@@ -6,14 +6,16 @@ import {
   Paper,
   CircularProgress,
   Alert,
+  useTheme,
+  Box,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Box
 } from '@mui/material';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import PeopleIcon from '@mui/icons-material/People';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import dashboardService from '../services/dashboardService';
@@ -36,7 +38,7 @@ const ReportTable = ({ title, icon, data, columns }) => (
                 <TableBody>
                     {data && data.length > 0 ? (
                         data.map((row, index) => (
-                            <TableRow key={index}>
+                            <TableRow key={index} hover>
                                 {columns.map((col) => (
                                     <TableCell key={col.id} align={col.align || 'left'}>
                                         {col.render ? col.render(row) : row[col.id]}
@@ -57,8 +59,9 @@ const ReportTable = ({ title, icon, data, columns }) => (
     </Paper>
 );
 
-
 const ClientDashboardPage = () => {
+  const theme = useTheme();
+  const [demographicsData, setDemographicsData] = useState(null);
   const [topVisitors, setTopVisitors] = useState([]);
   const [topRedeemers, setTopRedeemers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -69,12 +72,17 @@ const ClientDashboardPage = () => {
       try {
         setLoading(true);
         setError('');
-        const [visitorsData, redeemersData] = await Promise.all([
+        
+        const [demographics, visitors, redeemers] = await Promise.all([
+            dashboardService.getClientDemographics(),
             dashboardService.getTopClientsByResponses({ limit: 10 }),
             dashboardService.getTopClientsByRedemptions({ limit: 10 })
         ]);
-        setTopVisitors(visitorsData);
-        setTopRedeemers(redeemersData);
+        
+        setDemographicsData(demographics);
+        setTopVisitors(visitors);
+        setTopRedeemers(redeemers);
+
       } catch (err) {
         setError(err.message || 'Falha ao carregar o painel de clientes.');
       } finally {
@@ -85,10 +93,12 @@ const ClientDashboardPage = () => {
     fetchDashboardData();
   }, []);
 
+  const COLORS = [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.error.main, theme.palette.warning.main, theme.palette.info.main];
+
   const visitorsColumns = [
       { id: 'name', label: 'Cliente' },
       { id: 'phone', label: 'Telefone' },
-      { id: 'responseCount', label: 'Visitas', align: 'right' },
+      { id: 'responseCount', label: 'Respostas', align: 'right' },
   ];
 
   const redeemersColumns = [
@@ -115,15 +125,16 @@ const ClientDashboardPage = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom fontWeight="bold">
+    <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+      <Typography variant="h4" component="h1" gutterBottom>
         Painel de Clientes
       </Typography>
 
-      <Grid container spacing={3}>
+      {/* New Engagement Reports */}
+      <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} md={6}>
             <ReportTable 
-                title="Top 10 Clientes Mais Engajados"
+                title="Top 10 Clientes Mais Engajados (por Respostas)"
                 icon={<PeopleIcon color="primary" />}
                 data={topVisitors}
                 columns={visitorsColumns}
@@ -138,6 +149,53 @@ const ClientDashboardPage = () => {
             />
         </Grid>
       </Grid>
+      
+      {/* Demographics Charts */}
+      {demographicsData && (
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
+                <Paper elevation={3} sx={{ p: 2, height: 400 }}>
+                    <Typography variant="h6" gutterBottom>Distribuição por Faixa Etária</Typography>
+                    <ResponsiveContainer width="100%" height="90%">
+                        <BarChart data={Object.entries(demographicsData.ageDistribution).map(([name, count]) => ({name, count}))} margin={{ top: 20, right: 30, left: 20, bottom: 50 }}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="name" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend verticalAlign="top" />
+                            <Bar dataKey="count" fill={theme.palette.primary.main} name="Clientes" />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </Paper>
+            </Grid>
+            <Grid item xs={12} md={6}>
+                <Paper elevation={3} sx={{ p: 2, height: 400 }}>
+                    <Typography variant="h6" gutterBottom>Distribuição por Gênero</Typography>
+                    <ResponsiveContainer width="100%" height="90%">
+                        <PieChart>
+                            <Pie
+                                data={Object.entries(demographicsData.genderDistribution).map(([name, value]) => ({name, value}))}
+                                cx="50%"
+                                cy="50%"
+                                labelLine={false}
+                                outerRadius={120}
+                                fill="#8884d8"
+                                dataKey="value"
+                                nameKey="name"
+                                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                            >
+                                {Object.entries(demographicsData.genderDistribution).map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                            </Pie>
+                            <Tooltip />
+                            <Legend />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </Paper>
+            </Grid>
+        </Grid>
+      )}
     </Container>
   );
 };

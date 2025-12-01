@@ -100,6 +100,11 @@ const dashboardService = {
         const response = await apiAuthenticated.get('/dashboard/reports/top-clients-by-redemptions', { params });
         return response.data;
     },
+
+    getClientDemographics: async (params) => {
+        const response = await apiAuthenticated.get('/dashboard/client-demographics', { params });
+        return response.data;
+    },
 };
 
 export default dashboardService;

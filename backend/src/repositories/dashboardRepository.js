@@ -1684,7 +1684,7 @@ const getTopClientsByRedemptions = async (tenantId, limit = 10) => {
         where: whereClause,
         attributes: [
             'clienteId',
-            [Sequelize.fn('COUNT', Sequelize.col('id')), 'redemptionCount']
+            [Sequelize.fn('COUNT', Sequelize.col('Cupom.id')), 'redemptionCount']
         ],
         include: [{
             model: Client,

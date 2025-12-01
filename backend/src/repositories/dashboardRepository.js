@@ -314,51 +314,6 @@ const getFeedbacks = async (
 
   if (startDate && endDate) {
     whereClause.createdAt = { [Op.between]: [startDate, endDate] };
-  } else if (startDate) {
-    whereClause.createdAt = { [Op.gte]: startDate };
-  } else if (endDate) {
-    whereClause.createdAt = { [Op.lte]: endDate };
-  }
-
-  const includeClause = [
-    {
-      model: Client,
-      as: "client",
-      attributes: ["name"],
-      foreignKey: "respondentSessionId",
-      targetKey: "respondentSessionId",
-    },
-    {
-      model: Pergunta,
-      as: 'pergunta',
-      attributes: ['text', 'type'],
-    }
-  ];
-
-  if (npsClassification === 'promoters') {
-    whereClause.ratingValue = { [Op.gte]: 9 };
-    includeClause.push({
-      model: Pergunta,
-      as: "pergunta",
-      where: { type: 'rating_0_10' },
-      required: true,
-    });
-  } else if (npsClassification === 'neutrals') {
-    whereClause.ratingValue = { [Op.between]: [7, 8] };
-    includeClause.push({
-      model: Pergunta,
-      as: "pergunta",
-      where: { type: 'rating_0_10' },
-      required: true,
-    });
-  } else if (npsClassification === 'detractors') {
-    whereClause.ratingValue = { [Op.lte]: 6 };
-    includeClause.push({
-      model: Pergunta,
-      as: "pergunta",
-      where: { type: 'rating_0_10' },
-      required: true,
-    });
   }
 
   const offset = (page - 1) * limit;
@@ -369,28 +324,54 @@ const getFeedbacks = async (
       "id",
       "createdAt",
       "textValue",
-      "ratingValue",
       "respondentSessionId",
+      [
+        Sequelize.literal(`(
+          SELECT r2."ratingValue"
+          FROM "respostas" AS r2
+          WHERE r2."respondentSessionId" = "Resposta"."respondentSessionId"
+          AND r2."ratingValue" IS NOT NULL
+          LIMIT 1
+        )`),
+        'sessionRating'
+      ],
+      [
+        Sequelize.literal(`(
+          SELECT p."type"
+          FROM "respostas" AS r2
+          JOIN "perguntas" AS p ON p.id = r2."perguntaId"
+          WHERE r2."respondentSessionId" = "Resposta"."respondentSessionId"
+          AND r2."ratingValue" IS NOT NULL
+          LIMIT 1
+        )`),
+        'sessionRatingType'
+      ]
+    ],
+    include: [
+        { model: Client, as: 'client', attributes: ['name'] },
+        { model: Pergunta, as: 'pergunta', attributes: ['text'] }
     ],
     order: [["createdAt", "DESC"]],
     limit,
     offset,
-    include: includeClause,
   });
 
   const formattedFeedbacks = feedbacksData.map((feedback) => ({
     id: feedback.id,
     createdAt: feedback.createdAt,
-    client: feedback.client ? { name: feedback.client.name } : null,
-    npsScore: feedback.ratingValue,
+    client: feedback.client,
+    npsScore: feedback.get('sessionRating'),
+    questionType: feedback.get('sessionRatingType'),
     comment: feedback.textValue,
     question: feedback.pergunta?.text,
-    questionType: feedback.pergunta?.type, // Adicionado
-    lastContact: null, // You might want to add this logic if needed
+    lastContact: null, 
   }));
 
+  // Re-contar para paginação, pois a consulta principal é complexa
+  const totalCount = await Resposta.count({ where: whereClause });
+
   return {
-    count,
+    count: totalCount,
     rows: formattedFeedbacks,
   };
 };

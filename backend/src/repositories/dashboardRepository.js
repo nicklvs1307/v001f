@@ -328,6 +328,11 @@ const getFeedbacks = async (
       foreignKey: "respondentSessionId",
       targetKey: "respondentSessionId",
     },
+    {
+      model: Pergunta,
+      as: 'pergunta',
+      attributes: ['text', 'type'],
+    }
   ];
 
   if (npsClassification === 'promoters') {
@@ -379,6 +384,8 @@ const getFeedbacks = async (
     client: feedback.client ? { name: feedback.client.name } : null,
     npsScore: feedback.ratingValue,
     comment: feedback.textValue,
+    question: feedback.pergunta?.text,
+    questionType: feedback.pergunta?.type, // Adicionado
     lastContact: null, // You might want to add this logic if needed
   }));
 
@@ -447,13 +454,28 @@ const getScoresByCriteria = async (
       return result;
     }
 
-    let allResponses = criterio.perguntas.flatMap(p => p.respostas || []);
+    const allResponses = criterio.perguntas.flatMap(p => p.respostas || []);
     if (allResponses.length === 0) {
       return result;
     }
     
     result.total = allResponses.length;
-    const questionType = criterio.perguntas[0].type;
+
+    // Lógica mais robusta para encontrar o tipo de pergunta
+    let questionType = null;
+    const firstQuestionWithAnswers = criterio.perguntas.find(p => p.respostas && p.respostas.length > 0);
+    if(firstQuestionWithAnswers) {
+        questionType = firstQuestionWithAnswers.type;
+    } else {
+        // Fallback se nenhuma pergunta tiver resposta, mas ainda assim houver respostas agregadas (improvável)
+        // Ou se um critério não tiver perguntas com pontuação, mas só de texto, por ex.
+        const firstQuestion = criterio.perguntas[0];
+        if (firstQuestion) {
+            questionType = firstQuestion.type;
+        } else {
+            return result; // Critério sem perguntas
+        }
+    }
 
     if (questionType === "rating_0_10") {
       result.scoreType = "NPS";

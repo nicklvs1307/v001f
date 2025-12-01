@@ -53,22 +53,22 @@ const FeedbacksList = ({ feedbacks }) => {
                         <React.Fragment key={index}>
                             <ListItem alignItems="flex-start">
                                 <ListItemAvatar>
-                                    <Avatar sx={{ bgcolor: getRatingColor(feedback.ratingValue, feedback.questionType) }}>
+                                    <Avatar sx={{ bgcolor: getRatingColor(feedback.npsScore, feedback.questionType) }}>
                                         <Star />
                                     </Avatar>
                                 </ListItemAvatar>
                                 <ListItemText
                                     primary={
                                         <Typography variant="body1">
-                                            "{feedback.textValue}"
+                                            "{feedback.comment}"
                                         </Typography>
                                     }
                                     secondary={
                                         <Box component="span" sx={{ display: 'flex', flexDirection: 'column', mt: 1 }}>
                                             <Typography component="span" variant="body2" color="text.primary">
-                                                {feedback.clientName || 'Anônimo'}
+                                                {feedback.client?.name || 'Anônimo'}
                                             </Typography>
-                                            <Chip label={`${feedback.ratingValue} ★ - ${feedback.questionText}`} size="small" sx={{ mt: 0.5, width: 'fit-content' }} />
+                                            <Chip label={`${feedback.npsScore} ★ - ${feedback.question}`} size="small" sx={{ mt: 0.5, width: 'fit-content' }} />
                                         </Box>
                                     }
                                 />

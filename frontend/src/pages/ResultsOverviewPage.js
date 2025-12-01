@@ -88,6 +88,20 @@ const ResultsOverviewPage = () => {
         { title: 'Cupons Utilizados', value: data.summary.couponsUsed ?? 0 },
     ] : [];
 
+    const latestCommentsData = data?.feedbacks?.rows
+        .flatMap(session =>
+            session.responses
+                .filter(response => response.questionType === 'free_text' && response.answer)
+                .map(response => ({
+                    client: session.client?.name || 'Anônimo',
+                    comment: response.answer,
+                    date: session.createdAt,
+                    rating: session.responses.find(r => ['rating_0_10', 'rating_1_5', 'rating'].includes(r.questionType))?.answer,
+                }))
+        )
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 5);
+
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
             <Box sx={{ flexGrow: 1, p: 3, backgroundColor: '#f4f6f8' }}>
@@ -134,7 +148,7 @@ const ResultsOverviewPage = () => {
                         </Grid>
 
                         <Grid item xs={12} lg={4}>
-                            <CustomerFeedback latestComments={data.feedbacks} />
+                            <CustomerFeedback latestComments={latestCommentsData} />
                         </Grid>
 
                         <Grid item xs={12}>

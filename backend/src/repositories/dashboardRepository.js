@@ -304,12 +304,11 @@ const getFeedbacks = async (
   tenantId = null,
   startDate = null,
   endDate = null,
-  npsClassification = 'all', // Manter para compatibilidade, embora a lógica mude
+  npsClassification = 'all',
   page = 1,
   limit = 10,
 ) => {
   const sessionFilterWhereClause = {
-    // Filtrar sessões que têm pelo menos uma resposta com rating ou texto (ou ambos)
     [Op.or]: [
       { ratingValue: { [Op.ne]: null } },
       { textValue: { [Op.ne]: null, [Op.ne]: "" } }
@@ -319,31 +318,66 @@ const getFeedbacks = async (
   if (tenantId) sessionFilterWhereClause.tenantId = tenantId;
   if (startDate && endDate) sessionFilterWhereClause.createdAt = { [Op.between]: [startDate, endDate] };
 
-  // 1. Encontrar IDs de sessões únicas no período com feedbacks relevantes
+  // Etapa de Pré-filtragem para classificação NPS
+  if (npsClassification && npsClassification !== 'all') {
+    const npsQuestionType = 'rating_0_10';
+    let ratingWhere;
+
+    if (npsClassification === 'promoters') {
+      ratingWhere = { [Op.gte]: 9 };
+    } else if (npsClassification === 'neutrals') {
+      ratingWhere = { [Op.between]: [7, 8] };
+    } else if (npsClassification === 'detractors') {
+      ratingWhere = { [Op.lte]: 6 };
+    }
+
+    if (ratingWhere) {
+      const classifiedSessionIds = await Resposta.findAll({
+        where: {
+          tenantId: sessionFilterWhereClause.tenantId,
+          createdAt: sessionFilterWhereClause.createdAt,
+          ratingValue: ratingWhere
+        },
+        include: [{
+          model: Pergunta,
+          as: 'pergunta',
+          where: { type: npsQuestionType },
+          attributes: []
+        }],
+        attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('respondentSessionId')), 'respondentSessionId']],
+        raw: true,
+      }).then(sessions => sessions.map(s => s.respondentSessionId));
+      
+      // Adiciona o filtro de IDs de sessão à cláusula principal
+      sessionFilterWhereClause.respondentSessionId = { [Op.in]: classifiedSessionIds };
+    }
+  }
+
+  // 1. Encontrar IDs de sessões únicas no período com feedbacks relevantes (e já filtradas se aplicável)
   const distinctSessionIdsResult = await Resposta.findAll({
     where: sessionFilterWhereClause,
     attributes: [
       [Sequelize.fn('DISTINCT', Sequelize.col('respondentSessionId')), 'respondentSessionId'],
-      [Sequelize.fn('MIN', Sequelize.col('createdAt')), 'firstResponseAt'] // Para ordenação inicial das sessões
+      [Sequelize.fn('MIN', Sequelize.col('createdAt')), 'firstResponseAt']
     ],
     group: ['respondentSessionId'],
-    order: [['firstResponseAt', 'DESC']], // Ordena as sessões pela primeira resposta mais recente
+    order: [['firstResponseAt', 'DESC']],
     limit,
     offset: (page - 1) * limit,
-    raw: true, // Retorna dados brutos para fácil mapeamento
+    raw: true,
   });
 
   const sessionIds = distinctSessionIdsResult.map(s => s.respondentSessionId);
   if (sessionIds.length === 0) return { count: 0, rows: [] };
 
-  // 2. Buscar todas as respostas para essas sessões, incluindo Pergunta e Client
+  // 2. Buscar todas as respostas para essas sessões
   const allResponsesInTheseSessions = await Resposta.findAll({
     where: { respondentSessionId: { [Op.in]: sessionIds } },
     include: [
       { model: Pergunta, as: 'pergunta', attributes: ['text', 'type'] },
       { model: Client, as: 'client', attributes: ['name'] }
     ],
-    order: [['createdAt', 'ASC']] // Ordena as respostas dentro de cada sessão por data
+    order: [['createdAt', 'ASC']]
   });
 
   // 3. Agrupar e formatar por sessão
@@ -353,37 +387,32 @@ const getFeedbacks = async (
       acc[sessionId] = {
         sessionId: sessionId,
         client: response.client ? { name: response.client.name } : null,
-        createdAt: response.createdAt, // Inicializa com a data da primeira resposta
+        createdAt: response.createdAt,
         responses: [],
       };
     }
 
-    let answerValue = null;
-    if (response.textValue) {
-      answerValue = response.textValue;
-    } else if (response.ratingValue !== null) {
+    let answerValue = response.textValue || response.selectedOption;
+    if (response.ratingValue !== null) {
       answerValue = response.ratingValue;
-    } else if (response.selectedOption) {
-      answerValue = response.selectedOption;
     }
-
+    
     acc[sessionId].responses.push({
       perguntaId: response.perguntaId,
       question: response.pergunta?.text,
       answer: answerValue,
       questionType: response.pergunta?.type,
-      ratingValue: response.ratingValue, // Manter o rating original para referência
+      ratingValue: response.ratingValue,
     });
     
-    // Atualizar createdAt com a resposta mais recente da sessão para garantir a ordenação correta das sessões
-    if (response.createdAt && acc[sessionId].createdAt && new Date(response.createdAt) > new Date(acc[sessionId].createdAt)) {
+    if (response.createdAt > new Date(acc[sessionId].createdAt)) {
       acc[sessionId].createdAt = response.createdAt;
     }
 
     return acc;
   }, {});
 
-  // 4. Formatar o resultado final para o frontend e ordenar pela data da sessão
+  // 4. Formatar o resultado final
   const formattedRows = Object.values(groupedFeedbacksMap).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   // Contagem total para paginação (baseada no número de sessões distintas)

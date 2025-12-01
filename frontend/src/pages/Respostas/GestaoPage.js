@@ -58,12 +58,12 @@ const GestaoPage = () => {
             const data = await dashboardService.getAllFeedbacks(params);
             
             const processedFeedbacks = data.rows.map(fb => {
-                const npsResponse = fb.responses.find(r => r.questionType === 'rating_0_10');
+                const ratingResponse = fb.responses.find(r => ['rating_0_10', 'rating_1_5', 'rating'].includes(r.questionType) && r.ratingValue !== null);
                 const suggestionResponse = fb.responses.find(r => r.questionType === 'free_text' && r.answer);
 
                 return {
                     ...fb,
-                    npsScore: npsResponse ? npsResponse.answer : 'N/A',
+                    rating: ratingResponse ? ratingResponse.answer : 'N/A',
                     suggestion: suggestionResponse ? suggestionResponse.answer : 'N/A'
                 };
             });
@@ -131,7 +131,7 @@ const GestaoPage = () => {
                                 <TableRow>
                                     <TableCell>Horário</TableCell>
                                     <TableCell>Cliente</TableCell>
-                                    <TableCell>NPS</TableCell>
+                                    <TableCell>Nota</TableCell>
                                     <TableCell>Sugestão</TableCell>
                                     <TableCell>Último Contato</TableCell>
                                     <TableCell>Ações</TableCell>
@@ -142,7 +142,7 @@ const GestaoPage = () => {
                                     <TableRow key={feedback.sessionId}>
                                         <TableCell>{feedback.createdAt ? format(new Date(feedback.createdAt), 'dd/MM/yyyy HH:mm') : 'N/A'}</TableCell>
                                         <TableCell>{feedback.client?.name || 'Anônimo'}</TableCell>
-                                        <TableCell>{feedback.npsScore}</TableCell>
+                                        <TableCell>{feedback.rating}</TableCell>
                                         <TableCell>{feedback.suggestion}</TableCell>
                                         <TableCell>{feedback.lastContact ? format(new Date(feedback.lastContact), 'dd/MM/yyyy HH:mm') : 'N/A'}</TableCell>
                                         <TableCell>

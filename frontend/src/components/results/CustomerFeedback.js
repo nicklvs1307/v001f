@@ -38,7 +38,7 @@ const CustomerFeedback = ({ latestComments }) => {
                                 }}
                             >
                                 <Avatar sx={{ bgcolor: theme.palette.primary.light, color: theme.palette.primary.dark, mr: 2 }}>
-                                    {comment.client ? comment.client.charAt(0) : 'A'}
+                                    {comment.client ? comment.client.charAt(0).toUpperCase() : 'A'}
                                 </Avatar>
                                 <ListItemText
                                     primary={

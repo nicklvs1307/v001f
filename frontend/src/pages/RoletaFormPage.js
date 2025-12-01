@@ -52,17 +52,18 @@ const RoletaFormPage = () => {
   };
 
   useEffect(() => {
-    const fetchRecompensas = async () => {
-      try {
-        // Busca apenas recompensas ativas para popular o formulário
-        const response = await recompensaService.getAll(true);
-        setRecompensas(response || []);
-      } catch (err) {
-        setError('Erro ao buscar recompensas.');
-      }
-    };
+        const fetchRecompensas = async () => {
+            try {
+                // No modo de edição, busca todas as recompensas (null). Na criação, apenas as ativas (true).
+                const activeFilter = isEditing ? null : true;
+                const response = await recompensaService.getAll(activeFilter);
+                setRecompensas(response || []);
+            } catch (err) {
+                setError('Erro ao buscar recompensas.');
+            }
+        };
 
-    fetchRecompensas();
+        fetchRecompensas();
 
     if (isEditing) {
       setLoading(true);
@@ -260,7 +261,7 @@ const RoletaFormPage = () => {
                         }}
                         renderInput={(params) => <TextField {...params} label="Recompensa" />}
                         renderOption={(props, option) => (
-                            <Box component="li" {...props} color="text.primary">
+                            <Box component="li" {...props}>
                                 {option.nome}
                             </Box>
                         )}

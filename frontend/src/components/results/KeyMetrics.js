@@ -9,6 +9,7 @@ import {
     LocalActivity,
     SentimentNeutral,
     SentimentVeryDissatisfied,
+    FactCheck, // Importar FactCheck
 } from '@mui/icons-material';
 
 const getIcon = (title) => {
@@ -19,6 +20,8 @@ const getIcon = (title) => {
             return <SentimentSatisfiedAlt fontSize="large" />;
         case 'Total de Respostas':
             return <QuestionAnswer fontSize="large" />;
+        case 'Total de Pesquisas Realizadas': // Adicionar este caso
+            return <FactCheck fontSize="large" />;
         case 'Total de Cadastros':
             return <PersonAdd fontSize="large" />;
         case 'Cupons Gerados':

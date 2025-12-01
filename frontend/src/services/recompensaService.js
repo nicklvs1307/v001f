@@ -8,8 +8,12 @@ const recompensaService = {
     return response.data;
   },
 
-  getAll: async (activeOnly = false) => {
-    const response = await apiAuthenticated.get(RECOMPENSA_API_URL, { params: { active: activeOnly } });
+  getAll: async (activeOnly = null) => {
+    const params = {};
+    if (activeOnly !== null) {
+      params.active = activeOnly;
+    }
+    const response = await apiAuthenticated.get(RECOMPENSA_API_URL, { params });
     return response.data;
   },
 

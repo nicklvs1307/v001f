@@ -1,4 +1,4 @@
-const { Cupom, Recompensa, Client } = require("../../models");
+const { Cupom, Recompensa, Client, Tenant } = require("../../models");
 const { now } = require("../utils/dateUtils");
 const { Op, fn, col, literal } = require("sequelize");
 const { subDays, addDays } = require("date-fns");
@@ -17,6 +17,7 @@ class CupomRepository {
     const include = [
       { model: Recompensa, as: "recompensa" },
       { model: Client, as: "client" },
+      { model: Tenant, as: "tenant" },
     ];
 
     if (filters.status) {

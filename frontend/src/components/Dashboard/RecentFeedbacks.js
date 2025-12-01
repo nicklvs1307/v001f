@@ -9,22 +9,13 @@ import {
     ListItemText,
     CircularProgress,
     Alert,
-    useTheme
+    useTheme,
+    Tooltip
 } from '@mui/material';
 import { formatDateForDisplay, getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
 import dashboardService from '../../services/dashboardService';
-import { keyframes } from '@mui/system';
-
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
+import StarIcon from '@mui/icons-material/Star';
+import CommentIcon from '@mui/icons-material/Comment';
 
 const RecentFeedbacks = ({ startDate, endDate, handleFeedbackClick }) => {
     const theme = useTheme();
@@ -39,7 +30,7 @@ const RecentFeedbacks = ({ startDate, endDate, handleFeedbackClick }) => {
             try {
                 setLoading(true);
                 setError('');
-                const params = {};
+                const params = { page: 1, limit: 10 }; // Limitar aos 10 mais recentes
                 if (startDate) {
                     params.startDate = getStartOfDayUTC(startDate);
                 }
@@ -71,8 +62,9 @@ const RecentFeedbacks = ({ startDate, endDate, handleFeedbackClick }) => {
     if (loading) {
         return (
             <Grid item xs={12} md={6}>
-                <CircularProgress />
-                <Alert severity="info">Carregando feedbacks recentes...</Alert>
+                 <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 }, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <CircularProgress />
+                </Paper>
             </Grid>
         );
     }
@@ -92,41 +84,60 @@ const RecentFeedbacks = ({ startDate, endDate, handleFeedbackClick }) => {
                     Feedbacks Recentes
                 </Typography>
                 <List sx={{ flexGrow: 1, overflowY: 'auto' }}>
-                    {feedbacks.map((feedback, index) => (
-                        <ListItem
-                            key={index}
-                            divider
-                            button
-                            onClick={() => handleFeedbackClick(feedback.respondentSessionId)}
-                        >
-                            <ListItemText
-                                primary={
-                                    <Box>
-                                        <Typography component="span" variant="body2" color="text.secondary" mr={1}>
-                                            {formatDateForDisplay(feedback.date)}
-                                        </Typography>
-                                        {feedback.client && (
+                    {feedbacks.length > 0 ? feedbacks.map((feedback) => {
+                        const npsResponse = feedback.responses.find(r => r.questionType === 'rating_0_10');
+                        const suggestionResponse = feedback.responses.find(r => r.questionType === 'free_text' && r.answer);
+
+                        return (
+                            <ListItem
+                                key={feedback.sessionId}
+                                divider
+                                button
+                                onClick={() => handleFeedbackClick(feedback.sessionId)}
+                            >
+                                <ListItemText
+                                    primary={
+                                        <Box display="flex" justifyContent="space-between" alignItems="center">
                                             <Typography component="span" variant="body2" fontWeight="bold">
-                                                {feedback.client.name}
+                                                {feedback.client?.name || 'Anônimo'}
                                             </Typography>
-                                        )}
-                                    </Box>
-                                }
-                                secondary={
-                                    <Box sx={{ mt: 0.5 }}>
-                                        <Typography component="span" variant="caption" sx={{ backgroundColor: theme.palette.primary.main, color: 'white', p: '2px 8px', borderRadius: '12px', mr: 1 }}>
-                                            Nota: {feedback.rating}
-                                        </Typography>
-                                        {feedback.comment && (
-                                            <Typography component="span" variant="body2" color="text.primary">
-                                                {feedback.comment}
+                                            <Typography component="span" variant="caption" color="text.secondary">
+                                                {formatDateForDisplay(feedback.createdAt)}
                                             </Typography>
-                                        )}
-                                    </Box>
-                                }
-                            />
+                                        </Box>
+                                    }
+                                    secondary={
+                                        <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                            {npsResponse && (
+                                                <Tooltip title={npsResponse.question}>
+                                                    <Box display="flex" alignItems="center">
+                                                        <StarIcon sx={{ color: theme.palette.warning.main, mr: 1, fontSize: '1rem' }} />
+                                                        <Typography component="span" variant="body2" color="text.primary">
+                                                            NPS: <strong>{npsResponse.answer}</strong>
+                                                        </Typography>
+                                                    </Box>
+                                                </Tooltip>
+                                            )}
+                                            {suggestionResponse && (
+                                                <Tooltip title={suggestionResponse.question}>
+                                                    <Box display="flex" alignItems="center">
+                                                        <CommentIcon sx={{ color: theme.palette.info.main, mr: 1, fontSize: '1rem' }} />
+                                                        <Typography component="span" variant="body2" color="text.primary" noWrap>
+                                                            {suggestionResponse.answer}
+                                                        </Typography>
+                                                    </Box>
+                                                </Tooltip>
+                                            )}
+                                        </Box>
+                                    }
+                                />
+                            </ListItem>
+                        );
+                    }) : (
+                        <ListItem>
+                            <ListItemText primary="Nenhum feedback recente para o período selecionado." />
                         </ListItem>
-                    ))}
+                    )}
                 </List>
             </Paper>
         </Grid>

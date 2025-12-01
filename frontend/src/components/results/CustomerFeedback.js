@@ -38,7 +38,7 @@ const CustomerFeedback = ({ latestComments }) => {
                                 }}
                             >
                                 <Avatar sx={{ bgcolor: theme.palette.primary.light, color: theme.palette.primary.dark, mr: 2 }}>
-                                    {comment.client ? comment.client.charAt(0) : 'A'}
+                                    {comment.client?.name ? comment.client.name.charAt(0) : 'A'}
                                 </Avatar>
                                 <ListItemText
                                     primary={
@@ -49,7 +49,7 @@ const CustomerFeedback = ({ latestComments }) => {
                                     secondary={
                                         <Box component="span" sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                                             <Typography component="span" variant="caption" color="text.secondary">
-                                                - {comment.client} em {formatDateForDisplay(comment.date, 'dd/MM/yy HH:mm')}
+                                                - {comment.client?.name} em {formatDateForDisplay(comment.date, 'dd/MM/yy HH:mm')}
                                             </Typography>
                                             <Box component="span" sx={{ ml: 1.5 }}>
                                                 {getRatingChip(comment.rating)}

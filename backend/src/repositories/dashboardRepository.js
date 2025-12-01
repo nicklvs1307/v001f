@@ -1648,29 +1648,24 @@ const getDashboardData = async (
 };
 
 const getTopClientsByResponses = async (tenantId, limit = 10) => {
-  const whereClause = {};
-  if (tenantId) {
-    whereClause.tenantId = tenantId;
-  }
-
   return Client.findAll({
-    where: whereClause,
-    attributes: {
-      include: [
-        [
-          Sequelize.literal(`(
-            SELECT COUNT(DISTINCT "respondentSessionId")
-            FROM "respostas" AS r
-            WHERE r."clienteId" = "Client"."id"
-          )`),
-          'responseCount'
-        ]
-      ]
-    },
-    order: [[Sequelize.literal('"responseCount" DESC')]],
+    where: { tenantId },
+    attributes: [
+      'id',
+      'name',
+      'phone',
+      [Sequelize.fn('COUNT', Sequelize.col('respostas.id')), 'responseCount']
+    ],
+    include: [{
+      model: Resposta,
+      as: 'respostas',
+      attributes: [],
+      required: true,
+    }],
+    group: ['Client.id'],
+    order: [[Sequelize.literal('"responseCount"'), 'DESC']],
     limit,
     subQuery: false,
-    group: ['Client.id'],
   });
 };
 

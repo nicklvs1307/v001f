@@ -4,12 +4,6 @@ import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow, alpha, Paper,
     CircularProgress,
 } from '@mui/material';
-import React, { Suspense } from 'react';
-import { 
-    Grid, Typography, Box, useTheme, Card, CardContent, CardHeader,
-    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, alpha, Paper,
-    CircularProgress,
-} from '@mui/material';
 import ErrorBoundary from '../common/ErrorBoundary';
 import {
     ComposedChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, Area, Label,

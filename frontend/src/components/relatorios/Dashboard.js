@@ -1,9 +1,4 @@
-import React, { Suspense } from 'react';
-import { 
-    Grid, Typography, Box, useTheme, Card, CardContent, CardHeader,
-    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, alpha, Paper,
-    CircularProgress,
-} from '@mui/material';
+import ErrorBoundary from '../common/ErrorBoundary';
 import {
     ComposedChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, Area, Label,
 } from 'recharts';
@@ -79,7 +74,7 @@ const CustomTooltip = ({ active, payload, label }) => {
                 <Typography variant="subtitle2">{`Período: ${label}`}</Typography>
                 {payload.map((pld, index) => (
                     <Typography key={index} style={{ color: pld.color }}>
-                        {`${pld.name}: ${pld.value.toFixed(1)}`}
+                        {`${pld.name}: ${pld.value?.toFixed(1) ?? '0'}`}
                     </Typography>
                 ))}
             </Paper>
@@ -122,160 +117,174 @@ const Dashboard = ({ data, reportType }) => {
             <SectionHeader title="Análise de Sentimento" icon={<ShowChart color="primary" />} />
             
             <Grid item xs={12} lg={6}>
-                <Card elevation={3}>
-                    <CardHeader title="Distribuição NPS" avatar={<TrendingUp />} />
-                    <CardContent>
-                        {npsPieData.some(d => d.value > 0) ? (
-                            <ResponsiveContainer width="100%" height={250}>
-                                <PieChart>
-                                    <Pie 
-                                        data={npsPieData} 
-                                        dataKey="value" 
-                                        nameKey="name" 
-                                        cx="50%" 
-                                        cy="50%" 
-                                        innerRadius={70} 
-                                        outerRadius={90} 
-                                        fill="#8884d8" 
-                                        paddingAngle={5} 
-                                        labelLine={false}
-                                        label={<CustomizedLabel />}
-                                    >
-                                        {npsPieData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={NPS_COLORS[index % NPS_COLORS.length]} />
-                                        ))}
-                                        <Label 
-                                            content={<CustomCenterLabel total={npsDistribution.reduce((acc, item) => acc + item.value, 0)} />} 
-                                            position="center" 
+                <ErrorBoundary name="NPS Distribution Chart">
+                    <Card elevation={3}>
+                        <CardHeader title="Distribuição NPS" avatar={<TrendingUp />} />
+                        <CardContent>
+                            {(npsPieData && npsDistribution && npsPieData.some(d => d.value > 0)) ? (
+                                <ResponsiveContainer width="100%" height={250}>
+                                    <PieChart>
+                                        <Pie 
+                                            data={npsPieData} 
+                                            dataKey="value" 
+                                            nameKey="name" 
+                                            cx="50%" 
+                                            cy="50%" 
+                                            innerRadius={70} 
+                                            outerRadius={90} 
+                                            fill="#8884d8" 
+                                            paddingAngle={5} 
+                                            labelLine={false}
+                                            label={<CustomizedLabel />}
+                                        >
+                                            {npsPieData.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={NPS_COLORS[index % NPS_COLORS.length]} />
+                                            ))}
+                                            <Label 
+                                                content={<CustomCenterLabel total={npsDistribution.reduce((acc, item) => acc + item.value, 0)} />} 
+                                                position="center" 
+                                            />
+                                        </Pie>
+                                        <Tooltip />
+                                        <Legend content={<CustomLegend />} />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            ) : <NoData />}
+                        </CardContent>
+                    </Card>
+                </ErrorBoundary>
+            </Grid>
+
+            <Grid item xs={12} lg={6}>
+                 <ErrorBoundary name="NPS Trend Chart">
+                    <Card elevation={3}>
+                        <CardHeader title={trendTitle} avatar={<ShowChart />} />
+                        <CardContent>
+                            {npsTrend && npsTrend.length > 0 ? (
+                                <ResponsiveContainer width="100%" height={250}>
+                                    {reportType === 'diario' ? (
+                                        <ComposedChart data={npsTrend}>
+                                            <defs>
+                                                <linearGradient id="colorNps" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="5%" stopColor={theme.palette.primary.main} stopOpacity={0.8}/>
+                                                    <stop offset="95%" stopColor={theme.palette.primary.main} stopOpacity={0}/>
+                                                </linearGradient>
+                                            </defs>
+                                            <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
+                                            <XAxis dataKey="period" />
+                                            <YAxis />
+                                            <Tooltip content={<CustomTooltip />} />
+                                            <Legend />
+                                            <Area type="monotone" dataKey="nps" fill="url(#colorNps)" stroke={theme.palette.primary.dark} />
+                                        </ComposedChart>
+                                    ) : (
+                                        <BarChart data={npsTrend}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="period" />
+                                            <YAxis />
+                                            <Tooltip content={<CustomTooltip />} />
+                                            <Legend />
+                                            <Bar dataKey="nps" fill={theme.palette.primary.main} name="NPS" />
+                                        </BarChart>
+                                    )}
+                                </ResponsiveContainer>
+                            ) : <NoData />}
+                        </CardContent>
+                    </Card>
+                </ErrorBoundary>
+            </Grid>
+
+            <Grid item xs={12} lg={6}>
+                <ErrorBoundary name="WordCloud">
+                    <Card elevation={3}>
+                        <CardHeader title="Nuvem de Palavras" avatar={<Cloud />} />
+                        <CardContent>
+                            {wordCloudData && wordCloudData.length > 0 ? (
+                                <Suspense fallback={<CircularProgress />}>
+                                    <Box sx={{ height: 300, width: '100%' }}>
+                                        <WordCloud
+                                            words={wordCloudData}
+                                            options={{
+                                                fontFamily: theme.typography.fontFamily,
+                                                fontWeight: "bold",
+                                                fontSizes: [20, 80],
+                                                padding: 5,
+                                                rotations: 2,
+                                                rotationAngles: [-90, 0],
+                                                colors: [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.primary.light, theme.palette.secondary.light],
+                                                spiral: 'archimedean',
+                                                deterministic: false
+                                            }}
                                         />
-                                    </Pie>
-                                    <Tooltip />
-                                    <Legend content={<CustomLegend />} />
-                                </PieChart>
-                            </ResponsiveContainer>
-                        ) : <NoData />}
-                    </CardContent>
-                </Card>
+                                    </Box>
+                                </Suspense>
+                            ) : <NoData />}
+                        </CardContent>
+                    </Card>
+                </ErrorBoundary>
             </Grid>
 
             <Grid item xs={12} lg={6}>
-                 <Card elevation={3}>
-                    <CardHeader title={trendTitle} avatar={<ShowChart />} />
-                    <CardContent>
-                        {npsTrend && npsTrend.length > 0 ? (
-                            <ResponsiveContainer width="100%" height={250}>
-                                {reportType === 'diario' ? (
-                                    <ComposedChart data={npsTrend}>
-                                        <defs>
-                                            <linearGradient id="colorNps" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor={theme.palette.primary.main} stopOpacity={0.8}/>
-                                                <stop offset="95%" stopColor={theme.palette.primary.main} stopOpacity={0}/>
-                                            </linearGradient>
-                                        </defs>
-                                        <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
-                                        <XAxis dataKey="period" />
-                                        <YAxis />
-                                        <Tooltip content={<CustomTooltip />} />
-                                        <Legend />
-                                        <Area type="monotone" dataKey="nps" fill="url(#colorNps)" stroke={theme.palette.primary.dark} />
-                                    </ComposedChart>
-                                ) : (
-                                    <BarChart data={npsTrend}>
+                <ErrorBoundary name="Criteria Satisfaction Chart">
+                    <Card elevation={3}>
+                        <CardHeader title="Satisfação por Critério" avatar={<CheckCircle />} />
+                        <CardContent>
+                            {processedCriteriaScores && processedCriteriaScores.length > 0 ? (
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <BarChart data={processedCriteriaScores} layout="vertical" margin={{ top: 20, right: 30, left: 30, bottom: 5 }}>
                                         <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="period" />
-                                        <YAxis />
-                                        <Tooltip content={<CustomTooltip />} />
+                                        <XAxis type="number" domain={domain} />
+                                        <YAxis type="category" dataKey="criterion" width={100} tick={{ fontSize: 12 }} />
+                                        <Tooltip />
                                         <Legend />
-                                        <Bar dataKey="nps" fill={theme.palette.primary.main} name="NPS" />
+                                        <Bar dataKey="score" fill={theme.palette.secondary.main} name="Pontuação" />
                                     </BarChart>
-                                )}
-                            </ResponsiveContainer>
-                        ) : <NoData />}
-                    </CardContent>
-                </Card>
+                                </ResponsiveContainer>
+                            ) : <NoData />}
+                        </CardContent>
+                    </Card>
+                </ErrorBoundary>
             </Grid>
-
-            <Grid item xs={12} lg={6}>
-                 <Card elevation={3}>
-                    <CardHeader title="Nuvem de Palavras" avatar={<Cloud />} />
-                    <CardContent>
-                        {wordCloudData && wordCloudData.length > 0 ? (
-                            <Suspense fallback={<CircularProgress />}>
-                                <Box sx={{ height: 300, width: '100%' }}>
-                                    <WordCloud
-                                        words={wordCloudData}
-                                        options={{
-                                            fontFamily: theme.typography.fontFamily,
-                                            fontWeight: "bold",
-                                            fontSizes: [20, 80],
-                                            padding: 5,
-                                            rotations: 2,
-                                            rotationAngles: [-90, 0],
-                                            colors: [theme.palette.primary.main, theme.palette.secondary.main, theme.palette.primary.light, theme.palette.secondary.light],
-                                            spiral: 'archimedean',
-                                            deterministic: false
-                                        }}
-                                    />
-                                </Box>
-                            </Suspense>
-                        ) : <NoData />}
-                    </CardContent>
-                </Card>
-            </Grid>
-
-            <Grid item xs={12} lg={6}>
-                 <Card elevation={3}>
-                    <CardHeader title="Satisfação por Critério" avatar={<CheckCircle />} />
-                    <CardContent>
-                        {processedCriteriaScores && processedCriteriaScores.length > 0 ? (
-                            <ResponsiveContainer width="100%" height={300}>
-                                <BarChart data={processedCriteriaScores} layout="vertical" margin={{ top: 20, right: 30, left: 30, bottom: 5 }}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis type="number" domain={domain} />
-                                    <YAxis type="category" dataKey="criterion" width={100} tick={{ fontSize: 12 }} />
-                                    <Tooltip />
-                                    <Legend />
-                                    <Bar dataKey="score" fill={theme.palette.secondary.main} name="Pontuação" />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        ) : <NoData />}
-                    </CardContent>
-                </Card>
-            </Grid>            {/* Seção: Desempenho e Feedbacks */}
+            
+            {/* Seção: Desempenho e Feedbacks */}
             <SectionHeader title="Desempenho e Feedbacks" icon={<People color="primary" />} />
 
             <Grid item xs={12} md={6}>
-                <Card elevation={3}>
-                    <CardHeader title="Ranking de Atendentes" avatar={<People />} />
-                    <CardContent>
-                        {attendantsPerformance && attendantsPerformance.length > 0 ? (
-                            <TableContainer>
-                                <Table stickyHeader size="small">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>Atendente</TableCell>
-                                            <TableCell align="right">NPS</TableCell>
-                                            <TableCell align="right">Respostas</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {attendantsPerformance.map((attendant, index) => (
-                                            <TableRow key={index} hover>
-                                                <TableCell component="th" scope="row">{attendant.name}</TableCell>
-                                                <TableCell align="right">{attendant.currentNPS ?? 'N/A'}</TableCell>
-                                                <TableCell align="right">{attendant.responses}</TableCell>
+                <ErrorBoundary name="Attendants Ranking">
+                    <Card elevation={3}>
+                        <CardHeader title="Ranking de Atendentes" avatar={<People />} />
+                        <CardContent>
+                            {attendantsPerformance && attendantsPerformance.length > 0 ? (
+                                <TableContainer>
+                                    <Table stickyHeader size="small">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Atendente</TableCell>
+                                                <TableCell align="right">NPS</TableCell>
+                                                <TableCell align="right">Respostas</TableCell>
                                             </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        ) : <NoData />}
-                    </CardContent>
-                </Card>
+                                        </TableHead>
+                                        <TableBody>
+                                            {attendantsPerformance.map((attendant, index) => (
+                                                <TableRow key={index} hover>
+                                                    <TableCell component="th" scope="row">{attendant.name}</TableCell>
+                                                    <TableCell align="right">{attendant.currentNPS ?? 'N/A'}</TableCell>
+                                                    <TableCell align="right">{attendant.responses}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            ) : <NoData />}
+                        </CardContent>
+                    </Card>
+                </ErrorBoundary>
             </Grid>
 
             <Grid item xs={12} md={6}>
-                <FeedbacksList feedbacks={feedbacks?.rows} />
+                <ErrorBoundary name="Feedbacks List">
+                    <FeedbacksList feedbacks={feedbacks?.rows} />
+                </ErrorBoundary>
             </Grid>
 
         </Grid>

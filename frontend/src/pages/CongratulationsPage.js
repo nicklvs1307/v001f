@@ -98,8 +98,9 @@ const CongratulationsComponent = ({ premio, cupom, tenant }) => {
                     
                     <Paper elevation={3} sx={{ background: `linear-gradient(45deg, ${theme.palette.background.default}, ${theme.palette.grey[100]})`, borderRadius: '15px', padding: { xs: '20px', sm: '30px' }, margin: '30px 0', border: `2px dashed ${theme.palette.error.main}`, position: 'relative', animation: `${floatAnimation} 3s ease-in-out infinite` }}>
                         <Typography variant="h6" sx={{ fontSize: { xs: '1.2rem', sm: '1.8rem' }, color: theme.palette.error.main, marginBottom: '15px' }}>Sua Recompensa:</Typography>
-                        <Typography><strong>Nome:</strong> {premio.nome}</Typography>
-                        <Typography><strong>Descrição:</strong> {premio.descricao}</Typography>
+                        <Typography variant="h4" component="p" sx={{ fontWeight: 'bold', fontSize: { xs: '1.8rem', sm: '2.2rem' }, color: theme.palette.primary.dark, mt: 2, mb: 2 }}>
+                            {premio.nome}
+                        </Typography>
                         <Box sx={{ fontSize: { xs: '1.5rem', sm: '2.5rem' }, fontWeight: 'bold', background: 'white', padding: { xs: '10px', sm: '15px' }, borderRadius: '10px', margin: '20px auto', letterSpacing: '2px', color: theme.palette.primary.main, border: `2px solid ${theme.palette.primary.main}`, display: 'inline-block', wordBreak: 'break-all' }}>
                             {cupom.codigo}
                         </Box>

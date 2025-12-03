@@ -619,7 +619,7 @@ const getNpsTrendData = async (
     const nps = total > 0 ? ((promoters - detractors) / total) * 100 : 0;
     return {
       period: formatInTimeZone(
-        period,
+        item.dataValues.period,
         period === "day"
           ? "dd/MM"
           : period === "week"

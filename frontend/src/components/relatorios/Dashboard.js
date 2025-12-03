@@ -170,18 +170,12 @@ const Dashboard = ({ data, reportType }) => {
                                 <ResponsiveContainer width="100%" height={250}>
                                     {reportType === 'diario' ? (
                                         <ComposedChart data={npsTrend}>
-                                            <defs>
-                                                <linearGradient id="colorNps" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="5%" stopColor={theme.palette.primary.main} stopOpacity={0.8}/>
-                                                    <stop offset="95%" stopColor={theme.palette.primary.main} stopOpacity={0}/>
-                                                </linearGradient>
-                                            </defs>
                                             <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
                                             <XAxis dataKey="period" />
                                             <YAxis />
                                             <Tooltip content={<CustomTooltip />} />
                                             <Legend />
-                                            <Area type="monotone" dataKey="nps" fill="url(#colorNps)" stroke={theme.palette.primary.dark} />
+                                            <Area type="monotone" dataKey="nps" fill={alpha(theme.palette.primary.main, 0.4)} stroke={theme.palette.primary.dark} name="NPS" />
                                         </ComposedChart>
                                     ) : (
                                         <BarChart data={npsTrend}>

@@ -25,7 +25,7 @@ const whatsappConfigController = {
       true, // Apenas recompensas ativas
     );
 
-    const roletas = await roletaRepository.getAllRoletas(tenantId);
+    const roletas = await roletaRepository.findAllByTenant(tenantId);
 
     if (!config) {
       return res.json({ status: "unconfigured" });

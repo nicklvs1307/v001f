@@ -1,15 +1,11 @@
+import React, { Suspense } from 'react';
+import {
+    Grid, Typography, Box, useTheme, Card, CardContent, CardHeader,
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, alpha, Paper,
+    CircularProgress,
+} from '@mui/material';
 import ErrorBoundary from '../common/ErrorBoundary';
 import {
-    ComposedChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, Area, Label,
-} from 'recharts';
-import WordCloud from 'react-wordcloud';
-
-// Importando ícones
-import { TrendingUp, BarChart as BarChartIcon, People, Star, Cloud, CheckCircle, Chat as ChatIcon, ShowChart } from '@mui/icons-material';
-import FeedbacksList from './FeedbacksList';
-
-const NPS_COLORS = ['#2ECC71', '#F1C40F', '#E74C3C']; // Promotores, Neutros, Detratores
-const CSAT_COLORS = ['#2ECC71', '#F1C40F', '#E74C3C']; // Satisfeitos, Neutros, Insatisfeitos
 
 const RADIAN = Math.PI / 180;
 const CustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {

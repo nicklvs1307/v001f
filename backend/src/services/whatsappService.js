@@ -65,7 +65,8 @@ const sendSystemMessage = async (number, message) => {
       `${SYSTEM_WHATSAPP_URL}/message/sendText/${SYSTEM_WHATSAPP_INSTANCE}`,
       {
         number: finalNumber,
-        textMessage: { text: message },
+        text: message,
+        options: { delay: 1200, presence: "composing" },
       },
       {
         headers: {
@@ -124,7 +125,8 @@ const sendTenantMessage = async (tenantId, number, message) => {
       `${config.url}/message/sendText/${config.instanceName}`,
       {
         number: finalNumber,
-        textMessage: { text: message },
+        text: message,
+        options: { delay: 1200, presence: "composing" },
       },
       {
         headers: { "Content-Type": "application/json", apikey: config.apiKey },
@@ -283,8 +285,8 @@ const sendCampaignMessage = async (sender, number, message, delay = 1200) => {
 
   const payload = {
     number: finalNumber,
-    textMessage: { text: message },
-    options: { delay },
+    text: message,
+    options: { delay, presence: "composing" },
   };
 
   return sendCampaignRequest(sender, "message/sendText", payload);

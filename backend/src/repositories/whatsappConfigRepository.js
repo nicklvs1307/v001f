@@ -28,32 +28,6 @@ class WhatsappConfigRepository {
     });
   }
 
-  async findAllWithWeeklyReportEnabled() {
-    return await WhatsappConfig.findAll({
-      where: {
-        weeklyReportEnabled: true,
-        reportPhoneNumbers: {
-          [Op.ne]: null,
-          [Op.not]: "",
-        },
-      },
-      raw: true,
-    });
-  }
-
-  async findAllWithMonthlyReportEnabled() {
-    return await WhatsappConfig.findAll({
-      where: {
-        monthlyReportEnabled: true,
-        reportPhoneNumbers: {
-          [Op.ne]: null,
-          [Op.not]: "",
-        },
-      },
-      raw: true,
-    });
-  }
-
   async findAllWithBirthdayAutomationEnabled() {
     return await WhatsappConfig.findAll({
       where: {

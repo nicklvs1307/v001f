@@ -1,7 +1,6 @@
 "use strict";
 const asyncHandler = require("express-async-handler");
-const { format, addDays, startOfDay, endOfDay, subDays, subWeeks, startOfWeek, endOfWeek, subMonths, startOfMonth, endOfMonth } = require("date-fns");
-const { ptBR } = require("date-fns/locale");
+const { format, addDays, startOfDay, endOfDay, subDays } = require("date-fns");
 const { now } = require("../utils/dateUtils");
 const whatsappService = require("../services/whatsappService");
 const tenantRepository = require("../repositories/tenantRepository");
@@ -59,17 +58,11 @@ exports.testDailyReport = asyncHandler(async (req, res) => {
 
   let message =
     `*Relatorio Diario ${tenant.name}*\n\n` +
-    `Aqui está o resumo da experiência dos seus clientes no dia ${formattedDate}!
-` +
-    `📊 Total de respostas: ${yesterdaySummary.totalResponses} ${diffText}
-` +
-    `🟢 Número de Promotores: ${yesterdaySummary.nps.promoters}
-` +
-    `🟡 Número de Neutros: ${yesterdaySummary.nps.neutrals}
-` +
-    `🔴 Número de Detratores: ${yesterdaySummary.nps.detractors}
-
-` +
+    `Aqui está o resumo da experiência dos seus clientes no dia ${formattedDate}!\n` +
+    `📊 Total de respostas: ${yesterdaySummary.totalResponses} ${diffText}\n` +
+    `🟢 Número de Promotores: ${yesterdaySummary.nps.promoters}\n` +
+    `🟡 Número de Neutros: ${yesterdaySummary.nps.neutrals}\n` +
+    `🔴 Número de Detratores: ${yesterdaySummary.nps.detractors}\n\n` +
     `🔗 Para acessar o sistema, visite ${reportUrl}`;
 
   message += "\n\n--- MENSAGEM DE TESTE ---";
@@ -220,120 +213,5 @@ exports.testRoletaPrize = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     message: `Mensagem de teste de prêmio da roleta enviada para ${phoneNumber}.`,
-  });
-});
-
-// @desc    Enviar um teste de mensagem de relatório semanal
-// @route   POST /api/automations/test/weekly-report
-// @access  Admin, Superadmin
-exports.testWeeklyReport = asyncHandler(async (req, res) => {
-  const { tenantId, phoneNumber } = req.body;
-
-  if (!tenantId || !phoneNumber) {
-    throw new ApiError(400, "tenantId e phoneNumber são obrigatórios.");
-  }
-
-  const tenant = await tenantRepository.getTenantById(tenantId);
-  if (!tenant) {
-    throw new ApiError(404, "Tenant não encontrado.");
-  }
-
-  const zonedNow = now();
-  const lastWeek = subWeeks(zonedNow, 1);
-  const startOfLastWeek = startOfWeek(lastWeek, { weekStartsOn: 1 }); // Monday
-  const endOfLastWeek = endOfWeek(lastWeek, { weekStartsOn: 1 });   // Sunday
-
-  const weeklySummary = await dashboardRepository.getSummary(
-    tenantId,
-    startOfLastWeek,
-    endOfLastWeek,
-  );
-
-  const formattedStartDate = format(startOfLastWeek, "dd/MM/yyyy");
-  const formattedEndDate = format(endOfLastWeek, "dd/MM/yyyy");
-  const isoDate = format(endOfLastWeek, "yyyy-MM-dd");
-  
-  const baseUrl =
-    process.env.FRONTEND_URL || "https://loyalfood.towersfy.com";
-  const reportUrl = `${baseUrl}/relatorios/semanal?date=${isoDate}`;
-
-  let message =
-    `*Relatório Semanal ${tenant.name}*\n\n` +
-    `Aqui está o resumo da experiência dos seus clientes na semana de ${formattedStartDate} a ${formattedEndDate}!
-` +
-    `📊 Total de respostas: ${weeklySummary.totalResponses}
-` +
-    `🟢 Número de Promotores: ${weeklySummary.nps.promoters}
-` +
-    `🟡 Número de Neutros: ${weeklySummary.nps.neutrals}
-` +
-    `🔴 Número de Detratores: ${weeklySummary.nps.detractors}
-
-` +
-    `🔗 Para acessar o relatório completo, visite ${reportUrl}`;
-    
-  message += "\n\n--- MENSAGEM DE TESTE ---";
-
-  await whatsappService.sendTenantMessage(tenantId, phoneNumber, message);
-
-  res.status(200).json({
-    message: `Mensagem de teste de relatório semanal enviada para ${phoneNumber}.`,
-  });
-});
-
-// @desc    Enviar um teste de mensagem de relatório mensal
-// @route   POST /api/automations/test/monthly-report
-// @access  Admin, Superadmin
-exports.testMonthlyReport = asyncHandler(async (req, res) => {
-  const { tenantId, phoneNumber } = req.body;
-
-  if (!tenantId || !phoneNumber) {
-    throw new ApiError(400, "tenantId e phoneNumber são obrigatórios.");
-  }
-
-  const tenant = await tenantRepository.getTenantById(tenantId);
-  if (!tenant) {
-    throw new ApiError(404, "Tenant não encontrado.");
-  }
-
-  const zonedNow = now();
-  const lastMonth = subMonths(zonedNow, 1);
-  const startOfLastMonth = startOfMonth(lastMonth);
-  const endOfLastMonth = endOfMonth(lastMonth);
-
-  const monthlySummary = await dashboardRepository.getSummary(
-    tenantId,
-    startOfLastMonth,
-    endOfLastMonth,
-  );
-
-  const formattedMonth = format(lastMonth, "MMMM 'de' yyyy", { locale: ptBR });
-  const isoDate = format(endOfLastMonth, "yyyy-MM-dd");
-
-  const baseUrl =
-    process.env.FRONTEND_URL || "https://loyalfood.towersfy.com";
-  const reportUrl = `${baseUrl}/relatorios/mensal?date=${isoDate}`;
-
-  let message =
-    `*Relatório Mensal ${tenant.name}*\n\n` +
-    `Aqui está o resumo da experiência dos seus clientes em ${formattedMonth}!
-` +
-    `📊 Total de respostas: ${monthlySummary.totalResponses}
-` +
-    `🟢 Número de Promotores: ${monthlySummary.nps.promoters}
-` +
-    `🟡 Número de Neutros: ${monthlySummary.nps.neutrals}
-` +
-    `🔴 Número de Detratores: ${monthlySummary.nps.detractors}
-
-` +
-    `🔗 Para acessar o relatório completo, visite ${reportUrl}`;
-
-  message += "\n\n--- MENSAGEM DE TESTE ---";
-
-  await whatsappService.sendTenantMessage(tenantId, phoneNumber, message);
-
-  res.status(200).json({
-    message: `Mensagem de teste de relatório mensal enviada para ${phoneNumber}.`,
   });
 });

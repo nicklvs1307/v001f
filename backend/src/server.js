@@ -74,8 +74,6 @@ const startServer = async () => {
 
     // Inicia os jobs agendados
     const dailyReportJob = require("./jobs/dailyReportJob");
-    const weeklyReportJob = require("./jobs/weeklyReportJob");
-    const monthlyReportJob = require("./jobs/monthlyReportJob");
     const couponReminderJob = require("./jobs/couponReminderJob");
     const birthdayAutomationJob = require("./jobs/birthdayAutomationJob");
     const couponExpirationJob = require("./jobs/couponExpirationJob");
@@ -85,8 +83,6 @@ const startServer = async () => {
     const { initCampaignMonitorJob } = require("./jobs/campaignMonitorJob");
 
     dailyReportJob.start();
-    weeklyReportJob.start();
-    monthlyReportJob.start();
     couponReminderJob.start();
     birthdayAutomationJob.start();
     couponExpirationJob.start();

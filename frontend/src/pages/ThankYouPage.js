@@ -2,7 +2,6 @@ import React from 'react';
 import { Typography, Box, Button, Paper } from '@mui/material';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import PublicPageLayout from '../components/layout/PublicPageLayout';
-import { motion } from 'framer-motion';
 
 const ThankYouPage = () => {
     const navigate = useNavigate();
@@ -26,35 +25,28 @@ const ThankYouPage = () => {
 
             {/* Seção Condicional para Cadastro */}
             {tenantId && pesquisaId && (
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3, duration: 0.5 }}
+                <Box
+                    sx={{
+                        p: 3, 
+                        mt: 4, 
+                        mb: 4,
+                        borderRadius: '12px',
+                        background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+                        textAlign: 'center'
+                    }}
                 >
-                    <Paper 
-                        elevation={4} 
-                        sx={{ 
-                            p: 3, 
-                            mt: 4, 
-                            mb: 4,
-                            borderRadius: '12px',
-                            background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-                            textAlign: 'center'
-                        }}
+                    <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold', mb: 2 }}>
+                        Não perca seu prêmio!
+                    </Typography>
+                    <Button 
+                        variant="contained" 
+                        color="primary" 
+                        component={Link}
+                        to={`/cadastro-cliente/${tenantId}/${pesquisaId}`}
                     >
-                        <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold', mb: 2 }}>
-                            Não perca seu prêmio!
-                        </Typography>
-                        <Button 
-                            variant="contained" 
-                            color="primary" 
-                            component={Link}
-                            to={`/cadastro-cliente/${tenantId}/${pesquisaId}`}
-                        >
-                            Cadastre-se para girar a roleta
-                        </Button>
-                    </Paper>
-                </motion.div>
+                        Cadastre-se para girar a roleta
+                    </Button>
+                </Box>
             )}
 
             <Box sx={{ mt: 3 }}>

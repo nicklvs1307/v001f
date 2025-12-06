@@ -1,8 +1,4 @@
-main.1c9a8184.js:2 [Violation] 'message' handler took 156ms
-main.1c9a8184.js:2 [Violation] 'message' handler took 175ms
-main.1c9a8184.js:2 [Violation] 'message' handler took 180ms
-main.1c9a8184.js:2 [Violation] 'click' handler took 158ms
-[Violation] Forced reflow while executing JavaScript took 75ms
+main.5f606f14.js:2 [Violation] 'message' handler took 209ms
 react-dom.production.min.js:188 Error: Minified React error #306; visit https://reactjs.org/docs/error-decoder.html?invariant=306&args[]=undefined&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
     at Sl (react-dom.production.min.js:290:512)
     at bc (react-dom.production.min.js:279:389)

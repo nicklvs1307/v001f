@@ -29,14 +29,7 @@ const useReportData = (reportType) => {
                 params.date = selectedDate.toISOString();
             }
 
-            let resultData;
-            if (reportType === 'diario') {
-                resultData = await dashboardService.getDailyReport(params);
-            } else if (reportType === 'semanal') {
-                resultData = await dashboardService.getWeeklyReport(params);
-            } else if (reportType === 'mensal') {
-                resultData = await dashboardService.getMonthlyReport(params);
-            }
+            const resultData = await dashboardService.getReport(reportType, params);
             
             setReportData(resultData);
         } catch (err) {

@@ -181,72 +181,42 @@ module.exports = {
     res.status(200).json(feedbacks);
   }),
 
-  getDailyReport: asyncHandler(async (req, res) => {
+  getReport: asyncHandler(async (req, res) => {
+    const { reportType } = req.params;
     const {
       date,
       startDate: queryStartDate,
       endDate: queryEndDate,
       surveyId,
     } = req.query;
-    const { startDate, endDate } = getPeriodDateRange(
-      queryStartDate,
-      queryEndDate,
-      "day",
-      date,
-    );
-    const reportData = await dashboardRepository.getDashboardData(
-      req.tenantId,
-      startDate,
-      endDate,
-      "day", // Keep period as 'day' for daily grouping in the trend
-      surveyId,
-    );
-    res.status(200).json(reportData);
-  }),
 
-  getWeeklyReport: asyncHandler(async (req, res) => {
-    const {
-      date,
-      startDate: queryStartDate,
-      endDate: queryEndDate,
-      surveyId,
-    } = req.query;
-    const { startDate, endDate } = getPeriodDateRange(
-      queryStartDate,
-      queryEndDate,
-      "week",
-      date,
-    );
-    const reportData = await dashboardRepository.getDashboardData(
-      req.tenantId,
-      startDate,
-      endDate,
-      "week",
-      surveyId,
-    );
-    res.status(200).json(reportData);
-  }),
+    const validReportTypes = {
+      diario: "day",
+      semanal: "week",
+      mensal: "month",
+    };
 
-  getMonthlyReport: asyncHandler(async (req, res) => {
-    const {
-      date,
-      startDate: queryStartDate,
-      endDate: queryEndDate,
-      surveyId,
-    } = req.query;
+    const period = validReportTypes[reportType];
+
+    if (!period) {
+      return res.status(400).json({ message: "Tipo de relatório inválido." });
+    }
+
     const { startDate, endDate } = getPeriodDateRange(
       queryStartDate,
       queryEndDate,
-      "month",
+      period,
       date,
     );
+
     const reportData = await dashboardRepository.getDashboardData(
       req.tenantId,
       startDate,
       endDate,
-      "month",
+      period,
       surveyId,
     );
+
     res.status(200).json(reportData);
   }),
 

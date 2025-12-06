@@ -89,7 +89,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     return null;
 };
 
-const Dashboard = ({ data, reportType }) => {
+const RelatorioDashboard = ({ data, reportType, trendTitle }) => {
     const theme = useTheme();
 
     if (!data) {
@@ -111,10 +111,6 @@ const Dashboard = ({ data, reportType }) => {
     if (scoreTypes?.includes('NPS')) {
         domain = [-100, 100];
     }
-
-    const trendTitle = reportType === 'diario' ? 'Tendência do NPS (Diário)' :
-                       reportType === 'semanal' ? 'Tendência do NPS (Semanal)' :
-                       'Tendência do NPS (Mensal)';
     
     return (
         <Grid container spacing={3}>
@@ -168,14 +164,25 @@ const Dashboard = ({ data, reportType }) => {
                         <CardContent>
                             {npsTrend && npsTrend.length > 0 ? (
                                 <ResponsiveContainer width="100%" height={250}>
-                                    <ComposedChart data={npsTrend}>
-                                        <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
-                                        <XAxis dataKey="period" />
-                                        <YAxis />
-                                        <Tooltip content={<CustomTooltip />} />
-                                        <Legend />
-                                        <Area type="monotone" dataKey="nps" fill={alpha(theme.palette.primary.main, 0.4)} stroke={theme.palette.primary.dark} name="NPS" />
-                                    </ComposedChart>
+                                    {reportType === 'diario' ? (
+                                        <ComposedChart data={npsTrend}>
+                                            <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
+                                            <XAxis dataKey="period" />
+                                            <YAxis />
+                                            <Tooltip content={<CustomTooltip />} />
+                                            <Legend />
+                                            <Area type="monotone" dataKey="nps" fill={alpha(theme.palette.primary.main, 0.4)} stroke={theme.palette.primary.dark} name="NPS" />
+                                        </ComposedChart>
+                                    ) : (
+                                        <BarChart data={npsTrend}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="period" />
+                                            <YAxis />
+                                            <Tooltip content={<CustomTooltip />} />
+                                            <Legend />
+                                            <Bar dataKey="nps" fill={theme.palette.primary.main} name="NPS" />
+                                        </BarChart>
+                                    )}
                                 </ResponsiveContainer>
                             ) : <NoData />}
                         </CardContent>
@@ -281,4 +288,4 @@ const Dashboard = ({ data, reportType }) => {
 };
 
 
-export default Dashboard;
+export default RelatorioDashboard;

@@ -131,27 +131,11 @@ router.get(
 );
 
 router.get(
-  "/daily-report",
+  "/report/:reportType",
   validateDateFilters,
   validate,
   authorize("dashboard:read"),
-  dashboardController.getDailyReport,
-);
-
-router.get(
-  "/weekly-report",
-  validateDateFilters,
-  validate,
-  authorize("dashboard:read"),
-  dashboardController.getWeeklyReport,
-);
-
-router.get(
-  "/monthly-report",
-  validateDateFilters,
-  validate,
-  authorize("dashboard:read"),
-  dashboardController.getMonthlyReport,
+  dashboardController.getReport,
 );
 
 router.get(

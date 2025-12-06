@@ -612,14 +612,14 @@ const getNpsTrendData = async (
   });
 
   return trendData.map((item) => {
-    const { period, promoters: p, detractors: d, total: t } = item.dataValues;
+    const { period: datePeriod, promoters: p, detractors: d, total: t } = item.dataValues;
     const promoters = parseInt(p) || 0;
     const detractors = parseInt(d) || 0;
     const total = parseInt(t) || 0;
     const nps = total > 0 ? ((promoters - detractors) / total) * 100 : 0;
     return {
       period: formatInTimeZone(
-        item.dataValues.period,
+        datePeriod,
         period === "day"
           ? "dd/MM"
           : period === "week"

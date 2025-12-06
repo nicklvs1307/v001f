@@ -15,18 +15,32 @@ const {
 
 // Helper function to normalize phone numbers
 const normalizeNumber = (number) => {
+  if (!number) {
+    return null;
+  }
+
+  // 1. Remove todos os caracteres não numéricos
   let digitsOnly = String(number).replace(/\D/g, "");
-  if (digitsOnly.length > 11 && digitsOnly.startsWith("55")) {
+
+  // 2. Se o número começar com 55 e tiver mais de 11 dígitos, remove o 55 inicial.
+  // Isso normaliza números que já estão no formato internacional.
+  if (digitsOnly.startsWith("55") && digitsOnly.length > 11) {
     digitsOnly = digitsOnly.substring(2);
   }
-  // This logic for removing the 9th digit might need review for broader cases
-  if (digitsOnly.length === 11) {
+
+  // 3. Lógica para adicionar o 9º dígito em celulares
+  // A maioria dos DDDs de celular no Brasil tem 11 dígitos (DDD + 9 dígitos).
+  // Se tiver 10 dígitos (DDD + 8 dígitos), é provável que o '9' esteja faltando.
+  if (digitsOnly.length === 10) {
     const ddd = parseInt(digitsOnly.substring(0, 2), 10);
-    if (ddd >= 11 && ddd <= 28) {
-      // Common DDDs that have the 9th digit
-      // It's generally safer to keep the 9th digit for mobile numbers
+    // DDDs de 11 a 99 são os intervalos de celular no Brasil que usam o 9º dígito
+    if (ddd >= 11 && ddd <= 99) {
+      const numberWithoutDDD = digitsOnly.substring(2);
+      digitsOnly = `${ddd}9${numberWithoutDDD}`;
     }
   }
+
+  // 4. Retorna o número no formato JID do WhatsApp
   return `55${digitsOnly}@s.whatsapp.net`;
 };
 

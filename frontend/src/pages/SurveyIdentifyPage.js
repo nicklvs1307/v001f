@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Box, Button, Paper, CircularProgress } from '@mui/material';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { 
+    Typography, Box, Button, Paper, CircularProgress,
+    Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle 
+} from '@mui/material';
+import { useNavigate, useParams } from 'react-router-dom';
 import publicSurveyService from '../services/publicSurveyService';
 
 const SurveyIdentifyPage = () => {
@@ -8,6 +11,7 @@ const SurveyIdentifyPage = () => {
     const { tenantId, pesquisaId } = useParams();
     const [tenant, setTenant] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [open, setOpen] = useState(false); // Estado para o modal
 
     useEffect(() => {
         const fetchTenant = async () => {
@@ -43,8 +47,20 @@ const SurveyIdentifyPage = () => {
         });
     };
 
-    const handleAnonymous = () => {
-        navigate('/agradecimento');
+    const handleOpenModal = () => {
+        setOpen(true);
+    };
+
+    const handleCloseModal = (proceed) => {
+        setOpen(false);
+        if (proceed) {
+            navigate('/agradecimento');
+        }
+    };
+    
+    const handleRegisterFromModal = () => {
+        setOpen(false);
+        handleRegister();
     };
 
     const headerStyle = {
@@ -97,8 +113,11 @@ const SurveyIdentifyPage = () => {
                 </Box>
 
                 <Box sx={{ p: 4, textAlign: 'center' }}>
-                    <Typography variant="body1" sx={{ mb: 4, color: '#555' }}>
-                        Para receber recompensas e acompanhar seus feedbacks, identifique-se.
+                    <Typography variant="body1" sx={{ mb: 1, color: '#555' }}>
+                        Para <strong>garantir seu prêmio</strong> e participar de futuras recompensas, faça seu cadastro ou identifique-se. <strong>Levará apenas 15 segundos e será feito uma única vez.</strong>
+                    </Typography>
+                    <Typography variant="subtitle2" sx={{ mb: 4, color: 'red', fontWeight: 'bold' }}>
+                        Prêmios não podem ser salvos em contas anônimas.
                     </Typography>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <Button variant="contained" size="large" onClick={handleRegister} sx={buttonStyle}>
@@ -107,12 +126,38 @@ const SurveyIdentifyPage = () => {
                         <Button variant="outlined" size="large" onClick={handleIdentify} sx={{ borderColor: tenant?.primaryColor, color: tenant?.primaryColor }}>
                             Já tenho Cadastro
                         </Button>
-                        <Button variant="text" onClick={handleAnonymous} sx={{ mt: 2, color: '#777' }}>
+                        <Button variant="text" onClick={handleOpenModal} sx={{ mt: 2, color: '#777' }}>
                             Continuar como anônimo
                         </Button>
                     </Box>
                 </Box>
             </Paper>
+
+            <Dialog
+                open={open}
+                onClose={() => handleCloseModal(false)}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Você tem certeza?"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Se você continuar como anônimo, o prêmio desta pesquisa{' '}
+                        <strong>não poderá ser salvo</strong> e você poderá perdê-lo. 
+                        O cadastro <strong>leva apenas 15 segundos, é feito uma única vez</strong> e garante seu benefício!
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions sx={{ p: '0 24px 16px' }}>
+                    <Button onClick={() => handleCloseModal(true)} color="primary">
+                        Continuar Mesmo Assim
+                    </Button>
+                    <Button onClick={handleRegisterFromModal} variant="contained" autoFocus>
+                        Cadastrar Agora
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };

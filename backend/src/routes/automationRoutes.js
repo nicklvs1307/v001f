@@ -32,4 +32,18 @@ router.post(
   automationController.testRoletaPrize,
 );
 
+router.post(
+  "/test/weekly-report",
+  protect,
+  authorize(["Admin", "Super Admin"]),
+  automationController.testWeeklyReport,
+);
+
+router.post(
+  "/test/monthly-report",
+  protect,
+  authorize(["Admin", "Super Admin"]),
+  automationController.testMonthlyReport,
+);
+
 module.exports = router;

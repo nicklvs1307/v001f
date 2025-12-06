@@ -1,38 +1,12 @@
-main.5f606f14.js:2 [Violation] 'message' handler took 209ms
-react-dom.production.min.js:188 Error: Minified React error #306; visit https://reactjs.org/docs/error-decoder.html?invariant=306&args[]=undefined&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
-    at Sl (react-dom.production.min.js:290:512)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at oc (react-dom.production.min.js:267:429)
-    at w (scheduler.production.min.js:13:203)
-    at MessagePort.T (scheduler.production.min.js:14:128)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
-react-dom.production.min.js:290 Uncaught Error: Minified React error #306; visit https://reactjs.org/docs/error-decoder.html?invariant=306&args[]=undefined&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
-    at Sl (react-dom.production.min.js:290:512)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at oc (react-dom.production.min.js:267:429)
-    at w (scheduler.production.min.js:13:203)
-    at MessagePort.T (scheduler.production.min.js:14:128)
-Sl @ react-dom.production.min.js:290
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-ac @ react-dom.production.min.js:270
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
+URL da solicitação
+https://apivoltaki.towersfy.com/api/automations/test/daily-report
+Método da solicitação
+POST
+Código de status
+500 Internal Server Erro
+{
+    "status": "error",
+    "code": "HTTP_500",
+    "message": "Request failed with status code 400",
+    "details": "AxiosError: Request failed with status code 400\n    at settle (/usr/src/app/node_modules/axios/dist/node/axios.cjs:2106:12)\n    at IncomingMessage.handleStreamEnd (/usr/src/app/node_modules/axios/dist/node/axios.cjs:3491:11)\n    at IncomingMessage.emit (node:events:529:35)\n    at endReadableNT (node:internal/streams/readable:1400:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)\n    at Axios.request (/usr/src/app/node_modules/axios/dist/node/axios.cjs:4731:41)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Object.sendTenantMessage (/usr/src/app/src/services/whatsappService.js:124:22)\n    at async /usr/src/app/src/controllers/automationController.js:70:3"
+}

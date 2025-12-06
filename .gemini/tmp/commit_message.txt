@@ -1,6 +1,15 @@
-feat(automations): Adiciona automação de detratores e melhora relatórios
+feat(dashboard): Melhora usabilidade e corrige bugs em Cupons e Roletas
 
-- Implementa a automação "Pós Venda - Detratores", permitindo o envio de mensagens para clientes com nota baixa e a notificação da equipe, com configuração via painel.
-- Corrige a automação de prêmio da roleta, que não era enviada, expondo sua configuração no painel de administração.
-- Padroniza e corrige as páginas de relatórios (diário, semanal, mensal), unificando a busca de dados no backend e resolvendo problemas de dados faltantes e lentidão.
-- Melhora a interface e a experiência do usuário das páginas de relatório com um design mais moderno e organizado.
+Este commit introduz melhorias significativas e correções de bugs em várias partes do dashboard:
+
+Cupons:
+- feat: Adiciona a funcionalidade de validar cupons diretamente na tela de listagem, através de um modal de detalhes.
+- fix: Corrige um bug onde o nome do Cliente e da Empresa apareciam como "N/A" na listagem por não incluir as associações na consulta.
+- refactor: Simplifica a tabela de cupons para uma visualização mais limpa.
+
+Roletas:
+- fix: Garante que recompensas inativas, mas salvas em uma roleta, sejam exibidas corretamente no modo de edição.
+- fix: Resolve um problema de renderização onde o texto das recompensas ficava invisível no dropdown de seleção.
+
+Recompensas:
+- fix: Corrige a lógica no serviço de recompensas que impedia a listagem de todos os itens (ativos e inativos), fazendo a página de recompensas aparecer vazia.

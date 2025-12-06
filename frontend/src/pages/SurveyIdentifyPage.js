@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { 
     Typography, Box, Button, Paper, CircularProgress,
-    Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle 
+    Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
 } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
+import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import publicSurveyService from '../services/publicSurveyService';
 
 const SurveyIdentifyPage = () => {
@@ -54,7 +55,8 @@ const SurveyIdentifyPage = () => {
     const handleCloseModal = (proceed) => {
         setOpen(false);
         if (proceed) {
-            navigate('/agradecimento');
+            // Passa os IDs para a página de agradecimento
+            navigate('/agradecimento', { state: { tenantId, pesquisaId } });
         }
     };
     
@@ -109,15 +111,15 @@ const SurveyIdentifyPage = () => {
                             <img src={tenant.logoUrl} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
                         </Box>
                     )}
-                    <Typography variant="h5" component="h1" sx={{ mb: 1, fontWeight: 'bold' }}>Obrigado por responder!</Typography>
+                    <Typography variant="h5" component="h1" sx={{ mb: 1, fontWeight: 'bold' }}>Gire a roleta e ganhe prêmios!</Typography>
                 </Box>
 
                 <Box sx={{ p: 4, textAlign: 'center' }}>
                     <Typography variant="body1" sx={{ mb: 1, color: '#555' }}>
-                        Para <strong>garantir seu prêmio</strong> e participar de futuras recompensas, faça seu cadastro ou identifique-se. <strong>Levará apenas 15 segundos e será feito uma única vez.</strong>
+                        Para <strong>garantir seu prêmio</strong>, faça seu cadastro ou identifique-se.
                     </Typography>
                     <Typography variant="subtitle2" sx={{ mb: 4, color: 'red', fontWeight: 'bold' }}>
-                        Prêmios não podem ser salvos em contas anônimas.
+                        O cadastro leva apenas 15 segundos e é feito uma única vez.
                     </Typography>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <Button variant="contained" size="large" onClick={handleRegister} sx={buttonStyle}>
@@ -127,7 +129,7 @@ const SurveyIdentifyPage = () => {
                             Já tenho Cadastro
                         </Button>
                         <Button variant="text" onClick={handleOpenModal} sx={{ mt: 2, color: '#777' }}>
-                            Continuar como anônimo
+                            Continuar sem cadastro
                         </Button>
                     </Box>
                 </Box>
@@ -136,25 +138,30 @@ const SurveyIdentifyPage = () => {
             <Dialog
                 open={open}
                 onClose={() => handleCloseModal(false)}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
+                PaperProps={{
+                    sx: {
+                        borderRadius: "15px",
+                        textAlign: 'center',
+                        p: 2
+                    }
+                }}
             >
-                <DialogTitle id="alert-dialog-title">
-                    {"Você tem certeza?"}
-                </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Se você continuar como anônimo, o prêmio desta pesquisa{' '}
-                        <strong>não poderá ser salvo</strong> e você poderá perdê-lo. 
+                    <CardGiftcardIcon sx={{ fontSize: 60, color: 'primary.main', mb: 2 }} />
+                    <DialogTitle sx={{ fontWeight: 'bold', p: 1 }}>
+                        Não deixe de ganhar seu prêmio!
+                    </DialogTitle>
+                    <DialogContentText>
+                        Cadastre-se para girar a roleta e salvar seu prêmio.
                         O cadastro <strong>leva apenas 15 segundos, é feito uma única vez</strong> e garante seu benefício!
                     </DialogContentText>
                 </DialogContent>
-                <DialogActions sx={{ p: '0 24px 16px' }}>
-                    <Button onClick={() => handleCloseModal(true)} color="primary">
-                        Continuar Mesmo Assim
+                <DialogActions sx={{ justifyContent: 'center', flexDirection: 'column', gap: 1, p: '0 24px 16px' }}>
+                    <Button onClick={handleRegisterFromModal} variant="contained" fullWidth>
+                        Cadastre-se agora
                     </Button>
-                    <Button onClick={handleRegisterFromModal} variant="contained" autoFocus>
-                        Cadastrar Agora
+                    <Button onClick={() => handleCloseModal(true)} color="secondary" fullWidth>
+                        Continuar sem cadastro
                     </Button>
                 </DialogActions>
             </Dialog>

@@ -1,12 +1,9 @@
-feat(campaigns): Implement specific and birthday client selection
+feat(tenants): Refactor tenant management UI
 
-This commit enhances the campaign creation functionality by adding support for 'specific' and 'birthday' client selection criteria.
+This commit refactors the tenant management UI to improve user experience and code maintainability.
 
-Backend:
-- The `_selectClients` function in `campanhaService.js` has been updated to handle `criterio.type === 'specific'` and `criterio.type === 'birthday'`.
-
-Frontend:
-- `ClientSegmentSelector.js` has been updated to include 'Specific Clients' and 'Birthday Month' as selectable options.
-- `CampaignFormPage.js` now conditionally renders a multi-select dropdown for specific clients or a month selector for birthday campaigns.
-- The page now fetches all clients to populate the specific client selector.
-- The state management has been updated to handle `clientIds` and `month` in the `criterioSelecao` object.
+- A dedicated page (`TenantFormPage.js`) has been created for creating and editing tenants, replacing the previous modal-based approach.
+- New routes (`/superadmin/tenants/new` and `/superadmin/tenants/edit/:id`) have been added for the tenant form page.
+- The `TenantList.js` component has been updated to use the `DataGrid` component from `@mui/x-data-grid`, providing out-of-the-box sorting, filtering, and pagination.
+- The old `TenantForm.js` component has been removed.
+- The `@mui/x-data-grid` package has been added as a dependency.

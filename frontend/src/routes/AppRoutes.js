@@ -25,6 +25,7 @@ const DashboardPage = React.lazy(() => import('../pages/DashboardPage'));
 const UsersPage = React.lazy(() => import('../pages/UsersPage'));
 const RolesPage = React.lazy(() => import('../pages/RolesPage'));
 const TenantsPage = React.lazy(() => import('../pages/TenantsPage'));
+const TenantFormPage = React.lazy(() => import('../pages/TenantFormPage'));
 const SurveysPage = React.lazy(() => import('../pages/SurveysPage'));
 const SurveyTemplatesPage = React.lazy(() => import('../pages/SurveyTemplatesPage'));
 const QuestionsPage = React.lazy(() => import('../pages/QuestionsPage'));
@@ -107,6 +108,8 @@ const AppRoutes = () => {
             <Route index element={<SuperAdminDashboardPage />} />
             <Route path="dashboard" element={<SuperAdminDashboardPage />} />
             <Route path="tenants" element={<TenantsPage />} />
+            <Route path="tenants/new" element={<TenantFormPage />} />
+            <Route path="tenants/edit/:id" element={<TenantFormPage />} />
             <Route path="whatsapp-config" element={<WhatsappConfigPage />} />
             <Route path="sender-pool" element={<SenderPoolPage />} />
             <Route path="senders/:id/connect" element={<SenderConnectPage />} />

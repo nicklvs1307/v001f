@@ -1,5 +1,19 @@
-feat(debug): Adiciona logs para depuração de erros em dashboards
+feat(reports): Reintroduce and enhance weekly/monthly reports
 
-Adicionados `console.log`s em componentes chave do frontend (`NpsCharts.js`, `AttendantPerformance.js`, `Dashboard.js`) para auxiliar na depuração de erros de renderização de gráficos ("Invariant failed", erros de SVG/NaN) nas páginas `/dashboard/resultados` e `/dashboard/relatorios/diario`.
+This commit reintroduces the weekly and monthly report functionality that was previously reverted due to a breaking change in the WhatsApp service payload. It also includes improvements and ensures proper frontend integration.
 
-Estes logs permitirão inspecionar os dados que estão sendo passados para os gráficos e identificar a causa raiz dos problemas.
+Backend Changes:
+- Re-applied the unified report structure from a previous refactoring (commit d641c3a), consolidating report endpoints and controllers.
+- Added a migration to include `weeklyReportEnabled` and `monthlyReportEnabled` columns to `whatsapp_configs` table.
+- Updated `backend/models/whatsappconfig.js` to reflect the new report fields.
+- Implemented `backend/src/jobs/weeklyReportJob.js` and `backend/src/jobs/monthlyReportJob.js` for scheduled report generation and sending, ensuring correct WhatsApp API payload usage.
+- Enhanced `backend/src/repositories/whatsappConfigRepository.js` with methods to find configurations for weekly and monthly reports.
+- Added `testWeeklyReport` and `testMonthlyReport` to `backend/src/controllers/automationController.js` and their respective routes in `backend/src/routes/automationRoutes.js` for testing purposes.
+- Configured `backend/src/server.js` to start the new report jobs upon application launch.
+
+Frontend Changes:
+- Restored the refactored report components and logic from the previous refactoring, including `ReportPage.js`, `RelatorioDashboard.js`, `useReportData.js`, and `dashboardService.js`.
+- Updated `frontend/src/pages/WhatsappConfigPage.js` to include user interface elements (switches and text fields) for enabling/disabling weekly and monthly reports, and specifying phone numbers for these reports.
+- Also added UI elements for detractor message sending configuration (`sendDetractorMessageToClient`, `detractorMessageTemplate`, `notifyDetractorToOwner`, `detractorOwnerMessageTemplate`, `detractorOwnerPhoneNumbers`).
+
+This ensures that the weekly and monthly reporting features are fully functional and configurable without introducing previous breaking changes.

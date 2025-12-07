@@ -22,9 +22,18 @@ const EditConfigDialog = ({ open, onClose, config, onSave, saving }) => {
     url: '',
     apiKey: '',
     dailyReportEnabled: false,
-    reportPhoneNumbers: '',
+    reportPhoneNumbers: '', // This will be for daily
+    weeklyReportEnabled: false, // New
+    weeklyReportPhoneNumbers: '', // New
+    monthlyReportEnabled: false, // New
+    monthlyReportPhoneNumbers: '', // New
     sendPrizeMessage: false,
     prizeMessageTemplate: '',
+    sendDetractorMessageToClient: false,
+    detractorMessageTemplate: '',
+    notifyDetractorToOwner: false,
+    detractorOwnerMessageTemplate: '',
+    detractorOwnerPhoneNumbers: '',
   });
 
   useEffect(() => {
@@ -34,8 +43,17 @@ const EditConfigDialog = ({ open, onClose, config, onSave, saving }) => {
         apiKey: config.apiKey || '',
         dailyReportEnabled: config.dailyReportEnabled || false,
         reportPhoneNumbers: config.reportPhoneNumbers || '',
+        weeklyReportEnabled: config.weeklyReportEnabled || false,
+        weeklyReportPhoneNumbers: config.weeklyReportPhoneNumbers || '',
+        monthlyReportEnabled: config.monthlyReportEnabled || false,
+        monthlyReportPhoneNumbers: config.monthlyReportPhoneNumbers || '',
         sendPrizeMessage: config.sendPrizeMessage || false,
         prizeMessageTemplate: config.prizeMessageTemplate || '',
+        sendDetractorMessageToClient: config.sendDetractorMessageToClient || false,
+        detractorMessageTemplate: config.detractorMessageTemplate || '',
+        notifyDetractorToOwner: config.notifyDetractorToOwner || false,
+        detractorOwnerMessageTemplate: config.detractorOwnerMessageTemplate || '',
+        detractorOwnerPhoneNumbers: config.detractorOwnerPhoneNumbers || '',
       });
     }
   }, [config]);
@@ -102,6 +120,48 @@ const EditConfigDialog = ({ open, onClose, config, onSave, saving }) => {
           <FormControlLabel
             control={
               <Switch
+                checked={formData.weeklyReportEnabled}
+                onChange={handleChange}
+                name="weeklyReportEnabled"
+              />
+            }
+            label="Enviar Relatório Semanal"
+          />
+          <TextField
+            fullWidth
+            label="Números para Relatório Semanal (separados por vírgula)"
+            name="weeklyReportPhoneNumbers"
+            value={formData.weeklyReportPhoneNumbers}
+            onChange={handleChange}
+            margin="normal"
+            disabled={!formData.weeklyReportEnabled}
+          />
+        </FormGroup>
+        <FormGroup sx={{ mt: 2 }}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={formData.monthlyReportEnabled}
+                onChange={handleChange}
+                name="monthlyReportEnabled"
+              />
+            }
+            label="Enviar Relatório Mensal"
+          />
+          <TextField
+            fullWidth
+            label="Números para Relatório Mensal (separados por vírgula)"
+            name="monthlyReportPhoneNumbers"
+            value={formData.monthlyReportPhoneNumbers}
+            onChange={handleChange}
+            margin="normal"
+            disabled={!formData.monthlyReportEnabled}
+          />
+        </FormGroup>
+        <FormGroup sx={{ mt: 2 }}>
+          <FormControlLabel
+            control={
+              <Switch
                 checked={formData.sendPrizeMessage}
                 onChange={handleChange}
                 name="sendPrizeMessage"
@@ -146,6 +206,40 @@ const EditConfigDialog = ({ open, onClose, config, onSave, saving }) => {
             helperText="Use {{cliente}} como variável."
           />
         </FormGroup>
+        <FormGroup sx={{ mt: 2 }}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={formData.notifyDetractorToOwner}
+                onChange={handleChange}
+                name="notifyDetractorToOwner"
+              />
+            }
+            label="Notificar Detrator para o Proprietário"
+          />
+          <TextField
+            fullWidth
+            label="Template de Notificação do Detrator (Proprietário)"
+            name="detractorOwnerMessageTemplate"
+            value={formData.detractorOwnerMessageTemplate}
+            onChange={handleChange}
+            margin="normal"
+            multiline
+            rows={3}
+            disabled={!formData.notifyDetractorToOwner}
+            helperText="Use {{cliente}}, {{nota}}, {{comentario}} como variáveis."
+          />
+          <TextField
+            fullWidth
+            label="Números de Telefone do Proprietário (separados por vírgula)"
+            name="detractorOwnerPhoneNumbers"
+            value={formData.detractorOwnerPhoneNumbers}
+            onChange={handleChange}
+            margin="normal"
+            disabled={!formData.notifyDetractorToOwner}
+          />
+        </FormGroup>
+
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancelar</Button>

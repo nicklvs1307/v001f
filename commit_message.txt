@@ -1,15 +1,8 @@
-feat(superadmin): Implement Login as Tenant feature
+fix(frontend): Correct import paths
 
-This commit introduces the "Login as Tenant" feature, allowing superadmins to impersonate tenant admins for debugging and support purposes.
+This commit fixes a build error caused by incorrect import paths in several components. The error "Module not found: Error: You attempted to import which falls outside of the project src/ directory" was occurring because of relative imports going up too many levels.
 
-Backend:
-- Created a new endpoint `/api/superadmin/login-as-tenant/:tenantId` to generate a JWT for a tenant user.
-- Added a new `superadminController.js` with the `loginAsTenant` function.
-- Registered the new `superadminRoutes.js` in the main router.
-
-Frontend:
-- Added a "Login as" button to the tenants list in `TenantList.js`.
-- Implemented the `handleLoginAsTenant` function to call the new endpoint, store the original token, and set the new tenant token.
-- Created a `ReturnToSuperadminBanner.js` component that is displayed when impersonating a tenant.
-- The banner includes a "Return to Superadmin" button that restores the original superadmin session.
-- Added the `superadminService.js` to handle the API call.
+The following files have been updated with the correct import paths:
+- `frontend/src/pages/TenantFormPage.js`
+- `frontend/src/components/tenants/TenantList.js`
+- `frontend/src/pages/UserFormPage.js`

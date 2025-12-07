@@ -1,17 +1,48 @@
- => ERROR [build 6/6] RUN npm run build                                                       18.6s
+root@Server:~/loyalfood/v001f# git pull origin main
+remote: Enumerating objects: 13, done.
+remote: Counting objects: 100% (13/13), done.
+remote: Compressing objects: 100% (1/1), done.
+remote: Total 7 (delta 5), reused 7 (delta 5), pack-reused 0 (from 0)
+Unpacking objects: 100% (7/7), 562 bytes | 112.00 KiB/s, done.
+From https://github.com/nicklvs1307/v001f
+ * branch            main       -> FETCH_HEAD
+   ecf6067..31c594a  main       -> origin/main
+Updating ecf6067..31c594a
+Fast-forward
+ commit_message.txt                            | 8 --------
+ frontend/src/components/tenants/TenantList.js | 4 ++--
+ 2 files changed, 2 insertions(+), 10 deletions(-)
+ delete mode 100644 commit_message.txt
+root@Server:~/loyalfood/v001f# docker build --build-arg REACT_APP_API_URL=https://apivoltaki.towersfy.com -t voltaki-frontend:latest ./frontend
+[+] Building 19.3s (12/15)                                                           docker:default
+ => [internal] load build definition from Dockerfile                                           0.0s
+ => => transferring dockerfile: 924B                                                           0.0s
+ => [internal] load metadata for docker.io/library/nginx:1.25-alpine                           0.9s
+ => [internal] load metadata for docker.io/library/node:18-alpine                              0.8s
+ => [internal] load .dockerignore                                                              0.0s
+ => => transferring context: 64B                                                               0.0s
+ => [build 1/6] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f2490  0.0s
+ => [internal] load build context                                                              0.0s
+ => => transferring context: 18.80kB                                                           0.0s
+ => [stage-1 1/4] FROM docker.io/library/nginx:1.25-alpine@sha256:516475cc129da42866742567714  0.0s
+ => CACHED [build 2/6] WORKDIR /app                                                            0.0s
+ => CACHED [build 3/6] COPY package*.json ./                                                   0.0s
+ => CACHED [build 4/6] RUN npm install --omit=dev --legacy-peer-deps                           0.0s
+ => [build 5/6] COPY . .                                                                       0.1s
+ => ERROR [build 6/6] RUN npm run build                                                       18.2s
 ------
  > [build 6/6] RUN npm run build:
-0.530
-0.530 > frontend@0.1.0 build
-0.530 > react-scripts build
-0.530
-1.582 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-2.805 Creating an optimized production build...
-18.36 Failed to compile.
-18.36
-18.37 Module not found: Error: Can't resolve 'services/tenantService' in '/app/src/pages'
-18.37
-18.37
+0.549
+0.549 > frontend@0.1.0 build
+0.549 > react-scripts build
+0.549
+1.590 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+2.815 Creating an optimized production build...
+17.91 Failed to compile.
+17.91
+17.91 Module not found: Error: Can't resolve '../services/roleService' in '/app/src/pages'
+17.91
+17.91
 ------
 Dockerfile:14
 --------------------

@@ -1,24 +1,35 @@
 const asyncHandler = require('express-async-handler');
+const jwt = require('jsonwebtoken');
 const { Usuario, Role } = require('../../models');
-const { generateToken } = require('../utils/jwt');
+const config = require('../config');
 const ApiError = require('../errors/ApiError');
 
 const loginAsTenant = asyncHandler(async (req, res) => {
     const { tenantId } = req.params;
 
+    // Encontra o primeiro usuário (geralmente o admin) do tenant especificado.
     const userToImpersonate = await Usuario.findOne({
         where: { tenantId },
-        include: [{ model: Role, as: 'role' }]
+        include: [{ model: Role, as: 'role' }],
+        order: [['createdAt', 'ASC']] // Garante que pegue o usuário mais antigo.
     });
 
     if (!userToImpersonate) {
-        throw new ApiError(404, 'No user found for this tenant.');
+        throw new ApiError(404, 'Nenhum usuário encontrado para este tenant.');
     }
 
-    const token = generateToken({
-        id: userToImpersonate.id,
+    // Cria o payload para o novo token, alinhado com o authController.
+    const payload = {
+        userId: userToImpersonate.id,
+        name: userToImpersonate.name,
+        role: userToImpersonate.role.name,
         tenantId: userToImpersonate.tenantId,
-        role: userToImpersonate.role.name
+        profilePictureUrl: userToImpersonate.profilePictureUrl,
+    };
+    
+    // Gera o novo token usando o padrão do projeto.
+    const token = jwt.sign(payload, config.jwtSecret, {
+        expiresIn: config.jwtExpiresIn,
     });
 
     res.json({

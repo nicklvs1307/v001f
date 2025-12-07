@@ -1,17 +1,17 @@
- => ERROR [build 6/6] RUN npm run build                                                       18.1s
+ => ERROR [build 6/6] RUN npm run build                                                       18.6s
 ------
  > [build 6/6] RUN npm run build:
-0.564
-0.564 > frontend@0.1.0 build
-0.564 > react-scripts build
-0.564
-1.763 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-3.001 Creating an optimized production build...
-17.94 Failed to compile.
-17.94
-17.94 Module not found: Error: Can't resolve '../services/roleService' in '/app/src/pages'
-17.94
-17.94
+0.530
+0.530 > frontend@0.1.0 build
+0.530 > react-scripts build
+0.530
+1.582 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+2.805 Creating an optimized production build...
+18.36 Failed to compile.
+18.36
+18.37 Module not found: Error: Can't resolve 'services/tenantService' in '/app/src/pages'
+18.37
+18.37
 ------
 Dockerfile:14
 --------------------

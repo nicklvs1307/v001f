@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import tenantService from 'services/tenantService';
-import superadminService from 'services/superadminService';
+import tenantService from '../services/tenantService';
+import superadminService from '../services/superadminService';
 import AuthContext from '../../context/AuthContext';
 import { 
     Box, 

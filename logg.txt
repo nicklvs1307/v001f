@@ -1,18 +1,17 @@
- => ERROR [build 6/6] RUN npm run build                                                       18.5s
+ => ERROR [build 6/6] RUN npm run build                                                       18.1s
 ------
  > [build 6/6] RUN npm run build:
-0.634
-0.634 > frontend@0.1.0 build
-0.634 > react-scripts build
-0.634
-1.739 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-2.886 Creating an optimized production build...
-18.32 Failed to compile.
-18.32
-18.33 Module not found: Error: You attempted to import ../../context/NotificationContext which falls outside of the project src/ directory. Relative imports outside of src/ are not supported.
-18.33 You can either move it inside src/, or add a symlink to it from project's node_modules/.
-18.33
-18.33
+0.564
+0.564 > frontend@0.1.0 build
+0.564 > react-scripts build
+0.564
+1.763 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+3.001 Creating an optimized production build...
+17.94 Failed to compile.
+17.94
+17.94 Module not found: Error: Can't resolve '../services/roleService' in '/app/src/pages'
+17.94
+17.94
 ------
 Dockerfile:14
 --------------------

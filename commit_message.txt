@@ -1,8 +1,8 @@
-fix(frontend): Correct import paths
+fix(frontend): Use absolute import paths to resolve build error
 
-This commit fixes a build error caused by incorrect import paths in several components. The error "Module not found: Error: You attempted to import which falls outside of the project src/ directory" was occurring because of relative imports going up too many levels.
+This commit fixes a build error caused by incorrect relative import paths in several components. The error "Module not found: Error: Can't resolve" was occurring because of issues with relative path resolution during the build process.
 
-The following files have been updated with the correct import paths:
+The following files have been updated to use absolute import paths from the `src` directory, which is a more robust approach:
 - `frontend/src/pages/TenantFormPage.js`
 - `frontend/src/components/tenants/TenantList.js`
 - `frontend/src/pages/UserFormPage.js`

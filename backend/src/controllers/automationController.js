@@ -1,3 +1,4 @@
+const asyncHandler = require("express-async-handler");
 const { format, addDays, startOfDay, endOfDay, subDays, subWeeks, startOfWeek, endOfWeek, subMonths, startOfMonth, endOfMonth } = require("date-fns");
 const { ptBR } = require("date-fns/locale");
 const { now } = require("../utils/dateUtils");

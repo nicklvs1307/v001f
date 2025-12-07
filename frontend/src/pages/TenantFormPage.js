@@ -10,8 +10,8 @@ import {
     CircularProgress,
     Alert
 } from '@mui/material';
-import tenantService from '../services/tenantService';
-import { useNotification } from '../context/NotificationContext';
+import tenantService from 'services/tenantService';
+import { useNotification } from 'context/NotificationContext';
 
 const TenantFormPage = () => {
     const { id } = useParams();

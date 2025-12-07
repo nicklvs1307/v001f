@@ -14,10 +14,10 @@ import {
     Select,
     MenuItem
 } from '@mui/material';
-import useUsers from '../hooks/useUsers';
-import tenantService from '../services/tenantService';
-import roleService from '../services/roleService';
-import { useNotification } from '../context/NotificationContext';
+import useUsers from 'hooks/useUsers';
+import tenantService from 'services/tenantService';
+import roleService from 'services/roleService';
+import { useNotification } from 'context/NotificationContext';
 
 const UserFormPage = () => {
     const { id } = useParams();

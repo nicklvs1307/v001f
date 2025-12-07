@@ -277,8 +277,29 @@ class CampanhaService {
 
     switch (criterio.type) {
       case "todos":
-        return this.clientRepository.findByTenant(tenantId);
-      // Add other cases here as they are implemented
+        return this.clientRepository.findAllByTenant(tenantId);
+      case "specific":
+        if (criterio.clientIds && criterio.clientIds.length > 0) {
+          return this.clientRepository.findAll({
+            where: {
+              id: { [Op.in]: criterio.clientIds },
+              tenantId: tenantId,
+            },
+          });
+        }
+        return [];
+      case "birthday":
+        if (criterio.month) {
+          return this.clientRepository.findAll({
+            where: {
+              tenantId: tenantId,
+              [Op.and]: [
+                sequelize.where(sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "birthDate"')), criterio.month)
+              ]
+            }
+          });
+        }
+        return [];
       default:
         return [];
     }

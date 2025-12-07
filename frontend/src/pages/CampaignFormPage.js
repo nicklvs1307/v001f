@@ -27,7 +27,11 @@ import {
   DialogTitle,
   DialogContent,
   DialogContentText,
-  DialogActions
+  DialogActions,
+  Select,
+  InputLabel,
+  Checkbox,
+  ListItemText
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -40,6 +44,7 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import campanhaService from '../services/campanhaService';
 import recompensaService from '../services/recompensaService';
 import roletaService from '../services/roletaService';
+import clientService from '../services/clientService';
 import ClientSegmentSelector from '../components/campaigns/ClientSegmentSelector';
 import WhatsappPreview from '../components/WhatsappPreview';
 import aiService from '../services/aiService'; // Import the new AI service
@@ -61,6 +66,7 @@ const initialState = {
   mediaPreview: null,
   recompensas: [],
   roletas: [],
+  clients: [],
   loading: true,
   error: '',
   activeTab: 0,
@@ -81,6 +87,7 @@ function campaignFormReducer(state, action) {
         loading: false,
         recompensas: action.payload.recompensas,
         roletas: action.payload.roletas,
+        clients: action.payload.clients,
         campaign: { ...initialState.campaign, ...fetchedCampaign },
         mediaPreview: fetchedCampaign.mediaUrl ? `${process.env.REACT_APP_API_URL}${fetchedCampaign.mediaUrl}` : null,
       };
@@ -155,7 +162,7 @@ const CampaignFormPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [state, dispatch] = useReducer(campaignFormReducer, initialState);
-  const { campaign, recompensas, roletas, loading, error, activeTab, mediaPreview } = state;
+  const { campaign, recompensas, roletas, clients, loading, error, activeTab, mediaPreview } = state;
   const [activeMessageTab, setActiveMessageTab] = useState(0);
   const textInputRef = useRef(null);
 
@@ -238,9 +245,10 @@ const CampaignFormPage = () => {
     const fetchData = async () => {
       dispatch({ type: 'FETCH_START' });
       try {
-        const [recompensasData, roletasData] = await Promise.all([
+        const [recompensasData, roletasData, clientsData] = await Promise.all([
           recompensaService.getAll(true),
           roletaService.getAll(),
+          clientService.getAllClients(1, 1000), // Fetch up to 1000 clients
         ]);
 
         let campaignData = {};
@@ -262,6 +270,7 @@ const CampaignFormPage = () => {
             payload: {
               recompensas: recompensasData.data || [],
               roletas: roletasData.data || [],
+              clients: clientsData.clients || [],
               campaign: campaignData,
             }
           });
@@ -485,8 +494,39 @@ const CampaignFormPage = () => {
               <Grid item xs={12} md={6}>
                 <ClientSegmentSelector
                   selectedValue={campaign.criterioSelecao?.type}
-                  onChange={(value) => dispatch({ type: 'FIELD_CHANGE', payload: { field: 'criterioSelecao', value: { type: value } } })}
+                  onChange={(value) => dispatch({ type: 'FIELD_CHANGE', payload: { field: 'criterioSelecao', value: { ...campaign.criterioSelecao, type: value } } })}
                 />
+                {campaign.criterioSelecao?.type === 'specific' && (
+                  <FormControl fullWidth margin="normal">
+                    <InputLabel>Clientes Específicos</InputLabel>
+                    <Select
+                      multiple
+                      value={campaign.criterioSelecao.clientIds || []}
+                      onChange={(e) => dispatch({ type: 'FIELD_CHANGE', payload: { field: 'criterioSelecao', value: { ...campaign.criterioSelecao, clientIds: e.target.value } } })}
+                      renderValue={(selected) => selected.map(id => clients.find(c => c.id === id)?.name).join(', ')}
+                    >
+                      {clients.map(client => (
+                        <MenuItem key={client.id} value={client.id}>
+                          <Checkbox checked={(campaign.criterioSelecao.clientIds || []).indexOf(client.id) > -1} />
+                          <ListItemText primary={client.name} />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
+                {campaign.criterioSelecao?.type === 'birthday' && (
+                  <FormControl fullWidth margin="normal">
+                    <InputLabel>Mês do Aniversário</InputLabel>
+                    <Select
+                      value={campaign.criterioSelecao.month || ''}
+                      onChange={(e) => dispatch({ type: 'FIELD_CHANGE', payload: { field: 'criterioSelecao', value: { ...campaign.criterioSelecao, month: e.target.value } } })}
+                    >
+                      {Array.from({ length: 12 }, (_, i) => (
+                        <MenuItem key={i + 1} value={i + 1}>{new Date(0, i).toLocaleString('pt-BR', { month: 'long' })}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
               </Grid>
               <Grid item xs={12} md={6}>
                 <FormControl component="fieldset" fullWidth margin="normal">

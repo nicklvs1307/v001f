@@ -39,6 +39,8 @@ import AutomationTester from '../components/AutomationTester';
 
 const initialAutomationState = {
   dailyReport: { enabled: false, phoneNumbers: '' },
+  weeklyReport: { enabled: false, phoneNumbers: '' },
+  monthlyReport: { enabled: false, phoneNumbers: '' },
   prizeRoulette: { enabled: false, template: '' },
   couponReminder: { enabled: false, daysBefore: 0, message: '' },
   birthdayAutomation: {
@@ -71,7 +73,7 @@ const AutomationItem = styled(Paper)(({ theme }) => ({
 const AutomationsPage = () => {
   const [automations, setAutomations] = useState(initialAutomationState);
   const [originalAutomations, setOriginalAutomations] = useState(initialAutomationState);
-  const [open, setOpen] = useState({ dailyReport: false, prizeRoulette: false, couponReminder: false, birthdayAutomation: false, detractorAutomation: false });
+  const [open, setOpen] = useState({ dailyReport: false, weeklyReport: false, monthlyReport: false, prizeRoulette: false, couponReminder: false, birthdayAutomation: false, detractorAutomation: false });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -192,6 +194,68 @@ const AutomationsPage = () => {
                 disabled={!automations.dailyReport.enabled}
               />
               <AutomationTester automationType="daily-report" onTestSent={handleTestSent} />
+            </Box>
+          </Collapse>
+        </AutomationItem>
+
+        {/* Relatório Semanal */}
+        <AutomationItem>
+          <ListItem onClick={() => setOpen(prev => ({ ...prev, weeklyReport: !prev.weeklyReport }))} sx={{ cursor: 'pointer' }}>
+            <ListItemIcon><AssessmentOutlinedIcon /></ListItemIcon>
+            <ListItemText primary="Relatório Semanal de NPS" secondary="Receber um resumo semanal de performance via WhatsApp." />
+            <Switch
+              edge="end"
+              onChange={() => handleToggle('weeklyReport')}
+              checked={automations.weeklyReport.enabled}
+              onClick={(e) => e.stopPropagation()}
+            />
+            {open.weeklyReport ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={open.weeklyReport} timeout="auto" unmountOnExit>
+            <Box sx={{ p: 2, pl: 4, borderTop: '1px solid #eee' }}>
+              <TextField
+                label="Números de Telefone para Relatórios"
+                value={automations.weeklyReport.reportPhoneNumbers || ''}
+                onChange={(e) => handleChange('weeklyReport', 'reportPhoneNumbers', e.target.value)}
+                fullWidth
+                multiline
+                rows={2}
+                helperText="Insira os números com DDI e DDD, separados por vírgula."
+                margin="normal"
+                disabled={!automations.weeklyReport.enabled}
+              />
+              <AutomationTester automationType="weekly-report" onTestSent={handleTestSent} />
+            </Box>
+          </Collapse>
+        </AutomationItem>
+
+        {/* Relatório Mensal */}
+        <AutomationItem>
+          <ListItem onClick={() => setOpen(prev => ({ ...prev, monthlyReport: !prev.monthlyReport }))} sx={{ cursor: 'pointer' }}>
+            <ListItemIcon><AssessmentOutlinedIcon /></ListItemIcon>
+            <ListItemText primary="Relatório Mensal de NPS" secondary="Receber um resumo mensal de performance via WhatsApp." />
+            <Switch
+              edge="end"
+              onChange={() => handleToggle('monthlyReport')}
+              checked={automations.monthlyReport.enabled}
+              onClick={(e) => e.stopPropagation()}
+            />
+            {open.monthlyReport ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={open.monthlyReport} timeout="auto" unmountOnExit>
+            <Box sx={{ p: 2, pl: 4, borderTop: '1px solid #eee' }}>
+              <TextField
+                label="Números de Telefone para Relatórios"
+                value={automations.monthlyReport.reportPhoneNumbers || ''}
+                onChange={(e) => handleChange('monthlyReport', 'reportPhoneNumbers', e.target.value)}
+                fullWidth
+                multiline
+                rows={2}
+                helperText="Insira os números com DDI e DDD, separados por vírgula."
+                margin="normal"
+                disabled={!automations.monthlyReport.enabled}
+              />
+              <AutomationTester automationType="monthly-report" onTestSent={handleTestSent} />
             </Box>
           </Collapse>
         </AutomationItem>

@@ -1,10 +1,12 @@
 
 import React from 'react';
 import { Grid, Card, CardActionArea, CardContent, Typography, Box } from '@mui/material';
-import { Star, StarBorder, DirectionsRun, AccessibleForward, HelpOutline } from '@mui/icons-material';
+import { Star, StarBorder, DirectionsRun, AccessibleForward, HelpOutline, Cake } from '@mui/icons-material';
 
 const segments = [
     { key: 'todos', title: 'Todos os Clientes', icon: <Star /> },
+    { key: 'specific', title: 'Clientes Específicos', icon: <AccessibleForward /> },
+    { key: 'birthday', title: 'Aniversariantes do Mês', icon: <Cake /> },
     { key: 'novatos', title: 'Novatos', description: '1 visita nos últimos 3 meses', icon: <StarBorder /> },
     { key: 'fieis', title: 'Fiéis', description: '2-4 visitas nos últimos 3 meses', icon: <Star /> },
     { key: 'super_cliente', title: 'Super Cliente', description: '5+ visitas nos últimos 3 meses', icon: <Star style={{ color: '#FFD700' }} /> },

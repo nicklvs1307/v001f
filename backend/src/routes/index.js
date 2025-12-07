@@ -32,6 +32,7 @@ const automationRoutes = require("./automationRoutes");
 const aiRoutes = require("./aiRoutes"); // Import the new AI routes
 
 // Super Admin Routes
+const superadminRoutes = require("./superadminRoutes");
 const senderRoutes = require("./superadmin/senderRoutes");
 const reportRoutes = require("./superadmin/reportRoutes");
 
@@ -42,6 +43,7 @@ module.exports = (router) => {
   });
 
   // Super Admin Routes
+  router.use("/superadmin", superadminRoutes);
   router.use("/superadmin/senders", senderRoutes);
   router.use("/superadmin/reports", reportRoutes);
 

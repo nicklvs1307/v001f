@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import tenantService from '../../services/tenantService';
+import superadminService from '../../services/superadminService';
+import AuthContext from '../../context/AuthContext';
 import { 
     Box, 
     Typography, 
@@ -15,7 +17,8 @@ import {
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit'; 
-import DeleteIcon from '@mui/icons-material/Delete'; 
+import DeleteIcon from '@mui/icons-material/Delete';
+import LoginIcon from '@mui/icons-material/Login';
 import { useNotification } from '../../context/NotificationContext';
 import { formatDateForDisplay } from '../../utils/dateUtils';
 
@@ -26,6 +29,7 @@ const TenantList = () => {
     const [selectedTenant, setSelectedTenant] = useState(null); 
     const { showNotification } = useNotification();
     const navigate = useNavigate();
+    const { setToken } = useContext(AuthContext);
 
     const handleOpenDeleteConfirm = (tenant) => {
         setSelectedTenant(tenant);
@@ -65,6 +69,24 @@ const TenantList = () => {
         }
     };
 
+    const handleLoginAsTenant = async (tenantId) => {
+        try {
+            const response = await superadminService.loginAsTenant(tenantId);
+            const { token, user } = response.data;
+
+            // Save the original superadmin token
+            localStorage.setItem('superadmin_token', localStorage.getItem('token'));
+
+            // Set the new tenant admin token
+            setToken(token);
+
+            // Redirect to the tenant's dashboard
+            navigate('/dashboard');
+        } catch (err) {
+            showNotification(err.message || 'Falha ao fazer login como tenant.', 'error');
+        }
+    };
+
     const columns = [
         { field: 'name', headerName: 'Nome', flex: 1 },
         { field: 'email', headerName: 'Email', flex: 1 },
@@ -85,6 +107,9 @@ const TenantList = () => {
             flex: 1,
             renderCell: (params) => (
                 <Box>
+                    <IconButton edge="end" aria-label="login" onClick={() => handleLoginAsTenant(params.row.id)}>
+                        <LoginIcon />
+                    </IconButton>
                     <IconButton edge="end" aria-label="edit" onClick={() => navigate(`/superadmin/tenants/edit/${params.row.id}`)}>
                         <EditIcon />
                     </IconButton>

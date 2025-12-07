@@ -1,8 +1,15 @@
-feat(users): Refactor user management UI
+feat(superadmin): Implement Login as Tenant feature
 
-This commit refactors the user management UI to improve user experience and code maintainability.
+This commit introduces the "Login as Tenant" feature, allowing superadmins to impersonate tenant admins for debugging and support purposes.
 
-- A dedicated page (`UserFormPage.js`) has been created for creating and editing users, replacing the previous modal-based approach.
-- New routes (`/dashboard/usuarios/new` and `/dashboard/usuarios/edit/:id`) have been added for the user form page.
-- The `UserList.js` component has been updated to use the `DataGrid` component from `@mui/x-data-grid`, providing out-of-the-box sorting, filtering, and pagination.
-- The old `UserModal.js` component has been removed.
+Backend:
+- Created a new endpoint `/api/superadmin/login-as-tenant/:tenantId` to generate a JWT for a tenant user.
+- Added a new `superadminController.js` with the `loginAsTenant` function.
+- Registered the new `superadminRoutes.js` in the main router.
+
+Frontend:
+- Added a "Login as" button to the tenants list in `TenantList.js`.
+- Implemented the `handleLoginAsTenant` function to call the new endpoint, store the original token, and set the new tenant token.
+- Created a `ReturnToSuperadminBanner.js` component that is displayed when impersonating a tenant.
+- The banner includes a "Return to Superadmin" button that restores the original superadmin session.
+- Added the `superadminService.js` to handle the API call.

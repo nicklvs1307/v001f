@@ -34,6 +34,7 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 import { ROLES } from '../../constants/roles';
 import SupportSpeedDial from '../../components/common/SupportSpeedDial';
+import ReturnToSuperadminBanner from '../common/ReturnToSuperadminBanner';
 
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 
@@ -49,6 +50,12 @@ const DashboardLayout = () => {
     const { user, logout } = useContext(AuthContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const [pageTitle, setPageTitle] = useState('Dashboard');
+    const [isImpersonating, setIsImpersonating] = useState(false);
+
+    useEffect(() => {
+        const superadminToken = localStorage.getItem('superadmin_token');
+        setIsImpersonating(!!superadminToken);
+    }, [location]);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -295,6 +302,7 @@ const DashboardLayout = () => {
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
+            {isImpersonating && <ReturnToSuperadminBanner />}
             <AppBar
                 position="fixed"
                 sx={{
@@ -302,6 +310,7 @@ const DashboardLayout = () => {
                     ml: { sm: drawerOpen ? `${drawerWidth}px` : `${collapsedDrawerWidth}px` },
                     borderBottom: '1px solid #e3e6f0',
                     boxShadow: 'none',
+                    mt: isImpersonating ? '48px' : 0, // Adjust for banner
                 }}
             >
                 <Toolbar sx={{ justifyContent: 'space-between' }}>
@@ -430,6 +439,7 @@ const DashboardLayout = () => {
                         easing: theme.transitions.easing.sharp,
                         duration: theme.transitions.duration.enteringScreen,
                     }),
+                    pt: isImpersonating ? '64px' : 3, // Adjust for banner
                 }}
             >
                 <Toolbar /> 

@@ -1,8 +1,0 @@
-fix(frontend): Correct relative import paths again
-
-This commit rectifies persistent build errors related to module not found. Previously, an attempt was made to use absolute import paths, which was incorrect due to the project's Webpack/CRA configuration not supporting them without explicit setup.
-
-This commit reverts the import paths in the following files to correct relative paths, ensuring proper module resolution during the build process:
-- `frontend/src/pages/TenantFormPage.js`
-- `frontend/src/components/tenants/TenantList.js`
-- `frontend/src/pages/UserFormPage.js`

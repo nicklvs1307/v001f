@@ -437,6 +437,7 @@ const getScoresByCriteria = async (
 
   const responseWhere = { ratingValue: { [Op.ne]: null } };
   if (tenantId) {
+    responseWhere.tenantId = tenantId;
     whereClause.tenantId = tenantId;
   }
   if (startDate && endDate) {

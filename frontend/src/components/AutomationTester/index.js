@@ -26,6 +26,12 @@ const AutomationTester = ({ automationType, onTestSent }) => {
         case 'daily-report':
           response = await automationService.testDailyReport(payload);
           break;
+        case 'weekly-report':
+          response = await automationService.testWeeklyReport(payload);
+          break;
+        case 'monthly-report':
+          response = await automationService.testMonthlyReport(payload);
+          break;
         case 'birthday':
           response = await automationService.testBirthday(payload);
           break;

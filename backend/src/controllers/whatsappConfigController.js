@@ -44,6 +44,14 @@ const whatsappConfigController = {
         enabled: config.dailyReportEnabled,
         reportPhoneNumbers: config.reportPhoneNumbers,
       },
+      weeklyReport: {
+        enabled: config.weeklyReportEnabled,
+        reportPhoneNumbers: config.reportPhoneNumbers,
+      },
+      monthlyReport: {
+        enabled: config.monthlyReportEnabled,
+        reportPhoneNumbers: config.reportPhoneNumbers,
+      },
       prizeRoulette: {
         enabled: config.sendPrizeMessage,
         template: config.prizeMessageTemplate,
@@ -87,8 +95,10 @@ const whatsappConfigController = {
 
     // 1. Atualizar a tabela principal WhatsappConfig
     const configUpdateData = {
-      // Mapeamento para dailyReport
+      // Mapeamento para relatórios (o número de telefone é compartilhado)
       dailyReportEnabled: data.dailyReport.enabled,
+      weeklyReportEnabled: data.weeklyReport.enabled,
+      monthlyReportEnabled: data.monthlyReport.enabled,
       reportPhoneNumbers: data.dailyReport.reportPhoneNumbers,
       // Mapeamento para prizeRoulette (note a mudança de nome dos campos)
       sendPrizeMessage: data.prizeRoulette.enabled,
@@ -105,7 +115,7 @@ const whatsappConfigController = {
       detractorMessageTemplate: data.detractorAutomation.messageTemplate,
       notifyDetractorToOwner: data.detractorAutomation.notifyOwner,
       detractorOwnerMessageTemplate: data.detractorAutomation.ownerMessageTemplate,
-      detractorOwnerPhoneNumbers: data.detractorAutomation.ownerPhoneNumbers,
+      ownerPhoneNumbers: data.detractorAutomation.ownerPhoneNumbers,
     };
     await config.update(configUpdateData);
 

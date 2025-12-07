@@ -12,6 +12,8 @@ const automationService = {
   testBirthday: (data) => apiAuthenticated.post("/automations/test/birthday", data),
   testCouponReminder: (data) => apiAuthenticated.post("/automations/test/coupon-reminder", data),
   testRoletaPrize: (data) => apiAuthenticated.post("/automations/test/roleta-prize", data),
+  testWeeklyReport: (data) => apiAuthenticated.post("/automations/test/weekly-report", data),
+  testMonthlyReport: (data) => apiAuthenticated.post("/automations/test/monthly-report", data),
 };
 
 export default automationService;

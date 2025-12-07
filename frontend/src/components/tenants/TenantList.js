@@ -21,8 +21,6 @@ import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit'; 
 import DeleteIcon from '@mui/icons-material/Delete';
 import LoginIcon from '@mui/icons-material/Login';
-import { useNotification } from '../../context/NotificationContext';
-import { formatDateForDisplay } from '../../utils/dateUtils';
 
 const TenantList = () => {
     const [tenants, setTenants] = useState([]);

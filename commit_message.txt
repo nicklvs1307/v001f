@@ -1,9 +1,8 @@
-feat(tenants): Refactor tenant management UI
+feat(users): Refactor user management UI
 
-This commit refactors the tenant management UI to improve user experience and code maintainability.
+This commit refactors the user management UI to improve user experience and code maintainability.
 
-- A dedicated page (`TenantFormPage.js`) has been created for creating and editing tenants, replacing the previous modal-based approach.
-- New routes (`/superadmin/tenants/new` and `/superadmin/tenants/edit/:id`) have been added for the tenant form page.
-- The `TenantList.js` component has been updated to use the `DataGrid` component from `@mui/x-data-grid`, providing out-of-the-box sorting, filtering, and pagination.
-- The old `TenantForm.js` component has been removed.
-- The `@mui/x-data-grid` package has been added as a dependency.
+- A dedicated page (`UserFormPage.js`) has been created for creating and editing users, replacing the previous modal-based approach.
+- New routes (`/dashboard/usuarios/new` and `/dashboard/usuarios/edit/:id`) have been added for the user form page.
+- The `UserList.js` component has been updated to use the `DataGrid` component from `@mui/x-data-grid`, providing out-of-the-box sorting, filtering, and pagination.
+- The old `UserModal.js` component has been removed.

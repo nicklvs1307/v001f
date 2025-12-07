@@ -23,6 +23,7 @@ import TermsOfServicePage from '../pages/TermsOfServicePage';
 // Páginas
 const DashboardPage = React.lazy(() => import('../pages/DashboardPage'));
 const UsersPage = React.lazy(() => import('../pages/UsersPage'));
+const UserFormPage = React.lazy(() => import('../pages/UserFormPage'));
 const RolesPage = React.lazy(() => import('../pages/RolesPage'));
 const TenantsPage = React.lazy(() => import('../pages/TenantsPage'));
 const TenantFormPage = React.lazy(() => import('../pages/TenantFormPage'));
@@ -121,6 +122,8 @@ const AppRoutes = () => {
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<DashboardPage />} />
             <Route path="usuarios" element={<UsersPage />} />
+            <Route path="usuarios/new" element={<UserFormPage />} />
+            <Route path="usuarios/edit/:id" element={<UserFormPage />} />
             <Route path="cargos" element={<RolesPage />} />
             {/* <Route path="locatarios" element={<TenantsPage />} /> */} {/* Movido para superadmin */}
             <Route path="pesquisas" element={<SurveysPage />} />

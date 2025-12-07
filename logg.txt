@@ -1,18 +1,18 @@
- => ERROR [build 6/6] RUN npm run build                                                       16.7s
+ => ERROR [build 6/6] RUN npm run build                                                       18.5s
 ------
  > [build 6/6] RUN npm run build:
-0.627
-0.627 > frontend@0.1.0 build
-0.627 > react-scripts build
-0.627
-1.984 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-3.523 Creating an optimized production build...
-16.54 Failed to compile.
-16.54
-16.54 Module not found: Error: You attempted to import ../../services/tenantService which falls outside of the project src/ directory. Relative imports outside of src/ are not supported.
-16.54 You can either move it inside src/, or add a symlink to it from project's node_modules/.
-16.54
-16.54
+0.634
+0.634 > frontend@0.1.0 build
+0.634 > react-scripts build
+0.634
+1.739 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+2.886 Creating an optimized production build...
+18.32 Failed to compile.
+18.32
+18.33 Module not found: Error: You attempted to import ../../context/NotificationContext which falls outside of the project src/ directory. Relative imports outside of src/ are not supported.
+18.33 You can either move it inside src/, or add a symlink to it from project's node_modules/.
+18.33
+18.33
 ------
 Dockerfile:14
 --------------------

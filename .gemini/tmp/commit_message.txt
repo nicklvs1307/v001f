@@ -1,15 +1,8 @@
-feat(dashboard): Melhora usabilidade e corrige bugs em Cupons e Roletas
+feat(automations): Implementa salvamento e teste para relatórios semanais/mensais
 
-Este commit introduz melhorias significativas e correções de bugs em várias partes do dashboard:
+Este commit corrige um bug onde as configurações de automação para relatórios semanais e mensais não eram salvas nem podiam ser testadas.
 
-Cupons:
-- feat: Adiciona a funcionalidade de validar cupons diretamente na tela de listagem, através de um modal de detalhes.
-- fix: Corrige um bug onde o nome do Cliente e da Empresa apareciam como "N/A" na listagem por não incluir as associações na consulta.
-- refactor: Simplifica a tabela de cupons para uma visualização mais limpa.
-
-Roletas:
-- fix: Garante que recompensas inativas, mas salvas em uma roleta, sejam exibidas corretamente no modo de edição.
-- fix: Resolve um problema de renderização onde o texto das recompensas ficava invisível no dropdown de seleção.
-
-Recompensas:
-- fix: Corrige a lógica no serviço de recompensas que impedia a listagem de todos os itens (ativos e inativos), fazendo a página de recompensas aparecer vazia.
+Modificações:
+- `backend/controllers/whatsappConfigController.js`: As funções `getInstanceConfig` e `updateInstanceConfig` foram atualizadas para carregar e salvar corretamente os dados dos relatórios semanal e mensal, que antes eram ignorados.
+- `frontend/services/automationService.js`: Adicionadas as funções `testWeeklyReport` e `testMonthlyReport` para se comunicar com os endpoints de teste do backend.
+- `frontend/components/AutomationTester/index.js`: O componente de teste foi atualizado para invocar as novas funções de serviço, habilitando o botão "Enviar Teste" para todos os tipos de relatório.

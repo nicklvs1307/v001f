@@ -22,11 +22,9 @@ const EditConfigDialog = ({ open, onClose, config, onSave, saving }) => {
     url: '',
     apiKey: '',
     dailyReportEnabled: false,
-    reportPhoneNumbers: '', // This will be for daily
-    weeklyReportEnabled: false, // New
-    weeklyReportPhoneNumbers: '', // New
-    monthlyReportEnabled: false, // New
-    monthlyReportPhoneNumbers: '', // New
+    weeklyReportEnabled: false,
+    monthlyReportEnabled: false,
+    reportPhoneNumbers: '',
     sendPrizeMessage: false,
     prizeMessageTemplate: '',
     sendDetractorMessageToClient: false,
@@ -42,11 +40,9 @@ const EditConfigDialog = ({ open, onClose, config, onSave, saving }) => {
         url: config.url || '',
         apiKey: config.apiKey || '',
         dailyReportEnabled: config.dailyReportEnabled || false,
-        reportPhoneNumbers: config.reportPhoneNumbers || '',
         weeklyReportEnabled: config.weeklyReportEnabled || false,
-        weeklyReportPhoneNumbers: config.weeklyReportPhoneNumbers || '',
         monthlyReportEnabled: config.monthlyReportEnabled || false,
-        monthlyReportPhoneNumbers: config.monthlyReportPhoneNumbers || '',
+        reportPhoneNumbers: config.reportPhoneNumbers || '',
         sendPrizeMessage: config.sendPrizeMessage || false,
         prizeMessageTemplate: config.prizeMessageTemplate || '',
         sendDetractorMessageToClient: config.sendDetractorMessageToClient || false,
@@ -94,7 +90,7 @@ const EditConfigDialog = ({ open, onClose, config, onSave, saving }) => {
           required
         />
         <Divider sx={{ my: 2 }} />
-        <Typography variant="h6" gutterBottom>Automações</Typography>
+        <Typography variant="h6" gutterBottom>Relatórios Automáticos</Typography>
         <FormGroup>
           <FormControlLabel
             control={
@@ -106,17 +102,6 @@ const EditConfigDialog = ({ open, onClose, config, onSave, saving }) => {
             }
             label="Enviar Relatório Diário"
           />
-          <TextField
-            fullWidth
-            label="Números para Relatório Diário (separados por vírgula)"
-            name="reportPhoneNumbers"
-            value={formData.reportPhoneNumbers}
-            onChange={handleChange}
-            margin="normal"
-            disabled={!formData.dailyReportEnabled}
-          />
-        </FormGroup>
-        <FormGroup sx={{ mt: 2 }}>
           <FormControlLabel
             control={
               <Switch
@@ -127,17 +112,6 @@ const EditConfigDialog = ({ open, onClose, config, onSave, saving }) => {
             }
             label="Enviar Relatório Semanal"
           />
-          <TextField
-            fullWidth
-            label="Números para Relatório Semanal (separados por vírgula)"
-            name="weeklyReportPhoneNumbers"
-            value={formData.weeklyReportPhoneNumbers}
-            onChange={handleChange}
-            margin="normal"
-            disabled={!formData.weeklyReportEnabled}
-          />
-        </FormGroup>
-        <FormGroup sx={{ mt: 2 }}>
           <FormControlLabel
             control={
               <Switch
@@ -150,14 +124,19 @@ const EditConfigDialog = ({ open, onClose, config, onSave, saving }) => {
           />
           <TextField
             fullWidth
-            label="Números para Relatório Mensal (separados por vírgula)"
-            name="monthlyReportPhoneNumbers"
-            value={formData.monthlyReportPhoneNumbers}
+            label="Números para Relatórios (separados por vírgula)"
+            name="reportPhoneNumbers"
+            value={formData.reportPhoneNumbers}
             onChange={handleChange}
             margin="normal"
-            disabled={!formData.monthlyReportEnabled}
+            disabled={!formData.dailyReportEnabled && !formData.weeklyReportEnabled && !formData.monthlyReportEnabled}
+            helperText="Os números de telefone para todos os relatórios habilitados."
           />
         </FormGroup>
+
+        <Divider sx={{ my: 2 }} />
+        <Typography variant="h6" gutterBottom>Outras Automações</Typography>
+
         <FormGroup sx={{ mt: 2 }}>
           <FormControlLabel
             control={

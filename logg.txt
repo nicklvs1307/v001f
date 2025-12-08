@@ -1,24 +1,1500 @@
- => ERROR [build 6/6] RUN npm run build                                                       16.1s
-------
- > [build 6/6] RUN npm run build:
-0.533
-0.533 > frontend@0.1.0 build
-0.533 > react-scripts build
-0.533
-1.555 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-2.791 Creating an optimized production build...
-15.83 Failed to compile.
-15.83
-15.84 Module not found: Error: Can't resolve '../services/roleService' in '/app/src/pages'
-15.84
-15.84
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+      _newSessionPending: false,
+      _controlReleased: true,
+      secureConnecting: false,
+      _SNICallback: null,
+      servername: 'evolution2.towersfy.com',
+      alpnProtocol: false,
+      authorized: true,
+      authorizationError: null,
+      encrypted: true,
+      _events: [Object: null prototype],
+      _eventsCount: 10,
+      connecting: false,
+      _hadError: false,
+      _parent: null,
+      _host: 'evolution2.towersfy.com',
+      _closeAfterHandlingError: false,
+      _readableState: [ReadableState],
+      _maxListeners: undefined,
+      _writableState: [WritableState],
+      allowHalfOpen: false,
+      _sockname: null,
+      _pendingData: null,
+      _pendingEncoding: '',
+      server: undefined,
+      _server: null,
+      ssl: [TLSWrap],
+      _requestCert: true,
+      _rejectUnauthorized: true,
+      parser: null,
+      _httpMessage: [Circular *1],
+      timeout: 0,
+      [Symbol(alpncallback)]: null,
+      [Symbol(res)]: [TLSWrap],
+      [Symbol(verified)]: true,
+      [Symbol(pendingSession)]: null,
+      [Symbol(async_id_symbol)]: 66804,
+      [Symbol(kHandle)]: [TLSWrap],
+      [Symbol(lastWriteQueueSize)]: 0,
+      [Symbol(timeout)]: null,
+      [Symbol(kBuffer)]: null,
+      [Symbol(kBufferCb)]: null,
+      [Symbol(kBufferGen)]: null,
+      [Symbol(kCapture)]: false,
+      [Symbol(kSetNoDelay)]: false,
+      [Symbol(kSetKeepAlive)]: true,
+      [Symbol(kSetKeepAliveInitialDelay)]: 60,
+      [Symbol(kBytesRead)]: 0,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(connect-options)]: [Object]
+    },
+    _header: 'POST /message/sendText/roma-pizzaria--chopperia HTTP/1.1\r\n' +
+      'Accept: application/json, text/plain, */*\r\n' +
+      'Content-Type: application/json\r\n' +
+      'apikey: 9df82dcbee60ce08f6ca93aa4024ca6c\r\n' +
+      'User-Agent: axios/1.13.2\r\n' +
+      'Content-Length: 513\r\n' +
+      'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+      'Host: evolution2.towersfy.com\r\n' +
+      'Connection: close\r\n' +
+      '\r\n',
+    _keepAliveTimeout: 0,
+    _onPendingData: [Function: nop],
+    agent: Agent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      defaultPort: 443,
+      protocol: 'https:',
+      options: [Object: null prototype],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      maxCachedSessions: 100,
+      _sessionCache: [Object],
+      [Symbol(kCapture)]: false
+    },
+    socketPath: undefined,
+    method: 'POST',
+    maxHeaderSize: undefined,
+    insecureHTTPParser: undefined,
+    joinDuplicateHeaders: undefined,
+    path: '/message/sendText/roma-pizzaria--chopperia',
+    _ended: true,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [TLSSocket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      rawHeaders: [Array],
+      rawTrailers: [],
+      joinDuplicateHeaders: undefined,
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 400,
+      statusMessage: 'Bad Request',
+      client: [TLSSocket],
+      _consuming: false,
+      _dumped: false,
+      req: [Circular *1],
+      responseUrl: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+      redirects: [],
+      [Symbol(kCapture)]: false,
+      [Symbol(kHeaders)]: [Object],
+      [Symbol(kHeadersCount)]: 16,
+      [Symbol(kTrailers)]: null,
+      [Symbol(kTrailersCount)]: 0
+    },
+    aborted: false,
+    timeoutCb: null,
+    upgradeOrConnect: false,
+    parser: null,
+    maxHeadersCount: null,
+    reusedSocket: false,
+    host: 'evolution2.towersfy.com',
+    protocol: 'https:',
+    _redirectable: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: true,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 513,
+      _requestBodyBuffers: [],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [Circular *1],
+      _currentUrl: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+      _timeout: null,
+      [Symbol(kCapture)]: false
+    },
+    [Symbol(kCapture)]: false,
+    [Symbol(kBytesWritten)]: 0,
+    [Symbol(kNeedDrain)]: false,
+    [Symbol(corked)]: 0,
+    [Symbol(kOutHeaders)]: [Object: null prototype] {
+      accept: [Array],
+      'content-type': [Array],
+      apikey: [Array],
+      'user-agent': [Array],
+      'content-length': [Array],
+      'accept-encoding': [Array],
+      host: [Array]
+    },
+    [Symbol(errored)]: null,
+    [Symbol(kHighWaterMark)]: 16384,
+    [Symbol(kRejectNonStandardBodyWrites)]: false,
+    [Symbol(kUniqueHeaders)]: null
+  },
+  response: {
+    status: 400,
+    statusText: 'Bad Request',
+    headers: Object [AxiosHeaders] {
+      'access-control-allow-credentials': 'true',
+      'content-length': '155',
+      'content-type': 'application/json; charset=utf-8',
+      date: 'Mon, 08 Dec 2025 11:39:23 GMT',
+      etag: 'W/"9b-v9XRnqmleym6UCBo+dQtl2PavDs"',
+      vary: 'Origin, Accept-Encoding',
+      'x-powered-by': 'Express',
+      connection: 'close'
+    },
+    config: {
+      transitional: [Object],
+      adapter: [Array],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      env: [Object],
+      validateStatus: [Function: validateStatus],
+      headers: [Object [AxiosHeaders]],
+      method: 'post',
+      url: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+      data: '{"number":"5535991090766@s.whatsapp.net","text":"*Relatorio Diario Roma Pizzaria & Chopperia*\\n\\nAqui está o resumo da experiência dos seus clientes no dia 07/12/2025!\\n📊 Total de respostas: 0 (⬇ -1 respostas em relação a 06/12/2025)\\n🟢 Número de Promotores: 0\\n🟡 Número de Neutros: 0\\n🔴 Número de Detratores: 0\\n\\n🔗 Para acessar o sistema, visite https://voltaki.towersfy.com/relatorios/diario?date=2025-12-07\\n\\n--- MENSAGEM DE TESTE ---","options":{"delay":1200,"presence":"composing"}}',
+      allowAbsoluteUrls: true
+    },
+    request: <ref *1> ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 7,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      destroyed: false,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      maxRequestsOnConnectionReached: false,
+      _defaultKeepAlive: true,
+      useChunkedEncodingByDefault: true,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      strictContentLength: false,
+      _contentLength: '513',
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      _closed: false,
+      socket: [TLSSocket],
+      _header: 'POST /message/sendText/roma-pizzaria--chopperia HTTP/1.1\r\n' +
+        'Accept: application/json, text/plain, */*\r\n' +
+        'Content-Type: application/json\r\n' +
+        'apikey: 9df82dcbee60ce08f6ca93aa4024ca6c\r\n' +
+        'User-Agent: axios/1.13.2\r\n' +
+        'Content-Length: 513\r\n' +
+        'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+        'Host: evolution2.towersfy.com\r\n' +
+        'Connection: close\r\n' +
+        '\r\n',
+      _keepAliveTimeout: 0,
+      _onPendingData: [Function: nop],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'POST',
+      maxHeaderSize: undefined,
+      insecureHTTPParser: undefined,
+      joinDuplicateHeaders: undefined,
+      path: '/message/sendText/roma-pizzaria--chopperia',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      host: 'evolution2.towersfy.com',
+      protocol: 'https:',
+      _redirectable: [Writable],
+      [Symbol(kCapture)]: false,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype],
+      [Symbol(errored)]: null,
+      [Symbol(kHighWaterMark)]: 16384,
+      [Symbol(kRejectNonStandardBodyWrites)]: false,
+      [Symbol(kUniqueHeaders)]: null
+    },
+    data: { status: 400, error: 'Bad Request', response: [Object] }
+  },
+  status: 400
+}
+[Auth Middleware] Request: POST /api/automations/test/daily-report
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt", "reportPhoneNumber" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Client"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."updatedAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Client"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."updatedAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
+[WhatsappService] Resposta da API de status da instância: {
+  "instance": {
+    "instanceName": "roma-pizzaria--chopperia",
+    "state": "open"
+  }
+}
+[WhatsApp Service] Enviando mensagem de tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4 para: 5535991090766@s.whatsapp.net
+[WhatsApp Service] Falha ao enviar mensagem para o tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4. Número: 35991090766.
+[WhatsApp Service] Erro detalhado da API: {
+  "status": 400,
+  "error": "Bad Request",
+  "response": {
+    "message": [
+      {
+        "jid": "5535991090766@s.whatsapp.net",
+        "exists": false,
+        "number": "5535991090766@s.whatsapp.net"
+      }
+    ]
+  }
+}
+AxiosError: Request failed with status code 400
+    at settle (/usr/src/app/node_modules/axios/dist/node/axios.cjs:2106:12)
+    at IncomingMessage.handleStreamEnd (/usr/src/app/node_modules/axios/dist/node/axios.cjs:3491:11)
+    at IncomingMessage.emit (node:events:529:35)
+    at endReadableNT (node:internal/streams/readable:1400:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+    at Axios.request (/usr/src/app/node_modules/axios/dist/node/axios.cjs:4731:41)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Object.sendTenantMessage (/usr/src/app/src/services/whatsappService.js:124:22)
+    at async /usr/src/app/src/controllers/automationController.js:70:3 {
+  code: 'ERR_BAD_REQUEST',
+  config: {
+    transitional: {
+      silentJSONParsing: true,
+      forcedJSONParsing: true,
+      clarifyTimeoutError: false
+    },
+    adapter: [ 'xhr', 'http', 'fetch' ],
+    transformRequest: [ [Function: transformRequest] ],
+    transformResponse: [ [Function: transformResponse] ],
+    timeout: 0,
+    xsrfCookieName: 'XSRF-TOKEN',
+    xsrfHeaderName: 'X-XSRF-TOKEN',
+    maxContentLength: -1,
+    maxBodyLength: -1,
+    env: { FormData: [Function], Blob: [class Blob] },
+    validateStatus: [Function: validateStatus],
+    headers: Object [AxiosHeaders] {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+      apikey: '9df82dcbee60ce08f6ca93aa4024ca6c',
+      'User-Agent': 'axios/1.13.2',
+      'Content-Length': '513',
+      'Accept-Encoding': 'gzip, compress, deflate, br'
+    },
+    method: 'post',
+    url: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+    data: '{"number":"5535991090766@s.whatsapp.net","text":"*Relatorio Diario Roma Pizzaria & Chopperia*\\n\\nAqui está o resumo da experiência dos seus clientes no dia 07/12/2025!\\n📊 Total de respostas: 0 (⬇ -1 respostas em relação a 06/12/2025)\\n🟢 Número de Promotores: 0\\n🟡 Número de Neutros: 0\\n🔴 Número de Detratores: 0\\n\\n🔗 Para acessar o sistema, visite https://voltaki.towersfy.com/relatorios/diario?date=2025-12-07\\n\\n--- MENSAGEM DE TESTE ---","options":{"delay":1200,"presence":"composing"}}',
+    allowAbsoluteUrls: true
+  },
+  request: <ref *1> ClientRequest {
+    _events: [Object: null prototype] {
+      abort: [Function (anonymous)],
+      aborted: [Function (anonymous)],
+      connect: [Function (anonymous)],
+      error: [Function (anonymous)],
+      socket: [Function (anonymous)],
+      timeout: [Function (anonymous)],
+      finish: [Function: requestOnFinish]
+    },
+    _eventsCount: 7,
+    _maxListeners: undefined,
+    outputData: [],
+    outputSize: 0,
+    writable: true,
+    destroyed: false,
+    _last: true,
+    chunkedEncoding: false,
+    shouldKeepAlive: false,
+    maxRequestsOnConnectionReached: false,
+    _defaultKeepAlive: true,
+    useChunkedEncodingByDefault: true,
+    sendDate: false,
+    _removedConnection: false,
+    _removedContLen: false,
+    _removedTE: false,
+    strictContentLength: false,
+    _contentLength: '513',
+    _hasBody: true,
+    _trailer: '',
+    finished: true,
+    _headerSent: true,
+    _closed: false,
+    socket: TLSSocket {
+      _tlsOptions: [Object],
+      _secureEstablished: true,
+      _securePending: false,
+      _newSessionPending: false,
+      _controlReleased: true,
+      secureConnecting: false,
+      _SNICallback: null,
+      servername: 'evolution2.towersfy.com',
+      alpnProtocol: false,
+      authorized: true,
+      authorizationError: null,
+      encrypted: true,
+      _events: [Object: null prototype],
+      _eventsCount: 10,
+      connecting: false,
+      _hadError: false,
+      _parent: null,
+      _host: 'evolution2.towersfy.com',
+      _closeAfterHandlingError: false,
+      _readableState: [ReadableState],
+      _maxListeners: undefined,
+      _writableState: [WritableState],
+      allowHalfOpen: false,
+      _sockname: null,
+      _pendingData: null,
+      _pendingEncoding: '',
+      server: undefined,
+      _server: null,
+      ssl: [TLSWrap],
+      _requestCert: true,
+      _rejectUnauthorized: true,
+      parser: null,
+      _httpMessage: [Circular *1],
+      timeout: 0,
+      [Symbol(alpncallback)]: null,
+      [Symbol(res)]: [TLSWrap],
+      [Symbol(verified)]: true,
+      [Symbol(pendingSession)]: null,
+      [Symbol(async_id_symbol)]: 66980,
+      [Symbol(kHandle)]: [TLSWrap],
+      [Symbol(lastWriteQueueSize)]: 0,
+      [Symbol(timeout)]: null,
+      [Symbol(kBuffer)]: null,
+      [Symbol(kBufferCb)]: null,
+      [Symbol(kBufferGen)]: null,
+      [Symbol(kCapture)]: false,
+      [Symbol(kSetNoDelay)]: false,
+      [Symbol(kSetKeepAlive)]: true,
+      [Symbol(kSetKeepAliveInitialDelay)]: 60,
+      [Symbol(kBytesRead)]: 0,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(connect-options)]: [Object]
+    },
+    _header: 'POST /message/sendText/roma-pizzaria--chopperia HTTP/1.1\r\n' +
+      'Accept: application/json, text/plain, */*\r\n' +
+      'Content-Type: application/json\r\n' +
+      'apikey: 9df82dcbee60ce08f6ca93aa4024ca6c\r\n' +
+      'User-Agent: axios/1.13.2\r\n' +
+      'Content-Length: 513\r\n' +
+      'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+      'Host: evolution2.towersfy.com\r\n' +
+      'Connection: close\r\n' +
+      '\r\n',
+    _keepAliveTimeout: 0,
+    _onPendingData: [Function: nop],
+    agent: Agent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      defaultPort: 443,
+      protocol: 'https:',
+      options: [Object: null prototype],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      maxCachedSessions: 100,
+      _sessionCache: [Object],
+      [Symbol(kCapture)]: false
+    },
+    socketPath: undefined,
+    method: 'POST',
+    maxHeaderSize: undefined,
+    insecureHTTPParser: undefined,
+    joinDuplicateHeaders: undefined,
+    path: '/message/sendText/roma-pizzaria--chopperia',
+    _ended: true,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [TLSSocket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      rawHeaders: [Array],
+      rawTrailers: [],
+      joinDuplicateHeaders: undefined,
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 400,
+      statusMessage: 'Bad Request',
+      client: [TLSSocket],
+      _consuming: false,
+      _dumped: false,
+      req: [Circular *1],
+      responseUrl: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+      redirects: [],
+      [Symbol(kCapture)]: false,
+      [Symbol(kHeaders)]: [Object],
+      [Symbol(kHeadersCount)]: 16,
+      [Symbol(kTrailers)]: null,
+      [Symbol(kTrailersCount)]: 0
+    },
+    aborted: false,
+    timeoutCb: null,
+    upgradeOrConnect: false,
+    parser: null,
+    maxHeadersCount: null,
+    reusedSocket: false,
+    host: 'evolution2.towersfy.com',
+    protocol: 'https:',
+    _redirectable: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: true,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 513,
+      _requestBodyBuffers: [],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [Circular *1],
+      _currentUrl: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+      _timeout: null,
+      [Symbol(kCapture)]: false
+    },
+    [Symbol(kCapture)]: false,
+    [Symbol(kBytesWritten)]: 0,
+    [Symbol(kNeedDrain)]: false,
+    [Symbol(corked)]: 0,
+    [Symbol(kOutHeaders)]: [Object: null prototype] {
+      accept: [Array],
+      'content-type': [Array],
+      apikey: [Array],
+      'user-agent': [Array],
+      'content-length': [Array],
+      'accept-encoding': [Array],
+      host: [Array]
+    },
+    [Symbol(errored)]: null,
+    [Symbol(kHighWaterMark)]: 16384,
+    [Symbol(kRejectNonStandardBodyWrites)]: false,
+    [Symbol(kUniqueHeaders)]: null
+  },
+  response: {
+    status: 400,
+    statusText: 'Bad Request',
+    headers: Object [AxiosHeaders] {
+      'access-control-allow-credentials': 'true',
+      'content-length': '155',
+      'content-type': 'application/json; charset=utf-8',
+      date: 'Mon, 08 Dec 2025 11:39:31 GMT',
+      etag: 'W/"9b-v9XRnqmleym6UCBo+dQtl2PavDs"',
+      vary: 'Origin, Accept-Encoding',
+      'x-powered-by': 'Express',
+      connection: 'close'
+    },
+    config: {
+      transitional: [Object],
+      adapter: [Array],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      env: [Object],
+      validateStatus: [Function: validateStatus],
+      headers: [Object [AxiosHeaders]],
+      method: 'post',
+      url: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+      data: '{"number":"5535991090766@s.whatsapp.net","text":"*Relatorio Diario Roma Pizzaria & Chopperia*\\n\\nAqui está o resumo da experiência dos seus clientes no dia 07/12/2025!\\n📊 Total de respostas: 0 (⬇ -1 respostas em relação a 06/12/2025)\\n🟢 Número de Promotores: 0\\n🟡 Número de Neutros: 0\\n🔴 Número de Detratores: 0\\n\\n🔗 Para acessar o sistema, visite https://voltaki.towersfy.com/relatorios/diario?date=2025-12-07\\n\\n--- MENSAGEM DE TESTE ---","options":{"delay":1200,"presence":"composing"}}',
+      allowAbsoluteUrls: true
+    },
+    request: <ref *1> ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 7,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      destroyed: false,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      maxRequestsOnConnectionReached: false,
+      _defaultKeepAlive: true,
+      useChunkedEncodingByDefault: true,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      strictContentLength: false,
+      _contentLength: '513',
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      _closed: false,
+      socket: [TLSSocket],
+      _header: 'POST /message/sendText/roma-pizzaria--chopperia HTTP/1.1\r\n' +
+        'Accept: application/json, text/plain, */*\r\n' +
+        'Content-Type: application/json\r\n' +
+        'apikey: 9df82dcbee60ce08f6ca93aa4024ca6c\r\n' +
+        'User-Agent: axios/1.13.2\r\n' +
+        'Content-Length: 513\r\n' +
+        'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+        'Host: evolution2.towersfy.com\r\n' +
+        'Connection: close\r\n' +
+        '\r\n',
+      _keepAliveTimeout: 0,
+      _onPendingData: [Function: nop],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'POST',
+      maxHeaderSize: undefined,
+      insecureHTTPParser: undefined,
+      joinDuplicateHeaders: undefined,
+      path: '/message/sendText/roma-pizzaria--chopperia',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      host: 'evolution2.towersfy.com',
+      protocol: 'https:',
+      _redirectable: [Writable],
+      [Symbol(kCapture)]: false,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype],
+      [Symbol(errored)]: null,
+      [Symbol(kHighWaterMark)]: 16384,
+      [Symbol(kRejectNonStandardBodyWrites)]: false,
+      [Symbol(kUniqueHeaders)]: null
+    },
+    data: { status: 400, error: 'Bad Request', response: [Object] }
+  },
+  status: 400
+}
+[Auth Middleware] Request: POST /api/automations/test/daily-report
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt", "reportPhoneNumber" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Client"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."updatedAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Client"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."updatedAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
+[WhatsappService] Resposta da API de status da instância: {
+  "instance": {
+    "instanceName": "roma-pizzaria--chopperia",
+    "state": "open"
+  }
+}
+[WhatsApp Service] Enviando mensagem de tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4 para: 5535998374007@s.whatsapp.net
+[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
+[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
+Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
+Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
+[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
+[SENDER_MONITOR] Verificando 1 disparador(es) inativo(s).
+[SENDER_MONITOR] Verificação de status concluída.
+[Auth Middleware] Request: POST /api/automations/test/daily-report
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt", "reportPhoneNumber" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Client"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."updatedAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Client"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."updatedAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
+[WhatsappService] Resposta da API de status da instância: {
+  "instance": {
+    "instanceName": "roma-pizzaria--chopperia",
+    "state": "open"
+  }
+}
+[WhatsApp Service] Enviando mensagem de tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4 para: 5535991523297@s.whatsapp.net
+[Auth Middleware] Request: POST /api/automations/test/daily-report
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt", "reportPhoneNumber" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Client"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."updatedAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Client"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."updatedAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
+[WhatsappService] Resposta da API de status da instância: {
+  "instance": {
+    "instanceName": "roma-pizzaria--chopperia",
+    "state": "open"
+  }
+}
+[WhatsApp Service] Enviando mensagem de tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4 para: 5535991090766@s.whatsapp.net
+[WhatsApp Service] Falha ao enviar mensagem para o tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4. Número: 5535991090766.
+[WhatsApp Service] Erro detalhado da API: {
+  "status": 400,
+  "error": "Bad Request",
+  "response": {
+    "message": [
+      {
+        "jid": "5535991090766@s.whatsapp.net",
+        "exists": false,
+        "number": "5535991090766@s.whatsapp.net"
+      }
+    ]
+  }
+}
+AxiosError: Request failed with status code 400
+    at settle (/usr/src/app/node_modules/axios/dist/node/axios.cjs:2106:12)
+    at IncomingMessage.handleStreamEnd (/usr/src/app/node_modules/axios/dist/node/axios.cjs:3491:11)
+    at IncomingMessage.emit (node:events:529:35)
+    at endReadableNT (node:internal/streams/readable:1400:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+    at Axios.request (/usr/src/app/node_modules/axios/dist/node/axios.cjs:4731:41)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Object.sendTenantMessage (/usr/src/app/src/services/whatsappService.js:124:22)
+    at async /usr/src/app/src/controllers/automationController.js:70:3 {
+  code: 'ERR_BAD_REQUEST',
+  config: {
+    transitional: {
+      silentJSONParsing: true,
+      forcedJSONParsing: true,
+      clarifyTimeoutError: false
+    },
+    adapter: [ 'xhr', 'http', 'fetch' ],
+    transformRequest: [ [Function: transformRequest] ],
+    transformResponse: [ [Function: transformResponse] ],
+    timeout: 0,
+    xsrfCookieName: 'XSRF-TOKEN',
+    xsrfHeaderName: 'X-XSRF-TOKEN',
+    maxContentLength: -1,
+    maxBodyLength: -1,
+    env: { FormData: [Function], Blob: [class Blob] },
+    validateStatus: [Function: validateStatus],
+    headers: Object [AxiosHeaders] {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+      apikey: '9df82dcbee60ce08f6ca93aa4024ca6c',
+      'User-Agent': 'axios/1.13.2',
+      'Content-Length': '513',
+      'Accept-Encoding': 'gzip, compress, deflate, br'
+    },
+    method: 'post',
+    url: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+    data: '{"number":"5535991090766@s.whatsapp.net","text":"*Relatorio Diario Roma Pizzaria & Chopperia*\\n\\nAqui está o resumo da experiência dos seus clientes no dia 07/12/2025!\\n📊 Total de respostas: 0 (⬇ -1 respostas em relação a 06/12/2025)\\n🟢 Número de Promotores: 0\\n🟡 Número de Neutros: 0\\n🔴 Número de Detratores: 0\\n\\n🔗 Para acessar o sistema, visite https://voltaki.towersfy.com/relatorios/diario?date=2025-12-07\\n\\n--- MENSAGEM DE TESTE ---","options":{"delay":1200,"presence":"composing"}}',
+    allowAbsoluteUrls: true
+  },
+  request: <ref *1> ClientRequest {
+    _events: [Object: null prototype] {
+      abort: [Function (anonymous)],
+      aborted: [Function (anonymous)],
+      connect: [Function (anonymous)],
+      error: [Function (anonymous)],
+      socket: [Function (anonymous)],
+      timeout: [Function (anonymous)],
+      finish: [Function: requestOnFinish]
+    },
+    _eventsCount: 7,
+    _maxListeners: undefined,
+    outputData: [],
+    outputSize: 0,
+    writable: true,
+    destroyed: false,
+    _last: true,
+    chunkedEncoding: false,
+    shouldKeepAlive: false,
+    maxRequestsOnConnectionReached: false,
+    _defaultKeepAlive: true,
+    useChunkedEncodingByDefault: true,
+    sendDate: false,
+    _removedConnection: false,
+    _removedContLen: false,
+    _removedTE: false,
+    strictContentLength: false,
+    _contentLength: '513',
+    _hasBody: true,
+    _trailer: '',
+    finished: true,
+    _headerSent: true,
+    _closed: false,
+    socket: TLSSocket {
+      _tlsOptions: [Object],
+      _secureEstablished: true,
+      _securePending: false,
+      _newSessionPending: false,
+      _controlReleased: true,
+      secureConnecting: false,
+      _SNICallback: null,
+      servername: 'evolution2.towersfy.com',
+      alpnProtocol: false,
+      authorized: true,
+      authorizationError: null,
+      encrypted: true,
+      _events: [Object: null prototype],
+      _eventsCount: 10,
+      connecting: false,
+      _hadError: false,
+      _parent: null,
+      _host: 'evolution2.towersfy.com',
+      _closeAfterHandlingError: false,
+      _readableState: [ReadableState],
+      _maxListeners: undefined,
+      _writableState: [WritableState],
+      allowHalfOpen: false,
+      _sockname: null,
+      _pendingData: null,
+      _pendingEncoding: '',
+      server: undefined,
+      _server: null,
+      ssl: [TLSWrap],
+      _requestCert: true,
+      _rejectUnauthorized: true,
+      parser: null,
+      _httpMessage: [Circular *1],
+      timeout: 0,
+      [Symbol(alpncallback)]: null,
+      [Symbol(res)]: [TLSWrap],
+      [Symbol(verified)]: true,
+      [Symbol(pendingSession)]: null,
+      [Symbol(async_id_symbol)]: 67654,
+      [Symbol(kHandle)]: [TLSWrap],
+      [Symbol(lastWriteQueueSize)]: 0,
+      [Symbol(timeout)]: null,
+      [Symbol(kBuffer)]: null,
+      [Symbol(kBufferCb)]: null,
+      [Symbol(kBufferGen)]: null,
+      [Symbol(kCapture)]: false,
+      [Symbol(kSetNoDelay)]: false,
+      [Symbol(kSetKeepAlive)]: true,
+      [Symbol(kSetKeepAliveInitialDelay)]: 60,
+      [Symbol(kBytesRead)]: 0,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(connect-options)]: [Object]
+    },
+    _header: 'POST /message/sendText/roma-pizzaria--chopperia HTTP/1.1\r\n' +
+      'Accept: application/json, text/plain, */*\r\n' +
+      'Content-Type: application/json\r\n' +
+      'apikey: 9df82dcbee60ce08f6ca93aa4024ca6c\r\n' +
+      'User-Agent: axios/1.13.2\r\n' +
+      'Content-Length: 513\r\n' +
+      'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+      'Host: evolution2.towersfy.com\r\n' +
+      'Connection: close\r\n' +
+      '\r\n',
+    _keepAliveTimeout: 0,
+    _onPendingData: [Function: nop],
+    agent: Agent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      defaultPort: 443,
+      protocol: 'https:',
+      options: [Object: null prototype],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      maxCachedSessions: 100,
+      _sessionCache: [Object],
+      [Symbol(kCapture)]: false
+    },
+    socketPath: undefined,
+    method: 'POST',
+    maxHeaderSize: undefined,
+    insecureHTTPParser: undefined,
+    joinDuplicateHeaders: undefined,
+    path: '/message/sendText/roma-pizzaria--chopperia',
+    _ended: true,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [TLSSocket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      rawHeaders: [Array],
+      rawTrailers: [],
+      joinDuplicateHeaders: undefined,
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 400,
+      statusMessage: 'Bad Request',
+      client: [TLSSocket],
+      _consuming: false,
+      _dumped: false,
+      req: [Circular *1],
+      responseUrl: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+      redirects: [],
+      [Symbol(kCapture)]: false,
+      [Symbol(kHeaders)]: [Object],
+      [Symbol(kHeadersCount)]: 16,
+      [Symbol(kTrailers)]: null,
+      [Symbol(kTrailersCount)]: 0
+    },
+    aborted: false,
+    timeoutCb: null,
+    upgradeOrConnect: false,
+    parser: null,
+    maxHeadersCount: null,
+    reusedSocket: false,
+    host: 'evolution2.towersfy.com',
+    protocol: 'https:',
+    _redirectable: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: true,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 513,
+      _requestBodyBuffers: [],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [Circular *1],
+      _currentUrl: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+      _timeout: null,
+      [Symbol(kCapture)]: false
+    },
+    [Symbol(kCapture)]: false,
+    [Symbol(kBytesWritten)]: 0,
+    [Symbol(kNeedDrain)]: false,
+    [Symbol(corked)]: 0,
+    [Symbol(kOutHeaders)]: [Object: null prototype] {
+      accept: [Array],
+      'content-type': [Array],
+      apikey: [Array],
+      'user-agent': [Array],
+      'content-length': [Array],
+      'accept-encoding': [Array],
+      host: [Array]
+    },
+    [Symbol(errored)]: null,
+    [Symbol(kHighWaterMark)]: 16384,
+    [Symbol(kRejectNonStandardBodyWrites)]: false,
+    [Symbol(kUniqueHeaders)]: null
+  },
+  response: {
+    status: 400,
+    statusText: 'Bad Request',
+    headers: Object [AxiosHeaders] {
+      'access-control-allow-credentials': 'true',
+      'content-length': '155',
+      'content-type': 'application/json; charset=utf-8',
+      date: 'Mon, 08 Dec 2025 11:40:30 GMT',
+      etag: 'W/"9b-v9XRnqmleym6UCBo+dQtl2PavDs"',
+      vary: 'Origin, Accept-Encoding',
+      'x-powered-by': 'Express',
+      connection: 'close'
+    },
+    config: {
+      transitional: [Object],
+      adapter: [Array],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      env: [Object],
+      validateStatus: [Function: validateStatus],
+      headers: [Object [AxiosHeaders]],
+      method: 'post',
+      url: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+      data: '{"number":"5535991090766@s.whatsapp.net","text":"*Relatorio Diario Roma Pizzaria & Chopperia*\\n\\nAqui está o resumo da experiência dos seus clientes no dia 07/12/2025!\\n📊 Total de respostas: 0 (⬇ -1 respostas em relação a 06/12/2025)\\n🟢 Número de Promotores: 0\\n🟡 Número de Neutros: 0\\n🔴 Número de Detratores: 0\\n\\n🔗 Para acessar o sistema, visite https://voltaki.towersfy.com/relatorios/diario?date=2025-12-07\\n\\n--- MENSAGEM DE TESTE ---","options":{"delay":1200,"presence":"composing"}}',
+      allowAbsoluteUrls: true
+    },
+    request: <ref *1> ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 7,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      destroyed: false,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      maxRequestsOnConnectionReached: false,
+      _defaultKeepAlive: true,
+      useChunkedEncodingByDefault: true,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      strictContentLength: false,
+      _contentLength: '513',
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      _closed: false,
+      socket: [TLSSocket],
+      _header: 'POST /message/sendText/roma-pizzaria--chopperia HTTP/1.1\r\n' +
+        'Accept: application/json, text/plain, */*\r\n' +
+        'Content-Type: application/json\r\n' +
+        'apikey: 9df82dcbee60ce08f6ca93aa4024ca6c\r\n' +
+        'User-Agent: axios/1.13.2\r\n' +
+        'Content-Length: 513\r\n' +
+        'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+        'Host: evolution2.towersfy.com\r\n' +
+        'Connection: close\r\n' +
+        '\r\n',
+      _keepAliveTimeout: 0,
+      _onPendingData: [Function: nop],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'POST',
+      maxHeaderSize: undefined,
+      insecureHTTPParser: undefined,
+      joinDuplicateHeaders: undefined,
+      path: '/message/sendText/roma-pizzaria--chopperia',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      host: 'evolution2.towersfy.com',
+      protocol: 'https:',
+      _redirectable: [Writable],
+      [Symbol(kCapture)]: false,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype],
+      [Symbol(errored)]: null,
+      [Symbol(kHighWaterMark)]: 16384,
+      [Symbol(kRejectNonStandardBodyWrites)]: false,
+      [Symbol(kUniqueHeaders)]: null
+    },
+    data: { status: 400, error: 'Bad Request', response: [Object] }
+  },
+  status: 400
+}
+[Auth Middleware] Request: POST /api/automations/test/daily-report
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt", "reportPhoneNumber" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Client"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."updatedAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Client"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."updatedAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
+[WhatsappService] Resposta da API de status da instância: {
+  "instance": {
+    "instanceName": "roma-pizzaria--chopperia",
+    "state": "open"
+  }
+}
+[WhatsApp Service] Enviando mensagem de tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4 para: 5535998374007@s.whatsapp.net
+[Auth Middleware] Request: POST /api/automations/test/daily-report
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
+Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt", "reportPhoneNumber" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Client"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."createdAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."updatedAt" BETWEEN '2025-12-07 00:00:00.000 +00:00' AND '2025-12-07 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Client"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00';
+Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."createdAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."updatedAt" BETWEEN '2025-12-06 00:00:00.000 +00:00' AND '2025-12-06 23:59:59.999 +00:00';
+Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
+Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
+[WhatsappService] Resposta da API de status da instância: {
+  "instance": {
+    "instanceName": "roma-pizzaria--chopperia",
+    "state": "open"
+  }
+}
+[WhatsApp Service] Enviando mensagem de tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4 para: 5535991090766@s.whatsapp.net
+[WhatsApp Service] Falha ao enviar mensagem para o tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4. Número: 553591090766.
+[WhatsApp Service] Erro detalhado da API: {
+  "status": 400,
+  "error": "Bad Request",
+  "response": {
+    "message": [
+      {
+        "jid": "5535991090766@s.whatsapp.net",
+        "exists": false,
+        "number": "5535991090766@s.whatsapp.net"
+      }
+    ]
+  }
+}
+AxiosError: Request failed with status code 400
+    at settle (/usr/src/app/node_modules/axios/dist/node/axios.cjs:2106:12)
+    at IncomingMessage.handleStreamEnd (/usr/src/app/node_modules/axios/dist/node/axios.cjs:3491:11)
+    at IncomingMessage.emit (node:events:529:35)
+    at endReadableNT (node:internal/streams/readable:1400:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+    at Axios.request (/usr/src/app/node_modules/axios/dist/node/axios.cjs:4731:41)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Object.sendTenantMessage (/usr/src/app/src/services/whatsappService.js:124:22)
+    at async /usr/src/app/src/controllers/automationController.js:70:3 {
+  code: 'ERR_BAD_REQUEST',
+  config: {
+    transitional: {
+      silentJSONParsing: true,
+      forcedJSONParsing: true,
+      clarifyTimeoutError: false
+    },
+    adapter: [ 'xhr', 'http', 'fetch' ],
+    transformRequest: [ [Function: transformRequest] ],
+    transformResponse: [ [Function: transformResponse] ],
+    timeout: 0,
+    xsrfCookieName: 'XSRF-TOKEN',
+    xsrfHeaderName: 'X-XSRF-TOKEN',
+    maxContentLength: -1,
+    maxBodyLength: -1,
+    env: { FormData: [Function], Blob: [class Blob] },
+    validateStatus: [Function: validateStatus],
+    headers: Object [AxiosHeaders] {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+      apikey: '9df82dcbee60ce08f6ca93aa4024ca6c',
+      'User-Agent': 'axios/1.13.2',
+      'Content-Length': '513',
+      'Accept-Encoding': 'gzip, compress, deflate, br'
+    },
+    method: 'post',
+    url: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+    data: '{"number":"5535991090766@s.whatsapp.net","text":"*Relatorio Diario Roma Pizzaria & Chopperia*\\n\\nAqui está o resumo da experiência dos seus clientes no dia 07/12/2025!\\n📊 Total de respostas: 0 (⬇ -1 respostas em relação a 06/12/2025)\\n🟢 Número de Promotores: 0\\n🟡 Número de Neutros: 0\\n🔴 Número de Detratores: 0\\n\\n🔗 Para acessar o sistema, visite https://voltaki.towersfy.com/relatorios/diario?date=2025-12-07\\n\\n--- MENSAGEM DE TESTE ---","options":{"delay":1200,"presence":"composing"}}',
+    allowAbsoluteUrls: true
+  },
+  request: <ref *1> ClientRequest {
+    _events: [Object: null prototype] {
+      abort: [Function (anonymous)],
+      aborted: [Function (anonymous)],
+      connect: [Function (anonymous)],
+      error: [Function (anonymous)],
+      socket: [Function (anonymous)],
+      timeout: [Function (anonymous)],
+      finish: [Function: requestOnFinish]
+    },
+    _eventsCount: 7,
+    _maxListeners: undefined,
+    outputData: [],
+    outputSize: 0,
+    writable: true,
+    destroyed: false,
+    _last: true,
+    chunkedEncoding: false,
+    shouldKeepAlive: false,
+    maxRequestsOnConnectionReached: false,
+    _defaultKeepAlive: true,
+    useChunkedEncodingByDefault: true,
+    sendDate: false,
+    _removedConnection: false,
+    _removedContLen: false,
+    _removedTE: false,
+    strictContentLength: false,
+    _contentLength: '513',
+    _hasBody: true,
+    _trailer: '',
+    finished: true,
+    _headerSent: true,
+    _closed: false,
+    socket: TLSSocket {
+      _tlsOptions: [Object],
+      _secureEstablished: true,
+      _securePending: false,
+      _newSessionPending: false,
+      _controlReleased: true,
+      secureConnecting: false,
+      _SNICallback: null,
+      servername: 'evolution2.towersfy.com',
+      alpnProtocol: false,
+      authorized: true,
+      authorizationError: null,
+      encrypted: true,
+      _events: [Object: null prototype],
+      _eventsCount: 10,
+      connecting: false,
+      _hadError: false,
+      _parent: null,
+      _host: 'evolution2.towersfy.com',
+      _closeAfterHandlingError: false,
+      _readableState: [ReadableState],
+      _maxListeners: undefined,
+      _writableState: [WritableState],
+      allowHalfOpen: false,
+      _sockname: null,
+      _pendingData: null,
+      _pendingEncoding: '',
+      server: undefined,
+      _server: null,
+      ssl: [TLSWrap],
+      _requestCert: true,
+      _rejectUnauthorized: true,
+      parser: null,
+      _httpMessage: [Circular *1],
+      timeout: 0,
+      [Symbol(alpncallback)]: null,
+      [Symbol(res)]: [TLSWrap],
+      [Symbol(verified)]: true,
+      [Symbol(pendingSession)]: null,
+      [Symbol(async_id_symbol)]: 68034,
+      [Symbol(kHandle)]: [TLSWrap],
+      [Symbol(lastWriteQueueSize)]: 0,
+      [Symbol(timeout)]: null,
+      [Symbol(kBuffer)]: null,
+      [Symbol(kBufferCb)]: null,
+      [Symbol(kBufferGen)]: null,
+      [Symbol(kCapture)]: false,
+      [Symbol(kSetNoDelay)]: false,
+      [Symbol(kSetKeepAlive)]: true,
+      [Symbol(kSetKeepAliveInitialDelay)]: 60,
+      [Symbol(kBytesRead)]: 0,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(connect-options)]: [Object]
+    },
+    _header: 'POST /message/sendText/roma-pizzaria--chopperia HTTP/1.1\r\n' +
+      'Accept: application/json, text/plain, */*\r\n' +
+      'Content-Type: application/json\r\n' +
+      'apikey: 9df82dcbee60ce08f6ca93aa4024ca6c\r\n' +
+      'User-Agent: axios/1.13.2\r\n' +
+      'Content-Length: 513\r\n' +
+      'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+      'Host: evolution2.towersfy.com\r\n' +
+      'Connection: close\r\n' +
+      '\r\n',
+    _keepAliveTimeout: 0,
+    _onPendingData: [Function: nop],
+    agent: Agent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      defaultPort: 443,
+      protocol: 'https:',
+      options: [Object: null prototype],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype],
+      freeSockets: [Object: null prototype] {},
+      keepAliveMsecs: 1000,
+      keepAlive: false,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      maxCachedSessions: 100,
+      _sessionCache: [Object],
+      [Symbol(kCapture)]: false
+    },
+    socketPath: undefined,
+    method: 'POST',
+    maxHeaderSize: undefined,
+    insecureHTTPParser: undefined,
+    joinDuplicateHeaders: undefined,
+    path: '/message/sendText/roma-pizzaria--chopperia',
+    _ended: true,
+    res: IncomingMessage {
+      _readableState: [ReadableState],
+      _events: [Object: null prototype],
+      _eventsCount: 4,
+      _maxListeners: undefined,
+      socket: [TLSSocket],
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      rawHeaders: [Array],
+      rawTrailers: [],
+      joinDuplicateHeaders: undefined,
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 400,
+      statusMessage: 'Bad Request',
+      client: [TLSSocket],
+      _consuming: false,
+      _dumped: false,
+      req: [Circular *1],
+      responseUrl: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+      redirects: [],
+      [Symbol(kCapture)]: false,
+      [Symbol(kHeaders)]: [Object],
+      [Symbol(kHeadersCount)]: 16,
+      [Symbol(kTrailers)]: null,
+      [Symbol(kTrailersCount)]: 0
+    },
+    aborted: false,
+    timeoutCb: null,
+    upgradeOrConnect: false,
+    parser: null,
+    maxHeadersCount: null,
+    reusedSocket: false,
+    host: 'evolution2.towersfy.com',
+    protocol: 'https:',
+    _redirectable: Writable {
+      _writableState: [WritableState],
+      _events: [Object: null prototype],
+      _eventsCount: 3,
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: true,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 513,
+      _requestBodyBuffers: [],
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [Circular *1],
+      _currentUrl: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+      _timeout: null,
+      [Symbol(kCapture)]: false
+    },
+    [Symbol(kCapture)]: false,
+    [Symbol(kBytesWritten)]: 0,
+    [Symbol(kNeedDrain)]: false,
+    [Symbol(corked)]: 0,
+    [Symbol(kOutHeaders)]: [Object: null prototype] {
+      accept: [Array],
+      'content-type': [Array],
+      apikey: [Array],
+      'user-agent': [Array],
+      'content-length': [Array],
+      'accept-encoding': [Array],
+      host: [Array]
+    },
+    [Symbol(errored)]: null,
+    [Symbol(kHighWaterMark)]: 16384,
+    [Symbol(kRejectNonStandardBodyWrites)]: false,
+    [Symbol(kUniqueHeaders)]: null
+  },
+  response: {
+    status: 400,
+    statusText: 'Bad Request',
+    headers: Object [AxiosHeaders] {
+      'access-control-allow-credentials': 'true',
+      'content-length': '155',
+      'content-type': 'application/json; charset=utf-8',
+      date: 'Mon, 08 Dec 2025 11:41:30 GMT',
+      etag: 'W/"9b-v9XRnqmleym6UCBo+dQtl2PavDs"',
+      vary: 'Origin, Accept-Encoding',
+      'x-powered-by': 'Express',
+      connection: 'close'
+    },
+    config: {
+      transitional: [Object],
+      adapter: [Array],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      env: [Object],
+      validateStatus: [Function: validateStatus],
+      headers: [Object [AxiosHeaders]],
+      method: 'post',
+      url: 'https://evolution2.towersfy.com/message/sendText/roma-pizzaria--chopperia',
+      data: '{"number":"5535991090766@s.whatsapp.net","text":"*Relatorio Diario Roma Pizzaria & Chopperia*\\n\\nAqui está o resumo da experiência dos seus clientes no dia 07/12/2025!\\n📊 Total de respostas: 0 (⬇ -1 respostas em relação a 06/12/2025)\\n🟢 Número de Promotores: 0\\n🟡 Número de Neutros: 0\\n🔴 Número de Detratores: 0\\n\\n🔗 Para acessar o sistema, visite https://voltaki.towersfy.com/relatorios/diario?date=2025-12-07\\n\\n--- MENSAGEM DE TESTE ---","options":{"delay":1200,"presence":"composing"}}',
+      allowAbsoluteUrls: true
+    },
+    request: <ref *1> ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 7,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      destroyed: false,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: false,
+      maxRequestsOnConnectionReached: false,
+      _defaultKeepAlive: true,
+      useChunkedEncodingByDefault: true,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      strictContentLength: false,
+      _contentLength: '513',
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      _closed: false,
+      socket: [TLSSocket],
+      _header: 'POST /message/sendText/roma-pizzaria--chopperia HTTP/1.1\r\n' +
+        'Accept: application/json, text/plain, */*\r\n' +
+        'Content-Type: application/json\r\n' +
+        'apikey: 9df82dcbee60ce08f6ca93aa4024ca6c\r\n' +
+        'User-Agent: axios/1.13.2\r\n' +
+        'Content-Length: 513\r\n' +
+        'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+        'Host: evolution2.towersfy.com\r\n' +
+        'Connection: close\r\n' +
+        '\r\n',
+      _keepAliveTimeout: 0,
+      _onPendingData: [Function: nop],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'POST',
+      maxHeaderSize: undefined,
+      insecureHTTPParser: undefined,
+      joinDuplicateHeaders: undefined,
+      path: '/message/sendText/roma-pizzaria--chopperia',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      host: 'evolution2.towersfy.com',
+      protocol: 'https:',
+      _redirectable: [Writable],
+      [Symbol(kCapture)]: false,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype],
+      [Symbol(errored)]: null,
+      [Symbol(kHighWaterMark)]: 16384,
+      [Symbol(kRejectNonStandardBodyWrites)]: false,
+      [Symbol(kUniqueHeaders)]: null
+    },
+    data: { status: 400, error: 'Bad Request', response: [Object] }
+  },
+  status: 400
+}

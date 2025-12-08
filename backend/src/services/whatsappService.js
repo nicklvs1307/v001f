@@ -135,7 +135,7 @@ const sendTenantMessage = async (tenantId, number, message) => {
     return response.data;
   } catch (error) {
     console.error(
-      `[WhatsApp Service] Falha ao enviar mensagem para o tenant ${tenantId}. Número: ${number}.`,
+      `[WhatsApp Service] Falha ao enviar mensagem para o tenant ${tenantId}. Número: ${finalNumber}.`,
     );
     if (error.response) {
       console.error(
@@ -189,7 +189,7 @@ const sendTenantMediaMessage = async (tenantId, number, mediaUrl, caption) => {
     return response.data;
   } catch (error) {
     console.error(
-      `[WhatsApp Service] Falha ao enviar mensagem com mídia para o tenant ${tenantId}. Número: ${number}.`,
+      `[WhatsApp Service] Falha ao enviar mensagem com mídia para o tenant ${tenantId}. Número: ${finalNumber}.`,
     );
     if (error.response) {
       console.error(
@@ -229,7 +229,7 @@ const sendTenantAudioMessage = async (tenantId, number, mediaUrl) => {
     return response.data;
   } catch (error) {
     console.error(
-      `[WhatsApp Service] Falha ao enviar mensagem de áudio para o tenant ${tenantId}. Número: ${number}.`,
+      `[WhatsApp Service] Falha ao enviar mensagem de áudio para o tenant ${tenantId}. Número: ${finalNumber}.`,
     );
     if (error.response) {
       console.error(

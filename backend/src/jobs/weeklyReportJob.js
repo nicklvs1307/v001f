@@ -73,14 +73,21 @@ const weeklyReportTask = cron.schedule(
             .map((p) => p.trim())
             .filter((p) => p);
           for (const phoneNumber of phoneNumbers) {
-            await whatsappService.sendTenantMessage(
-              config.tenantId,
-              phoneNumber,
-              message,
-            );
-            console.log(
-              `Relatório semanal para "${tenant.name}" enviado para ${phoneNumber}.`,
-            );
+            try {
+              await whatsappService.sendTenantMessage(
+                config.tenantId,
+                phoneNumber,
+                message,
+              );
+              console.log(
+                `Relatório semanal para "${tenant.name}" enviado para ${phoneNumber}.`,
+              );
+            } catch (error) {
+              console.error(
+                `Falha ao enviar relatório semanal para o número ${phoneNumber} do tenant ${config.tenantId}:`,
+                error.message,
+              );
+            }
           }
         } catch (tenantError) {
           console.error(

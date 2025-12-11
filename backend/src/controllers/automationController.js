@@ -1,7 +1,8 @@
 const asyncHandler = require("express-async-handler");
-const { format, addDays, startOfDay, endOfDay, subDays, subWeeks, startOfWeek, endOfWeek, subMonths, startOfMonth, endOfMonth } = require("date-fns");
+const { format, addDays, subDays, subWeeks, startOfWeek, endOfWeek, subMonths, startOfMonth, endOfMonth } = require("date-fns");
 const { ptBR } = require("date-fns/locale");
-const { now } = require("../utils/dateUtils");
+const { formatInTimeZone, TIMEZONE } = require("../utils/dateUtils");
+const { zonedTimeToUtc } = require("date-fns-tz");
 const whatsappService = require("../services/whatsappService");
 const tenantRepository = require("../repositories/tenantRepository");
 const dashboardRepository = require("../repositories/dashboardRepository");
@@ -26,14 +27,32 @@ exports.testDailyReport = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Tenant não encontrado.");
   }
 
-  const zonedNow = now();
-  const yesterdayZoned = subDays(zonedNow, 1);
-  const twoDaysAgoZoned = subDays(zonedNow, 2);
+  // Correct timezone-aware date calculation
+  const today = new Date();
 
-  const startOfYesterdayZoned = startOfDay(yesterdayZoned);
-  const endOfYesterdayZoned = endOfDay(yesterdayZoned);
-  const startOfTwoDaysAgoZoned = startOfDay(twoDaysAgoZoned);
-  const endOfTwoDaysAgoZoned = endOfDay(twoDaysAgoZoned);
+  // Yesterday
+  const yesterday = subDays(today, 1);
+  const yesterdayDateString = formatInTimeZone(yesterday, "yyyy-MM-dd");
+  const startOfYesterdayZoned = zonedTimeToUtc(
+    `${yesterdayDateString} 00:00:00`,
+    TIMEZONE,
+  );
+  const endOfYesterdayZoned = zonedTimeToUtc(
+    `${yesterdayDateString} 23:59:59.999`,
+    TIMEZONE,
+  );
+
+  // Two days ago
+  const twoDaysAgo = subDays(today, 2);
+  const twoDaysAgoDateString = formatInTimeZone(twoDaysAgo, "yyyy-MM-dd");
+  const startOfTwoDaysAgoZoned = zonedTimeToUtc(
+    `${twoDaysAgoDateString} 00:00:00`,
+    TIMEZONE,
+  );
+  const endOfTwoDaysAgoZoned = zonedTimeToUtc(
+    `${twoDaysAgoDateString} 23:59:59.999`,
+    TIMEZONE,
+  );
 
   const yesterdaySummary = await dashboardRepository.getSummary(
     tenantId,
@@ -49,10 +68,10 @@ exports.testDailyReport = asyncHandler(async (req, res) => {
   const diff =
     yesterdaySummary.totalResponses - twoDaysAgoSummary.totalResponses;
   const diffArrow = diff > 0 ? "⬆" : diff < 0 ? "⬇" : "➖";
-  const diffText = `(${diffArrow} ${diff} respostas em relação a ${format(twoDaysAgoZoned, "dd/MM/yyyy")})`;
+  const diffText = `(${diffArrow} ${diff} respostas em relação a ${format(twoDaysAgo, "dd/MM/yyyy")})`;
 
-  const formattedDate = format(yesterdayZoned, "dd/MM/yyyy");
-  const isoDate = format(yesterdayZoned, "yyyy-MM-dd");
+  const formattedDate = format(yesterday, "dd/MM/yyyy");
+  const isoDate = format(yesterday, "yyyy-MM-dd");
   const baseUrl = process.env.FRONTEND_URL || "https://loyalfood.towersfy.com";
   const reportUrl = `${baseUrl}/relatorios/diario?date=${isoDate}`;
 

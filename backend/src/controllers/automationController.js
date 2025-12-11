@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const { format, addDays, subDays, subWeeks, startOfWeek, endOfWeek, subMonths, startOfMonth, endOfMonth } = require("date-fns");
 const { ptBR } = require("date-fns/locale");
-const { formatInTimeZone, TIMEZONE, convertToUtc } = require("../utils/dateUtils");
+const { formatInTimeZone, TIMEZONE, convertToUtc, now } = require("../utils/dateUtils");
 const whatsappService = require("../services/whatsappService");
 const tenantRepository = require("../repositories/tenantRepository");
 const dashboardRepository = require("../repositories/dashboardRepository");

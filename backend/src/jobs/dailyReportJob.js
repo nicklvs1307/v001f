@@ -1,7 +1,6 @@
 const cron = require("node-cron");
 const { format, subDays } = require("date-fns");
-const { formatInTimeZone, TIMEZONE } = require("../utils/dateUtils");
-const { zonedTimeToUtc } = require("date-fns-tz");
+const { formatInTimeZone, TIMEZONE, convertToUtc } = require("../utils/dateUtils");
 const whatsappService = require("../services/whatsappService");
 const whatsappConfigRepository = require("../repositories/whatsappConfigRepository");
 const tenantRepository = require("../repositories/tenantRepository");
@@ -48,25 +47,21 @@ const dailyReportTask = cron.schedule(
           // Yesterday
           const yesterday = subDays(today, 1);
           const yesterdayDateString = formatInTimeZone(yesterday, "yyyy-MM-dd");
-          const startOfYesterdayZoned = zonedTimeToUtc(
-            `${yesterdayDateString} 00:00:00`,
-            TIMEZONE,
+          const startOfYesterdayZoned = convertToUtc(
+            new Date(`${yesterdayDateString}T00:00:00.000Z`)
           );
-          const endOfYesterdayZoned = zonedTimeToUtc(
-            `${yesterdayDateString} 23:59:59.999`,
-            TIMEZONE,
+          const endOfYesterdayZoned = convertToUtc(
+            new Date(`${yesterdayDateString}T23:59:59.999Z`)
           );
 
           // Two days ago
           const twoDaysAgo = subDays(today, 2);
           const twoDaysAgoDateString = formatInTimeZone(twoDaysAgo, "yyyy-MM-dd");
-          const startOfTwoDaysAgoZoned = zonedTimeToUtc(
-            `${twoDaysAgoDateString} 00:00:00`,
-            TIMEZONE,
+          const startOfTwoDaysAgoZoned = convertToUtc(
+            new Date(`${twoDaysAgoDateString}T00:00:00.000Z`)
           );
-          const endOfTwoDaysAgoZoned = zonedTimeToUtc(
-            `${twoDaysAgoDateString} 23:59:59.999`,
-            TIMEZONE,
+          const endOfTwoDaysAgoZoned = convertToUtc(
+            new Date(`${twoDaysAgoDateString}T23:59:59.999Z`)
           );
 
           // Fetch summaries for both days using the timezone-aware dates
@@ -85,11 +80,11 @@ const dailyReportTask = cron.schedule(
           const diff =
             yesterdaySummary.totalResponses - twoDaysAgoSummary.totalResponses;
           const diffArrow = diff > 0 ? "⬆" : diff < 0 ? "⬇" : "➖";
-          const diffText = `(${diffArrow} ${diff} respostas em relação ${format(twoDaysAgoZoned, "dd/MM/yyyy")})`;
+          const diffText = `(${diffArrow} ${diff} respostas em relação ${format(twoDaysAgo, "dd/MM/yyyy")})`;
 
           // Format dates for the message
-          const formattedDate = format(yesterdayZoned, "dd/MM/yyyy");
-          const isoDate = format(yesterdayZoned, "yyyy-MM-dd");
+          const formattedDate = format(yesterday, "dd/MM/yyyy");
+          const isoDate = format(yesterday, "yyyy-MM-dd");
           const baseUrl =
             process.env.FRONTEND_URL || "https://loyalfood.towersfy.com";
           const reportUrl = `${baseUrl}/relatorios/diario?date=${isoDate}`;

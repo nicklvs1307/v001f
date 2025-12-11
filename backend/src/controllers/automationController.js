@@ -1,8 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const { format, addDays, subDays, subWeeks, startOfWeek, endOfWeek, subMonths, startOfMonth, endOfMonth } = require("date-fns");
 const { ptBR } = require("date-fns/locale");
-const { formatInTimeZone, TIMEZONE } = require("../utils/dateUtils");
-const { zonedTimeToUtc } = require("date-fns-tz");
+const { formatInTimeZone, TIMEZONE, convertToUtc } = require("../utils/dateUtils");
 const whatsappService = require("../services/whatsappService");
 const tenantRepository = require("../repositories/tenantRepository");
 const dashboardRepository = require("../repositories/dashboardRepository");
@@ -33,25 +32,22 @@ exports.testDailyReport = asyncHandler(async (req, res) => {
   // Yesterday
   const yesterday = subDays(today, 1);
   const yesterdayDateString = formatInTimeZone(yesterday, "yyyy-MM-dd");
-  const startOfYesterdayZoned = zonedTimeToUtc(
-    `${yesterdayDateString} 00:00:00`,
-    TIMEZONE,
+  const startOfYesterdayZoned = convertToUtc(
+    new Date(`${yesterdayDateString}T00:00:00.000Z`)
   );
-  const endOfYesterdayZoned = zonedTimeToUtc(
-    `${yesterdayDateString} 23:59:59.999`,
-    TIMEZONE,
+  const endOfYesterdayZoned = convertToUtc(
+    new Date(`${yesterdayDateString}T23:59:59.999Z`)
   );
+
 
   // Two days ago
   const twoDaysAgo = subDays(today, 2);
   const twoDaysAgoDateString = formatInTimeZone(twoDaysAgo, "yyyy-MM-dd");
-  const startOfTwoDaysAgoZoned = zonedTimeToUtc(
-    `${twoDaysAgoDateString} 00:00:00`,
-    TIMEZONE,
+  const startOfTwoDaysAgoZoned = convertToUtc(
+    new Date(`${twoDaysAgoDateString}T00:00:00.000Z`)
   );
-  const endOfTwoDaysAgoZoned = zonedTimeToUtc(
-    `${twoDaysAgoDateString} 23:59:59.999`,
-    TIMEZONE,
+  const endOfTwoDaysAgoZoned = convertToUtc(
+    new Date(`${twoDaysAgoDateString}T23:59:59.999Z`)
   );
 
   const yesterdaySummary = await dashboardRepository.getSummary(

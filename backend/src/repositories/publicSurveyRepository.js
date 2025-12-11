@@ -289,7 +289,7 @@ const submitSurveyResponses = async (
           } else if (
             question.type === "rating_1_5" &&
             res.ratingValue >= 1 &&
-            res.ratingValue <= 3
+            res.ratingValue <= 2
           ) {
             isDetractor = true;
           }

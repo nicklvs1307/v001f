@@ -1,6 +1,7 @@
 const cron = require("node-cron");
-const { format, subDays, startOfDay, endOfDay } = require("date-fns");
-const { now } = require("../utils/dateUtils");
+const { format, subDays } = require("date-fns");
+const { formatInTimeZone, TIMEZONE } = require("../utils/dateUtils");
+const { zonedTimeToUtc } = require("date-fns-tz");
 const whatsappService = require("../services/whatsappService");
 const whatsappConfigRepository = require("../repositories/whatsappConfigRepository");
 const tenantRepository = require("../repositories/tenantRepository");
@@ -42,15 +43,31 @@ const dailyReportTask = cron.schedule(
             continue;
           }
 
-          const zonedNow = now();
-          const yesterdayZoned = subDays(zonedNow, 1);
-          const twoDaysAgoZoned = subDays(zonedNow, 2);
+          const today = new Date(); // Cron ensures this runs on the correct day in SP timezone context
 
-          // We get the start and end of the day in the SP timezone
-          const startOfYesterdayZoned = startOfDay(yesterdayZoned);
-          const endOfYesterdayZoned = endOfDay(yesterdayZoned);
-          const startOfTwoDaysAgoZoned = startOfDay(twoDaysAgoZoned);
-          const endOfTwoDaysAgoZoned = endOfDay(twoDaysAgoZoned);
+          // Yesterday
+          const yesterday = subDays(today, 1);
+          const yesterdayDateString = formatInTimeZone(yesterday, "yyyy-MM-dd");
+          const startOfYesterdayZoned = zonedTimeToUtc(
+            `${yesterdayDateString} 00:00:00`,
+            TIMEZONE,
+          );
+          const endOfYesterdayZoned = zonedTimeToUtc(
+            `${yesterdayDateString} 23:59:59.999`,
+            TIMEZONE,
+          );
+
+          // Two days ago
+          const twoDaysAgo = subDays(today, 2);
+          const twoDaysAgoDateString = formatInTimeZone(twoDaysAgo, "yyyy-MM-dd");
+          const startOfTwoDaysAgoZoned = zonedTimeToUtc(
+            `${twoDaysAgoDateString} 00:00:00`,
+            TIMEZONE,
+          );
+          const endOfTwoDaysAgoZoned = zonedTimeToUtc(
+            `${twoDaysAgoDateString} 23:59:59.999`,
+            TIMEZONE,
+          );
 
           // Fetch summaries for both days using the timezone-aware dates
           const yesterdaySummary = await dashboardRepository.getSummary(

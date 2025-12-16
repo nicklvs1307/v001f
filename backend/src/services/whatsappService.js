@@ -44,6 +44,48 @@ const normalizeNumber = (number) => {
   return `55${digitsOnly}@s.whatsapp.net`;
 };
 
+const checkWhatsAppNumber = async (config, number) => {
+  const numberForCheck = normalizeNumber(number).split("@")[0];
+
+  try {
+    const response = await axios.post(
+      `${config.url}/chat/whatsappNumbers/${config.instanceName}`,
+      { numbers: [numberForCheck] },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          apikey: config.apiKey,
+        },
+      },
+    );
+
+    if (
+      response.data &&
+      Array.isArray(response.data) &&
+      response.data.length > 0
+    ) {
+      const checkResult = response.data[0];
+      if (checkResult.exists) {
+        console.log(
+          `[WhatsApp Service] Number check successful for: ${checkResult.jid}`,
+        );
+        return true;
+      }
+    }
+    console.warn(
+      `[WhatsApp Service] Number ${numberForCheck} does not exist on WhatsApp.`,
+    );
+    return false;
+  } catch (error) {
+    console.error(
+      `[WhatsApp Service] Failed to check number ${numberForCheck}.`,
+      error.message,
+    );
+    // Em caso de erro na verificação, bloqueamos o envio para evitar problemas.
+    return false;
+  }
+};
+
 const sendSystemMessage = async (number, message) => {
   if (
     !SYSTEM_WHATSAPP_URL ||
@@ -55,6 +97,23 @@ const sendSystemMessage = async (number, message) => {
     );
     throw new Error("WhatsApp do sistema não configurado.");
   }
+
+  // Cria uma configuração temporária para a verificação do número
+  const systemConfig = {
+    url: SYSTEM_WHATSAPP_URL,
+    apiKey: SYSTEM_WHATSAPP_API_KEY,
+    instanceName: SYSTEM_WHATSAPP_INSTANCE,
+  };
+
+  const numberExists = await checkWhatsAppNumber(systemConfig, number);
+  if (!numberExists) {
+    const errorMessage = `[WhatsApp Service] Tentativa de envio de mensagem de SISTEMA para número inexistente (${number}). Abortando.`;
+    console.error(errorMessage);
+    throw new Error(
+      "O número de WhatsApp fornecido para a mensagem de sistema não existe.",
+    );
+  }
+
   const finalNumber = normalizeNumber(number);
   console.log(
     `[WhatsApp Service] Enviando mensagem de sistema para: ${finalNumber}`,
@@ -115,6 +174,16 @@ const getTenantWhatsappConfig = async (tenantId) => {
 
 const sendTenantMessage = async (tenantId, number, message) => {
   const config = await getTenantWhatsappConfig(tenantId);
+
+  // Verifica se o número existe antes de enviar
+  const numberExists = await checkWhatsAppNumber(config, number);
+  if (!numberExists) {
+    const errorMessage = `[WhatsApp Service] Tentativa de envio para número inexistente no WhatsApp (${number}) no tenant ${tenantId}. Abortando.`;
+    console.error(errorMessage);
+    // Lança um erro claro que pode ser tratado pelo chamador
+    throw new Error("O número de WhatsApp fornecido não existe ou não pôde ser verificado.");
+  }
+
   const finalNumber = normalizeNumber(number);
   console.log(
     `[WhatsApp Service] Enviando mensagem de tenant ${tenantId} para: ${finalNumber}`,
@@ -154,6 +223,14 @@ const sendTenantMessage = async (tenantId, number, message) => {
 
 const sendTenantMediaMessage = async (tenantId, number, mediaUrl, caption) => {
   const config = await getTenantWhatsappConfig(tenantId);
+
+  const numberExists = await checkWhatsAppNumber(config, number);
+  if (!numberExists) {
+    const errorMessage = `[WhatsApp Service] Tentativa de envio de mídia para número inexistente (${number}) no tenant ${tenantId}. Abortando.`;
+    console.error(errorMessage);
+    throw new Error("O número de WhatsApp fornecido não existe ou não pôde ser verificado.");
+  }
+
   const finalNumber = normalizeNumber(number);
   console.log(
     `[WhatsApp Service] Enviando mensagem com mídia de tenant ${tenantId} para: ${finalNumber}`,
@@ -208,6 +285,14 @@ const sendTenantMediaMessage = async (tenantId, number, mediaUrl, caption) => {
 
 const sendTenantAudioMessage = async (tenantId, number, mediaUrl) => {
   const config = await getTenantWhatsappConfig(tenantId);
+
+  const numberExists = await checkWhatsAppNumber(config, number);
+  if (!numberExists) {
+    const errorMessage = `[WhatsApp Service] Tentativa de envio de áudio para número inexistente (${number}) no tenant ${tenantId}. Abortando.`;
+    console.error(errorMessage);
+    throw new Error("O número de WhatsApp fornecido não existe ou não pôde ser verificado.");
+  }
+
   const finalNumber = normalizeNumber(number);
   console.log(
     `[WhatsApp Service] Enviando mensagem de áudio de tenant ${tenantId} para: ${finalNumber}`,
@@ -278,6 +363,16 @@ const sendCampaignRequest = async (sender, endpoint, payload) => {
 };
 
 const sendCampaignMessage = async (sender, number, message, delay = 1200) => {
+  // O objeto 'sender' tem a mesma estrutura que 'config' (url, apiKey, instanceName)
+  const numberExists = await checkWhatsAppNumber(sender, number);
+  if (!numberExists) {
+    const errorMessage = `[WhatsApp Service] Tentativa de envio de CAMPANHA para número inexistente (${number}) com o disparador ${sender.name}. Abortando.`;
+    console.error(errorMessage);
+    throw new Error(
+      "O número de WhatsApp fornecido para a campanha não existe ou não pôde ser verificado.",
+    );
+  }
+
   const finalNumber = normalizeNumber(number);
   console.log(
     `[WhatsApp Service] Enviando mensagem de CAMPANHA com disparador ${sender.name} para: ${finalNumber}`,
@@ -299,6 +394,15 @@ const sendCampaignMediaMessage = async (
   caption,
   delay = 1200,
 ) => {
+  const numberExists = await checkWhatsAppNumber(sender, number);
+  if (!numberExists) {
+    const errorMessage = `[WhatsApp Service] Tentativa de envio de CAMPANHA com mídia para número inexistente (${number}) com o disparador ${sender.name}. Abortando.`;
+    console.error(errorMessage);
+    throw new Error(
+      "O número de WhatsApp fornecido para a campanha não existe ou não pôde ser verificado.",
+    );
+  }
+
   const finalNumber = normalizeNumber(number);
   console.log(
     `[WhatsApp Service] Enviando mensagem de CAMPANHA com mídia com disparador ${sender.name} para: ${finalNumber}`,
@@ -334,6 +438,15 @@ const sendCampaignAudioMessage = async (
   mediaUrl,
   delay = 1200,
 ) => {
+  const numberExists = await checkWhatsAppNumber(sender, number);
+  if (!numberExists) {
+    const errorMessage = `[WhatsApp Service] Tentativa de envio de CAMPANHA com áudio para número inexistente (${number}) com o disparador ${sender.name}. Abortando.`;
+    console.error(errorMessage);
+    throw new Error(
+      "O número de WhatsApp fornecido para a campanha não existe ou não pôde ser verificado.",
+    );
+  }
+
   const finalNumber = normalizeNumber(number);
   console.log(
     `[WhatsApp Service] Enviando mensagem de CAMPANHA com áudio com disparador ${sender.name} para: ${finalNumber}`,

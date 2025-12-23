@@ -7,7 +7,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       AtendenteMeta.belongsTo(models.Atendente, { foreignKey: 'atendenteId', as: 'atendente' });
       AtendenteMeta.belongsTo(models.Tenant, { foreignKey: 'tenantId', as: 'tenant' });
-      AtendenteMeta.belongsTo(models.Recompensa, { foreignKey: 'recompensaId', as: 'recompensa', allowNull: true });
     }
   }
   AtendenteMeta.init({
@@ -27,28 +26,38 @@ module.exports = (sequelize, DataTypes) => {
     },
     npsGoal: {
       type: DataTypes.DECIMAL(5, 2),
-      allowNull: false,
-      defaultValue: 0,
+      allowNull: true,
     },
     responsesGoal: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
+      allowNull: true,
     },
     registrationsGoal: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
-    },
-    recompensaId: {
-      type: DataTypes.UUID,
-      allowNull: true
+      allowNull: true,
     },
     period: {
       type: DataTypes.ENUM('DIARIO', 'SEMANAL', 'MENSAL'),
       allowNull: false,
       defaultValue: 'MENSAL'
-    }
+    },
+    dias_trabalhados: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 22
+    },
+    nps_premio_valor: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+    },
+    respostas_premio_valor: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+    },
+    cadastros_premio_valor: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+    },
   }, {
     sequelize,
     modelName: 'AtendenteMeta',

@@ -8,7 +8,6 @@ module.exports = (sequelize, DataTypes) => {
       AtendentePremiacao.belongsTo(models.Tenant, { foreignKey: 'tenantId', as: 'tenant' });
       AtendentePremiacao.belongsTo(models.Atendente, { foreignKey: 'atendenteId', as: 'atendente' });
       AtendentePremiacao.belongsTo(models.AtendenteMeta, { foreignKey: 'atendenteMetaId', as: 'meta' });
-      AtendentePremiacao.belongsTo(models.Recompensa, { foreignKey: 'recompensaId', as: 'recompensa' });
     }
   }
   AtendentePremiacao.init({
@@ -29,8 +28,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       allowNull: false
     },
-    recompensaId: {
-      type: DataTypes.UUID,
+    descricao_premio: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    valor_premio: {
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false
     },
     dateAwarded: {

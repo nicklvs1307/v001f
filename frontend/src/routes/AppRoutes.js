@@ -40,6 +40,7 @@ const CampaignDetailsPage = React.lazy(() => import('../pages/CampaignDetailsPag
 const ClientsPage = React.lazy(() => import('../pages/ClientsPage'));
 const AttendantsPage = React.lazy(() => import('../pages/AttendantsPage'));
 const AttendantGoalsPage = React.lazy(() => import('../pages/AttendantGoalsPage'));
+const AttendantGoalDetailsPage = React.lazy(() => import('../pages/AttendantGoalDetailsPage')); // Nova página
 const GMBConfigsPage = React.lazy(() => import('../pages/GMBConfigsPage'));
 const GMBReviewsPage = React.lazy(() => import('../pages/GMBReviewsPage'));
 const RoletasPage = React.lazy(() => import('../pages/RoletasPage'));
@@ -150,6 +151,7 @@ const AppRoutes = () => {
             <Route path="clientes/dashboard" element={<ClientDashboardPage />} />
             <Route path="atendentes" element={<AttendantsPage />} />
             <Route path="metas-atendentes" element={<AttendantGoalsPage />} />
+            <Route path="metas-atendentes/:atendenteId" element={<AttendantGoalDetailsPage />} /> {/* Nova Rota de Detalhes */}
             <Route path="atendentes-dashboard" element={<AtendenteDashboardPage />} />
             <Route path="resultados" element={<ResultsOverviewPage />} />
 

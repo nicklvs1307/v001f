@@ -153,4 +153,23 @@ const awardProcessorJob = async () => {
     console.log('Job de processamento de premiações finalizado.');
 };
 
-// module.exports = awardProcessorJob;
+const awardProcessingTask = cron.schedule(
+    '0 1 * * *', // Todos os dias à 1h da manhã
+    awardProcessorJob,
+    {
+        scheduled: false,
+        timezone: 'America/Sao_Paulo'
+    }
+);
+
+module.exports = {
+  start: () => {
+    console.log("Agendador de processamento de premiações iniciado. A tarefa será executada todo dia à 1h.");
+    awardProcessingTask.start();
+  },
+  stop: () => {
+    console.log("Agendador de processamento de premiações parado.");
+    awardProcessingTask.stop();
+  },
+};
+

@@ -7,7 +7,6 @@ process.on("unhandledRejection", (reason, promise) => {
 });
 
 const express = require("express");
-const cron = require("node-cron"); // Importar o módulo cron
 const cors = require("cors");
 const helmet = require("helmet");
 const config = require("./config");
@@ -96,13 +95,7 @@ const startServer = async () => {
     initSenderMonitorJob();
     initWarmingUpProgressJob();
     initCampaignMonitorJob();
-
-    // Iniciar o job de processamento de premiações (diariamente à 1h da manhã)
-    // Para testes, pode-se usar '* * * * *' para a cada minuto
-    cron.schedule('0 1 * * *', awardProcessorJob, {
-        scheduled: true,
-        timezone: 'America/Sao_Paulo' // Pode ser configurável
-    });
+    awardProcessorJob.start(); // Iniciar o novo job de premiações
 
     // Instanciar dependências e inicializar agendamentos de campanha
     const CampanhaService = require("./services/campanhaService");

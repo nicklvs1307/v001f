@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       AtendenteMeta.belongsTo(models.Atendente, { foreignKey: 'atendenteId', as: 'atendente' });
       AtendenteMeta.belongsTo(models.Tenant, { foreignKey: 'tenantId', as: 'tenant' });
+      AtendenteMeta.belongsTo(models.Recompensa, { foreignKey: 'recompensaId', as: 'recompensa', allowNull: true });
     }
   }
   AtendenteMeta.init({
@@ -39,6 +40,15 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 0,
     },
+    recompensaId: {
+      type: DataTypes.UUID,
+      allowNull: true
+    },
+    period: {
+      type: DataTypes.ENUM('DIARIO', 'SEMANAL', 'MENSAL'),
+      allowNull: false,
+      defaultValue: 'MENSAL'
+    }
   }, {
     sequelize,
     modelName: 'AtendenteMeta',

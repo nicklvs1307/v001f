@@ -18,6 +18,13 @@ import {
 } from '@mui/material';
 import atendenteService from '../services/atendenteService';
 import atendenteMetaService from '../services/atendenteMetaService';
+import recompensaService from '../services/recompensaService'; // Importar recompensaService
+import {
+  FormControl, // Adicionar FormControl
+  InputLabel,   // Adicionar InputLabel
+  Select,      // Adicionar Select
+  MenuItem,    // Adicionar MenuItem
+} from '@mui/material'; // Adicionar componentes de formulário
 
 const AtendenteMetasPage = () => {
   const [atendentes, setAtendentes] = useState([]);
@@ -27,6 +34,7 @@ const AtendenteMetasPage = () => {
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState('');
+  const [recompensas, setRecompensas] = useState([]); // Novo estado para recompensas
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,6 +51,11 @@ const AtendenteMetasPage = () => {
           return acc;
         }, {});
         setMetas(metasMap);
+
+        // Buscar recompensas
+        const fetchedRecompensas = await recompensaService.getAll();
+        setRecompensas(fetchedRecompensas);
+
       } catch (err) {
         setError(err.message || 'Falha ao carregar dados de atendentes e metas.');
       } finally {
@@ -58,7 +71,7 @@ const AtendenteMetasPage = () => {
       ...prevMetas,
       [atendenteId]: {
         ...prevMetas[atendenteId],
-        atendenteId: atendenteId, // Garante que o atendenteId esteja presente
+        atendenteId: atendenteId,
         [field]: value,
       },
     }));
@@ -73,8 +86,19 @@ const AtendenteMetasPage = () => {
       if (!metaData || (!metaData.npsGoal && !metaData.responsesGoal && !metaData.registrationsGoal)) {
         throw new Error("Preencha ao menos uma meta para salvar.");
       }
+      // Certificar que recompensaId é null se for uma string vazia
+      if (metaData.recompensaId === '') {
+        metaData.recompensaId = null;
+      }
       await atendenteMetaService.createOrUpdateMeta(atendenteId, metaData);
       setSaveSuccess(true);
+      // Após salvar, buscar as metas novamente para garantir que os dados de recompensa e período estão atualizados
+      const fetchedMetas = await atendenteMetaService.getAllMetasByTenant();
+      const metasMap = fetchedMetas.reduce((acc, meta) => {
+        acc[meta.atendenteId] = meta;
+        return acc;
+      }, {});
+      setMetas(metasMap);
     } catch (err) {
       setSaveError(err.message || 'Erro ao salvar meta.');
     } finally {
@@ -115,8 +139,12 @@ const AtendenteMetasPage = () => {
               <TableRow>
                 <TableCell>Atendente</TableCell>
                 <TableCell>Meta NPS</TableCell>
+                <TableCell>Prêmio NPS</TableCell>
                 <TableCell>Meta Respostas</TableCell>
+                <TableCell>Prêmio Respostas</TableCell>
                 <TableCell>Meta Cadastros</TableCell>
+                <TableCell>Prêmio Cadastros</TableCell>
+                <TableCell>Período de Apuração</TableCell>
                 <TableCell>Ações</TableCell>
               </TableRow>
             </TableHead>
@@ -135,6 +163,21 @@ const AtendenteMetasPage = () => {
                       />
                     </TableCell>
                     <TableCell>
+                      <FormControl size="small" fullWidth>
+                        <InputLabel>Prêmio</InputLabel>
+                        <Select
+                          value={metas[atendente.id]?.recompensaId || ''}
+                          label="Prêmio"
+                          onChange={(e) => handleMetaChange(atendente.id, 'recompensaId', e.target.value)}
+                        >
+                          <MenuItem value="">Nenhum</MenuItem>
+                          {recompensas.map((r) => (
+                            <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </TableCell>
+                    <TableCell>
                       <TextField
                         type="number"
                         size="small"
@@ -143,12 +186,56 @@ const AtendenteMetasPage = () => {
                       />
                     </TableCell>
                     <TableCell>
+                      <FormControl size="small" fullWidth>
+                        <InputLabel>Prêmio</InputLabel>
+                        <Select
+                          value={metas[atendente.id]?.recompensaId || ''} // Usando o mesmo recompensaId para todas as metas por simplicidade
+                          label="Prêmio"
+                          onChange={(e) => handleMetaChange(atendente.id, 'recompensaId', e.target.value)}
+                        >
+                          <MenuItem value="">Nenhum</MenuItem>
+                          {recompensas.map((r) => (
+                            <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </TableCell>
+                    <TableCell>
                       <TextField
                         type="number"
                         size="small"
                         value={metas[atendente.id]?.registrationsGoal || ''}
                         onChange={(e) => handleMetaChange(atendente.id, 'registrationsGoal', e.target.value)}
                       />
+                    </TableCell>
+                    <TableCell>
+                      <FormControl size="small" fullWidth>
+                        <InputLabel>Prêmio</InputLabel>
+                        <Select
+                          value={metas[atendente.id]?.recompensaId || ''} // Usando o mesmo recompensaId para todas as metas por simplicidade
+                          label="Prêmio"
+                          onChange={(e) => handleMetaChange(atendente.id, 'recompensaId', e.target.value)}
+                        >
+                          <MenuItem value="">Nenhum</MenuItem>
+                          {recompensas.map((r) => (
+                            <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </TableCell>
+                    <TableCell>
+                      <FormControl size="small" fullWidth>
+                        <InputLabel>Período</InputLabel>
+                        <Select
+                          value={metas[atendente.id]?.period || 'MENSAL'}
+                          label="Período"
+                          onChange={(e) => handleMetaChange(atendente.id, 'period', e.target.value)}
+                        >
+                          <MenuItem value="DIARIO">Diário</MenuItem>
+                          <MenuItem value="SEMANAL">Semanal</MenuItem>
+                          <MenuItem value="MENSAL">Mensal</MenuItem>
+                        </Select>
+                      </FormControl>
                     </TableCell>
                     <TableCell>
                       <Button
@@ -164,7 +251,7 @@ const AtendenteMetasPage = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} align="center">Nenhum atendente encontrado.</TableCell>
+                  <TableCell colSpan={9} align="center">Nenhum atendente encontrado.</TableCell>
                 </TableRow>
               )}
             </TableBody>

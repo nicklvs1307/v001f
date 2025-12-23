@@ -80,12 +80,17 @@ const CupomListPage = () => {
     }
   }, []);
 
-  const debouncedFetch = useCallback(debounce(fetchCupons, 500), [fetchCupons]);
+  const debouncedFetch = useCallback(debounce(fetchCupons, 500), []);
 
   useEffect(() => {
     debouncedFetch(filters);
+    // A busca de recompensas não precisa ser refeita a cada filtro
+    // A menos que as recompensas mudem com frequência, pode ser carregado uma vez
+  }, [filters]);
+
+  useEffect(() => {
     fetchRecompensas();
-  }, [filters, debouncedFetch]);
+  }, []);
 
   const fetchRecompensas = async () => {
     try {

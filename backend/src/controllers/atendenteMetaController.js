@@ -8,7 +8,7 @@ const atendenteMetaController = {
   // @access  Private (Super Admin, Admin)
   createOrUpdateMeta: asyncHandler(async (req, res) => {
     const { atendenteId } = req.params;
-    const { npsGoal, responsesGoal, registrationsGoal } = req.body;
+    const { npsGoal, responsesGoal, registrationsGoal, recompensaId, period } = req.body;
     const requestingUser = req.user;
 
     if (!atendenteId) {
@@ -24,7 +24,7 @@ const atendenteMetaController = {
       throw new ApiError(400, "Tenant ID é obrigatório para definir metas.");
     }
 
-    const metaData = { npsGoal, responsesGoal, registrationsGoal };
+    const metaData = { npsGoal, responsesGoal, registrationsGoal, recompensaId, period };
 
     const meta = await atendenteMetaRepository.createOrUpdateMeta(
       atendenteId,

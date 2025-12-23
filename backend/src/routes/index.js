@@ -30,6 +30,7 @@ const whatsappWebhookRoutes = require("./whatsappWebhookRoutes");
 const roletaAdminRoutes = require("./roletaAdminRoutes");
 const automationRoutes = require("./automationRoutes");
 const aiRoutes = require("./aiRoutes"); // Import the new AI routes
+const premiacaoController = require("../controllers/premiacaoController"); // Importar o novo controller
 
 // Super Admin Routes
 const superadminRoutes = require("./superadminRoutes");
@@ -75,4 +76,5 @@ module.exports = (router) => {
   router.use("/roletas", roletaAdminRoutes);
   router.use("/automations", automationRoutes);
   router.use("/ai", aiRoutes); // Register AI routes
+  router.get("/premiacoes", premiacaoController.getAllPremiacoes); // Adicionar rota para premiações
 };

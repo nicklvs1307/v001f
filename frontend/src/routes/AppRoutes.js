@@ -66,6 +66,8 @@ const ComparativoPesquisaPage = React.lazy(() => import('../pages/Geral/Comparat
 const EvolucaoPage = React.lazy(() => import('../pages/Geral/EvolucaoPage'));
 const BenchmarkingPage = React.lazy(() => import('../pages/Geral/BenchmarkingPage'));
 const NuvemDePalavrasPage = React.lazy(() => import('../pages/Geral/NuvemDePalavrasPage'));
+const PremiacaoHistoricoPage = React.lazy(() => import('../pages/PremiacaoHistoricoPage')); // Novo componente
+
 const SenderPoolPage = React.lazy(() => import('../pages/SenderPoolPage'));
 const SenderConnectPage = React.lazy(() => import('../pages/SenderConnectPage'));
 const SystemReportsPage = React.lazy(() => import('../pages/SystemReportsPage'));
@@ -176,6 +178,7 @@ const AppRoutes = () => {
             <Route path="geral/evolucao" element={<EvolucaoPage />} />
             <Route path="geral/benchmarking" element={<BenchmarkingPage />} />
             <Route path="geral/nuvem-de-palavras" element={<NuvemDePalavrasPage />} />
+            <Route path="premiacoes/historico" element={<PremiacaoHistoricoPage />} /> {/* Nova rota de histórico de premiações */}
           </Route>
         </Route>
 

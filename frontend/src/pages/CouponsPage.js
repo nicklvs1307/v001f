@@ -42,7 +42,6 @@ import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import cupomService from '../services/cupomService';
 import recompensaService from '../services/recompensaService';
-import { debounce } from 'lodash';
 import { formatDateForDisplay } from '../utils/dateUtils';
 
 const CupomListPage = () => {
@@ -58,6 +57,10 @@ const CupomListPage = () => {
   });
   const [selectedCupom, setSelectedCupom] = useState(null);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  
+  // Estado para o valor do input de busca, separado dos filtros da API
+  const [searchTerm, setSearchTerm] = useState('');
+  
   const [filters, setFilters] = useState({
     search: '',
     status: '',
@@ -80,30 +83,41 @@ const CupomListPage = () => {
     }
   }, []);
 
-  const debouncedFetch = useCallback(debounce(fetchCupons, 500), []);
+  // Efeito para aplicar o debounce na busca
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setFilters((prev) => ({ ...prev, search: searchTerm }));
+    }, 500); // 500ms de delay
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [searchTerm]);
+
+  // Efeito para buscar os dados quando os filtros (exceto o search) mudam
+  useEffect(() => {
+    fetchCupons(filters);
+  }, [filters, fetchCupons]);
 
   useEffect(() => {
-    debouncedFetch(filters);
-    // A busca de recompensas não precisa ser refeita a cada filtro
-    // A menos que as recompensas mudem com frequência, pode ser carregado uma vez
-  }, [filters]);
-
-  useEffect(() => {
+    const fetchRecompensas = async () => {
+      try {
+        const data = await recompensaService.getAll();
+        setRecompensas(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error('Erro ao buscar recompensas:', err);
+      }
+    };
     fetchRecompensas();
   }, []);
 
-  const fetchRecompensas = async () => {
-    try {
-      const data = await recompensaService.getAll();
-      setRecompensas(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error('Erro ao buscar recompensas:', err);
-    }
-  };
-
-  const handleFilterChange = (e) => {
+  const handleNonSearchFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+  
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
   };
 
   const handleDateChange = (name, date) => {
@@ -111,6 +125,7 @@ const CupomListPage = () => {
   };
 
   const handleClearFilters = () => {
+    setSearchTerm('');
     setFilters({
       search: '',
       status: '',
@@ -215,7 +230,8 @@ const CupomListPage = () => {
     setNotification({ ...notification, open: false });
   };
 
-  if (loading) {
+  // O loading principal agora é mais sobre a busca inicial
+  if (loading && cupons.length === 0) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
         <CircularProgress />
@@ -253,8 +269,8 @@ const CupomListPage = () => {
               fullWidth
               label="Pesquisar por prêmio ou cliente"
               name="search"
-              value={filters.search}
-              onChange={handleFilterChange}
+              value={searchTerm}
+              onChange={handleSearchChange}
               variant="outlined"
               size="small"
             />
@@ -265,7 +281,7 @@ const CupomListPage = () => {
               <Select
                 name="status"
                 value={filters.status}
-                onChange={handleFilterChange}
+                onChange={handleNonSearchFilterChange}
                 label="Status"
               >
                 <MenuItem value="">Todos</MenuItem>
@@ -282,7 +298,7 @@ const CupomListPage = () => {
               <Select
                 name="recompensaId"
                 value={filters.recompensaId}
-                onChange={handleFilterChange}
+                onChange={handleNonSearchFilterChange}
                 label="Recompensa"
               >
                 <MenuItem value="">Todas</MenuItem>
@@ -334,7 +350,14 @@ const CupomListPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {cupons.map((cupom) => (
+              {loading && (
+                <TableRow>
+                  <TableCell colSpan={6} align="center">
+                    <CircularProgress size={24} />
+                  </TableCell>
+                </TableRow>
+              )}
+              {!loading && cupons.map((cupom) => (
                 <TableRow 
                   key={cupom.id} 
                   onClick={() => handleRowClick(cupom)} 
@@ -349,6 +372,11 @@ const CupomListPage = () => {
                   <TableCell>{getStatusChip(cupom.status)}</TableCell>
                 </TableRow>
               ))}
+              {!loading && cupons.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={6} align="center">Nenhum cupom encontrado.</TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>

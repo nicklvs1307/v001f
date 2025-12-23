@@ -49,4 +49,22 @@ router
     atendenteController.deleteAtendente,
   );
 
+// Rota para buscar o histórico de premiações de um atendente
+router.get(
+  "/:id/premiacoes",
+  [check("id", "ID do atendente inválido").isUUID().not().isEmpty()],
+  validate,
+  authorize("atendentes:read"),
+  atendenteController.getAtendentePremiacoes,
+);
+
+// Rota para buscar a performance atual de um atendente
+router.get(
+  "/:id/performance",
+  [check("id", "ID do atendente inválido").isUUID().not().isEmpty()],
+  validate,
+  authorize("atendentes:read"),
+  atendenteController.getAtendentePerformance,
+);
+
 module.exports = router;

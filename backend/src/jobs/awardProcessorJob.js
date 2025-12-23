@@ -83,18 +83,20 @@ const awardProcessorJob = async () => {
                 }
             }
 
-            // 2. Meta de Respostas
+            // 2. Meta de Pesquisas Respondidas
             if (responsesGoal && respostas_premio_valor > 0) {
                 // Cálculo proporcional
                 const diasNoPeriodo = period === 'MENSAL' ? getDaysInMonth(startDate) : (period === 'SEMANAL' ? 7 : 1);
                 const metaProporcional = Math.ceil((responsesGoal / (dias_trabalhados || 22)) * diasNoPeriodo);
 
-                const totalRespostas = await Resposta.count({
+                const totalPesquisas = await Resposta.count({
+                    distinct: true,
+                    col: 'pesquisaId',
                     where: { atendenteId: atendente.id, createdAt: { [Op.between]: [startUtc, endUtc] } }
                 });
 
-                if (totalRespostas >= metaProporcional) {
-                    await registrarPremiacao(meta, 'Respostas', totalRespostas, respostas_premio_valor, startUtc);
+                if (totalPesquisas >= metaProporcional) {
+                    await registrarPremiacao(meta, 'Pesquisas', totalPesquisas, respostas_premio_valor, startUtc);
                 }
             }
 

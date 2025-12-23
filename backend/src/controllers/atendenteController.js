@@ -172,6 +172,40 @@ const atendenteController = {
 
     res.status(200).json({ message: "Atendente deletado com sucesso." });
   }),
+
+  getAtendentePremiacoes: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const requestingUser = req.user;
+    const tenantId =
+      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+
+    // Primeiro, verifique se o atendente existe e pertence ao tenant correto
+    const atendente = await atendenteRepository.getAtendenteById(id, tenantId);
+    if (!atendente) {
+      throw new ApiError(404, "Atendente não encontrado.");
+    }
+    
+    const premiacoes = await atendenteRepository.findPremiacoesByAtendenteId(id, atendente.tenantId);
+
+    res.status(200).json(premiacoes);
+  }),
+
+  getAtendentePerformance: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const requestingUser = req.user;
+    const tenantId =
+      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+
+    const atendente = await atendenteRepository.getAtendenteById(id, tenantId);
+    if (!atendente) {
+      throw new ApiError(404, "Atendente não encontrado.");
+    }
+
+    // Busca a performance do mês atual
+    const performance = await atendenteRepository.findAtendentePerformanceById(id, atendente.tenantId);
+
+    res.status(200).json(performance);
+  }),
 };
 
 module.exports = atendenteController;

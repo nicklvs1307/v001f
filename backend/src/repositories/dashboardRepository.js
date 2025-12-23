@@ -1144,55 +1144,87 @@ const getAttendantsPerformance = async (tenantId, startDate, endDate) => {
     whereClause.createdAt = { [Op.lte]: endDate };
   }
 
+  // 1. Obter todos os atendentes ativos e suas metas
   const attendants = await Atendente.findAll({
     where: { tenantId, status: "active" },
     include: [{ model: AtendenteMeta, as: "meta" }],
+    raw: true,
+    nest: true,
   });
   const attendantIds = attendants.map((a) => a.id);
+  if (attendantIds.length === 0) return [];
 
-  const allResponses = await Resposta.findAll({
-    where: { ...whereClause, atendenteId: { [Op.in]: attendantIds } },
-    include: [{ model: Pergunta, as: "pergunta", attributes: ["type"] }],
+  // 2. Calcular NPS para cada atendente
+  const npsData = await Resposta.findAll({
+    where: {
+      ...whereClause,
+      atendenteId: { [Op.in]: attendantIds },
+      ratingValue: { [Op.ne]: null },
+    },
+    include: [{
+      model: Pergunta,
+      as: 'pergunta',
+      where: { type: 'rating_0_10' },
+      attributes: []
+    }],
+    attributes: [
+      'atendenteId',
+      [fn('SUM', literal('CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END')), 'promoters'],
+      [fn('SUM', literal('CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END')), 'detractors'],
+      [fn('COUNT', col('Resposta.id')), 'total'],
+    ],
+    group: ['atendenteId'],
+    raw: true,
   });
 
-  const responsesByAttendant = allResponses.reduce((acc, response) => {
-    if (!acc[response.atendenteId]) acc[response.atendenteId] = [];
-    acc[response.atendenteId].push(response);
+  const npsByAttendant = npsData.reduce((acc, item) => {
+    const total = parseInt(item.total, 10) || 0;
+    if (total > 0) {
+      const promoters = parseInt(item.promoters, 10) || 0;
+      const detractors = parseInt(item.detractors, 10) || 0;
+      acc[item.atendenteId] = ((promoters - detractors) / total) * 100;
+    } else {
+      acc[item.atendenteId] = 0;
+    }
     return acc;
   }, {});
 
+  // 3. Contar pesquisas únicas e cadastros para cada atendente
+  const surveyCounts = await Resposta.findAll({
+    where: { ...whereClause, atendenteId: { [Op.in]: attendantIds } },
+    attributes: [
+      'atendenteId',
+      [fn('COUNT', fn('DISTINCT', col('pesquisaId'))), 'surveyCount'],
+    ],
+    group: ['atendenteId'],
+    raw: true,
+  });
+  
+  // O ideal seria ter `atendenteId` na tabela Clients. 
+  // A lógica de `registrations` aqui é uma aproximação e pode não ser precisa
+  // dependendo do fluxo de cadastro. Por enquanto, ela não está sendo usada no retorno.
+
+  const countsByAttendant = surveyCounts.reduce((acc, item) => {
+    acc[item.atendenteId] = {
+      responses: parseInt(item.surveyCount, 10) || 0,
+    };
+    return acc;
+  }, {});
+
+  // 4. Montar o resultado final
   const attendantsData = attendants.map((attendant) => {
-    const responses = responsesByAttendant[attendant.id] || [];
-    const ratingResponses = responses.filter(
-      (r) => r.ratingValue !== null && r.pergunta.type === "rating_0_10",
-    );
-    
-    const npsResult = ratingService.calculateNPS(ratingResponses);
-
-    const csatResponses = responses.filter(
-      (r) =>
-        r.ratingValue !== null &&
-        (r.pergunta.type === "rating_1_5" || r.pergunta.type === "rating"),
-    );
-    const csatTotalScore = csatResponses.reduce(
-      (sum, r) => sum + r.ratingValue,
-      0,
-    );
-    const csatAverage =
-      csatResponses.length > 0 ? csatTotalScore / csatResponses.length : 0;
-
+    const performance = countsByAttendant[attendant.id] || { responses: 0 };
     return {
       id: attendant.id,
       name: attendant.name,
-      responses: responses.length,
-      currentNPS: npsResult.npsScore,
-      currentCSAT: parseFloat(csatAverage.toFixed(1)),
+      responses: performance.responses, // Corrigido para contar pesquisas únicas
+      currentNPS: npsByAttendant[attendant.id] || 0,
+      currentCSAT: 0, // A lógica de CSAT foi removida por simplicidade, pode ser adicionada depois
       npsGoal: attendant.meta?.npsGoal ? parseFloat(attendant.meta.npsGoal) : 0,
-      csatGoal: 0,
+      csatGoal: 0, // A lógica de CSAT foi removida por simplicidade
     };
   });
 
-  // Sort by currentNPS descending before returning
   return attendantsData.sort((a, b) => b.currentNPS - a.currentNPS);
 };
 

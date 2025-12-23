@@ -76,7 +76,7 @@ const AttendantGoalsPage = () => {
               <TableRow>
                 <TableCell>Atendente</TableCell>
                 <TableCell align="center">NPS Atual</TableCell>
-                <TableCell align="center">Total de Respostas (Mês)</TableCell>
+                <TableCell align="center">Pesquisas Respondidas (Mês)</TableCell>
                 <TableCell align="center">Total de Cadastros (Mês)</TableCell>
                 <TableCell align="center">Configurar</TableCell>
               </TableRow>

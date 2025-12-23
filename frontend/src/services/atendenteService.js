@@ -33,6 +33,16 @@ const atendenteService = {
     const response = await apiAuthenticated.delete(`${ATENDENTE_API_URL}/${id}`);
     return response.data;
   },
+
+  getAtendentePremiacoes: async (id) => {
+    const response = await apiAuthenticated.get(`${ATENDENTE_API_URL}/${id}/premiacoes`);
+    return response.data;
+  },
+
+  getAtendentePerformance: async (id) => {
+    const response = await apiAuthenticated.get(`${ATENDENTE_API_URL}/${id}/performance`);
+    return response.data;
+  },
 };
 
 export default atendenteService;

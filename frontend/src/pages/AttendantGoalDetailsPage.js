@@ -13,11 +13,20 @@ import {
   Tabs,
   Tab,
   Tooltip,
-  IconButton
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  LinearProgress,
+  Divider,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import atendenteService from '../services/atendenteService';
 import atendenteMetaService from '../services/atendenteMetaService';
+import { format } from 'date-fns';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -38,6 +47,30 @@ function TabPanel(props) {
   );
 }
 
+const PerformanceMetric = ({ title, currentValue, goalValue }) => {
+  const goal = parseFloat(goalValue) || 0;
+  const current = parseFloat(currentValue) || 0;
+  const progress = goal > 0 ? (current / goal) * 100 : 0;
+  const isGoalReached = current >= goal;
+
+  return (
+    <Box sx={{ mb: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+        <Typography variant="body1" fontWeight="medium">{title}</Typography>
+        <Typography variant="body1" color={isGoalReached ? 'success.main' : 'text.secondary'}>
+          {current.toFixed(0)} / {goal.toFixed(0)}
+        </Typography>
+      </Box>
+      <LinearProgress 
+        variant="determinate" 
+        value={progress > 100 ? 100 : progress}
+        color={isGoalReached ? 'success' : 'primary'}
+        sx={{ height: 10, borderRadius: 5 }}
+      />
+    </Box>
+  );
+};
+
 const AttendantGoalDetailsPage = () => {
   const { atendenteId } = useParams();
   const navigate = useNavigate();
@@ -50,6 +83,14 @@ const AttendantGoalDetailsPage = () => {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [tabValue, setTabValue] = useState(0);
 
+  const [historico, setHistorico] = useState([]);
+  const [historicoLoading, setHistoricoLoading] = useState(false);
+  const [historicoError, setHistoricoError] = useState('');
+  
+  const [performance, setPerformance] = useState(null);
+  const [performanceLoading, setPerformanceLoading] = useState(false);
+  const [performanceError, setPerformanceError] = useState('');
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -60,7 +101,7 @@ const AttendantGoalDetailsPage = () => {
           atendenteMetaService.getMetaByAtendenteId(atendenteId)
         ]);
         setAtendente(fetchedAtendente);
-        setMeta(fetchedMeta || { // Inicializa com valores padrão se não houver meta
+        setMeta(fetchedMeta || {
             npsGoal: '',
             responsesGoal: '',
             registrationsGoal: '',
@@ -71,9 +112,7 @@ const AttendantGoalDetailsPage = () => {
             cadastros_premio_valor: '',
         });
       } catch (err) {
-        // Se a meta não for encontrada (404), não é um erro fatal
         if (err.response && err.response.status === 404) {
-          // A meta será inicializada com valores padrão
         } else {
           setError(err.message || 'Falha ao carregar dados do atendente.');
         }
@@ -84,6 +123,35 @@ const AttendantGoalDetailsPage = () => {
 
     fetchData();
   }, [atendenteId]);
+
+  useEffect(() => {
+    const fetchTabData = async () => {
+      if (tabValue === 1) { // Aba de Acompanhamento
+        try {
+          setPerformanceLoading(true);
+          setPerformanceError('');
+          const data = await atendenteService.getAtendentePerformance(atendenteId);
+          setPerformance(data);
+        } catch (err) {
+          setPerformanceError(err.message || 'Falha ao carregar performance.');
+        } finally {
+          setPerformanceLoading(false);
+        }
+      } else if (tabValue === 2) { // Aba de Histórico de Prêmios
+        try {
+          setHistoricoLoading(true);
+          setHistoricoError('');
+          const data = await atendenteService.getAtendentePremiacoes(atendenteId);
+          setHistorico(data);
+        } catch (err) {
+          setHistoricoError(err.message || 'Falha ao carregar histórico.');
+        } finally {
+          setHistoricoLoading(false);
+        }
+      }
+    };
+    fetchTabData();
+  }, [tabValue, atendenteId]);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -115,7 +183,7 @@ const AttendantGoalDetailsPage = () => {
     return <Container sx={{ textAlign: 'center', mt: 4 }}><CircularProgress /></Container>;
   }
 
-  if (error && !atendente) { // Só mostra erro fatal se não conseguir carregar o atendente
+  if (error && !atendente) {
     return <Container sx={{ mt: 4 }}><Alert severity="error">{error}</Alert></Container>;
   }
 
@@ -136,8 +204,8 @@ const AttendantGoalDetailsPage = () => {
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={tabValue} onChange={handleTabChange} aria-label="abas de detalhes do atendente">
             <Tab label="Configuração de Metas" />
-            <Tab label="Acompanhamento" disabled />
-            <Tab label="Histórico de Prêmios" disabled />
+            <Tab label="Acompanhamento" />
+            <Tab label="Histórico de Prêmios" />
           </Tabs>
         </Box>
         
@@ -182,13 +250,13 @@ const AttendantGoalDetailsPage = () => {
               </Grid>
             </Grid>
 
-            <Typography variant="h6" gutterBottom>Meta de Respostas</Typography>
+            <Typography variant="h6" gutterBottom>Meta de Pesquisas</Typography>
             <Grid container spacing={3} sx={{ mb: 4 }}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
                   type="number"
-                  label="Meta de Total de Respostas"
+                  label="Meta de Pesquisas Respondidas"
                   name="responsesGoal"
                   value={meta.responsesGoal || ''}
                   onChange={handleMetaChange}
@@ -219,6 +287,58 @@ const AttendantGoalDetailsPage = () => {
               </Button>
             </Box>
           </Box>
+        </TabPanel>
+        <TabPanel value={tabValue} index={1}>
+          {performanceLoading && <CircularProgress />}
+          {performanceError && <Alert severity="error">{performanceError}</Alert>}
+          {performance && (
+            <Box>
+              <Typography variant="h6" gutterBottom>Performance do Mês Atual</Typography>
+              <Divider sx={{ mb: 2 }} />
+              <PerformanceMetric 
+                title="NPS"
+                currentValue={performance.currentNPS}
+                goalValue={meta.npsGoal}
+              />
+              <PerformanceMetric 
+                title="Pesquisas Respondidas"
+                currentValue={performance.surveysResponded}
+                goalValue={meta.responsesGoal}
+              />
+            </Box>
+          )}
+        </TabPanel>
+        <TabPanel value={tabValue} index={2}>
+          {historicoLoading && <CircularProgress />}
+          {historicoError && <Alert severity="error">{historicoError}</Alert>}
+          {!historicoLoading && !historicoError && (
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Data</TableCell>
+                    <TableCell>Descrição do Prêmio</TableCell>
+                    <TableCell align="right">Valor (R$)</TableCell>
+                    <TableCell align="right">Métrica Atingida</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {historico.length > 0 ? historico.map((premio) => (
+                    <TableRow key={premio.id}>
+                      <TableCell>{format(new Date(premio.dateAwarded), 'dd/MM/yyyy')}</TableCell>
+                      <TableCell>{premio.descricao_premio}</TableCell>
+                      <TableCell align="right">{parseFloat(premio.valor_premio).toFixed(2)}</TableCell>
+                      <TableCell align="right">{parseFloat(premio.metricValueAchieved).toFixed(0)}</TableCell>
+                    </TableRow>
+                  )) : (
+                    <TableRow>
+                      <TableCell colSpan={4} align="center">Nenhum prêmio encontrado no histórico.</TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </TabPanel>
       </Paper>
     </Container>

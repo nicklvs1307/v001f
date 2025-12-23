@@ -5,36 +5,46 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     const transaction = await queryInterface.sequelize.transaction();
     try {
+      const addColumnIfNotExists = async (tableName, columnName, definition) => {
+        const table = await queryInterface.describeTable(tableName, { transaction });
+        if (!table[columnName]) {
+          await queryInterface.addColumn(tableName, columnName, definition, { transaction });
+        }
+      };
+
+      const createTableIfNotExists = async (tableName, definition) => {
+        const tables = await queryInterface.showAllTables({ transaction });
+        if (!tables.includes(tableName)) {
+          await queryInterface.createTable(tableName, definition, { transaction });
+        }
+      };
+
       // --- Alterações na tabela 'atendente_metas' ---
-      await queryInterface.addColumn('atendente_metas', 'period', {
+      await addColumnIfNotExists('atendente_metas', 'period', {
         type: Sequelize.ENUM('DIARIO', 'SEMANAL', 'MENSAL'),
         allowNull: false,
         defaultValue: 'MENSAL'
-      }, { transaction });
-
-      await queryInterface.addColumn('atendente_metas', 'dias_trabalhados', {
+      });
+      await addColumnIfNotExists('atendente_metas', 'dias_trabalhados', {
         type: Sequelize.INTEGER,
         allowNull: true,
         defaultValue: 22
-      }, { transaction });
-
-      await queryInterface.addColumn('atendente_metas', 'nps_premio_valor', {
+      });
+      await addColumnIfNotExists('atendente_metas', 'nps_premio_valor', {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: true
-      }, { transaction });
-
-      await queryInterface.addColumn('atendente_metas', 'respostas_premio_valor', {
+      });
+      await addColumnIfNotExists('atendente_metas', 'respostas_premio_valor', {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: true
-      }, { transaction });
-      
-      await queryInterface.addColumn('atendente_metas', 'cadastros_premio_valor', {
+      });
+      await addColumnIfNotExists('atendente_metas', 'cadastros_premio_valor', {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: true
-      }, { transaction });
+      });
 
       // --- Criação da tabela 'atendente_premiacoes' ---
-      await queryInterface.createTable('atendente_premiacoes', {
+      await createTableIfNotExists('atendente_premiacoes', {
         id: {
           type: Sequelize.UUID,
           defaultValue: Sequelize.UUIDV4,
@@ -87,7 +97,7 @@ module.exports = {
           allowNull: false,
           defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
         }
-      }, { transaction });
+      });
 
       await transaction.commit();
     } catch (err) {
@@ -99,12 +109,27 @@ module.exports = {
   async down(queryInterface, Sequelize) {
     const transaction = await queryInterface.sequelize.transaction();
     try {
-      await queryInterface.dropTable('atendente_premiacoes', { transaction });
-      await queryInterface.removeColumn('atendente_metas', 'period', { transaction });
-      await queryInterface.removeColumn('atendente_metas', 'dias_trabalhados', { transaction });
-      await queryInterface.removeColumn('atendente_metas', 'nps_premio_valor', { transaction });
-      await queryInterface.removeColumn('atendente_metas', 'respostas_premio_valor', { transaction });
-      await queryInterface.removeColumn('atendente_metas', 'cadastros_premio_valor', { transaction });
+      const removeColumnIfExists = async (tableName, columnName) => {
+        const table = await queryInterface.describeTable(tableName, { transaction });
+        if (table[columnName]) {
+          await queryInterface.removeColumn(tableName, columnName, { transaction });
+        }
+      };
+
+      const dropTableIfExists = async (tableName) => {
+        const tables = await queryInterface.showAllTables({ transaction });
+        if (tables.includes(tableName)) {
+          await queryInterface.dropTable(tableName, { transaction });
+        }
+      };
+
+      await dropTableIfExists('atendente_premiacoes');
+      await removeColumnIfExists('atendente_metas', 'period');
+      await removeColumnIfExists('atendente_metas', 'dias_trabalhados');
+      await removeColumnIfExists('atendente_metas', 'nps_premio_valor');
+      await removeColumnIfExists('atendente_metas', 'respostas_premio_valor');
+      await removeColumnIfExists('atendente_metas', 'cadastros_premio_valor');
+      
       await transaction.commit();
     } catch (err) {
       await transaction.rollback();

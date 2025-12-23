@@ -1,8 +1,33 @@
-feat(automations): Implementa salvamento e teste para relatórios semanais/mensais
+﻿feat: Refatora sistema de metas e prêmios para atendentes
 
-Este commit corrige um bug onde as configurações de automação para relatórios semanais e mensais não eram salvas nem podiam ser testadas.
+Este commit refatora completamente a funcionalidade de metas e premiações, atendendo à solicitação de um sistema mais robusto, completo e com um fluxo de trabalho mais intuitivo.
 
-Modificações:
-- `backend/controllers/whatsappConfigController.js`: As funções `getInstanceConfig` e `updateInstanceConfig` foram atualizadas para carregar e salvar corretamente os dados dos relatórios semanal e mensal, que antes eram ignorados.
-- `frontend/services/automationService.js`: Adicionadas as funções `testWeeklyReport` e `testMonthlyReport` para se comunicar com os endpoints de teste do backend.
-- `frontend/components/AutomationTester/index.js`: O componente de teste foi atualizado para invocar as novas funções de serviço, habilitando o botão "Enviar Teste" para todos os tipos de relatório.
+Principais alterações:
+
+**Backend:**
+- **Schema do Banco de Dados:**
+  - tendente_metas: A coluna ecompensaId foi removida e substituída por campos específicos para prêmios em dinheiro (
+ps_premio_valor, espostas_premio_valor, cadastros_premio_valor) e um campo para dias_trabalhados.
+  - tendente_premiacoes: A tabela foi recriada para armazenar descricao_premio e alor_premio, em vez de uma referência a uma recompensa.
+- **Migrações:** As migrações anteriores foram revertidas e substituídas por uma única migração consolidada (create-attendant-award-system).
+- **Lógica de Premiação (wardProcessorJob.js):** O job foi totalmente reescrito para:
+  - Buscar metas que tenham um valor de prêmio associado.
+  - Processar cada prêmio (NPS, Respostas) de forma independente.
+  - Calcular metas de contagem (respostas) de forma proporcional aos dias trabalhados.
+  - Registrar a premiação na nova estrutura da tabela tendente_premiacoes.
+- **Controller (tendenteMetaController.js):** Atualizado para lidar com a nova estrutura de dados ao salvar as metas.
+
+**Frontend:**
+- **Refatoração da Página de Metas (AttendantGoalsPage.js):**
+  - A página foi transformada em um 
+Painel
+de
+Performance, que agora exibe uma lista de atendentes com suas métricas atuais em modo de leitura.
+  - Cada linha é clicável, redirecionando para a nova página de detalhes.
+- **Nova Página de Detalhes (AttendantGoalDetailsPage.js):**
+  - Criada a rota e o componente para /dashboard/metas-atendentes/:atendenteId.
+  - Esta página permite a configuração detalhada de metas e prêmios em dinheiro para cada métrica (NPS, Respostas), além de definir a jornada de trabalho do atendente.
+  - O layout foi preparado com abas para futuras expansões (Acompanhamento, Histórico).
+- **Roteamento (AppRoutes.js):** Atualizado para incluir a nova rota da página de detalhes.
+
+Esta refatoração cria uma base sólida e escalável para o sistema de performance e incentivo dos atendentes.

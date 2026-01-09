@@ -243,6 +243,9 @@ const getClientStatusCounts = async (
   };
 };
 
+const getSurveysRespondedChart = async (
+  tenantId = null,
+  startDate = null,
   endDate = null,
   period = "day",
 ) => {

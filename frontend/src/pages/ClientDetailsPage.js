@@ -9,12 +9,16 @@ import { formatDateForDisplay } from '../utils/dateUtils';
 import ActivityTab from '../components/clients/ActivityTab';
 import CouponsTab from '../components/clients/CouponsTab';
 
+import DashboardSummaryMetricCard from '../components/Dashboard/DashboardSummaryMetricCard';
+import { useTheme } from '@mui/material';
+
 const ClientDetailsPage = () => {
     const { id } = useParams();
     const [client, setClient] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [tabValue, setTabValue] = useState(0);
+    const theme = useTheme();
 
     useEffect(() => {
         const fetchClientDetails = async () => {
@@ -50,7 +54,7 @@ const ClientDetailsPage = () => {
     }
 
     const { name, email, phone, birthDate, stats } = client;
-    const { totalVisits, lastVisit, activeCoupons, usedCoupons, attendanceData } = stats;
+    const { totalVisits, lastVisit, activeCoupons, usedCoupons, attendanceData, totalOrders, totalSpent } = stats;
 
     return (
         <Container sx={{ mt: 4 }}>
@@ -76,6 +80,22 @@ const ClientDetailsPage = () => {
                     </Grid>
                 </Grid>
             </Paper>
+
+            <Grid container spacing={2} sx={{ mb: 4 }}>
+                <Grid item xs={12} md={4}>
+                    <DashboardSummaryMetricCard title="Total de Visitas" value={totalVisits || 0} color={theme.palette.primary.main} />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <DashboardSummaryMetricCard title="Total de Pedidos" value={totalOrders || 0} color={theme.palette.secondary.main} />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <DashboardSummaryMetricCard 
+                        title="Gasto Total" 
+                        value={new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalSpent || 0)} 
+                        color={theme.palette.success.main} 
+                    />
+                </Grid>
+            </Grid>
 
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={tabValue} onChange={handleTabChange} aria-label="client details tabs">

@@ -306,7 +306,15 @@ class ClientRepository {
           as: "respostas",
           attributes: ["createdAt"],
         },
+        {
+          model: require("../../models").DeliveryOrder,
+          as: "deliveryOrders",
+          order: [['orderDate', 'DESC']],
+        }
       ],
+      order: [
+        [{ model: require("../../models").DeliveryOrder, as: 'deliveryOrders' }, 'orderDate', 'DESC']
+      ]
     });
 
     if (!client) {
@@ -320,7 +328,7 @@ class ClientRepository {
     const activeCoupons = cupons.filter((c) => c.status === "active");
     const usedCoupons = cupons.filter((c) => c.status === "used");
 
-    // Processar visitas
+    // Processar visitas (respostas a pesquisas)
     const visits = clientJSON.respostas || [];
     const totalVisits = new Set(
       visits.map((v) => new Date(v.createdAt).toDateString()),
@@ -342,16 +350,58 @@ class ClientRepository {
       visits: attendance[month],
     }));
 
+    // Processar Pedidos de Delivery
+    const deliveryOrders = clientJSON.deliveryOrders || [];
+    const totalOrders = deliveryOrders.length;
+    const totalSpent = deliveryOrders.reduce((sum, order) => sum + parseFloat(order.totalAmount || 0), 0);
+    const lastOrders = deliveryOrders.slice(0, 5);
+
+    // Processar Preferências a partir dos pedidos
+    const productCounts = {};
+    const categoryCounts = {};
+
+    deliveryOrders.forEach(order => {
+      const payload = order.payload;
+      if (payload && Array.isArray(payload.produtos)) {
+        payload.produtos.forEach(produto => {
+          if (produto.produto) {
+            productCounts[produto.produto] = (productCounts[produto.produto] || 0) + (produto.quantidade || 1);
+          }
+          if (produto.categoria) {
+            categoryCounts[produto.categoria] = (categoryCounts[produto.categoria] || 0) + (produto.quantidade || 1);
+          }
+        });
+      }
+    });
+
+    const topProducts = Object.entries(productCounts)
+                              .sort(([,a],[,b]) => b - a)
+                              .slice(0, 5)
+                              .map(([name, count]) => ({ name, count }));
+
+    const topCategories = Object.entries(categoryCounts)
+                                .sort(([,a],[,b]) => b - a)
+                                .slice(0, 5)
+                                .map(([name, count]) => ({ name, count }));
+
     return {
       ...clientJSON,
-      cupons: undefined, // remover para não duplicar
-      respostas: undefined, // remover para não duplicar
+      cupons: undefined, 
+      respostas: undefined, 
+      deliveryOrders: undefined,
       stats: {
         totalVisits,
         lastVisit,
         activeCoupons,
         usedCoupons,
         attendanceData,
+        totalOrders,
+        totalSpent,
+        lastOrders,
+        preferences: {
+          topProducts,
+          topCategories,
+        },
       },
     };
   }

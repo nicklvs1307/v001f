@@ -22,12 +22,9 @@ import PeopleIcon from '@mui/icons-material/People';
 import GroupIcon from '@mui/icons-material/Group';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import GroupIcon from '@mui/icons-material/Group';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 import { ROLES } from '../../constants/roles';
-
-import AssessmentIcon from '@mui/icons-material/Assessment';
 
 const drawerWidth = 250;
 

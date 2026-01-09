@@ -1,11 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const franchisorController = require("../controllers/franchisorController");
-const authMiddleware = require("../middlewares/authMiddleware");
-const checkRole = require("../middlewares/checkRole");
+const { protect, authorize } = require("../middlewares/authMiddleware");
 
 // Proteger todas as rotas de franqueador com autenticação e verificação de papel
-router.use(authMiddleware, checkRole(['Franqueador']));
+router.use(protect, authorize(['Franqueador']));
 
 // Rota para o dashboard do franqueador
 router.get("/dashboard", franchisorController.getDashboard);

@@ -111,3 +111,5 @@ const ActivityTab = ({ stats }) => {
         </Box>
     );
 };
+
+export default ActivityTab;

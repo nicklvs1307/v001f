@@ -16,6 +16,7 @@ const createTenant = async (tenantData) => {
       "description",
       "createdAt",
       "updatedAt",
+      "franchisorId",
     ],
   });
   return {
@@ -27,6 +28,7 @@ const createTenant = async (tenantData) => {
     cnpj: newTenant.cnpj,
     description: newTenant.description,
     createdAt: newTenant.createdAt,
+    franchisorId: newTenant.franchisorId,
   };
 };
 
@@ -121,6 +123,10 @@ const findByName = async (name) => {
   return Tenant.findOne({ where: { name } });
 };
 
+const findByUaiRangoId = async (uairangoEstablishmentId) => {
+  return Tenant.findOne({ where: { uairangoEstablishmentId } });
+};
+
 module.exports = {
   createTenant,
   getTenants,
@@ -129,4 +135,6 @@ module.exports = {
   deleteTenant,
   getTenantLogoUrlById,
   findAllWithReportPhoneNumber,
+  findByName,
+  findByUaiRangoId, // Adicionar a nova função
 };

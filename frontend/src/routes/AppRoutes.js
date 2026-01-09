@@ -4,6 +4,7 @@ import { CircularProgress, Box } from '@mui/material';
 import PrivateRoute from './PrivateRoute';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import SuperAdminLayout from '../components/layout/SuperAdminLayout'; // Importar SuperAdminLayout
+import FranchisorLayout from '../components/layout/FranchisorLayout'; // Importar FranchisorLayout
 import PublicLayout from '../components/layout/PublicLayout';
 import LoginPage from '../pages/LoginPage';
 import LandingPage from '../pages/LandingPage';
@@ -18,7 +19,8 @@ import ConfirmClientPage from '../pages/ConfirmClientPage';
 import ClientIdentificationPage from '../pages/ClientIdentificationPage';
 import RoletaSpinPage from '../pages/RoletaSpinPage';
 import PrivacyPolicyPage from '../pages/PrivacyPolicyPage';
-import TermsOfServicePage from '../pages/TermsOfServicePage';
+const TermsOfServicePage = React.lazy(() => import('../pages/TermsOfServicePage'));
+const IntegrationsPage = React.lazy(() => import('../pages/IntegrationsPage')); // Adicionando a nova página
 
 // Páginas
 const DashboardPage = React.lazy(() => import('../pages/DashboardPage'));
@@ -74,6 +76,12 @@ const SenderConnectPage = React.lazy(() => import('../pages/SenderConnectPage'))
 const SystemReportsPage = React.lazy(() => import('../pages/SystemReportsPage'));
 const TenantReportsPage = React.lazy(() => import('../pages/TenantReportsPage'));
 const SuperAdminDashboardPage = React.lazy(() => import('../pages/SuperAdminDashboardPage'));
+const FranchisorDashboardPage = React.lazy(() => import('../pages/FranchisorDashboardPage'));
+const FranchiseesPage = React.lazy(() => import('../pages/FranchiseesPage'));
+const FranchisorUsersPage = React.lazy(() => import('../pages/FranchisorUsersPage'));
+const FranchisorUserFormPage = React.lazy(() => import('../pages/FranchisorUserFormPage'));
+const FranchisorTenantFormPage = React.lazy(() => import('../pages/FranchisorTenantFormPage'));
+const FranchisorReportsPage = React.lazy(() => import('../pages/FranchisorReportsPage'));
 
 const RespostasPainelPage = React.lazy(() => import('../pages/Respostas/PainelPage'));
 const RespostasGestaoPage = React.lazy(() => import('../pages/Respostas/GestaoPage'));
@@ -119,6 +127,20 @@ const AppRoutes = () => {
             <Route path="senders/:id/connect" element={<SenderConnectPage />} />
             <Route path="reports/system-overview" element={<SystemReportsPage />} />
             <Route path="reports/tenant-reports" element={<TenantReportsPage />} />
+          </Route>
+
+          {/* Painel do Franqueador */}
+          <Route path="/franchisor" element={<FranchisorLayout />}>
+            <Route index element={<FranchisorDashboardPage />} />
+            <Route path="dashboard" element={<FranchisorDashboardPage />} />
+            <Route path="franchisees" element={<FranchiseesPage />} />
+            <Route path="franchisees/new" element={<FranchisorTenantFormPage />} />
+            <Route path="franchisees/edit/:id" element={<FranchisorTenantFormPage />} />
+            <Route path="users" element={<FranchisorUsersPage />} />
+            <Route path="users/new" element={<FranchisorUserFormPage />} />
+            <Route path="users/edit/:id" element={<FranchisorUserFormPage />} />
+            <Route path="reports" element={<FranchisorReportsPage />} />
+            {/* Adicionar outras rotas do franqueador aqui, como a de gestão de franqueados */}
           </Route>
 
           {/* Painel Principal do Tenant */}
@@ -171,6 +193,7 @@ const AppRoutes = () => {
             <Route path="whatsapp/automations" element={<AutomationsPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="config" element={<GMBConfigsPage />} />
+            <Route path="integracoes" element={<IntegrationsPage />} />
             <Route path="relatorios/diario" element={<RelatorioDiario />} />
             <Route path="relatorios/semanal" element={<RelatorioSemanal />} />
             <Route path="relatorios/mensal" element={<RelatorioMensal />} />

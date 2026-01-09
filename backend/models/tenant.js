@@ -8,6 +8,8 @@ module.exports = (sequelize, DataTypes) => {
       Tenant.hasMany(models.Usuario, { foreignKey: 'tenantId', as: 'usuarios' });
       Tenant.hasMany(models.Pesquisa, { foreignKey: 'tenantId', as: 'pesquisas' });
       Tenant.hasOne(models.WhatsappConfig, { foreignKey: 'tenantId', as: 'whatsappConfig' });
+      Tenant.hasMany(models.DeliveryOrder, { foreignKey: 'tenantId', as: 'deliveryOrders' }); // Adicionar associação com DeliveryOrder
+      Tenant.belongsTo(models.Franchisor, { foreignKey: 'franchisorId', as: 'franchisor' });
     }
   }
   Tenant.init({
@@ -68,6 +70,19 @@ module.exports = (sequelize, DataTypes) => {
     gmb_link: {
       type: DataTypes.STRING,
       allowNull: true
+    },
+    uairangoEstablishmentId: { // Novo campo para o ID do estabelecimento no Uai Rango
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true,
+    },
+    franchisorId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: 'franchisors',
+        key: 'id',
+      },
     }
   }, {
     sequelize,

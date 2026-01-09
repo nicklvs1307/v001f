@@ -11,6 +11,7 @@ module.exports = {
       const superAdminRole = await queryInterface.bulkInsert('roles', [{
         id: uuidv4(),
         name: 'Super Admin',
+        key: 'super_admin',
         description: 'Usuário com acesso total ao sistema, sem restrição de tenant.',
         isSystemRole: true,
         createdAt: new Date(),
@@ -20,6 +21,7 @@ module.exports = {
       const adminRole = await queryInterface.bulkInsert('roles', [{
         id: uuidv4(),
         name: 'Admin',
+        key: 'admin',
         description: 'Administrador de um tenant específico.',
         isSystemRole: true,
         createdAt: new Date(),

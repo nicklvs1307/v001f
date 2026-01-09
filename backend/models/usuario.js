@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Usuario.belongsTo(models.Tenant, { foreignKey: 'tenantId', as: 'tenant' });
       Usuario.belongsTo(models.Role, { foreignKey: 'roleId', as: 'role' });
+      Usuario.belongsTo(models.Franchisor, { foreignKey: 'franchisorId', as: 'franchisor' });
     }
   }
   Usuario.init({
@@ -22,6 +23,14 @@ module.exports = (sequelize, DataTypes) => {
     roleId: {
       type: DataTypes.UUID,
       allowNull: false
+    },
+    franchisorId: {
+      type: DataTypes.UUID,
+      allowNull: true, // Nulo para usuários que não são de uma franqueadora
+      references: {
+        model: 'franchisors',
+        key: 'id',
+      },
     },
     name: {
       type: DataTypes.STRING,

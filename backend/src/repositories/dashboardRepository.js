@@ -23,9 +23,14 @@ const getSummary = async (
   endDate = null,
   surveyId = null,
 ) => {
-  // --- FILTROS ---
   const whereClause = {};
-  if (tenantId) whereClause.tenantId = tenantId;
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
+    }
+  }
 
   if (startDate && endDate) {
     whereClause.createdAt = { [Op.between]: [startDate, endDate] };
@@ -196,7 +201,14 @@ const getClientStatusCounts = async (
   startDate = null,
   endDate = null,
 ) => {
-  const whereClause = { tenantId };
+  const whereClause = {};
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
+    }
+  }
   if (startDate && endDate) {
     whereClause.createdAt = { [Op.between]: [startDate, endDate] };
   } else if (startDate) {
@@ -231,13 +243,17 @@ const getClientStatusCounts = async (
   };
 };
 
-const getSurveysRespondedChart = async (
-  tenantId = null,
-  startDate = null,
   endDate = null,
   period = "day",
 ) => {
-  const whereClause = tenantId ? { tenantId } : {};
+  const whereClause = {};
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
+    }
+  }
   if (startDate && endDate) {
     whereClause.createdAt = { [Op.between]: [startDate, endDate] };
   } else if (startDate) {
@@ -272,7 +288,14 @@ const getResponseChart = async (
   endDate = null,
   period = "day",
 ) => {
-  const whereClause = tenantId ? { tenantId } : {};
+  const whereClause = {};
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
+    }
+  }
   if (startDate && endDate) {
     whereClause.createdAt = { [Op.between]: [startDate, endDate] };
   } else if (startDate) {
@@ -315,7 +338,13 @@ const getFeedbacks = async (
     ]
   };
 
-  if (tenantId) sessionFilterWhereClause.tenantId = tenantId;
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      sessionFilterWhereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      sessionFilterWhereClause.tenantId = tenantId;
+    }
+  }
   if (startDate && endDate) sessionFilterWhereClause.createdAt = { [Op.between]: [startDate, endDate] };
 
   // Etapa de Pré-filtragem para classificação NPS
@@ -433,7 +462,16 @@ const getScoresByCriteria = async (
   endDate = null,
   surveyId = null,
 ) => {
-  const whereClause = { tenantId: tenantId || { [Op.ne]: null } };
+  const whereClause = {};
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
+    }
+  } else {
+    whereClause.tenantId = { [Op.ne]: null };
+  }
 
   const responseWhere = { ratingValue: { [Op.ne]: null } };
   if (tenantId) {
@@ -539,7 +577,13 @@ const getNpsDistribution = async (
   endDate = null,
 ) => {
   const whereClause = { ratingValue: { [Op.ne]: null } };
-  if (tenantId) whereClause.tenantId = tenantId;
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
+    }
+  }
 
   if (startDate && endDate) {
     whereClause.createdAt = { [Op.between]: [startDate, endDate] };
@@ -575,7 +619,13 @@ const getNpsTrendData = async (
   endDate = null,
 ) => {
   const whereClause = { ratingValue: { [Op.ne]: null } };
-  if (tenantId) whereClause.tenantId = tenantId;
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
+    }
+  }
 
   if (startDate && endDate) {
     whereClause.createdAt = { [Op.between]: [startDate, endDate] };
@@ -638,7 +688,16 @@ const getEvolutionData = async (
   startDate = null,
   endDate = null,
 ) => {
-  const whereClause = { tenantId: tenantId || { [Op.ne]: null } };
+  const whereClause = {};
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
+    }
+  } else {
+    whereClause.tenantId = { [Op.ne]: null };
+  }
   if (startDate && endDate) {
     whereClause.createdAt = { [Op.between]: [startDate, endDate] };
   } else if (startDate) {
@@ -772,7 +831,13 @@ const getConversionChartData = async (
   endDate = null,
 ) => {
   const whereClause = {};
-  if (tenantId) whereClause.tenantId = tenantId;
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
+    }
+  }
   if (startDate && endDate) {
     whereClause.createdAt = { [Op.between]: [startDate, endDate] };
   } else if (startDate) {
@@ -811,7 +876,13 @@ const getWordCloudData = async (
   const whereClause = {
     textValue: { [Op.ne]: null, [Op.ne]: "" },
   };
-  if (tenantId) whereClause.tenantId = tenantId;
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
+    }
+  }
 
   if (startDate && endDate) {
     whereClause.createdAt = { [Op.between]: [startDate, endDate] };
@@ -1050,7 +1121,13 @@ const getNpsByDayOfWeek = async (
   endDate = null,
 ) => {
   const whereClause = { ratingValue: { [Op.ne]: null } };
-  if (tenantId) whereClause.tenantId = tenantId;
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
+    }
+  }
 
   if (startDate && endDate) {
     whereClause.createdAt = { [Op.between]: [startDate, endDate] };
@@ -1135,7 +1212,14 @@ const getNpsByDayOfWeek = async (
 };
 
 const getAttendantsPerformance = async (tenantId, startDate, endDate) => {
-  const whereClause = { tenantId };
+  const whereClause = {};
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
+    }
+  }
   if (startDate && endDate) {
     whereClause.createdAt = { [Op.between]: [startDate, endDate] };
   } else if (startDate) {
@@ -1234,7 +1318,14 @@ const getAttendantDetails = async (
   startDate,
   endDate,
 ) => {
-  const whereClause = { tenantId, atendenteId: attendantId };
+  const whereClause = { atendenteId: attendantId };
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
+    }
+  }
   if (startDate && endDate) {
     whereClause.createdAt = { [Op.between]: [startDate, endDate] };
   } else if (startDate) {
@@ -1302,8 +1393,17 @@ const getAttendantDetails = async (
 };
 
 const getResponseDetails = async (tenantId, sessionId) => {
+  const whereClause = { respondentSessionId: sessionId };
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
+    }
+  }
+
   const responses = await Resposta.findAll({
-    where: { tenantId, respondentSessionId: sessionId },
+    where: whereClause,
     include: [
       {
         model: Pergunta,
@@ -1328,7 +1428,14 @@ const getResponseDetails = async (tenantId, sessionId) => {
 };
 
 const getDemographicsData = async (tenantId, startDate, endDate) => {
-  const whereClause = { tenantId };
+  const whereClause = {};
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
+    }
+  }
   const dateFilter = {};
   if (startDate) dateFilter[Op.gte] = startDate;
   if (endDate) dateFilter[Op.lte] = endDate;
@@ -1386,7 +1493,17 @@ const getDemographicsData = async (tenantId, startDate, endDate) => {
 };
 
 const getDetails = async (tenantId, startDate, endDate, category) => {
-  const where = { tenantId: tenantId || { [Op.ne]: null } };
+  const where = {};
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      where.tenantId = { [Op.in]: tenantId };
+    } else {
+      where.tenantId = tenantId;
+    }
+  } else {
+    where.tenantId = { [Op.ne]: null };
+  }
+  
   if (startDate && endDate) {
     where.createdAt = { [Op.between]: [startDate, endDate] };
   } else if (startDate) {
@@ -1713,8 +1830,17 @@ const getDashboardData = async (
 };
 
 const getTopClientsByResponses = async (tenantId, limit = 10) => {
+  const whereClause = {};
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
+    }
+  }
+
   return Client.findAll({
-    where: { tenantId },
+    where: whereClause,
     attributes: [
       'id',
       'name',
@@ -1739,7 +1865,11 @@ const getTopClientsByRedemptions = async (tenantId, limit = 10) => {
         status: 'used'
     };
     if (tenantId) {
-        whereClause.tenantId = tenantId;
+        if (Array.isArray(tenantId)) {
+            whereClause.tenantId = { [Op.in]: tenantId };
+        } else {
+            whereClause.tenantId = tenantId;
+        }
     }
 
     return Cupom.findAll({

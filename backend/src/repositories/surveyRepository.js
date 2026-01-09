@@ -425,6 +425,19 @@ const findResultsById = async (surveyId, tenantId = null) => {
   return { survey, totalResponsesCount };
 };
 
+const findActiveDefaultSurvey = async (tenantId) => {
+  // Busca uma pesquisa ativa para o tenant
+  // Pode-se adicionar lógica para priorizar surveys mais genéricas ou com 'isOpen: true'
+  return Pesquisa.findOne({
+    where: {
+      tenantId,
+      status: 'active',
+      // Talvez adicionar outras condições como isOpen: true, ou um campo 'isDefaultDeliverySurvey: true'
+    },
+    order: [['createdAt', 'DESC']], // Pega a mais recente
+  });
+};
+
 module.exports = {
   createSurvey,
   getSurveyById,
@@ -434,4 +447,5 @@ module.exports = {
   getSurveyStats,
   findAllForList,
   findResultsById,
+  findActiveDefaultSurvey, // Exportar a nova função
 };

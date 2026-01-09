@@ -9,15 +9,22 @@ const path = require("path");
 // @access  Private (Super Admin)
 exports.createTenant = asyncHandler(async (req, res) => {
   const { name, address, phone, email, cnpj, description } = req.body;
+  const requestingUser = req.user;
 
-  const newTenant = await tenantRepository.createTenant({
+  const tenantData = {
     name,
     address,
     phone,
     email,
     cnpj,
     description,
-  });
+  };
+
+  if (requestingUser.role === 'Franqueador') {
+    tenantData.franchisorId = requestingUser.franchisorId;
+  }
+
+  const newTenant = await tenantRepository.createTenant(tenantData);
 
   res.status(201).json({
     message: "Tenant criado com sucesso!",

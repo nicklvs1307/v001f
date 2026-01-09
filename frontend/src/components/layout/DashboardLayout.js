@@ -30,6 +30,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import StarsIcon from '@mui/icons-material/Stars'; // New import
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 import { ROLES } from '../../constants/roles';
@@ -174,6 +175,7 @@ const DashboardLayout = () => {
                 { text: 'Usuários do Sistema', path: '/dashboard/usuarios', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
                 { text: 'Perfil', path: '/dashboard/profile', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.GERENTE, ROLES.GARCOM] },
                 { text: 'Empresa', path: '/dashboard/config', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Integrações', icon: <IntegrationInstructionsIcon />, path: '/dashboard/integracoes', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] }, // Adicionado aqui
                 { text: 'Roletas', path: '/dashboard/roletas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
             ],
         },

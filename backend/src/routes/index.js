@@ -27,6 +27,7 @@ const whatsappConfigRoutes = require("./whatsappConfigRoutes");
 const whatsappTemplateRoutes = require("./whatsappTemplateRoutes"); // Rota para templates
 const roletaRoutes = require("./roletaRoutes");
 const whatsappWebhookRoutes = require("./whatsappWebhookRoutes");
+const deliveryWebhookRoutes = require("./deliveryWebhookRoutes"); // Importar as novas rotas de webhook de delivery
 const roletaAdminRoutes = require("./roletaAdminRoutes");
 const automationRoutes = require("./automationRoutes");
 const aiRoutes = require("./aiRoutes"); // Import the new AI routes
@@ -36,6 +37,8 @@ const premiacaoController = require("../controllers/premiacaoController"); // Im
 const superadminRoutes = require("./superadminRoutes");
 const senderRoutes = require("./superadmin/senderRoutes");
 const reportRoutes = require("./superadmin/reportRoutes");
+const franchisorRoutes = require("./franchisorRoutes"); // Importar rotas do franqueador
+const franchisorReportRoutes = require("./franchisorReportRoutes");
 
 module.exports = (router) => {
   // Rota para Health Check do Docker
@@ -47,6 +50,10 @@ module.exports = (router) => {
   router.use("/superadmin", superadminRoutes);
   router.use("/superadmin/senders", senderRoutes);
   router.use("/superadmin/reports", reportRoutes);
+
+  // Franchisor Routes
+  router.use("/franchisor", franchisorRoutes);
+  router.use("/franchisor/reports", franchisorReportRoutes);
 
   router.use("/auth", authRoutes);
   router.use("/users", userRoutes);
@@ -66,6 +73,7 @@ module.exports = (router) => {
   router.use("/whatsapp-config", whatsappConfigRoutes);
   router.use("/whatsapp-templates", whatsappTemplateRoutes); // Rota para templates
   router.use("/whatsapp-webhook", whatsappWebhookRoutes);
+  router.use("/delivery-webhooks", deliveryWebhookRoutes); // Registrar as novas rotas de webhook de delivery
   router.use("/roleta", roletaRoutes);
   router.use("/survey-templates", surveyTemplateRoutes);
   router.use("/gmb-auth", gmbAuthRoutes);

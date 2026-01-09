@@ -10,9 +10,10 @@ const findRoleById = async (roleId) => {
   return Role.findByPk(roleId);
 };
 
-const createUser = async (tenantId, roleId, name, email, passwordHash) => {
+const createUser = async (tenantId, roleId, name, email, passwordHash, franchisorId = null) => {
   const newUser = await Usuario.create({
     tenantId,
+    franchisorId,
     roleId,
     name,
     email,
@@ -21,6 +22,7 @@ const createUser = async (tenantId, roleId, name, email, passwordHash) => {
   return {
     id: newUser.id,
     tenantId: newUser.tenantId,
+    franchisorId: newUser.franchisorId,
     roleId: newUser.roleId,
     name: newUser.name,
     email: newUser.email,
@@ -28,8 +30,14 @@ const createUser = async (tenantId, roleId, name, email, passwordHash) => {
   };
 };
 
-const getUsers = async (tenantId = null) => {
-  const whereClause = tenantId ? { tenantId } : {};
+const getUsers = async (tenantId = null, franchisorId = null) => {
+  const whereClause = {};
+  if (tenantId) {
+    whereClause.tenantId = tenantId;
+  }
+  if (franchisorId) {
+    whereClause.franchisorId = franchisorId;
+  }
 
   return Usuario.findAll({
     where: whereClause,

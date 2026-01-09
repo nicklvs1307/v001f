@@ -4,22 +4,34 @@ const userRepository = require("../repositories/userRepository");
 const ApiError = require("../errors/ApiError");
 const fs = require("fs");
 const path = require("path");
+const { Tenant } = require("../../models");
 
 // @desc    Criar um novo usuário (para um tenant específico)
 // @access  Private (Super Admin ou Admin)
 exports.createUser = asyncHandler(async (req, res) => {
-  const { name, email, password, roleId, tenantId } = req.body;
-  const requestingUser = req.user; // Usuário que está fazendo a requisição
+  const { name, email, password, roleId, tenantId, franchisorId } = req.body;
+  const requestingUser = req.user;
 
-  // Super Admin pode criar usuários para qualquer tenant ou Super Admin
-  // Admin só pode criar usuários para o seu próprio tenant
-  const targetTenantId =
-    requestingUser.role === "Super Admin" && tenantId
-      ? tenantId
-      : requestingUser.tenantId;
+  let targetTenantId = tenantId;
+  let targetFranchisorId = franchisorId;
 
-  if (!targetTenantId) {
-    throw new ApiError(400, "Tenant ID é obrigatório para criar um usuário.");
+  if (requestingUser.role === 'Super Admin') {
+    // Super Admin can do anything
+  } else if (requestingUser.role === 'Franqueador') {
+    targetFranchisorId = requestingUser.franchisorId;
+    if (tenantId) {
+      // Check if the tenant belongs to the franchisor
+      const tenant = await Tenant.findOne({ where: { id: tenantId, franchisorId: requestingUser.franchisorId } });
+      if (!tenant) {
+        throw new ApiError(403, "Você não tem permissão para criar usuários para este tenant.");
+      }
+    }
+  } else { // Admin
+    targetTenantId = requestingUser.tenantId;
+  }
+
+  if (!targetTenantId && !targetFranchisorId) {
+    throw new ApiError(400, "Tenant ID ou Franchisor ID é obrigatório para criar um usuário.");
   }
 
   // Verificar se o email já existe
@@ -28,13 +40,13 @@ exports.createUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Email já cadastrado.");
   }
 
-  // Verificar se o roleId existe e se é um role válido para o tenant (se aplicável)
+  // Verificar se o roleId existe
   const role = await userRepository.findRoleById(roleId);
   if (!role) {
     throw new ApiError(400, "Papel (role) inválido.");
   }
 
-  // Um Admin não pode criar um Super Admin
+  // Um Admin ou Franqueador não pode criar um Super Admin
   if (requestingUser.role !== "Super Admin" && role.name === "Super Admin") {
     throw new ApiError(403, "Você não pode criar um Super Admin.");
   }
@@ -50,6 +62,7 @@ exports.createUser = asyncHandler(async (req, res) => {
     name,
     email,
     passwordHash,
+    targetFranchisorId
   );
 
   // --- NOTIFICATION ---
@@ -73,9 +86,16 @@ exports.createUser = asyncHandler(async (req, res) => {
 // @access Private (Super Admin ou Admin)
 exports.getUsers = asyncHandler(async (req, res) => {
   const requestingUser = req.user;
-  const tenantId =
-    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
-  const users = await userRepository.getUsers(tenantId);
+  let tenantId = null;
+  let franchisorId = null;
+
+  if (requestingUser.role === 'Franqueador') {
+    franchisorId = requestingUser.franchisorId;
+  } else if (requestingUser.role !== 'Super Admin') {
+    tenantId = requestingUser.tenantId;
+  }
+
+  const users = await userRepository.getUsers(tenantId, franchisorId);
   res.status(200).json(users);
 });
 

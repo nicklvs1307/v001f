@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       tenantId: {
         type: DataTypes.UUID,
-        allowNull: false,
+        allowNull: true,
       },
       nome: {
         type: DataTypes.STRING,

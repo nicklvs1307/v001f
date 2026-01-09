@@ -5,7 +5,7 @@ const ApiError = require("../errors/ApiError");
 const surveyTriggerService = require("./surveyTriggerService"); // Importar o novo serviço de disparo de pesquisa
 
 const deliveryIntegrationService = {
-  async function processUaiRangoOrder(payload) {
+  processUaiRangoOrder: async function(payload) {
     console.log("Iniciando processamento do webhook do Uai Rango:", JSON.stringify(payload, null, 2));
 
     const uairangoEstablishmentId = String(payload.id_estabelecimento);

@@ -70,27 +70,29 @@ const getTenantById = async (id, tenantId = null) => {
 };
 
 const updateTenant = async (id, tenantData) => {
-  const [updatedRows, [updatedTenant]] = await Tenant.update(tenantData, {
+  // Filtra quaisquer chaves que tenham valor `undefined` para evitar erros.
+  const filteredData = Object.keys(tenantData).reduce((acc, key) => {
+    if (tenantData[key] !== undefined) {
+      acc[key] = tenantData[key];
+    }
+    return acc;
+  }, {});
+
+  if (Object.keys(filteredData).length === 0) {
+    // Nenhum dado para atualizar, retorna o tenant atual para evitar uma query desnecessária.
+    return Tenant.findByPk(id);
+  }
+
+  const [updatedRows] = await Tenant.update(filteredData, {
     where: { id },
-    returning: [
-      "id",
-      "name",
-      "address",
-      "phone",
-      "email",
-      "cnpj",
-      "description",
-      "logoUrl",
-      "createdAt",
-      "updatedAt",
-    ],
   });
 
   if (updatedRows === 0) {
     return null;
   }
 
-  return updatedTenant;
+  // Retorna a instância atualizada para garantir que o chamador receba os dados mais recentes.
+  return Tenant.findByPk(id);
 };
 
 const deleteTenant = async (id) => {

@@ -22,12 +22,12 @@ const deliveryIntegrationService = {
         console.log(`[UaiRango Webhook] Tenant encontrado: ${tenant.id} para o pedido ${orderIdPlatform}`);
 
         // 2. Find or Create Client
-        const customerPhone = payload.cliente.celular.replace(/\D/g, "");
+        const customerPhone = payload.usuario.tel1.replace(/\D/g, "");
         let client = await clientRepository.findClientByPhone(customerPhone, tenant.id);
 
         if (!client) {
             client = await clientRepository.createClient({
-                name: payload.cliente.nome,
+                name: payload.usuario.nome,
                 phone: customerPhone,
                 tenantId: tenant.id,
             });
@@ -47,7 +47,7 @@ const deliveryIntegrationService = {
             platform: 'UaiRango',
             orderIdPlatform: orderIdPlatform,
             totalAmount: parseFloat(payload.valor_total),
-            orderDate: new Date(payload.data_pedido),
+            orderDate: new Date(payload.data),
             payload: payload,
             clientId: client.id,
             tenantId: tenant.id,

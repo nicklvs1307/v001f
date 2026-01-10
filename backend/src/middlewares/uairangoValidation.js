@@ -4,10 +4,10 @@ const ApiError = require('../errors/ApiError');
 const validateUaiRangoWebhook = [
     check('id_estabelecimento').notEmpty().withMessage('ID do estabelecimento é obrigatório.'),
     check('cod_pedido').notEmpty().withMessage('Código do pedido é obrigatório.'),
-    check('cliente.nome').notEmpty().withMessage('Nome do cliente é obrigatório.'),
-    check('cliente.celular').notEmpty().withMessage('Celular do cliente é obrigatório.'),
+    check('usuario.nome').notEmpty().withMessage('Nome do cliente é obrigatório.'),
+    check('usuario.tel1').notEmpty().withMessage('Celular do cliente é obrigatório.'),
     check('valor_total').isFloat({ gt: 0 }).withMessage('Valor total deve ser um número positivo.'),
-    check('data_pedido').notEmpty().withMessage('Data do pedido é obrigatória.'),
+    check('data').notEmpty().withMessage('Data do pedido é obrigatória.'),
 
     (req, res, next) => {
         const errors = validationResult(req);

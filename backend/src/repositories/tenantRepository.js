@@ -172,6 +172,7 @@ const findByUaiRangoId = async (uairangoEstablishmentId) => {
 };
 
 module.exports = {
+  createTenantWithAdmin,
   createTenant,
   getTenants,
   getTenantById,

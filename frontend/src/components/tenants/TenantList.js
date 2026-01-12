@@ -15,9 +15,10 @@ import {
     DialogActions, 
     DialogContent, 
     DialogContentText, 
-    DialogTitle
+    DialogTitle,
+    Paper
 } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit'; 
 import DeleteIcon from '@mui/icons-material/Delete';
 import LoginIcon from '@mui/icons-material/Login';
@@ -126,18 +127,54 @@ const TenantList = () => {
     }
 
     return (
-        <Box sx={{ mt: 4, height: 600, width: '100%' }}>
-            <Typography variant="h5" gutterBottom>Gerenciamento de Restaurantes</Typography>
-            <Button variant="contained" sx={{ mb: 2 }} onClick={() => navigate('/superadmin/tenants/new')}>Adicionar Novo Restaurante</Button>
-            
-            <DataGrid
-                rows={tenants}
-                columns={columns}
-                pageSize={10}
-                rowsPerPageOptions={[10]}
-                autoHeight
-                disableSelectionOnClick
-            />
+        <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                    Gerenciamento de Restaurantes
+                </Typography>
+                <Button variant="contained" onClick={() => navigate('/superadmin/tenants/new')}>
+                    Adicionar Novo
+                </Button>
+            </Box>
+            <Box sx={{ height: 'auto', width: '100%' }}>
+                <DataGrid
+                    rows={tenants}
+                    columns={columns}
+                    pageSize={10}
+                    rowsPerPageOptions={[10, 25, 50]}
+                    autoHeight
+                    disableSelectionOnClick
+                    slots={{ toolbar: GridToolbar }}
+                    slotProps={{
+                        toolbar: {
+                          showQuickFilter: true,
+                          quickFilterProps: { debounceMs: 500 },
+                        },
+                    }}
+                    sx={{
+                        '& .MuiDataGrid-root': {
+                            border: 'none',
+                        },
+                        '& .MuiDataGrid-cell': {
+                            borderBottom: 'none',
+                        },
+                        '& .MuiDataGrid-columnHeaders': {
+                            backgroundColor: (theme) => theme.palette.background.paper,
+                            color: (theme) => theme.palette.text.secondary,
+                            borderBottom: '1px solid #e0e0e0',
+                        },
+                        '& .MuiDataGrid-virtualScroller': {
+                            backgroundColor: (theme) => theme.palette.background.default,
+                        },
+                        '& .MuiDataGrid-footerContainer': {
+                            borderTop: '1px solid #e0e0e0',
+                        },
+                        '& .MuiDataGrid-toolbarContainer .MuiButton-root': {
+                            color: (theme) => theme.palette.text.primary,
+                        },
+                    }}
+                />
+            </Box>
 
             <Dialog
                 open={openDeleteConfirm}
@@ -160,7 +197,7 @@ const TenantList = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </Box>
+        </Paper>
     );
 };
 

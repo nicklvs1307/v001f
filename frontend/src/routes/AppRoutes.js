@@ -1,8 +1,7 @@
 import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { CircularProgress, Box } from '@mui/material';
-import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
-import baseTheme from '../theme';
+
 import PrivateRoute from './PrivateRoute';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import SuperAdminLayout from '../components/layout/SuperAdminLayout'; // Importar SuperAdminLayout
@@ -118,7 +117,7 @@ const AppRoutes = () => {
         <Route path="/roleta/spin/:token" element={<RoletaSpinPage />} />
 
         {/* Rotas Privadas */}
-        <MuiThemeProvider theme={baseTheme}>
+
           <Route element={<PrivateRoute />}>
             {/* Painel do Super Admin */}
             <Route path="/superadmin" element={<SuperAdminLayout />}>
@@ -214,7 +213,7 @@ const AppRoutes = () => {
               <Route path="premiacoes/historico" element={<PremiacaoHistoricoPage />} /> {/* Nova rota de histórico de premiações */}
             </Route>
           </Route>
-        </MuiThemeProvider>
+
 
         {/* Catch-all para rotas não encontradas */}
         <Route path="*" element={<Navigate to="/login" />} />

@@ -8,6 +8,8 @@ import AppRoutes from './routes/AppRoutes'; // Importar o novo componente de rot
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { ptBR } from 'date-fns/locale';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'; // Adicionar import
+import baseTheme from './theme'; // Adicionar import
 
 function App() {
   return (
@@ -16,7 +18,9 @@ function App() {
         <SocketProvider>
             <NotificationProvider>
               <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
-                <AppRoutes /> {/* Usar o componente AppRoutes */}
+                <MuiThemeProvider theme={baseTheme}> {/* Adicionar MuiThemeProvider aqui */}
+                  <AppRoutes />
+                </MuiThemeProvider>
               </LocalizationProvider>
             </NotificationProvider>
         </SocketProvider>

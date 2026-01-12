@@ -1,6 +1,8 @@
 import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { CircularProgress, Box } from '@mui/material';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import baseTheme from '../theme';
 import PrivateRoute from './PrivateRoute';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import SuperAdminLayout from '../components/layout/SuperAdminLayout'; // Importar SuperAdminLayout
@@ -117,99 +119,101 @@ const AppRoutes = () => {
 
         {/* Rotas Privadas */}
         <Route element={<PrivateRoute />}>
-          {/* Painel do Super Admin */}
-          <Route path="/superadmin" element={<SuperAdminLayout />}>
-            <Route index element={<SuperAdminDashboardPage />} />
-            <Route path="dashboard" element={<SuperAdminDashboardPage />} />
-            <Route path="tenants" element={<TenantsPage />} />
-            <Route path="tenants/new" element={<TenantFormPage />} />
-            <Route path="tenants/edit/:id" element={<TenantFormPage />} />
-            <Route path="franchisors" element={<FranchisorsPage />} />
-            <Route path="franchisors/new" element={<FranchisorFormPage />} />
-            <Route path="franchisors/edit/:id" element={<FranchisorFormPage />} />
-            <Route path="whatsapp-config" element={<WhatsappConfigPage />} />
-            <Route path="sender-pool" element={<SenderPoolPage />} />
-            <Route path="senders/:id/connect" element={<SenderConnectPage />} />
-            <Route path="reports/system-overview" element={<SystemReportsPage />} />
-            <Route path="reports/tenant-reports" element={<TenantReportsPage />} />
-          </Route>
+          <MuiThemeProvider theme={baseTheme}>
+            {/* Painel do Super Admin */}
+            <Route path="/superadmin" element={<SuperAdminLayout />}>
+              <Route index element={<SuperAdminDashboardPage />} />
+              <Route path="dashboard" element={<SuperAdminDashboardPage />} />
+              <Route path="tenants" element={<TenantsPage />} />
+              <Route path="tenants/new" element={<TenantFormPage />} />
+              <Route path="tenants/edit/:id" element={<TenantFormPage />} />
+              <Route path="franchisors" element={<FranchisorsPage />} />
+              <Route path="franchisors/new" element={<FranchisorFormPage />} />
+              <Route path="franchisors/edit/:id" element={<FranchisorFormPage />} />
+              <Route path="whatsapp-config" element={<WhatsappConfigPage />} />
+              <Route path="sender-pool" element={<SenderPoolPage />} />
+              <Route path="senders/:id/connect" element={<SenderConnectPage />} />
+              <Route path="reports/system-overview" element={<SystemReportsPage />} />
+              <Route path="reports/tenant-reports" element={<TenantReportsPage />} />
+            </Route>
 
-          {/* Painel do Franqueador */}
-          <Route path="/franchisor" element={<FranchisorLayout />}>
-            <Route index element={<FranchisorDashboardPage />} />
-            <Route path="dashboard" element={<FranchisorDashboardPage />} />
-            <Route path="franchisees" element={<FranchiseesPage />} />
-            <Route path="franchisees/new" element={<FranchisorTenantFormPage />} />
-            <Route path="franchisees/edit/:id" element={<FranchisorTenantFormPage />} />
-            <Route path="users" element={<FranchisorUsersPage />} />
-            <Route path="users/new" element={<FranchisorUserFormPage />} />
-            <Route path="users/edit/:id" element={<FranchisorUserFormPage />} />
-            <Route path="reports" element={<FranchisorReportsPage />} />
-            {/* Adicionar outras rotas do franqueador aqui, como a de gestão de franqueados */}
-          </Route>
+            {/* Painel do Franqueador */}
+            <Route path="/franchisor" element={<FranchisorLayout />}>
+              <Route index element={<FranchisorDashboardPage />} />
+              <Route path="dashboard" element={<FranchisorDashboardPage />} />
+              <Route path="franchisees" element={<FranchiseesPage />} />
+              <Route path="franchisees/new" element={<FranchisorTenantFormPage />} />
+              <Route path="franchisees/edit/:id" element={<FranchisorTenantFormPage />} />
+              <Route path="users" element={<FranchisorUsersPage />} />
+              <Route path="users/new" element={<FranchisorUserFormPage />} />
+              <Route path="users/edit/:id" element={<FranchisorUserFormPage />} />
+              <Route path="reports" element={<FranchisorReportsPage />} />
+              {/* Adicionar outras rotas do franqueador aqui, como a de gestão de franqueados */}
+            </Route>
 
-          {/* Painel Principal do Tenant */}
-          <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<DashboardPage />} />
-            <Route path="usuarios" element={<UsersPage />} />
-            <Route path="usuarios/new" element={<UserFormPage />} />
-            <Route path="usuarios/edit/:id" element={<UserFormPage />} />
-            <Route path="cargos" element={<RolesPage />} />
-            {/* <Route path="locatarios" element={<TenantsPage />} /> */} {/* Movido para superadmin */}
-            <Route path="pesquisas" element={<SurveysPage />} />
-            <Route path="pesquisas/create" element={<SurveyCreatePage />} />
-            <Route path="pesquisas/edit/:id" element={<SurveyCreatePage />} />
-            <Route path="pesquisas/results/:id" element={<SurveyResultsPage />} />
-            <Route path="templates-pesquisa" element={<SurveyTemplatesPage />} />
-            <Route path="perguntas" element={<QuestionsPage />} />
-            <Route path="criterios" element={<CriteriosPage />} />
-            <Route path="recompensas" element={<RewardsPage />} />
-            <Route path="recompensas/dashboard" element={<RewardsDashboardPage />} />
-            <Route path="cupons" element={<CouponsPage />} />
-            <Route path="cupons/campanhas" element={<CampaignsPage />} />
-            <Route path="cupons/campanhas/nova" element={<CampaignFormPage />} />
-            <Route path="cupons/campanhas/editar/:id" element={<CampaignFormPage />} />
-            <Route path="cupons/campanhas/detalhes/:id" element={<CampaignDetailsPage />} />
-            <Route path="cupons/dashboard" element={<CupomDashboardPage />} />
-            <Route path="validar-cupom" element={<CupomValidationPage />} />
-            <Route path="clientes" element={<ClientsPage />} />
-            <Route path="clientes/:id" element={<ClientDetailsPage />} />
-            <Route path="clientes/birthdays" element={<BirthdayClientsPage />} />
-            <Route path="clientes/dashboard" element={<ClientDashboardPage />} />
-            <Route path="atendentes" element={<AttendantsPage />} />
-            <Route path="metas-atendentes" element={<AttendantGoalsPage />} />
-            <Route path="metas-atendentes/:atendenteId" element={<AttendantGoalDetailsPage />} /> {/* Nova Rota de Detalhes */}
-            <Route path="atendentes-dashboard" element={<AtendenteDashboardPage />} />
-            <Route path="resultados" element={<ResultsOverviewPage />} />
+            {/* Painel Principal do Tenant */}
+            <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route index element={<DashboardPage />} />
+              <Route path="usuarios" element={<UsersPage />} />
+              <Route path="usuarios/new" element={<UserFormPage />} />
+              <Route path="usuarios/edit/:id" element={<UserFormPage />} />
+              <Route path="cargos" element={<RolesPage />} />
+              {/* <Route path="locatarios" element={<TenantsPage />} /> */} {/* Movido para superadmin */}
+              <Route path="pesquisas" element={<SurveysPage />} />
+              <Route path="pesquisas/create" element={<SurveyCreatePage />} />
+              <Route path="pesquisas/edit/:id" element={<SurveyCreatePage />} />
+              <Route path="pesquisas/results/:id" element={<SurveyResultsPage />} />
+              <Route path="templates-pesquisa" element={<SurveyTemplatesPage />} />
+              <Route path="perguntas" element={<QuestionsPage />} />
+              <Route path="criterios" element={<CriteriosPage />} />
+              <Route path="recompensas" element={<RewardsPage />} />
+              <Route path="recompensas/dashboard" element={<RewardsDashboardPage />} />
+              <Route path="cupons" element={<CouponsPage />} />
+              <Route path="cupons/campanhas" element={<CampaignsPage />} />
+              <Route path="cupons/campanhas/nova" element={<CampaignFormPage />} />
+              <Route path="cupons/campanhas/editar/:id" element={<CampaignFormPage />} />
+              <Route path="cupons/campanhas/detalhes/:id" element={<CampaignDetailsPage />} />
+              <Route path="cupons/dashboard" element={<CupomDashboardPage />} />
+              <Route path="validar-cupom" element={<CupomValidationPage />} />
+              <Route path="clientes" element={<ClientsPage />} />
+              <Route path="clientes/:id" element={<ClientDetailsPage />} />
+              <Route path="clientes/birthdays" element={<BirthdayClientsPage />} />
+              <Route path="clientes/dashboard" element={<ClientDashboardPage />} />
+              <Route path="atendentes" element={<AttendantsPage />} />
+              <Route path="metas-atendentes" element={<AttendantGoalsPage />} />
+              <Route path="metas-atendentes/:atendenteId" element={<AttendantGoalDetailsPage />} /> {/* Nova Rota de Detalhes */}
+              <Route path="atendentes-dashboard" element={<AtendenteDashboardPage />} />
+              <Route path="resultados" element={<ResultsOverviewPage />} />
 
-            <Route path="respostas/painel" element={<RespostasPainelPage />} />
-            <Route path="respostas/gestao" element={<RespostasGestaoPage />} />
-            <Route path="respostas/replicas" element={<RespostasReplicasPage />} />
-            <Route path="respostas/tratativas" element={<RespostasTratativasPage />} />
+              <Route path="respostas/painel" element={<RespostasPainelPage />} />
+              <Route path="respostas/gestao" element={<RespostasGestaoPage />} />
+              <Route path="respostas/replicas" element={<RespostasReplicasPage />} />
+              <Route path="respostas/tratativas" element={<RespostasTratativasPage />} />
 
-            <Route path="reputacao" element={<GMBReviewsPage />} />
-            <Route path="config-gmb" element={<GMBConfigsPage />} />
-            <Route path="reviews-gmb" element={<GMBReviewsPage />} />
-            <Route path="roletas" element={<RoletasPage />} />
-            <Route path="roletas/nova" element={<RoletaFormPage />} />
-            <Route path="roletas/editar/:id" element={<RoletaFormPage />} />
-            {/* <Route path="config-whatsapp" element={<WhatsappConfigPage />} /> */} {/* Movido para superadmin */}
-            <Route path="whatsapp-connect" element={<WhatsappConnectPage />} />
-            <Route path="whatsapp/automations" element={<AutomationsPage />} />
-            <Route path="profile" element={<ProfilePage />} />
-            <Route path="config" element={<GMBConfigsPage />} />
-            <Route path="integracoes" element={<IntegrationsPage />} />
-            <Route path="relatorios/diario" element={<RelatorioDiario />} />
-            <Route path="relatorios/semanal" element={<RelatorioSemanal />} />
-            <Route path="relatorios/mensal" element={<RelatorioMensal />} />
-            <Route path="geral/satisfacao" element={<SatisfacaoPage />} />
-            <Route path="geral/resumo" element={<ResumoMesPage />} />
-            <Route path="geral/comparativo" element={<ComparativoPesquisaPage />} />
-            <Route path="geral/evolucao" element={<EvolucaoPage />} />
-            <Route path="geral/benchmarking" element={<BenchmarkingPage />} />
-            <Route path="geral/nuvem-de-palavras" element={<NuvemDePalavrasPage />} />
-            <Route path="premiacoes/historico" element={<PremiacaoHistoricoPage />} /> {/* Nova rota de histórico de premiações */}
-          </Route>
+              <Route path="reputacao" element={<GMBReviewsPage />} />
+              <Route path="config-gmb" element={<GMBConfigsPage />} />
+              <Route path="reviews-gmb" element={<GMBReviewsPage />} />
+              <Route path="roletas" element={<RoletasPage />} />
+              <Route path="roletas/nova" element={<RoletaFormPage />} />
+              <Route path="roletas/editar/:id" element={<RoletaFormPage />} />
+              {/* <Route path="config-whatsapp" element={<WhatsappConfigPage />} /> */} {/* Movido para superadmin */}
+              <Route path="whatsapp-connect" element={<WhatsappConnectPage />} />
+              <Route path="whatsapp/automations" element={<AutomationsPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+              <Route path="config" element={<GMBConfigsPage />} />
+              <Route path="integracoes" element={<IntegrationsPage />} />
+              <Route path="relatorios/diario" element={<RelatorioDiario />} />
+              <Route path="relatorios/semanal" element={<RelatorioSemanal />} />
+              <Route path="relatorios/mensal" element={<RelatorioMensal />} />
+              <Route path="geral/satisfacao" element={<SatisfacaoPage />} />
+              <Route path="geral/resumo" element={<ResumoMesPage />} />
+              <Route path="geral/comparativo" element={<ComparativoPesquisaPage />} />
+              <Route path="geral/evolucao" element={<EvolucaoPage />} />
+              <Route path="geral/benchmarking" element={<BenchmarkingPage />} />
+              <Route path="geral/nuvem-de-palavras" element={<NuvemDePalavrasPage />} />
+              <Route path="premiacoes/historico" element={<PremiacaoHistoricoPage />} /> {/* Nova rota de histórico de premiações */}
+            </Route>
+          </MuiThemeProvider>
         </Route>
 
         {/* Catch-all para rotas não encontradas */}

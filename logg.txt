@@ -1,281 +1,393 @@
-Postgres is up - executing command
-Server.js is being executed!
-JWT Secret loaded: ********
-JWT Secret length: 32
-Conexão com o banco de dados estabelecida com sucesso (Sequelize).
-Server is running on port 5000
-Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
-Agendador de relatório semanal iniciado. A tarefa será executada toda segunda-feira às 8:00.
-Agendador de relatório mensal iniciado. A tarefa será executada todo dia 1º, às 8:00.
-Agendador de lembrete de cupons iniciado. A tarefa será executada todos os dias às 9:00.
-Agendador de automação de aniversário iniciado. A tarefa será executada todos os dias às 9:00.
-Agendador de expiração de cupons iniciado. A tarefa será executada todo dia à meia-noite.
-[SenderMonitorJob] Job de monitoramento de disparadores inicializado para rodar a cada 5 minutos.
-[WarmingUpProgressJob] Job de progressão de aquecimento inicializado para rodar diariamente à 1h.
-[CampaignMonitorJob] Job de monitoramento de campanhas inicializado para rodar a cada 10 minutos.
-Agendador de processamento de premiações iniciado. A tarefa será executada todo dia às 2h.
-[CampanhaService] Inicializando campanhas agendadas...
-Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'scheduled' AND "Campanha"."startDate" IS NOT NULL;
-[CampanhaService] 0 campanhas reagendadas.
-[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
-Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
-[SENDER_MONITOR] Verificando 1 disparador(es) inativo(s).
-[SENDER_MONITOR] Verificação de status concluída.
-[Auth Middleware] Request: POST /api/auth/verify-token
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-[Auth Middleware] Request: GET /api/superadmin/reports/dashboard
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-Executing (default): SELECT count(*) AS "count" FROM "tenants" AS "Tenant";
-Executing (default): SELECT count(*) AS "count" FROM "usuarios" AS "Usuario";
-Executing (default): SELECT count(*) AS "count" FROM "pesquisas" AS "Pesquisa";
-Executing (default): SELECT count(*) AS "count" FROM "franchisors" AS "Franchisor";
-Executing (default): SELECT DATE_TRUNC('month', "createdAt") AS "month", COUNT("id") AS "count" FROM "usuarios" AS "Usuario" GROUP BY "month" ORDER BY DATE_TRUNC('month', "createdAt") ASC;
-[Auth Middleware] Request: GET /api/tenants
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt" FROM "tenants" AS "Tenant" ORDER BY "Tenant"."createdAt" DESC;
-[Auth Middleware] Request: GET /api/superadmin/franchisors
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-Executing (default): SELECT "id", "name", "cnpj", "email", "phone", "createdAt", "updatedAt" FROM "franchisors" AS "Franchisor" ORDER BY "Franchisor"."name" ASC;
-[Auth Middleware] Request: GET /api/superadmin/reports/system-overview
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-Executing (default): SELECT count(*) AS "count" FROM "tenants" AS "Tenant";
-Executing (default): SELECT count(*) AS "count" FROM "usuarios" AS "Usuario";
-Executing (default): SELECT count(*) AS "count" FROM "campanhas" AS "Campanha";
-Executing (default): SELECT "status", COUNT("status") AS "count" FROM "WhatsappSenders" AS "WhatsappSender" GROUP BY "status";
-[Auth Middleware] Request: GET /api/superadmin/reports/tenant-reports
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-Executing (default): SELECT "id", "name" FROM "tenants" AS "Tenant";
-Executing (default): SELECT "tenantId", count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" IN ('00055233-b221-4eaa-8e8b-7c14d02d221c', '839e61fb-e67a-40c5-a46a-5473a9be3207', 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4', '8d088ff3-b3ea-4b34-b486-7ae4a600990c', '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd') GROUP BY "tenantId";
-Executing (default): SELECT "tenantId", count(*) AS "count" FROM "campanhas" AS "Campanha" WHERE "Campanha"."tenantId" IN ('00055233-b221-4eaa-8e8b-7c14d02d221c', '839e61fb-e67a-40c5-a46a-5473a9be3207', 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4', '8d088ff3-b3ea-4b34-b486-7ae4a600990c', '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd') AND "Campanha"."status" IN ('processing', 'scheduled') GROUP BY "tenantId";
-Executing (default): SELECT "tenantId", count(*) AS "count" FROM "pesquisas" AS "Pesquisa" WHERE "Pesquisa"."tenantId" IN ('00055233-b221-4eaa-8e8b-7c14d02d221c', '839e61fb-e67a-40c5-a46a-5473a9be3207', 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4', '8d088ff3-b3ea-4b34-b486-7ae4a600990c', '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd') GROUP BY "tenantId";
-Executing (default): SELECT "tenantId", count(*) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" IN ('00055233-b221-4eaa-8e8b-7c14d02d221c', '839e61fb-e67a-40c5-a46a-5473a9be3207', 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4', '8d088ff3-b3ea-4b34-b486-7ae4a600990c', '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd') GROUP BY "tenantId";
-[Auth Middleware] Request: GET /api/tenants
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt" FROM "tenants" AS "Tenant" ORDER BY "Tenant"."createdAt" DESC;
-[Auth Middleware] Request: POST /api/superadmin/login-as-tenant/8d088ff3-b3ea-4b34-b486-7ae4a600990c
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt" FROM "usuarios" AS "Usuario" INNER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" AND "role"."name" = 'Admin' WHERE "Usuario"."tenantId" = '8d088ff3-b3ea-4b34-b486-7ae4a600990c' ORDER BY "Usuario"."createdAt" ASC LIMIT 1;
-[Auth Middleware] Request: GET /api/tenants/8d088ff3-b3ea-4b34-b486-7ae4a600990c
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt", "reportPhoneNumber" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '8d088ff3-b3ea-4b34-b486-7ae4a600990c';
-[Auth Middleware] Request: GET /api/tenants
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt" FROM "tenants" AS "Tenant" ORDER BY "Tenant"."createdAt" DESC;
-[Auth Middleware] Request: POST /api/tenants
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-TypeError: tenantRepository.createTenantWithAdmin is not a function
-    at /usr/src/app/src/controllers/tenantController.js:35:72
-[Auth Middleware] Request: GET /api/superadmin/franchisors
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-Executing (default): SELECT "id", "name", "cnpj", "email", "phone", "createdAt", "updatedAt" FROM "franchisors" AS "Franchisor" ORDER BY "Franchisor"."name" ASC;
-[Auth Middleware] Request: POST /api/superadmin/franchisors
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-Executing (default): INSERT INTO "franchisors" ("id","name","cnpj","email","phone","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING "id","name","cnpj","email","phone","createdAt","updatedAt";
-[Auth Middleware] Request: GET /api/superadmin/franchisors
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-Executing (default): SELECT "id", "name", "cnpj", "email", "phone", "createdAt", "updatedAt" FROM "franchisors" AS "Franchisor" ORDER BY "Franchisor"."name" ASC;
-Executando a tarefa de relatório diário...
-Executando a tarefa de relatório semanal...
-[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
-[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."dailyReportEnabled" = true AND ("WhatsappConfig"."reportPhoneNumbers" IS NOT NULL AND "WhatsappConfig"."reportPhoneNumbers" != '');
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."weeklyReportEnabled" = true AND ("WhatsappConfig"."reportPhoneNumbers" IS NOT NULL AND "WhatsappConfig"."reportPhoneNumbers" != '');
-Encontradas 2 configurações para receber relatórios.
-Gerando relatório para o tenantId: 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd
-Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
-Encontradas 1 configurações para receber relatórios semanais.
-Gerando relatório semanal para o tenantId: eb629ea8-7d69-47a1-b1f1-f9dcb33475f4
-Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
-[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
-Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt", "reportPhoneNumber" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt", "reportPhoneNumber" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
-[SENDER_MONITOR] Verificando 1 disparador(es) inativo(s).
-Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Resposta"."createdAt" BETWEEN '2026-01-11 03:00:00.000 +00:00' AND '2026-01-12 02:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
-Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2026-01-05 00:00:00.000 +00:00' AND '2026-01-11 23:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
-Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Resposta"."createdAt" BETWEEN '2026-01-11 03:00:00.000 +00:00' AND '2026-01-12 02:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
-Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2026-01-05 00:00:00.000 +00:00' AND '2026-01-11 23:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
-Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Client"."createdAt" BETWEEN '2026-01-11 03:00:00.000 +00:00' AND '2026-01-12 02:59:59.999 +00:00';
-[SENDER_MONITOR] Verificação de status concluída.
-Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Resposta"."createdAt" BETWEEN '2026-01-11 03:00:00.000 +00:00' AND '2026-01-12 02:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
-Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Client"."createdAt" BETWEEN '2026-01-05 00:00:00.000 +00:00' AND '2026-01-11 23:59:59.999 +00:00';
-Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Cupom"."createdAt" BETWEEN '2026-01-11 03:00:00.000 +00:00' AND '2026-01-12 02:59:59.999 +00:00';
-Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2026-01-05 00:00:00.000 +00:00' AND '2026-01-11 23:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
-Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Cupom"."updatedAt" BETWEEN '2026-01-11 03:00:00.000 +00:00' AND '2026-01-12 02:59:59.999 +00:00';
-Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."createdAt" BETWEEN '2026-01-05 00:00:00.000 +00:00' AND '2026-01-11 23:59:59.999 +00:00';
-Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."updatedAt" BETWEEN '2026-01-05 00:00:00.000 +00:00' AND '2026-01-11 23:59:59.999 +00:00';
-Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Resposta"."createdAt" BETWEEN '2026-01-10 03:00:00.000 +00:00' AND '2026-01-11 02:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
-Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
-Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Resposta"."createdAt" BETWEEN '2026-01-10 03:00:00.000 +00:00' AND '2026-01-11 02:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
-Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Client"."createdAt" BETWEEN '2026-01-10 03:00:00.000 +00:00' AND '2026-01-11 02:59:59.999 +00:00';
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
-Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Resposta"."createdAt" BETWEEN '2026-01-10 03:00:00.000 +00:00' AND '2026-01-11 02:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
-Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Cupom"."createdAt" BETWEEN '2026-01-10 03:00:00.000 +00:00' AND '2026-01-11 02:59:59.999 +00:00';
-Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' AND "Cupom"."updatedAt" BETWEEN '2026-01-10 03:00:00.000 +00:00' AND '2026-01-11 02:59:59.999 +00:00';
-Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Resposta da API de status da instância: {
-  "instance": {
-    "instanceName": "roma-pizzaria--chopperia",
-    "state": "open"
-  }
-}
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd' LIMIT 1;
-[WhatsappService] Resposta da API de status da instância: {
-  "instance": {
-    "instanceName": "roma-pizzaria--chopperiaaa",
-    "state": "open"
-  }
-}
-[WhatsApp Service] Number check successful for: 553591090766@s.whatsapp.net
-[WhatsApp Service] Enviando mensagem de tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4 para: 5535991090766@s.whatsapp.net
-[WhatsApp Service] Number check successful for: 553598374007@s.whatsapp.net
-[WhatsApp Service] Enviando mensagem de tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd para: 5535998374007@s.whatsapp.net
-Relatório semanal para "Roma Pizzaria & Chopperia" enviado para 5535991090766.
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
-Relatório para "Roma Pizzaria & Chopperiaaa" enviado para 5535998374007.
-Gerando relatório para o tenantId: eb629ea8-7d69-47a1-b1f1-f9dcb33475f4
-Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt", "reportPhoneNumber" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
-Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2026-01-11 03:00:00.000 +00:00' AND '2026-01-12 02:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
-Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2026-01-11 03:00:00.000 +00:00' AND '2026-01-12 02:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
-Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Client"."createdAt" BETWEEN '2026-01-11 03:00:00.000 +00:00' AND '2026-01-12 02:59:59.999 +00:00';
-Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2026-01-11 03:00:00.000 +00:00' AND '2026-01-12 02:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
-[WhatsappService] Resposta da API de status da instância: {
-  "instance": {
-    "instanceName": "roma-pizzaria--chopperia",
-    "state": "open"
-  }
-}
-Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."createdAt" BETWEEN '2026-01-11 03:00:00.000 +00:00' AND '2026-01-12 02:59:59.999 +00:00';
-Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."updatedAt" BETWEEN '2026-01-11 03:00:00.000 +00:00' AND '2026-01-12 02:59:59.999 +00:00';
-Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
-Executing (default): SELECT "Resposta"."id", "Resposta"."perguntaId", "Resposta"."pesquisaId", "Resposta"."tenantId", "Resposta"."atendenteId", "Resposta"."respondentSessionId", "Resposta"."ratingValue", "Resposta"."textValue", "Resposta"."selectedOption", "Resposta"."createdAt", "Resposta"."updatedAt", "pergunta"."id" AS "pergunta.id", "pergunta"."type" AS "pergunta.type", "pergunta"."criterioId" AS "pergunta.criterioId" FROM "respostas" AS "Resposta" INNER JOIN "perguntas" AS "pergunta" ON "Resposta"."perguntaId" = "pergunta"."id" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2026-01-10 03:00:00.000 +00:00' AND '2026-01-11 02:59:59.999 +00:00' AND "Resposta"."ratingValue" IS NOT NULL;
-Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2026-01-10 03:00:00.000 +00:00' AND '2026-01-11 02:59:59.999 +00:00' AND "Resposta"."ratingValue" >= 9 AND "Resposta"."respondentSessionId" IS NOT NULL;
-Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Client"."createdAt" BETWEEN '2026-01-10 03:00:00.000 +00:00' AND '2026-01-11 02:59:59.999 +00:00';
-Executing (default): SELECT count(DISTINCT("respondentSessionId")) AS "count" FROM "respostas" AS "Resposta" WHERE "Resposta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Resposta"."createdAt" BETWEEN '2026-01-10 03:00:00.000 +00:00' AND '2026-01-11 02:59:59.999 +00:00' AND "Resposta"."respondentSessionId" IS NOT NULL;
-Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."createdAt" BETWEEN '2026-01-10 03:00:00.000 +00:00' AND '2026-01-11 02:59:59.999 +00:00';
-Executing (default): SELECT count(*) AS "count" FROM "cupons" AS "Cupom" WHERE "Cupom"."status" = 'used' AND "Cupom"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Cupom"."updatedAt" BETWEEN '2026-01-10 03:00:00.000 +00:00' AND '2026-01-11 02:59:59.999 +00:00';
-Executing (default): SELECT count(*) AS "count" FROM "clients" AS "Client" WHERE "Client"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
-[WhatsappService] Resposta da API de status da instância: {
-  "instance": {
-    "instanceName": "roma-pizzaria--chopperia",
-    "state": "open"
-  }
-}
-[WhatsApp Service] Number check successful for: 553591090766@s.whatsapp.net
-[WhatsApp Service] Enviando mensagem de tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4 para: 5535991090766@s.whatsapp.net
-[WhatsApp Service] Number check successful for: 553591523297@s.whatsapp.net
-[WhatsApp Service] Enviando mensagem de tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4 para: 5535991523297@s.whatsapp.net
-Relatório para "Roma Pizzaria & Chopperia" enviado para 5535991090766.
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
-[WhatsappService] Resposta da API de status da instância: {
-  "instance": {
-    "instanceName": "roma-pizzaria--chopperia",
-    "state": "open"
-  }
-}
-[WhatsApp Service] Number check successful for: 553591523297@s.whatsapp.net
-[WhatsApp Service] Enviando mensagem de tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4 para: 5535991523297@s.whatsapp.net
-Relatório semanal para "Roma Pizzaria & Chopperia" enviado para 553591523297.
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
-[WhatsappService] Resposta da API de status da instância: {
-  "instance": {
-    "instanceName": "roma-pizzaria--chopperia",
-    "state": "open"
-  }
-}
-[WhatsApp Service] Number check successful for: 553598374007@s.whatsapp.net
-[WhatsApp Service] Enviando mensagem de tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4 para: 5535998374007@s.whatsapp.net
-Relatório para "Roma Pizzaria & Chopperia" enviado para 553591523297.
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
-[WhatsappService] Resposta da API de status da instância: {
-  "instance": {
-    "instanceName": "roma-pizzaria--chopperia",
-    "state": "open"
-  }
-}
-[WhatsApp Service] Number check successful for: 553598374007@s.whatsapp.net
-[WhatsApp Service] Enviando mensagem de tenant eb629ea8-7d69-47a1-b1f1-f9dcb33475f4 para: 5535998374007@s.whatsapp.net
-Relatório semanal para "Roma Pizzaria & Chopperia" enviado para 553598374007.
-Tarefa de relatório semanal concluída.
-Relatório para "Roma Pizzaria & Chopperia" enviado para 553598374007.
-Tarefa de relatório diário concluída.
-[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
-Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
-[SENDER_MONITOR] Verificando 1 disparador(es) inativo(s).
-[SENDER_MONITOR] Verificação de status concluída.
-[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
-[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
-Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
-Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
-[SENDER_MONITOR] Verificando 1 disparador(es) inativo(s).
-[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
-[SENDER_MONITOR] Verificação de status concluída.
-[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
-Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
-[SENDER_MONITOR] Verificando 1 disparador(es) inativo(s).
-[SENDER_MONITOR] Verificação de status concluída.
-[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
-[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
-Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
-Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
-[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
-[SENDER_MONITOR] Verificando 1 disparador(es) inativo(s).
-[SENDER_MONITOR] Verificação de status concluída.
-Executing (default): SELECT "id", "name", "logoUrl", "primaryColor", "secondaryColor", "description" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
-Executing (default): SELECT "Pesquisa"."id", "Pesquisa"."title", "Pesquisa"."description", "Pesquisa"."createdAt", "Pesquisa"."updatedAt", "Pesquisa"."isOpen", "Pesquisa"."tenantId", "Pesquisa"."askForAttendant", "Pesquisa"."status", "Pesquisa"."recompensaId", "Pesquisa"."roletaId", "perguntas"."id" AS "perguntas.id", "perguntas"."type" AS "perguntas.type", "perguntas"."text" AS "perguntas.text", "perguntas"."options" AS "perguntas.options", "perguntas"."order" AS "perguntas.order", "perguntas"."required" AS "perguntas.required", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."description" AS "tenant.description", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "roleta"."id" AS "roleta.id", "roleta"."nome" AS "roleta.nome", "roleta"."descricao" AS "roleta.descricao", "roleta"."active" AS "roleta.active" FROM "pesquisas" AS "Pesquisa" LEFT OUTER JOIN "perguntas" AS "perguntas" ON "Pesquisa"."id" = "perguntas"."pesquisaId" LEFT OUTER JOIN "tenants" AS "tenant" ON "Pesquisa"."tenantId" = "tenant"."id" LEFT OUTER JOIN "roletas" AS "roleta" ON "Pesquisa"."roletaId" = "roleta"."id" WHERE "Pesquisa"."id" = '70644ab0-f9a5-49e5-88cc-86773acfd2a4';
-Executing (default): SELECT "id", "tenantId", "creatorId", "title", "description", "startDate", "endDate", "isOpen", "askForAttendant", "status", "expectedRespondents", "dueDate", "recompensaId", "roletaId", "createdAt", "updatedAt" FROM "pesquisas" AS "Pesquisa" WHERE "Pesquisa"."id" = '70644ab0-f9a5-49e5-88cc-86773acfd2a4';
-Executing (default): SELECT "id", "pesquisaId", "campanhaId", "tenantId", "recompensaId", "codigo", "clienteId", "dataGeracao", "dataUtilizacao", "dataValidade", "status", "ultimoContato", "createdAt", "updatedAt" FROM "cupons" AS "Cupom" WHERE "Cupom"."clienteId" = 'c2e2b889-89b6-49b4-9189-456dd183cae4' AND "Cupom"."pesquisaId" = '70644ab0-f9a5-49e5-88cc-86773acfd2a4' ORDER BY "Cupom"."dataGeracao" DESC LIMIT 1;
-Executing (default): SELECT "RoletaPremio"."id", "RoletaPremio"."tenantId", "RoletaPremio"."nome", "RoletaPremio"."descricao", "RoletaPremio"."porcentagem", "RoletaPremio"."cor", "RoletaPremio"."recompensaId", "RoletaPremio"."roletaId", "RoletaPremio"."imageUrl", "RoletaPremio"."active", "RoletaPremio"."createdAt", "RoletaPremio"."updatedAt", "recompensa"."id" AS "recompensa.id", "recompensa"."tenantId" AS "recompensa.tenantId", "recompensa"."name" AS "recompensa.name", "recompensa"."description" AS "recompensa.description", "recompensa"."pointsRequired" AS "recompensa.pointsRequired", "recompensa"."type" AS "recompensa.type", "recompensa"."value" AS "recompensa.value", "recompensa"."imageUrl" AS "recompensa.imageUrl", "recompensa"."active" AS "recompensa.active", "recompensa"."createdAt" AS "recompensa.createdAt", "recompensa"."updatedAt" AS "recompensa.updatedAt" FROM "roleta_premios" AS "RoletaPremio" LEFT OUTER JOIN "recompensas" AS "recompensa" ON "RoletaPremio"."recompensaId" = "recompensa"."id" WHERE "RoletaPremio"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "RoletaPremio"."roletaId" = 'f4da8c53-db4f-4452-8c7d-505be5e99657' ORDER BY "RoletaPremio"."nome" ASC;
-[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
-Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
-[SENDER_MONITOR] Verificando 1 disparador(es) inativo(s).
-[SENDER_MONITOR] Verificação de status concluída.
-[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
-[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
-Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
-Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
-[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
-[SENDER_MONITOR] Verificando 1 disparador(es) inativo(s).
-[SENDER_MONITOR] Verificação de status concluída.
-[Auth Middleware] Request: GET /api/tenants
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt" FROM "tenants" AS "Tenant" ORDER BY "Tenant"."createdAt" DESC;
-[Auth Middleware] Request: POST /api/superadmin/login-as-tenant/8d088ff3-b3ea-4b34-b486-7ae4a600990c
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt" FROM "usuarios" AS "Usuario" INNER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" AND "role"."name" = 'Admin' WHERE "Usuario"."tenantId" = '8d088ff3-b3ea-4b34-b486-7ae4a600990c' ORDER BY "Usuario"."createdAt" ASC LIMIT 1;
-[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
-Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
-[SENDER_MONITOR] Verificando 1 disparador(es) inativo(s).
-[SENDER_MONITOR] Verificação de status concluída.
-[Auth Middleware] Request: GET /api/tenants
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt" FROM "tenants" AS "Tenant" ORDER BY "Tenant"."createdAt" DESC;
-[Auth Middleware] Request: POST /api/tenants
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-TypeError: tenantRepository.createTenantWithAdmin is not a function
-    at /usr/src/app/src/controllers/tenantController.js:35:72
-[Auth Middleware] Request: GET /api/superadmin/reports/dashboard
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-Executing (default): SELECT count(*) AS "count" FROM "tenants" AS "Tenant";
-Executing (default): SELECT count(*) AS "count" FROM "usuarios" AS "Usuario";
-Executing (default): SELECT count(*) AS "count" FROM "pesquisas" AS "Pesquisa";
-Executing (default): SELECT count(*) AS "count" FROM "franchisors" AS "Franchisor";
-Executing (default): SELECT DATE_TRUNC('month', "createdAt") AS "month", COUNT("id") AS "count" FROM "usuarios" AS "Usuario" GROUP BY "month" ORDER BY DATE_TRUNC('month', "createdAt") ASC;
-[Auth Middleware] Request: GET /api/tenants
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'd6b790f2-474f-442b-934b-731898c6c795';
-Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt" FROM "tenants" AS "Tenant" ORDER BY "Tenant"."createdAt" DESC;
-[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
-[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
-Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
-Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
-[SENDER_MONITOR] Verificando 1 disparador(es) inativo(s).
-[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
-[SENDER_MONITOR] Verificação de status concluída.
+react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
+    at l (colorManipulator.js:75:13)
+    at h (colorManipulator.js:249:11)
+    at ListItemButton.js:73:134
+    at b (createStyled.js:66:67)
+    at createStyled.js:172:25
+    at h (emotion-serialize.esm.js:109:24)
+    at g (emotion-serialize.esm.js:200:15)
+    at emotion-styled-base.browser.esm.js:123:24
+    at emotion-element-43c6fea0.browser.esm.js:38:12
+    at gi (react-dom.production.min.js:160:137)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
+    at l (colorManipulator.js:75:13)
+    at h (colorManipulator.js:249:11)
+    at ListItemButton.js:73:134
+    at b (createStyled.js:66:67)
+    at createStyled.js:172:25
+    at h (emotion-serialize.esm.js:109:24)
+    at g (emotion-serialize.esm.js:200:15)
+    at emotion-styled-base.browser.esm.js:123:24
+    at emotion-element-43c6fea0.browser.esm.js:38:12
+    at gi (react-dom.production.min.js:160:137)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
+    at l (colorManipulator.js:75:13)
+    at h (colorManipulator.js:249:11)
+    at ListItemButton.js:73:134
+    at b (createStyled.js:66:67)
+    at createStyled.js:172:25
+    at h (emotion-serialize.esm.js:109:24)
+    at g (emotion-serialize.esm.js:200:15)
+    at emotion-styled-base.browser.esm.js:123:24
+    at emotion-element-43c6fea0.browser.esm.js:38:12
+    at gi (react-dom.production.min.js:160:137)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
+    at l (colorManipulator.js:75:13)
+    at h (colorManipulator.js:249:11)
+    at ListItemButton.js:73:134
+    at b (createStyled.js:66:67)
+    at createStyled.js:172:25
+    at h (emotion-serialize.esm.js:109:24)
+    at g (emotion-serialize.esm.js:200:15)
+    at emotion-styled-base.browser.esm.js:123:24
+    at emotion-element-43c6fea0.browser.esm.js:38:12
+    at gi (react-dom.production.min.js:160:137)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
+    at l (colorManipulator.js:75:13)
+    at h (colorManipulator.js:249:11)
+    at ListItemButton.js:73:134
+    at b (createStyled.js:66:67)
+    at createStyled.js:172:25
+    at h (emotion-serialize.esm.js:109:24)
+    at g (emotion-serialize.esm.js:200:15)
+    at emotion-styled-base.browser.esm.js:123:24
+    at emotion-element-43c6fea0.browser.esm.js:38:12
+    at gi (react-dom.production.min.js:160:137)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
+    at l (colorManipulator.js:75:13)
+    at h (colorManipulator.js:249:11)
+    at ListItemButton.js:73:134
+    at b (createStyled.js:66:67)
+    at createStyled.js:172:25
+    at h (emotion-serialize.esm.js:109:24)
+    at g (emotion-serialize.esm.js:200:15)
+    at emotion-styled-base.browser.esm.js:123:24
+    at emotion-element-43c6fea0.browser.esm.js:38:12
+    at gi (react-dom.production.min.js:160:137)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
+    at l (colorManipulator.js:75:13)
+    at h (colorManipulator.js:249:11)
+    at ListItemButton.js:73:134
+    at b (createStyled.js:66:67)
+    at createStyled.js:172:25
+    at h (emotion-serialize.esm.js:109:24)
+    at g (emotion-serialize.esm.js:200:15)
+    at emotion-styled-base.browser.esm.js:123:24
+    at emotion-element-43c6fea0.browser.esm.js:38:12
+    at gi (react-dom.production.min.js:160:137)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
+    at l (colorManipulator.js:75:13)
+    at h (colorManipulator.js:249:11)
+    at ListItemButton.js:73:134
+    at b (createStyled.js:66:67)
+    at createStyled.js:172:25
+    at h (emotion-serialize.esm.js:109:24)
+    at g (emotion-serialize.esm.js:200:15)
+    at emotion-styled-base.browser.esm.js:123:24
+    at emotion-element-43c6fea0.browser.esm.js:38:12
+    at gi (react-dom.production.min.js:160:137)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
+    at l (colorManipulator.js:75:13)
+    at h (colorManipulator.js:249:11)
+    at ListItemButton.js:73:134
+    at b (createStyled.js:66:67)
+    at createStyled.js:172:25
+    at h (emotion-serialize.esm.js:109:24)
+    at g (emotion-serialize.esm.js:200:15)
+    at emotion-styled-base.browser.esm.js:123:24
+    at emotion-element-43c6fea0.browser.esm.js:38:12
+    at gi (react-dom.production.min.js:160:137)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
+    at l (colorManipulator.js:75:13)
+    at h (colorManipulator.js:249:11)
+    at ListItemButton.js:73:134
+    at b (createStyled.js:66:67)
+    at createStyled.js:172:25
+    at h (emotion-serialize.esm.js:109:24)
+    at g (emotion-serialize.esm.js:200:15)
+    at emotion-styled-base.browser.esm.js:123:24
+    at emotion-element-43c6fea0.browser.esm.js:38:12
+    at gi (react-dom.production.min.js:160:137)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
+    at l (colorManipulator.js:75:13)
+    at h (colorManipulator.js:249:11)
+    at ListItemButton.js:73:134
+    at b (createStyled.js:66:67)
+    at createStyled.js:172:25
+    at h (emotion-serialize.esm.js:109:24)
+    at g (emotion-serialize.esm.js:200:15)
+    at emotion-styled-base.browser.esm.js:123:24
+    at emotion-element-43c6fea0.browser.esm.js:38:12
+    at gi (react-dom.production.min.js:160:137)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
+    at l (colorManipulator.js:75:13)
+    at h (colorManipulator.js:249:11)
+    at ListItemButton.js:73:134
+    at b (createStyled.js:66:67)
+    at createStyled.js:172:25
+    at h (emotion-serialize.esm.js:109:24)
+    at g (emotion-serialize.esm.js:200:15)
+    at emotion-styled-base.browser.esm.js:123:24
+    at emotion-element-43c6fea0.browser.esm.js:38:12
+    at gi (react-dom.production.min.js:160:137)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
+    at l (colorManipulator.js:75:13)
+    at h (colorManipulator.js:249:11)
+    at ListItemButton.js:73:134
+    at b (createStyled.js:66:67)
+    at createStyled.js:172:25
+    at h (emotion-serialize.esm.js:109:24)
+    at g (emotion-serialize.esm.js:200:15)
+    at emotion-styled-base.browser.esm.js:123:24
+    at emotion-element-43c6fea0.browser.esm.js:38:12
+    at gi (react-dom.production.min.js:160:137)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+colorManipulator.js:75 Uncaught TypeError: Cannot read properties of null (reading 'type')
+    at l (colorManipulator.js:75:13)
+    at h (colorManipulator.js:249:11)
+    at ListItemButton.js:73:134
+    at b (createStyled.js:66:67)
+    at createStyled.js:172:25
+    at h (emotion-serialize.esm.js:109:24)
+    at g (emotion-serialize.esm.js:200:15)
+    at emotion-styled-base.browser.esm.js:123:24
+    at emotion-element-43c6fea0.browser.esm.js:38:12
+    at gi (react-dom.production.min.js:160:137)
+l @ colorManipulator.js:75
+h @ colorManipulator.js:249
+(anônimo) @ ListItemButton.js:73
+b @ createStyled.js:66
+(anônimo) @ createStyled.js:172
+h @ emotion-serialize.esm.js:109
+g @ emotion-serialize.esm.js:200
+(anônimo) @ emotion-styled-base.browser.esm.js:123
+(anônimo) @ emotion-element-43c6fea0.browser.esm.js:38
+gi @ react-dom.production.min.js:160
+As @ react-dom.production.min.js:192
+Sl @ react-dom.production.min.js:293
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+ac @ react-dom.production.min.js:270
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+main.0c267bf8.js:2 [Violation] 'message' handler took 220ms
+
+
+react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
+    at l (colorManipulator.js:75:13)
+    at h (colorManipulator.js:249:11)
+    at Checkbox.js:51:216
+    at b (createStyled.js:66:67)
+    at createStyled.js:172:25
+    at h (emotion-serialize.esm.js:109:24)
+    at g (emotion-serialize.esm.js:200:15)
+    at emotion-styled-base.browser.esm.js:123:24
+    at emotion-element-43c6fea0.browser.esm.js:38:12
+    at gi (react-dom.production.min.js:160:137)
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+react-dom.production.min.js:188 Error: Minified MUI error #9; visit https://mui.com/production-error/?code=9&args[]=secondary for the full message.
+    at l (colorManipulator.js:84:11)
+    at h (colorManipulator.js:249:11)
+    at A (getTextDecoration.js:23:10)
+    at Link.js:55:26
+    at b (createStyled.js:66:67)
+    at createStyled.js:172:25
+    at h (emotion-serialize.esm.js:109:24)
+    at g (emotion-serialize.esm.js:200:15)
+    at emotion-styled-base.browser.esm.js:123:24
+    at emotion-element-43c6fea0.browser.esm.js:38:12
+ds @ react-dom.production.min.js:188
+n.callback @ react-dom.production.min.js:188
+Ha @ react-dom.production.min.js:156
+xl @ react-dom.production.min.js:261
+bl @ react-dom.production.min.js:259
+yl @ react-dom.production.min.js:258
+(anônimo) @ react-dom.production.min.js:282
+Ac @ react-dom.production.min.js:280
+oc @ react-dom.production.min.js:269
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14
+colorManipulator.js:75 Uncaught TypeError: Cannot read properties of null (reading 'type')
+    at l (colorManipulator.js:75:13)
+    at h (colorManipulator.js:249:11)
+    at Checkbox.js:51:216
+    at b (createStyled.js:66:67)
+    at createStyled.js:172:25
+    at h (emotion-serialize.esm.js:109:24)
+    at g (emotion-serialize.esm.js:200:15)
+    at emotion-styled-base.browser.esm.js:123:24
+    at emotion-element-43c6fea0.browser.esm.js:38:12
+    at gi (react-dom.production.min.js:160:137)
+l @ colorManipulator.js:75
+h @ colorManipulator.js:249
+(anônimo) @ Checkbox.js:51
+b @ createStyled.js:66
+(anônimo) @ createStyled.js:172
+h @ emotion-serialize.esm.js:109
+g @ emotion-serialize.esm.js:200
+(anônimo) @ emotion-styled-base.browser.esm.js:123
+(anônimo) @ emotion-element-43c6fea0.browser.esm.js:38
+gi @ react-dom.production.min.js:160
+As @ react-dom.production.min.js:192
+Sl @ react-dom.production.min.js:293
+bc @ react-dom.production.min.js:279
+vc @ react-dom.production.min.js:279
+gc @ react-dom.production.min.js:279
+ac @ react-dom.production.min.js:270
+oc @ react-dom.production.min.js:267
+w @ scheduler.production.min.js:13
+T @ scheduler.production.min.js:14

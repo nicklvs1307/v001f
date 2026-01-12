@@ -103,7 +103,22 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
     premioGanhador = premios[premios.length - 1];
   }
 
+  // --- MODIFICAÇÃO: Lidar com a opção "Não foi dessa vez" ---
+  if (premioGanhador.isNoPrizeOption) {
+    return res.status(200).json({
+      message: "Não foi dessa vez! Tente novamente em 24 horas.",
+      premio: {
+        id: premioGanhador.id,
+        nome: premioGanhador.nome,
+        descricao: premioGanhador.descricao,
+        isNoPrizeOption: true,
+      },
+      cupom: null, // Nenhum cupom gerado para esta opção
+    });
+  }
+
   const recompensa = premioGanhador.recompensa;
+  // A validação abaixo agora é executada APENAS se não for isNoPrizeOption
   if (!recompensa || !recompensa.id) {
     throw new ApiError(
       500,
@@ -199,9 +214,10 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
         value: recompensa.value,
         type: recompensa.type,
       },
+      isNoPrizeOption: false, // Explicitamente false para prêmios reais
     },
     cupom: {
-      id: novoCupom.id, // Adicionado ID do cupom
+      id: novoCupom.id,
       codigo: novoCupom.codigo,
       dataValidade: novoCupom.dataValidade,
     },
@@ -248,18 +264,20 @@ exports.getRoletaConfig = asyncHandler(async (req, res) => {
   }
 
   const items = premios
-    .filter((premio) => premio.recompensa)
     .map((premio) => ({
       id: premio.id,
       name: premio.nome,
       description: premio.descricao,
       probabilidade: premio.porcentagem,
-      recompensa: {
-        id: premio.recompensa.id,
-        name: premio.recompensa.name,
-        value: premio.recompensa.value,
-        type: premio.recompensa.type,
-      },
+      recompensa: premio.recompensa
+        ? {
+            id: premio.recompensa.id,
+            name: premio.recompensa.name,
+            value: premio.recompensa.value,
+            type: premio.recompensa.type,
+          }
+        : null, // Retorna null se não houver recompensa
+      isNoPrizeOption: premio.isNoPrizeOption, // Adicionado
     }));
 
   res.status(200).json({ items, hasSpun: hasSpunRecently });

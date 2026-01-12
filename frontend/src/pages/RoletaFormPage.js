@@ -77,6 +77,7 @@ const RoletaFormPage = () => {
             recompensaId: p.recompensaId,
             porcentagem: p.porcentagem,
             style: { backgroundColor: p.cor, textColor: getContrastColor(p.cor) },
+            isNoPrizeOption: p.isNoPrizeOption || false, // Adicionar esta linha
           })));
         })
         .catch(err => setError('Erro ao buscar dados da roleta.'))
@@ -100,8 +101,16 @@ const RoletaFormPage = () => {
     const newPremios = [...premios];
     if (field === 'recompensa') {
       const selectedRecompensa = recompensas.find(r => r.id === value);
-      newPremios[index].option = selectedRecompensa ? selectedRecompensa.nome : '';
+      newPremios[index].option = selectedRecompensa ? selectedRecompensa.name : '';
       newPremios[index].recompensaId = value;
+    } else if (field === 'isNoPrizeOption') {
+      newPremios[index].isNoPrizeOption = value;
+      if (value) { // Se for "Não é prêmio", limpa a recompensa e define um nome padrão
+          newPremios[index].recompensaId = null;
+          newPremios[index].option = 'Não foi dessa vez';
+      } else { // Se não for "Não é prêmio", tenta restaurar a recompensa se possível
+          newPremios[index].option = ''; // Limpar, para o usuário digitar ou selecionar
+      }
     } else {
       newPremios[index][field] = value;
     }
@@ -124,6 +133,7 @@ const RoletaFormPage = () => {
       recompensaId: null,
       porcentagem: 0,
       style: { backgroundColor: newColor, textColor: getContrastColor(newColor) },
+      isNoPrizeOption: false, // Adicionar esta linha
     }]);
   };
 
@@ -157,6 +167,7 @@ const RoletaFormPage = () => {
         recompensaId: p.recompensaId,
         porcentagem: Number(p.porcentagem),
         cor: p.style.backgroundColor,
+        isNoPrizeOption: p.isNoPrizeOption, // Adicionar esta linha
       })),
     };
 
@@ -251,10 +262,22 @@ const RoletaFormPage = () => {
               {premios.map((premio, index) => (
                 <Paper key={index} sx={{ p: 2, mb: 2, border: '1px solid #ddd' }}>
                   <Grid container spacing={2} alignItems="center">
+                    <Grid item xs={12}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={premio.isNoPrizeOption}
+                            onChange={(e) => handlePremioChange(index, 'isNoPrizeOption', e.target.checked)}
+                            name="isNoPrizeOption"
+                          />
+                        }
+                        label="Não é prêmio (ex: 'Não foi dessa vez')"
+                      />
+                    </Grid>
                     <Grid item xs={12} sm={5}>
                       <Autocomplete
                         options={recompensas}
-                        getOptionLabel={(option) => option.nome || ''}
+                        getOptionLabel={(option) => option.name || ''}
                         value={recompensas.find(r => r.id === premio.recompensaId) || null}
                         onChange={(event, newValue) => {
                           handlePremioChange(index, 'recompensa', newValue ? newValue.id : null);
@@ -262,9 +285,10 @@ const RoletaFormPage = () => {
                         renderInput={(params) => <TextField {...params} label="Recompensa" />}
                         renderOption={(props, option) => (
                             <Box component="li" {...props}>
-                                {option.nome}
+                                {option.name}
                             </Box>
                         )}
+                        disabled={premio.isNoPrizeOption} // Desabilitar se for "Não é prêmio"
                       />
                     </Grid>
                     <Grid item xs={6} sm={3}>

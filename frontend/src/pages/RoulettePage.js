@@ -52,7 +52,13 @@ const RoulettePage = ({ spinData }) => {
 
       
 
-              setRoletaConfig({ items: roletaData.premios, hasSpun: spinData.status === 'USED' });
+              setRoletaConfig({
+                items: roletaData.premios.map(p => ({
+                  ...p,
+                  isNoPrizeOption: p.isNoPrizeOption || false,
+                })),
+                hasSpun: spinData.status === 'USED'
+              });
 
               setTenant(spinData.roleta.tenant);
 
@@ -98,9 +104,21 @@ const RoulettePage = ({ spinData }) => {
 
               setTenant(tenantResponse);
 
-              const configData = await publicRoletaService.getRoletaConfig(currentPesquisaId, currentClientId);
+                            const configData = await publicRoletaService.getRoletaConfig(currentPesquisaId, currentClientId);
 
-              setRoletaConfig(configData.data);
+                            setRoletaConfig({
+
+                              items: configData.data.items.map(item => ({
+
+                                ...item,
+
+                                isNoPrizeOption: item.isNoPrizeOption || false,
+
+                              })),
+
+                              hasSpun: configData.data.hasSpun
+
+                            });
 
               actualTenant = tenantResponse;
 
@@ -158,13 +176,24 @@ const RoulettePage = ({ spinData }) => {
     setIsSpinning(false);
     // Adiciona um atraso de 4 segundos antes de enviar a mensagem e navegar
     setTimeout(async () => {
-      if (spinResultRef.current && spinResultRef.current.cupom) {
-        try {
-          await publicRoletaService.sendPrizeMessage(spinResultRef.current.cupom.id);
-        } catch (error) {
-          // Continua a navegação mesmo se o envio da mensagem falhar
+      if (spinResultRef.current && spinResultRef.current.premio) {
+        if (spinResultRef.current.premio.isNoPrizeOption) {
+          // Se for a opção "Não foi dessa vez", exibe a mensagem no console e navega para uma página apropriada
+          console.log(spinResultRef.current.message);
+          navigate('/nao-ganhou', {
+            state: {
+              message: spinResultRef.current.message,
+              tenantId: tenant.id
+            }
+          });
+        } else if (spinResultRef.current.cupom) {
+          try {
+            await publicRoletaService.sendPrizeMessage(spinResultRef.current.cupom.id);
+          } catch (error) {
+            // Continua a navegação mesmo se o envio da mensagem falhar
+          }
+          navigate('/parabens', { state: { premio: spinResultRef.current.premio, cupom: spinResultRef.current.cupom, tenantId: tenant.id } });
         }
-        navigate('/parabens', { state: { premio: spinResultRef.current.premio, cupom: spinResultRef.current.cupom, tenantId: tenant.id } });
       }
     }, 4000); // Atraso de 4 segundos
   }, [navigate, tenant]);

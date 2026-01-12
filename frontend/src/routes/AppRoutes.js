@@ -19,6 +19,7 @@ import SurveyIdentifyPage from '../pages/SurveyIdentifyPage';
 import ConfirmClientPage from '../pages/ConfirmClientPage';
 import ClientIdentificationPage from '../pages/ClientIdentificationPage';
 import RoletaSpinPage from '../pages/RoletaSpinPage';
+import NoPrizePage from '../pages/NoPrizePage'; // Adicionar esta linha
 import PrivacyPolicyPage from '../pages/PrivacyPolicyPage';
 const TermsOfServicePage = React.lazy(() => import('../pages/TermsOfServicePage'));
 const IntegrationsPage = React.lazy(() => import('../pages/IntegrationsPage')); // Adicionando a nova página
@@ -112,6 +113,7 @@ const AppRoutes = () => {
         <Route path="/cadastro-cliente/:tenantId/:pesquisaId" element={<ClientRegistrationPage />} />
         <Route path="/roleta/:tenantId/:pesquisaId/:clientId" element={<PublicLayout><RoulettePage /></PublicLayout>} />
         <Route path="/parabens" element={<CongratulationsPage />} />
+        <Route path="/nao-ganhou" element={<NoPrizePage />} /> {/* Adicionar esta linha */}
         <Route path="/validar-cupom/:cupomId" element={<CupomValidationPage />} />
         <Route path="/agradecimento" element={<ThankYouPage />} />
         <Route path="/roleta/spin/:token" element={<RoletaSpinPage />} />

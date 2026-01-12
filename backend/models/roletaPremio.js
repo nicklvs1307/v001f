@@ -63,6 +63,11 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: true,
       allowNull: false,
     },
+    isNoPrizeOption: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+    },
   }, {
     sequelize,
     modelName: 'RoletaPremio',

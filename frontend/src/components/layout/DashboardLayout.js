@@ -407,7 +407,7 @@ const DashboardLayout = () => {
                     }}
                     sx={{
                         display: { xs: 'block', sm: 'none' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, backgroundColor: '#1B2432' },
                     }}
                 >
                     {drawer}
@@ -424,6 +424,7 @@ const DashboardLayout = () => {
                                 duration: theme.transitions.duration.enteringScreen,
                             }),
                             overflowX: 'hidden', // Hide horizontal scrollbar when collapsed
+                            backgroundColor: '#1B2432', // Adicionado aqui
                         },
                     }}
                     open

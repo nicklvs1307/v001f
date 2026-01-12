@@ -4,7 +4,7 @@ const theme = createTheme({
   spacing: 5, // Reduz o espaçamento base (padrão é 8)
   palette: {
     primary: {
-      main: '#FC4C35',
+      main: '#1B2432',
       contrastText: '#FFFFFF',
     },
     secondary: {

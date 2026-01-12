@@ -229,7 +229,7 @@ const DashboardLayout = () => {
                             <ListItemText
                                 primary={
                                     <Box component="span" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                                        <Typography variant="body1" component="span">{item.text}</Typography>
+                                        <Typography variant="body1" component="span" sx={{ color: 'white' }}>{item.text}</Typography>
                                         {item.badge && (
                                             <Box
                                                 component="span"
@@ -266,7 +266,7 @@ const DashboardLayout = () => {
                                                                                     <ListItemText
                                                                                         primary={
                                                                                             <Box component="span" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                                                                                                <Typography variant="body2" component="span">{child.text}</Typography>
+                                                                                                <Typography variant="body2" component="span" sx={{ color: 'white' }}>{child.text}</Typography>
                                                                                                 {child.badge && (
                                                                                                     <Box
                                                                                                         component="span"

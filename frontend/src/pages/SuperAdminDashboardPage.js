@@ -10,7 +10,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { People, Store, Assessment } from '@mui/icons-material';
+import { People, Store, Assessment, Storefront as StorefrontIcon } from '@mui/icons-material';
 import StatCard from '../components/StatCard';
 import reportService from '../services/reportService';
 
@@ -69,7 +69,7 @@ const SuperAdminDashboardPage = () => {
         </Typography>
 
         <Grid container spacing={4} sx={{ mb: 4 }}>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={3}>
             <StatCard
               title="Total de Tenants"
               value={dashboardData.totalTenants}
@@ -77,7 +77,15 @@ const SuperAdminDashboardPage = () => {
               color={theme.palette.primary.main}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard
+              title="Total de Franqueadores"
+              value={dashboardData.totalFranchisors}
+              icon={<StorefrontIcon sx={{ fontSize: 40, color: theme.palette.info.main }} />}
+              color={theme.palette.info.main}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
             <StatCard
               title="Total de Usuários"
               value={dashboardData.totalUsers}
@@ -85,7 +93,7 @@ const SuperAdminDashboardPage = () => {
               color={theme.palette.secondary.main}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={3}>
             <StatCard
               title="Total de Pesquisas"
               value={dashboardData.totalSurveys}

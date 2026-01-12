@@ -6,6 +6,7 @@ const {
   WhatsappSender,
   Client,
   Resposta,
+  Franchisor, // Importar o modelo Franchisor
   sequelize,
 } = require("../../../models");
 const { Op } = require("sequelize");
@@ -15,6 +16,7 @@ class ReportService {
     const totalTenants = await Tenant.count();
     const totalUsers = await Usuario.count();
     const totalSurveys = await Pesquisa.count();
+    const totalFranchisors = await Franchisor.count(); // Contar franqueadores
 
     const userGrowth = await Usuario.findAll({
       attributes: [
@@ -45,6 +47,7 @@ class ReportService {
       totalTenants,
       totalUsers,
       totalSurveys,
+      totalFranchisors, // Retornar o novo valor
       userGrowth: userGrowth.map((item) => ({
         name: new Date(item.month).toLocaleString("default", {
           month: "short",

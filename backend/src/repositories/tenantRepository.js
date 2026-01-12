@@ -1,5 +1,47 @@
-const { Tenant, WhatsappConfig } = require("../../models"); // Importa os modelos
+const { Tenant, WhatsappConfig, Role, Usuario } = require("../../models"); // Importa os modelos
 const { Op } = require("sequelize");
+const { sequelize } = require("../database"); // Import sequelize instance
+
+const createTenantWithAdmin = async (tenantData, adminData) => {
+  const t = await sequelize.transaction();
+  try {
+    if (tenantData.cnpj === "") {
+      tenantData.cnpj = null;
+    }
+    
+    // 1. Criar o Tenant
+    const newTenant = await Tenant.create(tenantData, { transaction: t });
+
+    // 2. Encontrar o Role de Admin
+    const adminRole = await Role.findOne({ where: { name: 'Admin' } }, { transaction: t });
+    if (!adminRole) {
+      throw new Error("O papel 'Admin' não foi encontrado. Execute os seeders.");
+    }
+
+    // 3. Criar o Usuário Admin (senha já vem hasheada do controller)
+    const adminUser = await Usuario.create({
+      tenantId: newTenant.id,
+      roleId: adminRole.id,
+      name: adminData.name,
+      email: adminData.email,
+      passwordHash: adminData.passwordHash, // Espera-se a senha já hasheada
+      franchisorId: newTenant.franchisorId, // Se aplicável
+    }, { transaction: t });
+
+    await t.commit();
+
+    // Retornar dados limpos
+    const tenantResult = { ...newTenant.get({ plain: true }) };
+    const userResult = { ...adminUser.get({ plain: true }) };
+    delete userResult.passwordHash;
+
+    return { tenant: tenantResult, user: userResult };
+
+  } catch (error) {
+    await t.rollback();
+    throw error; // Re-throw para ser tratado pelo asyncHandler no controller
+  }
+};
 
 const createTenant = async (tenantData) => {
   if (tenantData.cnpj === "") {

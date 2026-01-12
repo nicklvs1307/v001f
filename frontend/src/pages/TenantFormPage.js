@@ -17,23 +17,27 @@ const TenantFormPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { showNotification } = useNotification();
+    const isEditMode = Boolean(id);
     const [formData, setFormData] = useState({
         name: '',
         address: '',
         phone: '',
         email: '',
         cnpj: '',
-        description: ''
+        description: '',
+        adminName: '',
+        adminEmail: '',
+        adminPassword: '',
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        if (id) {
+        if (isEditMode) {
             setLoading(true);
             tenantService.getTenantById(id)
                 .then(response => {
-                    setFormData(response.data);
+                    setFormData(prev => ({ ...prev, ...response.data }));
                     setLoading(false);
                 })
                 .catch(err => {
@@ -41,7 +45,7 @@ const TenantFormPage = () => {
                     setLoading(false);
                 });
         }
-    }, [id]);
+    }, [id, isEditMode]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -53,14 +57,16 @@ const TenantFormPage = () => {
         setLoading(true);
         setError('');
         try {
-            if (id) {
-                await tenantService.updateTenant(id, formData);
+            if (isEditMode) {
+                // Em modo de edição, não enviamos os dados do admin
+                const { adminName, adminEmail, adminPassword, ...tenantData } = formData;
+                await tenantService.updateTenant(id, tenantData);
                 showNotification('Tenant updated successfully!', 'success');
             } else {
                 await tenantService.createTenant(formData);
                 showNotification('Tenant created successfully!', 'success');
             }
-            navigate('/dashboard/tenants');
+            navigate('/superadmin/tenants'); // Navegar para a lista de tenants do superadmin
         } catch (err) {
             const errorMessage = err.response?.data?.message || 'An error occurred.';
             setError(errorMessage);
@@ -69,7 +75,7 @@ const TenantFormPage = () => {
         }
     };
 
-    if (loading && id) {
+    if (loading && isEditMode) {
         return <CircularProgress />;
     }
 
@@ -77,15 +83,16 @@ const TenantFormPage = () => {
         <Container maxWidth="md">
             <Paper sx={{ p: 4, mt: 4 }}>
                 <Typography variant="h4" component="h1" gutterBottom>
-                    {id ? 'Edit Tenant' : 'Create Tenant'}
+                    {isEditMode ? 'Edit Tenant' : 'Create Tenant'}
                 </Typography>
                 {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
                 <form onSubmit={handleSubmit}>
+                    <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>Dados da Empresa</Typography>
                     <TextField
                         fullWidth
                         margin="normal"
                         name="name"
-                        label="Name"
+                        label="Nome da Empresa"
                         value={formData.name}
                         onChange={handleChange}
                         required
@@ -94,7 +101,7 @@ const TenantFormPage = () => {
                         fullWidth
                         margin="normal"
                         name="address"
-                        label="Address"
+                        label="Endereço"
                         value={formData.address}
                         onChange={handleChange}
                     />
@@ -102,7 +109,7 @@ const TenantFormPage = () => {
                         fullWidth
                         margin="normal"
                         name="phone"
-                        label="Phone"
+                        label="Telefone"
                         value={formData.phone}
                         onChange={handleChange}
                     />
@@ -110,7 +117,7 @@ const TenantFormPage = () => {
                         fullWidth
                         margin="normal"
                         name="email"
-                        label="Email"
+                        label="Email da Empresa"
                         type="email"
                         value={formData.email}
                         onChange={handleChange}
@@ -127,18 +134,54 @@ const TenantFormPage = () => {
                         fullWidth
                         margin="normal"
                         name="description"
-                        label="Description"
+                        label="Descrição"
                         multiline
                         rows={4}
                         value={formData.description}
                         onChange={handleChange}
                     />
+
+                    {!isEditMode && (
+                        <>
+                            <Typography variant="h6" sx={{ mt: 3, mb: 1 }}>Administrador Principal</Typography>
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                name="adminName"
+                                label="Nome do Administrador"
+                                value={formData.adminName}
+                                onChange={handleChange}
+                                required
+                            />
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                name="adminEmail"
+                                label="Email do Administrador"
+                                type="email"
+                                value={formData.adminEmail}
+                                onChange={handleChange}
+                                required
+                            />
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                name="adminPassword"
+                                label="Senha do Administrador"
+                                type="password"
+                                value={formData.adminPassword}
+                                onChange={handleChange}
+                                required
+                            />
+                        </>
+                    )}
+
                     <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-                        <Button onClick={() => navigate('/dashboard/tenants')} sx={{ mr: 2 }}>
-                            Cancel
+                        <Button onClick={() => navigate('/superadmin/tenants')} sx={{ mr: 2 }}>
+                            Cancelar
                         </Button>
                         <Button type="submit" variant="contained" disabled={loading}>
-                            {loading ? <CircularProgress size={24} /> : (id ? 'Update' : 'Create')}
+                            {loading ? <CircularProgress size={24} /> : (isEditMode ? 'Salvar Alterações' : 'Criar')}
                         </Button>
                     </Box>
                 </form>

@@ -3,32 +3,41 @@ const tenantRepository = require("../repositories/tenantRepository");
 const ApiError = require("../errors/ApiError");
 const fs = require("fs");
 const path = require("path");
+const bcrypt = require('bcryptjs');
 
-// @desc    Criar um novo tenant
+// @desc    Criar um novo tenant com seu usuário admin
 // @route   POST /api/tenants
 // @access  Private (Super Admin)
 exports.createTenant = asyncHandler(async (req, res) => {
-  const { name, address, phone, email, cnpj, description } = req.body;
+  const { 
+    name, address, phone, email, cnpj, description, // Tenant data
+    adminName, adminEmail, adminPassword // Admin user data
+  } = req.body;
   const requestingUser = req.user;
 
-  const tenantData = {
-    name,
-    address,
-    phone,
-    email,
-    cnpj,
-    description,
-  };
+  // Validação
+  if (!name || !adminName || !adminEmail || !adminPassword) {
+    throw new ApiError(400, "Dados da empresa e do administrador são obrigatórios.");
+  }
+
+  // Hash da senha do admin
+  const salt = await bcrypt.genSalt(10);
+  const passwordHash = await bcrypt.hash(adminPassword, salt);
+
+  const tenantData = { name, address, phone, email, cnpj, description };
+  const adminData = { name: adminName, email: adminEmail, passwordHash: passwordHash };
 
   if (requestingUser.role === 'Franqueador') {
     tenantData.franchisorId = requestingUser.franchisorId;
   }
 
-  const newTenant = await tenantRepository.createTenant(tenantData);
+  // Chamar a nova função transacional no repositório
+  const { tenant: newTenant, user: newAdmin } = await tenantRepository.createTenantWithAdmin(tenantData, adminData);
 
   res.status(201).json({
-    message: "Tenant criado com sucesso!",
+    message: "Tenant e usuário administrador criados com sucesso!",
     tenant: newTenant,
+    user: newAdmin,
   });
 });
 

@@ -20,6 +20,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
+import StorefrontIcon from '@mui/icons-material/Storefront';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import StarsIcon from '@mui/icons-material/Stars';
@@ -71,6 +72,7 @@ const SuperAdminLayout = () => {
     const menuItems = useMemo(() => [
         { text: 'Dashboard', icon: <DashboardIcon />, path: '/superadmin/dashboard', roles: [ROLES.SUPER_ADMIN] },
         { text: 'Tenants', icon: <PeopleIcon />, path: '/superadmin/tenants', roles: [ROLES.SUPER_ADMIN] },
+        { text: 'Franqueadores', icon: <StorefrontIcon />, path: '/superadmin/franchisors', roles: [ROLES.SUPER_ADMIN] },
         { text: 'Configurações WhatsApp', icon: <WhatsAppIcon />, path: '/superadmin/whatsapp-config', roles: [ROLES.SUPER_ADMIN] },
         { text: 'Pool de Disparo', icon: <DnsIcon />, path: '/superadmin/sender-pool', roles: [ROLES.SUPER_ADMIN] },
         {

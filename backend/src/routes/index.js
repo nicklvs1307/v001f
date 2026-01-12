@@ -37,6 +37,7 @@ const premiacaoController = require("../controllers/premiacaoController"); // Im
 const superadminRoutes = require("./superadminRoutes");
 const senderRoutes = require("./superadmin/senderRoutes");
 const reportRoutes = require("./superadmin/reportRoutes");
+const franchisorAdminRoutes = require('./superadmin/franchisorAdminRoutes'); // Rota para Super Admin gerenciar franqueadoras
 const franchisorRoutes = require("./franchisorRoutes"); // Importar rotas do franqueador
 const franchisorReportRoutes = require("./franchisorReportRoutes");
 
@@ -50,6 +51,7 @@ module.exports = (router) => {
   router.use("/superadmin", superadminRoutes);
   router.use("/superadmin/senders", senderRoutes);
   router.use("/superadmin/reports", reportRoutes);
+  router.use('/superadmin/franchisors', franchisorAdminRoutes); // Rota para Super Admin gerenciar franqueadoras
 
   // Franchisor Routes
   router.use("/franchisor", franchisorRoutes);

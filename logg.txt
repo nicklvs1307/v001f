@@ -17,8 +17,71 @@ Agendador de processamento de premiações iniciado. A tarefa será executada to
 [CampanhaService] Inicializando campanhas agendadas...
 Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'scheduled' AND "Campanha"."startDate" IS NOT NULL;
 [CampanhaService] 0 campanhas reagendadas.
-Executing (default): SELECT "Usuario"."id", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."tenantId", "Usuario"."roleId", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."email" = 'rafael1@towersfy.com';
-Executing (default): SELECT "name" FROM "roles" AS "Role" WHERE "Role"."id" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
-[Auth Middleware] Request: POST /api/auth/verify-token
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
-Erro no middleware de proteção: column role.key does not exist
+Iniciando processamento do webhook do Uai Rango: {
+  "id_estabelecimento": "68",
+  "cod_pedido": "4A6E9404A##jp",
+  "data": "2026-01-10 09:22:51",
+  "pedido_pronto": "0",
+  "data_pedido_pronto": null,
+  "cupom": null,
+  "tipo_entrega": "Delivery",
+  "prazo": null,
+  "categoria_pagamento": "Dinheiro",
+  "forma_pagamento": "Dinheiro",
+  "troco": "0",
+  "valor_total": "35.70",
+  "observacao": "",
+  "taxa_entrega": "1.00",
+  "nome_taxa_entrega": "Fixa",
+  "status": {
+
+    "id": 0,
+    "status": "Pendente"
+  },
+  "produtos": [
+    {
+      "id_categoria": "219",
+      "codigo_categoria": "",
+      "categoria": "Hamburguer 180gr",
+      "id_opcao": "1474",
+      "opcao": "Bem Passado",
+      "id_produto": "654",
+      "codigo": "2171369",
+      "produto": "Queridinho",
+      "id_produto_2": null,
+      "codigo_2": "",
+      "produto_2": null,
+      "obs": "",
+      "valor": "29.90",
+      "quantidade": "1",
+      "adicionais": [
+
+{
+          "id_tipo": "55",
+          "id_adicional": "56",
+          "codigo": "1299535",
+          "nome": "Maione de ervas",
+          "valor": "2.90"
+
+}
+      ]
+    }
+  ],
+  "usuario": {
+    "id": "36",
+    "nome": "Lucas Niquele",
+    "tel1": "35998374007##jp"
+  },
+  "endereco": {
+    "id": "35",
+    "uf": "MG",
+    "cidade": "Andradas",
+    "bairro": "Centro",
+    "rua": "vitoria buzato",
+    "num": "100",
+    "complemento": "casa",
+    "ponto_referencia": "ao lado do centro"
+  }
+}
+Executing (default): SELECT "id", "name", "address", "phone", "email", "logoUrl", "primaryColor", "secondaryColor", "description", "website", "cnpj", "inscricaoEstadual", "reportPhoneNumber", "gmb_link", "uairangoEstablishmentId", "franchisorId", "createdAt", "updatedAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."uairangoEstablishmentId" = '68';
+[UaiRango Webhook] Tenant não encontrado para uairangoEstablishmentId: 68. Payload: {"id_estabelecimento":"68","cod_pedido":"4A6E9404A##jp","data":"2026-01-10 09:22:51","pedido_pronto":"0","data_pedido_pronto":null,"cupom":null,"tipo_entrega":"Delivery","prazo":null,"categoria_pagamento":"Dinheiro","forma_pagamento":"Dinheiro","troco":"0","valor_total":"35.70","observacao":"","taxa_entrega":"1.00","nome_taxa_entrega":"Fixa","status":{"id":0,"status":"Pendente"},"produtos":[{"id_categoria":"219","codigo_categoria":"","categoria":"Hamburguer 180gr","id_opcao":"1474","opcao":"Bem Passado","id_produto":"654","codigo":"2171369","produto":"Queridinho","id_produto_2":null,"codigo_2":"","produto_2":null,"obs":"","valor":"29.90","quantidade":"1","adicionais":[{"id_tipo":"55","id_adicional":"56","codigo":"1299535","nome":"Maione de ervas","valor":"2.90"}]}],"usuario":{"id":"36","nome":"Lucas Niquele","tel1":"35998374007##jp"},"endereco":{"id":"35","uf":"MG","cidade":"Andradas","bairro":"Centro","rua":"vitoria buzato","num":"100","complemento":"casa","ponto_referencia":"ao lado do centro"}}

@@ -76,6 +76,8 @@ const SenderConnectPage = React.lazy(() => import('../pages/SenderConnectPage'))
 const SystemReportsPage = React.lazy(() => import('../pages/SystemReportsPage'));
 const TenantReportsPage = React.lazy(() => import('../pages/TenantReportsPage'));
 const SuperAdminDashboardPage = React.lazy(() => import('../pages/SuperAdminDashboardPage'));
+const FranchisorsPage = React.lazy(() => import('../pages/FranchisorsPage'));
+const FranchisorFormPage = React.lazy(() => import('../pages/FranchisorFormPage'));
 const FranchisorDashboardPage = React.lazy(() => import('../pages/FranchisorDashboardPage'));
 const FranchiseesPage = React.lazy(() => import('../pages/FranchiseesPage'));
 const FranchisorUsersPage = React.lazy(() => import('../pages/FranchisorUsersPage'));
@@ -122,6 +124,9 @@ const AppRoutes = () => {
             <Route path="tenants" element={<TenantsPage />} />
             <Route path="tenants/new" element={<TenantFormPage />} />
             <Route path="tenants/edit/:id" element={<TenantFormPage />} />
+            <Route path="franchisors" element={<FranchisorsPage />} />
+            <Route path="franchisors/new" element={<FranchisorFormPage />} />
+            <Route path="franchisors/edit/:id" element={<FranchisorFormPage />} />
             <Route path="whatsapp-config" element={<WhatsappConfigPage />} />
             <Route path="sender-pool" element={<SenderPoolPage />} />
             <Route path="senders/:id/connect" element={<SenderConnectPage />} />

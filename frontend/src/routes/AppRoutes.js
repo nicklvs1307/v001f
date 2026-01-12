@@ -214,7 +214,7 @@ const AppRoutes = () => {
               <Route path="premiacoes/historico" element={<PremiacaoHistoricoPage />} /> {/* Nova rota de histórico de premiações */}
             </Route>
           </Route>
-        
+        </MuiThemeProvider>
 
         {/* Catch-all para rotas não encontradas */}
         <Route path="*" element={<Navigate to="/login" />} />

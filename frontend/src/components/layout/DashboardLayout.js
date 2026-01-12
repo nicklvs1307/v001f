@@ -312,6 +312,7 @@ const DashboardLayout = () => {
                     ml: { sm: drawerOpen ? `${drawerWidth}px` : `${collapsedDrawerWidth}px` },
                     borderBottom: '1px solid #e3e6f0',
                     boxShadow: 'none',
+                    backgroundColor: '#1B2432', // Adicionado para forçar a cor escura
                     mt: isImpersonating ? '48px' : 0, // Adjust for banner
                 }}
             >

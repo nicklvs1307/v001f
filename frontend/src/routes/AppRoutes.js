@@ -118,8 +118,8 @@ const AppRoutes = () => {
         <Route path="/roleta/spin/:token" element={<RoletaSpinPage />} />
 
         {/* Rotas Privadas */}
-        <Route element={<PrivateRoute />}>
-          <MuiThemeProvider theme={baseTheme}>
+        <MuiThemeProvider theme={baseTheme}>
+          <Route element={<PrivateRoute />}>
             {/* Painel do Super Admin */}
             <Route path="/superadmin" element={<SuperAdminLayout />}>
               <Route index element={<SuperAdminDashboardPage />} />
@@ -213,8 +213,8 @@ const AppRoutes = () => {
               <Route path="geral/nuvem-de-palavras" element={<NuvemDePalavrasPage />} />
               <Route path="premiacoes/historico" element={<PremiacaoHistoricoPage />} /> {/* Nova rota de histórico de premiações */}
             </Route>
-          </MuiThemeProvider>
-        </Route>
+          </Route>
+        
 
         {/* Catch-all para rotas não encontradas */}
         <Route path="*" element={<Navigate to="/login" />} />

@@ -87,7 +87,7 @@ const NoPrizeComponent = ({ message, tenant }) => {
                         A roleta girou, mas infelizmente não saiu um prêmio para você desta vez.
                     </Typography>
                     <Typography variant="body1" sx={{ color: theme.palette.text.secondary, mt: 1 }}>
-                        Não desanime! Continue interagindo e quem sabe na próxima você não leva um prêmio incrível!
+                        Não desanime! Tente novamente na sua próxima visita ou pedido.
                     </Typography>
                 </Box>
                 <Box sx={{ padding: '20px', backgroundColor: theme.palette.grey[100], color: theme.palette.dark.main, fontSize: { xs: '0.8rem', sm: '0.9rem' } }}>

@@ -50,7 +50,7 @@ const modalStyle = {
 
 const CriterioList = () => {
   const { user: currentUser } = useContext(AuthContext);
-  console.log('Role do usuário em CriterioList:', currentUser.role);
+
   const [criterios, setCriterios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openCreateModal, setOpenCreateModal] = useState(false);
@@ -147,7 +147,7 @@ const CriterioList = () => {
     return <CircularProgress />;
   }
 
-  const canManageCriteria = currentUser.role === ROLES.SUPER_ADMIN || currentUser.role === ROLES.ADMIN || currentUser.role === ROLES.TENANT_ADMIN;
+  const canManageCriteria = currentUser.role.name === ROLES.SUPER_ADMIN || currentUser.role.name === ROLES.ADMIN || currentUser.role.name === ROLES.TENANT_ADMIN;
 
   return (
     <Paper elevation={3} sx={{ p: 4, mt: 4 }}>

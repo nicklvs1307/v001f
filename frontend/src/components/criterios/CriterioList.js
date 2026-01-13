@@ -50,6 +50,7 @@ const modalStyle = {
 
 const CriterioList = () => {
   const { user: currentUser } = useContext(AuthContext);
+  console.log('Role do usuário em CriterioList:', currentUser.role);
   const [criterios, setCriterios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openCreateModal, setOpenCreateModal] = useState(false);

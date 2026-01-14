@@ -32,9 +32,10 @@ router.get('/authorize', protect, asyncHandler(async (req, res) => {
     if (!tenant) {
         throw new ApiError(404, 'Tenant not found.');
     }
-    if (!tenant.ifoodClientId) {
-        throw new ApiError(400, 'iFood Client ID not configured for this tenant. Please configure it first.');
-    }
+    // TEMPORÁRIO PARA DEBUG: Esta verificação deve ser reativada em produção.
+    // if (!tenant.ifoodClientId) {
+    //     throw new ApiError(400, 'iFood Client ID not configured for this tenant. Please configure it first.');
+    // }
 
     // Usar um 'state' para segurança e para passar contexto como tenantId
     const state = Buffer.from(JSON.stringify({ tenantId })).toString('base64');

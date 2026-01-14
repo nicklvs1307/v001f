@@ -334,14 +334,7 @@ const ifoodService = {
     // --- Funções Auxiliares para o Job ---
     async runIfoodPolling() {
         console.log("[iFood Polling Job] Starting iFood polling for all active tenants...");
-        const tenants = await tenantRepository.getTenants({
-            where: {
-                ifoodMerchantId: { [Op.ne]: null },
-                ifoodAccessToken: { [Op.ne]: null },
-                ifoodClientId: { [Op.ne]: null },
-                ifoodClientSecret: { [Op.ne]: null },
-            },
-        });
+        const tenants = await tenantRepository.findIfoodEnabledTenants();
 
         for (const tenant of tenants) {
             console.log(`[iFood Polling Job] Polling events for tenant: ${tenant.id} (Merchant ID: ${tenant.ifoodMerchantId})`);

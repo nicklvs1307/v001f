@@ -171,6 +171,18 @@ const findByUaiRangoId = async (uairangoEstablishmentId) => {
   return Tenant.findOne({ where: { uairangoEstablishmentId } });
 };
 
+const findIfoodEnabledTenants = async () => {
+  return Tenant.findAll({
+    where: {
+      ifoodMerchantId: { [Op.ne]: null },
+      ifoodAccessToken: { [Op.ne]: null },
+      ifoodClientId: { [Op.ne]: null },
+      ifoodClientSecret: { [Op.ne]: null },
+    },
+    attributes: ['id', 'name', 'ifoodMerchantId', 'ifoodAccessToken', 'ifoodRefreshToken', 'ifoodTokenExpiresAt', 'ifoodClientId', 'ifoodClientSecret'],
+  });
+};
+
 module.exports = {
   createTenantWithAdmin,
   createTenant,
@@ -181,5 +193,6 @@ module.exports = {
   getTenantLogoUrlById,
   findAllWithReportPhoneNumber,
   findByName,
-  findByUaiRangoId, // Adicionar a nova função
+  findByUaiRangoId,
+  findIfoodEnabledTenants, // Adicionar a nova função
 };

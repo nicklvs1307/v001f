@@ -10,7 +10,7 @@ import {
     Button,
     CircularProgress,
     Alert,
-    Modal
+    Drawer // Substituído Modal por Drawer
 } from '@mui/material';
 import tenantService from '../services/tenantService';
 import toast from 'react-hot-toast';
@@ -350,27 +350,36 @@ const IntegrationsPage = () => {
 
 const UaiRangoConfigModal = ({ open, onClose, uairangoId, setUairangoId, handleSave }) => {
     return (
-        <Modal
+        <Drawer
+            anchor="right"
             open={open}
             onClose={onClose}
-            aria-labelledby="modal-title"
-            aria-describedby="modal-description"
+            PaperProps={{
+                sx: { width: 400 } // Ajustar a largura conforme necessário
+            }}
         >
             <Box sx={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: 400,
-                bgcolor: 'background.paper',
-                border: '2px solid #000',
-                boxShadow: 24,
+                width: '100%',
                 p: 4,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center', // Centraliza o conteúdo horizontalmente
+                height: '100%' // Ocupa a altura total do Drawer
             }}>
-                <Typography id="modal-title" variant="h6" component="h2" gutterBottom>
+                <Box
+                    component="img"
+                    src={UaiRangoLogo} // Usar a logo do Uai Rango
+                    alt="Uai Rango Logo"
+                    sx={{
+                        width: 100, // Tamanho da logo
+                        height: 100,
+                        mb: 2,
+                    }}
+                />
+                <Typography variant="h6" component="h2" gutterBottom>
                     Configurar Uai Rango
                 </Typography>
-                <Typography id="modal-description" sx={{ mt: 2, mb: 2 }}>
+                <Typography sx={{ mt: 2, mb: 2, textAlign: 'center' }}>
                     Forneça o ID do seu estabelecimento no Uai Rango e configure o webhook para começar a receber os pedidos.
                 </Typography>
                 <TextField
@@ -399,7 +408,7 @@ const UaiRangoConfigModal = ({ open, onClose, uairangoId, setUairangoId, handleS
                         handleSave('uairango');
                         onClose();
                     }}
-                    sx={{ mr: 2 }}
+                    sx={{ mb: 2 }}
                 >
                     Salvar
                 </Button>
@@ -409,37 +418,46 @@ const UaiRangoConfigModal = ({ open, onClose, uairangoId, setUairangoId, handleS
                 >
                     Cancelar
                 </Button>
-                <Alert severity="info" sx={{ mt: 2 }}>
+                <Alert severity="info" sx={{ mt: 2, textAlign: 'center' }}>
                     É necessário entrar em contato com o suporte do Voltaki para liberar a integração.
                 </Alert>
             </Box>
-        </Modal>
+        </Drawer>
     );
 };
 
 const IfoodConfigModal = ({ open, onClose, ifoodMerchantId, setIfoodMerchantId, handleSave, handleConnectIfood, ifoodConnected }) => {
     return (
-        <Modal
+        <Drawer
+            anchor="right"
             open={open}
             onClose={onClose}
-            aria-labelledby="modal-title"
-            aria-describedby="modal-description"
+            PaperProps={{
+                sx: { width: 400 } // Ajustar a largura conforme necessário
+            }}
         >
             <Box sx={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: 400,
-                bgcolor: 'background.paper',
-                border: '2px solid #000',
-                boxShadow: 24,
+                width: '100%',
                 p: 4,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center', // Centraliza o conteúdo horizontalmente
+                height: '100%' // Ocupa a altura total do Drawer
             }}>
-                <Typography id="modal-title" variant="h6" component="h2" gutterBottom>
+                <Box
+                    component="img"
+                    src={IfoodLogo} // Usar a logo do iFood
+                    alt="iFood Logo"
+                    sx={{
+                        width: 100, // Tamanho da logo
+                        height: 100,
+                        mb: 2,
+                    }}
+                />
+                <Typography variant="h6" component="h2" gutterBottom>
                     Configurar iFood
                 </Typography>
-                <Typography id="modal-description" sx={{ mt: 2, mb: 2 }}>
+                <Typography sx={{ mt: 2, mb: 2, textAlign: 'center' }}>
                     Conecte sua conta iFood para permitir que o sistema busque seus pedidos automaticamente. Primeiro, salve o ID do estabelecimento, depois conecte a conta iFood.
                 </Typography>
                 <TextField
@@ -457,7 +475,7 @@ const IfoodConfigModal = ({ open, onClose, ifoodMerchantId, setIfoodMerchantId, 
                         handleSave('ifood');
                         onClose();
                     }}
-                    sx={{ mr: 2 }}
+                    sx={{ mb: 2 }}
                 >
                     Salvar ID
                 </Button>
@@ -469,15 +487,16 @@ const IfoodConfigModal = ({ open, onClose, ifoodMerchantId, setIfoodMerchantId, 
                         onClose();
                     }}
                     disabled={!ifoodMerchantId} // Desabilita se o merchantId não estiver preenchido
+                    sx={{ mb: 2 }}
                 >
                     {ifoodConnected ? 'iFood Conectado' : 'Conectar iFood'}
                 </Button>
 
-                <Alert severity="info" sx={{ mt: 2 }}>
+                <Alert severity="info" sx={{ mt: 2, textAlign: 'center' }}>
                     A integração com o iFood utiliza polling para buscar pedidos. Certifique-se de que o Client ID e Client Secret do iFood estão configurados nas variáveis de ambiente do backend.
                 </Alert>
             </Box>
-        </Modal>
+        </Drawer>
     );
 };
 

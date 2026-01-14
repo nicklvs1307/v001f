@@ -83,7 +83,8 @@ const startServer = async () => {
     const { initSenderMonitorJob } = require("./jobs/senderMonitorJob");
     const { initWarmingUpProgressJob } = require("./jobs/warmingUpProgressJob");
     const { initCampaignMonitorJob } = require("./jobs/campaignMonitorJob");
-    const awardProcessorJob = require("./jobs/awardProcessorJob"); // Importar o novo job
+    const awardProcessorJob = require("./jobs/awardProcessorJob");
+    const ifoodPollingJob = require("./jobs/ifoodPollingJob"); // Importar o job de polling do iFood
 
     dailyReportJob.start();
     weeklyReportJob.start();
@@ -95,7 +96,8 @@ const startServer = async () => {
     initSenderMonitorJob();
     initWarmingUpProgressJob();
     initCampaignMonitorJob();
-    awardProcessorJob.start(); // Iniciar o novo job de premiações
+    awardProcessorJob.start();
+    ifoodPollingJob.start(); // Iniciar o job de polling do iFood
 
     // Instanciar dependências e inicializar agendamentos de campanha
     const CampanhaService = require("./services/campanhaService");

@@ -28,6 +28,7 @@ const whatsappTemplateRoutes = require("./whatsappTemplateRoutes"); // Rota para
 const roletaRoutes = require("./roletaRoutes");
 const whatsappWebhookRoutes = require("./whatsappWebhookRoutes");
 const deliveryWebhookRoutes = require("./deliveryWebhookRoutes"); // Importar as novas rotas de webhook de delivery
+const ifoodRoutes = require("./ifoodRoutes"); // Importar as rotas do iFood
 const roletaAdminRoutes = require("./roletaAdminRoutes");
 const automationRoutes = require("./automationRoutes");
 const aiRoutes = require("./aiRoutes"); // Import the new AI routes
@@ -76,6 +77,7 @@ module.exports = (router) => {
   router.use("/whatsapp-templates", whatsappTemplateRoutes); // Rota para templates
   router.use("/whatsapp-webhook", whatsappWebhookRoutes);
   router.use("/delivery-webhooks", deliveryWebhookRoutes); // Registrar as novas rotas de webhook de delivery
+  router.use("/ifood", ifoodRoutes); // Registrar as rotas do iFood
   router.use("/roleta", roletaRoutes);
   router.use("/survey-templates", surveyTemplateRoutes);
   router.use("/gmb-auth", gmbAuthRoutes);

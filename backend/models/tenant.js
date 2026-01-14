@@ -76,6 +76,31 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       unique: true,
     },
+    ifoodMerchantId: { // ID do estabelecimento no iFood
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true,
+    },
+    ifoodAccessToken: { // Token de acesso OAuth para a API do iFood
+      type: DataTypes.STRING(2048), // Tamanho maior para tokens
+      allowNull: true,
+    },
+    ifoodRefreshToken: { // Token de atualização OAuth para a API do iFood
+      type: DataTypes.STRING(2048), // Tamanho maior para tokens
+      allowNull: true,
+    },
+    ifoodTokenExpiresAt: { // Data de expiração do token de acesso
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    ifoodClientId: { // ID do Cliente OAuth para a API do iFood (por tenant)
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    ifoodClientSecret: { // Segredo do Cliente OAuth para a API do iFood (por tenant)
+      type: DataTypes.STRING(2048), // Pode ser um segredo longo
+      allowNull: true,
+    },
     franchisorId: {
       type: DataTypes.UUID,
       allowNull: true,

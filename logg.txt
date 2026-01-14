@@ -1,393 +1,68 @@
-react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
-    at l (colorManipulator.js:75:13)
-    at h (colorManipulator.js:249:11)
-    at ListItemButton.js:73:134
-    at b (createStyled.js:66:67)
-    at createStyled.js:172:25
-    at h (emotion-serialize.esm.js:109:24)
-    at g (emotion-serialize.esm.js:200:15)
-    at emotion-styled-base.browser.esm.js:123:24
-    at emotion-element-43c6fea0.browser.esm.js:38:12
-    at gi (react-dom.production.min.js:160:137)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
-react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
-    at l (colorManipulator.js:75:13)
-    at h (colorManipulator.js:249:11)
-    at ListItemButton.js:73:134
-    at b (createStyled.js:66:67)
-    at createStyled.js:172:25
-    at h (emotion-serialize.esm.js:109:24)
-    at g (emotion-serialize.esm.js:200:15)
-    at emotion-styled-base.browser.esm.js:123:24
-    at emotion-element-43c6fea0.browser.esm.js:38:12
-    at gi (react-dom.production.min.js:160:137)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
-react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
-    at l (colorManipulator.js:75:13)
-    at h (colorManipulator.js:249:11)
-    at ListItemButton.js:73:134
-    at b (createStyled.js:66:67)
-    at createStyled.js:172:25
-    at h (emotion-serialize.esm.js:109:24)
-    at g (emotion-serialize.esm.js:200:15)
-    at emotion-styled-base.browser.esm.js:123:24
-    at emotion-element-43c6fea0.browser.esm.js:38:12
-    at gi (react-dom.production.min.js:160:137)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
-react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
-    at l (colorManipulator.js:75:13)
-    at h (colorManipulator.js:249:11)
-    at ListItemButton.js:73:134
-    at b (createStyled.js:66:67)
-    at createStyled.js:172:25
-    at h (emotion-serialize.esm.js:109:24)
-    at g (emotion-serialize.esm.js:200:15)
-    at emotion-styled-base.browser.esm.js:123:24
-    at emotion-element-43c6fea0.browser.esm.js:38:12
-    at gi (react-dom.production.min.js:160:137)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
-react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
-    at l (colorManipulator.js:75:13)
-    at h (colorManipulator.js:249:11)
-    at ListItemButton.js:73:134
-    at b (createStyled.js:66:67)
-    at createStyled.js:172:25
-    at h (emotion-serialize.esm.js:109:24)
-    at g (emotion-serialize.esm.js:200:15)
-    at emotion-styled-base.browser.esm.js:123:24
-    at emotion-element-43c6fea0.browser.esm.js:38:12
-    at gi (react-dom.production.min.js:160:137)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
-react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
-    at l (colorManipulator.js:75:13)
-    at h (colorManipulator.js:249:11)
-    at ListItemButton.js:73:134
-    at b (createStyled.js:66:67)
-    at createStyled.js:172:25
-    at h (emotion-serialize.esm.js:109:24)
-    at g (emotion-serialize.esm.js:200:15)
-    at emotion-styled-base.browser.esm.js:123:24
-    at emotion-element-43c6fea0.browser.esm.js:38:12
-    at gi (react-dom.production.min.js:160:137)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
-react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
-    at l (colorManipulator.js:75:13)
-    at h (colorManipulator.js:249:11)
-    at ListItemButton.js:73:134
-    at b (createStyled.js:66:67)
-    at createStyled.js:172:25
-    at h (emotion-serialize.esm.js:109:24)
-    at g (emotion-serialize.esm.js:200:15)
-    at emotion-styled-base.browser.esm.js:123:24
-    at emotion-element-43c6fea0.browser.esm.js:38:12
-    at gi (react-dom.production.min.js:160:137)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
-react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
-    at l (colorManipulator.js:75:13)
-    at h (colorManipulator.js:249:11)
-    at ListItemButton.js:73:134
-    at b (createStyled.js:66:67)
-    at createStyled.js:172:25
-    at h (emotion-serialize.esm.js:109:24)
-    at g (emotion-serialize.esm.js:200:15)
-    at emotion-styled-base.browser.esm.js:123:24
-    at emotion-element-43c6fea0.browser.esm.js:38:12
-    at gi (react-dom.production.min.js:160:137)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
-react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
-    at l (colorManipulator.js:75:13)
-    at h (colorManipulator.js:249:11)
-    at ListItemButton.js:73:134
-    at b (createStyled.js:66:67)
-    at createStyled.js:172:25
-    at h (emotion-serialize.esm.js:109:24)
-    at g (emotion-serialize.esm.js:200:15)
-    at emotion-styled-base.browser.esm.js:123:24
-    at emotion-element-43c6fea0.browser.esm.js:38:12
-    at gi (react-dom.production.min.js:160:137)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
-react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
-    at l (colorManipulator.js:75:13)
-    at h (colorManipulator.js:249:11)
-    at ListItemButton.js:73:134
-    at b (createStyled.js:66:67)
-    at createStyled.js:172:25
-    at h (emotion-serialize.esm.js:109:24)
-    at g (emotion-serialize.esm.js:200:15)
-    at emotion-styled-base.browser.esm.js:123:24
-    at emotion-element-43c6fea0.browser.esm.js:38:12
-    at gi (react-dom.production.min.js:160:137)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
-react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
-    at l (colorManipulator.js:75:13)
-    at h (colorManipulator.js:249:11)
-    at ListItemButton.js:73:134
-    at b (createStyled.js:66:67)
-    at createStyled.js:172:25
-    at h (emotion-serialize.esm.js:109:24)
-    at g (emotion-serialize.esm.js:200:15)
-    at emotion-styled-base.browser.esm.js:123:24
-    at emotion-element-43c6fea0.browser.esm.js:38:12
-    at gi (react-dom.production.min.js:160:137)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
-react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
-    at l (colorManipulator.js:75:13)
-    at h (colorManipulator.js:249:11)
-    at ListItemButton.js:73:134
-    at b (createStyled.js:66:67)
-    at createStyled.js:172:25
-    at h (emotion-serialize.esm.js:109:24)
-    at g (emotion-serialize.esm.js:200:15)
-    at emotion-styled-base.browser.esm.js:123:24
-    at emotion-element-43c6fea0.browser.esm.js:38:12
-    at gi (react-dom.production.min.js:160:137)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
-react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
-    at l (colorManipulator.js:75:13)
-    at h (colorManipulator.js:249:11)
-    at ListItemButton.js:73:134
-    at b (createStyled.js:66:67)
-    at createStyled.js:172:25
-    at h (emotion-serialize.esm.js:109:24)
-    at g (emotion-serialize.esm.js:200:15)
-    at emotion-styled-base.browser.esm.js:123:24
-    at emotion-element-43c6fea0.browser.esm.js:38:12
-    at gi (react-dom.production.min.js:160:137)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
-colorManipulator.js:75 Uncaught TypeError: Cannot read properties of null (reading 'type')
-    at l (colorManipulator.js:75:13)
-    at h (colorManipulator.js:249:11)
-    at ListItemButton.js:73:134
-    at b (createStyled.js:66:67)
-    at createStyled.js:172:25
-    at h (emotion-serialize.esm.js:109:24)
-    at g (emotion-serialize.esm.js:200:15)
-    at emotion-styled-base.browser.esm.js:123:24
-    at emotion-element-43c6fea0.browser.esm.js:38:12
-    at gi (react-dom.production.min.js:160:137)
-l @ colorManipulator.js:75
-h @ colorManipulator.js:249
-(anônimo) @ ListItemButton.js:73
-b @ createStyled.js:66
-(anônimo) @ createStyled.js:172
-h @ emotion-serialize.esm.js:109
-g @ emotion-serialize.esm.js:200
-(anônimo) @ emotion-styled-base.browser.esm.js:123
-(anônimo) @ emotion-element-43c6fea0.browser.esm.js:38
-gi @ react-dom.production.min.js:160
-As @ react-dom.production.min.js:192
-Sl @ react-dom.production.min.js:293
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-ac @ react-dom.production.min.js:270
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
-main.0c267bf8.js:2 [Violation] 'message' handler took 220ms
+{
+    "id": "bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5",
+    "tenantId": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd",
+    "roleId": "ce609d07-d83f-4002-a892-e17c91b767d3",
+    "franchisorId": null,
+    "name": "Lucas",
+    "email": "rafael1@towersfy.com",
+    "passwordHash": "$2a$10$VRlf1XIqq39DijGUElmo3OLsDZFS29F5j/kX1uKwG3yrkQ3mARn56",
+    "profilePictureUrl": null,
+    "createdAt": "2025-09-29T20:56:14.726Z",
+    "updatedAt": "2025-09-29T20:56:14.726Z",
+    "role": {
+        "id": "ce609d07-d83f-4002-a892-e17c91b767d3",
+        "name": "Admin",
+        "key": "admin",
+        "description": "Administrador de um tenant específico.",
+        "isSystemRole": true,
+        "createdAt": "2025-09-27T17:41:21.372Z",
+        "updatedAt": "2025-09-27T17:41:21.372Z"
+    },
+    "tenant": {
+        "id": "3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd",
+        "name": "Roma Pizzaria & Chopperiaaa",
+        "address": "Endereço teste",
+        "phone": "3598979897",
+        "email": "romapizzaria@towersfy.com",
+        "logoUrl": "/uploads/logos/3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd-1758996127619.png",
+        "primaryColor": "#e13333",
+        "secondaryColor": "#3c92c8",
+        "description": "teste",
+        "website": null,
+        "cnpj": "000000000000000",
+        "inscricaoEstadual": null,
+        "reportPhoneNumber": "",
+        "gmb_link": "https://search.google.com/local/writereview?placeid=ChIJcfyzAL_Hy5QR4eCg9WAT1LM",
+        "uairangoEstablishmentId": "68",
+        "franchisorId": null,
+        "createdAt": "2025-09-27T18:01:10.944Z",
+        "updatedAt": "2026-01-10T13:10:35.437Z"
+    }
+}
 
 
-react-dom.production.min.js:188 TypeError: Cannot read properties of null (reading 'type')
-    at l (colorManipulator.js:75:13)
-    at h (colorManipulator.js:249:11)
-    at Checkbox.js:51:216
-    at b (createStyled.js:66:67)
-    at createStyled.js:172:25
-    at h (emotion-serialize.esm.js:109:24)
-    at g (emotion-serialize.esm.js:200:15)
-    at emotion-styled-base.browser.esm.js:123:24
-    at emotion-element-43c6fea0.browser.esm.js:38:12
-    at gi (react-dom.production.min.js:160:137)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
-react-dom.production.min.js:188 Error: Minified MUI error #9; visit https://mui.com/production-error/?code=9&args[]=secondary for the full message.
-    at l (colorManipulator.js:84:11)
-    at h (colorManipulator.js:249:11)
-    at A (getTextDecoration.js:23:10)
-    at Link.js:55:26
-    at b (createStyled.js:66:67)
-    at createStyled.js:172:25
-    at h (emotion-serialize.esm.js:109:24)
-    at g (emotion-serialize.esm.js:200:15)
-    at emotion-styled-base.browser.esm.js:123:24
-    at emotion-element-43c6fea0.browser.esm.js:38:12
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
-colorManipulator.js:75 Uncaught TypeError: Cannot read properties of null (reading 'type')
-    at l (colorManipulator.js:75:13)
-    at h (colorManipulator.js:249:11)
-    at Checkbox.js:51:216
-    at b (createStyled.js:66:67)
-    at createStyled.js:172:25
-    at h (emotion-serialize.esm.js:109:24)
-    at g (emotion-serialize.esm.js:200:15)
-    at emotion-styled-base.browser.esm.js:123:24
-    at emotion-element-43c6fea0.browser.esm.js:38:12
-    at gi (react-dom.production.min.js:160:137)
-l @ colorManipulator.js:75
-h @ colorManipulator.js:249
-(anônimo) @ Checkbox.js:51
-b @ createStyled.js:66
-(anônimo) @ createStyled.js:172
-h @ emotion-serialize.esm.js:109
-g @ emotion-serialize.esm.js:200
-(anônimo) @ emotion-styled-base.browser.esm.js:123
-(anônimo) @ emotion-element-43c6fea0.browser.esm.js:38
-gi @ react-dom.production.min.js:160
-As @ react-dom.production.min.js:192
-Sl @ react-dom.production.min.js:293
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-ac @ react-dom.production.min.js:270
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
+
+{
+    "id": "ce609d07-d83f-4002-a892-e17c91b767d3",
+    "name": "Admin",
+    "key": "admin",
+    "description": "Administrador de um tenant específico.",
+    "isSystemRole": true,
+    "createdAt": "2025-09-27T17:41:21.372Z",
+    "updatedAt": "2025-09-27T17:41:21.372Z"
+}
+
+{
+    "id": "ce609d07-d83f-4002-a892-e17c91b767d3",
+    "name": "Admin",
+    "key": "admin",
+    "description": "Administrador de um tenant específico.",
+    "isSystemRole": true,
+    "createdAt": "2025-09-27T17:41:21.372Z",
+    "updatedAt": "2025-09-27T17:41:21.372Z"
+}
+
+
+AuthContext.js:37 User data from AuthContext: {id: 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5', tenantId: '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd', roleId: 'ce609d07-d83f-4002-a892-e17c91b767d3', franchisorId: null, name: 'Lucas', …}
+CriterioList.js:53 Role do usuário em CriterioList: {id: 'ce609d07-d83f-4002-a892-e17c91b767d3', name: 'Admin', key: 'admin', description: 'Administrador de um tenant específico.', isSystemRole: true, …}
+CriterioList.js:53 Role do usuário em CriterioList: {id: 'ce609d07-d83f-4002-a892-e17c91b767d3', name: 'Admin', key: 'admin', description: 'Administrador de um tenant específico.', isSystemRole: true, …}

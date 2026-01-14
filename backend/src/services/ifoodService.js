@@ -31,9 +31,7 @@ const IFOOD_EVENTS_URL = process.env.IFOOD_EVENTS_URL || 'https://merchant-api.i
 // const IFOOD_CLIENT_ID = process.env.IFOOD_CLIENT_ID;
 // const IFOOD_CLIENT_SECRET = process.env.IFOOD_CLIENT_SECRET;
 
-if (!IFOOD_REDIRECT_URI) {
-    console.warn("IFOOD_REDIRECT_URI not set. iFood integration callback will not work.");
-}
+
 
 const ifoodService = {
 

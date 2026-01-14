@@ -227,3 +227,6 @@ const IntegrationsPage = () => {
         </Container>
     );
 };
+
+export default IntegrationsPage;
+

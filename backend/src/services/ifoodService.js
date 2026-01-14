@@ -25,7 +25,7 @@ axiosRetry(ifoodAxios, {
 const IFOOD_AUTH_URL = process.env.IFOOD_AUTH_URL || 'https://merchant-api.ifood.com.br/authentication/v1.0/oauth/token';
 const IFOOD_API_URL = process.env.IFOOD_API_URL || 'https://merchant-api.ifood.com.br/order/v1.0';
 const IFOOD_EVENTS_URL = process.env.IFOOD_EVENTS_URL || 'https://merchant-api.ifood.com.br/events/v1.0';
-const IFOOD_REDIRECT_URI = process.env.IFOOD_REDIRECT_URI; // Global, precisa ser registrado no iFood
+
 
 // Não mais globais, serão por tenant
 // const IFOOD_CLIENT_ID = process.env.IFOOD_CLIENT_ID;
@@ -78,9 +78,9 @@ const ifoodService = {
             const response = await ifoodAxios.post(IFOOD_AUTH_URL, new URLSearchParams({
                 grant_type: 'authorization_code',
                 code: authCode,
-                client_id: tenant.ifoodClientId,
-                client_secret: tenant.ifoodClientSecret,
-                redirect_uri: IFOOD_REDIRECT_URI,
+                client_id: tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL,
+                client_secret: tenant.ifoodClientSecret || process.env.IFOOD_CLIENT_SECRET_GLOBAL,
+                redirect_uri: process.env.BACKEND_URL + '/api/ifood/oauth/callback'
             }).toString(), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -113,9 +113,9 @@ const ifoodService = {
             const response = await ifoodAxios.post(IFOOD_AUTH_URL, new URLSearchParams({
                 grant_type: 'refresh_token',
                 refresh_token: refreshToken,
-                client_id: tenant.ifoodClientId,
-                client_secret: tenant.ifoodClientSecret,
-            }).toString(), {
+                        client_id: tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL,
+                        client_secret: tenant.ifoodClientSecret || process.env.IFOOD_CLIENT_SECRET_GLOBAL,
+                        redirect_uri: process.env.BACKEND_URL + '/api/ifood/oauth/callback'            }).toString(), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }

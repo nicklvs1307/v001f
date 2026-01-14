@@ -11,8 +11,8 @@ const { protect } = require('../middlewares/authMiddleware'); // Importar o midd
 const router = express.Router();
 
 // A IFOOD_REDIRECT_URI é global porque o iFood geralmente só permite um URI de redirecionamento por aplicação no painel do desenvolvedor.
-const IFOOD_REDIRECT_URI = process.env.IFOOD_REDIRECT_URI;
 const IFOOD_AUTHORIZATION_URL = process.env.IFOOD_AUTHORIZATION_URL || 'https://merchant-api.ifood.com.br/oauth/v2/auth';
+const IFOOD_REDIRECT_URI_FULL = process.env.BACKEND_URL + '/api/ifood/oauth/callback';
 
 
 
@@ -24,8 +24,8 @@ router.get('/authorize', protect, asyncHandler(async (req, res) => {
     if (!tenantId) {
         throw new ApiError(400, 'Tenant ID is required to initiate iFood authorization.');
     }
-    if (!IFOOD_REDIRECT_URI) {
-        throw new ApiError(500, 'IFOOD_REDIRECT_URI not configured in environment variables.');
+    if (!IFOOD_REDIRECT_URI_FULL) {
+        throw new ApiError(500, 'IFOOD_REDIRECT_URI_FULL not configured in environment variables or BACKEND_URL is missing.');
     }
 
     const tenant = await tenantRepository.getTenantById(tenantId);
@@ -42,10 +42,10 @@ router.get('/authorize', protect, asyncHandler(async (req, res) => {
 
     const authorizationUrl = `${IFOOD_AUTHORIZATION_URL}?` +
                              `response_type=code&` +
-                             `client_id=${tenant.ifoodClientId}&` + // Usar o Client ID do tenant
+                             `client_id=${tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL}&` + // Usar o Client ID do tenant
                              `access_type=offline&` + // Para obter refresh_token
                              `scope=merchant:read orders:read events:read&` + // Escopos necessários
-                             `redirect_uri=${IFOOD_REDIRECT_URI}&` +
+                             `redirect_uri=${IFOOD_REDIRECT_URI_FULL}&` +
                              `state=${state}`;
 
     res.json({ authorizationUrl });

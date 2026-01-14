@@ -13,8 +13,8 @@ import {
 } from '@mui/material';
 import tenantService from '../services/tenantService';
 import toast from 'react-hot-toast';
-import UaiRangoLogo from '../../assets/logo_uairango.png';
-import IfoodLogo from '../../assets/IfoodLogo.png'; // Adicionar esta linha
+import UaiRangoLogo from '../assets/logo_uairango.png'; // Caminho corrigido
+import IfoodLogo from '../assets/IfoodLogo.png';    // Caminho corrigido
 
 
 const IntegrationsPage = () => {

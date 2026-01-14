@@ -12,7 +12,7 @@ const router = express.Router();
 
 // A IFOOD_REDIRECT_URI é global porque o iFood geralmente só permite um URI de redirecionamento por aplicação no painel do desenvolvedor.
 const IFOOD_REDIRECT_URI = process.env.IFOOD_REDIRECT_URI;
-const IFOOD_AUTH_BASE_URL = process.env.IFOOD_AUTH_BASE_URL || 'https://sandbox.ifood.com.br/oauth/v2/auth'; // Sandbox auth URL
+const IFOOD_AUTHORIZATION_URL = process.env.IFOOD_AUTHORIZATION_URL || 'https://merchant-api.ifood.com.br/oauth/v2/auth';
 
 
 
@@ -40,7 +40,7 @@ router.get('/authorize', protect, asyncHandler(async (req, res) => {
     // Usar um 'state' para segurança e para passar contexto como tenantId
     const state = Buffer.from(JSON.stringify({ tenantId })).toString('base64');
 
-    const authorizationUrl = `${IFOOD_AUTH_BASE_URL}?` +
+    const authorizationUrl = `${IFOOD_AUTHORIZATION_URL}?` +
                              `response_type=code&` +
                              `client_id=${tenant.ifoodClientId}&` + // Usar o Client ID do tenant
                              `access_type=offline&` + // Para obter refresh_token

@@ -22,9 +22,9 @@ axiosRetry(ifoodAxios, {
     },
 });
 
-const IFOOD_AUTH_URL = process.env.IFOOD_AUTH_URL || 'https://sandbox.ifood.com.br/authentication/v1.0/oauth/token'; // Usar sandbox para desenvolvimento
-const IFOOD_API_URL = process.env.IFOOD_API_URL || 'https://sandbox.ifood.com.br/order/v1.0'; // Usar sandbox para desenvolvimento
-const IFOOD_EVENTS_URL = process.env.IFOOD_EVENTS_URL || 'https://sandbox.ifood.com.br/events/v1.0'; // Usar sandbox para desenvolvimento
+const IFOOD_AUTH_URL = process.env.IFOOD_AUTH_URL || 'https://merchant-api.ifood.com.br/authentication/v1.0/oauth/token';
+const IFOOD_API_URL = process.env.IFOOD_API_URL || 'https://merchant-api.ifood.com.br/order/v1.0';
+const IFOOD_EVENTS_URL = process.env.IFOOD_EVENTS_URL || 'https://merchant-api.ifood.com.br/events/v1.0';
 const IFOOD_REDIRECT_URI = process.env.IFOOD_REDIRECT_URI; // Global, precisa ser registrado no iFood
 
 // Não mais globais, serão por tenant

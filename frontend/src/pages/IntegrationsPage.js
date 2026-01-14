@@ -94,7 +94,7 @@ const IntegrationsPage = () => {
             // Requisição ao backend para iniciar o fluxo OAuth usando apiAuthenticated
             const response = await apiAuthenticated.get('/ifood/authorize');
             const { authorizationUrl } = response.data;
-            window.location.href = authorizationUrl; // Redireciona o usuário para o iFood
+            window.open(authorizationUrl, 'ifoodAuthPopup', 'width=800,height=600,resizable=yes,scrollbars=yes,status=yes');
         } catch (err) {
             toast.error(err.message || 'Erro ao iniciar o processo de conexão com o iFood.');
         }
@@ -630,27 +630,27 @@ const IntegrationsPage = () => {
 
     
 
-                                <IfoodConfigModal
+                                                                                                <IfoodConfigModal
 
     
 
-                                    open={showIfoodModal}
+                                                                                                    open={showIfoodModal}
 
     
 
-                                    onClose={() => setShowIfoodModal(false)}
+                                                                                                    onClose={() => setShowIfoodModal(false)}
 
     
 
-                                    handleConnectIfood={handleConnectIfood}
+                                                                                                    handleConnectIfood={handleConnectIfood}
 
     
 
-                                                    ifoodConnected={ifoodConnected}
+                                                                                                                    ifoodConnected={ifoodConnected}
 
     
 
-                                                />
+                                                                                                                />
 
                     
 
@@ -932,6 +932,7 @@ const IfoodConfigModal = ({ open, onClose, handleConnectIfood, ifoodConnected })
                         handleConnectIfood();
                         onClose();
                     }}
+                    disabled={false}
                 >
                     {ifoodConnected ? 'iFood Conectado' : 'Conectar iFood'}
                 </Button>

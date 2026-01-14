@@ -17,6 +17,7 @@ import toast from 'react-hot-toast';
 import UaiRangoLogo from '../assets/logo_uairango.png'; // Caminho corrigido
 import IfoodLogo from '../assets/IfoodLogo.png';    // Caminho corrigido
 import SaiposLogo from '../assets/SaiposLogo.jpg'; // Nova importação
+import GoogleMeuNegocioLogo from '../assets/GoogleMeuNegocio.png'; // Nova importação
 
 
 const IntegrationsPage = () => {
@@ -25,8 +26,10 @@ const IntegrationsPage = () => {
     const [uairangoId, setUairangoId] = useState('');
     const [ifoodMerchantId, setIfoodMerchantId] = useState('');
     const [ifoodConnected, setIfoodConnected] = useState(false); // Novo estado para verificar conexão iFood
+    const [gmbLink, setGmbLink] = useState(''); // Estado para o link do Google Meu Negócio
     const [showUaiRangoModal, setShowUaiRangoModal] = useState(false); // Estado para controlar o modal Uai Rango
     const [showIfoodModal, setShowIfoodModal] = useState(false);     // Estado para controlar o modal iFood
+    const [showGMBDrawer, setShowGMBDrawer] = useState(false); // Estado para controlar o Drawer do GMB
     const [error, setError] = useState('');
 
     useEffect(() => {
@@ -37,6 +40,7 @@ const IntegrationsPage = () => {
                 setUairangoId(response.data.uairangoEstablishmentId || '');
                 setIfoodMerchantId(response.data.ifoodMerchantId || '');
                 setIfoodConnected(!!response.data.ifoodAccessToken); // Verifica se já tem token de acesso
+                setGmbLink(response.data.gmb_link || ''); // Popula o estado gmbLink
             } catch (err) {
                 setError('Falha ao carregar os dados da empresa.');
                 toast.error('Falha ao carregar os dados da empresa.');
@@ -75,6 +79,15 @@ const IntegrationsPage = () => {
             }
         } catch (err) {
             toast.error('Falha ao salvar a integração.');
+        }
+    };
+
+    const handleSaveGMB = async () => {
+        try {
+            await tenantService.update({ gmb_link: gmbLink });
+            toast.success('Link do Google Meu Negócio atualizado com sucesso!');
+        } catch (err) {
+            toast.error('Falha ao salvar o link do Google Meu Negócio.');
         }
     };
 
@@ -297,11 +310,71 @@ const IntegrationsPage = () => {
 
                                     </CardContent>
 
-                                </Card>
+                                                            </Card>
 
-                            </Grid>
+                                                        </Grid>
 
-                        </Grid>
+                                
+
+                                                        {/* Card para Google Meu Negócio */}
+
+                                                        <Grid item xs={12} md={6} lg={4}>
+
+                                                            <Card>
+
+                                                                <CardContent>
+
+                                                                    <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
+
+                                                                        <Box
+
+                                                                            component="img"
+
+                                                                            src={GoogleMeuNegocioLogo}
+
+                                                                            alt="Google Meu Negócio Logo"
+
+                                                                            sx={{
+
+                                                                                width: 80,
+
+                                                                                height: 80,
+
+                                                                                borderRadius: '15px',
+
+                                                                                mb: 1,
+
+                                                                            }}
+
+                                                                        />
+
+                                                                        <Typography variant="h5" component="div" gutterBottom>
+
+                                                                            Google Meu Negócio
+
+                                                                        </Typography>
+
+                                                                    </Box>
+
+                                                                    <Button
+
+                                                                        variant="contained"
+
+                                                                        onClick={() => setShowGMBDrawer(true)}
+
+                                                                    >
+
+                                                                        Configurar
+
+                                                                    </Button>
+
+                                                                </CardContent>
+
+                                                            </Card>
+
+                                                        </Grid>
+
+                                                    </Grid>
 
                     </Box>
 
@@ -339,14 +412,163 @@ const IntegrationsPage = () => {
 
                     handleConnectIfood={handleConnectIfood}
 
-                    ifoodConnected={ifoodConnected}
+                                    ifoodConnected={ifoodConnected}
 
-                />
+                                />
 
-            </>
+                    
 
-        );
-};
+                                <GMBConfigDrawer
+
+                                    open={showGMBDrawer}
+
+                                    onClose={() => setShowGMBDrawer(false)}
+
+                                    gmbLink={gmbLink}
+
+                                    setGmbLink={setGmbLink}
+
+                                    handleSaveGMB={handleSaveGMB}
+
+                                />
+
+                            </>
+
+                        );
+
+                    };
+
+                    
+
+                    const GMBConfigDrawer = ({ open, onClose, gmbLink, setGmbLink, handleSaveGMB }) => {
+
+                        return (
+
+                            <Drawer
+
+                                anchor="right"
+
+                                open={open}
+
+                                onClose={onClose}
+
+                                PaperProps={{
+
+                                    sx: { width: 400 }
+
+                                }}
+
+                            >
+
+                                <Box sx={{
+
+                                    width: '100%',
+
+                                    p: 4,
+
+                                    display: 'flex',
+
+                                    flexDirection: 'column',
+
+                                    alignItems: 'center',
+
+                                    height: '100%'
+
+                                }}>
+
+                                    <Box
+
+                                        component="img"
+
+                                        src={GoogleMeuNegocioLogo}
+
+                                        alt="Google Meu Negócio Logo"
+
+                                        sx={{
+
+                                            width: 100,
+
+                                            height: 100,
+
+                                            mb: 2,
+
+                                        }}
+
+                                    />
+
+                                    <Typography variant="h6" component="h2" gutterBottom>
+
+                                        Configurar Google Meu Negócio
+
+                                    </Typography>
+
+                                    <Typography sx={{ mt: 2, mb: 2, textAlign: 'center' }}>
+
+                                        Forneça o link do seu perfil no Google Meu Negócio.
+
+                                    </Typography>
+
+                                    <TextField
+
+                                        fullWidth
+
+                                        label="Link do Google Meu Negócio"
+
+                                        variant="outlined"
+
+                                        value={gmbLink}
+
+                                        onChange={(e) => setGmbLink(e.target.value)}
+
+                                        sx={{ mb: 2 }}
+
+                                    />
+
+                                    <Button
+
+                                        variant="contained"
+
+                                        onClick={() => {
+
+                                            handleSaveGMB();
+
+                                            onClose();
+
+                                        }}
+
+                                        sx={{ mb: 2 }}
+
+                                    >
+
+                                        Salvar
+
+                                    </Button>
+
+                                    <Button
+
+                                        variant="outlined"
+
+                                        onClick={onClose}
+
+                                    >
+
+                                        Cancelar
+
+                                    </Button>
+
+                                    <Alert severity="info" sx={{ mt: 2, textAlign: 'center' }}>
+
+                                        Esta configuração é utilizada para direcionar clientes para deixar avaliações.
+
+                                    </Alert>
+
+                                </Box>
+
+                            </Drawer>
+
+                        );
+
+                    };
 
 const UaiRangoConfigModal = ({ open, onClose, uairangoId, setUairangoId, handleSave }) => {
     return (

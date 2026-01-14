@@ -1,5 +1,5 @@
 const axios = require('axios');
-const axiosRetry = require('axios-retry'); // Importar axios-retry
+const axiosRetry = require('axios-retry/lib/axiosRetry'); // Corrigido para importar a função axiosRetry
 const { Op } = require('sequelize');
 const tenantRepository = require('../repositories/tenantRepository');
 const clientRepository = require('../repositories/clientRepository');

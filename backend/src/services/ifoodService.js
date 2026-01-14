@@ -96,6 +96,9 @@ const ifoodService = {
                 ifoodTokenExpiresAt: ifoodTokenExpiresAt,
             });
 
+            // Após obter os tokens, buscar e salvar o merchantId automaticamente
+            await this.getIfoodMerchantData(tenantId);
+
             return access_token;
         } catch (error) {
             console.error(`[iFood Service] Error requesting new access token for tenant ${tenantId}:`, error.response?.data || error.message);
@@ -136,6 +139,46 @@ const ifoodService = {
                 ifoodTokenExpiresAt: null,
             }); // Limpa tokens para evitar novas tentativas com tokens inválidos
             throw new ApiError(500, 'Failed to refresh iFood access token.');
+        }
+    },
+
+    async getIfoodMerchantData(tenantId) {
+        let tenantConfig;
+        try {
+            tenantConfig = await this.getAccessToken(tenantId);
+        } catch (error) {
+            throw new ApiError(400, `Could not get access token to fetch iFood merchant data.`);
+        }
+
+        try {
+            // Este endpoint pode variar. Consulte a documentação do iFood.
+            // Assumindo que retorna uma lista de merchants ou um único merchant associado ao token.
+            const response = await ifoodAxios.get(`${IFOOD_API_URL}/merchants`, { // Endpoint comum para obter merchants
+                headers: {
+                    'Authorization': `Bearer ${tenantConfig.ifoodAccessToken}`,
+                    'Accept': 'application/json',
+                }
+            });
+            // Assumindo que a resposta contém um array de merchants ou um único objeto merchant
+            const merchantData = Array.isArray(response.data) && response.data.length > 0
+                                 ? response.data[0] // Pega o primeiro se for um array
+                                 : response.data; // Ou a própria resposta se for um único objeto
+
+            if (!merchantData || !merchantData.id) {
+                throw new ApiError(500, 'Could not retrieve iFood merchant ID from API.');
+            }
+
+            // Atualiza o tenant com o merchantId obtido
+            await tenantRepository.updateTenant(tenantId, {
+                ifoodMerchantId: merchantData.id,
+            });
+
+            console.log(`[iFood Service] Merchant ID ${merchantData.id} saved for tenant ${tenantId}.`);
+            return merchantData;
+
+        } catch (error) {
+            console.error(`[iFood Service] Error fetching iFood merchant data for tenant ${tenantId}:`, error.response?.data || error.message);
+            throw new ApiError(500, 'Failed to fetch iFood merchant data.');
         }
     },
 

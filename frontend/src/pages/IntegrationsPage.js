@@ -12,6 +12,7 @@ import {
     Alert,
     Drawer // Substituído Modal por Drawer
 } from '@mui/material';
+import SettingsIcon from '@mui/icons-material/Settings'; // Nova importação
 import tenantService from '../services/tenantService';
 import toast from 'react-hot-toast';
 import UaiRangoLogo from '../assets/logo_uairango.png'; // Caminho corrigido
@@ -24,7 +25,6 @@ const IntegrationsPage = () => {
     const [loading, setLoading] = useState(true);
     const [tenant, setTenant] = useState(null);
     const [uairangoId, setUairangoId] = useState('');
-    const [ifoodMerchantId, setIfoodMerchantId] = useState('');
     const [ifoodConnected, setIfoodConnected] = useState(false); // Novo estado para verificar conexão iFood
     const [gmbLink, setGmbLink] = useState(''); // Estado para o link do Google Meu Negócio
     const [showUaiRangoModal, setShowUaiRangoModal] = useState(false); // Estado para controlar o modal Uai Rango
@@ -38,7 +38,6 @@ const IntegrationsPage = () => {
                 const response = await tenantService.getMe();
                 setTenant(response.data);
                 setUairangoId(response.data.uairangoEstablishmentId || '');
-                setIfoodMerchantId(response.data.ifoodMerchantId || '');
                 setIfoodConnected(!!response.data.ifoodAccessToken); // Verifica se já tem token de acesso
                 setGmbLink(response.data.gmb_link || ''); // Popula o estado gmbLink
             } catch (err) {
@@ -73,10 +72,8 @@ const IntegrationsPage = () => {
             if (integrationType === 'uairango') {
                 await tenantService.update({ uairangoEstablishmentId: uairangoId });
                 toast.success('Integração com Uai Rango atualizada com sucesso!');
-            } else if (integrationType === 'ifood') {
-                await tenantService.update({ ifoodMerchantId: ifoodMerchantId });
-                toast.success('ID do Estabelecimento iFood atualizado com sucesso!');
             }
+
         } catch (err) {
             toast.error('Falha ao salvar a integração.');
         }
@@ -94,7 +91,7 @@ const IntegrationsPage = () => {
     const handleConnectIfood = async () => {
         try {
             // Requisição ao backend para iniciar o fluxo OAuth
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/ifood/authorize?merchantId=${ifoodMerchantId}`);
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/ifood/authorize`);
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Falha ao iniciar a autorização do iFood.');
@@ -140,241 +137,479 @@ const IntegrationsPage = () => {
 
     
 
-                        <Grid container spacing={4}>
-
-                            {/* Card para Saipos */}
-
-                            <Grid item xs={12} md={6} lg={4}>
-
-                                <Card>
-
-                                    <CardContent>
-
-                                        <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
-
-                                            <Box
-
-                                                component="img"
-
-                                                src={SaiposLogo}
-
-                                                alt="Saipos Logo"
-
-                                                sx={{
-
-                                                    width: 80,
-
-                                                    height: 80,
-
-                                                    borderRadius: '15px',
-
-                                                    mb: 1,
-
-                                                }}
-
-                                            />
-
-                                            <Typography variant="h5" component="div" gutterBottom>
-
-                                                Saipos
-
-                                            </Typography>
-
-                                        </Box>
-
-                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2, textAlign: 'center' }}>
-
-                                            Em Breve
-
-                                        </Typography>
-
-                                    </CardContent>
-
-                                </Card>
-
-                            </Grid>
+                                                <Grid container spacing={4}>
 
     
 
-                            {/* Card para Uai Rango */}
-
-                            <Grid item xs={12} md={6} lg={4}>
-
-                                <Card>
-
-                                    <CardContent>
-
-                                        <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
-
-                                            <Box
-
-                                                component="img"
-
-                                                src={UaiRangoLogo}
-
-                                                alt="Uai Rango Logo"
-
-                                                sx={{
-
-                                                    width: 80,
-
-                                                    height: 80,
-
-                                                    borderRadius: '15px', // Bordas arredondadas
-
-                                                    mb: 1,
-
-                                                }}
-
-                                            />
-
-                                            <Typography variant="h5" component="div" gutterBottom>
-
-                                                Uai Rango
-
-                                            </Typography>
-
-                                        </Box>
-
-                                        <Button
-
-                                            variant="contained"
-
-                                            onClick={() => setShowUaiRangoModal(true)}
-
-                                        >
-
-                                            Configurar
-
-                                        </Button>
-
-                                    </CardContent>
-
-                                </Card>
-
-                            </Grid>
+                                                    {/* Card para Saipos */}
 
     
 
-                            {/* Card para iFood */}
+                                                    <Grid item xs={12} md={6} lg={4}>
 
-                            <Grid item xs={12} md={6} lg={4}>
+    
 
-                                <Card>
+                                                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', '&:hover': { transform: 'translateY(-5px)', boxShadow: 6 } }}>
 
-                                    <CardContent>
+    
 
-                                        <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
+                                                            <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
 
-                                            <Box
+    
 
-                                                component="img"
+                                                                <Box
 
-                                                src={IfoodLogo}
+    
 
-                                                alt="iFood Logo"
+                                                                    component="img"
 
-                                                sx={{
+    
 
-                                                    width: 80,
+                                                                    src={SaiposLogo}
 
-                                                    height: 80,
+    
 
-                                                    borderRadius: '15px',
+                                                                    alt="Saipos Logo"
 
-                                                    mb: 1,
+    
 
-                                                }}
+                                                                    sx={{
 
-                                            />
+    
 
-                                            <Typography variant="h5" component="div" gutterBottom>
+                                                                        width: 100,
 
-                                                iFood
+    
 
-                                            </Typography>
+                                                                        height: 100,
 
-                                        </Box>
+    
 
-                                        <Button
+                                                                        borderRadius: '15px',
 
-                                            variant="contained"
+    
 
-                                            onClick={() => setShowIfoodModal(true)}
+                                                                        mb: 2,
 
-                                        >
+    
 
-                                            Configurar
+                                                                    }}
 
-                                        </Button>
+    
 
-                                    </CardContent>
+                                                                />
 
-                                                            </Card>
+    
 
-                                                        </Grid>
+                                                                <Typography variant="h5" component="div" gutterBottom>
 
-                                
+    
 
-                                                        {/* Card para Google Meu Negócio */}
+                                                                    Saipos
 
-                                                        <Grid item xs={12} md={6} lg={4}>
+    
 
-                                                            <Card>
+                                                                </Typography>
 
-                                                                <CardContent>
+    
 
-                                                                    <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
+                                                                <Typography variant="body2" color="text.secondary" sx={{ mb: 2, textAlign: 'center' }}>
 
-                                                                        <Box
+    
 
-                                                                            component="img"
+                                                                    Em Breve
 
-                                                                            src={GoogleMeuNegocioLogo}
+    
 
-                                                                            alt="Google Meu Negócio Logo"
+                                                                </Typography>
 
-                                                                            sx={{
+    
 
-                                                                                width: 80,
+                                                            </CardContent>
 
-                                                                                height: 80,
+    
 
-                                                                                borderRadius: '15px',
+                                                        </Card>
 
-                                                                                mb: 1,
-
-                                                                            }}
-
-                                                                        />
-
-                                                                        <Typography variant="h5" component="div" gutterBottom>
-
-                                                                            Google Meu Negócio
-
-                                                                        </Typography>
-
-                                                                    </Box>
-
-                                                                    <Button
-
-                                                                        variant="contained"
-
-                                                                        onClick={() => setShowGMBDrawer(true)}
-
-                                                                    >
-
-                                                                        Configurar
-
-                                                                    </Button>
-
-                                                                </CardContent>
-
-                                                            </Card>
-
-                                                        </Grid>
+    
 
                                                     </Grid>
+
+    
+
+                        
+
+    
+
+                                                    {/* Card para Uai Rango */}
+
+    
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+
+    
+
+                                                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', '&:hover': { transform: 'translateY(-5px)', boxShadow: 6 } }}>
+
+    
+
+                                                            <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+
+    
+
+                                                                <Box
+
+    
+
+                                                                    component="img"
+
+    
+
+                                                                    src={UaiRangoLogo}
+
+    
+
+                                                                    alt="Uai Rango Logo"
+
+    
+
+                                                                    sx={{
+
+    
+
+                                                                        width: 100,
+
+    
+
+                                                                        height: 100,
+
+    
+
+                                                                        borderRadius: '15px', // Bordas arredondadas
+
+    
+
+                                                                        mb: 2,
+
+    
+
+                                                                    }}
+
+    
+
+                                                                />
+
+    
+
+                                                                <Typography variant="h5" component="div" gutterBottom>
+
+    
+
+                                                                    Uai Rango
+
+    
+
+                                                                </Typography>
+
+    
+
+                                                                <Button
+
+    
+
+                                                                    fullWidth
+
+    
+
+                                                                    variant="contained"
+
+    
+
+                                                                    startIcon={<SettingsIcon />}
+
+    
+
+                                                                    onClick={() => setShowUaiRangoModal(true)}
+
+    
+
+                                                                    sx={{ mt: 'auto' }}
+
+    
+
+                                                                >
+
+    
+
+                                                                    Configurar
+
+    
+
+                                                                </Button>
+
+    
+
+                                                            </CardContent>
+
+    
+
+                                                        </Card>
+
+    
+
+                                                    </Grid>
+
+    
+
+                        
+
+    
+
+                                                    {/* Card para iFood */}
+
+    
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+
+    
+
+                                                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', '&:hover': { transform: 'translateY(-5px)', boxShadow: 6 } }}>
+
+    
+
+                                                            <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+
+    
+
+                                                                <Box
+
+    
+
+                                                                    component="img"
+
+    
+
+                                                                    src={IfoodLogo}
+
+    
+
+                                                                    alt="iFood Logo"
+
+    
+
+                                                                    sx={{
+
+    
+
+                                                                        width: 100,
+
+    
+
+                                                                        height: 100,
+
+    
+
+                                                                        borderRadius: '15px',
+
+    
+
+                                                                        mb: 2,
+
+    
+
+                                                                    }}
+
+    
+
+                                                                />
+
+    
+
+                                                                <Typography variant="h5" component="div" gutterBottom>
+
+    
+
+                                                                    iFood
+
+    
+
+                                                                </Typography>
+
+    
+
+                                                                <Button
+
+    
+
+                                                                    fullWidth
+
+    
+
+                                                                    variant="contained"
+
+    
+
+                                                                    startIcon={<SettingsIcon />}
+
+    
+
+                                                                    onClick={() => setShowIfoodModal(true)}
+
+    
+
+                                                                    sx={{ mt: 'auto' }}
+
+    
+
+                                                                >
+
+    
+
+                                                                    Configurar
+
+    
+
+                                                                </Button>
+
+    
+
+                                                            </CardContent>
+
+    
+
+                                                        </Card>
+
+    
+
+                                                    </Grid>
+
+    
+
+                        
+
+    
+
+                                                    {/* Card para Google Meu Negócio */}
+
+    
+
+                                                    <Grid item xs={12} md={6} lg={4}>
+
+    
+
+                                                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', '&:hover': { transform: 'translateY(-5px)', boxShadow: 6 } }}>
+
+    
+
+                                                            <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+
+    
+
+                                                                <Box
+
+    
+
+                                                                    component="img"
+
+    
+
+                                                                    src={GoogleMeuNegocioLogo}
+
+    
+
+                                                                    alt="Google Meu Negócio Logo"
+
+    
+
+                                                                    sx={{
+
+    
+
+                                                                        width: 100,
+
+    
+
+                                                                        height: 100,
+
+    
+
+                                                                        borderRadius: '15px',
+
+    
+
+                                                                        mb: 2,
+
+    
+
+                                                                    }}
+
+    
+
+                                                                />
+
+    
+
+                                                                <Typography variant="h5" component="div" gutterBottom>
+
+    
+
+                                                                    Google Meu Negócio
+
+    
+
+                                                                </Typography>
+
+    
+
+                                                                <Button
+
+    
+
+                                                                    fullWidth
+
+    
+
+                                                                    variant="contained"
+
+    
+
+                                                                    startIcon={<SettingsIcon />}
+
+    
+
+                                                                    onClick={() => setShowGMBDrawer(true)}
+
+    
+
+                                                                    sx={{ mt: 'auto' }}
+
+    
+
+                                                                >
+
+    
+
+                                                                    Configurar
+
+    
+
+                                                                </Button>
+
+    
+
+                                                            </CardContent>
+
+    
+
+                                                        </Card>
+
+    
+
+                                                    </Grid>
+
+    
+
+                                                </Grid>
 
                     </Box>
 
@@ -398,23 +633,27 @@ const IntegrationsPage = () => {
 
     
 
-                <IfoodConfigModal
+                                <IfoodConfigModal
 
-                    open={showIfoodModal}
+    
 
-                    onClose={() => setShowIfoodModal(false)}
+                                    open={showIfoodModal}
 
-                    ifoodMerchantId={ifoodMerchantId}
+    
 
-                    setIfoodMerchantId={setIfoodMerchantId}
+                                    onClose={() => setShowIfoodModal(false)}
 
-                    handleSave={handleSave}
+    
 
-                    handleConnectIfood={handleConnectIfood}
+                                    handleConnectIfood={handleConnectIfood}
 
-                                    ifoodConnected={ifoodConnected}
+    
 
-                                />
+                                                    ifoodConnected={ifoodConnected}
+
+    
+
+                                                />
 
                     
 
@@ -648,7 +887,7 @@ const UaiRangoConfigModal = ({ open, onClose, uairangoId, setUairangoId, handleS
     );
 };
 
-const IfoodConfigModal = ({ open, onClose, ifoodMerchantId, setIfoodMerchantId, handleSave, handleConnectIfood, ifoodConnected }) => {
+const IfoodConfigModal = ({ open, onClose, handleConnectIfood, ifoodConnected }) => {
     return (
         <Drawer
             anchor="right"
@@ -680,36 +919,22 @@ const IfoodConfigModal = ({ open, onClose, ifoodMerchantId, setIfoodMerchantId, 
                     Configurar iFood
                 </Typography>
                 <Typography sx={{ mt: 2, mb: 2, textAlign: 'center' }}>
-                    Conecte sua conta iFood para permitir que o sistema busque seus pedidos automaticamente. Primeiro, salve o ID do estabelecimento, depois conecte a conta iFood.
+                    Conecte sua conta iFood para permitir que o sistema busque seus pedidos automaticamente.
                 </Typography>
-                <TextField
-                    fullWidth
-                    label="ID do Estabelecimento iFood"
-                    variant="outlined"
-                    id="ifoodMerchantId"
-                    value={ifoodMerchantId}
-                    onChange={(e) => setIfoodMerchantId(e.target.value)}
-                    sx={{ mb: 2 }}
-                />
                 <Button
                     variant="contained"
-                    onClick={() => {
-                        handleSave('ifood');
-                        onClose();
+                    sx={{
+                        mb: 2,
+                        backgroundColor: '#EA1D2C', // Vermelho iFood
+                        borderRadius: '20px', // Arredondado
+                        '&:hover': {
+                            backgroundColor: '#C81925', // Um tom mais escuro no hover
+                        },
                     }}
-                    sx={{ mb: 2 }}
-                >
-                    Salvar ID
-                </Button>
-                <Button
-                    variant="contained"
-                    color={ifoodConnected ? 'success' : 'primary'}
                     onClick={() => {
                         handleConnectIfood();
                         onClose();
                     }}
-                    disabled={!ifoodMerchantId} // Desabilita se o merchantId não estiver preenchido
-                    sx={{ mb: 2 }}
                 >
                     {ifoodConnected ? 'iFood Conectado' : 'Conectar iFood'}
                 </Button>

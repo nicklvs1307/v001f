@@ -21,8 +21,6 @@ const IFOOD_AUTH_BASE_URL = process.env.IFOOD_AUTH_BASE_URL || 'https://sandbox.
 router.get('/authorize', protect, asyncHandler(async (req, res) => {
     const tenantId = req.user.tenant.id; // Obtenha o tenantId do usuário autenticado através do objeto tenant aninhado
 
-    const ifoodMerchantId = req.query.merchantId; // O frontend pode passar o merchantId se já tiver
-
     if (!tenantId) {
         throw new ApiError(400, 'Tenant ID is required to initiate iFood authorization.');
     }
@@ -39,7 +37,7 @@ router.get('/authorize', protect, asyncHandler(async (req, res) => {
     }
 
     // Usar um 'state' para segurança e para passar contexto como tenantId
-    const state = Buffer.from(JSON.stringify({ tenantId, ifoodMerchantId })).toString('base64');
+    const state = Buffer.from(JSON.stringify({ tenantId })).toString('base64');
 
     const authorizationUrl = `${IFOOD_AUTH_BASE_URL}?` +
                              `response_type=code&` +
@@ -68,11 +66,9 @@ router.get('/oauth/callback', asyncHandler(async (req, res) => {
     }
 
     let tenantIdFromState = null;
-    let ifoodMerchantIdFromState = null;
     try {
         const decodedState = JSON.parse(Buffer.from(state, 'base64').toString('utf8'));
         tenantIdFromState = decodedState.tenantId;
-        ifoodMerchantIdFromState = decodedState.ifoodMerchantId;
     } catch (e) {
         console.error('Error decoding state parameter:', e);
         return res.redirect(`${process.env.FRONTEND_URL}/dashboard/integracoes?ifood_auth_error=invalid_state`);
@@ -87,14 +83,6 @@ router.get('/oauth/callback', asyncHandler(async (req, res) => {
         // ifoodService.requestNewAccessToken já busca as credenciais do tenant por tenantId
         await ifoodService.requestNewAccessToken(tenantIdFromState, code);
 
-        // Se o ifoodMerchantId foi passado e não está salvo, salvar
-        if (ifoodMerchantIdFromState) {
-            const tenant = await tenantRepository.getTenantById(tenantIdFromState);
-            if (tenant && !tenant.ifoodMerchantId) {
-                await tenantRepository.updateTenant(tenantIdFromState, { ifoodMerchantId: ifoodMerchantIdFromState });
-            }
-        }
-        
         // Redirecionar para o frontend com mensagem de sucesso
         res.redirect(`${process.env.FRONTEND_URL}/dashboard/integracoes?ifood_auth_success=true`);
 

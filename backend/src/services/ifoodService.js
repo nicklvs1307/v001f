@@ -1,5 +1,6 @@
 const axios = require('axios');
-const axiosRetry = require('axios-retry'); // Importar axios-retry da forma padrão
+const axiosRetryModule = require('axios-retry'); // Importa o módulo axios-retry
+const axiosRetry = typeof axiosRetryModule === 'function' ? axiosRetryModule : axiosRetryModule.default; // Garante que axiosRetry é a função
 const { Op } = require('sequelize');
 const tenantRepository = require('../repositories/tenantRepository');
 const clientRepository = require('../repositories/clientRepository');

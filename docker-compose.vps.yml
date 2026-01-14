@@ -16,6 +16,12 @@ x-environment: &environment
   BACKEND_URL: https://apivoltaki.towersfy.com
   OPENAI_API_KEY_FILE: /run/secrets/openai_api_key
   API_KEY_ENCRYPTION_KEY_FILE: /run/secrets/api_key_encryption_key
+  IFOOD_AUTH_BASE_URL: https://sandbox.ifood.com.br/oauth/v2/auth
+  IFOOD_AUTH_URL: https://sandbox.ifood.com.br/authentication/v1.0/oauth/token
+  IFOOD_API_URL: https://sandbox.ifood.com.br/order/v1.0
+  IFOOD_EVENTS_URL: https://sandbox.ifood.com.br/events/v1.0
+  IFOOD_REDIRECT_URI: ${BACKEND_URL}/api/ifood/callback
+  IFOOD_POLLING_INTERVAL: "*/5 * * * *"
 
 
 services:

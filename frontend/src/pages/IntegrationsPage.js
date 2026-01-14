@@ -19,6 +19,7 @@ import UaiRangoLogo from '../assets/logo_uairango.png'; // Caminho corrigido
 import IfoodLogo from '../assets/IfoodLogo.png';    // Caminho corrigido
 import SaiposLogo from '../assets/SaiposLogo.jpg'; // Nova importação
 import GoogleMeuNegocioLogo from '../assets/GoogleMeuNegocio.png'; // Nova importação
+import apiAuthenticated from '../services/apiAuthenticated'; // Importar apiAuthenticated
 
 
 const IntegrationsPage = () => {
@@ -90,14 +91,10 @@ const IntegrationsPage = () => {
 
     const handleConnectIfood = async () => {
         try {
-            // Requisição ao backend para iniciar o fluxo OAuth
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/ifood/authorize`);
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Falha ao iniciar a autorização do iFood.');
-            }
-            const data = await response.json();
-            window.location.href = data.authorizationUrl; // Redireciona o usuário para o iFood
+            // Requisição ao backend para iniciar o fluxo OAuth usando apiAuthenticated
+            const response = await apiAuthenticated.get('/ifood/authorize');
+            const { authorizationUrl } = response.data;
+            window.location.href = authorizationUrl; // Redireciona o usuário para o iFood
         } catch (err) {
             toast.error(err.message || 'Erro ao iniciar o processo de conexão com o iFood.');
         }

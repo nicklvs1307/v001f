@@ -15,7 +15,9 @@ axiosRetry(ifoodAxios, {
     retryCondition: (error) => {
         // Retenta em caso de erros de rede ou códigos de status 5xx ou 429
         return axiosRetry.isNetworkError(error) ||
-               axiosRetry.is>;
+               axiosRetry.isRetryableError(error.response.status) || // Retenta em caso de erro 5xx ou 429
+               error.response?.status === 429; // Retenta especificamente para 429 Too Many Requests
+
     },
 });
 

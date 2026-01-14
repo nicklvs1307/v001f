@@ -14,6 +14,8 @@ import {
 import tenantService from '../services/tenantService';
 import toast from 'react-hot-toast';
 import UaiRangoLogo from '../../assets/logo_uairango.png';
+import IfoodLogo from '../../assets/IfoodLogo.png'; // Adicionar esta linha
+
 
 const IntegrationsPage = () => {
     const [loading, setLoading] = useState(true);

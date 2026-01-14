@@ -1,3 +1,6 @@
+const ifoodService = require('../services/ifoodService');
+const express = require('express'); // Adicionado de volta
+const asyncHandler = require('express-async-handler'); // Para lidar com erros em funções async
 const ApiError = require('../errors/ApiError');
 const tenantRepository = require('../repositories/tenantRepository'); // Importar o tenantRepository
 const { protect } = require('../middlewares/authMiddleware'); // Importar o middleware de proteção

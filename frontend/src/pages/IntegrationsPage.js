@@ -9,12 +9,14 @@ import {
     TextField,
     Button,
     CircularProgress,
-    Alert
+    Alert,
+    Modal
 } from '@mui/material';
 import tenantService from '../services/tenantService';
 import toast from 'react-hot-toast';
 import UaiRangoLogo from '../assets/logo_uairango.png'; // Caminho corrigido
 import IfoodLogo from '../assets/IfoodLogo.png';    // Caminho corrigido
+import SaiposLogo from '../assets/SaiposLogo.jpg'; // Nova importação
 
 
 const IntegrationsPage = () => {
@@ -23,6 +25,8 @@ const IntegrationsPage = () => {
     const [uairangoId, setUairangoId] = useState('');
     const [ifoodMerchantId, setIfoodMerchantId] = useState('');
     const [ifoodConnected, setIfoodConnected] = useState(false); // Novo estado para verificar conexão iFood
+    const [showUaiRangoModal, setShowUaiRangoModal] = useState(false); // Estado para controlar o modal Uai Rango
+    const [showIfoodModal, setShowIfoodModal] = useState(false);     // Estado para controlar o modal iFood
     const [error, setError] = useState('');
 
     useEffect(() => {
@@ -112,71 +116,15 @@ const IntegrationsPage = () => {
                 </Typography>
 
                 <Grid container spacing={4}>
-                    {/* Card para Uai Rango */}
+                     {/* Card para Saipos */}
                     <Grid item xs={12} md={6} lg={4}>
                         <Card>
                             <CardContent>
                                 <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
                                     <Box
                                         component="img"
-                                        src={UaiRangoLogo}
-                                        alt="Uai Rango Logo"
-                                        sx={{
-                                            width: 80,
-                                            height: 80,
-                                            borderRadius: '15px', // Bordas arredondadas
-                                            mb: 1,
-                                        }}
-                                    />
-                                    <Typography variant="h5" component="div" gutterBottom>
-                                        Uai Rango
-                                    </Typography>
-                                </Box>
-                                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                                    Forneça o ID do seu estabelecimento no Uai Rango e configure o webhook para começar a receber os pedidos.
-                                </Typography>
-                                <TextField
-                                    fullWidth
-                                    label="ID do Estabelecimento Uai Rango"
-                                    variant="outlined"
-                                    value={uairangoId}
-                                    onChange={(e) => setUairangoId(e.target.value)}
-                                    sx={{ mb: 2 }}
-                                />
-                                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                    URL do Webhook:
-                                </Typography>
-                                <TextField
-                                    fullWidth
-                                    variant="outlined"
-                                    value={`${process.env.REACT_APP_API_URL}/api/delivery-webhooks/uairango`}
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                    sx={{ mb: 2 }}
-                                />
-                                <Button
-                                    variant="contained"
-                                    onClick={() => handleSave('uairango')}
-                                >
-                                    Salvar
-                                </Button>
-                                <Alert severity="info" sx={{ mt: 2 }}>
-                                    É necessário entrar em contato com o suporte do Voltaki para liberar a integração.
-                                </Alert>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-
-                    {/* Card para iFood */}
-                    <Grid item xs={12} md={6} lg={4}>
-                        <Card>
-                            <CardContent>
-                                <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
-                                    <Box
-                                        component="img"
-                                        src={IfoodLogo}
-                                        alt="iFood Logo"
+                                        src={SaiposLogo}
+                                        alt="Saipos Logo"
                                         sx={{
                                             width: 80,
                                             height: 80,
@@ -185,46 +133,227 @@ const IntegrationsPage = () => {
                                         }}
                                     />
                                     <Typography variant="h5" component="div" gutterBottom>
-                                        iFood
+                                        Saipos
                                     </Typography>
                                 </Box>
-                                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                                    Conecte sua conta iFood para permitir que o sistema busque seus pedidos automaticamente. Primeiro, salve o ID do estabelecimento, depois conecte a conta iFood.
+                                <Typography variant="body2" color="text.secondary" sx={{ mb: 2, textAlign: 'center' }}>
+                                    Em Breve
                                 </Typography>
-                                <TextField
-                                    fullWidth
-                                    label="ID do Estabelecimento iFood"
-                                    variant="outlined"
-                                    id="ifoodMerchantId"
-                                    value={ifoodMerchantId}
-                                    onChange={(e) => setIfoodMerchantId(e.target.value)}
-                                    sx={{ mb: 2 }}
-                                />
-                                <Button
-                                    variant="contained"
-                                    onClick={() => handleSave('ifood')}
-                                    sx={{ mr: 2 }}
-                                >
-                                    Salvar ID
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    color={ifoodConnected ? 'success' : 'primary'}
-                                    onClick={handleConnectIfood}
-                                    disabled={!ifoodMerchantId} // Desabilita se o merchantId não estiver preenchido
-                                >
-                                    {ifoodConnected ? 'iFood Conectado' : 'Conectar iFood'}
-                                </Button>
-
-                                <Alert severity="info" sx={{ mt: 2 }}>
-                                    A integração com o iFood utiliza polling para buscar pedidos. Certifique-se de que o Client ID e Client Secret do iFood estão configurados nas variáveis de ambiente do backend.
-                                </Alert>
                             </CardContent>
                         </Card>
                     </Grid>
-                </Grid>
+
+                                         {/* Card para Uai Rango */}
+                                        <Grid item xs={12} md={6} lg={4}>
+                                            <Card>
+                                                <CardContent>
+                                                    <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
+                                                        <Box
+                                                            component="img"
+                                                            src={UaiRangoLogo}
+                                                            alt="Uai Rango Logo"
+                                                            sx={{
+                                                                width: 80,
+                                                                height: 80,
+                                                                borderRadius: '15px', // Bordas arredondadas
+                                                                mb: 1,
+                                                            }}
+                                                        />
+                                                        <Typography variant="h5" component="div" gutterBottom>
+                                                            Uai Rango
+                                                        </Typography>
+                                                    </Box>
+                                                    <Button
+                                                        variant="contained"
+                                                        onClick={() => setShowUaiRangoModal(true)}
+                                                    >
+                                                        Configurar
+                                                    </Button>
+                                                </CardContent>
+                                            </Card>
+                                        </Grid>
+                                         {/* Card para iFood */}
+                                        <Grid item xs={12} md={6} lg={4}>
+                                            <Card>
+                                                <CardContent>
+                                                    <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
+                                                        <Box
+                                                            component="img"
+                                                            src={IfoodLogo}
+                                                            alt="iFood Logo"
+                                                            sx={{
+                                                                width: 80,
+                                                                height: 80,
+                                                                borderRadius: '15px',
+                                                                mb: 1,
+                                                            }}
+                                                        />
+                                                        <Typography variant="h5" component="div" gutterBottom>
+                                                            iFood
+                                                        </Typography>
+                                                    </Box>
+                                                    <Button
+                                                        variant="contained"
+                                                        onClick={() => setShowIfoodModal(true)}
+                                                    >
+                                                        Configurar
+                                                    </Button>
+                                                </CardContent>
+                                            </Card>
+                                        </Grid>                </Grid>
             </Box>
         </Container>
+
+        <UaiRangoConfigModal
+            open={showUaiRangoModal}
+            onClose={() => setShowUaiRangoModal(false)}
+            uairangoId={uairangoId}
+            setUairangoId={setUairangoId}
+            handleSave={handleSave}
+        />
+
+            <IfoodConfigModal
+                open={showIfoodModal}
+                onClose={() => setShowIfoodModal(false)}
+                ifoodMerchantId={ifoodMerchantId}
+                setIfoodMerchantId={setIfoodMerchantId}
+                handleSave={handleSave}
+                handleConnectIfood={handleConnectIfood}
+                ifoodConnected={ifoodConnected}
+            />
+    );
+};
+
+const UaiRangoConfigModal = ({ open, onClose, uairangoId, setUairangoId, handleSave }) => {
+    return (
+        <Modal
+            open={open}
+            onClose={onClose}
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
+        >
+            <Box sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 400,
+                bgcolor: 'background.paper',
+                border: '2px solid #000',
+                boxShadow: 24,
+                p: 4,
+            }}>
+                <Typography id="modal-title" variant="h6" component="h2" gutterBottom>
+                    Configurar Uai Rango
+                </Typography>
+                <Typography id="modal-description" sx={{ mt: 2, mb: 2 }}>
+                    Forneça o ID do seu estabelecimento no Uai Rango e configure o webhook para começar a receber os pedidos.
+                </Typography>
+                <TextField
+                    fullWidth
+                    label="ID do Estabelecimento Uai Rango"
+                    variant="outlined"
+                    value={uairangoId}
+                    onChange={(e) => setUairangoId(e.target.value)}
+                    sx={{ mb: 2 }}
+                />
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    URL do Webhook:
+                </Typography>
+                <TextField
+                    fullWidth
+                    variant="outlined"
+                    value={`${process.env.REACT_APP_API_URL}/api/delivery-webhooks/uairango`}
+                    InputProps={{
+                        readOnly: true,
+                    }}
+                    sx={{ mb: 2 }}
+                />
+                <Button
+                    variant="contained"
+                    onClick={() => {
+                        handleSave('uairango');
+                        onClose();
+                    }}
+                    sx={{ mr: 2 }}
+                >
+                    Salvar
+                </Button>
+                <Button
+                    variant="outlined"
+                    onClick={onClose}
+                >
+                    Cancelar
+                </Button>
+                <Alert severity="info" sx={{ mt: 2 }}>
+                    É necessário entrar em contato com o suporte do Voltaki para liberar a integração.
+                </Alert>
+            </Box>
+        </Modal>
+    );
+};
+
+const IfoodConfigModal = ({ open, onClose, ifoodMerchantId, setIfoodMerchantId, handleSave, handleConnectIfood, ifoodConnected }) => {
+    return (
+        <Modal
+            open={open}
+            onClose={onClose}
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
+        >
+            <Box sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 400,
+                bgcolor: 'background.paper',
+                border: '2px solid #000',
+                boxShadow: 24,
+                p: 4,
+            }}>
+                <Typography id="modal-title" variant="h6" component="h2" gutterBottom>
+                    Configurar iFood
+                </Typography>
+                <Typography id="modal-description" sx={{ mt: 2, mb: 2 }}>
+                    Conecte sua conta iFood para permitir que o sistema busque seus pedidos automaticamente. Primeiro, salve o ID do estabelecimento, depois conecte a conta iFood.
+                </Typography>
+                <TextField
+                    fullWidth
+                    label="ID do Estabelecimento iFood"
+                    variant="outlined"
+                    id="ifoodMerchantId"
+                    value={ifoodMerchantId}
+                    onChange={(e) => setIfoodMerchantId(e.target.value)}
+                    sx={{ mb: 2 }}
+                />
+                <Button
+                    variant="contained"
+                    onClick={() => {
+                        handleSave('ifood');
+                        onClose();
+                    }}
+                    sx={{ mr: 2 }}
+                >
+                    Salvar ID
+                </Button>
+                <Button
+                    variant="contained"
+                    color={ifoodConnected ? 'success' : 'primary'}
+                    onClick={() => {
+                        handleConnectIfood();
+                        onClose();
+                    }}
+                    disabled={!ifoodMerchantId} // Desabilita se o merchantId não estiver preenchido
+                >
+                    {ifoodConnected ? 'iFood Conectado' : 'Conectar iFood'}
+                </Button>
+
+                <Alert severity="info" sx={{ mt: 2 }}>
+                    A integração com o iFood utiliza polling para buscar pedidos. Certifique-se de que o Client ID e Client Secret do iFood estão configurados nas variáveis de ambiente do backend.
+                </Alert>
+            </Box>
+        </Modal>
     );
 };
 

@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import tenantService from '../services/tenantService';
 import toast from 'react-hot-toast';
-import UaiRangoLogo from '../logo_uairango.png';
+import UaiRangoLogo from '../../assets/logo_uairango.png';
 
 const IntegrationsPage = () => {
     const [loading, setLoading] = useState(true);

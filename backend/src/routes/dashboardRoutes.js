@@ -100,7 +100,9 @@ router.get(
 
 router.get(
   "/attendant-responses-timeseries",
-  requireTenantId,
+  validatePeriodFilter,
+  validate,
+  authorize("dashboard:read"),
   dashboardController.getAttendantResponsesTimeseries,
 );
 

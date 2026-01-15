@@ -135,6 +135,18 @@ module.exports = {
     res.status(200).json(attendantsPerformance);
   }),
 
+  getAttendantResponsesTimeseries: asyncHandler(async (req, res) => {
+    const { period, startDate, endDate, atendenteId } = req.query;
+    const data = await dashboardRepository.getAttendantResponsesTimeseries(
+      req.tenantId,
+      period || 'day',
+      startDate,
+      endDate,
+      atendenteId,
+    );
+    res.status(200).json(data);
+  }),
+
   getDetails: asyncHandler(async (req, res) => {
     const { category } = req.params;
     const { startDate, endDate } = req.query;

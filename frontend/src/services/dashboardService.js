@@ -66,6 +66,11 @@ const dashboardService = {
         return response.data;
     },
 
+    getAttendantResponsesTimeseries: async (params) => {
+        const response = await apiAuthenticated.get('/dashboard/attendant-responses-timeseries', { params });
+        return response.data;
+    },
+
     getWordCloudData: async (params) => {
         const response = await apiAuthenticated.get('/dashboard/wordcloud', { params });
         return response.data;

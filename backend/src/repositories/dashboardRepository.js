@@ -1893,6 +1893,71 @@ const getTopClientsByRedemptions = async (tenantId, limit = 10) => {
     });
 };
 
+const getAttendantResponsesTimeseries = async (tenantId, period, startDate, endDate, atendenteId = null) => {
+  const whereClause = {
+    tenantId: tenantId,
+    atendenteId: { [Op.ne]: null },
+  };
+
+  if (startDate && endDate) {
+    whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+  }
+
+  if (atendenteId) {
+    whereClause.atendenteId = atendenteId;
+  }
+
+  const responses = await Resposta.findAll({
+    where: whereClause,
+    attributes: [
+      'atendenteId',
+      [fn('date_trunc', period, col('createdAt')), 'period'],
+      [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'count'],
+    ],
+    include: [{ model: Atendente, as: 'atendente', attributes: ['name'], required: true }],
+    group: ['atendenteId', 'atendente.id', 'period'],
+    order: [['period', 'ASC']],
+    raw: true,
+    nest: true,
+  });
+
+  const series = {};
+  responses.forEach(item => {
+    const attendantName = item.atendente.name;
+    if (!series[attendantName]) {
+      series[attendantName] = [];
+    }
+    const formattedPeriod = formatInTimeZone(item.period, 'yyyy-MM-dd');
+    
+    const existingEntry = series[attendantName].find(e => e.period === formattedPeriod);
+    if (existingEntry) {
+        existingEntry.count += parseInt(item.count, 10);
+    } else {
+        series[attendantName].push({
+          period: formattedPeriod,
+          count: parseInt(item.count, 10),
+        });
+    }
+  });
+
+  const allPeriods = [...new Set(responses.map(item => formatInTimeZone(item.period, 'yyyy-MM-dd')))].sort();
+
+  for (const attendantName in series) {
+    const existingPeriods = new Set(series[attendantName].map(e => e.period));
+    const filledSeries = [];
+    for (const period of allPeriods) {
+        if (existingPeriods.has(period)) {
+            filledSeries.push(series[attendantName].find(e => e.period === period));
+        } else {
+            filledSeries.push({ period, count: 0 });
+        }
+    }
+    series[attendantName] = filledSeries;
+  }
+
+  return series;
+};
+
 const dashboardRepository = {
   getSummary,
   getSurveysRespondedChart,
@@ -1914,6 +1979,7 @@ const dashboardRepository = {
   getDashboardData,
   getTopClientsByResponses,
   getTopClientsByRedemptions,
+  getAttendantResponsesTimeseries,
 };
 
 module.exports = dashboardRepository;

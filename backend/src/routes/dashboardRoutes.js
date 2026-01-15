@@ -99,6 +99,12 @@ router.get(
 );
 
 router.get(
+  "/attendant-responses-timeseries",
+  requireTenantId,
+  dashboardController.getAttendantResponsesTimeseries,
+);
+
+router.get(
   "/details/:category",
   validateDateFilters,
   validate,

@@ -1281,7 +1281,7 @@ const getAttendantsPerformance = async (tenantId, startDate, endDate) => {
     where: { ...whereClause, atendenteId: { [Op.in]: attendantIds } },
     attributes: [
       'atendenteId',
-      [fn('COUNT', fn('DISTINCT', col('pesquisaId'))), 'surveyCount'],
+      [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'surveyCount'],
     ],
     group: ['atendenteId'],
     raw: true,

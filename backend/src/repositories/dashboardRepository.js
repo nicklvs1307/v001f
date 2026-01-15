@@ -1911,7 +1911,7 @@ const getAttendantResponsesTimeseries = async (tenantId, period, startDate, endD
     where: whereClause,
     attributes: [
       'atendenteId',
-      [fn('date_trunc', period, col('createdAt')), 'period'],
+      [fn('date_trunc', period, col('Resposta.createdAt')), 'period'],
       [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'count'],
     ],
     include: [{ model: Atendente, as: 'atendente', attributes: ['name'], required: true }],

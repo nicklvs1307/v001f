@@ -80,7 +80,7 @@ const findAtendentePerformanceById = async (atendenteId, tenantId) => {
     const surveyCount = await Resposta.count({
         where: whereClause,
         distinct: true,
-        col: 'pesquisaId',
+        col: 'respondentSessionId',
     });
 
     return {

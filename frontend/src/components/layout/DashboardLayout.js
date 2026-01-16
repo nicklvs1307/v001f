@@ -120,8 +120,8 @@ const DashboardLayout = () => {
             children: [
                 { text: 'Painel', path: '/dashboard/respostas/painel', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
                 { text: 'Gestão de Respostas', path: '/dashboard/respostas/gestao', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Replicas', path: '/dashboard/respostas/replicas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Tratativas', path: '/dashboard/respostas/tratativas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Replicas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], badge: 'Em Breve' },
+                { text: 'Tratativas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], badge: 'Em Breve' },
             ],
         },
         { text: 'Resultados', icon: <BarChartIcon />, path: '/dashboard/resultados', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
@@ -155,7 +155,7 @@ const DashboardLayout = () => {
                         badge: 'NOVO',            roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], // Only for tenant admins
             children: [
                 { text: 'Conexão', path: '/dashboard/whatsapp-connect', roles: [ROLES.ADMIN] },
-                { text: 'Campanhas', path: '/dashboard/cupons/campanhas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], badge: 'PRO' },
+                { text: 'Campanhas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], badge: 'Em Breve' },
                 { text: 'Automações', path: '/dashboard/whatsapp/automations', roles: [ROLES.ADMIN], badge: 'PRO' },
             ],
         },

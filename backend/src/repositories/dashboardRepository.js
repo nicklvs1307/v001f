@@ -500,7 +500,7 @@ const getScoresByCriteria = async (
             model: Resposta,
             as: "respostas",
             where: responseWhere,
-            required: false,
+            required: true,
             attributes: ["ratingValue"],
           },
         ],
@@ -508,6 +508,7 @@ const getScoresByCriteria = async (
     ],
     order: [["name", "ASC"]],
   });
+
 
   return criterios.map((criterio) => {
     const result = {

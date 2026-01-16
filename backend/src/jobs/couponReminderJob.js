@@ -1,5 +1,11 @@
 const cron = require("node-cron");
-const { Cupom, Client, Tenant, WhatsappTemplate } = require("../../models");
+const {
+  Cupom,
+  Client,
+  Tenant,
+  WhatsappTemplate,
+  Recompensa,
+} = require("../../models");
 const { now } = require("../utils/dateUtils");
 const { Op } = require("sequelize");
 const { format, addDays, startOfDay, endOfDay } = require("date-fns");
@@ -57,7 +63,10 @@ const task = cron.schedule(
               [Op.lt]: endOfDay(targetDate),
             },
           },
-          include: [{ model: Client, as: "client", required: true }],
+          include: [
+            { model: Client, as: "client", required: true },
+            { model: Recompensa, as: "recompensa" },
+          ],
         });
 
         console.log(
@@ -79,6 +88,10 @@ const task = cron.schedule(
               .replace(
                 /{{data_validade}}/g,
                 format(new Date(coupon.dataValidade), "dd/MM/yyyy"),
+              )
+              .replace(
+                /{{recompensa}}/g,
+                coupon.recompensa ? coupon.recompensa.name : "",
               );
 
             try {

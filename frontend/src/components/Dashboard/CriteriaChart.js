@@ -26,9 +26,7 @@ const CriteriaChart = ({ startDate, endDate }) => {
                 const data = await dashboardService.getCriteriaScores(params);
 
                 if (isActive) {
-                    // Filter for NPS criteria only, as this chart is for NPS
-                    const npsCriteria = data.filter(item => item.scoreType === 'NPS');
-                    setCriteriaScores(npsCriteria);
+                    setCriteriaScores(data);
                 }
             } catch (err) {
                 if (isActive) {

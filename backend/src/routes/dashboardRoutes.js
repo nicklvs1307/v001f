@@ -37,7 +37,7 @@ router.get(
   dashboardController.getRanking,
 );
 router.get(
-  "/nps-criteria",
+  "/criteria-scores",
   validateDateFilters,
   validate,
   authorize("dashboard:read"),

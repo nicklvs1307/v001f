@@ -54,7 +54,7 @@ const ClientDetailsPage = () => {
     }
 
     const { name, email, phone, birthDate, stats } = client;
-    const { totalVisits, lastVisit, activeCoupons, usedCoupons, attendanceData, totalOrders, totalSpent } = stats;
+    const { totalVisits, lastVisit, activeCoupons, usedOrExpiredCoupons, attendanceData, totalOrders, totalSpent } = stats;
 
     return (
         <Container sx={{ mt: 4 }}>
@@ -101,13 +101,13 @@ const ClientDetailsPage = () => {
                 <Tabs value={tabValue} onChange={handleTabChange} aria-label="client details tabs">
                     <Tab icon={<BarChart />} label="Atividade" />
                     <Tab icon={<Receipt />} label={`Cupons Ativos (${activeCoupons.length})`} />
-                    <Tab icon={<Receipt />} label={`Cupons Usados (${usedCoupons.length})`} />
+                    <Tab icon={<Receipt />} label={`Cupons Usados / Vencidos (${usedOrExpiredCoupons.length})`} />
                 </Tabs>
             </Box>
 
             {tabValue === 0 && <ActivityTab stats={stats} />}
             {tabValue === 1 && <CouponsTab coupons={activeCoupons} />}
-            {tabValue === 2 && <CouponsTab coupons={usedCoupons} isUsed={true} />}
+            {tabValue === 2 && <CouponsTab coupons={usedOrExpiredCoupons} isUsed={true} />}
 
         </Container>
     );

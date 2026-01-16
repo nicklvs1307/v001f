@@ -326,13 +326,13 @@ class ClientRepository {
     // Processar cupons
     const cupons = clientJSON.cupons || [];
     const activeCoupons = cupons.filter((c) => c.status === "active");
-    const usedCoupons = cupons.filter((c) => c.status === "used");
+    const usedOrExpiredCoupons = cupons.filter(
+      (c) => c.status === "used" || c.status === "expired",
+    );
 
     // Processar visitas (respostas a pesquisas)
     const visits = clientJSON.respostas || [];
-    const totalVisits = new Set(
-      visits.map((v) => new Date(v.createdAt).toDateString()),
-    ).size;
+    const totalVisits = visits.length;
     const lastVisit =
       visits.length > 0
         ? new Date(Math.max(...visits.map((v) => new Date(v.createdAt))))
@@ -393,7 +393,7 @@ class ClientRepository {
         totalVisits,
         lastVisit,
         activeCoupons,
-        usedCoupons,
+        usedOrExpiredCoupons,
         attendanceData,
         totalOrders,
         totalSpent,

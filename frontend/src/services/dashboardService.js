@@ -12,7 +12,7 @@ const dashboardService = {
     },
     
     getCriteriaScores: async (params) => {
-        const response = await apiAuthenticated.get('/dashboard/nps-criteria', { params });
+        const response = await apiAuthenticated.get('/dashboard/criteria-scores', { params });
         return response.data;
     },
 

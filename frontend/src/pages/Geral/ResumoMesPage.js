@@ -86,7 +86,7 @@ const ResumoMesPage = () => {
         try {
             setLoading(true);
             const params = { tenantId, date: selectedDate.toISOString() };
-            const data = await dashboardService.getMonthlyReport(params);
+            const data = await dashboardService.getReport('mensal', params);
             setReportData(data);
             setError('');
         } catch (err) {
@@ -101,7 +101,7 @@ const ResumoMesPage = () => {
         fetchResults();
     }, [fetchResults]);
 
-    const summary = reportData?.monthSummary;
+    const summary = reportData?.summary;
 
     if (loading) {
         return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}><CircularProgress size={60} /></Box>;

@@ -478,8 +478,11 @@ const getScoresByCriteria = async (
 
   const responseWhere = { ratingValue: { [Op.ne]: null } };
   if (tenantId) {
-    responseWhere.tenantId = tenantId;
-    whereClause.tenantId = tenantId;
+    if (Array.isArray(tenantId)) {
+      responseWhere.tenantId = { [Op.in]: tenantId };
+    } else {
+      responseWhere.tenantId = tenantId;
+    }
   }
   if (startDate && endDate) {
     responseWhere.createdAt = { [Op.between]: [startDate, endDate] };
@@ -495,12 +498,13 @@ const getScoresByCriteria = async (
         model: Pergunta,
         as: "perguntas",
         attributes: ["id", "type"],
+        required: false,
         include: [
           {
             model: Resposta,
             as: "respostas",
             where: responseWhere,
-            required: true,
+            required: false,
             attributes: ["ratingValue"],
           },
         ],
@@ -508,8 +512,6 @@ const getScoresByCriteria = async (
     ],
     order: [["name", "ASC"]],
   });
-
-  console.log('CRITERIOS DEBUG:', JSON.stringify(criterios, null, 2));
 
   return criterios.map((criterio) => {
     const result = {
@@ -522,7 +524,7 @@ const getScoresByCriteria = async (
       neutrals: 0,
       detractors: 0,
       satisfied: 0,
-      neutral: 0, // CSAT neutral
+      neutral: 0,
       unsatisfied: 0,
     };
 
@@ -537,19 +539,16 @@ const getScoresByCriteria = async (
     
     result.total = allResponses.length;
 
-    // Lógica mais robusta para encontrar o tipo de pergunta
     let questionType = null;
     const firstQuestionWithAnswers = criterio.perguntas.find(p => p.respostas && p.respostas.length > 0);
     if(firstQuestionWithAnswers) {
         questionType = firstQuestionWithAnswers.type;
     } else {
-        // Fallback se nenhuma pergunta tiver resposta, mas ainda assim houver respostas agregadas (improvável)
-        // Ou se um critério não tiver perguntas com pontuação, mas só de texto, por ex.
         const firstQuestion = criterio.perguntas[0];
         if (firstQuestion) {
             questionType = firstQuestion.type;
         } else {
-            return result; // Critério sem perguntas
+            return result;
         }
     }
 
@@ -568,6 +567,9 @@ const getScoresByCriteria = async (
       if (result.total > 0) {
         result.satisfactionRate = parseFloat(((result.satisfied / result.total) * 100).toFixed(1));
       }
+      result.promoters = result.satisfied;
+      result.neutrals = result.neutral;
+      result.detractors = result.unsatisfied;
     } else {
         result.scoreType = "Outro";
     }

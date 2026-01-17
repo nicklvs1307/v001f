@@ -1925,41 +1925,37 @@ const getAttendantResponsesTimeseries = async (tenantId, period, startDate, endD
     nest: true,
   });
 
-  const series = {};
+  const seriesByAttendant = {};
+  const allPeriods = new Set();
+
+  // Process all responses from the query
   responses.forEach(item => {
     const attendantName = item.atendente.name;
-    if (!series[attendantName]) {
-      series[attendantName] = [];
-    }
     const formattedPeriod = formatInTimeZone(item.period, 'yyyy-MM-dd');
-    
-    const existingEntry = series[attendantName].find(e => e.period === formattedPeriod);
-    if (existingEntry) {
-        existingEntry.count += parseInt(item.count, 10);
-    } else {
-        series[attendantName].push({
-          period: formattedPeriod,
-          count: parseInt(item.count, 10),
-        });
+    const count = parseInt(item.count, 10);
+
+    if (!seriesByAttendant[attendantName]) {
+      seriesByAttendant[attendantName] = {};
     }
+
+    // The GROUP BY should ensure we only visit each attendant/period combo once.
+    seriesByAttendant[attendantName][formattedPeriod] = count;
+    allPeriods.add(formattedPeriod);
   });
 
-  const allPeriods = [...new Set(responses.map(item => formatInTimeZone(item.period, 'yyyy-MM-dd')))].sort();
+  const sortedPeriods = Array.from(allPeriods).sort();
 
-  for (const attendantName in series) {
-    const existingPeriods = new Set(series[attendantName].map(e => e.period));
-    const filledSeries = [];
-    for (const period of allPeriods) {
-        if (existingPeriods.has(period)) {
-            filledSeries.push(series[attendantName].find(e => e.period === period));
-        } else {
-            filledSeries.push({ period, count: 0 });
-        }
-    }
-    series[attendantName] = filledSeries;
+  const finalSeries = {};
+
+  // Ensure all attendants have all periods
+  for (const attendantName in seriesByAttendant) {
+    finalSeries[attendantName] = sortedPeriods.map(period => ({
+      period: period,
+      count: seriesByAttendant[attendantName][period] || 0
+    }));
   }
 
-  return series;
+  return finalSeries;
 };
 
 const dashboardRepository = {

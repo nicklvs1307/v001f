@@ -495,12 +495,13 @@ const getScoresByCriteria = async (
         model: Pergunta,
         as: "perguntas",
         attributes: ["id", "type"],
+        required: false,
         include: [
           {
             model: Resposta,
             as: "respostas",
             where: responseWhere,
-            required: true,
+            required: false,
             attributes: ["ratingValue"],
           },
         ],
@@ -1916,7 +1917,7 @@ const getAttendantResponsesTimeseries = async (tenantId, period, startDate, endD
       [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'count'],
     ],
     include: [{ model: Atendente, as: 'atendente', attributes: ['name'], required: true }],
-    group: ['atendenteId', 'atendente.id', 'period'],
+    group: ['atendenteId', 'atendente.id', 'atendente.name', 'period'],
     order: [['period', 'ASC']],
     raw: true,
     nest: true,
@@ -1931,9 +1932,7 @@ const getAttendantResponsesTimeseries = async (tenantId, period, startDate, endD
     const formattedPeriod = formatInTimeZone(item.period, 'yyyy-MM-dd');
     
     const existingEntry = series[attendantName].find(e => e.period === formattedPeriod);
-    if (existingEntry) {
-        existingEntry.count += parseInt(item.count, 10);
-    } else {
+    if (!existingEntry) {
         series[attendantName].push({
           period: formattedPeriod,
           count: parseInt(item.count, 10),

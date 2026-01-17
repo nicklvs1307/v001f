@@ -495,13 +495,12 @@ const getScoresByCriteria = async (
         model: Pergunta,
         as: "perguntas",
         attributes: ["id", "type"],
-        required: false,
         include: [
           {
             model: Resposta,
             as: "respostas",
             where: responseWhere,
-            required: false,
+            required: true,
             attributes: ["ratingValue"],
           },
         ],
@@ -510,6 +509,7 @@ const getScoresByCriteria = async (
     order: [["name", "ASC"]],
   });
 
+  console.log('CRITERIOS DEBUG:', JSON.stringify(criterios, null, 2));
 
   return criterios.map((criterio) => {
     const result = {
@@ -1917,7 +1917,7 @@ const getAttendantResponsesTimeseries = async (tenantId, period, startDate, endD
       [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'count'],
     ],
     include: [{ model: Atendente, as: 'atendente', attributes: ['name'], required: true }],
-    group: ['atendenteId', 'atendente.id', 'atendente.name', 'period'],
+    group: ['atendenteId', 'atendente.id', 'period'],
     order: [['period', 'ASC']],
     raw: true,
     nest: true,
@@ -1932,7 +1932,9 @@ const getAttendantResponsesTimeseries = async (tenantId, period, startDate, endD
     const formattedPeriod = formatInTimeZone(item.period, 'yyyy-MM-dd');
     
     const existingEntry = series[attendantName].find(e => e.period === formattedPeriod);
-    if (!existingEntry) {
+    if (existingEntry) {
+        existingEntry.count += parseInt(item.count, 10);
+    } else {
         series[attendantName].push({
           period: formattedPeriod,
           count: parseInt(item.count, 10),

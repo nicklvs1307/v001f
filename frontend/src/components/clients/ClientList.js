@@ -15,6 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import EventIcon from '@mui/icons-material/Event';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import AddIcon from '@mui/icons-material/Add';
 import { formatDateForDisplay } from '../../utils/dateUtils';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -23,7 +24,7 @@ const ClientList = () => {
     const {
         clients, totalClients, loading, error, page, rowsPerPage, 
         filterText, createClient, updateClient, deleteClient,
-        handleChangePage, handleChangeRowsPerPage, handleFilterChange
+        handleChangePage, handleChangeRowsPerPage, handleFilterChange, handleClearFilter
     } = useClients();
 
     const navigate = useNavigate();
@@ -121,39 +122,59 @@ const ClientList = () => {
 
     return (
         <Box sx={{ mt: 4 }}>
-            <Paper sx={{ p: 2, mb: 3 }}>
-                <Grid container spacing={1} alignItems="center">
-                    <Grid item xs={12} sm={6} md={8}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                <Typography variant="h4" component="h1">Gestão de Clientes</Typography>
+                <Box>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<AddIcon />}
+                        onClick={() => handleOpenModal()}
+                        sx={{ mr: 1 }}
+                    >
+                        Adicionar Cliente
+                    </Button>
+                    <IconButton
+                        aria-label="mais opções"
+                        aria-controls="client-options-menu"
+                        aria-haspopup="true"
+                        onClick={handleMenuOpen}
+                        color="inherit"
+                    >
+                        <MoreVertIcon />
+                    </IconButton>
+                    <Menu
+                        id="client-options-menu"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={Boolean(anchorEl)}
+                        onClose={handleMenuClose}
+                    >
+                        <MenuItem onClick={handleOpenImportModal}>Importar Clientes</MenuItem>
+                    </Menu>
+                </Box>
+            </Box>
+
+            <Paper elevation={2} sx={{ p: 2, mb: 3 }}>
+                <Grid container spacing={2} alignItems="center">
+                    <Grid item xs={12} sm={10}>
                         <TextField
+                            fullWidth
                             label="Buscar Cliente por nome, e-mail ou telefone"
                             variant="outlined"
                             size="small"
-                            fullWidth
                             value={filterText}
                             onChange={handleFilterChange}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} md={4} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <Button variant="contained" onClick={() => handleOpenModal()}>Adicionar Cliente</Button>
-                        <IconButton
-                            aria-label="mais opções"
-                            aria-controls="client-options-menu"
-                            aria-haspopup="true"
-                            onClick={handleMenuOpen}
-                            color="inherit"
-                            sx={{ ml: 1 }}
+                    <Grid item xs={12} sm={2}>
+                        <Button
+                            fullWidth
+                            variant="outlined"
+                            onClick={handleClearFilter}
                         >
-                            <MoreVertIcon />
-                        </IconButton>
-                        <Menu
-                            id="client-options-menu"
-                            anchorEl={anchorEl}
-                            keepMounted
-                            open={Boolean(anchorEl)}
-                            onClose={handleMenuClose}
-                        >
-                            <MenuItem onClick={handleOpenImportModal}>Importar Clientes</MenuItem>
-                        </Menu>
+                            Limpar
+                        </Button>
                     </Grid>
                 </Grid>
             </Paper>

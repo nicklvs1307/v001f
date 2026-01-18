@@ -195,8 +195,8 @@ const ResumoMesPage = () => {
                                     <PieChart>
                                         <Pie
                                             data={[
-                                                { name: 'Com Cadastro', value: summary.clientProportion.registered },
-                                                { name: 'Sem Cadastro', value: summary.clientProportion.unregistered }
+                                                { name: 'Com Cadastro', value: summary.clientProportion?.registered ?? 0 },
+                                                { name: 'Sem Cadastro', value: summary.clientProportion?.unregistered ?? 0 }
                                             ]}
                                             dataKey="value"
                                             nameKey="name"

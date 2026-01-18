@@ -101,6 +101,11 @@ const useClients = () => {
         setPage(0);
     };
 
+    const handleClearFilter = () => {
+        setFilterText('');
+        setPage(0);
+    };
+
     return { 
         clients, 
         totalClients,
@@ -118,7 +123,8 @@ const useClients = () => {
         handleRequestSort,
         handleChangePage,
         handleChangeRowsPerPage,
-        handleFilterChange
+        handleFilterChange,
+        handleClearFilter
     };
 };
 

@@ -16,22 +16,7 @@ const useClients = () => {
     // Estado para o filtro, que será aplicado com debounce
     const [filterText, setFilterText] = useState('');
 
-    const fetchClients = useCallback(async () => {
-        try {
-            setLoading(true);
-            const pageNumber = isNaN(page) ? 0 : page;
-            const { clients: fetchedClients, total: fetchedTotal } = await clientService.getAllClients(pageNumber, rowsPerPage, orderBy, order, filterText);
-            setClients(fetchedClients);
-            setTotalClients(fetchedTotal);
-            setError(null);
-        } catch (err) {
-            setError(err.message || 'Falha ao buscar clientes.');
-        } finally {
-            setLoading(false);
-        }
-    }, [page, rowsPerPage, orderBy, order, filterText]);
-
-    // Efeito para aplicar o debounce
+    // Efeito para aplicar o debounce na busca
     useEffect(() => {
         const timerId = setTimeout(() => {
             setFilterText(searchTerm);
@@ -43,14 +28,38 @@ const useClients = () => {
         };
     }, [searchTerm]);
 
+    // Efeito para buscar os clientes quando os filtros ou paginação mudarem
     useEffect(() => {
+        const fetchClients = async () => {
+            try {
+                setLoading(true);
+                const pageNumber = isNaN(page) ? 0 : page;
+                const { clients: fetchedClients, total: fetchedTotal } = await clientService.getAllClients(pageNumber, rowsPerPage, orderBy, order, filterText);
+                setClients(fetchedClients);
+                setTotalClients(fetchedTotal);
+                setError(null);
+            } catch (err) {
+                setError(err.message || 'Falha ao buscar clientes.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchClients();
-    }, [fetchClients]); // A dependência principal agora é a função de busca
+    }, [filterText, page, rowsPerPage, orderBy, order]);
+
+    const refreshClients = useCallback(async () => {
+        const pageNumber = isNaN(page) ? 0 : page;
+        const { clients: fetchedClients, total: fetchedTotal } = await clientService.getAllClients(pageNumber, rowsPerPage, orderBy, order, filterText);
+        setClients(fetchedClients);
+        setTotalClients(fetchedTotal);
+    }, [page, rowsPerPage, orderBy, order, filterText]);
+
 
     const createClient = async (clientData) => {
         try {
             const newClient = await clientService.createClient(clientData);
-            fetchClients(); // Re-fetch para obter os dados mais recentes
+            refreshClients(); // Re-fetch para obter os dados mais recentes
             return newClient;
         } catch (err) {
             throw new Error(err.message || 'Falha ao criar cliente.');
@@ -60,7 +69,7 @@ const useClients = () => {
     const updateClient = async (id, clientData) => {
         try {
             const updatedClient = await clientService.updateClient(id, clientData);
-            fetchClients(); // Re-fetch para obter os dados mais recentes
+            refreshClients(); // Re-fetch para obter os dados mais recentes
             return updatedClient;
         } catch (err) {
             throw new Error(err.message || 'Falha ao atualizar cliente.');
@@ -70,7 +79,7 @@ const useClients = () => {
     const deleteClient = async (id) => {
         try {
             await clientService.deleteClient(id);
-            fetchClients(); // Re-fetch para obter os dados mais recentes
+            refreshClients(); // Re-fetch para obter os dados mais recentes
         } catch (err) {
             throw new Error(err.message || 'Falha ao deletar cliente.');
         }
@@ -96,10 +105,9 @@ const useClients = () => {
         setSearchTerm(event.target.value);
     };
 
+    // Limpa apenas o termo de busca; o debounce cuidará do resto.
     const handleClearFilter = () => {
         setSearchTerm('');
-        setFilterText('');
-        setPage(0);
     };
 
     return { 
@@ -112,7 +120,7 @@ const useClients = () => {
         orderBy, 
         order, 
         filterText: searchTerm, // Retorna o valor do input para ser exibido no TextField
-        fetchClients, 
+        fetchClients: refreshClients, 
         createClient, 
         updateClient, 
         deleteClient,

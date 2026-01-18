@@ -161,7 +161,6 @@ const ClientList = () => {
                             size="small"
                             value={filterText}
                             onChange={handleFilterChange}
-                            disabled={loading}
                         />
                     </Grid>
                     <Grid item xs={12} sm={2}>
@@ -169,7 +168,6 @@ const ClientList = () => {
                             fullWidth
                             variant="outlined"
                             onClick={handleClearFilter}
-                            disabled={loading}
                         >
                             Limpar
                         </Button>

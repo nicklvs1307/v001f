@@ -43,7 +43,8 @@ const SurveyIdentifyPage = () => {
                 surveyId: pesquisaId,
                 answers: surveyState.answers,
                 tenantId: surveyState.tenantId,
-                atendenteId: surveyState.atendenteId
+                atendenteId: surveyState.atendenteId,
+                respondentSessionId: surveyState.respondentSessionId
             } 
         });
     };

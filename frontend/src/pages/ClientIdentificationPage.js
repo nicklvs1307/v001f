@@ -71,7 +71,7 @@ const ClientIdentificationPage = () => {
 const IdentificationFormComponent = ({ tenant }) => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { surveyId, answers, tenantId, atendenteId } = location.state || {};
+    const { surveyId, answers, tenantId, atendenteId, respondentSessionId } = location.state || {};
     const { pesquisaId } = useParams();
     const theme = useTheme();
 
@@ -118,6 +118,7 @@ const IdentificationFormComponent = ({ tenant }) => {
                 atendenteId,
                 client: { phone },
                 tenantId,
+                respondentSessionId, // Adicionado para manter a sessão
             });
             localStorage.setItem('clientPhone', phone);
             navigate(`/roleta/${tenantId}/${surveyIdentifier}/${response.clienteId}`);

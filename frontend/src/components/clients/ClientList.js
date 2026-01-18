@@ -116,10 +116,6 @@ const ClientList = () => {
         }
     };
 
-    if (loading) {
-        return <CircularProgress />;
-    }
-
     return (
         <Box sx={{ mt: 4 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -165,6 +161,7 @@ const ClientList = () => {
                             size="small"
                             value={filterText}
                             onChange={handleFilterChange}
+                            disabled={loading}
                         />
                     </Grid>
                     <Grid item xs={12} sm={2}>
@@ -172,6 +169,7 @@ const ClientList = () => {
                             fullWidth
                             variant="outlined"
                             onClick={handleClearFilter}
+                            disabled={loading}
                         >
                             Limpar
                         </Button>
@@ -181,60 +179,66 @@ const ClientList = () => {
 
             {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-            <Grid container spacing={2}>
-                {(clients || []).map((client) => (
-                    <Grid item key={client.id} xs={12} sm={6} md={4}>
-                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', '&:hover': { boxShadow: 6 } }}>
-                            <CardActionArea onClick={() => handleCardClick(client.id)} sx={{ flexGrow: 1 }}>
-                                <CardContent>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                                        <Avatar sx={{ width: 48, height: 48, mr: 2, bgcolor: 'primary.main' }}>
-                                            {client.name.charAt(0).toUpperCase()}
-                                        </Avatar>
-                                        <Stack spacing={0.5}>
-                                            <Typography variant="h6" noWrap>{client.name}</Typography>
-                                            <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary' }}>
-                                                <PhoneIcon sx={{ mr: 1, fontSize: '1rem' }} />
-                                                <Typography variant="body2">{client.phone || 'N/A'}</Typography>
-                                            </Box>
-                                            <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary' }}>
-                                                <EmailIcon sx={{ mr: 1, fontSize: '1rem' }} />
-                                                <Typography variant="body2" noWrap>{client.email || 'N/A'}</Typography>
-                                            </Box>
-                                        </Stack>
-                                    </Box>
-                                    <Divider sx={{ my: 1.5 }} />
-                                    <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary' }}>
-                                        <EventIcon sx={{ mr: 1, fontSize: '1rem' }} />
-                                        <Typography variant="caption">
-                                            Última visita: {client.lastVisit ? formatDateForDisplay(client.lastVisit) : 'N/A'}
-                                        </Typography>
-                                    </Box>
-                                </CardContent>
-                            </CardActionArea>
-                            <CardActions sx={{ justifyContent: 'flex-end', p: 1 }}>
-                                <Tooltip title="Enviar WhatsApp">
-                                    <span>
-                                        <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleOpenMessageModal(client); }} disabled={!client.phone}>
-                                            <WhatsAppIcon />
+            {loading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+                    <CircularProgress />
+                </Box>
+            ) : (
+                <Grid container spacing={2}>
+                    {(clients || []).map((client) => (
+                        <Grid item key={client.id} xs={12} sm={6} md={4}>
+                            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', '&:hover': { boxShadow: 6 } }}>
+                                <CardActionArea onClick={() => handleCardClick(client.id)} sx={{ flexGrow: 1 }}>
+                                    <CardContent>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                                            <Avatar sx={{ width: 48, height: 48, mr: 2, bgcolor: 'primary.main' }}>
+                                                {client.name.charAt(0).toUpperCase()}
+                                            </Avatar>
+                                            <Stack spacing={0.5}>
+                                                <Typography variant="h6" noWrap>{client.name}</Typography>
+                                                <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary' }}>
+                                                    <PhoneIcon sx={{ mr: 1, fontSize: '1rem' }} />
+                                                    <Typography variant="body2">{client.phone || 'N/A'}</Typography>
+                                                </Box>
+                                                <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary' }}>
+                                                    <EmailIcon sx={{ mr: 1, fontSize: '1rem' }} />
+                                                    <Typography variant="body2" noWrap>{client.email || 'N/A'}</Typography>
+                                                </Box>
+                                            </Stack>
+                                        </Box>
+                                        <Divider sx={{ my: 1.5 }} />
+                                        <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary' }}>
+                                            <EventIcon sx={{ mr: 1, fontSize: '1rem' }} />
+                                            <Typography variant="caption">
+                                                Última visita: {client.lastVisit ? formatDateForDisplay(client.lastVisit) : 'N/A'}
+                                            </Typography>
+                                        </Box>
+                                    </CardContent>
+                                </CardActionArea>
+                                <CardActions sx={{ justifyContent: 'flex-end', p: 1 }}>
+                                    <Tooltip title="Enviar WhatsApp">
+                                        <span>
+                                            <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleOpenMessageModal(client); }} disabled={!client.phone}>
+                                                <WhatsAppIcon />
+                                            </IconButton>
+                                        </span>
+                                    </Tooltip>
+                                    <Tooltip title="Editar">
+                                        <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleOpenModal(client); }}>
+                                            <EditIcon />
                                         </IconButton>
-                                    </span>
-                                </Tooltip>
-                                <Tooltip title="Editar">
-                                    <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleOpenModal(client); }}>
-                                        <EditIcon />
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip title="Deletar">
-                                    <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleOpenConfirm(client); }}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                ))}
-            </Grid>
+                                    </Tooltip>
+                                    <Tooltip title="Deletar">
+                                        <IconButton size="small" onClick={(e) => { e.stopPropagation(); handleOpenConfirm(client); }}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </CardActions>
+                            </Card>
+                        </Grid>
+                    ))}
+                </Grid>
+            )}
 
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}

@@ -21,6 +21,8 @@ import ClientIdentificationPage from '../pages/ClientIdentificationPage';
 import RoletaSpinPage from '../pages/RoletaSpinPage';
 import NoPrizePage from '../pages/NoPrizePage'; // Adicionar esta linha
 import PrivacyPolicyPage from '../pages/PrivacyPolicyPage';
+import CompanyProfilePage from '../pages/CompanyProfilePage';
+import ReputationPage from '../pages/ReputationPage';
 const TermsOfServicePage = React.lazy(() => import('../pages/TermsOfServicePage'));
 const IntegrationsPage = React.lazy(() => import('../pages/IntegrationsPage')); // Adicionando a nova página
 
@@ -45,8 +47,6 @@ const ClientsPage = React.lazy(() => import('../pages/ClientsPage'));
 const AttendantsPage = React.lazy(() => import('../pages/AttendantsPage'));
 const AttendantGoalsPage = React.lazy(() => import('../pages/AttendantGoalsPage'));
 const AttendantGoalDetailsPage = React.lazy(() => import('../pages/AttendantGoalDetailsPage')); // Nova página
-const GMBConfigsPage = React.lazy(() => import('../pages/GMBConfigsPage'));
-const GMBReviewsPage = React.lazy(() => import('../pages/GMBReviewsPage'));
 const RoletasPage = React.lazy(() => import('../pages/RoletasPage'));
 const RoletaFormPage = React.lazy(() => import('../pages/RoletaFormPage'));
 const WhatsappConfigPage = React.lazy(() => import('../pages/WhatsappConfigPage'));
@@ -191,9 +191,7 @@ const AppRoutes = () => {
               <Route path="respostas/replicas" element={<RespostasReplicasPage />} />
               <Route path="respostas/tratativas" element={<RespostasTratativasPage />} />
 
-              <Route path="reputacao" element={<GMBReviewsPage />} />
-              <Route path="config-gmb" element={<GMBConfigsPage />} />
-              <Route path="reviews-gmb" element={<GMBReviewsPage />} />
+              <Route path="reputacao" element={<ReputationPage />} />
               <Route path="roletas" element={<RoletasPage />} />
               <Route path="roletas/nova" element={<RoletaFormPage />} />
               <Route path="roletas/editar/:id" element={<RoletaFormPage />} />
@@ -201,7 +199,7 @@ const AppRoutes = () => {
               <Route path="whatsapp-connect" element={<WhatsappConnectPage />} />
               <Route path="whatsapp/automations" element={<AutomationsPage />} />
               <Route path="profile" element={<ProfilePage />} />
-              <Route path="config" element={<GMBConfigsPage />} />
+              <Route path="config" element={<CompanyProfilePage />} />
               <Route path="integracoes" element={<IntegrationsPage />} />
               <Route path="relatorios/diario" element={<RelatorioDiario />} />
               <Route path="relatorios/semanal" element={<RelatorioSemanal />} />

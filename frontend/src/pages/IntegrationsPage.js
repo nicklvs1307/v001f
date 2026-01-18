@@ -408,7 +408,7 @@ const UaiRangoConfigModal = ({ open, onClose, uairangoId, setUairangoId, handleS
                 <TextField
                     fullWidth
                     variant="outlined"
-                    value={`${process.env.REACT_APP_API_URL}/delivery-webhooks/uairango`}
+                    value={`${process.env.REACT_APP_API_URL}/api/delivery-webhooks/uairango`}
                     InputProps={{
                         readOnly: true,
                     }}

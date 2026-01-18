@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const atendenteRepository = require("../repositories/atendenteRepository");
+const atendenteService = require("../services/atendenteService");
 const ApiError = require("../errors/ApiError");
 
 const atendenteController = {
@@ -8,53 +8,22 @@ const atendenteController = {
     const requestingUser = req.user;
 
     const targetTenantId =
-      requestingUser.role === "Super Admin" && req.body.tenantId
+      requestingUser.role.name === "Super Admin" && req.body.tenantId
         ? req.body.tenantId
         : requestingUser.tenantId;
 
     if (!targetTenantId) {
-      console.error("Error: Tenant ID is missing.");
       throw new ApiError(
         400,
         "Tenant ID é obrigatório para criar um atendente.",
       );
     }
 
-    let atendente;
-    let retries = 5;
-    while (retries > 0) {
-      const code = Math.floor(1000 + Math.random() * 9000).toString();
-      try {
-        console.log("Attempting to create atendente with:", {
-          targetTenantId,
-          name,
-          status,
-          code,
-        });
-        atendente = await atendenteRepository.createAtendente(
-          targetTenantId,
-          name,
-          status,
-          code,
-        );
-        console.log("Atendente created successfully:", atendente);
-        break; // Success
-      } catch (error) {
-        console.error("Error creating atendente:", error);
-        if (error.name === "SequelizeUniqueConstraintError") {
-          retries--;
-          if (retries === 0) {
-            console.error("Error: Could not generate a unique code.");
-            throw new ApiError(
-              500,
-              "Não foi possível gerar um código único para o atendente.",
-            );
-          }
-        } else {
-          throw error; // Re-throw other errors
-        }
-      }
-    }
+    const atendente = await atendenteService.createAtendente(
+      targetTenantId,
+      name,
+      status,
+    );
 
     res
       .status(201)
@@ -64,9 +33,9 @@ const atendenteController = {
   getAllAtendentes: asyncHandler(async (req, res) => {
     const requestingUser = req.user;
     const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
-    const atendentes = await atendenteRepository.getAllAtendentes(tenantId);
+    const atendentes = await atendenteService.getAllAtendentes(tenantId);
     res.status(200).json(atendentes);
   }),
 
@@ -74,16 +43,17 @@ const atendenteController = {
     const { id } = req.params;
     const requestingUser = req.user;
     const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
-    const atendente = await atendenteRepository.getAtendenteById(id, tenantId);
+    const atendente = await atendenteService.getAtendenteById(id, tenantId);
 
     if (!atendente) {
       throw new ApiError(404, "Atendente não encontrado.");
     }
 
+    // A verificação de tenantId já é feita no repositório, mas uma dupla verificação aqui é boa prática
     if (
-      requestingUser.role !== "Super Admin" &&
+      requestingUser.role.name !== "Super Admin" &&
       atendente.tenantId !== requestingUser.tenantId
     ) {
       throw new ApiError(
@@ -99,19 +69,20 @@ const atendenteController = {
     const { id } = req.params;
     const { name, status } = req.body;
     const requestingUser = req.user;
-    const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
-    const existingAtendente = await atendenteRepository.getAtendenteById(
-      id,
-      tenantId,
-    );
+    // Apenas Super Admin pode especificar um tenantId
+    const tenantId =
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
+
+    // Primeiro, verifique se o atendente existe e pertence ao tenant do usuário
+    const existingAtendente = await atendenteService.getAtendenteById(id, tenantId);
     if (!existingAtendente) {
       throw new ApiError(404, "Atendente não encontrado.");
     }
-
+    
+    // Garante que um admin não possa atualizar atendentes de outro tenant
     if (
-      requestingUser.role !== "Super Admin" &&
+      requestingUser.role.name !== "Super Admin" &&
       existingAtendente.tenantId !== requestingUser.tenantId
     ) {
       throw new ApiError(
@@ -120,16 +91,12 @@ const atendenteController = {
       );
     }
 
-    const updatedAtendente = await atendenteRepository.updateAtendente(
+    const updatedAtendente = await atendenteService.updateAtendente(
       id,
-      existingAtendente.tenantId,
+      existingAtendente.tenantId, // Use o tenantId do atendente existente para segurança
       name,
       status,
     );
-
-    if (!updatedAtendente) {
-      throw new ApiError(404, "Atendente não encontrado para atualização.");
-    }
 
     res.status(200).json({
       message: "Atendente atualizado com sucesso!",
@@ -141,18 +108,15 @@ const atendenteController = {
     const { id } = req.params;
     const requestingUser = req.user;
     const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
-    const existingAtendente = await atendenteRepository.getAtendenteById(
-      id,
-      tenantId,
-    );
+    const existingAtendente = await atendenteService.getAtendenteById(id, tenantId);
     if (!existingAtendente) {
       throw new ApiError(404, "Atendente não encontrado para deleção.");
     }
 
     if (
-      requestingUser.role !== "Super Admin" &&
+      requestingUser.role.name !== "Super Admin" &&
       existingAtendente.tenantId !== requestingUser.tenantId
     ) {
       throw new ApiError(
@@ -161,14 +125,7 @@ const atendenteController = {
       );
     }
 
-    const deletedRows = await atendenteRepository.deleteAtendente(
-      id,
-      existingAtendente.tenantId,
-    );
-
-    if (deletedRows === 0) {
-      throw new ApiError(404, "Atendente não encontrado para deleção.");
-    }
+    await atendenteService.deleteAtendente(id, existingAtendente.tenantId);
 
     res.status(200).json({ message: "Atendente deletado com sucesso." });
   }),
@@ -177,15 +134,14 @@ const atendenteController = {
     const { id } = req.params;
     const requestingUser = req.user;
     const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
-    // Primeiro, verifique se o atendente existe e pertence ao tenant correto
-    const atendente = await atendenteRepository.getAtendenteById(id, tenantId);
+    const atendente = await atendenteService.getAtendenteById(id, tenantId);
     if (!atendente) {
       throw new ApiError(404, "Atendente não encontrado.");
     }
     
-    const premiacoes = await atendenteRepository.findPremiacoesByAtendenteId(id, atendente.tenantId);
+    const premiacoes = await atendenteService.getAtendentePremiacoes(id, atendente.tenantId);
 
     res.status(200).json(premiacoes);
   }),
@@ -194,15 +150,14 @@ const atendenteController = {
     const { id } = req.params;
     const requestingUser = req.user;
     const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
-    const atendente = await atendenteRepository.getAtendenteById(id, tenantId);
+    const atendente = await atendenteService.getAtendenteById(id, tenantId);
     if (!atendente) {
       throw new ApiError(404, "Atendente não encontrado.");
     }
 
-    // Busca a performance do mês atual
-    const performance = await atendenteRepository.findAtendentePerformanceById(id, atendente.tenantId);
+    const performance = await atendenteService.getAtendentePerformance(id, atendente.tenantId);
 
     res.status(200).json(performance);
   }),

@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const atendenteMetaRepository = require("../repositories/atendenteMetaRepository");
+const atendenteMetaService = require("../services/atendenteMetaService");
 const ApiError = require("../errors/ApiError");
 
 const atendenteMetaController = {
@@ -19,7 +19,7 @@ const atendenteMetaController = {
     }
 
     const tenantId =
-      requestingUser.role === "Super Admin"
+      requestingUser.role.name === "Super Admin"
         ? req.body.tenantId
         : requestingUser.tenantId;
 
@@ -32,7 +32,7 @@ const atendenteMetaController = {
       dias_trabalhados, nps_premio_valor, respostas_premio_valor, cadastros_premio_valor
     };
 
-    const meta = await atendenteMetaRepository.createOrUpdateMeta(
+    const meta = await atendenteMetaService.createOrUpdateMeta(
       atendenteId,
       tenantId,
       metaData,
@@ -51,7 +51,7 @@ const atendenteMetaController = {
     const requestingUser = req.user;
 
     const tenantId =
-      requestingUser.role === "Super Admin"
+      requestingUser.role.name === "Super Admin"
         ? req.query.tenantId
         : requestingUser.tenantId;
 
@@ -59,7 +59,7 @@ const atendenteMetaController = {
       throw new ApiError(400, "Tenant ID é obrigatório para buscar metas.");
     }
 
-    const meta = await atendenteMetaRepository.getMetaByAtendenteId(
+    const meta = await atendenteMetaService.getMetaByAtendenteId(
       atendenteId,
       tenantId,
     );
@@ -78,7 +78,7 @@ const atendenteMetaController = {
     const requestingUser = req.user;
 
     const tenantId =
-      requestingUser.role === "Super Admin"
+      requestingUser.role.name === "Super Admin"
         ? req.query.tenantId
         : requestingUser.tenantId;
 
@@ -86,7 +86,7 @@ const atendenteMetaController = {
       throw new ApiError(400, "Tenant ID é obrigatório para buscar metas.");
     }
 
-    const metas = await atendenteMetaRepository.getAllMetasByTenant(tenantId);
+    const metas = await atendenteMetaService.getAllMetasByTenant(tenantId);
     res.status(200).json(metas);
   }),
 
@@ -98,7 +98,7 @@ const atendenteMetaController = {
     const requestingUser = req.user;
 
     const tenantId =
-      requestingUser.role === "Super Admin"
+      requestingUser.role.name === "Super Admin"
         ? req.query.tenantId
         : requestingUser.tenantId;
 
@@ -106,7 +106,7 @@ const atendenteMetaController = {
       throw new ApiError(400, "Tenant ID é obrigatório para deletar metas.");
     }
 
-    const deletedRows = await atendenteMetaRepository.deleteMeta(
+    const deletedRows = await atendenteMetaService.deleteMeta(
       atendenteId,
       tenantId,
     );

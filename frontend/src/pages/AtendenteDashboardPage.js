@@ -46,6 +46,8 @@ const RankingCard = ({ attendant, rank, icon, color, metric, unit }) => (
   </Paper>
 );
 
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF', '#FF1919'];
+
 const AtendenteDashboardPage = () => {
   const theme = useTheme();
   const [performanceData, setPerformanceData] = useState([]);
@@ -54,7 +56,7 @@ const AtendenteDashboardPage = () => {
   
   const [timeSeriesPeriod, setTimeSeriesPeriod] = useState('day');
   const [selectedAttendant, setSelectedAttendant] = useState('all');
-  const [timeSeriesData, setTimeSeriesData] = useState(null);
+  const [timeSeriesData, setTimeSeriesData] = useState({ chartData: [], attendantNames: [] });
   const [timeSeriesLoading, setTimeSeriesLoading] = useState(true);
 
   useEffect(() => {
@@ -84,7 +86,7 @@ const AtendenteDashboardPage = () => {
           params.atendenteId = selectedAttendant;
         }
         const data = await dashboardService.getAttendantResponsesTimeseries(params);
-        setTimeSeriesData(data);
+        setTimeSeriesData(data || { chartData: [], attendantNames: [] });
       } catch (err) {
         // Handle error for time series data
       } finally {
@@ -124,50 +126,6 @@ const AtendenteDashboardPage = () => {
       topResponders
     };
   }, [performanceData]);
-
-  const timeSeriesChartData = useMemo(() => {
-    if (!timeSeriesData) return [];
-
-    const allDates = new Set();
-    const seriesByName = {};
-
-    Object.keys(timeSeriesData).forEach(attendantName => {
-        timeSeriesData[attendantName].forEach(item => {
-            allDates.add(item.period);
-        });
-    });
-
-    const sortedDates = Array.from(allDates).sort();
-
-    sortedDates.forEach(date => {
-        Object.keys(timeSeriesData).forEach(attendantName => {
-            if (!seriesByName[attendantName]) {
-                seriesByName[attendantName] = [];
-            }
-        });
-    });
-
-    sortedDates.forEach(date => {
-        Object.keys(seriesByName).forEach(attendantName => {
-            const dataPoint = timeSeriesData[attendantName]?.find(d => d.period === date);
-            seriesByName[attendantName].push({
-                period: date,
-                count: dataPoint ? dataPoint.count : 0
-            });
-        });
-    });
-
-    const finalData = sortedDates.map(date => {
-        const entry = { period: new Date(date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) };
-        Object.keys(seriesByName).forEach(attendantName => {
-            const attendantData = seriesByName[attendantName].find(d => d.period === date);
-            entry[attendantName] = attendantData ? attendantData.count : 0;
-        });
-        return entry;
-    });
-
-    return finalData;
-  }, [timeSeriesData]);
 
   if (loading) {
     return (
@@ -253,14 +211,20 @@ const AtendenteDashboardPage = () => {
             </Box>
             <ResponsiveContainer width="100%" height={400}>
                 {timeSeriesLoading ? <CircularProgress /> : 
-                    <LineChart data={timeSeriesChartData}>
+                    <LineChart data={timeSeriesData.chartData}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="period" />
                         <YAxis />
                         <Tooltip />
                         <Legend />
-                        {timeSeriesData && Object.keys(timeSeriesData).map((attName, index) => (
-                            <Line key={attName} type="monotone" dataKey={attName} stroke={theme.palette.primary.main} />
+                        {timeSeriesData.attendantNames.map((attName, index) => (
+                            <Line 
+                              key={attName} 
+                              type="monotone" 
+                              dataKey={attName} 
+                              stroke={COLORS[index % COLORS.length]} 
+                              strokeWidth={2} 
+                            />
                         ))}
                     </LineChart>
                 }

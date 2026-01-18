@@ -1903,8 +1903,11 @@ const getAttendantResponsesTimeseries = async (tenantId, period, startDate, endD
     atendenteId: { [Op.ne]: null },
   };
 
+  // Se não houver data, padrão para o mês atual
   if (startDate && endDate) {
     whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+  } else {
+    whereClause.createdAt = { [Op.gte]: startOfMonth(new Date()) };
   }
 
   if (atendenteId) {
@@ -1916,6 +1919,7 @@ const getAttendantResponsesTimeseries = async (tenantId, period, startDate, endD
     attributes: [
       'atendenteId',
       [fn('date_trunc', period, col('Resposta.createdAt')), 'period'],
+      // Revertido para contar sessões únicas, conforme a regra de negócio.
       [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'count'],
     ],
     include: [{ model: Atendente, as: 'atendente', attributes: ['name'], required: true }],
@@ -1944,18 +1948,22 @@ const getAttendantResponsesTimeseries = async (tenantId, period, startDate, endD
   });
 
   const sortedPeriods = Array.from(allPeriods).sort();
+  const attendantNames = Object.keys(seriesByAttendant);
 
-  const finalSeries = {};
+  const finalChartData = sortedPeriods.map(period => {
+    const chartEntry = {
+      period: formatInTimeZone(new Date(period), 'dd/MM'),
+    };
+    attendantNames.forEach(name => {
+      chartEntry[name] = seriesByAttendant[name][period] || 0;
+    });
+    return chartEntry;
+  });
 
-  // Ensure all attendants have all periods
-  for (const attendantName in seriesByAttendant) {
-    finalSeries[attendantName] = sortedPeriods.map(period => ({
-      period: period,
-      count: seriesByAttendant[attendantName][period] || 0
-    }));
-  }
-
-  return finalSeries;
+  return {
+    chartData: finalChartData,
+    attendantNames: attendantNames,
+  };
 };
 
 const dashboardRepository = {

@@ -1,19 +1,5 @@
-
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import clientService from '../services/clientService';
-
-// Utility debounce function
-const debounce = (func, delay) => {
-    let timeoutId;
-    return (...args) => {
-        if (timeoutId) {
-            clearTimeout(timeoutId);
-        }
-        timeoutId = setTimeout(() => {
-            func(...args);
-        }, delay);
-    };
-};
 
 const useClients = () => {
     const [clients, setClients] = useState([]);
@@ -24,38 +10,47 @@ const useClients = () => {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [orderBy, setOrderBy] = useState('name');
     const [order, setOrder] = useState('asc');
+    
+    // Estado para o valor do input, que atualiza imediatamente
+    const [searchTerm, setSearchTerm] = useState(''); 
+    // Estado para o filtro, que será aplicado com debounce
     const [filterText, setFilterText] = useState('');
 
-    const debouncedFetchClients = useCallback(
-        debounce(async (page, rowsPerPage, orderBy, order, filterText) => {
-            try {
-                setLoading(true);
-                const pageNumber = isNaN(page) ? 0 : page;
-                const { clients: fetchedClients, total: fetchedTotal } = await clientService.getAllClients(pageNumber, rowsPerPage, orderBy, order, filterText);
-                setClients(fetchedClients);
-                setTotalClients(fetchedTotal);
-                setError(null);
-            } catch (err) {
-                setError(err.message || 'Falha ao buscar clientes.');
-            } finally {
-                setLoading(false);
-            }
-        }, 500), // 500ms debounce delay
-        []
-    );
+    const fetchClients = useCallback(async () => {
+        try {
+            setLoading(true);
+            const pageNumber = isNaN(page) ? 0 : page;
+            const { clients: fetchedClients, total: fetchedTotal } = await clientService.getAllClients(pageNumber, rowsPerPage, orderBy, order, filterText);
+            setClients(fetchedClients);
+            setTotalClients(fetchedTotal);
+            setError(null);
+        } catch (err) {
+            setError(err.message || 'Falha ao buscar clientes.');
+        } finally {
+            setLoading(false);
+        }
+    }, [page, rowsPerPage, orderBy, order, filterText]);
+
+    // Efeito para aplicar o debounce
+    useEffect(() => {
+        const timerId = setTimeout(() => {
+            setFilterText(searchTerm);
+            setPage(0); // Resetar a página ao aplicar um novo filtro
+        }, 500); // 500ms de delay
+
+        return () => {
+            clearTimeout(timerId);
+        };
+    }, [searchTerm]);
 
     useEffect(() => {
-        debouncedFetchClients(page, rowsPerPage, orderBy, order, filterText);
-    }, [page, rowsPerPage, orderBy, order, filterText, debouncedFetchClients]);
-
-    const fetchClients = useCallback(() => {
-        debouncedFetchClients(page, rowsPerPage, orderBy, order, filterText);
-    }, [page, rowsPerPage, orderBy, order, filterText, debouncedFetchClients]);
+        fetchClients();
+    }, [fetchClients]); // A dependência principal agora é a função de busca
 
     const createClient = async (clientData) => {
         try {
             const newClient = await clientService.createClient(clientData);
-            debouncedFetchClients(page, rowsPerPage, orderBy, order, filterText); // Re-fetch to get the latest data
+            fetchClients(); // Re-fetch para obter os dados mais recentes
             return newClient;
         } catch (err) {
             throw new Error(err.message || 'Falha ao criar cliente.');
@@ -65,7 +60,7 @@ const useClients = () => {
     const updateClient = async (id, clientData) => {
         try {
             const updatedClient = await clientService.updateClient(id, clientData);
-            debouncedFetchClients(page, rowsPerPage, orderBy, order, filterText); // Re-fetch to get the latest data
+            fetchClients(); // Re-fetch para obter os dados mais recentes
             return updatedClient;
         } catch (err) {
             throw new Error(err.message || 'Falha ao atualizar cliente.');
@@ -75,7 +70,7 @@ const useClients = () => {
     const deleteClient = async (id) => {
         try {
             await clientService.deleteClient(id);
-            debouncedFetchClients(page, rowsPerPage, orderBy, order, filterText); // Re-fetch to get the latest data
+            fetchClients(); // Re-fetch para obter os dados mais recentes
         } catch (err) {
             throw new Error(err.message || 'Falha ao deletar cliente.');
         }
@@ -96,12 +91,13 @@ const useClients = () => {
         setPage(0);
     };
 
+    // Atualiza o termo de busca imediatamente
     const handleFilterChange = (event) => {
-        setFilterText(event.target.value);
-        setPage(0);
+        setSearchTerm(event.target.value);
     };
 
     const handleClearFilter = () => {
+        setSearchTerm('');
         setFilterText('');
         setPage(0);
     };
@@ -115,7 +111,7 @@ const useClients = () => {
         rowsPerPage, 
         orderBy, 
         order, 
-        filterText, 
+        filterText: searchTerm, // Retorna o valor do input para ser exibido no TextField
         fetchClients, 
         createClient, 
         updateClient, 

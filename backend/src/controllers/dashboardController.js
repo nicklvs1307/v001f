@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
-const dashboardRepository = require("../repositories/dashboardRepository");
+const dashboardService = require("../services/dashboardService");
+const dashboardRepository = require("../repositories/dashboardRepository"); // Mantido por enquanto para as outras funções
 const { getPeriodDateRange } = require("../utils/dateUtils");
 
 // Objeto que mapeia as rotas para as funções do repositório
@@ -39,15 +40,11 @@ module.exports = {
 
   getRanking: asyncHandler(async (req, res) => {
     const { startDate, endDate } = req.query;
-    const performanceData = await dashboardRepository.getAttendantsPerformance(
+    const ranking = await dashboardService.getRanking(
       req.tenantId,
       startDate,
       endDate,
     );
-
-    // Ordena o ranking pelo NPS (maior para o menor)
-    const ranking = performanceData.sort((a, b) => b.currentNPS - a.currentNPS);
-
     res.status(200).json(ranking);
   }),
 
@@ -127,7 +124,7 @@ module.exports = {
   getAttendantsPerformance: asyncHandler(async (req, res) => {
     const { startDate, endDate } = req.query;
     const attendantsPerformance =
-      await dashboardRepository.getAttendantsPerformance(
+      await dashboardService.getAttendantsPerformance(
         req.tenantId,
         startDate,
         endDate,
@@ -137,7 +134,7 @@ module.exports = {
 
   getAttendantResponsesTimeseries: asyncHandler(async (req, res) => {
     const { period, startDate, endDate, atendenteId } = req.query;
-    const data = await dashboardRepository.getAttendantResponsesTimeseries(
+    const data = await dashboardService.getAttendantResponsesTimeseries(
       req.tenantId,
       period || 'day',
       startDate,

@@ -53,7 +53,9 @@ module.exports = {
         { id: uuidv4(), module: 'atendentes', action: 'read', description: 'Visualizar atendentes', createdAt: new Date(), updatedAt: new Date() },
         { id: uuidv4(), module: 'atendentes', action: 'create', description: 'Criar/Editar atendentes', createdAt: new Date(), updatedAt: new Date() }, // Adicionado
         { id: uuidv4(), module: 'criterios', action: 'read', description: 'Visualizar critérios', createdAt: new Date(), updatedAt: new Date() },
-        { id: uuidv4(), module: 'criterios', action: 'create', description: 'Criar/Editar critérios', createdAt: new Date(), updatedAt: new Date() }, // Adicionado
+        { id: uuidv4(), module: 'criterios', action: 'create', description: 'Criar critérios', createdAt: new Date(), updatedAt: new Date() },
+        { id: uuidv4(), module: 'criterios', action: 'update', description: 'Editar critérios', createdAt: new Date(), updatedAt: new Date() },
+        { id: uuidv4(), module: 'criterios', action: 'delete', description: 'Deletar critérios', createdAt: new Date(), updatedAt: new Date() },
         { id: uuidv4(), module: 'recompensas', action: 'read', description: 'Visualizar recompensas', createdAt: new Date(), updatedAt: new Date() },
         { id: uuidv4(), module: 'recompensas', action: 'create', description: 'Criar/Editar recompensas', createdAt: new Date(), updatedAt: new Date() }, // Adicionado
         { id: uuidv4(), module: 'cupons', action: 'read', description: 'Visualizar cupons', createdAt: new Date(), updatedAt: new Date() }, // Adicionado
@@ -188,7 +190,7 @@ module.exports = {
         { module: 'surveys', action: 'read' }, { module: 'surveys', action: 'create' },
         { module: 'dashboard', action: 'read' }, { module: 'dashboard', action: 'create' },
         { module: 'atendentes', action: 'read' }, { module: 'atendentes', action: 'create' },
-        { module: 'criterios', action: 'read' }, { module: 'criterios', action: 'create' },
+        { module: 'criterios', action: 'read' }, { module: 'criterios', action: 'create' }, { module: 'criterios', action: 'update' }, { module: 'criterios', action: 'delete' },
         { module: 'recompensas', action: 'read' }, { module: 'recompensas', action: 'create' },
         { module: 'cupons', action: 'read' }, { module: 'cupons', action: 'create' },
       ];

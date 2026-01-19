@@ -1,20 +1,9 @@
-{
-    "status": "error",
-    "code": [
-        {
-            "type": "field",
-            "value": "",
-            "msg": "ID do critério inválido.",
-            "path": "questions[2].criterioId",
-            "location": "body"
-        }
-    ],
-    "message": "Erros de validação",
-    "details": "Error: Erros de validação\n    at validate (/usr/src/app/src/middlewares/validationMiddleware.js:7:11)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at middleware (/usr/src/app/node_modules/express-validator/lib/middlewares/check.js:16:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
-}
+{"message":"Você não tem permissão para executar esta ação."}
 URL da solicitação
-https://apivoltaki.towersfy.com/api/surveys/70644ab0-f9a5-49e5-88cc-86773acfd2a4
+https://apivoltaki.towersfy.com/api/criterios/a45125ed-33ba-4ec1-b661-18ce7ff4f072
 Método da solicitação
-PUT
+DELETE
 Código de status
-400 Bad Reques
+403 Forbidden
+
+/dashboard/criterios

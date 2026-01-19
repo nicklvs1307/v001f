@@ -58,7 +58,8 @@ const ifoodService = {
                 client_id: tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL,
             }).toString(), {
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
                 }
             });
             return response.data;
@@ -99,7 +100,8 @@ const ifoodService = {
                 authorization_code: authCode,
             }).toString(), {
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
                 }
             });
 
@@ -133,7 +135,8 @@ const ifoodService = {
                 client_secret: tenant.ifoodClientSecret || process.env.IFOOD_CLIENT_SECRET_GLOBAL,
             }).toString(), {
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
                 }
             });
 

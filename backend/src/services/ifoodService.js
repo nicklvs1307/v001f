@@ -25,6 +25,7 @@ axiosRetry(ifoodAxios, {
 const IFOOD_AUTH_URL = process.env.IFOOD_AUTH_URL || 'https://merchant-api.ifood.com.br/authentication/v1.0/oauth/token';
 const IFOOD_API_URL = process.env.IFOOD_API_URL || 'https://merchant-api.ifood.com.br/order/v1.0';
 const IFOOD_EVENTS_URL = process.env.IFOOD_EVENTS_URL || 'https://merchant-api.ifood.com.br/events/v1.0';
+const IFOOD_MERCHANT_API_URL = process.env.IFOOD_MERCHANT_API_URL || 'https://merchant-api.ifood.com.br/merchant/v1.0';
 
 
 // Não mais globais, serão por tenant
@@ -42,9 +43,9 @@ const ifoodService = {
             throw new ApiError(404, 'Tenant not found.');
         }
 
-        if (!tenant.ifoodClientId || !tenant.ifoodClientSecret) {
-            throw new ApiError(400, 'iFood Client ID or Client Secret not configured for this tenant.');
-        }
+        // if (!tenant.ifoodClientId || !tenant.ifoodClientSecret) {
+        //     throw new ApiError(400, 'iFood Client ID or Client Secret not configured for this tenant.');
+        // }
         
         return tenant;
     },
@@ -113,7 +114,7 @@ const ifoodService = {
                 refresh_token: refreshToken,
                         client_id: tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL,
                         client_secret: tenant.ifoodClientSecret || process.env.IFOOD_CLIENT_SECRET_GLOBAL,
-                        redirect_uri: process.env.BACKEND_URL + '/api/ifood/oauth/callback'            }).toString(), {
+            }).toString(), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
@@ -151,7 +152,7 @@ const ifoodService = {
         try {
             // Este endpoint pode variar. Consulte a documentação do iFood.
             // Assumindo que retorna uma lista de merchants ou um único merchant associado ao token.
-            const response = await ifoodAxios.get(`${IFOOD_API_URL}/merchants`, { // Endpoint comum para obter merchants
+            const response = await ifoodAxios.get(`${IFOOD_MERCHANT_API_URL}/merchants`, {
                 headers: {
                     'Authorization': `Bearer ${tenantConfig.ifoodAccessToken}`,
                     'Accept': 'application/json',

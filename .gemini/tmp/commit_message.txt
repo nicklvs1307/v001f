@@ -1,33 +1,14 @@
-﻿feat: Refatora sistema de metas e prêmios para atendentes
+feat: Adiciona Condições a Recompensas e Mensagem Customizada a Pesquisas
 
-Este commit refatora completamente a funcionalidade de metas e premiações, atendendo à solicitação de um sistema mais robusto, completo e com um fluxo de trabalho mais intuitivo.
+Implementa duas novas funcionalidades:
 
-Principais alterações:
+1. Condições de Resgate para Recompensas:
+- Adiciona um campo de texto 'Regras e Condições' às Recompensas.
+- O formulário de Recompensa é atualizado para permitir a edição deste campo.
+- A tela de 'Parabéns' da roleta agora exibe as condições da recompensa ganha.
 
-**Backend:**
-- **Schema do Banco de Dados:**
-  - tendente_metas: A coluna ecompensaId foi removida e substituída por campos específicos para prêmios em dinheiro (
-ps_premio_valor, espostas_premio_valor, cadastros_premio_valor) e um campo para dias_trabalhados.
-  - tendente_premiacoes: A tabela foi recriada para armazenar descricao_premio e alor_premio, em vez de uma referência a uma recompensa.
-- **Migrações:** As migrações anteriores foram revertidas e substituídas por uma única migração consolidada (create-attendant-award-system).
-- **Lógica de Premiação (wardProcessorJob.js):** O job foi totalmente reescrito para:
-  - Buscar metas que tenham um valor de prêmio associado.
-  - Processar cada prêmio (NPS, Respostas) de forma independente.
-  - Calcular metas de contagem (respostas) de forma proporcional aos dias trabalhados.
-  - Registrar a premiação na nova estrutura da tabela tendente_premiacoes.
-- **Controller (tendenteMetaController.js):** Atualizado para lidar com a nova estrutura de dados ao salvar as metas.
+2. Mensagem Customizada de Roleta na Pesquisa:
+- Adiciona um campo de texto para uma mensagem customizada de prêmio da roleta em cada Pesquisa.
+- O controller da roleta agora prioriza esta mensagem sobre a mensagem padrão.
 
-**Frontend:**
-- **Refatoração da Página de Metas (AttendantGoalsPage.js):**
-  - A página foi transformada em um 
-Painel
-de
-Performance, que agora exibe uma lista de atendentes com suas métricas atuais em modo de leitura.
-  - Cada linha é clicável, redirecionando para a nova página de detalhes.
-- **Nova Página de Detalhes (AttendantGoalDetailsPage.js):**
-  - Criada a rota e o componente para /dashboard/metas-atendentes/:atendenteId.
-  - Esta página permite a configuração detalhada de metas e prêmios em dinheiro para cada métrica (NPS, Respostas), além de definir a jornada de trabalho do atendente.
-  - O layout foi preparado com abas para futuras expansões (Acompanhamento, Histórico).
-- **Roteamento (AppRoutes.js):** Atualizado para incluir a nova rota da página de detalhes.
-
-Esta refatoração cria uma base sólida e escalável para o sistema de performance e incentivo dos atendentes.
+Remove código e arquivos não utilizados referentes a um motor de regras automatizado que foi descartado durante o desenvolvimento.

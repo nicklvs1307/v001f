@@ -176,7 +176,7 @@ const SurveyForm = ({ initialData = {}, onSubmit, loading = false, error = null 
           </Grid>
           <Grid item xs={12} sm={6}>
             <DatePicker
-              label="Data de Término"
+              label="Data de Término (Opcional)"
               value={survey.endDate ? new Date(survey.endDate) : null}
               onChange={(newValue) => formActions.handleDateChange('endDate', newValue)}
               inputFormat="dd/MM/yyyy"
@@ -185,22 +185,13 @@ const SurveyForm = ({ initialData = {}, onSubmit, loading = false, error = null 
                   {...params}
                   fullWidth
                   margin="normal"
-                  required
                   error={!!errors.endDate}
                   helperText={errors.endDate}
                 />
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <DatePicker
-              label="Data de Vencimento (Opcional)"
-              value={survey.dueDate ? new Date(survey.dueDate) : null}
-              onChange={(newValue) => formActions.handleDateChange('dueDate', newValue)}
-              inputFormat="dd/MM/yyyy"
-              renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
-            />
-          </Grid>
+
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth margin="normal">
               <InputLabel id="status-label">Status da Pesquisa</InputLabel>

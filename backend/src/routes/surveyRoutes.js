@@ -36,7 +36,7 @@ const surveyQuestionsValidation = [
     .isArray()
     .withMessage("Opções da pergunta devem ser um array."),
   check("questions.*.criterioId")
-    .optional()
+    .optional({ nullable: true, checkFalsy: true })
     .isUUID()
     .withMessage("ID do critério inválido."),
 ];

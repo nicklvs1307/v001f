@@ -1,45 +1,20 @@
-AuthContext.js:37 User data from AuthContext: {id: '77f853e9-deb2-4067-881e-71fa16d3054f', tenantId: 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4', roleId: 'ce609d07-d83f-4002-a892-e17c91b767d3', franchisorId: null, name: 'Rafael', …}
-react-dom.production.min.js:188 TypeError: Cannot read properties of undefined (reading 'registered')
-    at M (ResumoMesPage.js:198:105)
-    at gi (react-dom.production.min.js:160:137)
-    at js (react-dom.production.min.js:196:258)
-    at Sl (react-dom.production.min.js:291:88)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at oc (react-dom.production.min.js:267:429)
-    at w (scheduler.production.min.js:13:203)
-ds @ react-dom.production.min.js:188
-n.callback @ react-dom.production.min.js:188
-Ha @ react-dom.production.min.js:156
-xl @ react-dom.production.min.js:261
-bl @ react-dom.production.min.js:259
-yl @ react-dom.production.min.js:258
-(anônimo) @ react-dom.production.min.js:282
-Ac @ react-dom.production.min.js:280
-oc @ react-dom.production.min.js:269
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
-react-dom.production.min.js:282 Uncaught TypeError: Cannot read properties of undefined (reading 'registered')
-    at M (ResumoMesPage.js:198:105)
-    at gi (react-dom.production.min.js:160:137)
-    at js (react-dom.production.min.js:196:258)
-    at Sl (react-dom.production.min.js:291:88)
-    at bc (react-dom.production.min.js:279:389)
-    at vc (react-dom.production.min.js:279:320)
-    at gc (react-dom.production.min.js:279:180)
-    at ac (react-dom.production.min.js:270:88)
-    at oc (react-dom.production.min.js:267:429)
-    at w (scheduler.production.min.js:13:203)
-M @ ResumoMesPage.js:198
-gi @ react-dom.production.min.js:160
-js @ react-dom.production.min.js:196
-Sl @ react-dom.production.min.js:291
-bc @ react-dom.production.min.js:279
-vc @ react-dom.production.min.js:279
-gc @ react-dom.production.min.js:279
-ac @ react-dom.production.min.js:270
-oc @ react-dom.production.min.js:267
-w @ scheduler.production.min.js:13
-T @ scheduler.production.min.js:14
+{
+    "status": "error",
+    "code": [
+        {
+            "type": "field",
+            "value": "",
+            "msg": "ID do critério inválido.",
+            "path": "questions[2].criterioId",
+            "location": "body"
+        }
+    ],
+    "message": "Erros de validação",
+    "details": "Error: Erros de validação\n    at validate (/usr/src/app/src/middlewares/validationMiddleware.js:7:11)\n    at Layer.handle [as handle_request] (/usr/src/app/node_modules/express/lib/router/layer.js:95:5)\n    at next (/usr/src/app/node_modules/express/lib/router/route.js:149:13)\n    at middleware (/usr/src/app/node_modules/express-validator/lib/middlewares/check.js:16:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)"
+}
+URL da solicitação
+https://apivoltaki.towersfy.com/api/surveys/70644ab0-f9a5-49e5-88cc-86773acfd2a4
+Método da solicitação
+PUT
+Código de status
+400 Bad Reques

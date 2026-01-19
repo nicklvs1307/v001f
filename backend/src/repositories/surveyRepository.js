@@ -31,6 +31,7 @@ const createSurvey = async (surveyData) => {
     endDate,
     recompensaId,
     roletaId,
+    roletaPrizeMessage,
   } = surveyData;
 
   const transaction = await sequelize.transaction();
@@ -51,6 +52,7 @@ const createSurvey = async (surveyData) => {
         endDate,
         recompensaId,
         roletaId,
+        roletaPrizeMessage,
       },
       { transaction },
     );
@@ -116,6 +118,7 @@ const getSurveyById = async (id, tenantId = null) => {
       "creatorId",
       "recompensaId",
       "roletaId",
+      "roletaPrizeMessage",
     ],
   });
 
@@ -138,6 +141,7 @@ const getSurveyById = async (id, tenantId = null) => {
     creatorId: survey.creatorId,
     recompensaId: survey.recompensaId,
     roletaId: survey.roletaId,
+    roletaPrizeMessage: survey.roletaPrizeMessage,
     questions: survey.perguntas.map((q) => ({
       ...q.toJSON(),
     })),
@@ -159,6 +163,7 @@ const updateSurvey = async (id, surveyData, tenantId = null) => {
     endDate,
     recompensaId,
     roletaId,
+    roletaPrizeMessage,
   } = surveyData;
 
   const transaction = await sequelize.transaction();
@@ -180,6 +185,7 @@ const updateSurvey = async (id, surveyData, tenantId = null) => {
         endDate,
         recompensaId,
         roletaId,
+        roletaPrizeMessage,
       },
       { where: whereClause, transaction },
     );

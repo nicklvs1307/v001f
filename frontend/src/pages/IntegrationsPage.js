@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {
     Container, Typography, Box, Grid, Card, CardContent, TextField, Button,
-    CircularProgress, Alert, Drawer, List, ListItem, ListItemText, Divider, Snackbar, Paper
+    CircularProgress, Alert, Drawer, List, ListItem, ListItemText, Divider, Snackbar, Paper, Link, IconButton
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import tenantService from '../services/tenantService';
 import gmbConfigService from '../services/gmbConfigService';
 import gmbReviewService from '../services/gmbReviewService';
@@ -17,58 +18,42 @@ import GoogleMeuNegocioLogo from '../assets/GoogleMeuNegocio.png';
 import apiAuthenticated from '../services/apiAuthenticated';
 
 const IntegrationsPage = () => {
-    // ... (estados existentes da IntegrationsPage)
     const [loading, setLoading] = useState(true);
     const [tenant, setTenant] = useState(null);
     const [uairangoId, setUairangoId] = useState('');
-    const [ifoodConnected, setIfoodConnected] = useState(false);
     const [showUaiRangoModal, setShowUaiRangoModal] = useState(false);
     const [showIfoodModal, setShowIfoodModal] = useState(false);
     const [showGMBDrawer, setShowGMBDrawer] = useState(false);
     const [error, setError] = useState('');
 
+    const fetchTenantData = async () => {
+        try {
+            const response = await tenantService.getMe();
+            setTenant(response.data);
+            setUairangoId(response.data.uairangoEstablishmentId || '');
+        } catch (err) {
+            setError('Falha ao carregar os dados da empresa.');
+            toast.error('Falha ao carregar os dados da empresa.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchTenantData = async () => {
-            try {
-                const response = await tenantService.getMe();
-                setTenant(response.data);
-                setUairangoId(response.data.uairangoEstablishmentId || '');
-                setIfoodConnected(!!response.data.ifoodAccessToken);
-            } catch (err) {
-                setError('Falha ao carregar os dados da empresa.');
-                toast.error('Falha ao carregar os dados da empresa.');
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchTenantData();
 
         const urlParams = new URLSearchParams(window.location.search);
-        const ifoodAuthSuccess = urlParams.get('ifood_auth_success');
-        const ifoodAuthError = urlParams.get('ifood_auth_error');
         const gmbAuthSuccess = urlParams.get('gmb_auth_success');
         const gmbAuthError = urlParams.get('gmb_auth_error');
 
-        if (ifoodAuthSuccess) {
-            toast.success('iFood conectado com sucesso!');
-            window.history.replaceState({}, document.title, window.location.pathname);
-            fetchTenantData();
-        } else if (ifoodAuthError) {
-            toast.error(`Falha ao conectar iFood: ${decodeURIComponent(ifoodAuthError)}`);
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-
         if (gmbAuthSuccess) {
             toast.success('Google Meu Negócio conectado com sucesso!');
-            setShowGMBDrawer(true); // Abre o drawer para mostrar o status
+            setShowGMBDrawer(true);
             window.history.replaceState({}, document.title, window.location.pathname);
         } else if (gmbAuthError) {
             toast.error(`Falha ao conectar Google Meu Negócio: ${decodeURIComponent(gmbAuthError)}`);
             window.history.replaceState({}, document.title, window.location.pathname);
         }
-
     }, []);
 
     const handleSave = async (integrationType) => {
@@ -79,16 +64,6 @@ const IntegrationsPage = () => {
             }
         } catch (err) {
             toast.error('Falha ao salvar a integração.');
-        }
-    };
-
-    const handleConnectIfood = async () => {
-        try {
-            const response = await apiAuthenticated.get('/ifood/authorize');
-            const { authorizationUrl } = response.data;
-            window.open(authorizationUrl, 'ifoodAuthPopup', 'width=800,height=600,resizable=yes,scrollbars=yes,status=yes');
-        } catch (err) {
-            toast.error(err.message || 'Erro ao iniciar o processo de conexão com o iFood.');
         }
     };
 
@@ -112,7 +87,6 @@ const IntegrationsPage = () => {
                     </Typography>
 
                     <Grid container spacing={4}>
-                         {/* Card para Google Meu Negócio */}
                         <Grid item xs={12} md={6} lg={4}>
                             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', '&:hover': { transform: 'translateY(-5px)', boxShadow: 6 } }}>
                                 <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -120,7 +94,7 @@ const IntegrationsPage = () => {
                                     <Typography variant="h5" component="div" gutterBottom>
                                         Google Meu Negócio
                                     </Typography>
-                                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2, textAlign: 'center' }}>
+                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2, textAlign: 'center' }}>
                                         Gerencie avaliações e conecte sua conta.
                                     </Typography>
                                     <Button fullWidth variant="contained" startIcon={<SettingsIcon />} onClick={() => setShowGMBDrawer(true)} sx={{ mt: 'auto' }}>
@@ -129,59 +103,58 @@ const IntegrationsPage = () => {
                                 </CardContent>
                             </Card>
                         </Grid>
-                        {/* Outros Cards (Saipos, Uai Rango, iFood) */}
-                         <Grid item xs={12} md={6} lg={4}>
-                                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', '&:hover': { transform: 'translateY(-5px)', boxShadow: 6 } }}>
-                                    <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                        <Box component="img" src={UaiRangoLogo} alt="Uai Rango Logo" sx={{ width: 100, height: 100, borderRadius: '15px', mb: 2 }} />
-                                        <Typography variant="h5" component="div" gutterBottom>
-                                            Uai Rango
-                                        </Typography>
-                                        <Button fullWidth variant="contained" startIcon={<SettingsIcon />} onClick={() => setShowUaiRangoModal(true)} sx={{ mt: 'auto' }}>
-                                            Configurar
-                                        </Button>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                             <Grid item xs={12} md={6} lg={4}>
-                                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', '&:hover': { transform: 'translateY(-5px)', boxShadow: 6 } }}>
-                                    <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                        <Box component="img" src={IfoodLogo} alt="iFood Logo" sx={{ width: 100, height: 100, borderRadius: '15px', mb: 2 }} />
-                                        <Typography variant="h5" component="div" gutterBottom>
-                                            iFood
-                                        </Typography>
-                                        <Button fullWidth variant="contained" startIcon={<SettingsIcon />} onClick={() => setShowIfoodModal(true)} sx={{ mt: 'auto' }}>
-                                            Configurar
-                                        </Button>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
                         <Grid item xs={12} md={6} lg={4}>
-                                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', '&:hover': { transform: 'translateY(-5px)', boxShadow: 6 } }}>
-                                    <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                        <Box component="img" src={SaiposLogo} alt="Saipos Logo" sx={{ width: 100, height: 100, borderRadius: '15px', mb: 2 }}/>
-                                        <Typography variant="h5" component="div" gutterBottom>
-                                            Saipos
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2, textAlign: 'center' }}>
-                                            Em Breve
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
+                            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', '&:hover': { transform: 'translateY(-5px)', boxShadow: 6 } }}>
+                                <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Box component="img" src={UaiRangoLogo} alt="Uai Rango Logo" sx={{ width: 100, height: 100, borderRadius: '15px', mb: 2 }} />
+                                    <Typography variant="h5" component="div" gutterBottom>
+                                        Uai Rango
+                                    </Typography>
+                                    <Button fullWidth variant="contained" startIcon={<SettingsIcon />} onClick={() => setShowUaiRangoModal(true)} sx={{ mt: 'auto' }}>
+                                        Configurar
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', '&:hover': { transform: 'translateY(-5px)', boxShadow: 6 } }}>
+                                <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Box component="img" src={IfoodLogo} alt="iFood Logo" sx={{ width: 100, height: 100, borderRadius: '15px', mb: 2 }} />
+                                    <Typography variant="h5" component="div" gutterBottom>
+                                        iFood
+                                    </Typography>
+                                    <Button fullWidth variant="contained" startIcon={<SettingsIcon />} onClick={() => setShowIfoodModal(true)} sx={{ mt: 'auto' }}>
+                                        Configurar
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', '&:hover': { transform: 'translateY(-5px)', boxShadow: 6 } }}>
+                                <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Box component="img" src={SaiposLogo} alt="Saipos Logo" sx={{ width: 100, height: 100, borderRadius: '15px', mb: 2 }}/>
+                                    <Typography variant="h5" component="div" gutterBottom>
+                                        Saipos
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2, textAlign: 'center' }}>
+                                        Em Breve
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
                     </Grid>
                 </Box>
             </Container>
 
-            {/* Modals de Configuração */}
             <UaiRangoConfigModal open={showUaiRangoModal} onClose={() => setShowUaiRangoModal(false)} uairangoId={uairangoId} setUairangoId={setUairangoId} handleSave={handleSave} />
-            <IfoodConfigModal open={showIfoodModal} onClose={() => setShowIfoodModal(false)} handleConnectIfood={handleConnectIfood} ifoodConnected={ifoodConnected} />
+            <IfoodConfigModal open={showIfoodModal} onClose={() => { setShowIfoodModal(false); }} tenant={tenant} fetchTenantData={fetchTenantData} />
             <GMBConfigDrawer open={showGMBDrawer} onClose={() => setShowGMBDrawer(false)} />
         </>
     );
 };
 
-// Componente do Drawer para GMB
+// ... GMBConfigDrawer and UaiRangoConfigModal components remain the same ...
+
 const GMBConfigDrawer = ({ open, onClose }) => {
     const { user } = useContext(AuthContext);
     const [config, setConfig] = useState(null);
@@ -359,7 +332,7 @@ const GMBConfigDrawer = ({ open, onClose }) => {
     );
 };
 
-// ... (outros modais UaiRangoConfigModal, IfoodConfigModal)
+
 const UaiRangoConfigModal = ({ open, onClose, uairangoId, setUairangoId, handleSave }) => {
     return (
         <Drawer
@@ -367,27 +340,11 @@ const UaiRangoConfigModal = ({ open, onClose, uairangoId, setUairangoId, handleS
             open={open}
             onClose={onClose}
             PaperProps={{
-                sx: { width: 400 } // Ajustar a largura conforme necessário
+                sx: { width: 400 }
             }}
         >
-            <Box sx={{
-                width: '100%',
-                p: 4,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center', // Centraliza o conteúdo horizontalmente
-                height: '100%' // Ocupa a altura total do Drawer
-            }}>
-                <Box
-                    component="img"
-                    src={UaiRangoLogo} // Usar a logo do Uai Rango
-                    alt="Uai Rango Logo"
-                    sx={{
-                        width: 100, // Tamanho da logo
-                        height: 100,
-                        mb: 2,
-                    }}
-                />
+            <Box sx={{ width: '100%', p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                <Box component="img" src={UaiRangoLogo} alt="Uai Rango Logo" sx={{ width: 100, height: 100, mb: 2 }} />
                 <Typography variant="h6" component="h2" gutterBottom>
                     Configurar Uai Rango
                 </Typography>
@@ -409,25 +366,17 @@ const UaiRangoConfigModal = ({ open, onClose, uairangoId, setUairangoId, handleS
                     fullWidth
                     variant="outlined"
                     value={`${process.env.REACT_APP_API_URL}/api/delivery-webhooks/uairango`}
-                    InputProps={{
-                        readOnly: true,
-                    }}
+                    InputProps={{ readOnly: true }}
                     sx={{ mb: 2 }}
                 />
                 <Button
                     variant="contained"
-                    onClick={() => {
-                        handleSave('uairango');
-                        onClose();
-                    }}
+                    onClick={() => { handleSave('uairango'); onClose(); }}
                     sx={{ mb: 2 }}
                 >
                     Salvar
                 </Button>
-                <Button
-                    variant="outlined"
-                    onClick={onClose}
-                >
+                <Button variant="outlined" onClick={onClose}>
                     Cancelar
                 </Button>
                 <Alert severity="info" sx={{ mt: 2, textAlign: 'center' }}>
@@ -438,65 +387,135 @@ const UaiRangoConfigModal = ({ open, onClose, uairangoId, setUairangoId, handleS
     );
 };
 
-const IfoodConfigModal = ({ open, onClose, handleConnectIfood, ifoodConnected }) => {
+const IfoodConfigModal = ({ open, onClose, tenant, fetchTenantData }) => {
+    const [step, setStep] = useState(tenant?.ifoodAccessToken ? 'connected' : 'initial');
+    const [userCodeData, setUserCodeData] = useState(null);
+    const [authorizationCode, setAuthorizationCode] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        // Reset state when tenant data changes or modal opens
+        if (open) {
+            setStep(tenant?.ifoodAccessToken ? 'connected' : 'initial');
+            setUserCodeData(null);
+            setAuthorizationCode('');
+            setError('');
+        }
+    }, [open, tenant]);
+
+    const handleInitiateAuth = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const { data } = await apiAuthenticated.get('/ifood/authorize');
+            setUserCodeData(data);
+            setStep('show_user_code');
+        } catch (err) {
+            const errorMessage = err.response?.data?.message || 'Erro ao iniciar conexão com iFood.';
+            setError(errorMessage);
+            toast.error(errorMessage);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleExchangeCode = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            await apiAuthenticated.post('/ifood/exchange-code', { authorizationCode });
+            toast.success('iFood conectado com sucesso!');
+            fetchTenantData();
+            setStep('connected');
+            onClose(); // Fecha o modal ao conectar
+        } catch (err) {
+            const errorMessage = err.response?.data?.message || 'Código de autorização inválido ou expirado.';
+            setError(errorMessage);
+            toast.error(errorMessage);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleCopyToClipboard = (text) => {
+        navigator.clipboard.writeText(text).then(() => {
+            toast.success('Código copiado para a área de transferência!');
+        }, () => {
+            toast.error('Falha ao copiar o código.');
+        });
+    };
+
+    const renderStepContent = () => {
+        switch (step) {
+            case 'initial':
+                return (
+                    <>
+                        <Typography sx={{ mt: 2, mb: 2, textAlign: 'center' }}>
+                            Conecte sua conta iFood para que o sistema busque seus pedidos automaticamente.
+                        </Typography>
+                        <Button variant="contained" onClick={handleInitiateAuth} disabled={loading} sx={{ backgroundColor: '#EA1D2C', '&:hover': { backgroundColor: '#C81925' } }}>
+                            {loading ? <CircularProgress size={24} color="inherit" /> : 'Conectar iFood'}
+                        </Button>
+                    </>
+                );
+            case 'show_user_code':
+                return (
+                    <>
+                        <Typography sx={{ mt: 2, textAlign: 'center' }}>
+                            1. Acesse o link abaixo e faça login no Portal do Parceiro iFood.
+                        </Typography>
+                        <Link href={userCodeData.verificationUrlComplete} target="_blank" rel="noopener noreferrer" sx={{ my: 1 }}>
+                            {userCodeData.verificationUrl}
+                        </Link>
+                        <Typography sx={{ mt: 2, textAlign: 'center' }}>
+                            2. Insira o código abaixo para autorizar a conexão:
+                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', my: 2, p: 1, border: '1px dashed grey', borderRadius: 1 }}>
+                            <Typography variant="h6" component="span" sx={{ mr: 1 }}>{userCodeData.userCode}</Typography>
+                            <IconButton onClick={() => handleCopyToClipboard(userCodeData.userCode)} size="small">
+                                <ContentCopyIcon fontSize="small" />
+                            </IconButton>
+                        </Box>
+                        <Typography sx={{ mt: 2, textAlign: 'center' }}>
+                            3. Após autorizar, o iFood fornecerá um **código de autorização**. Cole-o abaixo:
+                        </Typography>
+                        <TextField
+                            fullWidth
+                            label="Código de Autorização do iFood"
+                            variant="outlined"
+                            value={authorizationCode}
+                            onChange={(e) => setAuthorizationCode(e.target.value)}
+                            sx={{ mt: 2, mb: 2 }}
+                        />
+                        <Button variant="contained" onClick={handleExchangeCode} disabled={loading || !authorizationCode}>
+                            {loading ? <CircularProgress size={24} /> : 'Finalizar Conexão'}
+                        </Button>
+                    </>
+                );
+            case 'connected':
+                return (
+                     <Alert severity="success" sx={{ mt: 2, textAlign: 'center', width: '100%' }}>
+                        Sua conta iFood está conectada.
+                    </Alert>
+                );
+            default:
+                return null;
+        }
+    };
+
     return (
-        <Drawer
-            anchor="right"
-            open={open}
-            onClose={onClose}
-            PaperProps={{
-                sx: { width: 400 } // Ajustar a largura conforme necessário
-            }}
-        >
-            <Box sx={{
-                width: '100%',
-                p: 4,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center', // Centraliza o conteúdo horizontalmente
-                height: '100%' // Ocupa a altura total do Drawer
-            }}>
-                <Box
-                    component="img"
-                    src={IfoodLogo} // Usar a logo do iFood
-                    alt="iFood Logo"
-                    sx={{
-                        width: 100, // Tamanho da logo
-                        height: 100,
-                        mb: 2,
-                    }}
-                />
+        <Drawer anchor="right" open={open} onClose={onClose} PaperProps={{ sx: { width: {xs: '90%', sm: 450} } }}>
+            <Box sx={{ width: '100%', p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                <Box component="img" src={IfoodLogo} alt="iFood Logo" sx={{ width: 100, height: 100, mb: 2 }} />
                 <Typography variant="h6" component="h2" gutterBottom>
                     Configurar iFood
                 </Typography>
-                <Typography sx={{ mt: 2, mb: 2, textAlign: 'center' }}>
-                    Conecte sua conta iFood para permitir que o sistema busque seus pedidos automaticamente.
-                </Typography>
-                <Button
-                    variant="contained"
-                    sx={{
-                        mb: 2,
-                        backgroundColor: '#EA1D2C', // Vermelho iFood
-                        borderRadius: '20px', // Arredondado
-                        '&:hover': {
-                            backgroundColor: '#C81925', // Um tom mais escuro no hover
-                        },
-                    }}
-                    onClick={() => {
-                        handleConnectIfood();
-                        onClose();
-                    }}
-                    disabled={false}
-                >
-                    {ifoodConnected ? 'iFood Conectado' : 'Conectar iFood'}
-                </Button>
-
-                <Alert severity="info" sx={{ mt: 2, textAlign: 'center' }}>
-                    A integração com o iFood utiliza polling para buscar pedidos. Certifique-se de que o Client ID e Client Secret do iFood estão configurados nas variáveis de ambiente do backend.
-                </Alert>
+                {error && <Alert severity="error" sx={{ my: 2, width: '100%' }}>{error}</Alert>}
+                {renderStepContent()}
             </Box>
         </Drawer>
     );
 };
-export default IntegrationsPage;
 
+export default IntegrationsPage;

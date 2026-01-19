@@ -23,6 +23,7 @@ axiosRetry(ifoodAxios, {
 });
 
 const IFOOD_AUTH_URL = process.env.IFOOD_AUTH_URL || 'https://merchant-api.ifood.com.br/authentication/v1.0/oauth/token';
+const IFOOD_USERCODE_URL = process.env.IFOOD_USERCODE_URL || 'https://merchant-api.ifood.com.br/authentication/v1.0/oauth/userCode';
 const IFOOD_API_URL = process.env.IFOOD_API_URL || 'https://merchant-api.ifood.com.br/order/v1.0';
 const IFOOD_EVENTS_URL = process.env.IFOOD_EVENTS_URL || 'https://merchant-api.ifood.com.br/events/v1.0';
 const IFOOD_MERCHANT_API_URL = process.env.IFOOD_MERCHANT_API_URL || 'https://merchant-api.ifood.com.br/merchant/v1.0';
@@ -50,6 +51,23 @@ const ifoodService = {
         return tenant;
     },
 
+    async generateUserCode(tenantId) {
+        const tenant = await this.getTenantIfoodConfig(tenantId);
+        try {
+            const response = await ifoodAxios.post(IFOOD_USERCODE_URL, new URLSearchParams({
+                clientId: tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL,
+            }).toString(), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error(`[iFood Service] Error generating user code for tenant ${tenantId}:`, error.response?.data || error.message);
+            throw new ApiError(500, 'Failed to generate iFood user code.');
+        }
+    },
+
     async getAccessToken(tenantId) {
         const tenant = await this.getTenantIfoodConfig(tenantId);
 
@@ -75,30 +93,29 @@ const ifoodService = {
 
         try {
             const response = await ifoodAxios.post(IFOOD_AUTH_URL, new URLSearchParams({
-                grant_type: 'authorization_code',
-                code: authCode,
-                client_id: tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL,
-                client_secret: tenant.ifoodClientSecret || process.env.IFOOD_CLIENT_SECRET_GLOBAL,
-                redirect_uri: process.env.BACKEND_URL + '/api/ifood/oauth/callback'
+                grantType: 'authorization_code',
+                clientId: tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL,
+                clientSecret: tenant.ifoodClientSecret || process.env.IFOOD_CLIENT_SECRET_GLOBAL,
+                authorizationCode: authCode,
             }).toString(), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
 
-            const { access_token, refresh_token, expires_in } = response.data;
-            const ifoodTokenExpiresAt = new Date(new Date().getTime() + (expires_in * 1000));
+            const { accessToken, refreshToken, expiresIn } = response.data;
+            const ifoodTokenExpiresAt = new Date(new Date().getTime() + (expiresIn * 1000));
 
             await tenantRepository.updateTenant(tenantId, {
-                ifoodAccessToken: access_token,
-                ifoodRefreshToken: refresh_token,
+                ifoodAccessToken: accessToken,
+                ifoodRefreshToken: refreshToken,
                 ifoodTokenExpiresAt: ifoodTokenExpiresAt,
             });
 
             // Após obter os tokens, buscar e salvar o merchantId automaticamente
             await this.getIfoodMerchantData(tenantId);
 
-            return access_token;
+            return accessToken;
         } catch (error) {
             console.error(`[iFood Service] Error requesting new access token for tenant ${tenantId}:`, error.response?.data || error.message);
             throw new ApiError(500, 'Failed to request new iFood access token.');

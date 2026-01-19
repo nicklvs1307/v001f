@@ -1,96 +1,44 @@
 const ifoodService = require('../services/ifoodService');
-const express = require('express'); // Adicionado de volta
-const asyncHandler = require('express-async-handler'); // Para lidar com erros em funções async
+const express = require('express');
+const asyncHandler = require('express-async-handler');
 const ApiError = require('../errors/ApiError');
-const tenantRepository = require('../repositories/tenantRepository'); // Importar o tenantRepository
-const { protect } = require('../middlewares/authMiddleware'); // Importar o middleware de proteção
-// Você deve importar o seu middleware de autenticação real aqui
-// Exemplo: const { authenticateUser } = require('../middlewares/authMiddleware');
-// Exemplo: const { getTenantIdFromUser } = require('../utils/authUtils'); // Se for uma função auxiliar
+const { protect } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-// A IFOOD_REDIRECT_URI é global porque o iFood geralmente só permite um URI de redirecionamento por aplicação no painel do desenvolvedor.
-const IFOOD_AUTHORIZATION_URL = process.env.IFOOD_AUTHORIZATION_URL || 'https://merchant-api.ifood.com.br/oauth/v2/auth';
-const IFOOD_REDIRECT_URI_FULL = process.env.BACKEND_URL + '/api/ifood/oauth/callback';
-
-
-
-
-// 1. Endpoint para iniciar o fluxo OAuth (frontend chama este)
+// 1. Endpoint para iniciar o fluxo de autenticação e gerar o user_code
 router.get('/authorize', protect, asyncHandler(async (req, res) => {
-    const tenantId = req.user.tenant.id; // Obtenha o tenantId do usuário autenticado através do objeto tenant aninhado
+    const tenantId = req.user.tenant.id;
 
     if (!tenantId) {
         throw new ApiError(400, 'Tenant ID is required to initiate iFood authorization.');
     }
-    if (!IFOOD_REDIRECT_URI_FULL) {
-        throw new ApiError(500, 'IFOOD_REDIRECT_URI_FULL not configured in environment variables or BACKEND_URL is missing.');
-    }
-
-    const tenant = await tenantRepository.getTenantById(tenantId);
-    if (!tenant) {
-        throw new ApiError(404, 'Tenant not found.');
-    }
-    // TEMPORÁRIO PARA DEBUG: Esta verificação deve ser reativada em produção.
-    // if (!tenant.ifoodClientId) {
-    //     throw new ApiError(400, 'iFood Client ID not configured for this tenant. Please configure it first.');
-    // }
-
-    // Usar um 'state' para segurança e para passar contexto como tenantId
-    const state = Buffer.from(JSON.stringify({ tenantId })).toString('base64');
-
-    const authorizationUrl = `${IFOOD_AUTHORIZATION_URL}?` +
-                             `response_type=code&` +
-                             `client_id=${tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL}&` + // Usar o Client ID do tenant
-                             `access_type=offline&` + // Para obter refresh_token
-                             `scope=merchant:read orders:read events:read&` + // Escopos necessários
-                             `redirect_uri=${IFOOD_REDIRECT_URI_FULL}&` +
-                             `state=${state}`;
-
-    res.json({ authorizationUrl });
+    
+    // Chama o serviço para gerar o user code junto ao iFood
+    const userCodeData = await ifoodService.generateUserCode(tenantId);
+    
+    // Retorna os dados para o frontend, que irá exibir para o usuário
+    res.json(userCodeData);
 }));
 
-// 2. Endpoint de callback para o iFood (iFood redireciona para este)
-router.get('/oauth/callback', asyncHandler(async (req, res) => {
-    const { code, state, error } = req.query;
+// 2. Endpoint para trocar o authorizationCode (recebido pelo usuário no portal iFood) pelo access_token
+router.post('/exchange-code', protect, asyncHandler(async (req, res) => {
+    const tenantId = req.user.tenant.id;
+    const { authorizationCode } = req.body;
 
-    if (error) {
-        console.error('iFood OAuth Callback Error:', error);
-        // Redirecionar para o frontend com mensagem de erro
-        return res.redirect(`${process.env.FRONTEND_URL}/dashboard/integracoes?ifood_auth_error=${error}`);
+    if (!tenantId) {
+        throw new ApiError(400, 'Tenant ID is required.');
     }
 
-    if (!code) {
-        // Redirecionar para o frontend com mensagem de erro
-        return res.redirect(`${process.env.FRONTEND_URL}/dashboard/integracoes?ifood_auth_error=no_code_received`);
+    if (!authorizationCode) {
+        throw new ApiError(400, 'iFood Authorization Code is required.');
     }
 
-    let tenantIdFromState = null;
-    try {
-        const decodedState = JSON.parse(Buffer.from(state, 'base64').toString('utf8'));
-        tenantIdFromState = decodedState.tenantId;
-    } catch (e) {
-        console.error('Error decoding state parameter:', e);
-        return res.redirect(`${process.env.FRONTEND_URL}/dashboard/integracoes?ifood_auth_error=invalid_state`);
-    }
+    // O service agora usa grantType: 'authorization_code' e o código recebido
+    await ifoodService.requestNewAccessToken(tenantId, authorizationCode);
 
-    if (!tenantIdFromState) {
-        console.error('Tenant ID not found in state parameter for iFood OAuth callback.');
-        return res.redirect(`${process.env.FRONTEND_URL}/dashboard/integracoes?ifood_auth_error=missing_tenant_id`);
-    }
-
-    try {
-        // ifoodService.requestNewAccessToken já busca as credenciais do tenant por tenantId
-        await ifoodService.requestNewAccessToken(tenantIdFromState, code);
-
-        // Redirecionar para o frontend com mensagem de sucesso
-        res.redirect(`${process.env.FRONTEND_URL}/dashboard/integracoes?ifood_auth_success=true`);
-
-    } catch (err) {
-        console.error('Error during iFood OAuth token exchange or saving:', err);
-        res.redirect(`${process.env.FRONTEND_URL}/dashboard/integracoes?ifood_auth_error=token_exchange_failed`);
-    }
+    res.status(200).json({ message: 'iFood connected successfully!' });
 }));
+
 
 module.exports = router;

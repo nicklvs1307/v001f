@@ -26,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: true
     },
+    conditionDescription: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
     pointsRequired: {
       type: DataTypes.INTEGER,
       allowNull: false

@@ -1,4 +1,4 @@
-const { Recompensa, Tenant, Cupom } = require("../../models");
+const { Recompensa, Cupom } = require("../../models");
 const { Op, fn, col } = require("sequelize");
 
 const createRecompensa = async (

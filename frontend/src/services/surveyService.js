@@ -121,14 +121,13 @@ const getSurveyResults = async (surveyId) => {
 };
 
 const surveyService = {
-
     getSurveyById,
     createSurvey,
     updateSurvey,
     deleteSurvey,
     generateQrCode,
-    getSurveyStats, // Exportar nova função
-    getSurveysList, // Exportar nova função
+    getSurveyStats,
+    getSurveysList,
     getSurveyResults,
 };
 

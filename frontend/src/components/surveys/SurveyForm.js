@@ -101,21 +101,34 @@ const SurveyForm = ({ initialData = {}, onSubmit, loading = false, error = null 
         )}
 
         {rewardType === 'roleta' && (
-          <FormControl fullWidth margin="normal">
-            <InputLabel id="roleta-label">Selecione a Roleta</InputLabel>
-            <Select
-              labelId="roleta-label"
-              name="roletaId"
-              value={survey.roletaId || ''}
-              onChange={handleRewardChange}
-              label="Selecione a Roleta"
-            >
-              {roletasLoading ? <MenuItem>Carregando...</MenuItem> : (roletas || []).map(r => (
-                <MenuItem key={r.id} value={r.id}>{r.nome}</MenuItem>
-              ))}
-            </Select>
-            {roletasError && <FormHelperText error>{roletasError}</FormHelperText>}
-          </FormControl>
+          <>
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="roleta-label">Selecione a Roleta</InputLabel>
+              <Select
+                labelId="roleta-label"
+                name="roletaId"
+                value={survey.roletaId || ''}
+                onChange={handleRewardChange}
+                label="Selecione a Roleta"
+              >
+                {roletasLoading ? <MenuItem>Carregando...</MenuItem> : (roletas || []).map(r => (
+                  <MenuItem key={r.id} value={r.id}>{r.nome}</MenuItem>
+                ))}
+              </Select>
+              {roletasError && <FormHelperText error>{roletasError}</FormHelperText>}
+            </FormControl>
+            <TextField
+              label="Mensagem Customizada do Prêmio (Opcional)"
+              name="roletaPrizeMessage"
+              value={survey.roletaPrizeMessage || ''}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              multiline
+              rows={4}
+              helperText="Se deixado em branco, usará a mensagem padrão das automações. Placeholders disponíveis: {{cliente}}, {{premio}}, {{cupom}}."
+            />
+          </>
         )}
       </Paper>
 

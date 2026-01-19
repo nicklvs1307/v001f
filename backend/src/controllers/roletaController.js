@@ -172,6 +172,7 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
         );
 
         let message =
+          pesquisa.roletaPrizeMessage ||
           whatsappConfig.prizeMessageTemplate ||
           "Parabéns, {{cliente}}! Você ganhou um prêmio: {{premio}}. Use o cupom {{cupom}} para resgatar.";
         message = message.replace("{{cliente}}", cliente.name.split(" ")[0]);
@@ -213,6 +214,7 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
         name: recompensa.name,
         value: recompensa.value,
         type: recompensa.type,
+        conditionDescription: recompensa.conditionDescription,
       },
       isNoPrizeOption: false, // Explicitamente false para prêmios reais
     },

@@ -106,6 +106,18 @@ const CongratulationsComponent = ({ premio, cupom, tenant }) => {
                         </Box>
                         <Typography>Use este código em sua próxima visita para resgatar sua recompensa.</Typography>
                     </Paper>
+
+                    {premio.recompensa?.conditionDescription && (
+                        <Paper elevation={0} sx={{ textAlign: 'left', p: 2, mt: 3, backgroundColor: theme.palette.grey[50], borderRadius: '10px' }}>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
+                                Regras e Condições:
+                            </Typography>
+                            {premio.recompensa.conditionDescription.split('\n').map((line, index) => (
+                                line.trim() && <Typography key={index} variant="body2" component="p" sx={{mb: 0.5}}>- {line}</Typography>
+                            ))}
+                        </Paper>
+                    )}
+
                     <Box sx={{ backgroundColor: '#ffebee', padding: '15px', borderRadius: '10px', margin: '20px 0', border: `1px solid ${theme.palette.error.main}` }}>
                         <Typography><strong>Validade:</strong> Este cupom é válido até <strong>{formattedValidity}</strong>.</Typography>
                     </Box>

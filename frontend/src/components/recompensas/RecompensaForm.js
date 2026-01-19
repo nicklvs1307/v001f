@@ -15,6 +15,7 @@ const RecompensaForm = ({ open, handleClose, recompensa, handleSubmit }) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
+    conditionDescription: '', // Campo restaurado
     pointsRequired: '',
     active: true,
   });
@@ -24,6 +25,7 @@ const RecompensaForm = ({ open, handleClose, recompensa, handleSubmit }) => {
       setFormData({
         name: recompensa.name || '',
         description: recompensa.description || '',
+        conditionDescription: recompensa.conditionDescription || '', // Campo restaurado
         pointsRequired: recompensa.pointsRequired || '',
         active: recompensa.active !== undefined ? recompensa.active : true,
       });
@@ -31,6 +33,7 @@ const RecompensaForm = ({ open, handleClose, recompensa, handleSubmit }) => {
       setFormData({
         name: '',
         description: '',
+        conditionDescription: '',
         pointsRequired: '',
         active: true,
       });
@@ -46,6 +49,7 @@ const RecompensaForm = ({ open, handleClose, recompensa, handleSubmit }) => {
   };
 
   const onSubmit = () => {
+    // Apenas os campos do formulário serão enviados
     handleSubmit(formData);
   };
 
@@ -75,6 +79,20 @@ const RecompensaForm = ({ open, handleClose, recompensa, handleSubmit }) => {
           rows={3}
           variant="outlined"
           value={formData.description}
+          onChange={handleChange}
+          sx={{ mb: 2 }}
+        />
+        {/* Campo restaurado */}
+        <TextField
+          margin="dense"
+          name="conditionDescription"
+          label="Regras e Condições (visível para o cliente)"
+          type="text"
+          fullWidth
+          multiline
+          rows={3}
+          variant="outlined"
+          value={formData.conditionDescription || ''}
           onChange={handleChange}
           sx={{ mb: 2 }}
         />

@@ -73,6 +73,10 @@ module.exports = (sequelize, DataTypes) => {
     roletaId: {
       type: DataTypes.UUID,
       allowNull: true,
+    },
+    roletaPrizeMessage: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     }
   }, {
     sequelize,

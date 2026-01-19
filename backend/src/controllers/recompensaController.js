@@ -5,7 +5,7 @@ const ApiError = require("../errors/ApiError");
 const recompensaController = {
   createRecompensa: asyncHandler(async (req, res) => {
     const { name, description, pointsRequired, active } = req.body;
-    const requestingUser = req.user; // Garante que requestingUser está definido
+    const requestingUser = req.user;
 
     const targetTenantId =
       requestingUser.role === "Super Admin" && req.body.tenantId
@@ -13,12 +13,10 @@ const recompensaController = {
         : requestingUser.tenantId;
 
     if (!targetTenantId) {
-      throw new ApiError(
-        400,
-        "Tenant ID é obrigatório para criar uma recompensa.",
-      );
+      throw new ApiError(400, "Tenant ID é obrigatório para criar uma recompensa.");
     }
 
+    // Lógica revertida para passar argumentos individuais
     const newRecompensa = await recompensaRepository.createRecompensa(
       targetTenantId,
       name,
@@ -36,8 +34,6 @@ const recompensaController = {
       requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
     const { active } = req.query;
 
-    // active pode ser 'true', 'false', ou undefined.
-    // Se for undefined, passamos null para o repositório para não filtrar.
     const activeFilter =
       active === "true" ? true : active === "false" ? false : null;
 
@@ -53,11 +49,9 @@ const recompensaController = {
     const requestingUser = req.user;
     const tenantId =
       requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
-
-    const recompensa = await recompensaRepository.getRecompensaById(
-      id,
-      tenantId,
-    );
+    
+    // O nome correto da função no repositório original era findById
+    const recompensa = await recompensaRepository.findById(id, tenantId);
 
     if (!recompensa) {
       throw new ApiError(404, "Recompensa não encontrada.");
@@ -67,10 +61,7 @@ const recompensaController = {
       requestingUser.role !== "Super Admin" &&
       recompensa.tenantId !== requestingUser.tenantId
     ) {
-      throw new ApiError(
-        403,
-        "Você não tem permissão para ver esta recompensa.",
-      );
+      throw new ApiError(403, "Você não tem permissão para ver esta recompensa.");
     }
 
     res.status(200).json(recompensa);
@@ -79,14 +70,11 @@ const recompensaController = {
   updateRecompensa: asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { name, description, pointsRequired, active } = req.body;
-    const requestingUser = req.user; // Garante que requestingUser está definido
+    const requestingUser = req.user;
     const tenantId =
       requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
-    const existingRecompensa = await recompensaRepository.getRecompensaById(
-      id,
-      tenantId,
-    );
+    const existingRecompensa = await recompensaRepository.findById(id, tenantId);
     if (!existingRecompensa) {
       throw new ApiError(404, "Recompensa não encontrada.");
     }
@@ -95,12 +83,10 @@ const recompensaController = {
       requestingUser.role !== "Super Admin" &&
       existingRecompensa.tenantId !== requestingUser.tenantId
     ) {
-      throw new ApiError(
-        403,
-        "Você não tem permissão para atualizar esta recompensa.",
-      );
+      throw new ApiError(403, "Você não tem permissão para atualizar esta recompensa.");
     }
 
+    // Lógica revertida para passar argumentos individuais
     const updatedRecompensa = await recompensaRepository.updateRecompensa(
       id,
       existingRecompensa.tenantId,
@@ -122,14 +108,11 @@ const recompensaController = {
 
   deleteRecompensa: asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const requestingUser = req.user; // Garante que requestingUser está definido
+    const requestingUser = req.user;
     const tenantId =
       requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
 
-    const existingRecompensa = await recompensaRepository.getRecompensaById(
-      id,
-      tenantId,
-    );
+    const existingRecompensa = await recompensaRepository.findById(id, tenantId);
     if (!existingRecompensa) {
       throw new ApiError(404, "Recompensa não encontrada para deleção.");
     }
@@ -138,24 +121,17 @@ const recompensaController = {
       requestingUser.role !== "Super Admin" &&
       existingRecompensa.tenantId !== requestingUser.tenantId
     ) {
-      throw new ApiError(
-        403,
-        "Você não tem permissão para deletar esta recompensa.",
-      );
+      throw new ApiError(403, "Você não tem permissão para deletar esta recompensa.");
     }
 
-    const deletedRows = await recompensaRepository.deleteRecompensa(
+    await recompensaRepository.deleteRecompensa(
       id,
       existingRecompensa.tenantId,
     );
 
-    if (deletedRows === 0) {
-      throw new ApiError(404, "Recompensa não encontrada para deleção.");
-    }
-
     res.status(200).json({ message: "Recompensa deletada com sucesso." });
   }),
-
+  
   getDashboard: asyncHandler(async (req, res) => {
     const requestingUser = req.user;
     const tenantId =

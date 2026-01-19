@@ -55,7 +55,7 @@ const ifoodService = {
         const tenant = await this.getTenantIfoodConfig(tenantId);
         try {
             const response = await ifoodAxios.post(IFOOD_USERCODE_URL, new URLSearchParams({
-                clientId: tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL,
+                client_id: tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL,
             }).toString(), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -93,29 +93,29 @@ const ifoodService = {
 
         try {
             const response = await ifoodAxios.post(IFOOD_AUTH_URL, new URLSearchParams({
-                grantType: 'authorization_code',
-                clientId: tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL,
-                clientSecret: tenant.ifoodClientSecret || process.env.IFOOD_CLIENT_SECRET_GLOBAL,
-                authorizationCode: authCode,
+                grant_type: 'authorization_code',
+                client_id: tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL,
+                client_secret: tenant.ifoodClientSecret || process.env.IFOOD_CLIENT_SECRET_GLOBAL,
+                authorization_code: authCode,
             }).toString(), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
 
-            const { accessToken, refreshToken, expiresIn } = response.data;
-            const ifoodTokenExpiresAt = new Date(new Date().getTime() + (expiresIn * 1000));
+            const { access_token, refresh_token, expires_in } = response.data;
+            const ifoodTokenExpiresAt = new Date(new Date().getTime() + (expires_in * 1000));
 
             await tenantRepository.updateTenant(tenantId, {
-                ifoodAccessToken: accessToken,
-                ifoodRefreshToken: refreshToken,
+                ifoodAccessToken: access_token,
+                ifoodRefreshToken: refresh_token,
                 ifoodTokenExpiresAt: ifoodTokenExpiresAt,
             });
 
             // Após obter os tokens, buscar e salvar o merchantId automaticamente
             await this.getIfoodMerchantData(tenantId);
 
-            return accessToken;
+            return access_token;
         } catch (error) {
             console.error(`[iFood Service] Error requesting new access token for tenant ${tenantId}:`, error.response?.data || error.message);
             throw new ApiError(500, 'Failed to request new iFood access token.');
@@ -129,8 +129,8 @@ const ifoodService = {
             const response = await ifoodAxios.post(IFOOD_AUTH_URL, new URLSearchParams({
                 grant_type: 'refresh_token',
                 refresh_token: refreshToken,
-                        client_id: tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL,
-                        client_secret: tenant.ifoodClientSecret || process.env.IFOOD_CLIENT_SECRET_GLOBAL,
+                client_id: tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL,
+                client_secret: tenant.ifoodClientSecret || process.env.IFOOD_CLIENT_SECRET_GLOBAL,
             }).toString(), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'

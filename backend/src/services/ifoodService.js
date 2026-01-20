@@ -57,16 +57,27 @@ const ifoodService = {
 
     async getAuthorizationUrl(tenantId) {
         const clientId = process.env.IFOOD_CLIENT_ID_GLOBAL;
-        const redirectUri = process.env.IFOOD_REDIRECT_URI;
-        const authBaseUrl = process.env.IFOOD_AUTHORIZATION_URL || 'https://merchant.ifood.com.br/partners/authorize';
+        // Pega a URL base do backend. Se não tiver, assume localhost:5000 para dev local
+        const backendUrl = process.env.BACKEND_URL || 'http://localhost:5000';
+        
+        let redirectUri = process.env.IFOOD_REDIRECT_URI;
 
-        if (!clientId || !redirectUri) {
-            const errorMessage = 'Configuração global do iFood (Client ID ou Redirect URI) não encontrada no ambiente.';
-            console.error(`[iFood Service] Missing iFood global config.`);
-            throw new ApiError(500, errorMessage);
+        // Se o redirectUri for relativo (começar com /), concatena com a URL do backend
+        if (redirectUri && redirectUri.startsWith('/')) {
+            redirectUri = `${backendUrl}${redirectUri}`;
+        } else if (!redirectUri) {
+             // Fallback se a variável não existir
+             redirectUri = `${backendUrl}/api/ifood/callback`;
         }
 
-        // Monta a URL de autorização para o lojista acessar via Navegador
+        if (!clientId) {
+            throw new ApiError(500, 'Client ID do iFood não configurado (IFOOD_CLIENT_ID_GLOBAL).');
+        }
+
+        // URL correta para o navegador (Portal do Parceiro)
+        // Ignoramos a env IFOOD_AUTHORIZATION_URL se ela apontar para a API (merchant-api)
+        const authBaseUrl = 'https://merchant.ifood.com.br/partners/authorize';
+
         const authUrl = new URL(authBaseUrl);
         authUrl.searchParams.append('clientId', clientId);
         authUrl.searchParams.append('redirectUri', redirectUri);

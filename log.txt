@@ -18,6 +18,16 @@ Agendador de processamento de premiações iniciado. A tarefa será executada to
 [CampanhaService] Inicializando campanhas agendadas...
 Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'scheduled' AND "Campanha"."startDate" IS NOT NULL;
 [CampanhaService] 0 campanhas reagendadas.
+[Auth Middleware] Request: POST /api/auth/verify-token
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."ifoodMerchantId" AS "tenant.ifoodMerchantId", "tenant"."ifoodAccessToken" AS "tenant.ifoodAccessToken", "tenant"."ifoodRefreshToken" AS "tenant.ifoodRefreshToken", "tenant"."ifoodTokenExpiresAt" AS "tenant.ifoodTokenExpiresAt", "tenant"."ifoodClientId" AS "tenant.ifoodClientId", "tenant"."ifoodClientSecret" AS "tenant.ifoodClientSecret", "tenant"."ifoodAuthVerifier" AS "tenant.ifoodAuthVerifier", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
+[Auth Middleware] Request: GET /api/tenants/me
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."ifoodMerchantId" AS "tenant.ifoodMerchantId", "tenant"."ifoodAccessToken" AS "tenant.ifoodAccessToken", "tenant"."ifoodRefreshToken" AS "tenant.ifoodRefreshToken", "tenant"."ifoodTokenExpiresAt" AS "tenant.ifoodTokenExpiresAt", "tenant"."ifoodClientId" AS "tenant.ifoodClientId", "tenant"."ifoodClientSecret" AS "tenant.ifoodClientSecret", "tenant"."ifoodAuthVerifier" AS "tenant.ifoodAuthVerifier", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
+Executing (default): SELECT "id", "name", "key", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
+Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'tenants' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
+Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt", "reportPhoneNumber" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
+[Auth Middleware] Request: GET /api/ifood/authorize
+Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."ifoodMerchantId" AS "tenant.ifoodMerchantId", "tenant"."ifoodAccessToken" AS "tenant.ifoodAccessToken", "tenant"."ifoodRefreshToken" AS "tenant.ifoodRefreshToken", "tenant"."ifoodTokenExpiresAt" AS "tenant.ifoodTokenExpiresAt", "tenant"."ifoodClientId" AS "tenant.ifoodClientId", "tenant"."ifoodClientSecret" AS "tenant.ifoodClientSecret", "tenant"."ifoodAuthVerifier" AS "tenant.ifoodAuthVerifier", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
+[iFood Service] Generated Authorization URL for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd: https://merchant-api.ifood.com.br/oauth/v2/auth?clientId=521a9099-254a-467e-b7cd-8a5cade41113&redirectUri=%2Fapi%2Fifood%2Fcallback&responseType=code&state=3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd
 [SENDER_MONITOR] Iniciando verificação de status dos disparadores...
 Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
 [CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
@@ -28,96 +38,3 @@ Executing (default): SELECT "id", "name", "ifoodMerchantId", "ifoodAccessToken",
 [CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
 [iFood Polling Job] Finished iFood polling.
 [SENDER_MONITOR] Verificação de status concluída.
-[Auth Middleware] Request: POST /api/auth/verify-token
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."ifoodMerchantId" AS "tenant.ifoodMerchantId", "tenant"."ifoodAccessToken" AS "tenant.ifoodAccessToken", "tenant"."ifoodRefreshToken" AS "tenant.ifoodRefreshToken", "tenant"."ifoodTokenExpiresAt" AS "tenant.ifoodTokenExpiresAt", "tenant"."ifoodClientId" AS "tenant.ifoodClientId", "tenant"."ifoodClientSecret" AS "tenant.ifoodClientSecret", "tenant"."ifoodAuthVerifier" AS "tenant.ifoodAuthVerifier", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
-[Auth Middleware] Request: GET /api/tenants/me
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."ifoodMerchantId" AS "tenant.ifoodMerchantId", "tenant"."ifoodAccessToken" AS "tenant.ifoodAccessToken", "tenant"."ifoodRefreshToken" AS "tenant.ifoodRefreshToken", "tenant"."ifoodTokenExpiresAt" AS "tenant.ifoodTokenExpiresAt", "tenant"."ifoodClientId" AS "tenant.ifoodClientId", "tenant"."ifoodClientSecret" AS "tenant.ifoodClientSecret", "tenant"."ifoodAuthVerifier" AS "tenant.ifoodAuthVerifier", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
-Executing (default): SELECT "id", "name", "key", "description", "isSystemRole", "createdAt", "updatedAt" FROM "roles" AS "Role" WHERE "Role"."name" = 'Admin';
-Executing (default): SELECT "RolePermissao"."roleId", "RolePermissao"."permissaoId", "RolePermissao"."createdAt", "RolePermissao"."updatedAt", "permissao"."id" AS "permissao.id", "permissao"."module" AS "permissao.module", "permissao"."action" AS "permissao.action", "permissao"."description" AS "permissao.description", "permissao"."createdAt" AS "permissao.createdAt", "permissao"."updatedAt" AS "permissao.updatedAt" FROM "role_permissoes" AS "RolePermissao" INNER JOIN "permissoes" AS "permissao" ON "RolePermissao"."permissaoId" = "permissao"."id" AND "permissao"."module" = 'tenants' AND "permissao"."action" = 'read' WHERE "RolePermissao"."roleId" = 'ce609d07-d83f-4002-a892-e17c91b767d3';
-Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt", "reportPhoneNumber" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-[Auth Middleware] Request: GET /api/ifood/authorize
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."ifoodMerchantId" AS "tenant.ifoodMerchantId", "tenant"."ifoodAccessToken" AS "tenant.ifoodAccessToken", "tenant"."ifoodRefreshToken" AS "tenant.ifoodRefreshToken", "tenant"."ifoodTokenExpiresAt" AS "tenant.ifoodTokenExpiresAt", "tenant"."ifoodClientId" AS "tenant.ifoodClientId", "tenant"."ifoodClientSecret" AS "tenant.ifoodClientSecret", "tenant"."ifoodAuthVerifier" AS "tenant.ifoodAuthVerifier", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = 'bfe6c6f3-bc13-44b7-a796-d7b3ce2353e5';
-Executing (default): SELECT "id", "name", "address", "phone", "email", "cnpj", "description", "createdAt", "reportPhoneNumber" FROM "tenants" AS "Tenant" WHERE "Tenant"."id" = '3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd';
-[iFood Service] Error generating user code for tenant 3bd5b49a-56e6-45b7-9710-8d51b8f6e8dd: <!DOCTYPE html>
-<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en-US"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en-US"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en-US"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en-US"> <!--<![endif]-->
-<head>
-<title>Attention Required! | Cloudflare</title>
-<meta charset="UTF-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-<meta name="robots" content="noindex, nofollow" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<link rel="stylesheet" id="cf_styles-css" href="/cdn-cgi/styles/cf.errors.css" />
-<!--[if lt IE 9]><link rel="stylesheet" id='cf_styles-ie-css' href="/cdn-cgi/styles/cf.errors.ie.css" /><![endif]-->
-<style>body{margin:0;padding:0}</style>
-<!--[if gte IE 10]><!-->
-<script>
-  if (!navigator.cookieEnabled) {
-    window.addEventListener('DOMContentLoaded', function () {
-      var cookieEl = document.getElementById('cookie-alert');
-      cookieEl.style.display = 'block';
-    })
-  }
-
->
-<!--<![endif]-->
-</head>
-<body>
-  <div id="cf-wrapper">
-    <div class="cf-alert cf-alert-error cf-cookie-error" id="cookie-alert" data-translate="enable_cookies">Please enable cookies.</div>
-    <div id="cf-error-details" class="cf-error-details-wrapper">
-      <div class="cf-wrapper cf-header cf-error-overview">
-        <h1 data-translate="block_headline">Sorry, you have been blocked</h1>
-        <h2 class="cf-subheadline"><span data-translate="unable_to_access">You are unable to access</span> merchant-api.ifood.com.br</h2>
-      </div><!-- /.header -->
-      <div class="cf-section cf-highlight">
-        <div class="cf-wrapper">
-          <div class="cf-screenshot-container cf-screenshot-full">
-
-            
-              <span class="cf-no-screenshot error"></span>
-
-            
-          </div>
-        </div>
-      </div><!-- /.captcha-container -->
-      <div class="cf-section cf-wrapper">
-        <div class="cf-columns two">
-          <div class="cf-column">
-            <h2 data-translate="blocked_why_headline">Why have I been blocked?</h2>
-            <p data-translate="blocked_why_detail">This website is using a security service to protect itself from online attacks. The action you just performed triggered the security solution. There are several actions that could trigger this block including submitting a certain word or phrase, a SQL command or malformed data.</p>
-          </div>
-          <div class="cf-column">
-            <h2 data-translate="blocked_resolve_headline">What can I do to resolve this?</h2>
-            <p data-translate="blocked_resolve_detail">You can email the site owner to let them know you were blocked. Please include what you were doing when this page came up and the Cloudflare Ray ID found at the bottom of this page.</p>
-          </div>
-        </div>
-      </div><!-- /.section -->
-      <div class="cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300">
-  <p class="text-13">
-    <span class="cf-footer-item sm:block sm:mb-1">Cloudflare Ray ID: <strong class="font-semibold">9c0ff47b9c6b3605</strong></span>
-    <span class="cf-footer-separator sm:hidden">&bull;</span>
-    <span id="cf-footer-item-ip" class="cf-footer-item hidden sm:block sm:mb-1">
-      Your IP:
-      <button type="button" id="cf-footer-ip-reveal" class="cf-footer-ip-reveal-btn">Click to reveal</button>
-      <span class="hidden" id="cf-footer-ip">95.217.16.187</span>
-      <span class="cf-footer-separator sm:hidden">&bull;</span>
-    </span>
-    <span class="cf-footer-item sm:block sm:mb-1"><span>Performance &amp; security by</span> <a rel="noopener noreferrer" href="https://www.cloudflare.com/5xx-error-landing" id="brand_link" target="_blank">Cloudflare</a></span>
-    
-  </p>
-  <script>(function(){function d(){var b=a.getElementById("cf-footer-item-ip"),c=a.getElementById("cf-footer-ip-reveal");b&&"classList"in b&&(b.classList.remove("hidden"),c.addEventListener("click",function(){c.classList.add("hidden");a.getElementById("cf-footer-ip").classList.remove("hidden")}))}var a=document;document.addEventListener&&a.addEventListener("DOMContentLoaded",d)})();</script>
-</div><!-- /.error-footer -->
-    </div><!-- /#cf-error-details -->
-  </div><!-- /#cf-wrapper -->
-  <script>
-  window._cf_translation = {};
-  
-  
-
->
-</body>
-</html>

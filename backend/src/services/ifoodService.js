@@ -62,6 +62,7 @@ const ifoodService = {
 
         try {
             // Inicia o fluxo Distributed Auth (User Code)
+            // O User-Agent 'curl/7.68.0' no ifoodAxios evita o bloqueio da Cloudflare
             const response = await ifoodAxios.post(IFOOD_USERCODE_URL, new URLSearchParams({
                 clientId: clientId
             }).toString(), {
@@ -74,16 +75,17 @@ const ifoodService = {
 
             console.log(`[iFood Service] Generated User Code for tenant ${tenantId}: ${userCode}`);
 
-            // Salva o authorizationCodeVerifier no banco para usar depois na troca pelo token
+            // Salva o authorizationCodeVerifier no banco para usar na troca pelo token
             await tenantRepository.updateTenant(tenantId, {
                 ifoodAuthVerifier: authorizationCodeVerifier
             });
 
-            // Retorna a URL completa que já preenche o código para o usuário
+            // Retorna os dados para o frontend abrir o portal do iFood
             return { 
                 url: verificationUrlComplete,
-                userCode: userCode, // Retorna também o código caso o frontend queira exibir
-                verificationUrl: verificationUrl
+                userCode: userCode,
+                verificationUrl: verificationUrl,
+                expiresIn: expiresIn
             };
 
         } catch (error) {
@@ -116,46 +118,14 @@ const ifoodService = {
     },
 
     async requestUserCode(tenantId) {
-        const clientId = process.env.IFOOD_CLIENT_ID_GLOBAL;
-        
-        if (!clientId) {
-            throw new ApiError(500, 'Client ID do iFood não configurado (IFOOD_CLIENT_ID_GLOBAL).');
-        }
-
-        try {
-            const response = await ifoodAxios.post(IFOOD_USERCODE_URL, new URLSearchParams({
-                clientId: clientId
-            }).toString(), {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
-
-            const { userCode, authorizationCodeVerifier, verificationUrl, verificationUrlComplete, expiresIn } = response.data;
-
-            // Salvar o authorizationCodeVerifier no banco para usar depois na troca pelo token
-            await tenantRepository.updateTenant(tenantId, {
-                ifoodAuthVerifier: authorizationCodeVerifier
-            });
-
-            return {
-                userCode,
-                verificationUrl,
-                verificationUrlComplete,
-                expiresIn
-            };
-        } catch (error) {
-            console.error(`[iFood Service] Error generating user code for tenant ${tenantId}:`, error.response?.data || error.message);
-            throw new ApiError(500, 'Falha ao iniciar autorização com iFood (User Code).');
-        }
+        return this.getAuthorizationUrl(tenantId);
     },
 
     async requestNewAccessToken(tenantId, authCode) {
         const clientId = process.env.IFOOD_CLIENT_ID_GLOBAL;
         const clientSecret = process.env.IFOOD_CLIENT_SECRET_GLOBAL;
-        const redirectUri = process.env.IFOOD_REDIRECT_URI;
 
-        // Buscar o tenant para pegar o verifier salvo
+        // Buscar o tenant para pegar o verifier salvo no passo anterior
         const tenant = await tenantRepository.getTenantById(tenantId);
         const codeVerifier = tenant?.ifoodAuthVerifier;
 
@@ -164,19 +134,15 @@ const ifoodService = {
         }
 
         try {
-            // Troca o Código de Autorização pelo Token de Acesso (Server-to-Server)
-            // Agora incluindo authorizationCodeVerifier para o fluxo Distributed
+            // Troca o Código de Autorização pelo Token de Acesso
+            // IMPORTANTE: Parâmetros em snake_case para a API do iFood
             const params = new URLSearchParams({
-                grantType: 'authorization_code',
-                clientId: clientId,
-                clientSecret: clientSecret,
-                authorizationCode: authCode,
-                redirectUri: redirectUri
+                grant_type: 'authorization_code',
+                client_id: clientId,
+                client_secret: clientSecret,
+                authorization_code: authCode,
+                authorization_code_verifier: codeVerifier
             });
-
-            if (codeVerifier) {
-                params.append('authorizationCodeVerifier', codeVerifier);
-            }
 
             const response = await ifoodAxios.post(IFOOD_AUTH_URL, params.toString(), {
                 headers: {
@@ -186,7 +152,6 @@ const ifoodService = {
 
             const { accessToken, refreshToken, expiresIn } = response.data;
             
-            // Garantir compatibilidade com snake_case ou camelCase
             const actualAccessToken = accessToken || response.data.access_token;
             const actualRefreshToken = refreshToken || response.data.refresh_token;
             const actualExpiresIn = expiresIn || response.data.expires_in;
@@ -197,16 +162,15 @@ const ifoodService = {
                 ifoodAccessToken: actualAccessToken,
                 ifoodRefreshToken: actualRefreshToken,
                 ifoodTokenExpiresAt: ifoodTokenExpiresAt,
-                ifoodAuthVerifier: null // Limpa o verifier após uso bem-sucedido
+                ifoodAuthVerifier: null 
             });
 
-            // Após obter os tokens, buscar o merchantId
             await this.getIfoodMerchantData(tenantId);
 
             return actualAccessToken;
         } catch (error) {
             console.error(`[iFood Service] Error requesting new access token:`, error.response?.data || error.message);
-            throw new ApiError(500, 'Falha ao validar autorização com iFood.');
+            throw new ApiError(500, 'Falha ao validar autorização com iFood. Verifique o código.');
         }
     },
 
@@ -221,10 +185,10 @@ const ifoodService = {
 
         try {
             const response = await ifoodAxios.post(IFOOD_AUTH_URL, new URLSearchParams({
-                grantType: 'refresh_token',
-                refreshToken: refreshToken,
-                clientId: clientId,
-                clientSecret: clientSecret,
+                grant_type: 'refresh_token',
+                refresh_token: refreshToken,
+                client_id: clientId,
+                client_secret: clientSecret,
             }).toString(), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'

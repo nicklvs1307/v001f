@@ -1,0 +1,7 @@
+{
+  "userCode": "HQCB-KGRD",
+  "authorizationCodeVerifier": "ogppkerv0mdd4dq7736t30rikp374ov8ziq5u4bkx2flvhitugxt4v4pnnm01q35s1xcxx4ht82wseuquh0ib99qicy7e3mh0si",
+  "verificationUrl": "https://portal.ifood.com.br/apps/code",
+  "verificationUrlComplete": "https://portal.ifood.com.br/apps/code?c=HQCB-KGRD",
+  "expiresIn": 600
+}

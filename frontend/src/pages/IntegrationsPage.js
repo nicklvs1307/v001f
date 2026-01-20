@@ -401,10 +401,14 @@ const UaiRangoConfigModal = ({ open, onClose, uairangoId, setUairangoId, handleS
 const IfoodConfigModal = ({ open, onClose, tenant, fetchTenantData }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [step, setStep] = useState('initial'); // initial, waiting_code
+    const [authCode, setAuthCode] = useState('');
 
     useEffect(() => {
         if (open) {
             setError('');
+            setStep('initial');
+            setAuthCode('');
         }
     }, [open]);
 
@@ -414,7 +418,9 @@ const IfoodConfigModal = ({ open, onClose, tenant, fetchTenantData }) => {
         try {
             const { data } = await apiAuthenticated.get('/ifood/authorize');
             if (data.url) {
-                window.location.href = data.url;
+                // Abre em nova aba para o usuário pegar o código
+                window.open(data.url, '_blank');
+                setStep('waiting_code');
             } else {
                 throw new Error('URL de autorização não recebida.');
             }
@@ -422,6 +428,29 @@ const IfoodConfigModal = ({ open, onClose, tenant, fetchTenantData }) => {
             const errorMessage = err.response?.data?.message || err.message || 'Erro ao iniciar conexão com iFood.';
             setError(errorMessage);
             toast.error(errorMessage);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleConfirmCode = async () => {
+        if (!authCode) {
+            setError('Por favor, insira o código de autorização.');
+            return;
+        }
+
+        setLoading(true);
+        setError('');
+        try {
+            await apiAuthenticated.post('/ifood/exchange-code', { authorizationCode: authCode });
+            toast.success('iFood conectado com sucesso!');
+            await fetchTenantData();
+            onClose();
+        } catch (err) {
+            const errorMessage = err.response?.data?.message || err.message || 'Erro ao validar o código. Verifique se copiou corretamente.';
+            setError(errorMessage);
+            toast.error(errorMessage);
+        } finally {
             setLoading(false);
         }
     };
@@ -441,17 +470,52 @@ const IfoodConfigModal = ({ open, onClose, tenant, fetchTenantData }) => {
                 ) : (
                     <>
                         <Typography sx={{ mt: 2, mb: 2, textAlign: 'center' }}>
-                            Conecte sua conta iFood para que o sistema busque seus pedidos automaticamente.
+                            {step === 'initial' 
+                                ? 'Conecte sua conta iFood para sincronizar pedidos.' 
+                                : 'Siga as instruções na página do iFood e cole o código abaixo:'}
                         </Typography>
+
                          {error && <Alert severity="error" sx={{ my: 2, width: '100%' }}>{error}</Alert>}
-                        <Button 
-                            variant="contained" 
-                            onClick={handleInitiateAuth} 
-                            disabled={loading} 
-                            sx={{ backgroundColor: '#EA1D2C', '&:hover': { backgroundColor: '#C81925' }, mt: 2 }}
-                        >
-                            {loading ? <CircularProgress size={24} color="inherit" /> : 'Conectar iFood'}
-                        </Button>
+
+                         {step === 'initial' ? (
+                            <Button 
+                                variant="contained" 
+                                onClick={handleInitiateAuth} 
+                                disabled={loading} 
+                                sx={{ backgroundColor: '#EA1D2C', '&:hover': { backgroundColor: '#C81925' }, mt: 2 }}
+                            >
+                                {loading ? <CircularProgress size={24} color="inherit" /> : 'Conectar iFood'}
+                            </Button>
+                         ) : (
+                            <Box sx={{ width: '100%', mt: 2 }}>
+                                <TextField
+                                    fullWidth
+                                    label="Código de Autorização"
+                                    variant="outlined"
+                                    value={authCode}
+                                    onChange={(e) => setAuthCode(e.target.value)}
+                                    placeholder="Cole o código aqui"
+                                    sx={{ mb: 2 }}
+                                />
+                                <Button 
+                                    fullWidth
+                                    variant="contained" 
+                                    onClick={handleConfirmCode} 
+                                    disabled={loading} 
+                                    sx={{ backgroundColor: '#EA1D2C', '&:hover': { backgroundColor: '#C81925' } }}
+                                >
+                                    {loading ? <CircularProgress size={24} color="inherit" /> : 'Confirmar Código'}
+                                </Button>
+                                <Button 
+                                    fullWidth
+                                    variant="text" 
+                                    onClick={() => setStep('initial')} 
+                                    sx={{ mt: 1 }}
+                                >
+                                    Voltar
+                                </Button>
+                            </Box>
+                         )}
                     </>
                 )}
             </Box>

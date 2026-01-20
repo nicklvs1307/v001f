@@ -101,6 +101,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(2048), // Pode ser um segredo longo
       allowNull: true,
     },
+    ifoodAuthVerifier: { // Verificador do código de autorização (Distributed Flow)
+      type: DataTypes.STRING(2048),
+      allowNull: true,
+    },
     franchisorId: {
       type: DataTypes.UUID,
       allowNull: true,

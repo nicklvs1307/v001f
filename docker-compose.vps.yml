@@ -24,7 +24,7 @@ x-environment: &environment
   IFOOD_EVENTS_URL: https://merchant-api.ifood.com.br/events/v1.0
   IFOOD_REDIRECT_URI: ${BACKEND_URL}/api/ifood/callback
   IFOOD_POLLING_INTERVAL: "*/5 * * * *"
-  IFOOD_CLIENT_ID_GLOBAL: 075aa502-48f3-4cd8-a588-ee67d2f03618
+  IFOOD_CLIENT_ID_GLOBAL: 521a9099-254a-467e-b7cd-8a5cade41113
   IFOOD_CLIENT_SECRET_GLOBAL: v7awy0mh8a71k6cchc7exwtcfi99bl46771v58ps0q8969lsr7ks6xk8xi41f0syj2lx6pkx5k3tm98mhvfiwo72pvh2jc4kqdp
 
 

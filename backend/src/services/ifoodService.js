@@ -10,9 +10,20 @@ const ApiError = require('../errors/ApiError');
 // Configuração Axios
 const ifoodAxios = axios.create({
     headers: {
-        'Accept': 'application/json',
+        'Authority': 'merchant-api.ifood.com.br',
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
         'Cache-Control': 'no-cache',
-        'User-Agent': 'Feedeliza/1.0' 
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+        'Referer': 'https://merchant.ifood.com.br/',
+        'Origin': 'https://merchant.ifood.com.br',
+        'Sec-Ch-Ua': '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
+        'Sec-Ch-Ua-Mobile': '?0',
+        'Sec-Ch-Ua-Platform': '"Windows"',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-site',
+        'Connection': 'keep-alive'
     },
     timeout: 10000 // 10 segundos timeout
 });

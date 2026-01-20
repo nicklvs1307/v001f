@@ -47,9 +47,11 @@ const ifoodService = {
         return tenant;
     },
 
-    async generateUserCode(tenantId) {
+    async getAuthorizationUrl(tenantId) {
         const tenant = await this.getTenantIfoodConfig(tenantId);
+        // Prioriza credenciais do tenant, mas usa as globais como fallback (modelo App Distribuído)
         const clientId = tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL;
+        const redirectUri = process.env.IFOOD_REDIRECT_URI || 'https://apivoltaki.towersfy.com/api/ifood/callback';
 
         if (!clientId) {
             const errorMessage = 'A credencial (Client ID) para integração com o iFood não foi configurada. Por favor, entre em contato com o suporte para habilitar a integração.';
@@ -57,23 +59,11 @@ const ifoodService = {
             throw new ApiError(400, errorMessage);
         }
 
-        try {
-            const response = await ifoodAxios.post(IFOOD_USERCODE_URL, new URLSearchParams({
-                client_id: clientId,
-            }).toString(), {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
-            return response.data;
-        } catch (error) {
-            const errorData = error.response?.data || error.message;
-            console.error(`[iFood Service] Error generating user code for tenant ${tenantId}:`, errorData);
-            if (typeof errorData === 'string' && (errorData.includes('Access Denied') || errorData.includes('blocked'))) {
-                 throw new ApiError(401, 'Acesso negado pelo iFood. Verifique se as credenciais do sistema estão corretas e se o servidor tem permissão para acessar a API do iFood.');
-            }
-            throw new ApiError(500, 'Falha ao comunicar com o iFood para gerar o código de autorização.');
-        }
+        // Construção da URL de autorização para o navegador
+        // https://merchant.ifood.com.br/partners/authorize?clientId=...&redirectUri=...&responseType=code&state=...
+        const url = `https://merchant.ifood.com.br/partners/authorize?clientId=${clientId}&redirectUri=${encodeURIComponent(redirectUri)}&responseType=code&state=${tenantId}`;
+
+        return { url };
     },
 
     async getAccessToken(tenantId) {
@@ -100,6 +90,7 @@ const ifoodService = {
         const tenant = await this.getTenantIfoodConfig(tenantId);
         const clientId = tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL;
         const clientSecret = tenant.ifoodClientSecret || process.env.IFOOD_CLIENT_SECRET_GLOBAL;
+        const redirectUri = process.env.IFOOD_REDIRECT_URI || 'https://apivoltaki.towersfy.com/api/ifood/callback';
 
         if (!clientId || !clientSecret) {
             const errorMessage = 'As credenciais de integração do iFood (Client ID e/ou Client Secret) não foram configuradas. Por favor, entre em contato com o suporte para habilitar a integração.';
@@ -113,6 +104,7 @@ const ifoodService = {
                 client_id: clientId,
                 client_secret: clientSecret,
                 authorization_code: authCode,
+                redirect_uri: redirectUri,
             }).toString(), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'

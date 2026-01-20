@@ -45,6 +45,8 @@ const IntegrationsPage = () => {
         const urlParams = new URLSearchParams(window.location.search);
         const gmbAuthSuccess = urlParams.get('gmb_auth_success');
         const gmbAuthError = urlParams.get('gmb_auth_error');
+        const ifoodSuccess = urlParams.get('ifood_success');
+        const ifoodError = urlParams.get('ifood_error');
 
         if (gmbAuthSuccess) {
             toast.success('Google Meu Negócio conectado com sucesso!');
@@ -52,6 +54,15 @@ const IntegrationsPage = () => {
             window.history.replaceState({}, document.title, window.location.pathname);
         } else if (gmbAuthError) {
             toast.error(`Falha ao conectar Google Meu Negócio: ${decodeURIComponent(gmbAuthError)}`);
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        if (ifoodSuccess) {
+             toast.success('iFood conectado com sucesso!');
+             // Opcional: abrir o modal ou apenas atualizar os dados
+             window.history.replaceState({}, document.title, window.location.pathname);
+        } else if (ifoodError) {
+            toast.error(`Falha ao conectar iFood: ${decodeURIComponent(ifoodError)}`);
             window.history.replaceState({}, document.title, window.location.pathname);
         }
     }, []);
@@ -388,119 +399,30 @@ const UaiRangoConfigModal = ({ open, onClose, uairangoId, setUairangoId, handleS
 };
 
 const IfoodConfigModal = ({ open, onClose, tenant, fetchTenantData }) => {
-    const [step, setStep] = useState(tenant?.ifoodAccessToken ? 'connected' : 'initial');
-    const [userCodeData, setUserCodeData] = useState(null);
-    const [authorizationCode, setAuthorizationCode] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        // Reset state when tenant data changes or modal opens
         if (open) {
-            setStep(tenant?.ifoodAccessToken ? 'connected' : 'initial');
-            setUserCodeData(null);
-            setAuthorizationCode('');
             setError('');
         }
-    }, [open, tenant]);
+    }, [open]);
 
     const handleInitiateAuth = async () => {
         setLoading(true);
         setError('');
         try {
             const { data } = await apiAuthenticated.get('/ifood/authorize');
-            setUserCodeData(data);
-            setStep('show_user_code');
+            if (data.url) {
+                window.location.href = data.url;
+            } else {
+                throw new Error('URL de autorização não recebida.');
+            }
         } catch (err) {
-            const errorMessage = err.response?.data?.message || 'Erro ao iniciar conexão com iFood.';
+            const errorMessage = err.response?.data?.message || err.message || 'Erro ao iniciar conexão com iFood.';
             setError(errorMessage);
             toast.error(errorMessage);
-        } finally {
             setLoading(false);
-        }
-    };
-
-    const handleExchangeCode = async () => {
-        setLoading(true);
-        setError('');
-        try {
-            await apiAuthenticated.post('/ifood/exchange-code', { authorizationCode });
-            toast.success('iFood conectado com sucesso!');
-            fetchTenantData();
-            setStep('connected');
-            onClose(); // Fecha o modal ao conectar
-        } catch (err) {
-            const errorMessage = err.response?.data?.message || 'Código de autorização inválido ou expirado.';
-            setError(errorMessage);
-            toast.error(errorMessage);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleCopyToClipboard = (text) => {
-        navigator.clipboard.writeText(text).then(() => {
-            toast.success('Código copiado para a área de transferência!');
-        }, () => {
-            toast.error('Falha ao copiar o código.');
-        });
-    };
-
-    const renderStepContent = () => {
-        switch (step) {
-            case 'initial':
-                return (
-                    <>
-                        <Typography sx={{ mt: 2, mb: 2, textAlign: 'center' }}>
-                            Conecte sua conta iFood para que o sistema busque seus pedidos automaticamente.
-                        </Typography>
-                        <Button variant="contained" onClick={handleInitiateAuth} disabled={loading} sx={{ backgroundColor: '#EA1D2C', '&:hover': { backgroundColor: '#C81925' } }}>
-                            {loading ? <CircularProgress size={24} color="inherit" /> : 'Conectar iFood'}
-                        </Button>
-                    </>
-                );
-            case 'show_user_code':
-                return (
-                    <>
-                        <Typography sx={{ mt: 2, textAlign: 'center' }}>
-                            1. Acesse o link abaixo e faça login no Portal do Parceiro iFood.
-                        </Typography>
-                        <Link href={userCodeData.verificationUrlComplete} target="_blank" rel="noopener noreferrer" sx={{ my: 1 }}>
-                            {userCodeData.verificationUrl}
-                        </Link>
-                        <Typography sx={{ mt: 2, textAlign: 'center' }}>
-                            2. Insira o código abaixo para autorizar a conexão:
-                        </Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', my: 2, p: 1, border: '1px dashed grey', borderRadius: 1 }}>
-                            <Typography variant="h6" component="span" sx={{ mr: 1 }}>{userCodeData.userCode}</Typography>
-                            <IconButton onClick={() => handleCopyToClipboard(userCodeData.userCode)} size="small">
-                                <ContentCopyIcon fontSize="small" />
-                            </IconButton>
-                        </Box>
-                        <Typography sx={{ mt: 2, textAlign: 'center' }}>
-                            3. Após autorizar, o iFood fornecerá um **código de autorização**. Cole-o abaixo:
-                        </Typography>
-                        <TextField
-                            fullWidth
-                            label="Código de Autorização do iFood"
-                            variant="outlined"
-                            value={authorizationCode}
-                            onChange={(e) => setAuthorizationCode(e.target.value)}
-                            sx={{ mt: 2, mb: 2 }}
-                        />
-                        <Button variant="contained" onClick={handleExchangeCode} disabled={loading || !authorizationCode}>
-                            {loading ? <CircularProgress size={24} /> : 'Finalizar Conexão'}
-                        </Button>
-                    </>
-                );
-            case 'connected':
-                return (
-                     <Alert severity="success" sx={{ mt: 2, textAlign: 'center', width: '100%' }}>
-                        Sua conta iFood está conectada.
-                    </Alert>
-                );
-            default:
-                return null;
         }
     };
 
@@ -511,8 +433,27 @@ const IfoodConfigModal = ({ open, onClose, tenant, fetchTenantData }) => {
                 <Typography variant="h6" component="h2" gutterBottom>
                     Configurar iFood
                 </Typography>
-                {error && <Alert severity="error" sx={{ my: 2, width: '100%' }}>{error}</Alert>}
-                {renderStepContent()}
+                
+                {tenant?.ifoodAccessToken ? (
+                    <Alert severity="success" sx={{ my: 2, width: '100%', textAlign: 'center' }}>
+                        Sua conta iFood está conectada e sincronizada.
+                    </Alert>
+                ) : (
+                    <>
+                        <Typography sx={{ mt: 2, mb: 2, textAlign: 'center' }}>
+                            Conecte sua conta iFood para que o sistema busque seus pedidos automaticamente.
+                        </Typography>
+                         {error && <Alert severity="error" sx={{ my: 2, width: '100%' }}>{error}</Alert>}
+                        <Button 
+                            variant="contained" 
+                            onClick={handleInitiateAuth} 
+                            disabled={loading} 
+                            sx={{ backgroundColor: '#EA1D2C', '&:hover': { backgroundColor: '#C81925' }, mt: 2 }}
+                        >
+                            {loading ? <CircularProgress size={24} color="inherit" /> : 'Conectar iFood'}
+                        </Button>
+                    </>
+                )}
             </Box>
         </Drawer>
     );

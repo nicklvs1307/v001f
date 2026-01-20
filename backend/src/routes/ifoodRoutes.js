@@ -6,7 +6,7 @@ const { protect } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-// 1. Endpoint para iniciar o fluxo de autenticação e gerar o user_code
+// 1. Endpoint para obter a URL de autorização do iFood (Browser Flow)
 router.get('/authorize', protect, asyncHandler(async (req, res) => {
     const tenantId = req.user.tenant.id;
 
@@ -14,14 +14,42 @@ router.get('/authorize', protect, asyncHandler(async (req, res) => {
         throw new ApiError(400, 'Tenant ID is required to initiate iFood authorization.');
     }
     
-    // Chama o serviço para gerar o user code junto ao iFood
-    const userCodeData = await ifoodService.generateUserCode(tenantId);
+    // Retorna a URL para o frontend redirecionar o usuário
+    const urlData = await ifoodService.getAuthorizationUrl(tenantId);
     
-    // Retorna os dados para o frontend, que irá exibir para o usuário
-    res.json(userCodeData);
+    res.json(urlData);
 }));
 
-// 2. Endpoint para trocar o authorizationCode (recebido pelo usuário no portal iFood) pelo access_token
+// 2. Callback endpoint que recebe o redirect do iFood
+// GET /api/ifood/callback?code=...&state=...
+router.get('/callback', asyncHandler(async (req, res) => {
+    const { code, state, error, error_description } = req.query; // state é o tenantId
+
+    const frontendUrl = process.env.FRONTEND_URL || 'https://voltaki.towersfy.com';
+
+    if (error) {
+        console.error('iFood Callback Error:', error, error_description);
+        return res.redirect(`${frontendUrl}/dashboard/integracoes?ifood_error=${encodeURIComponent(error_description || error)}`);
+    }
+
+    if (!code || !state) {
+        return res.redirect(`${frontendUrl}/dashboard/integracoes?ifood_error=Missing+code+or+state`);
+    }
+
+    try {
+        // Troca o code pelo token
+        await ifoodService.requestNewAccessToken(state, code);
+        
+        // Redireciona para o frontend com sucesso
+        res.redirect(`${frontendUrl}/dashboard/integracoes?ifood_success=true`);
+    } catch (err) {
+        console.error('iFood Callback Exchange Error:', err);
+        const message = err.message || 'Falha ao conectar com o iFood.';
+        res.redirect(`${frontendUrl}/dashboard/integracoes?ifood_error=${encodeURIComponent(message)}`);
+    }
+}));
+
+// 3. (Opcional) Endpoint para troca manual, caso o frontend receba o code por outra via
 router.post('/exchange-code', protect, asyncHandler(async (req, res) => {
     const tenantId = req.user.tenant.id;
     const { authorizationCode } = req.body;
@@ -34,7 +62,6 @@ router.post('/exchange-code', protect, asyncHandler(async (req, res) => {
         throw new ApiError(400, 'iFood Authorization Code is required.');
     }
 
-    // O service agora usa grantType: 'authorization_code' e o código recebido
     await ifoodService.requestNewAccessToken(tenantId, authorizationCode);
 
     res.status(200).json({ message: 'iFood connected successfully!' });

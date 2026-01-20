@@ -58,6 +58,7 @@ const ifoodService = {
     async getAuthorizationUrl(tenantId) {
         const clientId = process.env.IFOOD_CLIENT_ID_GLOBAL;
         const redirectUri = process.env.IFOOD_REDIRECT_URI;
+        const authBaseUrl = process.env.IFOOD_AUTHORIZATION_URL || 'https://merchant.ifood.com.br/partners/authorize';
 
         if (!clientId || !redirectUri) {
             const errorMessage = 'Configuração global do iFood (Client ID ou Redirect URI) não encontrada no ambiente.';
@@ -66,14 +67,13 @@ const ifoodService = {
         }
 
         // Monta a URL de autorização para o lojista acessar via Navegador
-        // Documentação: https://developer.ifood.com.br/pt-BR/docs/guides/modules/authentication/distributed
-        const authUrl = new URL('https://merchant.ifood.com.br/partners/authorize');
+        const authUrl = new URL(authBaseUrl);
         authUrl.searchParams.append('clientId', clientId);
         authUrl.searchParams.append('redirectUri', redirectUri);
         authUrl.searchParams.append('responseType', 'code');
         authUrl.searchParams.append('state', tenantId);
 
-        console.log(`[iFood Service] Generated Authorization URL for tenant ${tenantId}`);
+        console.log(`[iFood Service] Generated Authorization URL for tenant ${tenantId}: ${authUrl.toString()}`);
 
         return { 
             url: authUrl.toString()

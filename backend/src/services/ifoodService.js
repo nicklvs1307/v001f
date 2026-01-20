@@ -12,7 +12,8 @@ const ApiError = require('../errors/ApiError');
 const ifoodAxios = axios.create({
     headers: {
         'Accept': 'application/json',
-        'Cache-Control': 'no-cache'
+        'Cache-Control': 'no-cache',
+        'User-Agent': 'curl/7.68.0' // Mimic curl to bypass WAF as tested by user
     }
 });
 axiosRetry(ifoodAxios, {

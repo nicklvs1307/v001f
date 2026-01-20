@@ -56,47 +56,28 @@ const ifoodService = {
     },
 
     async getAuthorizationUrl(tenantId) {
-        const tenant = await this.getTenantIfoodConfig(tenantId);
-        // Prioriza credenciais do tenant, mas usa as globais como fallback (modelo App Distribuído)
-        const clientId = tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL;
+        const clientId = process.env.IFOOD_CLIENT_ID_GLOBAL;
+        const redirectUri = process.env.IFOOD_REDIRECT_URI;
 
-        if (!clientId) {
-            const errorMessage = 'A credencial (Client ID) para integração com o iFood não foi configurada. Por favor, entre em contato com o suporte para habilitar a integração.';
-            console.error(`[iFood Service] Missing iFood Client ID for tenant ${tenantId}.`);
-            throw new ApiError(400, errorMessage);
+        if (!clientId || !redirectUri) {
+            const errorMessage = 'Configuração global do iFood (Client ID ou Redirect URI) não encontrada no ambiente.';
+            console.error(`[iFood Service] Missing iFood global config.`);
+            throw new ApiError(500, errorMessage);
         }
 
-        try {
-            // Solicita o User Code para o iFood (Fluxo de App Distribuído)
-            // POST https://merchant-api.ifood.com.br/authentication/v1.0/oauth/userCode
-            const response = await ifoodAxios.post(`${IFOOD_AUTH_URL.replace('/token', '/userCode')}`, 
-                new URLSearchParams({
-                    clientId: clientId
-                }), 
-                {
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-                }
-            );
+        // Monta a URL de autorização para o lojista acessar via Navegador
+        // Documentação: https://developer.ifood.com.br/pt-BR/docs/guides/modules/authentication/distributed
+        const authUrl = new URL('https://merchant.ifood.com.br/partners/authorize');
+        authUrl.searchParams.append('clientId', clientId);
+        authUrl.searchParams.append('redirectUri', redirectUri);
+        authUrl.searchParams.append('responseType', 'code');
+        authUrl.searchParams.append('state', tenantId);
 
-            const { userCode, authorizationCodeVerifier, verificationUrl, verificationUrlComplete, expiresIn } = response.data;
+        console.log(`[iFood Service] Generated Authorization URL for tenant ${tenantId}`);
 
-            // Salva o verifier no banco para usar na troca do token depois
-            await tenantRepository.updateTenant(tenantId, {
-                ifoodAuthVerifier: authorizationCodeVerifier
-            });
-
-            console.log(`[iFood Service] Generated User Code for tenant ${tenantId}. Verifier saved.`);
-
-            // Retorna a URL completa para o frontend redirecionar o usuário
-            return { 
-                url: verificationUrlComplete,
-                userCode: userCode // Opcional, caso a URL completa não funcione automaticamente
-            };
-
-        } catch (error) {
-            console.error(`[iFood Service] Error generating user code for tenant ${tenantId}:`, error.response?.data || error.message);
-            throw new ApiError(500, 'Falha ao iniciar autenticação com iFood. Verifique as credenciais da aplicação (ClientId).');
-        }
+        return { 
+            url: authUrl.toString()
+        };
     },
 
     async getAccessToken(tenantId) {
@@ -110,47 +91,44 @@ const ifoodService = {
         // Se tiver um refresh token, tenta usá-lo
         if (tenant.ifoodRefreshToken) {
             console.log(`[iFood Service] Refreshing token for tenant: ${tenantId}`);
-            await this.refreshAccessToken(tenantId, tenant.ifoodRefreshToken);
-            return await this.getTenantIfoodConfig(tenantId); // Retorna o tenant atualizado
+            try {
+                await this.refreshAccessToken(tenantId, tenant.ifoodRefreshToken);
+                return await this.getTenantIfoodConfig(tenantId);
+            } catch (error) {
+                console.error(`[iFood Service] Failed to refresh token for tenant ${tenantId}.`);
+            }
         }
 
-        // Se não tiver nenhum token, precisa iniciar o fluxo de OAuth ou pedir ao usuário para configurar
-        console.warn(`[iFood Service] No valid access or refresh token for tenant: ${tenantId}. Manual intervention might be needed.`);
-        throw new ApiError(400, 'iFood tokens not available. Please configure iFood integration.');
+        console.warn(`[iFood Service] No valid access or refresh token for tenant: ${tenantId}.`);
+        throw new ApiError(401, 'Integração com iFood não autorizada ou expirada.');
     },
 
     async requestNewAccessToken(tenantId, authCode) {
-        const tenant = await this.getTenantIfoodConfig(tenantId);
-        const clientId = tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL;
-        const clientSecret = tenant.ifoodClientSecret || process.env.IFOOD_CLIENT_SECRET_GLOBAL;
-        const verifier = tenant.ifoodAuthVerifier;
+        const clientId = process.env.IFOOD_CLIENT_ID_GLOBAL;
+        const clientSecret = process.env.IFOOD_CLIENT_SECRET_GLOBAL;
+        const redirectUri = process.env.IFOOD_REDIRECT_URI;
 
         if (!clientId || !clientSecret) {
-            const errorMessage = 'As credenciais de integração do iFood (Client ID e/ou Client Secret) não foram configuradas.';
-            throw new ApiError(400, errorMessage);
-        }
-
-        if (!verifier) {
-             throw new ApiError(400, 'Fluxo de autenticação inválido: Verificador não encontrado. Reinicie a conexão.');
+            throw new ApiError(500, 'Credenciais globais do iFood não configuradas no servidor.');
         }
 
         try {
-            // Troca o Código de Autorização + Verificador pelo Token de Acesso
+            // Troca o Código de Autorização pelo Token de Acesso (Server-to-Server)
             const response = await ifoodAxios.post(IFOOD_AUTH_URL, new URLSearchParams({
                 grantType: 'authorization_code',
                 clientId: clientId,
                 clientSecret: clientSecret,
                 authorizationCode: authCode,
-                authorizationCodeVerifier: verifier
+                redirectUri: redirectUri
             }).toString(), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
 
-            const { accessToken, refreshToken, expiresIn } = response.data; // Nota: iFood API retorna camelCase ou snake_case? A doc diz snake_case geralmente, mas o endpoint novo pode ser camel. Vamos ajustar para snake_case padrão se falhar.
+            const { accessToken, refreshToken, expiresIn } = response.data;
             
-            // Verificando os campos retornados (a API v1.0 costuma retornar snake_case)
+            // Garantir compatibilidade com snake_case ou camelCase
             const actualAccessToken = accessToken || response.data.access_token;
             const actualRefreshToken = refreshToken || response.data.refresh_token;
             const actualExpiresIn = expiresIn || response.data.expires_in;
@@ -161,60 +139,63 @@ const ifoodService = {
                 ifoodAccessToken: actualAccessToken,
                 ifoodRefreshToken: actualRefreshToken,
                 ifoodTokenExpiresAt: ifoodTokenExpiresAt,
-                ifoodAuthVerifier: null // Limpa o verifier após uso
+                ifoodAuthVerifier: null // Limpa resquícios de fluxos antigos
             });
 
-            // Após obter os tokens, buscar e salvar o merchantId automaticamente
+            // Após obter os tokens, buscar o merchantId
             await this.getIfoodMerchantData(tenantId);
 
             return actualAccessToken;
         } catch (error) {
-            console.error(`[iFood Service] Error requesting new access token for tenant ${tenantId}:`, error.response?.data || error.message);
-            throw new ApiError(500, 'Falha ao trocar o código de autorização por um token de acesso do iFood. Verifique o código inserido.');
+            console.error(`[iFood Service] Error requesting new access token:`, error.response?.data || error.message);
+            throw new ApiError(500, 'Falha ao validar autorização com iFood.');
         }
     },
 
     async refreshAccessToken(tenantId, refreshToken) {
-        const tenant = await this.getTenantIfoodConfig(tenantId);
-        const clientId = tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL;
-        const clientSecret = tenant.ifoodClientSecret || process.env.IFOOD_CLIENT_SECRET_GLOBAL;
+        const clientId = process.env.IFOOD_CLIENT_ID_GLOBAL;
+        const clientSecret = process.env.IFOOD_CLIENT_SECRET_GLOBAL;
 
         if (!clientId || !clientSecret) {
-            const errorMessage = 'As credenciais de integração do iFood (Client ID e/ou Client Secret) não foram configuradas. Por favor, entre em contato com o suporte para habilitar a integração.';
             console.error(`[iFood Service] Missing iFood credentials for tenant ${tenantId} during token refresh.`);
-            throw new ApiError(400, errorMessage);
+            throw new ApiError(500, 'Credenciais globais do iFood não configuradas.');
         }
 
         try {
             const response = await ifoodAxios.post(IFOOD_AUTH_URL, new URLSearchParams({
-                grant_type: 'refresh_token',
-                refresh_token: refreshToken,
-                client_id: clientId,
-                client_secret: clientSecret,
+                grantType: 'refresh_token',
+                refreshToken: refreshToken,
+                clientId: clientId,
+                clientSecret: clientSecret,
             }).toString(), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
 
-            const { access_token, refresh_token, expires_in } = response.data;
-            const ifoodTokenExpiresAt = new Date(new Date().getTime() + (expires_in * 1000));
+            const { accessToken, refreshToken: newRefreshToken, expiresIn } = response.data;
+            
+            const actualAccessToken = accessToken || response.data.access_token;
+            const actualRefreshToken = newRefreshToken || response.data.refresh_token;
+            const actualExpiresIn = expiresIn || response.data.expires_in;
+
+            const ifoodTokenExpiresAt = new Date(new Date().getTime() + (actualExpiresIn * 1000));
 
             await tenantRepository.updateTenant(tenantId, {
-                ifoodAccessToken: access_token,
-                ifoodRefreshToken: refresh_token,
+                ifoodAccessToken: actualAccessToken,
+                ifoodRefreshToken: actualRefreshToken,
                 ifoodTokenExpiresAt: ifoodTokenExpiresAt,
             });
 
-            return access_token;
+            return actualAccessToken;
         } catch (error) {
             console.error(`[iFood Service] Error refreshing access token for tenant ${tenantId}:`, error.response?.data || error.message);
             await tenantRepository.updateTenant(tenantId, {
                 ifoodAccessToken: null,
                 ifoodRefreshToken: null,
                 ifoodTokenExpiresAt: null,
-            }); // Limpa tokens para evitar novas tentativas com tokens inválidos
-            throw new ApiError(500, 'Sessão com o iFood expirou e não foi possível renová-la. Por favor, refaça a autenticação.');
+            });
+            throw new ApiError(401, 'Sessão com o iFood expirou. Por favor, reconecte.');
         }
     },
 

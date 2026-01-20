@@ -176,10 +176,9 @@ const findIfoodEnabledTenants = async () => {
     where: {
       ifoodMerchantId: { [Op.ne]: null },
       ifoodAccessToken: { [Op.ne]: null },
-      ifoodClientId: { [Op.ne]: null },
-      ifoodClientSecret: { [Op.ne]: null },
+      ifoodRefreshToken: { [Op.ne]: null }, // Ensure refresh token is present
     },
-    attributes: ['id', 'name', 'ifoodMerchantId', 'ifoodAccessToken', 'ifoodRefreshToken', 'ifoodTokenExpiresAt', 'ifoodClientId', 'ifoodClientSecret'],
+    attributes: ['id', 'name', 'ifoodMerchantId', 'ifoodAccessToken', 'ifoodRefreshToken', 'ifoodTokenExpiresAt'],
   });
 };
 

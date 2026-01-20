@@ -1,430 +1,365 @@
 const axios = require('axios');
-const axiosRetryModule = require('axios-retry'); // Importa o módulo axios-retry
-const axiosRetry = typeof axiosRetryModule === 'function' ? axiosRetryModule : axiosRetryModule.default; // Garante que axiosRetry é a função
-const { Op } = require('sequelize');
+const axiosRetryModule = require('axios-retry');
+const axiosRetry = typeof axiosRetryModule === 'function' ? axiosRetryModule : axiosRetryModule.default;
 const tenantRepository = require('../repositories/tenantRepository');
 const clientRepository = require('../repositories/clientRepository');
 const deliveryOrderRepository = require('../repositories/deliveryOrderRepository');
 const surveyTriggerService = require('./surveyTriggerService');
 const ApiError = require('../errors/ApiError');
 
-// Configurar uma instância de axios com retry para as APIs do iFood
+// Configuração Axios
 const ifoodAxios = axios.create({
     headers: {
         'Accept': 'application/json',
         'Cache-Control': 'no-cache',
-        'User-Agent': 'curl/7.68.0' // Mimic curl to bypass WAF as tested by user
-    }
+        'User-Agent': 'Feedeliza/1.0' 
+    },
+    timeout: 10000 // 10 segundos timeout
 });
-axiosRetry(ifoodAxios, {
-    retries: 3, // Número de retries
-    retryDelay: axiosRetry.exponentialDelay, // Backoff exponencial
-    retryCondition: (error) => {
-        // Retenta em caso de erros de rede ou códigos de status 5xx ou 429
-        return axiosRetry.isNetworkError(error) ||
-               axiosRetry.isRetryableError(error.response.status) || // Retenta em caso de erro 5xx ou 429
-               error.response?.status === 429; // Retenta especificamente para 429 Too Many Requests
 
+axiosRetry(ifoodAxios, {
+    retries: 3,
+    retryDelay: axiosRetry.exponentialDelay,
+    retryCondition: (error) => {
+        return axiosRetry.isNetworkError(error) ||
+               axiosRetry.isRetryableError(error.response?.status) ||
+               error.response?.status === 429;
     },
 });
 
-const IFOOD_AUTH_URL = process.env.IFOOD_AUTH_URL || 'https://merchant-api.ifood.com.br/authentication/v1.0/oauth/token';
-const IFOOD_USERCODE_URL = process.env.IFOOD_USERCODE_URL || 'https://merchant-api.ifood.com.br/authentication/v1.0/oauth/userCode';
-const IFOOD_API_URL = process.env.IFOOD_API_URL || 'https://merchant-api.ifood.com.br/order/v1.0';
-const IFOOD_EVENTS_URL = process.env.IFOOD_EVENTS_URL || 'https://merchant-api.ifood.com.br/events/v1.0';
-const IFOOD_MERCHANT_API_URL = process.env.IFOOD_MERCHANT_API_URL || 'https://merchant-api.ifood.com.br/merchant/v1.0';
+// URLs (Padrão Distribuído)
+const IFOOD_AUTH_BASE_URL = 'https://merchant-api.ifood.com.br/authentication/v1.0';
+const IFOOD_ORDER_BASE_URL = 'https://merchant-api.ifood.com.br/order/v1.0';
+const IFOOD_EVENTS_BASE_URL = 'https://merchant-api.ifood.com.br/events/v1.0';
+const IFOOD_MERCHANT_BASE_URL = 'https://merchant-api.ifood.com.br/merchant/v1.0';
 
-
-// Não mais globais, serão por tenant
-// const IFOOD_CLIENT_ID = process.env.IFOOD_CLIENT_ID;
-// const IFOOD_CLIENT_SECRET = process.env.IFOOD_CLIENT_SECRET;
-
-
+// Credenciais Globais (App Distribuído)
+const getGlobalCredentials = () => {
+    const clientId = process.env.IFOOD_CLIENT_ID_GLOBAL;
+    const clientSecret = process.env.IFOOD_CLIENT_SECRET_GLOBAL;
+    
+    if (!clientId || !clientSecret) {
+        throw new ApiError(500, 'Configuração iFood incompleta: IFOOD_CLIENT_ID_GLOBAL ou SECRET ausente.');
+    }
+    return { clientId, clientSecret };
+};
 
 const ifoodService = {
 
-    // --- Autenticação ---
-    async getTenantIfoodConfig(tenantId) {
-        const tenant = await tenantRepository.getTenantById(tenantId);
-        if (!tenant) {
-            throw new ApiError(404, 'Tenant not found.');
-        }
-        
-        return tenant;
-    },
-
+    /**
+     * Passo 1: Gerar URL para autorização (User Code ou Authorization Code)
+     */
     async getAuthorizationUrl(tenantId) {
-        const clientId = process.env.IFOOD_CLIENT_ID_GLOBAL;
-        
-        if (!clientId) {
-            throw new ApiError(500, 'Client ID do iFood não configurado (IFOOD_CLIENT_ID_GLOBAL).');
-        }
+        const { clientId } = getGlobalCredentials();
 
         try {
-            // Utilizando o axios configurado (que já tem User-Agent customizado)
-            const response = await ifoodAxios.post(IFOOD_USERCODE_URL, new URLSearchParams({
+            console.log(`[iFood Auth] Requesting User Code for tenant ${tenantId} using Client ID: ${clientId}`);
+            
+            // Endpoint para fluxo "User Code" (recomendado para integração fácil)
+            const response = await ifoodAxios.post(`${IFOOD_AUTH_BASE_URL}/oauth/userCode`, new URLSearchParams({
                 clientId: clientId
-            }).toString(), {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
+            }), {
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
             });
 
             const { userCode, authorizationCodeVerifier, verificationUrl, verificationUrlComplete, expiresIn } = response.data;
 
-            console.log(`[iFood Service] Generated User Code for tenant ${tenantId}: ${userCode}`);
-
-            // Salva o authorizationCodeVerifier no banco para usar na troca pelo token
+            // Salva verifier temporariamente
             await tenantRepository.updateTenant(tenantId, {
                 ifoodAuthVerifier: authorizationCodeVerifier
             });
 
-            // Retorna os dados para o frontend abrir o portal do iFood
             return { 
                 url: verificationUrlComplete,
-                userCode: userCode,
-                verificationUrl: verificationUrl,
-                expiresIn: expiresIn
+                userCode,
+                verificationUrl,
+                expiresIn
             };
 
         } catch (error) {
-            console.error(`[iFood Service] Error generating user code for tenant ${tenantId}:`, error.response?.data || error.message);
+            console.error(`[iFood Auth] Error getting User Code:`, error.response?.data || error.message);
             
-            // Se for erro de bloqueio (403/Cloudflare), lança um erro específico
-            if (error.response?.status === 403 || error.message.includes('Cloudflare')) {
-                 throw new ApiError(500, 'Bloqueio de segurança (Cloudflare). Tente novamente mais tarde.');
+            if (error.response?.status === 403) {
+                 throw new ApiError(403, 'Acesso negado pelo iFood. Verifique se o Client ID Global está aprovado.');
             }
-            
-            throw new ApiError(500, 'Falha ao iniciar autorização com iFood.');
+            throw new ApiError(500, 'Falha ao iniciar conexão com iFood.');
         }
     },
 
-    async getAccessToken(tenantId) {
-        const tenant = await this.getTenantIfoodConfig(tenantId);
-
-        // Se o token de acesso existir e não estiver expirado, retorna-o
-        if (tenant.ifoodAccessToken && tenant.ifoodTokenExpiresAt && new Date(tenant.ifoodTokenExpiresAt) > new Date()) {
-            return tenant; // Retorna o tenant completo
-        }
-
-        // Se tiver um refresh token, tenta usá-lo
-        if (tenant.ifoodRefreshToken) {
-            console.log(`[iFood Service] Refreshing token for tenant: ${tenantId}`);
-            try {
-                await this.refreshAccessToken(tenantId, tenant.ifoodRefreshToken);
-                return await this.getTenantIfoodConfig(tenantId);
-            } catch (error) {
-                console.error(`[iFood Service] Failed to refresh token for tenant ${tenantId}.`);
-            }
-        }
-
-        console.warn(`[iFood Service] No valid access or refresh token for tenant: ${tenantId}.`);
-        throw new ApiError(401, 'Integração com iFood não autorizada ou expirada.');
-    },
-
-    async requestUserCode(tenantId) {
-        return this.getAuthorizationUrl(tenantId);
-    },
-
-    async requestNewAccessToken(tenantId, authCode) {
-        const clientId = process.env.IFOOD_CLIENT_ID_GLOBAL;
-        const clientSecret = process.env.IFOOD_CLIENT_SECRET_GLOBAL;
-
-        // Buscar o tenant para pegar o verifier salvo no passo anterior
+    /**
+     * Passo 2: Trocar Code (Authorization Code) por Token
+     * Chamado quando o iFood redireciona de volta ou o frontend envia o código manual.
+     */
+    async requestNewAccessToken(tenantId, authCode = null) {
+        const { clientId, clientSecret } = getGlobalCredentials();
         const tenant = await tenantRepository.getTenantById(tenantId);
+        
+        // Se usar fluxo User Code, o authCode pode vir do frontend, ou não ser necessário dependendo do fluxo exato.
+        // No fluxo User Code puro, o App troca o User Code após o usuário confirmar? Não, o iFood chama o callback ou fazemos polling.
+        // A implementação anterior sugeria um mix. Vamos assumir o fluxo Authorization Code padrão se authCode for passado.
+        
+        // Recuperar verifier se existir
         const codeVerifier = tenant?.ifoodAuthVerifier;
 
-        if (!clientId || !clientSecret) {
-            throw new ApiError(500, 'Credenciais globais do iFood não configuradas no servidor.');
+        const params = new URLSearchParams();
+        params.append('grant_type', 'authorization_code');
+        params.append('client_id', clientId);
+        params.append('client_secret', clientSecret);
+        
+        if (authCode) {
+            params.append('authorization_code', authCode);
+        }
+        
+        if (codeVerifier) {
+            params.append('authorization_code_verifier', codeVerifier);
         }
 
         try {
-            // Troca o Código de Autorização pelo Token de Acesso
-            // IMPORTANTE: Parâmetros em snake_case para a API do iFood
-            const params = new URLSearchParams({
-                grant_type: 'authorization_code',
-                client_id: clientId,
-                client_secret: clientSecret,
-                authorization_code: authCode,
-                authorization_code_verifier: codeVerifier
-            });
-
-            const response = await ifoodAxios.post(IFOOD_AUTH_URL, params.toString(), {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
-
-            const { accessToken, refreshToken, expiresIn } = response.data;
+            console.log(`[iFood Auth] Exchanging code for token for tenant ${tenantId}`);
             
-            const actualAccessToken = accessToken || response.data.access_token;
-            const actualRefreshToken = refreshToken || response.data.refresh_token;
-            const actualExpiresIn = expiresIn || response.data.expires_in;
-
-            const ifoodTokenExpiresAt = new Date(new Date().getTime() + (actualExpiresIn * 1000));
-
-            await tenantRepository.updateTenant(tenantId, {
-                ifoodAccessToken: actualAccessToken,
-                ifoodRefreshToken: actualRefreshToken,
-                ifoodTokenExpiresAt: ifoodTokenExpiresAt,
-                ifoodAuthVerifier: null 
+            const response = await ifoodAxios.post(`${IFOOD_AUTH_BASE_URL}/oauth/token`, params, {
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
             });
 
+            await this.saveTokenData(tenantId, response.data);
+            
+            // Buscar Merchant ID para confirmar vínculo
             await this.getIfoodMerchantData(tenantId);
 
-            return actualAccessToken;
+            return response.data.accessToken;
+
         } catch (error) {
-            console.error(`[iFood Service] Error requesting new access token:`, error.response?.data || error.message);
-            throw new ApiError(500, 'Falha ao validar autorização com iFood. Verifique o código.');
+            console.error(`[iFood Auth] Exchange Token Error:`, error.response?.data || error.message);
+            throw new ApiError(500, 'Falha ao finalizar conexão. O código pode ter expirado.');
         }
     },
 
-    async refreshAccessToken(tenantId, refreshToken) {
-        const clientId = process.env.IFOOD_CLIENT_ID_GLOBAL;
-        const clientSecret = process.env.IFOOD_CLIENT_SECRET_GLOBAL;
+    /**
+     * Salva tokens e calcula expiração
+     */
+    async saveTokenData(tenantId, tokenData) {
+        const { accessToken, refresh_token, expiresIn, access_token } = tokenData;
+        const actualAccessToken = accessToken || access_token;
+        const actualRefreshToken = refresh_token || tokenData.refreshToken;
+        const actualExpiresIn = expiresIn || tokenData.expires_in;
 
-        if (!clientId || !clientSecret) {
-            console.error(`[iFood Service] Missing iFood credentials for tenant ${tenantId} during token refresh.`);
-            throw new ApiError(500, 'Credenciais globais do iFood não configuradas.');
+        const expiresAt = new Date(Date.now() + (actualExpiresIn * 1000));
+
+        await tenantRepository.updateTenant(tenantId, {
+            ifoodAccessToken: actualAccessToken,
+            ifoodRefreshToken: actualRefreshToken,
+            ifoodTokenExpiresAt: expiresAt,
+            ifoodAuthVerifier: null // Limpa o verifier após uso
+        });
+    },
+
+    /**
+     * Obtém token válido (renova se necessário)
+     */
+    async getValidToken(tenantId) {
+        const tenant = await tenantRepository.getTenantById(tenantId);
+        
+        if (!tenant || !tenant.ifoodAccessToken) {
+            throw new Error('Tenant sem token iFood.');
         }
 
+        // Margem de segurança de 5 minutos
+        const nowPlusBuffer = new Date(Date.now() + 5 * 60000);
+        
+        if (tenant.ifoodTokenExpiresAt && new Date(tenant.ifoodTokenExpiresAt) > nowPlusBuffer) {
+            return tenant.ifoodAccessToken;
+        }
+
+        if (tenant.ifoodRefreshToken) {
+            console.log(`[iFood Auth] Token expired for tenant ${tenantId}. Refreshing...`);
+            return await this.refreshAccessToken(tenantId, tenant.ifoodRefreshToken);
+        }
+
+        throw new Error('Token expirado e sem refresh token.');
+    },
+
+    /**
+     * Renova o Token usando Refresh Token
+     */
+    async refreshAccessToken(tenantId, refreshToken) {
+        const { clientId, clientSecret } = getGlobalCredentials();
+
         try {
-            const response = await ifoodAxios.post(IFOOD_AUTH_URL, new URLSearchParams({
+            const response = await ifoodAxios.post(`${IFOOD_AUTH_BASE_URL}/oauth/token`, new URLSearchParams({
                 grant_type: 'refresh_token',
                 refresh_token: refreshToken,
                 client_id: clientId,
-                client_secret: clientSecret,
-            }).toString(), {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
+                client_secret: clientSecret
+            }), {
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
             });
 
-            const { accessToken, refreshToken: newRefreshToken, expiresIn } = response.data;
-            
-            const actualAccessToken = accessToken || response.data.access_token;
-            const actualRefreshToken = newRefreshToken || response.data.refresh_token;
-            const actualExpiresIn = expiresIn || response.data.expires_in;
+            await this.saveTokenData(tenantId, response.data);
+            return response.data.accessToken || response.data.access_token;
 
-            const ifoodTokenExpiresAt = new Date(new Date().getTime() + (actualExpiresIn * 1000));
-
-            await tenantRepository.updateTenant(tenantId, {
-                ifoodAccessToken: actualAccessToken,
-                ifoodRefreshToken: actualRefreshToken,
-                ifoodTokenExpiresAt: ifoodTokenExpiresAt,
-            });
-
-            return actualAccessToken;
         } catch (error) {
-            console.error(`[iFood Service] Error refreshing access token for tenant ${tenantId}:`, error.response?.data || error.message);
+            console.error(`[iFood Auth] Refresh Error for tenant ${tenantId}:`, error.response?.data || error.message);
+            // Se falhar refresh, limpar tokens para evitar loop
             await tenantRepository.updateTenant(tenantId, {
                 ifoodAccessToken: null,
                 ifoodRefreshToken: null,
-                ifoodTokenExpiresAt: null,
+                ifoodTokenExpiresAt: null
             });
-            throw new ApiError(401, 'Sessão com o iFood expirou. Por favor, reconecte.');
+            throw new ApiError(401, 'Conexão iFood expirada. Reconecte a conta.');
         }
     },
 
+    /**
+     * Busca dados do Merchant (Loja) e salva ID
+     */
     async getIfoodMerchantData(tenantId) {
-        let tenantConfig;
         try {
-            tenantConfig = await this.getAccessToken(tenantId);
-        } catch (error) {
-            throw new ApiError(400, `Could not get access token to fetch iFood merchant data.`);
-        }
-
-        try {
-            // Este endpoint pode variar. Consulte a documentação do iFood.
-            // Assumindo que retorna uma lista de merchants ou um único merchant associado ao token.
-            const response = await ifoodAxios.get(`${IFOOD_MERCHANT_API_URL}/merchants`, {
-                headers: {
-                    'Authorization': `Bearer ${tenantConfig.ifoodAccessToken}`,
-                    'Accept': 'application/json',
-                }
+            const token = await this.getValidToken(tenantId);
+            
+            const response = await ifoodAxios.get(`${IFOOD_MERCHANT_BASE_URL}/merchants`, {
+                headers: { 'Authorization': `Bearer ${token}` }
             });
-            // Assumindo que a resposta contém um array de merchants ou um único objeto merchant
-            const merchantData = Array.isArray(response.data) && response.data.length > 0
-                                 ? response.data[0] // Pega o primeiro se for um array
-                                 : response.data; // Ou a própria resposta se for um único objeto
 
-            if (!merchantData || !merchantData.id) {
-                throw new ApiError(500, 'Could not retrieve iFood merchant ID from API.');
+            // Pode retornar array ou objeto
+            const merchants = Array.isArray(response.data) ? response.data : [response.data];
+            const merchant = merchants[0]; // Pega o primeiro se houver vários
+
+            if (merchant && merchant.id) {
+                await tenantRepository.updateTenant(tenantId, {
+                    ifoodMerchantId: merchant.id
+                });
+                console.log(`[iFood] Merchant ID ${merchant.id} linked to tenant ${tenantId}`);
+                return merchant;
             }
-
-            // Atualiza o tenant com o merchantId obtido
-            await tenantRepository.updateTenant(tenantId, {
-                ifoodMerchantId: merchantData.id,
-            });
-
-            console.log(`[iFood Service] Merchant ID ${merchantData.id} saved for tenant ${tenantId}.`);
-            return merchantData;
+            
+            throw new Error('Nenhum estabelecimento encontrado na conta iFood.');
 
         } catch (error) {
-            console.error(`[iFood Service] Error fetching iFood merchant data for tenant ${tenantId}:`, error.response?.data || error.message);
-            throw new ApiError(500, 'Failed to fetch iFood merchant data.');
+            console.error(`[iFood] Get Merchant Error:`, error.message);
+            throw error;
         }
     },
 
-    // --- Polling de Eventos ---
-    async pollEventsForTenant(tenantId) {
-        let tenantConfig;
-        try {
-            tenantConfig = await this.getAccessToken(tenantId); // getAccessToken agora retorna o tenant completo
-        } catch (error) {
-            console.warn(`[iFood Service] Could not get iFood config for tenant ${tenantId}. Skipping polling.`, error.message);
-            return;
-        }
+    // --- Polling System ---
 
-        try {
-            const response = await ifoodAxios.get(`${IFOOD_EVENTS_URL}/events:polling`, {
-                headers: {
-                    'Authorization': `Bearer ${tenantConfig.ifoodAccessToken}`,
-                    'Accept': 'application/json',
-                }
-            });
-
-            const events = response.data;
-            if (events && events.length > 0) {
-                console.log(`[iFood Service] Found ${events.length} events for tenant ${tenantId}.`);
-                const processedEventIds = [];
-
-                for (const event of events) {
-                    try {
-                        if (event.code === 'PLACED_ORDER') { // Exemplo: Novo pedido
-                            console.log(`[iFood Service] Processing PLACED_ORDER event for tenant ${tenantId}, order ID: ${event.payload.id}`);
-                            await this.processIfoodOrder(tenantId, event.payload.id);
-                        }
-                        processedEventIds.push(event.id);
-                    } catch (eventProcessError) {
-                        console.error(`[iFood Service] Error processing iFood event ${event.id} for tenant ${tenantId}:`, eventProcessError.message);
-                        // Continua para o próximo evento, mas não marca este como processado
-                    }
-                }
-
-                if (processedEventIds.length > 0) {
-                    await this.acknowledgeEvents(tenantId, processedEventIds);
-                }
-            } else {
-                console.log(`[iFood Service] No new events for tenant ${tenantId}.`);
-            }
-        } catch (error) {
-            console.error(`[iFood Service] Error polling events for tenant ${tenantId}:`, error.response?.data || error.message);
-        }
-    },
-
-    async acknowledgeEvents(tenantId, eventIds) {
-        let tenantConfig;
-        try {
-            tenantConfig = await this.getAccessToken(tenantId);
-        } catch (error) {
-            console.warn(`[iFood Service] Could not get iFood config for tenant ${tenantId}. Cannot acknowledge events.`, error.message);
-            return;
-        }
-
-        try {
-            await ifoodAxios.post(`${IFOOD_EVENTS_URL}/events/acknowledgment`, {
-                events: eventIds.map(id => ({ id })),
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${tenantConfig.ifoodAccessToken}`,
-                    'Content-Type': 'application/json',
-                }
-            });
-            console.log(`[iFood Service] Acknowledged ${eventIds.length} events for tenant ${tenantId}.`);
-        } catch (error) {
-            console.error(`[iFood Service] Error acknowledging events for tenant ${tenantId}:`, error.response?.data || error.message);
-        }
-    },
-
-    // --- Processamento de Pedidos ---
-    async getIfoodOrderDetails(tenantId, orderId) {
-        let tenantConfig;
-        try {
-            tenantConfig = await this.getAccessToken(tenantId);
-        } catch (error) {
-            throw new ApiError(400, `Could not get access token to fetch iFood order ${orderId}.`);
-        }
-
-        try {
-            const response = await ifoodAxios.get(`${IFOOD_API_URL}/orders/${orderId}`, {
-                headers: {
-                    'Authorization': `Bearer ${tenantConfig.ifoodAccessToken}`,
-                    'Accept': 'application/json',
-                }
-            });
-            return response.data;
-        } catch (error) {
-            console.error(`[iFood Service] Error fetching iFood order ${orderId} for tenant ${tenantId}:`, error.response?.data || error.message);
-            throw new ApiError(500, `Failed to fetch iFood order ${orderId}.`);
-        }
-    },
-
-    async processIfoodOrder(tenantId, ifoodOrderId) {
-        console.log(`[iFood Service] Processing iFood order ${ifoodOrderId} for tenant ${tenantId}.`);
-
-        // 1. Get Order Details from iFood
-        const ifoodOrderDetails = await this.getIfoodOrderDetails(tenantId, ifoodOrderId);
-        // if (ifoodOrderDetails.status !== 'CONFIRMED') { // Exemplo de filtro de status
-        //     console.log(`[iFood Service] Order ${ifoodOrderId} is not in CONFIRMED status. Skipping.`);
-        //     return;
-        // }
-
-        // 2. Check for existing DeliveryOrder
-        const existingOrder = await deliveryOrderRepository.findByPlatformAndOrderId('iFood', ifoodOrderId);
-        if (existingOrder) {
-            console.log(`[iFood Service] Order ${ifoodOrderId} from iFood already exists. Skipping.`);
-            return;
-        }
-
-        // 3. Find or Create Client
-        const customerPhone = ifoodOrderDetails.customer?.phone?.number?.replace(/\D/g, "") || 'N/A'; // Ajustar conforme a estrutura real do payload do iFood
-        let client = await clientRepository.findClientByPhone(customerPhone, tenantId);
-
-        if (!client && customerPhone !== 'N/A') {
-            client = await clientRepository.createClient({
-                name: ifoodOrderDetails.customer?.name || 'Cliente iFood',
-                phone: customerPhone,
-                tenantId: tenantId,
-            });
-            console.log(`[iFood Service] New client created for iFood order ${ifoodOrderId}: ${client.id}`);
-        } else if (client) {
-            console.log(`[iFood Service] Existing client found for iFood order ${ifoodOrderId}: ${client.id}`);
-        } else {
-            console.warn(`[iFood Service] Could not create or find client for iFood order ${ifoodOrderId} (phone N/A).`);
-        }
-
-        // 4. Create DeliveryOrder
-        const deliveryOrder = await deliveryOrderRepository.create({
-            platform: 'iFood',
-            orderIdPlatform: ifoodOrderId,
-            totalAmount: parseFloat(ifoodOrderDetails.total?.value || 0),
-            orderDate: new Date(ifoodOrderDetails.createdAt), // Ajustar conforme a estrutura real do payload do iFood
-            payload: ifoodOrderDetails,
-            clientId: client ? client.id : null, // Pode ser null se o cliente não foi encontrado/criado
-            tenantId: tenantId,
-        });
-        console.log(`[iFood Service] DeliveryOrder created for iFood order ${ifoodOrderId}: ${deliveryOrder.id}`);
-
-        // 5. Trigger Survey Job (if client was found/created)
-        if (client) {
-            await surveyTriggerService.sendSatisfactionSurvey(client.id, tenantId, deliveryOrder.id);
-            console.log(`[iFood Service] Survey trigger requested for client ${client.id}, iFood order ${deliveryOrder.id}.`);
-        } else {
-            console.warn(`[iFood Service] Skipping survey trigger for iFood order ${deliveryOrder.id} as client was not identified.`);
-        }
-    },
-
-    // --- Funções Auxiliares para o Job ---
     async runIfoodPolling() {
-        console.log("[iFood Polling Job] Starting iFood polling for all active tenants...");
+        console.log("[iFood Job] Starting Polling...");
         const tenants = await tenantRepository.findIfoodEnabledTenants();
 
         for (const tenant of tenants) {
-            console.log(`[iFood Polling Job] Polling events for tenant: ${tenant.id} (Merchant ID: ${tenant.ifoodMerchantId})`);
             await this.pollEventsForTenant(tenant.id);
         }
-        console.log("[iFood Polling Job] Finished iFood polling.");
+    },
+
+    async pollEventsForTenant(tenantId) {
+        try {
+            const token = await this.getValidToken(tenantId);
+            
+            const response = await ifoodAxios.get(`${IFOOD_EVENTS_BASE_URL}/events:polling`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            const events = response.data || [];
+            
+            if (events.length > 0) {
+                console.log(`[iFood Job] ${events.length} events for tenant ${tenantId}`);
+                
+                const processedIds = [];
+                for (const event of events) {
+                    await this.handleSingleEvent(tenantId, event);
+                    processedIds.push({ id: event.id });
+                }
+
+                if (processedIds.length > 0) {
+                    await this.acknowledgeEvents(tenantId, processedIds, token);
+                }
+            }
+
+        } catch (error) {
+            // Silenciar erros de polling comuns para não sujar log excessivamente
+            if (error.response?.status !== 204) { // 204 No Content é normal
+                 console.error(`[iFood Job] Polling Error Tenant ${tenantId}:`, error.message);
+            }
+        }
+    },
+
+    async handleSingleEvent(tenantId, event) {
+        try {
+            if (event.code === 'PLACED') {
+                console.log(`[iFood] New Order: ${event.orderId} (Tenant ${tenantId})`);
+                await this.processOrder(tenantId, event.orderId);
+            }
+            // Adicionar outros eventos aqui (CANCELLED, CONFIRMED, etc)
+        } catch (e) {
+            console.error(`[iFood] Event Handler Error:`, e.message);
+        }
+    },
+
+    async acknowledgeEvents(tenantId, eventList, token) {
+        try {
+            await ifoodAxios.post(`${IFOOD_EVENTS_BASE_URL}/events/acknowledgment`, eventList, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+        } catch (error) {
+            console.error(`[iFood] ACK Error:`, error.message);
+        }
+    },
+
+    // --- Processamento de Pedido ---
+
+    async processOrder(tenantId, orderId) {
+        try {
+            const token = await this.getValidToken(tenantId);
+            
+            // Verificar se já existe
+            const exists = await deliveryOrderRepository.findByPlatformAndOrderId('iFood', orderId);
+            if (exists) return;
+
+            // Buscar detalhes
+            const response = await ifoodAxios.get(`${IFOOD_ORDER_BASE_URL}/orders/${orderId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const order = response.data;
+
+            // Buscar/Criar Cliente
+            const phone = order.customer?.phone?.number?.replace(/\D/g, "") || null;
+            let client = null;
+
+            if (phone) {
+                client = await clientRepository.findClientByPhone(phone, tenantId);
+                if (!client) {
+                    client = await clientRepository.createClient({
+                        name: order.customer?.name || 'Cliente iFood',
+                        phone: phone,
+                        tenantId: tenantId
+                    });
+                }
+            }
+
+            // Salvar Pedido
+            const newOrder = await deliveryOrderRepository.create({
+                platform: 'iFood',
+                orderIdPlatform: orderId,
+                totalAmount: order.total?.value || 0,
+                orderDate: new Date(order.createdAt),
+                payload: order,
+                clientId: client?.id || null,
+                tenantId: tenantId
+            });
+
+            // Disparar Pesquisa (Se tiver cliente)
+            if (client) {
+                await surveyTriggerService.sendSatisfactionSurvey(client.id, tenantId, newOrder.id);
+            }
+
+        } catch (error) {
+            console.error(`[iFood] Order Processing Error ${orderId}:`, error.message);
+        }
+    },
+    
+    // Alias para manter compatibilidade com rotas antigas se necessário
+    async requestUserCode(tenantId) {
+        return this.getAuthorizationUrl(tenantId);
     }
 };
 

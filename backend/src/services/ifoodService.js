@@ -57,36 +57,41 @@ const ifoodService = {
 
     async getAuthorizationUrl(tenantId) {
         const clientId = process.env.IFOOD_CLIENT_ID_GLOBAL;
-        const backendUrl = process.env.BACKEND_URL || 'http://localhost:5000';
         
-        let redirectUri = process.env.IFOOD_REDIRECT_URI;
-
-        if (redirectUri && redirectUri.startsWith('/')) {
-            redirectUri = `${backendUrl}${redirectUri}`;
-        } else if (!redirectUri) {
-             redirectUri = `${backendUrl}/api/ifood/callback`;
-        }
-
         if (!clientId) {
             throw new ApiError(500, 'Client ID do iFood não configurado (IFOOD_CLIENT_ID_GLOBAL).');
         }
 
-        // URL de autorização OAuth 2.0 padrão do iFood (Identity Provider)
-        // Tentativa de usar o fluxo Web App padrão em vez do Distributed/Device flow
-        const authBaseUrl = 'https://account.ifood.com.br/auth/realms/ifood/protocol/openid-connect/auth';
+        try {
+            // Inicia o fluxo Distributed Auth (User Code)
+            const response = await ifoodAxios.post(IFOOD_USERCODE_URL, new URLSearchParams({
+                clientId: clientId
+            }).toString(), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
 
-        const authUrl = new URL(authBaseUrl);
-        authUrl.searchParams.append('client_id', clientId); // Note: client_id (snake_case)
-        authUrl.searchParams.append('redirect_uri', redirectUri); // Note: redirect_uri (snake_case)
-        authUrl.searchParams.append('response_type', 'code');
-        authUrl.searchParams.append('scope', 'offline_access merchant:read'); // Scope básico
-        authUrl.searchParams.append('state', tenantId);
+            const { userCode, authorizationCodeVerifier, verificationUrl, verificationUrlComplete, expiresIn } = response.data;
 
-        console.log(`[iFood Service] Generated Authorization URL for tenant ${tenantId}: ${authUrl.toString()}`);
+            console.log(`[iFood Service] Generated User Code for tenant ${tenantId}: ${userCode}`);
 
-        return { 
-            url: authUrl.toString()
-        };
+            // Salva o authorizationCodeVerifier no banco para usar depois na troca pelo token
+            await tenantRepository.updateTenant(tenantId, {
+                ifoodAuthVerifier: authorizationCodeVerifier
+            });
+
+            // Retorna a URL completa que já preenche o código para o usuário
+            return { 
+                url: verificationUrlComplete,
+                userCode: userCode, // Retorna também o código caso o frontend queira exibir
+                verificationUrl: verificationUrl
+            };
+
+        } catch (error) {
+            console.error(`[iFood Service] Error generating user code for tenant ${tenantId}:`, error.response?.data || error.message);
+            throw new ApiError(500, 'Falha ao iniciar autorização com iFood. Verifique as credenciais.');
+        }
     },
 
     async getAccessToken(tenantId) {

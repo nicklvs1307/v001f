@@ -57,16 +57,13 @@ const ifoodService = {
 
     async getAuthorizationUrl(tenantId) {
         const clientId = process.env.IFOOD_CLIENT_ID_GLOBAL;
-        // Pega a URL base do backend. Se não tiver, assume localhost:5000 para dev local
         const backendUrl = process.env.BACKEND_URL || 'http://localhost:5000';
         
         let redirectUri = process.env.IFOOD_REDIRECT_URI;
 
-        // Se o redirectUri for relativo (começar com /), concatena com a URL do backend
         if (redirectUri && redirectUri.startsWith('/')) {
             redirectUri = `${backendUrl}${redirectUri}`;
         } else if (!redirectUri) {
-             // Fallback se a variável não existir
              redirectUri = `${backendUrl}/api/ifood/callback`;
         }
 
@@ -74,14 +71,15 @@ const ifoodService = {
             throw new ApiError(500, 'Client ID do iFood não configurado (IFOOD_CLIENT_ID_GLOBAL).');
         }
 
-        // URL correta para o navegador (Portal do Parceiro)
-        // Ignoramos a env IFOOD_AUTHORIZATION_URL se ela apontar para a API (merchant-api)
-        const authBaseUrl = 'https://merchant.ifood.com.br/partners/authorize';
+        // URL de autorização OAuth 2.0 padrão do iFood (Identity Provider)
+        // Tentativa de usar o fluxo Web App padrão em vez do Distributed/Device flow
+        const authBaseUrl = 'https://account.ifood.com.br/auth/realms/ifood/protocol/openid-connect/auth';
 
         const authUrl = new URL(authBaseUrl);
-        authUrl.searchParams.append('clientId', clientId);
-        authUrl.searchParams.append('redirectUri', redirectUri);
-        authUrl.searchParams.append('responseType', 'code');
+        authUrl.searchParams.append('client_id', clientId); // Note: client_id (snake_case)
+        authUrl.searchParams.append('redirect_uri', redirectUri); // Note: redirect_uri (snake_case)
+        authUrl.searchParams.append('response_type', 'code');
+        authUrl.searchParams.append('scope', 'offline_access merchant:read'); // Scope básico
         authUrl.searchParams.append('state', tenantId);
 
         console.log(`[iFood Service] Generated Authorization URL for tenant ${tenantId}: ${authUrl.toString()}`);

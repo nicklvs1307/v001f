@@ -1,14 +1,4 @@
-feat: Adiciona Condições a Recompensas e Mensagem Customizada a Pesquisas
+fix(ifood): Add User-Agent header to auth requests
 
-Implementa duas novas funcionalidades:
-
-1. Condições de Resgate para Recompensas:
-- Adiciona um campo de texto 'Regras e Condições' às Recompensas.
-- O formulário de Recompensa é atualizado para permitir a edição deste campo.
-- A tela de 'Parabéns' da roleta agora exibe as condições da recompensa ganha.
-
-2. Mensagem Customizada de Roleta na Pesquisa:
-- Adiciona um campo de texto para uma mensagem customizada de prêmio da roleta em cada Pesquisa.
-- O controller da roleta agora prioriza esta mensagem sobre a mensagem padrão.
-
-Remove código e arquivos não utilizados referentes a um motor de regras automatizado que foi descartado durante o desenvolvimento.
+- Adds a standard User-Agent header to all POST requests to the iFood authentication API.
+- This is a potential fix for the "Access Denied" error, which may be caused by iFood's WAF blocking requests without a User-Agent.

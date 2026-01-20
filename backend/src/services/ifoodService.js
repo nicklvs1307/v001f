@@ -43,29 +43,36 @@ const ifoodService = {
         if (!tenant) {
             throw new ApiError(404, 'Tenant not found.');
         }
-
-        // if (!tenant.ifoodClientId || !tenant.ifoodClientSecret) {
-        //     throw new ApiError(400, 'iFood Client ID or Client Secret not configured for this tenant.');
-        // }
         
         return tenant;
     },
 
     async generateUserCode(tenantId) {
         const tenant = await this.getTenantIfoodConfig(tenantId);
+        const clientId = tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL;
+
+        if (!clientId) {
+            const errorMessage = 'A credencial (Client ID) para integração com o iFood não foi configurada. Por favor, entre em contato com o suporte para habilitar a integração.';
+            console.error(`[iFood Service] Missing iFood Client ID for tenant ${tenantId}.`);
+            throw new ApiError(400, errorMessage);
+        }
+
         try {
             const response = await ifoodAxios.post(IFOOD_USERCODE_URL, new URLSearchParams({
-                client_id: tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL,
+                client_id: clientId,
             }).toString(), {
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
             return response.data;
         } catch (error) {
-            console.error(`[iFood Service] Error generating user code for tenant ${tenantId}:`, error.response?.data || error.message);
-            throw new ApiError(500, 'Failed to generate iFood user code.');
+            const errorData = error.response?.data || error.message;
+            console.error(`[iFood Service] Error generating user code for tenant ${tenantId}:`, errorData);
+            if (typeof errorData === 'string' && (errorData.includes('Access Denied') || errorData.includes('blocked'))) {
+                 throw new ApiError(401, 'Acesso negado pelo iFood. Verifique se as credenciais do sistema estão corretas e se o servidor tem permissão para acessar a API do iFood.');
+            }
+            throw new ApiError(500, 'Falha ao comunicar com o iFood para gerar o código de autorização.');
         }
     },
 
@@ -91,17 +98,24 @@ const ifoodService = {
 
     async requestNewAccessToken(tenantId, authCode) {
         const tenant = await this.getTenantIfoodConfig(tenantId);
+        const clientId = tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL;
+        const clientSecret = tenant.ifoodClientSecret || process.env.IFOOD_CLIENT_SECRET_GLOBAL;
+
+        if (!clientId || !clientSecret) {
+            const errorMessage = 'As credenciais de integração do iFood (Client ID e/ou Client Secret) não foram configuradas. Por favor, entre em contato com o suporte para habilitar a integração.';
+            console.error(`[iFood Service] Missing iFood credentials for tenant ${tenantId}.`);
+            throw new ApiError(400, errorMessage);
+        }
 
         try {
             const response = await ifoodAxios.post(IFOOD_AUTH_URL, new URLSearchParams({
                 grant_type: 'authorization_code',
-                client_id: tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL,
-                client_secret: tenant.ifoodClientSecret || process.env.IFOOD_CLIENT_SECRET_GLOBAL,
+                client_id: clientId,
+                client_secret: clientSecret,
                 authorization_code: authCode,
             }).toString(), {
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
 
@@ -120,23 +134,30 @@ const ifoodService = {
             return access_token;
         } catch (error) {
             console.error(`[iFood Service] Error requesting new access token for tenant ${tenantId}:`, error.response?.data || error.message);
-            throw new ApiError(500, 'Failed to request new iFood access token.');
+            throw new ApiError(500, 'Falha ao trocar o código de autorização por um token de acesso do iFood.');
         }
     },
 
     async refreshAccessToken(tenantId, refreshToken) {
         const tenant = await this.getTenantIfoodConfig(tenantId);
+        const clientId = tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL;
+        const clientSecret = tenant.ifoodClientSecret || process.env.IFOOD_CLIENT_SECRET_GLOBAL;
+
+        if (!clientId || !clientSecret) {
+            const errorMessage = 'As credenciais de integração do iFood (Client ID e/ou Client Secret) não foram configuradas. Por favor, entre em contato com o suporte para habilitar a integração.';
+            console.error(`[iFood Service] Missing iFood credentials for tenant ${tenantId} during token refresh.`);
+            throw new ApiError(400, errorMessage);
+        }
 
         try {
             const response = await ifoodAxios.post(IFOOD_AUTH_URL, new URLSearchParams({
                 grant_type: 'refresh_token',
                 refresh_token: refreshToken,
-                client_id: tenant.ifoodClientId || process.env.IFOOD_CLIENT_ID_GLOBAL,
-                client_secret: tenant.ifoodClientSecret || process.env.IFOOD_CLIENT_SECRET_GLOBAL,
+                client_id: clientId,
+                client_secret: clientSecret,
             }).toString(), {
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
 
@@ -157,7 +178,7 @@ const ifoodService = {
                 ifoodRefreshToken: null,
                 ifoodTokenExpiresAt: null,
             }); // Limpa tokens para evitar novas tentativas com tokens inválidos
-            throw new ApiError(500, 'Failed to refresh iFood access token.');
+            throw new ApiError(500, 'Sessão com o iFood expirou e não foi possível renová-la. Por favor, refaça a autenticação.');
         }
     },
 

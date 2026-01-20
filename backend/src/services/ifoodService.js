@@ -112,10 +112,49 @@ const ifoodService = {
         throw new ApiError(401, 'Integração com iFood não autorizada ou expirada.');
     },
 
+    async requestUserCode(tenantId) {
+        const clientId = process.env.IFOOD_CLIENT_ID_GLOBAL;
+        
+        if (!clientId) {
+            throw new ApiError(500, 'Client ID do iFood não configurado (IFOOD_CLIENT_ID_GLOBAL).');
+        }
+
+        try {
+            const response = await ifoodAxios.post(IFOOD_USERCODE_URL, new URLSearchParams({
+                clientId: clientId
+            }).toString(), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
+
+            const { userCode, authorizationCodeVerifier, verificationUrl, verificationUrlComplete, expiresIn } = response.data;
+
+            // Salvar o authorizationCodeVerifier no banco para usar depois na troca pelo token
+            await tenantRepository.updateTenant(tenantId, {
+                ifoodAuthVerifier: authorizationCodeVerifier
+            });
+
+            return {
+                userCode,
+                verificationUrl,
+                verificationUrlComplete,
+                expiresIn
+            };
+        } catch (error) {
+            console.error(`[iFood Service] Error generating user code for tenant ${tenantId}:`, error.response?.data || error.message);
+            throw new ApiError(500, 'Falha ao iniciar autorização com iFood (User Code).');
+        }
+    },
+
     async requestNewAccessToken(tenantId, authCode) {
         const clientId = process.env.IFOOD_CLIENT_ID_GLOBAL;
         const clientSecret = process.env.IFOOD_CLIENT_SECRET_GLOBAL;
         const redirectUri = process.env.IFOOD_REDIRECT_URI;
+
+        // Buscar o tenant para pegar o verifier salvo
+        const tenant = await tenantRepository.getTenantById(tenantId);
+        const codeVerifier = tenant?.ifoodAuthVerifier;
 
         if (!clientId || !clientSecret) {
             throw new ApiError(500, 'Credenciais globais do iFood não configuradas no servidor.');
@@ -123,13 +162,20 @@ const ifoodService = {
 
         try {
             // Troca o Código de Autorização pelo Token de Acesso (Server-to-Server)
-            const response = await ifoodAxios.post(IFOOD_AUTH_URL, new URLSearchParams({
+            // Agora incluindo authorizationCodeVerifier para o fluxo Distributed
+            const params = new URLSearchParams({
                 grantType: 'authorization_code',
                 clientId: clientId,
                 clientSecret: clientSecret,
                 authorizationCode: authCode,
                 redirectUri: redirectUri
-            }).toString(), {
+            });
+
+            if (codeVerifier) {
+                params.append('authorizationCodeVerifier', codeVerifier);
+            }
+
+            const response = await ifoodAxios.post(IFOOD_AUTH_URL, params.toString(), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
@@ -148,7 +194,7 @@ const ifoodService = {
                 ifoodAccessToken: actualAccessToken,
                 ifoodRefreshToken: actualRefreshToken,
                 ifoodTokenExpiresAt: ifoodTokenExpiresAt,
-                ifoodAuthVerifier: null // Limpa resquícios de fluxos antigos
+                ifoodAuthVerifier: null // Limpa o verifier após uso bem-sucedido
             });
 
             // Após obter os tokens, buscar o merchantId

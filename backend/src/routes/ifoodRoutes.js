@@ -67,5 +67,17 @@ router.post('/exchange-code', protect, asyncHandler(async (req, res) => {
     res.status(200).json({ message: 'iFood connected successfully!' });
 }));
 
+// 4. Endpoint para iniciar o fluxo "Distributed Authorization" (User Code)
+router.get('/user-code', protect, asyncHandler(async (req, res) => {
+    const tenantId = req.user.tenant.id;
+
+    if (!tenantId) {
+        throw new ApiError(400, 'Tenant ID is required.');
+    }
+
+    const data = await ifoodService.requestUserCode(tenantId);
+    res.json(data);
+}));
+
 
 module.exports = router;

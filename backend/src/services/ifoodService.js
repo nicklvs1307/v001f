@@ -41,10 +41,6 @@ const IFOOD_MERCHANT_API_URL = process.env.IFOOD_MERCHANT_API_URL || 'https://me
 
 
 
-const { exec } = require('child_process');
-const util = require('util');
-const execPromise = util.promisify(exec);
-
 const ifoodService = {
 
     // --- Autenticação ---
@@ -65,24 +61,16 @@ const ifoodService = {
         }
 
         try {
-            // Utilizando cURL via shell para contornar o bloqueio da Cloudflare (WAF)
-            // O axios/node-fetch muitas vezes tem fingerprints TLS bloqueados, enquanto o curl passa.
-            const command = `curl -X POST "${IFOOD_USERCODE_URL}" -H "accept: application/json" -H "Content-Type: application/x-www-form-urlencoded" -d "clientId=${clientId}"`;
-            
-            console.log(`[iFood Service] Executing curl for tenant ${tenantId}...`);
-            const { stdout, stderr } = await execPromise(command);
+            // Utilizando o axios configurado (que já tem User-Agent customizado)
+            const response = await ifoodAxios.post(IFOOD_USERCODE_URL, new URLSearchParams({
+                clientId: clientId
+            }).toString(), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
 
-            if (!stdout) {
-                 throw new Error(`Empty response from curl. Stderr: ${stderr}`);
-            }
-
-            const data = JSON.parse(stdout);
-
-            if (data.error) {
-                 throw new Error(JSON.stringify(data));
-            }
-
-            const { userCode, authorizationCodeVerifier, verificationUrl, verificationUrlComplete, expiresIn } = data;
+            const { userCode, authorizationCodeVerifier, verificationUrl, verificationUrlComplete, expiresIn } = response.data;
 
             console.log(`[iFood Service] Generated User Code for tenant ${tenantId}: ${userCode}`);
 
@@ -100,8 +88,14 @@ const ifoodService = {
             };
 
         } catch (error) {
-            console.error(`[iFood Service] Error generating user code for tenant ${tenantId}:`, error.message);
-            throw new ApiError(500, 'Falha ao iniciar autorização com iFood. (Block/Curl Error)');
+            console.error(`[iFood Service] Error generating user code for tenant ${tenantId}:`, error.response?.data || error.message);
+            
+            // Se for erro de bloqueio (403/Cloudflare), lança um erro específico
+            if (error.response?.status === 403 || error.message.includes('Cloudflare')) {
+                 throw new ApiError(500, 'Bloqueio de segurança (Cloudflare). Tente novamente mais tarde.');
+            }
+            
+            throw new ApiError(500, 'Falha ao iniciar autorização com iFood.');
         }
     },
 

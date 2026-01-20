@@ -19,6 +19,7 @@ x-environment: &environment
   IFOOD_AUTHORIZATION_URL: https://merchant-api.ifood.com.br/oauth/v2/auth
   IFOOD_AUTHENTICATION_API_BASE_URL: https://merchant-api.ifood.com.br/authentication/v1.0/
   IFOOD_AUTH_URL: https://merchant-api.ifood.com.br/authentication/v1.0/oauth/token
+  IFOOD_USERCODE_URL: https://merchant-api.ifood.com.br/authentication/v1.0/oauth/userCode
   IFOOD_API_URL: https://merchant-api.ifood.com.br/order/v1.0
   IFOOD_EVENTS_URL: https://merchant-api.ifood.com.br/events/v1.0
   IFOOD_REDIRECT_URI: ${BACKEND_URL}/api/ifood/callback

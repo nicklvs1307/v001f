@@ -31,10 +31,12 @@ import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CakeIcon from '@mui/icons-material/Cake';
 import SmsFailedOutlinedIcon from '@mui/icons-material/SmsFailedOutlined';
+import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
 
 import automationService from '../services/automationService';
 import recompensaService from '../services/recompensaService';
 import roletaService from '../services/roletaService';
+import surveyService from '../services/surveyService'; // Importar surveyService
 import AutomationTester from '../components/AutomationTester';
 
 const initialAutomationState = {
@@ -58,6 +60,11 @@ const initialAutomationState = {
     ownerMessageTemplate: 'Alerta de Detrator: Cliente {{cliente}} deu a nota {{nota}}. Comentário: {{comentario}}',
     ownerPhoneNumbers: '',
   },
+  postSaleAutomation: {
+    delayMinutes: 0,
+    messageTemplate: 'Olá {{cliente}}! Agradecemos o seu pedido. Poderia nos dar um feedback rápido para melhorarmos? {{link_pesquisa}}',
+    surveyId: '',
+  },
 };
 
 const AutomationItem = styled(Paper)(({ theme }) => ({
@@ -73,13 +80,14 @@ const AutomationItem = styled(Paper)(({ theme }) => ({
 const AutomationsPage = () => {
   const [automations, setAutomations] = useState(initialAutomationState);
   const [originalAutomations, setOriginalAutomations] = useState(initialAutomationState);
-  const [open, setOpen] = useState({ dailyReport: false, weeklyReport: false, monthlyReport: false, prizeRoulette: false, couponReminder: false, birthdayAutomation: false, detractorAutomation: false });
+  const [open, setOpen] = useState({ dailyReport: false, weeklyReport: false, monthlyReport: false, prizeRoulette: false, couponReminder: false, birthdayAutomation: false, detractorAutomation: false, postSaleAutomation: false });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [recompensas, setRecompensas] = useState([]);
   const [roletas, setRoletas] = useState([]);
+  const [surveys, setSurveys] = useState([]);
 
   const isDirty = JSON.stringify(automations) !== JSON.stringify(originalAutomations);
 
@@ -87,7 +95,12 @@ const AutomationsPage = () => {
     try {
       setLoading(true);
       setError('');
-      const automationsResponse = await automationService.getAutomations();
+      
+      const [automationsResponse, surveysResponse] = await Promise.all([
+          automationService.getAutomations(),
+          surveyService.getAll()
+      ]);
+
       const mergedAutomations = {
         ...initialAutomationState,
         ...automationsResponse,
@@ -95,9 +108,12 @@ const AutomationsPage = () => {
       setAutomations(mergedAutomations);
       setOriginalAutomations(mergedAutomations);
       setRecompensas(Array.isArray(automationsResponse.recompensas) ? automationsResponse.recompensas : []);
-      // Assumindo que as roletas também podem vir da mesma resposta
+      // Assumindo que as roletas também podem vir da mesma resposta - Ajuste se necessário, geralmente services separados
       setRoletas(Array.isArray(automationsResponse.roletas) ? automationsResponse.roletas : []);
+      setSurveys(surveysResponse || []);
+
     } catch (err) {
+      console.error(err);
       setError('Falha ao carregar as configurações de automação.');
     } finally {
       setLoading(false);
@@ -167,6 +183,60 @@ const AutomationsPage = () => {
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
       <List component="nav">
+        {/* Automação de Pós-Venda (Delivery) */}
+        <AutomationItem>
+          <ListItem onClick={() => setOpen(prev => ({ ...prev, postSaleAutomation: !prev.postSaleAutomation }))} sx={{ cursor: 'pointer' }}>
+            <ListItemIcon><TimerOutlinedIcon /></ListItemIcon>
+            <ListItemText 
+                primary="Pós-Venda Delivery (iFood / Delivery Much / Uai Rango)" 
+                secondary="Configure o tempo de espera e a mensagem enviada após o pedido." 
+            />
+             {open.postSaleAutomation ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={open.postSaleAutomation} timeout="auto" unmountOnExit>
+            <Box sx={{ p: 2, pl: 4, borderTop: '1px solid #eee' }}>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                Esta automação se aplica a todos os pedidos recebidos via integrações.
+              </Typography>
+              
+              <TextField
+                label="Tempo de Espera (minutos)"
+                type="number"
+                value={automations.postSaleAutomation.delayMinutes}
+                onChange={(e) => handleChange('postSaleAutomation', 'delayMinutes', parseInt(e.target.value) || 0)}
+                margin="normal"
+                helperText="Tempo a aguardar após o pedido para enviar a mensagem (0 = imediato)."
+                sx={{ mb: 2, width: '200px' }}
+              />
+
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Pesquisa a Enviar</InputLabel>
+                <Select
+                  value={automations.postSaleAutomation.surveyId || ''}
+                  label="Pesquisa a Enviar"
+                  onChange={(e) => handleChange('postSaleAutomation', 'surveyId', e.target.value)}
+                >
+                  <MenuItem value="">Pesquisa Padrão (Ativa)</MenuItem>
+                  {surveys.map(s => (
+                    <MenuItem key={s.id} value={s.id}>{s.title}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <TextField
+                label="Mensagem Template"
+                value={automations.postSaleAutomation.messageTemplate}
+                onChange={(e) => handleChange('postSaleAutomation', 'messageTemplate', e.target.value)}
+                fullWidth
+                multiline
+                rows={4}
+                helperText="Variáveis: {{cliente}}, {{link_pesquisa}}"
+                margin="normal"
+              />
+            </Box>
+          </Collapse>
+        </AutomationItem>
+
         {/* Relatório Diário */}
         <AutomationItem>
           <ListItem onClick={() => setOpen(prev => ({ ...prev, dailyReport: !prev.dailyReport }))} sx={{ cursor: 'pointer' }}>

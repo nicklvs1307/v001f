@@ -56,6 +56,19 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
+    surveyStatus: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'PENDING', // PENDING, SCHEDULED, SENT, ERROR, SKIPPED
+    },
+    surveyScheduledAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    surveySentAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   }, {
     sequelize,
     modelName: 'DeliveryOrder',

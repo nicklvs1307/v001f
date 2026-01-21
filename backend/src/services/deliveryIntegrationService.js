@@ -54,9 +54,9 @@ const deliveryIntegrationService = {
         });
         console.log(`[UaiRango Webhook] DeliveryOrder criado: ${deliveryOrder.id} para o pedido ${orderIdPlatform}`);
 
-        // 4. Trigger Survey Job
-        await surveyTriggerService.sendSatisfactionSurvey(client.id, tenant.id, deliveryOrder.id);
-        console.log(`[UaiRango Webhook] Disparo de pesquisa de satisfação solicitado para cliente ${client.id}, pedido ${deliveryOrder.id}.`);
+        // 4. Trigger Survey Job (Schedule instead of Send Immediately)
+        await surveyTriggerService.schedulePostSaleSurvey(tenant.id, deliveryOrder.id);
+        console.log(`[UaiRango Webhook] Pesquisa de satisfação agendada para cliente ${client.id}, pedido ${deliveryOrder.id}.`);
 
     } catch (error) {
         console.error(`[UaiRango Webhook] Erro ao processar pedido ${orderIdPlatform}:`, error);

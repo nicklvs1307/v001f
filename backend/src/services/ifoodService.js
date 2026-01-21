@@ -10,19 +10,10 @@ const ApiError = require('../errors/ApiError');
 // Configuração Axios
 const ifoodAxios = axios.create({
     headers: {
-        'Authority': 'merchant-api.ifood.com.br',
-        'Accept': 'application/json, text/plain, */*',
-        'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
-        'Cache-Control': 'no-cache',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-        'Referer': 'https://merchant.ifood.com.br/',
-        'Origin': 'https://merchant.ifood.com.br',
-        'Sec-Ch-Ua': '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
-        'Sec-Ch-Ua-Mobile': '?0',
-        'Sec-Ch-Ua-Platform': '"Windows"',
-        'Sec-Fetch-Dest': 'empty',
-        'Sec-Fetch-Mode': 'cors',
-        'Sec-Fetch-Site': 'same-site',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        // 'User-Agent': 'LoyalFood-Integration/1.0', // Identificação honesta
+        // Remover headers que tentam emular browser (Sec-Ch-Ua, etc) pois causam conflito com TLS do Node
         'Connection': 'keep-alive'
     },
     timeout: 10000 // 10 segundos timeout
@@ -296,13 +287,38 @@ const ifoodService = {
 
     async handleSingleEvent(tenantId, event) {
         try {
-            if (event.code === 'PLACED') {
-                console.log(`[iFood] New Order: ${event.orderId} (Tenant ${tenantId})`);
-                await this.processOrder(tenantId, event.orderId);
+            const { code, orderId } = event;
+            console.log(`[iFood] Event ${code} for Order ${orderId} (Tenant ${tenantId})`);
+
+            if (code === 'PLACED') {
+                await this.processOrder(tenantId, orderId);
+            } else if (code === 'CONCLUDED') {
+                await this.processOrderConclusion(tenantId, orderId);
+            } else if (code === 'CANCELLED') {
+                // Opcional: Marcar pedido como cancelado no banco para não enviar pesquisa
+                // await this.cancelOrder(tenantId, orderId);
             }
-            // Adicionar outros eventos aqui (CANCELLED, CONFIRMED, etc)
         } catch (e) {
             console.error(`[iFood] Event Handler Error:`, e.message);
+        }
+    },
+
+    async processOrderConclusion(tenantId, orderId) {
+        try {
+            // Verificar se o pedido existe no nosso banco
+            const order = await deliveryOrderRepository.findByPlatformAndOrderId('iFood', orderId);
+            
+            if (order) {
+                // Se existe, agenda a pesquisa
+                console.log(`[iFood] Order ${orderId} concluded. Scheduling survey...`);
+                await surveyTriggerService.schedulePostSaleSurvey(tenantId, order.id);
+            } else {
+                // Se não existe (talvez o sistema estava off quando chegou o PLACED), tenta importar agora
+                console.log(`[iFood] Concluded order ${orderId} not found locally. Importing...`);
+                await this.processOrder(tenantId, orderId, true); // true = force schedule
+            }
+        } catch (error) {
+             console.error(`[iFood] Error processing conclusion for order ${orderId}:`, error.message);
         }
     },
 
@@ -318,49 +334,52 @@ const ifoodService = {
 
     // --- Processamento de Pedido ---
 
-    async processOrder(tenantId, orderId) {
+    async processOrder(tenantId, orderId, forceSchedule = false) {
         try {
             const token = await this.getValidToken(tenantId);
             
             // Verificar se já existe
-            const exists = await deliveryOrderRepository.findByPlatformAndOrderId('iFood', orderId);
-            if (exists) return;
+            let newOrder = await deliveryOrderRepository.findByPlatformAndOrderId('iFood', orderId);
+            
+            if (!newOrder) {
+                // Buscar detalhes
+                const response = await ifoodAxios.get(`${IFOOD_ORDER_BASE_URL}/orders/${orderId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const order = response.data;
 
-            // Buscar detalhes
-            const response = await ifoodAxios.get(`${IFOOD_ORDER_BASE_URL}/orders/${orderId}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const order = response.data;
+                // Buscar/Criar Cliente
+                const phone = order.customer?.phone?.number?.replace(/\D/g, "") || null;
+                let client = null;
 
-            // Buscar/Criar Cliente
-            const phone = order.customer?.phone?.number?.replace(/\D/g, "") || null;
-            let client = null;
-
-            if (phone) {
-                client = await clientRepository.findClientByPhone(phone, tenantId);
-                if (!client) {
-                    client = await clientRepository.createClient({
-                        name: order.customer?.name || 'Cliente iFood',
-                        phone: phone,
-                        tenantId: tenantId
-                    });
+                if (phone) {
+                    client = await clientRepository.findClientByPhone(phone, tenantId);
+                    if (!client) {
+                        client = await clientRepository.createClient({
+                            name: order.customer?.name || 'Cliente iFood',
+                            phone: phone,
+                            tenantId: tenantId
+                        });
+                    }
                 }
+
+                // Salvar Pedido
+                newOrder = await deliveryOrderRepository.create({
+                    platform: 'iFood',
+                    orderIdPlatform: orderId,
+                    totalAmount: order.total?.value || 0,
+                    orderDate: new Date(order.createdAt),
+                    payload: order,
+                    clientId: client?.id || null,
+                    tenantId: tenantId
+                });
+                console.log(`[iFood] Order saved: ${newOrder.id}`);
             }
 
-            // Salvar Pedido
-            const newOrder = await deliveryOrderRepository.create({
-                platform: 'iFood',
-                orderIdPlatform: orderId,
-                totalAmount: order.total?.value || 0,
-                orderDate: new Date(order.createdAt),
-                payload: order,
-                clientId: client?.id || null,
-                tenantId: tenantId
-            });
-
-            // Disparar Pesquisa (Se tiver cliente)
-            if (client) {
-                await surveyTriggerService.sendSatisfactionSurvey(client.id, tenantId, newOrder.id);
+            // Disparar/Agendar Pesquisa APENAS se forçado (ex: veio do evento CONCLUDED e não tinhamos o pedido)
+            // No fluxo normal PLACED -> CONCLUDED, o agendamento acontece no processOrderConclusion
+            if (forceSchedule) {
+                await surveyTriggerService.schedulePostSaleSurvey(tenantId, newOrder.id);
             }
 
         } catch (error) {

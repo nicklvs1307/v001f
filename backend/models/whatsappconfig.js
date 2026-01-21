@@ -175,6 +175,21 @@ module.exports = (sequelize, DataTypes) => {
     detractorOwnerPhoneNumbers: {
       type: DataTypes.TEXT,
       allowNull: true,
+    },
+    // Campos de Automação de Pós-Venda
+    postSaleDelayMinutes: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    postSaleMessageTemplate: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      defaultValue: 'Olá {{cliente}}! Agradecemos o seu pedido. Poderia nos dar um feedback rápido para melhorarmos? {{link_pesquisa}}',
+    },
+    postSaleSurveyId: {
+      type: DataTypes.UUID,
+      allowNull: true,
     }
   }, {
     sequelize,

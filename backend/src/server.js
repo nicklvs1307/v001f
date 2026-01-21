@@ -85,6 +85,8 @@ const startServer = async () => {
     const { initCampaignMonitorJob } = require("./jobs/campaignMonitorJob");
     const awardProcessorJob = require("./jobs/awardProcessorJob");
     const ifoodPollingJob = require("./jobs/ifoodPollingJob"); // Importar o job de polling do iFood
+    const deliveryMuchPollingJob = require("./jobs/deliveryMuchPollingJob"); // Importar o job de polling da Delivery Much
+    const postSaleSurveyJob = require("./jobs/postSaleSurveyJob"); // Job de envio de pesquisas pós-venda
 
     dailyReportJob.start();
     weeklyReportJob.start();
@@ -98,6 +100,8 @@ const startServer = async () => {
     initCampaignMonitorJob();
     awardProcessorJob.start();
     ifoodPollingJob.start(); // Iniciar o job de polling do iFood
+    deliveryMuchPollingJob.start(); // Iniciar o job de polling da Delivery Much
+    postSaleSurveyJob.start(); // Iniciar processamento de pesquisas agendadas
 
     // Instanciar dependências e inicializar agendamentos de campanha
     const CampanhaService = require("./services/campanhaService");

@@ -15,6 +15,7 @@ import UaiRangoLogo from '../assets/logo_uairango.png';
 import IfoodLogo from '../assets/IfoodLogo.png';
 import SaiposLogo from '../assets/SaiposLogo.jpg';
 import GoogleMeuNegocioLogo from '../assets/GoogleMeuNegocio.png';
+import DeliveryMuchLogo from '../assets/DeliveryMuchLogo.png';
 import apiAuthenticated from '../services/apiAuthenticated';
 
 const IntegrationsPage = () => {
@@ -23,6 +24,7 @@ const IntegrationsPage = () => {
     const [uairangoId, setUairangoId] = useState('');
     const [showUaiRangoModal, setShowUaiRangoModal] = useState(false);
     const [showIfoodModal, setShowIfoodModal] = useState(false);
+    const [showDeliveryMuchModal, setShowDeliveryMuchModal] = useState(false);
     const [showGMBDrawer, setShowGMBDrawer] = useState(false);
     const [error, setError] = useState('');
 
@@ -143,6 +145,19 @@ const IntegrationsPage = () => {
                         <Grid item xs={12} md={6} lg={4}>
                             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', '&:hover': { transform: 'translateY(-5px)', boxShadow: 6 } }}>
                                 <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Box component="img" src={DeliveryMuchLogo} alt="Delivery Much Logo" sx={{ width: 100, height: 100, borderRadius: '15px', mb: 2 }} />
+                                    <Typography variant="h5" component="div" gutterBottom>
+                                        Delivery Much
+                                    </Typography>
+                                    <Button fullWidth variant="contained" startIcon={<SettingsIcon />} onClick={() => setShowDeliveryMuchModal(true)} sx={{ mt: 'auto' }}>
+                                        Configurar
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={4}>
+                            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', '&:hover': { transform: 'translateY(-5px)', boxShadow: 6 } }}>
+                                <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                     <Box component="img" src={SaiposLogo} alt="Saipos Logo" sx={{ width: 100, height: 100, borderRadius: '15px', mb: 2 }}/>
                                     <Typography variant="h5" component="div" gutterBottom>
                                         Saipos
@@ -158,6 +173,7 @@ const IntegrationsPage = () => {
             </Container>
 
             <UaiRangoConfigModal open={showUaiRangoModal} onClose={() => setShowUaiRangoModal(false)} uairangoId={uairangoId} setUairangoId={setUairangoId} handleSave={handleSave} />
+            <DeliveryMuchConfigModal open={showDeliveryMuchModal} onClose={() => setShowDeliveryMuchModal(false)} tenant={tenant} onSave={() => { fetchTenantData(); setShowDeliveryMuchModal(false); }} />
             <IfoodConfigModal open={showIfoodModal} onClose={() => { setShowIfoodModal(false); }} tenant={tenant} fetchTenantData={fetchTenantData} />
             <GMBConfigDrawer open={showGMBDrawer} onClose={() => setShowGMBDrawer(false)} />
         </>
@@ -518,6 +534,103 @@ const IfoodConfigModal = ({ open, onClose, tenant, fetchTenantData }) => {
                          )}
                     </>
                 )}
+            </Box>
+        </Drawer>
+    );
+};
+
+const DeliveryMuchConfigModal = ({ open, onClose, tenant, onSave }) => {
+    const [clientId, setClientId] = useState('');
+    const [clientSecret, setClientSecret] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (open && tenant) {
+            setClientId(tenant.deliveryMuchClientId || '');
+            setClientSecret(tenant.deliveryMuchClientSecret || '');
+            setUsername(tenant.deliveryMuchUsername || '');
+            setPassword(tenant.deliveryMuchPassword || ''); // Cuidado com senhas em texto plano, ideal seria não retornar a senha ou apenas placeholder
+        }
+    }, [open, tenant]);
+
+    const handleSave = async () => {
+        setLoading(true);
+        try {
+            await tenantService.update({
+                deliveryMuchClientId: clientId,
+                deliveryMuchClientSecret: clientSecret,
+                deliveryMuchUsername: username,
+                deliveryMuchPassword: password
+            });
+            toast.success('Configuração da Delivery Much salva com sucesso!');
+            onSave();
+        } catch (error) {
+            toast.error('Erro ao salvar configuração.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <Drawer anchor="right" open={open} onClose={onClose} PaperProps={{ sx: { width: { xs: '90%', sm: 450 } } }}>
+            <Box sx={{ width: '100%', p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+                <Box component="img" src={DeliveryMuchLogo} alt="Delivery Much Logo" sx={{ width: 100, height: 100, mb: 2 }} />
+                <Typography variant="h6" component="h2" gutterBottom>
+                    Configurar Delivery Much
+                </Typography>
+                <Typography sx={{ mt: 2, mb: 2, textAlign: 'center' }}>
+                    Insira suas credenciais de integração API 2.0 da Delivery Much.
+                </Typography>
+                
+                <TextField
+                    fullWidth
+                    label="Client ID"
+                    variant="outlined"
+                    value={clientId}
+                    onChange={(e) => setClientId(e.target.value)}
+                    sx={{ mb: 2 }}
+                />
+                <TextField
+                    fullWidth
+                    label="Client Secret"
+                    variant="outlined"
+                    type="password"
+                    value={clientSecret}
+                    onChange={(e) => setClientSecret(e.target.value)}
+                    sx={{ mb: 2 }}
+                />
+                <TextField
+                    fullWidth
+                    label="Username"
+                    variant="outlined"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    sx={{ mb: 2 }}
+                />
+                <TextField
+                    fullWidth
+                    label="Password"
+                    variant="outlined"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    sx={{ mb: 2 }}
+                />
+
+                <Button
+                    variant="contained"
+                    fullWidth
+                    onClick={handleSave}
+                    disabled={loading}
+                    sx={{ backgroundColor: '#EA1D2C', '&:hover': { backgroundColor: '#C81925' }, mb: 2 }}
+                >
+                    {loading ? <CircularProgress size={24} color="inherit" /> : 'Salvar Configuração'}
+                </Button>
+                <Button variant="text" onClick={onClose}>
+                    Cancelar
+                </Button>
             </Box>
         </Drawer>
     );

@@ -182,6 +182,26 @@ const findIfoodEnabledTenants = async () => {
   });
 };
 
+const findDeliveryMuchEnabledTenants = async () => {
+  return Tenant.findAll({
+    where: {
+      deliveryMuchClientId: { [Op.ne]: null },
+      deliveryMuchClientSecret: { [Op.ne]: null },
+      deliveryMuchUsername: { [Op.ne]: null },
+      deliveryMuchPassword: { [Op.ne]: null },
+    },
+    attributes: [
+      'id', 
+      'deliveryMuchClientId', 
+      'deliveryMuchClientSecret', 
+      'deliveryMuchUsername', 
+      'deliveryMuchPassword', 
+      'deliveryMuchToken', 
+      'deliveryMuchTokenExpiresAt'
+    ],
+  });
+};
+
 module.exports = {
   createTenantWithAdmin,
   createTenant,
@@ -193,5 +213,6 @@ module.exports = {
   findAllWithReportPhoneNumber,
   findByName,
   findByUaiRangoId,
-  findIfoodEnabledTenants, // Adicionar a nova função
+  findIfoodEnabledTenants,
+  findDeliveryMuchEnabledTenants,
 };

@@ -105,6 +105,31 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(2048),
       allowNull: true,
     },
+    // Campos da Delivery Much
+    deliveryMuchClientId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    deliveryMuchClientSecret: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    deliveryMuchUsername: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    deliveryMuchPassword: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    deliveryMuchToken: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    deliveryMuchTokenExpiresAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
     franchisorId: {
       type: DataTypes.UUID,
       allowNull: true,

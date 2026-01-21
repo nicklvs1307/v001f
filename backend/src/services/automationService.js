@@ -45,11 +45,23 @@ const automationService = {
         rewardId: config.birthdayRewardId,
         couponValidityDays: config.birthdayCouponValidityDays,
       },
+      postSaleAutomation: {
+        delayMinutes: config.postSaleDelayMinutes,
+        messageTemplate: config.postSaleMessageTemplate,
+        surveyId: config.postSaleSurveyId,
+      },
+      detractorAutomation: {
+        enabled: config.sendDetractorMessageToClient,
+        messageTemplate: config.detractorMessageTemplate,
+        notifyOwner: config.notifyDetractorToOwner,
+        ownerMessageTemplate: config.detractorOwnerMessageTemplate,
+        ownerPhoneNumbers: config.detractorOwnerPhoneNumbers,
+      },
     };
   },
 
   updateAutomations: async (tenantId, data) => {
-    const { dailyReport, prizeRoulette, couponReminder, birthdayAutomation } =
+    const { dailyReport, prizeRoulette, couponReminder, birthdayAutomation, detractorAutomation, postSaleAutomation } =
       data;
 
     const configData = {
@@ -63,6 +75,17 @@ const automationService = {
       birthdayRewardType: birthdayAutomation.rewardType,
       birthdayRewardId: birthdayAutomation.rewardId,
       birthdayCouponValidityDays: birthdayAutomation.couponValidityDays,
+      
+      sendDetractorMessageToClient: detractorAutomation.enabled,
+      detractorMessageTemplate: detractorAutomation.messageTemplate,
+      notifyDetractorToOwner: detractorAutomation.notifyOwner,
+      detractorOwnerMessageTemplate: detractorAutomation.ownerMessageTemplate,
+      detractorOwnerPhoneNumbers: detractorAutomation.ownerPhoneNumbers,
+
+      // Novos campos de Pós-Venda
+      postSaleDelayMinutes: postSaleAutomation ? postSaleAutomation.delayMinutes : 0,
+      postSaleMessageTemplate: postSaleAutomation ? postSaleAutomation.messageTemplate : null,
+      postSaleSurveyId: postSaleAutomation ? postSaleAutomation.surveyId : null,
     };
 
     await whatsappConfigRepository.updateByTenant(tenantId, configData);

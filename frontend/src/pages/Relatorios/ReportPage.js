@@ -7,7 +7,8 @@ import {
     Grid,
     Paper,
     TextField,
-    useTheme
+    useTheme,
+    Button
 } from '@mui/material';
 import { format, startOfWeek, endOfWeek } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -15,7 +16,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import useReportData from '../../hooks/useReportData';
 import RelatorioDashboard from '../../components/relatorios/RelatorioDashboard';
 import MetricCard from '../../components/common/MetricCard';
-import { TrendingUp, BarChart as BarChartIcon, Star, CheckCircle } from '@mui/icons-material';
+import { TrendingUp, BarChart as BarChartIcon, Star, CheckCircle, Print } from '@mui/icons-material';
 
 const reportConfig = {
     diario: {
@@ -70,6 +71,10 @@ const ReportPage = ({ reportType }) => {
 
     const config = reportConfig[reportType];
 
+    const handlePrint = () => {
+        window.print();
+    };
+
     if (loading) {
         return (
             <Container sx={{ mt: 8, textAlign: 'center' }}>
@@ -105,7 +110,20 @@ const ReportPage = ({ reportType }) => {
                         <Typography variant="h4" component="h1" gutterBottom fontWeight="bold">{config.title}</Typography>
                         <Typography variant="h6" sx={{ opacity: 0.9 }}>{config.getSubtitle(selectedDate)}</Typography>
                     </Grid>
-                    <Grid item>
+                    <Grid item sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                        <Button 
+                            variant="contained" 
+                            startIcon={<Print />} 
+                            onClick={handlePrint}
+                            sx={{ 
+                                bgcolor: 'white', 
+                                color: theme.palette.primary.main, 
+                                fontWeight: 'bold',
+                                '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.9)' } 
+                            }}
+                        >
+                            Imprimir
+                        </Button>
                         <DatePicker
                             label={config.datePickerLabel}
                             value={selectedDate}
@@ -117,6 +135,7 @@ const ReportPage = ({ reportType }) => {
                                 sx={{ 
                                     bgcolor: 'white', 
                                     borderRadius: 1,
+                                    minWidth: 200,
                                     '& .MuiInputBase-input': { color: 'black' },
                                     '& .MuiSvgIcon-root': { color: 'black' } 
                             }} />}

@@ -8,16 +8,30 @@ const surveyTriggerService = require('./surveyTriggerService');
 const ApiError = require('../errors/ApiError');
 
 // Configuração Axios
-const ifoodAxios = axios.create({
+const axiosConfig = {
     headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        // 'User-Agent': 'LoyalFood-Integration/1.0', // Identificação honesta
-        // Remover headers que tentam emular browser (Sec-Ch-Ua, etc) pois causam conflito com TLS do Node
         'Connection': 'keep-alive'
     },
-    timeout: 10000 // 10 segundos timeout
-});
+    timeout: 15000 // Aumentei para 15s pois proxies podem adicionar latência
+};
+
+// Adicionar Proxy se estiver configurado no .env
+if (process.env.IFOOD_PROXY_HOST && process.env.IFOOD_PROXY_PORT) {
+    console.log('[iFood Service] Using Proxy for connection.');
+    axiosConfig.proxy = {
+        protocol: 'http',
+        host: process.env.IFOOD_PROXY_HOST,
+        port: parseInt(process.env.IFOOD_PROXY_PORT),
+        auth: {
+            username: process.env.IFOOD_PROXY_USER,
+            password: process.env.IFOOD_PROXY_PASSWORD
+        }
+    };
+}
+
+const ifoodAxios = axios.create(axiosConfig);
 
 axiosRetry(ifoodAxios, {
     retries: 3,

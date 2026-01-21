@@ -23,6 +23,7 @@ import NpsCharts from '../components/results/NpsCharts';
 import CustomerFeedback from '../components/results/CustomerFeedback';
 import Demographics from '../components/results/Demographics';
 import AttendantPerformance from '../components/results/AttendantPerformance';
+import DeliveryPerformance from '../components/results/DeliveryPerformance';
 
 const ResultsOverviewPage = () => {
     const [data, setData] = useState(null);
@@ -138,6 +139,13 @@ const ResultsOverviewPage = () => {
                         <Grid item xs={12}>
                             <KeyMetrics metrics={keyMetricsData} />
                         </Grid>
+
+                        {/* Nova Seção de Delivery */}
+                        {data.deliveryStats && (
+                            <Grid item xs={12}>
+                                <DeliveryPerformance data={data.deliveryStats} />
+                            </Grid>
+                        )}
 
                         <Grid item xs={12} lg={8}>
                             <NpsCharts 

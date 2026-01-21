@@ -9,6 +9,7 @@ const {
   AtendenteMeta,
   Client,
   Criterio,
+  DeliveryOrder,
 } = require("../../models");
 const { Sequelize, Op } = require("sequelize");
 const { now, formatInTimeZone, TIMEZONE } = require("../utils/dateUtils");
@@ -1774,6 +1775,57 @@ const getMonthSummaryData = async (tenantId, startDate, endDate) => {
   };
 };
 
+const getDeliveryStats = async (tenantId = null, startDate = null, endDate = null) => {
+  const whereClause = {};
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
+    }
+  }
+  if (startDate && endDate) {
+    whereClause.orderDate = { [Op.between]: [startDate, endDate] };
+  } else if (startDate) {
+    whereClause.orderDate = { [Op.gte]: startDate };
+  } else if (endDate) {
+    whereClause.orderDate = { [Op.lte]: endDate };
+  }
+
+  // Total de pedidos
+  const totalOrders = await DeliveryOrder.count({ where: whereClause });
+
+  // Pedidos por Plataforma
+  const ordersByPlatform = await DeliveryOrder.findAll({
+    where: whereClause,
+    attributes: ['platform', [fn('COUNT', col('id')), 'count']],
+    group: ['platform'],
+    raw: true
+  });
+
+  // Status das Pesquisas de Delivery
+  const surveyStatusStats = await DeliveryOrder.findAll({
+    where: whereClause,
+    attributes: ['surveyStatus', [fn('COUNT', col('id')), 'count']],
+    group: ['surveyStatus'],
+    raw: true
+  });
+
+  // Conversão: Quantos pedidos geraram uma resposta?
+  // Precisamos ver quantos deliveryOrders têm uma resposta associada (via clientId e data próxima ou link direto se tivéssemos feito o link no banco)
+  // Como não temos link direto DeliveryOrder -> Resposta (ainda), vamos usar uma aproximação ou deixar para futuro.
+  // Mas podemos mostrar o funil de envio: Agendado -> Enviado.
+
+  return {
+    totalOrders,
+    byPlatform: ordersByPlatform.map(item => ({ name: item.platform, value: parseInt(item.count) })),
+    surveyStatus: surveyStatusStats.reduce((acc, item) => {
+        acc[item.surveyStatus] = parseInt(item.count);
+        return acc;
+    }, {})
+  };
+};
+
 const getDashboardData = async (
   tenantId = null,
   startDate = null,
@@ -1796,6 +1848,7 @@ const getDashboardData = async (
     demographics,
     clientStatusCounts,
     monthSummary,
+    deliveryStats, // Novo dado
   ] = await Promise.all([
     getSummary(tenantId, startDate, endDate, surveyId),
     getResponseChart(tenantId, startDate, endDate, period),
@@ -1811,6 +1864,7 @@ const getDashboardData = async (
     getDemographicsData(tenantId, startDate, endDate),
     getClientStatusCounts(tenantId, startDate, endDate),
     getMonthSummaryData(tenantId, startDate, endDate),
+    getDeliveryStats(tenantId, startDate, endDate), // Chamada nova
   ]);
 
   return {
@@ -1833,6 +1887,7 @@ const getDashboardData = async (
     },
     demographics,
     monthSummary,
+    deliveryStats, // Retorno novo
   };
 };
 

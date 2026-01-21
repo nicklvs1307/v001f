@@ -101,7 +101,7 @@ const ResumoMesPage = () => {
         fetchResults();
     }, [fetchResults]);
 
-    const summary = reportData?.summary;
+    const summary = reportData?.monthSummary;
 
     if (loading) {
         return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}><CircularProgress size={60} /></Box>;

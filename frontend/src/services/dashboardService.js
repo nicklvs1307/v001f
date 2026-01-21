@@ -105,6 +105,16 @@ const dashboardService = {
         const response = await apiAuthenticated.put(`/tratativas/${sessionId}`, data);
         return response.data;
     },
+
+    getReplicas: async (sessionId) => {
+        const response = await apiAuthenticated.get(`/replicas/${sessionId}`);
+        return response.data;
+    },
+
+    createReplica: async (sessionId, data) => {
+        const response = await apiAuthenticated.post(`/replicas/${sessionId}`, data);
+        return response.data;
+    },
 };
 
 export default dashboardService;

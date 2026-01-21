@@ -1,184 +1,24 @@
-root@Server:~/loyalfood/v001f# docker ps
-CONTAINER ID   IMAGE                           COMMAND                  CREATED              STATUS                        PORTS                                                                          NAMES
-369ebf276b88   79e66182ffbe                    "/entrypoint.sh --ap…"   About a minute ago   Up About a minute             0.0.0.0:80->80/tcp, [::]:80->80/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp   traefik_traefik.1.bctespnacdwkm8vyju9y9dsx5
-62f92fe5fff3   voltaki-frontend:latest         "/docker-entrypoint.…"   About a minute ago   Up About a minute (healthy)   80/tcp                                                                         loyalfood_frontend.1.57d1ljz9u93llpwyl4jdirrl1
-7def182c1d6c   voltaki-backend:latest          "docker-entrypoint.s…"   About a minute ago   Up About a minute (healthy)   5000/tcp                                                                       loyalfood_backend.1.l8lcn88re8dgy437vvosq6ufk
-f77abbb1c169   postgres:14                     "docker-entrypoint.s…"   2 days ago           Up 2 days                     5432/tcp                                                                       postgres_postgres.1.h3j4z4qivnrhmdnga32bq25g7
-436fc7cb1345   portainer/portainer-ce:latest   "/portainer -H tcp:/…"   2 days ago           Up 2 days                     8000/tcp, 9000/tcp, 9443/tcp                                                   portainer_portainer.1.pa1tu9idx5eb3bxu5mz6pm8i7
-05de10555a75   portainer/agent:latest          "./agent"                2 days ago           Up 2 days                                                                                                    portainer_agent.s2h3xrfurgkua7f3ibd3hf6qa.8xjl6s6zwj56vcmwl09fsdjl3
-root@Server:~/loyalfood/v001f# docker exec -it 7def182c1d6c /bin/sh
-$ npx sequelize-cli db:migrate
-
-Sequelize CLI [Node: 18.20.8, CLI: 6.6.3, ORM: 6.37.7]
-
-JWT Secret loaded: ********
-JWT Secret length: 32
-Loaded configuration file "src/config/sequelize-config.js".
-Using environment "production".
-== 20260120100000-add-delivery-much-credentials-to-tenants: migrating =======
-== 20260120100000-add-delivery-much-credentials-to-tenants: migrated (0.039s)
-
-== 20260120120000-add-post-sale-automation-fields: migrating =======
-== 20260120120000-add-post-sale-automation-fields: migrated (0.047s)
-
-npm notice
-npm notice New major version of npm available! 10.8.2 -> 11.7.0
-npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.7.0
-npm notice To update run: npm install -g npm@11.7.0
-npm notice
-$ exit
-root@Server:~/loyalfood/v001f# cls
-Command 'cls' not found, but there are 20 similar ones.
-root@Server:~/loyalfood/v001f# docker exec -it 7def182c1d6c /bin/sh
-$ npx sequelize-cli db:migrate
-
-Sequelize CLI [Node: 18.20.8, CLI: 6.6.3, ORM: 6.37.7]
-
-JWT Secret loaded: ********
-JWT Secret length: 32
-Loaded configuration file "src/config/sequelize-config.js".
-Using environment "production".
-No migrations were executed, database schema was already up to date.
-npm notice
-npm notice New major version of npm available! 10.8.2 -> 11.7.0
-npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.7.0
-npm notice To update run: npm install -g npm@11.7.0
-npm notice
-$ root@Server:~/loyalfood/v001fdocker system prune -a --volumes -f
-Total reclaimed space: 0B
-root@Server:~/loyalfood/v001f# docker ps
-CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                    PORTS                                                                          NAMES
-400052ab1e19   voltaki-backend:latest          "docker-entrypoint.s…"   6 minutes ago    Up 6 minutes (healthy)    5000/tcp                                                                       loyalfood_backend.1.h4f0zkk4834cd23l2udihtj1x
-369ebf276b88   79e66182ffbe                    "/entrypoint.sh --ap…"   15 minutes ago   Up 15 minutes             0.0.0.0:80->80/tcp, [::]:80->80/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp   traefik_traefik.1.bctespnacdwkm8vyju9y9dsx5
-62f92fe5fff3   voltaki-frontend:latest         "/docker-entrypoint.…"   16 minutes ago   Up 16 minutes (healthy)   80/tcp                                                                         loyalfood_frontend.1.57d1ljz9u93llpwyl4jdirrl1
-f77abbb1c169   postgres:14                     "docker-entrypoint.s…"   2 days ago       Up 2 days                 5432/tcp                                                                       postgres_postgres.1.h3j4z4qivnrhmdnga32bq25g7
-436fc7cb1345   portainer/portainer-ce:latest   "/portainer -H tcp:/…"   2 days ago       Up 2 days                 8000/tcp, 9000/tcp, 9443/tcp                                                   portainer_portainer.1.pa1tu9idx5eb3bxu5mz6pm8i7
-05de10555a75   portainer/agent:latest          "./agent"                2 days ago       Up 2 days                                                                                                portainer_agent.s2h3xrfurgkua7f3ibd3hf6qa.8xjl6s6zwj56vcmwl09fsdjl3
-root@Server:~/loyalfood/v001f# docker exec -it 400052ab1e19 /bin/sh
-$ npx sequelize-cli db:migrate
-
-Sequelize CLI [Node: 18.20.8, CLI: 6.6.3, ORM: 6.37.7]
-
-JWT Secret loaded: ********
-JWT Secret length: 32
-Loaded configuration file "src/config/sequelize-config.js".
-Using environment "production".
-No migrations were executed, database schema was already up to date.
-npm notice
-npm notice New major version of npm available! 10.8.2 -> 11.7.0
-npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.7.0
-npm notice To update run: npm install -g npm@11.7.0
-npm notice
-$
-
-
-Postgres is up - executing command
-Server.js is being executed!
-JWT Secret loaded: ********
-JWT Secret length: 32
-Conexão com o banco de dados estabelecida com sucesso (Sequelize).
-Server is running on port 5000
-Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.
-Agendador de relatório semanal iniciado. A tarefa será executada toda segunda-feira às 8:00.
-Agendador de relatório mensal iniciado. A tarefa será executada todo dia 1º, às 8:00.
-Agendador de lembrete de cupons iniciado. A tarefa será executada todos os dias às 9:00.
-Agendador de automação de aniversário iniciado. A tarefa será executada todos os dias às 9:00.
-Agendador de expiração de cupons iniciado. A tarefa será executada todo dia à meia-noite.
-[SenderMonitorJob] Job de monitoramento de disparadores inicializado para rodar a cada 5 minutos.
-[WarmingUpProgressJob] Job de progressão de aquecimento inicializado para rodar diariamente à 1h.
-[CampaignMonitorJob] Job de monitoramento de campanhas inicializado para rodar a cada 10 minutos.
-Agendador de processamento de premiações iniciado. A tarefa será executada todo dia às 2h.
-[iFood Polling Job] Scheduling iFood polling to run every 30 seconds
-[Delivery Much Polling Job] Scheduling polling to run every */5 * * * *
-[Post-Sale Survey Job] Iniciando agendamento de pesquisas...
-[CampanhaService] Inicializando campanhas agendadas...
-Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'scheduled' AND "Campanha"."startDate" IS NOT NULL;
-[CampanhaService] 0 campanhas reagendadas.
-[Auth Middleware] Request: POST /api/auth/verify-token
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."ifoodMerchantId" AS "tenant.ifoodMerchantId", "tenant"."ifoodAccessToken" AS "tenant.ifoodAccessToken", "tenant"."ifoodRefreshToken" AS "tenant.ifoodRefreshToken", "tenant"."ifoodTokenExpiresAt" AS "tenant.ifoodTokenExpiresAt", "tenant"."ifoodClientId" AS "tenant.ifoodClientId", "tenant"."ifoodClientSecret" AS "tenant.ifoodClientSecret", "tenant"."ifoodAuthVerifier" AS "tenant.ifoodAuthVerifier", "tenant"."deliveryMuchClientId" AS "tenant.deliveryMuchClientId", "tenant"."deliveryMuchClientSecret" AS "tenant.deliveryMuchClientSecret", "tenant"."deliveryMuchUsername" AS "tenant.deliveryMuchUsername", "tenant"."deliveryMuchPassword" AS "tenant.deliveryMuchPassword", "tenant"."deliveryMuchToken" AS "tenant.deliveryMuchToken", "tenant"."deliveryMuchTokenExpiresAt" AS "tenant.deliveryMuchTokenExpiresAt", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."ifoodMerchantId" AS "tenant.ifoodMerchantId", "tenant"."ifoodAccessToken" AS "tenant.ifoodAccessToken", "tenant"."ifoodRefreshToken" AS "tenant.ifoodRefreshToken", "tenant"."ifoodTokenExpiresAt" AS "tenant.ifoodTokenExpiresAt", "tenant"."ifoodClientId" AS "tenant.ifoodClientId", "tenant"."ifoodClientSecret" AS "tenant.ifoodClientSecret", "tenant"."ifoodAuthVerifier" AS "tenant.ifoodAuthVerifier", "tenant"."deliveryMuchClientId" AS "tenant.deliveryMuchClientId", "tenant"."deliveryMuchClientSecret" AS "tenant.deliveryMuchClientSecret", "tenant"."deliveryMuchUsername" AS "tenant.deliveryMuchUsername", "tenant"."deliveryMuchPassword" AS "tenant.deliveryMuchPassword", "tenant"."deliveryMuchToken" AS "tenant.deliveryMuchToken", "tenant"."deliveryMuchTokenExpiresAt" AS "tenant.deliveryMuchTokenExpiresAt", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "postSaleDelayMinutes", "postSaleMessageTemplate", "postSaleSurveyId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
-Executing (default): SELECT "id", "tenantId", "type", "isEnabled", "daysBefore", "message", "createdAt", "updatedAt" FROM "whatsapp_templates" AS "WhatsappTemplate" WHERE "WhatsappTemplate"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "WhatsappTemplate"."type" = 'COUPON_REMINDER' LIMIT 1;
-Executing (default): SELECT "id", "tenantId", "name", "description", "conditionDescription", "pointsRequired", "type", "value", "imageUrl", "active", "createdAt", "updatedAt" FROM "recompensas" AS "Recompensa" WHERE "Recompensa"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Recompensa"."active" = true ORDER BY "Recompensa"."name" ASC;
-Executing (default): SELECT "Roleta"."id", "Roleta"."tenantId", "Roleta"."nome", "Roleta"."descricao", "Roleta"."active", "Roleta"."createdAt", "Roleta"."updatedAt", "premios"."id" AS "premios.id", "premios"."tenantId" AS "premios.tenantId", "premios"."nome" AS "premios.nome", "premios"."descricao" AS "premios.descricao", "premios"."porcentagem" AS "premios.porcentagem", "premios"."cor" AS "premios.cor", "premios"."recompensaId" AS "premios.recompensaId", "premios"."roletaId" AS "premios.roletaId", "premios"."imageUrl" AS "premios.imageUrl", "premios"."active" AS "premios.active", "premios"."isNoPrizeOption" AS "premios.isNoPrizeOption", "premios"."createdAt" AS "premios.createdAt", "premios"."updatedAt" AS "premios.updatedAt" FROM "roletas" AS "Roleta" LEFT OUTER JOIN "roleta_premios" AS "premios" ON "Roleta"."id" = "premios"."roletaId" WHERE "Roleta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "postSaleDelayMinutes", "postSaleMessageTemplate", "postSaleSurveyId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
-[WhatsappService] Resposta da API de status da instância: {
-  "instance": {
-    "instanceName": "roma-pizzaria--chopperia",
-    "state": "open"
-  }
-}
-[iFood Job] Starting Polling...
-Executing (default): SELECT "id", "name", "ifoodMerchantId", "ifoodAccessToken", "ifoodRefreshToken", "ifoodTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."ifoodMerchantId" IS NOT NULL AND "Tenant"."ifoodAccessToken" IS NOT NULL AND "Tenant"."ifoodRefreshToken" IS NOT NULL;
-Executing (default): SELECT "id", "platform", "orderIdPlatform", "totalAmount", "orderDate", "payload", "clientId", "tenantId", "surveyStatus", "surveyScheduledAt", "surveySentAt", "createdAt", "updatedAt" FROM "delivery_orders" AS "DeliveryOrder" WHERE "DeliveryOrder"."surveyStatus" = 'SCHEDULED' AND "DeliveryOrder"."surveyScheduledAt" <= '2026-01-21 13:08:00.040 +00:00' LIMIT 50;
-[iFood Job] Starting Polling...
-Executing (default): SELECT "id", "name", "ifoodMerchantId", "ifoodAccessToken", "ifoodRefreshToken", "ifoodTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."ifoodMerchantId" IS NOT NULL AND "Tenant"."ifoodAccessToken" IS NOT NULL AND "Tenant"."ifoodRefreshToken" IS NOT NULL;
-[iFood Job] Starting Polling...
-Executing (default): SELECT "id", "platform", "orderIdPlatform", "totalAmount", "orderDate", "payload", "clientId", "tenantId", "surveyStatus", "surveyScheduledAt", "surveySentAt", "createdAt", "updatedAt" FROM "delivery_orders" AS "DeliveryOrder" WHERE "DeliveryOrder"."surveyStatus" = 'SCHEDULED' AND "DeliveryOrder"."surveyScheduledAt" <= '2026-01-21 13:09:00.040 +00:00' LIMIT 50;
-Executing (default): SELECT "id", "name", "ifoodMerchantId", "ifoodAccessToken", "ifoodRefreshToken", "ifoodTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."ifoodMerchantId" IS NOT NULL AND "Tenant"."ifoodAccessToken" IS NOT NULL AND "Tenant"."ifoodRefreshToken" IS NOT NULL;
-[iFood Job] Starting Polling...
-Executing (default): SELECT "id", "name", "ifoodMerchantId", "ifoodAccessToken", "ifoodRefreshToken", "ifoodTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."ifoodMerchantId" IS NOT NULL AND "Tenant"."ifoodAccessToken" IS NOT NULL AND "Tenant"."ifoodRefreshToken" IS NOT NULL;
-[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
-[CAMPAIGN_MONITOR] Iniciando verificação de campanhas pausadas...
-[Delivery Much Job] Starting Polling...
-[iFood Job] Starting Polling...
-Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
-Executing (default): SELECT "id", "tenantId", "nome", "mensagens", "rewardType", "recompensaId", "roletaId", "dataValidade", "criterioSelecao", "status", "startDate", "endDate", "minMessageDelaySeconds", "maxMessageDelaySeconds", "mediaUrl", "createdAt", "updatedAt" FROM "campanhas" AS "Campanha" WHERE "Campanha"."status" = 'paused';
-Executing (default): SELECT "id", "platform", "orderIdPlatform", "totalAmount", "orderDate", "payload", "clientId", "tenantId", "surveyStatus", "surveyScheduledAt", "surveySentAt", "createdAt", "updatedAt" FROM "delivery_orders" AS "DeliveryOrder" WHERE "DeliveryOrder"."surveyStatus" = 'SCHEDULED' AND "DeliveryOrder"."surveyScheduledAt" <= '2026-01-21 13:10:00.091 +00:00' LIMIT 50;
-[CAMPAIGN_MONITOR] Nenhuma campanha pausada encontrada.
-Executing (default): SELECT "id", "deliveryMuchClientId", "deliveryMuchClientSecret", "deliveryMuchUsername", "deliveryMuchPassword", "deliveryMuchToken", "deliveryMuchTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."deliveryMuchClientId" IS NOT NULL AND "Tenant"."deliveryMuchClientSecret" IS NOT NULL AND "Tenant"."deliveryMuchUsername" IS NOT NULL AND "Tenant"."deliveryMuchPassword" IS NOT NULL;
-[SENDER_MONITOR] Verificando 1 disparador(es) inativo(s).
-Executing (default): SELECT "id", "name", "ifoodMerchantId", "ifoodAccessToken", "ifoodRefreshToken", "ifoodTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."ifoodMerchantId" IS NOT NULL AND "Tenant"."ifoodAccessToken" IS NOT NULL AND "Tenant"."ifoodRefreshToken" IS NOT NULL;
-[SENDER_MONITOR] Verificação de status concluída.
-[iFood Job] Starting Polling...
-Executing (default): SELECT "id", "name", "ifoodMerchantId", "ifoodAccessToken", "ifoodRefreshToken", "ifoodTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."ifoodMerchantId" IS NOT NULL AND "Tenant"."ifoodAccessToken" IS NOT NULL AND "Tenant"."ifoodRefreshToken" IS NOT NULL;
-[iFood Job] Starting Polling...
-Executing (default): SELECT "id", "platform", "orderIdPlatform", "totalAmount", "orderDate", "payload", "clientId", "tenantId", "surveyStatus", "surveyScheduledAt", "surveySentAt", "createdAt", "updatedAt" FROM "delivery_orders" AS "DeliveryOrder" WHERE "DeliveryOrder"."surveyStatus" = 'SCHEDULED' AND "DeliveryOrder"."surveyScheduledAt" <= '2026-01-21 13:11:00.023 +00:00' LIMIT 50;
-Executing (default): SELECT "id", "name", "ifoodMerchantId", "ifoodAccessToken", "ifoodRefreshToken", "ifoodTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."ifoodMerchantId" IS NOT NULL AND "Tenant"."ifoodAccessToken" IS NOT NULL AND "Tenant"."ifoodRefreshToken" IS NOT NULL;
-[iFood Job] Starting Polling...
-Executing (default): SELECT "id", "name", "ifoodMerchantId", "ifoodAccessToken", "ifoodRefreshToken", "ifoodTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."ifoodMerchantId" IS NOT NULL AND "Tenant"."ifoodAccessToken" IS NOT NULL AND "Tenant"."ifoodRefreshToken" IS NOT NULL;
-[iFood Job] Starting Polling...
-Executing (default): SELECT "id", "platform", "orderIdPlatform", "totalAmount", "orderDate", "payload", "clientId", "tenantId", "surveyStatus", "surveyScheduledAt", "surveySentAt", "createdAt", "updatedAt" FROM "delivery_orders" AS "DeliveryOrder" WHERE "DeliveryOrder"."surveyStatus" = 'SCHEDULED' AND "DeliveryOrder"."surveyScheduledAt" <= '2026-01-21 13:12:00.043 +00:00' LIMIT 50;
-Executing (default): SELECT "id", "name", "ifoodMerchantId", "ifoodAccessToken", "ifoodRefreshToken", "ifoodTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."ifoodMerchantId" IS NOT NULL AND "Tenant"."ifoodAccessToken" IS NOT NULL AND "Tenant"."ifoodRefreshToken" IS NOT NULL;
-[iFood Job] Starting Polling...
-Executing (default): SELECT "id", "name", "ifoodMerchantId", "ifoodAccessToken", "ifoodRefreshToken", "ifoodTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."ifoodMerchantId" IS NOT NULL AND "Tenant"."ifoodAccessToken" IS NOT NULL AND "Tenant"."ifoodRefreshToken" IS NOT NULL;
-[iFood Job] Starting Polling...
-Executing (default): SELECT "id", "platform", "orderIdPlatform", "totalAmount", "orderDate", "payload", "clientId", "tenantId", "surveyStatus", "surveyScheduledAt", "surveySentAt", "createdAt", "updatedAt" FROM "delivery_orders" AS "DeliveryOrder" WHERE "DeliveryOrder"."surveyStatus" = 'SCHEDULED' AND "DeliveryOrder"."surveyScheduledAt" <= '2026-01-21 13:13:00.044 +00:00' LIMIT 50;
-Executing (default): SELECT "id", "name", "ifoodMerchantId", "ifoodAccessToken", "ifoodRefreshToken", "ifoodTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."ifoodMerchantId" IS NOT NULL AND "Tenant"."ifoodAccessToken" IS NOT NULL AND "Tenant"."ifoodRefreshToken" IS NOT NULL;
-[iFood Job] Starting Polling...
-Executing (default): SELECT "id", "name", "ifoodMerchantId", "ifoodAccessToken", "ifoodRefreshToken", "ifoodTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."ifoodMerchantId" IS NOT NULL AND "Tenant"."ifoodAccessToken" IS NOT NULL AND "Tenant"."ifoodRefreshToken" IS NOT NULL;
-[iFood Job] Starting Polling...
-Executing (default): SELECT "id", "platform", "orderIdPlatform", "totalAmount", "orderDate", "payload", "clientId", "tenantId", "surveyStatus", "surveyScheduledAt", "surveySentAt", "createdAt", "updatedAt" FROM "delivery_orders" AS "DeliveryOrder" WHERE "DeliveryOrder"."surveyStatus" = 'SCHEDULED' AND "DeliveryOrder"."surveyScheduledAt" <= '2026-01-21 13:14:00.035 +00:00' LIMIT 50;
-Executing (default): SELECT "id", "name", "ifoodMerchantId", "ifoodAccessToken", "ifoodRefreshToken", "ifoodTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."ifoodMerchantId" IS NOT NULL AND "Tenant"."ifoodAccessToken" IS NOT NULL AND "Tenant"."ifoodRefreshToken" IS NOT NULL;
-[iFood Job] Starting Polling...
-Executing (default): SELECT "id", "name", "ifoodMerchantId", "ifoodAccessToken", "ifoodRefreshToken", "ifoodTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."ifoodMerchantId" IS NOT NULL AND "Tenant"."ifoodAccessToken" IS NOT NULL AND "Tenant"."ifoodRefreshToken" IS NOT NULL;
-[SENDER_MONITOR] Iniciando verificação de status dos disparadores...
-[iFood Job] Starting Polling...
-[Delivery Much Job] Starting Polling...
-Executing (default): SELECT "id", "name", "apiUrl", "apiKey", "instanceName", "status", "priority", "dailyLimit", "messagesSentToday", "lastUsedAt", "warmingUpDay", "createdAt", "updatedAt" FROM "WhatsappSenders" AS "WhatsappSender" WHERE "WhatsappSender"."status" IN ('disconnected', 'blocked', 'resting');
-Executing (default): SELECT "id", "platform", "orderIdPlatform", "totalAmount", "orderDate", "payload", "clientId", "tenantId", "surveyStatus", "surveyScheduledAt", "surveySentAt", "createdAt", "updatedAt" FROM "delivery_orders" AS "DeliveryOrder" WHERE "DeliveryOrder"."surveyStatus" = 'SCHEDULED' AND "DeliveryOrder"."surveyScheduledAt" <= '2026-01-21 13:15:00.069 +00:00' LIMIT 50;
-[SENDER_MONITOR] Verificando 1 disparador(es) inativo(s).
-Executing (default): SELECT "id", "name", "ifoodMerchantId", "ifoodAccessToken", "ifoodRefreshToken", "ifoodTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."ifoodMerchantId" IS NOT NULL AND "Tenant"."ifoodAccessToken" IS NOT NULL AND "Tenant"."ifoodRefreshToken" IS NOT NULL;
-Executing (default): SELECT "id", "deliveryMuchClientId", "deliveryMuchClientSecret", "deliveryMuchUsername", "deliveryMuchPassword", "deliveryMuchToken", "deliveryMuchTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."deliveryMuchClientId" IS NOT NULL AND "Tenant"."deliveryMuchClientSecret" IS NOT NULL AND "Tenant"."deliveryMuchUsername" IS NOT NULL AND "Tenant"."deliveryMuchPassword" IS NOT NULL;
-[SENDER_MONITOR] Verificação de status concluída.
-[iFood Job] Starting Polling...
-Executing (default): SELECT "id", "name", "ifoodMerchantId", "ifoodAccessToken", "ifoodRefreshToken", "ifoodTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."ifoodMerchantId" IS NOT NULL AND "Tenant"."ifoodAccessToken" IS NOT NULL AND "Tenant"."ifoodRefreshToken" IS NOT NULL;
-[Auth Middleware] Request: POST /api/auth/verify-token
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."ifoodMerchantId" AS "tenant.ifoodMerchantId", "tenant"."ifoodAccessToken" AS "tenant.ifoodAccessToken", "tenant"."ifoodRefreshToken" AS "tenant.ifoodRefreshToken", "tenant"."ifoodTokenExpiresAt" AS "tenant.ifoodTokenExpiresAt", "tenant"."ifoodClientId" AS "tenant.ifoodClientId", "tenant"."ifoodClientSecret" AS "tenant.ifoodClientSecret", "tenant"."ifoodAuthVerifier" AS "tenant.ifoodAuthVerifier", "tenant"."deliveryMuchClientId" AS "tenant.deliveryMuchClientId", "tenant"."deliveryMuchClientSecret" AS "tenant.deliveryMuchClientSecret", "tenant"."deliveryMuchUsername" AS "tenant.deliveryMuchUsername", "tenant"."deliveryMuchPassword" AS "tenant.deliveryMuchPassword", "tenant"."deliveryMuchToken" AS "tenant.deliveryMuchToken", "tenant"."deliveryMuchTokenExpiresAt" AS "tenant.deliveryMuchTokenExpiresAt", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
-[Auth Middleware] Request: GET /api/whatsapp-config/instance
-Executing (default): SELECT "Usuario"."id", "Usuario"."tenantId", "Usuario"."roleId", "Usuario"."franchisorId", "Usuario"."name", "Usuario"."email", "Usuario"."passwordHash", "Usuario"."profilePictureUrl", "Usuario"."createdAt", "Usuario"."updatedAt", "role"."id" AS "role.id", "role"."name" AS "role.name", "role"."key" AS "role.key", "role"."description" AS "role.description", "role"."isSystemRole" AS "role.isSystemRole", "role"."createdAt" AS "role.createdAt", "role"."updatedAt" AS "role.updatedAt", "tenant"."id" AS "tenant.id", "tenant"."name" AS "tenant.name", "tenant"."address" AS "tenant.address", "tenant"."phone" AS "tenant.phone", "tenant"."email" AS "tenant.email", "tenant"."logoUrl" AS "tenant.logoUrl", "tenant"."primaryColor" AS "tenant.primaryColor", "tenant"."secondaryColor" AS "tenant.secondaryColor", "tenant"."description" AS "tenant.description", "tenant"."website" AS "tenant.website", "tenant"."cnpj" AS "tenant.cnpj", "tenant"."inscricaoEstadual" AS "tenant.inscricaoEstadual", "tenant"."reportPhoneNumber" AS "tenant.reportPhoneNumber", "tenant"."gmb_link" AS "tenant.gmb_link", "tenant"."uairangoEstablishmentId" AS "tenant.uairangoEstablishmentId", "tenant"."ifoodMerchantId" AS "tenant.ifoodMerchantId", "tenant"."ifoodAccessToken" AS "tenant.ifoodAccessToken", "tenant"."ifoodRefreshToken" AS "tenant.ifoodRefreshToken", "tenant"."ifoodTokenExpiresAt" AS "tenant.ifoodTokenExpiresAt", "tenant"."ifoodClientId" AS "tenant.ifoodClientId", "tenant"."ifoodClientSecret" AS "tenant.ifoodClientSecret", "tenant"."ifoodAuthVerifier" AS "tenant.ifoodAuthVerifier", "tenant"."deliveryMuchClientId" AS "tenant.deliveryMuchClientId", "tenant"."deliveryMuchClientSecret" AS "tenant.deliveryMuchClientSecret", "tenant"."deliveryMuchUsername" AS "tenant.deliveryMuchUsername", "tenant"."deliveryMuchPassword" AS "tenant.deliveryMuchPassword", "tenant"."deliveryMuchToken" AS "tenant.deliveryMuchToken", "tenant"."deliveryMuchTokenExpiresAt" AS "tenant.deliveryMuchTokenExpiresAt", "tenant"."franchisorId" AS "tenant.franchisorId", "tenant"."createdAt" AS "tenant.createdAt", "tenant"."updatedAt" AS "tenant.updatedAt" FROM "usuarios" AS "Usuario" LEFT OUTER JOIN "roles" AS "role" ON "Usuario"."roleId" = "role"."id" LEFT OUTER JOIN "tenants" AS "tenant" ON "Usuario"."tenantId" = "tenant"."id" WHERE "Usuario"."id" = '77f853e9-deb2-4067-881e-71fa16d3054f';
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "postSaleDelayMinutes", "postSaleMessageTemplate", "postSaleSurveyId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
-Executing (default): SELECT "id", "tenantId", "type", "isEnabled", "daysBefore", "message", "createdAt", "updatedAt" FROM "whatsapp_templates" AS "WhatsappTemplate" WHERE "WhatsappTemplate"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "WhatsappTemplate"."type" = 'COUPON_REMINDER' LIMIT 1;
-Executing (default): SELECT "id", "tenantId", "name", "description", "conditionDescription", "pointsRequired", "type", "value", "imageUrl", "active", "createdAt", "updatedAt" FROM "recompensas" AS "Recompensa" WHERE "Recompensa"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' AND "Recompensa"."active" = true ORDER BY "Recompensa"."name" ASC;
-Executing (default): SELECT "Roleta"."id", "Roleta"."tenantId", "Roleta"."nome", "Roleta"."descricao", "Roleta"."active", "Roleta"."createdAt", "Roleta"."updatedAt", "premios"."id" AS "premios.id", "premios"."tenantId" AS "premios.tenantId", "premios"."nome" AS "premios.nome", "premios"."descricao" AS "premios.descricao", "premios"."porcentagem" AS "premios.porcentagem", "premios"."cor" AS "premios.cor", "premios"."recompensaId" AS "premios.recompensaId", "premios"."roletaId" AS "premios.roletaId", "premios"."imageUrl" AS "premios.imageUrl", "premios"."active" AS "premios.active", "premios"."isNoPrizeOption" AS "premios.isNoPrizeOption", "premios"."createdAt" AS "premios.createdAt", "premios"."updatedAt" AS "premios.updatedAt" FROM "roletas" AS "Roleta" LEFT OUTER JOIN "roleta_premios" AS "premios" ON "Roleta"."id" = "premios"."roletaId" WHERE "Roleta"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4';
-Executing (default): SELECT "id", "url", "apiKey", "instanceApiKey", "instanceName", "instanceStatus", "tenantId", "sendPrizeMessage", "prizeMessageTemplate", "dailyReportEnabled", "reportPhoneNumbers", "weeklyReportEnabled", "monthlyReportEnabled", "birthdayAutomationEnabled", "birthdayMessageTemplate", "birthdayDaysBefore", "birthdayRewardType", "birthdayRewardId", "birthdayCouponValidityDays", "sendDetractorMessageToClient", "detractorMessageTemplate", "notifyDetractorToOwner", "detractorOwnerMessageTemplate", "detractorOwnerPhoneNumbers", "postSaleDelayMinutes", "postSaleMessageTemplate", "postSaleSurveyId", "createdAt", "updatedAt" FROM "whatsapp_configs" AS "WhatsappConfig" WHERE "WhatsappConfig"."tenantId" = 'eb629ea8-7d69-47a1-b1f1-f9dcb33475f4' LIMIT 1;
-[WhatsappService] Resposta da API de status da instância: {
-  "instance": {
-    "instanceName": "roma-pizzaria--chopperia",
-    "state": "open"
-  }
-}
-[iFood Job] Starting Polling...
-Executing (default): SELECT "id", "name", "ifoodMerchantId", "ifoodAccessToken", "ifoodRefreshToken", "ifoodTokenExpiresAt" FROM "tenants" AS "Tenant" WHERE "Tenant"."ifoodMerchantId" IS NOT NULL AND "Tenant"."ifoodAccessToken" IS NOT NULL AND "Tenant"."ifoodRefreshToken" IS NOT NULL;
-Executing (default): SELECT "id", "platform", "orderIdPlatform", "totalAmount", "orderDate", "payload", "clientId", "tenantId", "surveyStatus", "surveyScheduledAt", "surveySentAt", "createdAt", "updatedAt" FROM "delivery_orders" AS "DeliveryOrder" WHERE "DeliveryOrder"."surveyStatus" = 'SCHEDULED' AND "DeliveryOrder"."surveyScheduledAt" <= '2026-01-21 13:16:00.078 +00:00' LIMIT 50;
+ => ERROR [build 6/6] RUN npm run build                                                                                                        22.8s
+------
+ > [build 6/6] RUN npm run build:
+0.962
+0.962 > frontend@0.1.0 build
+0.962 > react-scripts build
+0.962
+3.058 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+5.417 Creating an optimized production build...
+22.51 Failed to compile.
+22.51
+22.51 Module not found: Error: Can't resolve '../components/dashboard/GenericMetricCard' in '/app/src/pages'
+22.51
+22.51
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

@@ -120,8 +120,8 @@ const DashboardLayout = () => {
             children: [
                 { text: 'Painel', path: '/dashboard/respostas/painel', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
                 { text: 'Gestão de Respostas', path: '/dashboard/respostas/gestao', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
-                { text: 'Replicas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], badge: 'Em Breve' },
-                { text: 'Tratativas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], badge: 'Em Breve' },
+                { text: 'Replicas', path: '/dashboard/respostas/replicas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], badge: 'BETA' },
+                { text: 'Tratativas', path: '/dashboard/respostas/tratativas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], badge: 'BETA' },
             ],
         },
         { text: 'Resultados', icon: <BarChartIcon />, path: '/dashboard/resultados', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },

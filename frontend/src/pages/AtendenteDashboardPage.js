@@ -25,8 +25,8 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import StarIcon from '@mui/icons-material/Star';
 import dashboardService from '../services/dashboardService';
-import GenericMetricCard from '../components/dashboard/GenericMetricCard';
-import AttendantRankingCard from '../components/dashboard/AttendantRankingCard';
+import GenericMetricCard from '../components/Dashboard/GenericMetricCard';
+import AttendantRankingCard from '../components/Dashboard/AttendantRankingCard';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF', '#FF1919'];
 

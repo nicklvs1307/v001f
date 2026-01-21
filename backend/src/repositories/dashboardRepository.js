@@ -10,6 +10,7 @@ const {
   Client,
   Criterio,
   DeliveryOrder,
+  Tratativa,
 } = require("../../models");
 const { Sequelize, Op } = require("sequelize");
 const { now, formatInTimeZone, TIMEZONE } = require("../utils/dateUtils");
@@ -408,7 +409,15 @@ const getFeedbacks = async (
     where: { respondentSessionId: { [Op.in]: sessionIds } },
     include: [
       { model: Pergunta, as: 'pergunta', attributes: ['text', 'type'] },
-      { model: Client, as: 'client', attributes: ['name'] }
+      { model: Client, as: 'client', attributes: ['name', 'phone', 'email'] },
+      { 
+        model: Tratativa, 
+        as: 'tratativa', 
+        required: false,
+        on: {
+          respondentSessionId: { [Op.col]: 'Resposta.respondentSessionId' }
+        }
+      }
     ],
     order: [['createdAt', 'ASC']]
   });
@@ -419,7 +428,13 @@ const getFeedbacks = async (
     if (!acc[sessionId]) {
       acc[sessionId] = {
         sessionId: sessionId,
-        client: response.client ? { name: response.client.name } : null,
+        client: response.client ? { 
+          name: response.client.name,
+          phone: response.client.phone,
+          email: response.client.email
+        } : null,
+        status: response.tratativa?.status || 'PENDENTE',
+        notes: response.tratativa?.notes || '',
         createdAt: response.createdAt,
         responses: [],
       };

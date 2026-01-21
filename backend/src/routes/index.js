@@ -31,6 +31,7 @@ const deliveryWebhookRoutes = require("./deliveryWebhookRoutes"); // Importar as
 const ifoodRoutes = require("./ifoodRoutes"); // Importar as rotas do iFood
 const roletaAdminRoutes = require("./roletaAdminRoutes");
 const automationRoutes = require("./automationRoutes");
+const tratativaRoutes = require("./tratativaRoutes");
 const aiRoutes = require("./aiRoutes"); // Import the new AI routes
 const premiacaoController = require("../controllers/premiacaoController"); // Importar o novo controller
 
@@ -87,6 +88,7 @@ module.exports = (router) => {
   router.use("/campanhas", campanhaRoutes);
   router.use("/roletas", roletaAdminRoutes);
   router.use("/automations", automationRoutes);
+  router.use("/tratativas", tratativaRoutes);
   router.use("/ai", aiRoutes); // Register AI routes
   router.get("/premiacoes", premiacaoController.getAllPremiacoes); // Adicionar rota para premiações
 };

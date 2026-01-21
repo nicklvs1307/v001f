@@ -192,14 +192,40 @@ exports.getMe = asyncHandler(async (req, res) => {
 // @access  Private (Admin do Tenant)
 exports.updateMe = asyncHandler(async (req, res) => {
   const { tenantId } = req.user;
-  const { reportPhoneNumber, uairangoEstablishmentId } = req.body;
+  const {
+    name,
+    address,
+    phone,
+    email,
+    cnpj,
+    description,
+    reportPhoneNumber,
+    uairangoEstablishmentId,
+    deliveryMuchClientId,
+    deliveryMuchClientSecret,
+    deliveryMuchUsername,
+    deliveryMuchPassword
+  } = req.body;
 
   if (!tenantId) {
     throw new ApiError(404, "Tenant não encontrado para este usuário.");
   }
 
-  // Apenas campos permitidos podem ser atualizados por esta rota
-  const allowedUpdates = { reportPhoneNumber, uairangoEstablishmentId };
+  // Campos permitidos para atualização pelo próprio tenant
+  const allowedUpdates = {
+    name,
+    address,
+    phone,
+    email,
+    cnpj,
+    description,
+    reportPhoneNumber,
+    uairangoEstablishmentId,
+    deliveryMuchClientId,
+    deliveryMuchClientSecret,
+    deliveryMuchUsername,
+    deliveryMuchPassword
+  };
 
   const updatedTenant = await tenantRepository.updateTenant(
     tenantId,
@@ -207,9 +233,8 @@ exports.updateMe = asyncHandler(async (req, res) => {
   );
 
   if (!updatedTenant) {
-    // Isso pode acontecer se o tenant não for encontrado, embora a verificação acima deva pegar isso.
     throw new ApiError(404, "Tenant não encontrado para atualização.");
   }
 
-  res.status(200).json({ message: "Tenant atualizado com sucesso." });
+  res.status(200).json({ message: "Tenant atualizado com sucesso.", tenant: updatedTenant });
 });

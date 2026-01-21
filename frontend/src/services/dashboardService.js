@@ -100,6 +100,11 @@ const dashboardService = {
         const response = await apiAuthenticated.get('/dashboard/client-demographics', { params });
         return response.data;
     },
+
+    updateFeedbackStatus: async (sessionId, data) => {
+        const response = await apiAuthenticated.put(`/tratativas/${sessionId}`, data);
+        return response.data;
+    },
 };
 
 export default dashboardService;

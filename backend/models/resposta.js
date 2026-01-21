@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       Resposta.belongsTo(models.Atendente, { foreignKey: 'atendenteId', as: 'atendente' });
       Resposta.belongsTo(models.Tenant, { foreignKey: 'tenantId', as: 'tenant' });
       Resposta.belongsTo(models.Client, { foreignKey: 'respondentSessionId', targetKey: 'respondentSessionId', as: 'client' });
-
+      Resposta.hasOne(models.Tratativa, { foreignKey: 'respondentSessionId', sourceKey: 'respondentSessionId', as: 'tratativa' });
     }
   }
   Resposta.init({

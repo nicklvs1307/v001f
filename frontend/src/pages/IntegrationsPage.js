@@ -14,7 +14,7 @@ import { formatDateForDisplay } from '../utils/dateUtils';
 import toast from 'react-hot-toast';
 import UaiRangoLogo from '../assets/logo_uairango.png';
 import IfoodLogo from '../assets/IfoodLogo.png';
-import SaiposLogo from '../assets/SaiposLogo.jpg';
+import SaiposLogo from '../assets/SaiposLogo.png';
 import GoogleMeuNegocioLogo from '../assets/GoogleMeuNegocio.png';
 import DeliveryMuchLogo from '../assets/DeliveryMuchLogo.png';
 import apiAuthenticated from '../services/apiAuthenticated';

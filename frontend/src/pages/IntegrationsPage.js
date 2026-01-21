@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {
     Container, Typography, Box, Grid, Card, CardContent, TextField, Button,
-    CircularProgress, Alert, Drawer, List, ListItem, ListItemText, Divider, Snackbar, Paper, Link, IconButton
+    CircularProgress, Alert, Drawer, List, ListItem, ListItemText, Divider, Snackbar, Paper, Link, IconButton,
+    Chip, Stack
 } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -99,6 +100,9 @@ const IntegrationsPage = () => {
                         Gerencie aqui suas integrações para automatizar processos e ampliar suas funcionalidades.
                     </Typography>
 
+                    <Typography variant="h5" component="h2" gutterBottom sx={{ mt: 4, mb: 2 }}>
+                        Gestão de Reputação
+                    </Typography>
                     <Grid container spacing={4}>
                         <Grid item xs={12} md={6} lg={4}>
                             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', '&:hover': { transform: 'translateY(-5px)', boxShadow: 6 } }}>
@@ -107,6 +111,10 @@ const IntegrationsPage = () => {
                                     <Typography variant="h5" component="div" gutterBottom>
                                         Google Meu Negócio
                                     </Typography>
+                                    <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+                                        <Chip label="Em Desenvolvimento" color="warning" size="small" />
+                                        <Chip label="Beta" color="secondary" size="small" />
+                                    </Stack>
                                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2, textAlign: 'center' }}>
                                         Gerencie avaliações e conecte sua conta.
                                     </Typography>
@@ -116,6 +124,12 @@ const IntegrationsPage = () => {
                                 </CardContent>
                             </Card>
                         </Grid>
+                    </Grid>
+
+                    <Typography variant="h5" component="h2" gutterBottom sx={{ mt: 4, mb: 2 }}>
+                        Aplicativos de Delivery
+                    </Typography>
+                    <Grid container spacing={4}>
                         <Grid item xs={12} md={6} lg={4}>
                             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', '&:hover': { transform: 'translateY(-5px)', boxShadow: 6 } }}>
                                 <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -123,6 +137,10 @@ const IntegrationsPage = () => {
                                     <Typography variant="h5" component="div" gutterBottom>
                                         Uai Rango
                                     </Typography>
+                                    <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+                                        <Chip label="Em Produção" color="success" size="small" />
+                                        <Chip label="Beta" color="secondary" size="small" />
+                                    </Stack>
                                     <Button fullWidth variant="contained" startIcon={<SettingsIcon />} onClick={() => setShowUaiRangoModal(true)} sx={{ mt: 'auto' }}>
                                         Configurar
                                     </Button>
@@ -136,6 +154,10 @@ const IntegrationsPage = () => {
                                     <Typography variant="h5" component="div" gutterBottom>
                                         iFood
                                     </Typography>
+                                    <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+                                        <Chip label="Em Desenvolvimento" color="warning" size="small" />
+                                        <Chip label="Beta" color="secondary" size="small" />
+                                    </Stack>
                                     <Button fullWidth variant="contained" startIcon={<SettingsIcon />} onClick={() => setShowIfoodModal(true)} sx={{ mt: 'auto' }}>
                                         Configurar
                                     </Button>
@@ -149,12 +171,22 @@ const IntegrationsPage = () => {
                                     <Typography variant="h5" component="div" gutterBottom>
                                         Delivery Much
                                     </Typography>
+                                    <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+                                        <Chip label="Em Desenvolvimento" color="warning" size="small" />
+                                        <Chip label="Beta" color="secondary" size="small" />
+                                    </Stack>
                                     <Button fullWidth variant="contained" startIcon={<SettingsIcon />} onClick={() => setShowDeliveryMuchModal(true)} sx={{ mt: 'auto' }}>
                                         Configurar
                                     </Button>
                                 </CardContent>
                             </Card>
                         </Grid>
+                    </Grid>
+
+                    <Typography variant="h5" component="h2" gutterBottom sx={{ mt: 4, mb: 2 }}>
+                        Sistemas ERP / PDV
+                    </Typography>
+                    <Grid container spacing={4}>
                         <Grid item xs={12} md={6} lg={4}>
                             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', '&:hover': { transform: 'translateY(-5px)', boxShadow: 6 } }}>
                                 <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -162,6 +194,10 @@ const IntegrationsPage = () => {
                                     <Typography variant="h5" component="div" gutterBottom>
                                         Saipos
                                     </Typography>
+                                    <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+                                        <Chip label="Em Desenvolvimento" color="warning" size="small" />
+                                        <Chip label="Beta" color="secondary" size="small" />
+                                    </Stack>
                                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2, textAlign: 'center' }}>
                                         Em Breve
                                     </Typography>

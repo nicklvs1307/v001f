@@ -1,22 +1,16 @@
 const asyncHandler = require("express-async-handler");
 const atendenteService = require("../services/atendenteService");
 const ApiError = require("../errors/ApiError");
+const { validateTenantAccess, checkResourceTenant } = require("../utils/tenantUtils");
 
 const atendenteController = {
   createAtendente: asyncHandler(async (req, res) => {
     const { name, status } = req.body;
-    const requestingUser = req.user;
-
-    const targetTenantId =
-      requestingUser.role.name === "Super Admin" && req.body.tenantId
-        ? req.body.tenantId
-        : requestingUser.tenantId;
+    
+    const targetTenantId = validateTenantAccess(req.user, req.body.tenantId);
 
     if (!targetTenantId) {
-      throw new ApiError(
-        400,
-        "Tenant ID é obrigatório para criar um atendente.",
-      );
+      throw new ApiError(400, "Tenant ID é obrigatório para criar um atendente.");
     }
 
     const atendente = await atendenteService.createAtendente(
@@ -31,9 +25,10 @@ const atendenteController = {
   }),
 
   getAllAtendentes: asyncHandler(async (req, res) => {
-    const requestingUser = req.user;
-    const tenantId =
-      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
+    // Para listar, se for Super Admin sem tenantId específico, lista todos (null).
+    // Se for user comum, lista só do seu tenant.
+    const isSuperAdmin = req.user.role.name === "Super Admin";
+    const tenantId = isSuperAdmin ? req.query.tenantId || null : req.user.tenantId;
 
     const atendentes = await atendenteService.getAllAtendentes(tenantId);
     res.status(200).json(atendentes);
@@ -41,26 +36,11 @@ const atendenteController = {
 
   getAtendenteById: asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const requestingUser = req.user;
-    const tenantId =
-      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
+    
+    // Busca inicial (o serviço já pode filtrar por tenantId se passarmos, mas vamos verificar o recurso depois)
+    const atendente = await atendenteService.getAtendenteById(id);
 
-    const atendente = await atendenteService.getAtendenteById(id, tenantId);
-
-    if (!atendente) {
-      throw new ApiError(404, "Atendente não encontrado.");
-    }
-
-    // A verificação de tenantId já é feita no repositório, mas uma dupla verificação aqui é boa prática
-    if (
-      requestingUser.role.name !== "Super Admin" &&
-      atendente.tenantId !== requestingUser.tenantId
-    ) {
-      throw new ApiError(
-        403,
-        "Você não tem permissão para ver este atendente.",
-      );
-    }
+    checkResourceTenant(atendente, req.user);
 
     res.status(200).json(atendente);
   }),
@@ -68,32 +48,13 @@ const atendenteController = {
   updateAtendente: asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { name, status } = req.body;
-    const requestingUser = req.user;
 
-    // Apenas Super Admin pode especificar um tenantId
-    const tenantId =
-      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
-
-    // Primeiro, verifique se o atendente existe e pertence ao tenant do usuário
-    const existingAtendente = await atendenteService.getAtendenteById(id, tenantId);
-    if (!existingAtendente) {
-      throw new ApiError(404, "Atendente não encontrado.");
-    }
-    
-    // Garante que um admin não possa atualizar atendentes de outro tenant
-    if (
-      requestingUser.role.name !== "Super Admin" &&
-      existingAtendente.tenantId !== requestingUser.tenantId
-    ) {
-      throw new ApiError(
-        403,
-        "Você não tem permissão para atualizar este atendente.",
-      );
-    }
+    const existingAtendente = await atendenteService.getAtendenteById(id);
+    checkResourceTenant(existingAtendente, req.user);
 
     const updatedAtendente = await atendenteService.updateAtendente(
       id,
-      existingAtendente.tenantId, // Use o tenantId do atendente existente para segurança
+      existingAtendente.tenantId,
       name,
       status,
     );
@@ -106,24 +67,9 @@ const atendenteController = {
 
   deleteAtendente: asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const requestingUser = req.user;
-    const tenantId =
-      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
-    const existingAtendente = await atendenteService.getAtendenteById(id, tenantId);
-    if (!existingAtendente) {
-      throw new ApiError(404, "Atendente não encontrado para deleção.");
-    }
-
-    if (
-      requestingUser.role.name !== "Super Admin" &&
-      existingAtendente.tenantId !== requestingUser.tenantId
-    ) {
-      throw new ApiError(
-        403,
-        "Você não tem permissão para deletar este atendente.",
-      );
-    }
+    const existingAtendente = await atendenteService.getAtendenteById(id);
+    checkResourceTenant(existingAtendente, req.user);
 
     await atendenteService.deleteAtendente(id, existingAtendente.tenantId);
 
@@ -132,14 +78,9 @@ const atendenteController = {
 
   getAtendentePremiacoes: asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const requestingUser = req.user;
-    const tenantId =
-      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
-    const atendente = await atendenteService.getAtendenteById(id, tenantId);
-    if (!atendente) {
-      throw new ApiError(404, "Atendente não encontrado.");
-    }
+    const atendente = await atendenteService.getAtendenteById(id);
+    checkResourceTenant(atendente, req.user);
     
     const premiacoes = await atendenteService.getAtendentePremiacoes(id, atendente.tenantId);
 
@@ -148,14 +89,9 @@ const atendenteController = {
 
   getAtendentePerformance: asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const requestingUser = req.user;
-    const tenantId =
-      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
-    const atendente = await atendenteService.getAtendenteById(id, tenantId);
-    if (!atendente) {
-      throw new ApiError(404, "Atendente não encontrado.");
-    }
+    const atendente = await atendenteService.getAtendenteById(id);
+    checkResourceTenant(atendente, req.user);
 
     const performance = await atendenteService.getAtendentePerformance(id, atendente.tenantId);
 

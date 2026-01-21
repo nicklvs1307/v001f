@@ -8,7 +8,6 @@ import {
   Alert,
   useTheme,
   Box,
-  Icon,
   Table,
   TableBody,
   TableCell,
@@ -22,29 +21,12 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import StarIcon from '@mui/icons-material/Star';
 import dashboardService from '../services/dashboardService';
-
-const MetricCard = ({ title, value, unit = '' }) => (
-  <Paper elevation={3} sx={{ p: 2, textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-    <Typography variant="subtitle1" color="text.secondary">{title}</Typography>
-    <Typography variant="h4" fontWeight="bold">
-      {value}
-      {unit && <Typography component="span" variant="h6" color="text.secondary" sx={{ ml: 0.5 }}>{unit}</Typography>}
-    </Typography>
-  </Paper>
-);
-
-const RankingCard = ({ attendant, rank, icon, color, metric, unit }) => (
-  <Paper elevation={3} sx={{ p: 2, textAlign: 'center', height: '100%', borderBottom: `4px solid ${color}` }}>
-    <Icon component={icon} sx={{ fontSize: 40, color: color }} />
-    <Typography variant="h6" fontWeight="bold">{rank}° Lugar</Typography>
-    <Typography variant="body1">{attendant.name}</Typography>
-    <Typography variant="h5" color="text.primary" fontWeight="medium">{metric.toFixed(0)} <Typography component="span" variant="caption">{unit}</Typography></Typography>
-  </Paper>
-);
+import GenericMetricCard from '../components/dashboard/GenericMetricCard';
+import AttendantRankingCard from '../components/dashboard/AttendantRankingCard';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF', '#FF1919'];
 
@@ -100,7 +82,6 @@ const AtendenteDashboardPage = () => {
     totalAttendants,
     totalResponses,
     attendantsWhoMetGoal,
-    goalMetData,
     topPerformers,
     topResponders
   } = useMemo(() => {
@@ -109,11 +90,6 @@ const AtendenteDashboardPage = () => {
 
     const attendantsWhoMetGoal = performanceData.filter(att => att.npsGoal && att.currentNPS >= att.npsGoal);
     
-    const goalMetData = [
-      { name: 'Atingiram a Meta', value: attendantsWhoMetGoal.length },
-      { name: 'Não Atingiram', value: performanceData.length - attendantsWhoMetGoal.length },
-    ];
-    
     const topPerformers = [...performanceData].sort((a, b) => b.currentNPS - a.currentNPS).slice(0, 3);
     const topResponders = [...performanceData].sort((a, b) => b.responses - a.responses).slice(0, 3);
     
@@ -121,7 +97,6 @@ const AtendenteDashboardPage = () => {
       totalAttendants,
       totalResponses,
       attendantsWhoMetGoal,
-      goalMetData,
       topPerformers,
       topResponders
     };
@@ -151,9 +126,9 @@ const AtendenteDashboardPage = () => {
       </Typography>
 
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item xs={12} sm={6} md={4}><MetricCard title="Atendentes Ativos" value={totalAttendants} /></Grid>
-        <Grid item xs={12} sm={6} md={4}><MetricCard title="Total de Respostas" value={totalResponses} /></Grid>
-        <Grid item xs={12} sm={6} md={4}><MetricCard title="Atingiram a Meta NPS" value={attendantsWhoMetGoal.length} /></Grid>
+        <Grid item xs={12} sm={6} md={4}><GenericMetricCard title="Atendentes Ativos" value={totalAttendants} /></Grid>
+        <Grid item xs={12} sm={6} md={4}><GenericMetricCard title="Total de Respostas" value={totalResponses} /></Grid>
+        <Grid item xs={12} sm={6} md={4}><GenericMetricCard title="Atingiram a Meta NPS" value={attendantsWhoMetGoal.length} /></Grid>
       </Grid>
       
       <Grid container spacing={3}>
@@ -162,7 +137,7 @@ const AtendenteDashboardPage = () => {
              <Grid container spacing={3}>
                 {topPerformers.map((attendant, index) => (
                   <Grid item xs={12} sm={6} md={4} key={`top-nps-${attendant.id}`}>
-                    <RankingCard attendant={attendant} rank={index + 1} icon={EmojiEventsIcon} color={index === 0 ? theme.palette.warning.main : index === 1 ? theme.palette.grey[500] : theme.palette.warning.dark} metric={attendant.currentNPS} unit="NPS" />
+                    <AttendantRankingCard attendant={attendant} rank={index + 1} icon={EmojiEventsIcon} color={index === 0 ? theme.palette.warning.main : index === 1 ? theme.palette.grey[500] : theme.palette.warning.dark} metric={attendant.currentNPS} unit="NPS" />
                   </Grid>
                 ))}
               </Grid>
@@ -172,7 +147,7 @@ const AtendenteDashboardPage = () => {
              <Grid container spacing={3}>
                 {topResponders.map((attendant, index) => (
                   <Grid item xs={12} sm={6} md={4} key={`top-resp-${attendant.id}`}>
-                    <RankingCard attendant={attendant} rank={index + 1} icon={StarIcon} color={theme.palette.primary.main} metric={attendant.responses} unit="Respostas"/>
+                    <AttendantRankingCard attendant={attendant} rank={index + 1} icon={StarIcon} color={theme.palette.primary.main} metric={attendant.responses} unit="Respostas"/>
                   </Grid>
                 ))}
               </Grid>

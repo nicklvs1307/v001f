@@ -1,6 +1,9 @@
 const asyncHandler = require("express-async-handler");
 const atendenteMetaService = require("../services/atendenteMetaService");
 const ApiError = require("../errors/ApiError");
+const { validateTenantAccess } = require("../utils/tenantUtils");
+
+const VALID_PERIODS = ['DIARIO', 'SEMANAL', 'MENSAL'];
 
 const atendenteMetaController = {
   // @desc    Cria ou atualiza a meta de um atendente
@@ -12,23 +15,23 @@ const atendenteMetaController = {
       npsGoal, responsesGoal, registrationsGoal, period,
       dias_trabalhados, nps_premio_valor, respostas_premio_valor, cadastros_premio_valor 
     } = req.body;
-    const requestingUser = req.user;
 
     if (!atendenteId) {
       throw new ApiError(400, "ID do atendente é obrigatório.");
     }
 
-    const tenantId =
-      requestingUser.role.name === "Super Admin"
-        ? req.body.tenantId
-        : requestingUser.tenantId;
+    if (period && !VALID_PERIODS.includes(period)) {
+        throw new ApiError(400, `Período inválido. Valores aceitos: ${VALID_PERIODS.join(', ')}`);
+    }
+
+    const tenantId = validateTenantAccess(req.user, req.body.tenantId);
 
     if (!tenantId) {
       throw new ApiError(400, "Tenant ID é obrigatório para definir metas.");
     }
 
     const metaData = { 
-      npsGoal, responsesGoal, registrationsGoal, period,
+      npsGoal, responsesGoal, registrationsGoal, period: period || 'MENSAL',
       dias_trabalhados, nps_premio_valor, respostas_premio_valor, cadastros_premio_valor
     };
 
@@ -48,12 +51,8 @@ const atendenteMetaController = {
   // @access  Private (Super Admin, Admin)
   getMetaByAtendenteId: asyncHandler(async (req, res) => {
     const { atendenteId } = req.params;
-    const requestingUser = req.user;
-
-    const tenantId =
-      requestingUser.role.name === "Super Admin"
-        ? req.query.tenantId
-        : requestingUser.tenantId;
+    
+    const tenantId = validateTenantAccess(req.user, req.query.tenantId);
 
     if (!tenantId) {
       throw new ApiError(400, "Tenant ID é obrigatório para buscar metas.");
@@ -63,9 +62,13 @@ const atendenteMetaController = {
       atendenteId,
       tenantId,
     );
-
+    
+    // Nota: Se não tiver meta, retorna null ou erro? O frontend espera objeto ou 404?
+    // O código anterior retornava 404. Vamos manter, mas é discutível.
     if (!meta) {
-      throw new ApiError(404, "Meta do atendente não encontrada.");
+      // throw new ApiError(404, "Meta do atendente não encontrada.");
+      // Mudar para retornar objeto vazio ou null para facilitar o frontend (sem erro 404 vermelho)
+      return res.status(200).json(null);
     }
 
     res.status(200).json(meta);
@@ -75,12 +78,7 @@ const atendenteMetaController = {
   // @route   GET /api/atendentes/metas
   // @access  Private (Super Admin, Admin)
   getAllMetasByTenant: asyncHandler(async (req, res) => {
-    const requestingUser = req.user;
-
-    const tenantId =
-      requestingUser.role.name === "Super Admin"
-        ? req.query.tenantId
-        : requestingUser.tenantId;
+    const tenantId = validateTenantAccess(req.user, req.query.tenantId);
 
     if (!tenantId) {
       throw new ApiError(400, "Tenant ID é obrigatório para buscar metas.");
@@ -95,12 +93,8 @@ const atendenteMetaController = {
   // @access  Private (Super Admin, Admin)
   deleteMeta: asyncHandler(async (req, res) => {
     const { atendenteId } = req.params;
-    const requestingUser = req.user;
-
-    const tenantId =
-      requestingUser.role.name === "Super Admin"
-        ? req.query.tenantId
-        : requestingUser.tenantId;
+    
+    const tenantId = validateTenantAccess(req.user, req.query.tenantId);
 
     if (!tenantId) {
       throw new ApiError(400, "Tenant ID é obrigatório para deletar metas.");

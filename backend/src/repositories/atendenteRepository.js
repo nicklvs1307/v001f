@@ -83,9 +83,34 @@ const findAtendentePerformanceById = async (atendenteId, tenantId) => {
         col: 'respondentSessionId',
     });
 
+    // Contar cadastros (registrations) vinculados a este atendente no período
+    // 1. Pegar sessionIds do atendente
+    const sessions = await Resposta.findAll({
+        where: {
+            ...whereClause,
+            respondentSessionId: { [Op.ne]: null }
+        },
+        attributes: [[fn('DISTINCT', col('respondentSessionId')), 'sessionId']],
+        raw: true
+    });
+    
+    const sessionIds = sessions.map(s => s.sessionId);
+    let registrationCount = 0;
+
+    if (sessionIds.length > 0) {
+        registrationCount = await require("../../models").Client.count({ // Lazy load model to avoid circular dependency issues if any
+            where: {
+                tenantId,
+                respondentSessionId: { [Op.in]: sessionIds },
+                createdAt: { [Op.gte]: beginningOfMonth } // Mesmo filtro de data das respostas
+            }
+        });
+    }
+
     return {
         currentNPS: npsScore,
         surveysResponded: surveyCount,
+        registrations: registrationCount,
     };
 };
 

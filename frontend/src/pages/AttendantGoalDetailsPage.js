@@ -273,6 +273,30 @@ const AttendantGoalDetailsPage = () => {
                 />
               </Grid>
             </Grid>
+
+            <Typography variant="h6" gutterBottom>Meta de Cadastros</Typography>
+            <Grid container spacing={3} sx={{ mb: 4 }}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  type="number"
+                  label="Meta de Cadastros Realizados"
+                  name="registrationsGoal"
+                  value={meta.registrationsGoal || ''}
+                  onChange={handleMetaChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  type="number"
+                  label="Valor do Prêmio (R$)"
+                  name="cadastros_premio_valor"
+                  value={meta.cadastros_premio_valor || ''}
+                  onChange={handleMetaChange}
+                />
+              </Grid>
+            </Grid>
             
             {saveSuccess && <Alert severity="success" sx={{ mb: 2 }}>Metas salvas com sucesso!</Alert>}
             {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
@@ -304,6 +328,11 @@ const AttendantGoalDetailsPage = () => {
                 title="Pesquisas Respondidas"
                 currentValue={performance.surveysResponded}
                 goalValue={meta.responsesGoal}
+              />
+              <PerformanceMetric 
+                title="Cadastros Realizados"
+                currentValue={performance.registrations}
+                goalValue={meta.registrationsGoal}
               />
             </Box>
           )}

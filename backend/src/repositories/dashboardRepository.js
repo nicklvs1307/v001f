@@ -1306,10 +1306,57 @@ const getAttendantsPerformance = async (tenantId, startDate, endDate) => {
     group: ['atendenteId'],
     raw: true,
   });
+
+  // 3.1 Contar cadastros (Clients) vinculados aos atendentes via respondentSessionId
+  // Precisamos encontrar Clients cujo respondentSessionId corresponde a uma resposta deste atendente
+  // A melhor forma performática é buscar as sessões dos atendentes e contar os clients
   
-  // O ideal seria ter `atendenteId` na tabela Clients. 
-  // A lógica de `registrations` aqui é uma aproximação e pode não ser precisa
-  // dependendo do fluxo de cadastro. Por enquanto, ela não está sendo usada no retorno.
+  // Primeiro, buscamos todas as sessões vinculadas a cada atendente no período
+  const sessionsByAttendantRaw = await Resposta.findAll({
+    where: { 
+      ...whereClause, 
+      atendenteId: { [Op.in]: attendantIds },
+      respondentSessionId: { [Op.ne]: null }
+    },
+    attributes: ['atendenteId', 'respondentSessionId'],
+    group: ['atendenteId', 'respondentSessionId'], // Dedup sessions per attendant
+    raw: true
+  });
+
+  // Mapa: SessionId -> AtendenteId
+  const sessionToAttendantMap = {};
+  const allSessionIds = [];
+  sessionsByAttendantRaw.forEach(s => {
+    sessionToAttendantMap[s.respondentSessionId] = s.atendenteId;
+    allSessionIds.push(s.respondentSessionId);
+  });
+
+  // Agora contamos os clients que têm esses sessionIds e foram criados no período (ou sempre, dependendo da regra. Vamos usar o período do filtro para consistência)
+  const clientWhereClause = {
+    respondentSessionId: { [Op.in]: allSessionIds },
+    tenantId: tenantId
+  };
+  
+  if (startDate && endDate) {
+     clientWhereClause.createdAt = { [Op.between]: [startDate, endDate] };
+  } else if (startDate) {
+     clientWhereClause.createdAt = { [Op.gte]: startDate };
+  }
+
+  const clientsFound = await Client.findAll({
+    where: clientWhereClause,
+    attributes: ['id', 'respondentSessionId'],
+    raw: true
+  });
+
+  // Agrupar contagem por atendente
+  const registrationsByAttendant = {};
+  clientsFound.forEach(client => {
+    const atendenteId = sessionToAttendantMap[client.respondentSessionId];
+    if (atendenteId) {
+        registrationsByAttendant[atendenteId] = (registrationsByAttendant[atendenteId] || 0) + 1;
+    }
+  });
 
   const countsByAttendant = surveyCounts.reduce((acc, item) => {
     acc[item.atendenteId] = {
@@ -1321,14 +1368,19 @@ const getAttendantsPerformance = async (tenantId, startDate, endDate) => {
   // 4. Montar o resultado final
   const attendantsData = attendants.map((attendant) => {
     const performance = countsByAttendant[attendant.id] || { responses: 0 };
+    const registrations = registrationsByAttendant[attendant.id] || 0;
+    
     return {
       id: attendant.id,
       name: attendant.name,
-      responses: performance.responses, // Corrigido para contar pesquisas únicas
+      responses: performance.responses, 
+      registrations: registrations, // Valor real calculado
       currentNPS: npsByAttendant[attendant.id] || 0,
-      currentCSAT: 0, // A lógica de CSAT foi removida por simplicidade, pode ser adicionada depois
+      currentCSAT: 0, 
       npsGoal: attendant.meta?.npsGoal ? parseFloat(attendant.meta.npsGoal) : 0,
-      csatGoal: 0, // A lógica de CSAT foi removida por simplicidade
+      responsesGoal: attendant.meta?.responsesGoal ? parseInt(attendant.meta.responsesGoal) : 0, // Adicionado meta de respostas
+      registrationsGoal: attendant.meta?.registrationsGoal ? parseInt(attendant.meta.registrationsGoal) : 0, // Adicionado meta de cadastros
+      csatGoal: 0, 
     };
   });
 
@@ -1988,13 +2040,13 @@ const getAttendantResponsesTimeseries = async (tenantId, period, startDate, endD
     where: whereClause,
     attributes: [
       'atendenteId',
-      [fn('date_trunc', period, col('Resposta.createdAt')), 'period'],
+      [fn('date_trunc', period, literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`)), 'period'],
       // Revertido para contar sessões únicas, conforme a regra de negócio.
       [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'count'],
     ],
     include: [{ model: Atendente, as: 'atendente', attributes: ['name'], required: true }],
-    group: ['atendenteId', 'atendente.id', 'period'],
-    order: [['period', 'ASC']],
+    group: ['atendenteId', 'atendente.id', fn('date_trunc', period, literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`))],
+    order: [[fn('date_trunc', period, literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`)), 'ASC']],
     raw: true,
     nest: true,
   });

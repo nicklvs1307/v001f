@@ -66,9 +66,9 @@ const RecompensaListPage = () => {
   const handleSubmitForm = async (formData) => {
     try {
       if (editingRecompensa) {
-        await recompensaService.updateRecompensa(editingRecompensa.id, formData);
+        await recompensaService.update(editingRecompensa.id, formData);
       } else {
-        await recompensaService.createRecompensa(formData);
+        await recompensaService.create(formData);
       }
       fetchRecompensas(); // Recarrega a lista inteira
       handleCloseForm();
@@ -89,7 +89,7 @@ const RecompensaListPage = () => {
 
   const handleDelete = async () => {
     try {
-      await recompensaService.deleteRecompensa(recompensaToDelete.id);
+      await recompensaService.delete(recompensaToDelete.id);
       fetchRecompensas();
       handleCloseConfirm();
     } catch (err) {

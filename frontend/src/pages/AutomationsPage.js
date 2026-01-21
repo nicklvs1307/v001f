@@ -98,7 +98,7 @@ const AutomationsPage = () => {
       
       const [automationsResponse, surveysResponse] = await Promise.all([
           automationService.getAutomations(),
-          surveyService.getAll()
+          surveyService.getSurveysList()
       ]);
 
       const mergedAutomations = {

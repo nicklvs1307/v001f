@@ -1,4 +1,4 @@
-import apiAuthenticated from '../apiAuthenticated';
+import apiAuthenticated from './apiAuthenticated';
 
 const planService = {
     getAllPlans: () => apiAuthenticated.get('/superadmin/plans'),

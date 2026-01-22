@@ -1,4 +1,4 @@
-import apiAuthenticated from '../apiAuthenticated';
+import apiAuthenticated from './apiAuthenticated';
 
 const permissionService = {
     getAllPermissions: () => apiAuthenticated.get('/superadmin/permissions'),

@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const { Permissao, Role, RolePermissao, sequelize } = require("../../../models");
-const ApiError = require("../../../errors/ApiError");
+const ApiError = require("../../errors/ApiError");
 
 // @desc    Listar todas as permissões disponíveis no sistema
 // @route   GET /api/superadmin/permissions

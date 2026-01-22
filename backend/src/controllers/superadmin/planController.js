@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const { Plan } = require("../../models");
+const { Plan } = require("../../../models");
 const ApiError = require("../../errors/ApiError");
 
 // @desc    Listar todos os planos

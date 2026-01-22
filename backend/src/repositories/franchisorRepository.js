@@ -1,7 +1,24 @@
-    const { Franchisor, Tenant } = require('../../models');
+const { Franchisor, Tenant } = require('../../models');
 
 const franchisorRepository = {
-    // ... (create, findAll, etc.)
+    /**
+     * Cria uma nova franqueadora no banco de dados.
+     * @param {object} franchisorData - Dados da franqueadora (name, cnpj, email, phone).
+     * @returns {Promise<Franchisor>} O objeto da franqueadora criada.
+     */
+    async create(franchisorData) {
+        return await Franchisor.create(franchisorData);
+    },
+
+    /**
+     * Retorna todas as franqueadoras.
+     * @returns {Promise<Franchisor[]>} Uma lista de todas as franqueadoras.
+     */
+    async findAll() {
+        return await Franchisor.findAll({
+            order: [['name', 'ASC']],
+        });
+    },
 
     /**
      * Encontra uma franqueadora pelo seu ID, incluindo seus Tenants.
@@ -13,7 +30,7 @@ const franchisorRepository = {
             include: [{
                 model: Tenant,
                 as: 'tenants',
-                attributes: ['id', 'name', 'city', 'state', 'status', 'logoUrl', 'phone', 'createdAt'], // Adicionei campos úteis
+                attributes: ['id', 'name', 'status', 'logoUrl', 'phone', 'createdAt'],
             }],
         });
     },

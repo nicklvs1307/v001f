@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
     Container,
     Typography,
@@ -16,6 +16,8 @@ import { useNotification } from 'context/NotificationContext';
 const TenantFormPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const franchisorId = searchParams.get('franchisorId');
     const { showNotification } = useNotification();
     const isEditMode = Boolean(id);
     const [formData, setFormData] = useState({
@@ -28,6 +30,7 @@ const TenantFormPage = () => {
         adminName: '',
         adminEmail: '',
         adminPassword: '',
+        franchisorId: franchisorId || '', // Inicializar com o parâmetro da URL
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');

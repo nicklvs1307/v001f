@@ -53,7 +53,15 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('userToken', token);
             const userData = await authService.verifyToken();
             setUser(userData);
-            navigate('/dashboard');
+
+            // Redirecionamento baseado no papel (Role)
+            if (userData.role && userData.role.name === 'Super Admin') {
+                navigate('/superadmin');
+            } else if (userData.role && userData.role.name === 'Franqueador') {
+                navigate('/franchisor');
+            } else {
+                navigate('/dashboard');
+            }
         } catch (error) {
             throw error;
         }

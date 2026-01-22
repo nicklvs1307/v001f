@@ -137,6 +137,15 @@ module.exports = (sequelize, DataTypes) => {
         model: 'franchisors',
         key: 'id',
       },
+    },
+    plan: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'basic',
+    },
+    planExpiresAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
     }
   }, {
     sequelize,

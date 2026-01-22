@@ -128,11 +128,11 @@ const AppRoutes = () => {
               <Route path="tenants" element={<TenantsPage />} />
               <Route path="tenants/new" element={<TenantFormPage />} />
               <Route path="tenants/edit/:id" element={<TenantFormPage />} />
-              <Route path="franchisors" element={<FranchisorsPage />} />
-              <Route path="franchisors/new" element={<FranchisorFormPage />} />
-              <Route path="franchisors/edit/:id" element={<FranchisorFormPage />} />
-              <Route path="whatsapp-config" element={<WhatsappConfigPage />} />
-              <Route path="sender-pool" element={<SenderPoolPage />} />
+                        <Route path="franchisors" element={<FranchisorsPage />} />
+                        <Route path="franchisors/new" element={<FranchisorFormPage />} />
+                        <Route path="franchisors/:id" element={<FranchisorDashboardPage />} /> {/* Dashboard da Franquia */}
+                        <Route path="franchisors/edit/:id" element={<FranchisorFormPage />} />
+                        <Route path="whatsapp-config" element={<WhatsappConfigPage />} />              <Route path="sender-pool" element={<SenderPoolPage />} />
               <Route path="senders/:id/connect" element={<SenderConnectPage />} />
               <Route path="reports/system-overview" element={<SystemReportsPage />} />
               <Route path="reports/tenant-reports" element={<TenantReportsPage />} />

@@ -4,6 +4,7 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DashboardIcon from '@mui/icons-material/Dashboard'; // Import DashboardIcon
 import superadminFranchisorService from '../services/superadminFranchisorService';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -60,13 +61,16 @@ const FranchisorsPage = () => {
             headerName: 'Ações',
             sortable: false,
             filterable: false,
-            width: 120,
+            width: 160,
             renderCell: (params) => (
                 <Box>
-                    <IconButton onClick={() => handleEdit(params.id)} color="primary">
+                    <IconButton onClick={() => navigate(`/superadmin/franchisors/${params.id}`)} color="primary" title="Dashboard">
+                        <DashboardIcon />
+                    </IconButton>
+                    <IconButton onClick={() => handleEdit(params.id)} color="primary" title="Editar">
                         <EditIcon />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(params.id)} color="secondary">
+                    <IconButton onClick={() => handleDelete(params.id)} color="secondary" title="Deletar">
                         <DeleteIcon />
                     </IconButton>
                 </Box>

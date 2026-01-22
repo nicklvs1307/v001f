@@ -11,7 +11,8 @@ const bcrypt = require('bcryptjs');
 exports.createTenant = asyncHandler(async (req, res) => {
   const { 
     name, address, phone, email, cnpj, description, // Tenant data
-    adminName, adminEmail, adminPassword // Admin user data
+    adminName, adminEmail, adminPassword, // Admin user data
+    franchisorId // Optional: provided by Super Admin
   } = req.body;
   const requestingUser = req.user;
 
@@ -27,8 +28,11 @@ exports.createTenant = asyncHandler(async (req, res) => {
   const tenantData = { name, address, phone, email, cnpj, description };
   const adminData = { name: adminName, email: adminEmail, passwordHash: passwordHash };
 
-  if (requestingUser.role === 'Franqueador') {
+  // Se for Franqueador logado, força o ID dele. Se for Super Admin, aceita o ID vindo do body.
+  if (requestingUser.role.name === 'Franqueador') {
     tenantData.franchisorId = requestingUser.franchisorId;
+  } else if (requestingUser.role.name === 'Super Admin' && franchisorId) {
+    tenantData.franchisorId = franchisorId;
   }
 
   // Chamar a nova função transacional no repositório

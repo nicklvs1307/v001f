@@ -73,6 +73,8 @@ const SuperAdminLayout = () => {
         { text: 'Dashboard', icon: <DashboardIcon />, path: '/superadmin/dashboard', roles: [ROLES.SUPER_ADMIN] },
         { text: 'Tenants', icon: <PeopleIcon />, path: '/superadmin/tenants', roles: [ROLES.SUPER_ADMIN] },
         { text: 'Franqueadores', icon: <StorefrontIcon />, path: '/superadmin/franchisors', roles: [ROLES.SUPER_ADMIN] },
+        { text: 'Planos e Assinaturas', icon: <AssessmentIcon />, path: '/superadmin/plans', roles: [ROLES.SUPER_ADMIN] },
+        { text: 'Cargos e Permissões', icon: <PeopleIcon />, path: '/superadmin/roles', roles: [ROLES.SUPER_ADMIN] },
         { text: 'Configurações WhatsApp', icon: <WhatsAppIcon />, path: '/superadmin/whatsapp-config', roles: [ROLES.SUPER_ADMIN] },
         { text: 'Pool de Disparo', icon: <DnsIcon />, path: '/superadmin/sender-pool', roles: [ROLES.SUPER_ADMIN] },
         {

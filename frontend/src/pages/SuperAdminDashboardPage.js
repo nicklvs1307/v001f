@@ -71,6 +71,14 @@ const SuperAdminDashboardPage = () => {
         <Grid container spacing={4} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
             <StatCard
+              title="MRR Estimado"
+              value={dashboardData.totalMRR ? `R$ ${dashboardData.totalMRR.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : 'R$ 0,00'}
+              icon={<Store sx={{ fontSize: 40, color: theme.palette.success.dark }} />}
+              color={theme.palette.success.dark}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard
               title="Total de Tenants"
               value={dashboardData.totalTenants}
               icon={<Store sx={{ fontSize: 40, color: theme.palette.primary.main }} />}
@@ -91,14 +99,6 @@ const SuperAdminDashboardPage = () => {
               value={dashboardData.totalUsers}
               icon={<People sx={{ fontSize: 40, color: theme.palette.secondary.main }} />}
               color={theme.palette.secondary.main}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <StatCard
-              title="Total de Pesquisas"
-              value={dashboardData.totalSurveys}
-              icon={<Assessment sx={{ fontSize: 40, color: theme.palette.success.main }} />}
-              color={theme.palette.success.main}
             />
           </Grid>
         </Grid>

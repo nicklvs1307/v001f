@@ -6,7 +6,8 @@ const {
   WhatsappSender,
   Client,
   Resposta,
-  Franchisor, // Importar o modelo Franchisor
+  Franchisor,
+  Plan, // Importar Plan
   sequelize,
 } = require("../../../models");
 const { Op } = require("sequelize");
@@ -16,7 +17,7 @@ class ReportService {
     const totalTenants = await Tenant.count();
     const totalUsers = await Usuario.count();
     const totalSurveys = await Pesquisa.count();
-    const totalFranchisors = await Franchisor.count(); // Contar franqueadores
+    const totalFranchisors = await Franchisor.count();
 
     const userGrowth = await Usuario.findAll({
       attributes: [
@@ -36,18 +37,40 @@ class ReportService {
       raw: true,
     });
 
-    // This is a placeholder for plans, as there is no plan information in the tenant model
-    const tenantsByPlan = [
-      { name: "Básico", value: totalTenants },
-      { name: "Pro", value: 0 },
-      { name: "Enterprise", value: 0 },
-    ];
+    // Buscar distribuição real de planos
+    const tenantsByPlanRaw = await Tenant.findAll({
+      attributes: ['plan', [sequelize.fn('COUNT', sequelize.col('id')), 'count']],
+      group: ['plan'],
+      raw: true
+    });
+
+    // Buscar detalhes dos planos para calcular MRR
+    const allPlans = await Plan.findAll({ raw: true });
+    const planMap = new Map(allPlans.map(p => [p.name.toLowerCase(), p])); // Normalizar nome para chave
+
+    let totalMRR = 0;
+    const tenantsByPlan = tenantsByPlanRaw.map(item => {
+      // Tentar encontrar o plano pelo nome (string) armazenado no tenant
+      // Nota: Idealmente o tenant deveria ter planId (UUID), mas estamos usando string 'plan' por legado
+      const planName = item.plan ? item.plan.toLowerCase() : 'basic';
+      const planInfo = planMap.get(planName) || planMap.get('básico') || { price: 0, name: item.plan };
+      
+      const count = parseInt(item.count, 10);
+      totalMRR += count * parseFloat(planInfo.price || 0);
+
+      return {
+        name: item.plan || 'Desconhecido',
+        value: count,
+        revenue: count * parseFloat(planInfo.price || 0)
+      };
+    });
 
     return {
       totalTenants,
       totalUsers,
       totalSurveys,
-      totalFranchisors, // Retornar o novo valor
+      totalFranchisors,
+      totalMRR, // Nova métrica: Receita Recorrente Mensal
       userGrowth: userGrowth.map((item) => ({
         name: new Date(item.month).toLocaleString("default", {
           month: "short",

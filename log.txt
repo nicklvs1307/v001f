@@ -1,17 +1,18 @@
-=> ERROR [build 6/6] RUN npm run build                                                                                                        13.2s
+=> ERROR [build 6/6] RUN npm run build                                                                                                        15.5s
 ------
  > [build 6/6] RUN npm run build:
-0.951
-0.951 > frontend@0.1.0 build
-0.951 > react-scripts build
-0.951
-2.991 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-5.339 Creating an optimized production build...
-13.03 Failed to compile.
-13.03
-13.03 Module not found: Error: Can't resolve '../pages/RolesPage' in '/app/src/routes'
-13.03
-13.03
+0.739
+0.739 > frontend@0.1.0 build
+0.739 > react-scripts build
+0.739
+2.161 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+3.822 Creating an optimized production build...
+15.32 Failed to compile.
+15.32
+15.32 Module not found: Error: You attempted to import ../../services/planService which falls outside of the project src/ directory. Relative imports outside of src/ are not supported.
+15.32 You can either move it inside src/, or add a symlink to it from project's node_modules/.
+15.32
+15.32
 ------
 Dockerfile:14
 --------------------

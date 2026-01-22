@@ -23,7 +23,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import planService from '../../services/planService';
+import planService from '../services/planService';
 import toast from 'react-hot-toast';
 
 const PlansPage = () => {

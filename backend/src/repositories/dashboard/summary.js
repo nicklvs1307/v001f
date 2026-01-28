@@ -240,7 +240,7 @@ const getMonthlySummary = async (
     group: ["date", "hour", "weekday"],
     raw: true,
   };
-  
+
   const results = await Resposta.findAll(query);
 
   const dailyNps = {};

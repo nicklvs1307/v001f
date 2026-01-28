@@ -136,7 +136,7 @@ module.exports = {
     const { period, startDate, endDate, atendenteId } = req.query;
     const data = await dashboardService.getAttendantResponsesTimeseries(
       req.tenantId,
-      period || 'day',
+      period || "day",
       startDate,
       endDate,
       atendenteId,
@@ -231,19 +231,29 @@ module.exports = {
 
   getDemographicsData: asyncHandler(async (req, res) => {
     const { startDate, endDate } = req.query;
-    const data = await dashboardRepository.getDemographicsData(req.tenantId, startDate, endDate);
+    const data = await dashboardRepository.getDemographicsData(
+      req.tenantId,
+      startDate,
+      endDate,
+    );
     res.status(200).json(data);
   }),
 
   getTopClientsByResponses: asyncHandler(async (req, res) => {
     const { limit } = req.query;
-    const data = await dashboardRepository.getTopClientsByResponses(req.tenantId, limit);
+    const data = await dashboardRepository.getTopClientsByResponses(
+      req.tenantId,
+      limit,
+    );
     res.status(200).json(data);
   }),
 
   getTopClientsByRedemptions: asyncHandler(async (req, res) => {
     const { limit } = req.query;
-    const data = await dashboardRepository.getTopClientsByRedemptions(req.tenantId, limit);
+    const data = await dashboardRepository.getTopClientsByRedemptions(
+      req.tenantId,
+      limit,
+    );
     res.status(200).json(data);
   }),
 };

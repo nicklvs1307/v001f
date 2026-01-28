@@ -9,7 +9,7 @@ const franchisorController = {
   getDashboard: asyncHandler(async (req, res) => {
     const { franchisorId } = req.user; // O franchisorId será injetado no req.user pelo middleware de autenticação
     const { surveyId, period } = req.query;
-    
+
     // Tratamento de datas
     let startDate, endDate;
     if (req.query.startDate) {
@@ -20,8 +20,11 @@ const franchisorController = {
     }
 
     const queryParams = { startDate, endDate, surveyId, period };
-    
-    const dashboardData = await franchisorService.getAggregatedDashboardData(franchisorId, queryParams);
+
+    const dashboardData = await franchisorService.getAggregatedDashboardData(
+      franchisorId,
+      queryParams,
+    );
 
     res.status(200).json(dashboardData);
   }),

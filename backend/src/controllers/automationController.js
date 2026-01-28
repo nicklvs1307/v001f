@@ -1,7 +1,22 @@
 const asyncHandler = require("express-async-handler");
-const { format, addDays, subDays, subWeeks, startOfWeek, endOfWeek, subMonths, startOfMonth, endOfMonth } = require("date-fns");
+const {
+  format,
+  addDays,
+  subDays,
+  subWeeks,
+  startOfWeek,
+  endOfWeek,
+  subMonths,
+  startOfMonth,
+  endOfMonth,
+} = require("date-fns");
 const { ptBR } = require("date-fns/locale");
-const { formatInTimeZone, TIMEZONE, convertToUtc, now } = require("../utils/dateUtils");
+const {
+  formatInTimeZone,
+  TIMEZONE,
+  convertToUtc,
+  now,
+} = require("../utils/dateUtils");
 const whatsappService = require("../services/whatsappService");
 const tenantRepository = require("../repositories/tenantRepository");
 const dashboardRepository = require("../repositories/dashboardRepository");
@@ -33,21 +48,20 @@ exports.testDailyReport = asyncHandler(async (req, res) => {
   const yesterday = subDays(today, 1);
   const yesterdayDateString = formatInTimeZone(yesterday, "yyyy-MM-dd");
   const startOfYesterdayZoned = convertToUtc(
-    new Date(`${yesterdayDateString}T00:00:00.000Z`)
+    new Date(`${yesterdayDateString}T00:00:00.000Z`),
   );
   const endOfYesterdayZoned = convertToUtc(
-    new Date(`${yesterdayDateString}T23:59:59.999Z`)
+    new Date(`${yesterdayDateString}T23:59:59.999Z`),
   );
-
 
   // Two days ago
   const twoDaysAgo = subDays(today, 2);
   const twoDaysAgoDateString = formatInTimeZone(twoDaysAgo, "yyyy-MM-dd");
   const startOfTwoDaysAgoZoned = convertToUtc(
-    new Date(`${twoDaysAgoDateString}T00:00:00.000Z`)
+    new Date(`${twoDaysAgoDateString}T00:00:00.000Z`),
   );
   const endOfTwoDaysAgoZoned = convertToUtc(
-    new Date(`${twoDaysAgoDateString}T23:59:59.999Z`)
+    new Date(`${twoDaysAgoDateString}T23:59:59.999Z`),
   );
 
   const yesterdaySummary = await dashboardRepository.getSummary(
@@ -249,7 +263,7 @@ exports.testWeeklyReport = asyncHandler(async (req, res) => {
   const zonedNow = now();
   const lastWeek = subWeeks(zonedNow, 1);
   const startOfLastWeek = startOfWeek(lastWeek, { weekStartsOn: 1 }); // Monday
-  const endOfLastWeek = endOfWeek(lastWeek, { weekStartsOn: 1 });   // Sunday
+  const endOfLastWeek = endOfWeek(lastWeek, { weekStartsOn: 1 }); // Sunday
 
   const weeklySummary = await dashboardRepository.getSummary(
     tenantId,
@@ -260,9 +274,8 @@ exports.testWeeklyReport = asyncHandler(async (req, res) => {
   const formattedStartDate = format(startOfLastWeek, "dd/MM/yyyy");
   const formattedEndDate = format(endOfLastWeek, "dd/MM/yyyy");
   const isoDate = format(endOfLastWeek, "yyyy-MM-dd");
-  
-  const baseUrl =
-    process.env.FRONTEND_URL || "https://loyalfood.towersfy.com";
+
+  const baseUrl = process.env.FRONTEND_URL || "https://loyalfood.towersfy.com";
   const reportUrl = `${baseUrl}/relatorios/semanal?date=${isoDate}`;
 
   let message =
@@ -273,7 +286,7 @@ exports.testWeeklyReport = asyncHandler(async (req, res) => {
     `🟡 Número de Neutros: ${weeklySummary.nps.neutrals}\n` +
     `🔴 Número de Detratores: ${weeklySummary.nps.detractors}\n\n` +
     `🔗 Para acessar o relatório completo, visite ${reportUrl}`;
-    
+
   message += "\n\n--- MENSAGEM DE TESTE ---";
 
   await whatsappService.sendTenantMessage(tenantId, phoneNumber, message);
@@ -312,8 +325,7 @@ exports.testMonthlyReport = asyncHandler(async (req, res) => {
   const formattedMonth = format(lastMonth, "MMMM 'de' yyyy", { locale: ptBR });
   const isoDate = format(endOfLastMonth, "yyyy-M-dd");
 
-  const baseUrl =
-    process.env.FRONTEND_URL || "https://loyalfood.towersfy.com";
+  const baseUrl = process.env.FRONTEND_URL || "https://loyalfood.towersfy.com";
   const reportUrl = `${baseUrl}/relatorios/mensal?date=${isoDate}`;
 
   let message =

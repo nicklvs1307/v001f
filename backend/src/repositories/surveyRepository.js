@@ -437,10 +437,10 @@ const findActiveDefaultSurvey = async (tenantId) => {
   return Pesquisa.findOne({
     where: {
       tenantId,
-      status: 'active',
+      status: "active",
       // Talvez adicionar outras condições como isOpen: true, ou um campo 'isDefaultDeliverySurvey: true'
     },
-    order: [['createdAt', 'DESC']], // Pega a mais recente
+    order: [["createdAt", "DESC"]], // Pega a mais recente
   });
 };
 

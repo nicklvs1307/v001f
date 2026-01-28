@@ -10,11 +10,9 @@ const tenantMiddleware = (req, res, next) => {
     tenantId = req.user.tenantId;
     // Garante que um usuário não-admin não possa bisbilhotar outros tenants
     if (!tenantId) {
-      return res
-        .status(403)
-        .json({
-          message: "Acesso negado: Tenant ID não encontrado para este usuário.",
-        });
+      return res.status(403).json({
+        message: "Acesso negado: Tenant ID não encontrado para este usuário.",
+      });
     }
   }
 

@@ -8,6 +8,9 @@ router.use(authorize("Super Admin"));
 
 router.get("/permissions", permissionController.getAllPermissions);
 router.get("/roles", permissionController.getAllSystemRoles);
-router.put("/roles/:roleId/permissions", permissionController.updateRolePermissions);
+router.put(
+  "/roles/:roleId/permissions",
+  permissionController.updateRolePermissions,
+);
 
 module.exports = router;

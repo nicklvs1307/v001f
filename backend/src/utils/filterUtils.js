@@ -12,7 +12,7 @@ const { Op } = require("sequelize");
  * @returns {object} A cláusula 'where' do Sequelize.
  */
 function buildWhereClause(options = {}) {
-  const { tenantId, surveyId, dateRange, dateField = 'createdAt' } = options;
+  const { tenantId, surveyId, dateRange, dateField = "createdAt" } = options;
   const where = {};
 
   if (tenantId) {
@@ -22,7 +22,9 @@ function buildWhereClause(options = {}) {
     where.pesquisaId = surveyId;
   }
   if (dateRange && dateRange.startDate && dateRange.endDate) {
-    where[dateField] = { [Op.between]: [dateRange.startDate, dateRange.endDate] };
+    where[dateField] = {
+      [Op.between]: [dateRange.startDate, dateRange.endDate],
+    };
   } else if (dateRange && dateRange.startDate) {
     where[dateField] = { [Op.gte]: dateRange.startDate };
   } else if (dateRange && dateRange.endDate) {

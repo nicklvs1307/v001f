@@ -265,22 +265,21 @@ exports.getRoletaConfig = asyncHandler(async (req, res) => {
     return res.status(200).json({ items: [], hasSpun: hasSpunRecently });
   }
 
-  const items = premios
-    .map((premio) => ({
-      id: premio.id,
-      name: premio.nome,
-      description: premio.descricao,
-      probabilidade: premio.porcentagem,
-      recompensa: premio.recompensa
-        ? {
-            id: premio.recompensa.id,
-            name: premio.recompensa.name,
-            value: premio.recompensa.value,
-            type: premio.recompensa.type,
-          }
-        : null, // Retorna null se não houver recompensa
-      isNoPrizeOption: premio.isNoPrizeOption, // Adicionado
-    }));
+  const items = premios.map((premio) => ({
+    id: premio.id,
+    name: premio.nome,
+    description: premio.descricao,
+    probabilidade: premio.porcentagem,
+    recompensa: premio.recompensa
+      ? {
+          id: premio.recompensa.id,
+          name: premio.recompensa.name,
+          value: premio.recompensa.value,
+          type: premio.recompensa.type,
+        }
+      : null, // Retorna null se não houver recompensa
+    isNoPrizeOption: premio.isNoPrizeOption, // Adicionado
+  }));
 
   res.status(200).json({ items, hasSpun: hasSpunRecently });
 });

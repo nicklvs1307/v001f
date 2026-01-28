@@ -296,14 +296,14 @@ const getRegistrationTrendData = async (
   }));
 };
 
-const getEvolutionDashboard = async function (
+const getEvolutionDashboard = async (
   tenantId = null,
   period = "day",
   startDateStr = null,
   endDateStr = null,
 ) => {
   const dateRange = getUtcDateRange(startDateStr, endDateStr);
-  
+
   const npsTrend = await getNpsTrendData(
     tenantId,
     period,

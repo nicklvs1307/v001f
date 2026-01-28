@@ -3,22 +3,32 @@ const tenantRepository = require("../repositories/tenantRepository");
 const ApiError = require("../errors/ApiError");
 const fs = require("fs");
 const path = require("path");
-const bcrypt = require('bcryptjs');
+const bcrypt = require("bcryptjs");
 
 // @desc    Criar um novo tenant com seu usuário admin
 // @route   POST /api/tenants
 // @access  Private (Super Admin)
 exports.createTenant = asyncHandler(async (req, res) => {
-  const { 
-    name, address, phone, email, cnpj, description, // Tenant data
-    adminName, adminEmail, adminPassword, // Admin user data
-    franchisorId // Optional: provided by Super Admin
+  const {
+    name,
+    address,
+    phone,
+    email,
+    cnpj,
+    description, // Tenant data
+    adminName,
+    adminEmail,
+    adminPassword, // Admin user data
+    franchisorId, // Optional: provided by Super Admin
   } = req.body;
   const requestingUser = req.user;
 
   // Validação
   if (!name || !adminName || !adminEmail || !adminPassword) {
-    throw new ApiError(400, "Dados da empresa e do administrador são obrigatórios.");
+    throw new ApiError(
+      400,
+      "Dados da empresa e do administrador são obrigatórios.",
+    );
   }
 
   // Hash da senha do admin
@@ -26,17 +36,22 @@ exports.createTenant = asyncHandler(async (req, res) => {
   const passwordHash = await bcrypt.hash(adminPassword, salt);
 
   const tenantData = { name, address, phone, email, cnpj, description };
-  const adminData = { name: adminName, email: adminEmail, passwordHash: passwordHash };
+  const adminData = {
+    name: adminName,
+    email: adminEmail,
+    passwordHash: passwordHash,
+  };
 
   // Se for Franqueador logado, força o ID dele. Se for Super Admin, aceita o ID vindo do body.
-  if (requestingUser.role.name === 'Franqueador') {
+  if (requestingUser.role.name === "Franqueador") {
     tenantData.franchisorId = requestingUser.franchisorId;
-  } else if (requestingUser.role.name === 'Super Admin' && franchisorId) {
+  } else if (requestingUser.role.name === "Super Admin" && franchisorId) {
     tenantData.franchisorId = franchisorId;
   }
 
   // Chamar a nova função transacional no repositório
-  const { tenant: newTenant, user: newAdmin } = await tenantRepository.createTenantWithAdmin(tenantData, adminData);
+  const { tenant: newTenant, user: newAdmin } =
+    await tenantRepository.createTenantWithAdmin(tenantData, adminData);
 
   res.status(201).json({
     message: "Tenant e usuário administrador criados com sucesso!",
@@ -208,7 +223,7 @@ exports.updateMe = asyncHandler(async (req, res) => {
     deliveryMuchClientId,
     deliveryMuchClientSecret,
     deliveryMuchUsername,
-    deliveryMuchPassword
+    deliveryMuchPassword,
   } = req.body;
 
   if (!tenantId) {
@@ -228,7 +243,7 @@ exports.updateMe = asyncHandler(async (req, res) => {
     deliveryMuchClientId,
     deliveryMuchClientSecret,
     deliveryMuchUsername,
-    deliveryMuchPassword
+    deliveryMuchPassword,
   };
 
   const updatedTenant = await tenantRepository.updateTenant(
@@ -240,5 +255,7 @@ exports.updateMe = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Tenant não encontrado para atualização.");
   }
 
-  res.status(200).json({ message: "Tenant atualizado com sucesso.", tenant: updatedTenant });
+  res
+    .status(200)
+    .json({ message: "Tenant atualizado com sucesso.", tenant: updatedTenant });
 });

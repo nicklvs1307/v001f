@@ -1,6 +1,10 @@
 const cron = require("node-cron");
 const { format, subDays } = require("date-fns");
-const { formatInTimeZone, TIMEZONE, convertToUtc } = require("../utils/dateUtils");
+const {
+  formatInTimeZone,
+  TIMEZONE,
+  convertToUtc,
+} = require("../utils/dateUtils");
 const whatsappService = require("../services/whatsappService");
 const whatsappConfigRepository = require("../repositories/whatsappConfigRepository");
 const tenantRepository = require("../repositories/tenantRepository");
@@ -48,20 +52,23 @@ const dailyReportTask = cron.schedule(
           const yesterday = subDays(today, 1);
           const yesterdayDateString = formatInTimeZone(yesterday, "yyyy-MM-dd");
           const startOfYesterdayZoned = convertToUtc(
-            new Date(`${yesterdayDateString}T00:00:00.000Z`)
+            new Date(`${yesterdayDateString}T00:00:00.000Z`),
           );
           const endOfYesterdayZoned = convertToUtc(
-            new Date(`${yesterdayDateString}T23:59:59.999Z`)
+            new Date(`${yesterdayDateString}T23:59:59.999Z`),
           );
 
           // Two days ago
           const twoDaysAgo = subDays(today, 2);
-          const twoDaysAgoDateString = formatInTimeZone(twoDaysAgo, "yyyy-MM-dd");
+          const twoDaysAgoDateString = formatInTimeZone(
+            twoDaysAgo,
+            "yyyy-MM-dd",
+          );
           const startOfTwoDaysAgoZoned = convertToUtc(
-            new Date(`${twoDaysAgoDateString}T00:00:00.000Z`)
+            new Date(`${twoDaysAgoDateString}T00:00:00.000Z`),
           );
           const endOfTwoDaysAgoZoned = convertToUtc(
-            new Date(`${twoDaysAgoDateString}T23:59:59.999Z`)
+            new Date(`${twoDaysAgoDateString}T23:59:59.999Z`),
           );
 
           // Fetch summaries for both days using the timezone-aware dates

@@ -10,7 +10,14 @@ const findRoleById = async (roleId) => {
   return Role.findByPk(roleId);
 };
 
-const createUser = async (tenantId, roleId, name, email, passwordHash, franchisorId = null) => {
+const createUser = async (
+  tenantId,
+  roleId,
+  name,
+  email,
+  passwordHash,
+  franchisorId = null,
+) => {
   const newUser = await Usuario.create({
     tenantId,
     franchisorId,

@@ -304,12 +304,21 @@ const submitSurveyResponses = async (
                 .split(",")
                 .map((n) => n.trim())
                 .filter((n) => n);
-              
+
               let messageToAdmin = whatsappConfig.detractorOwnerMessageTemplate;
 
-              messageToAdmin = messageToAdmin.replace(/{{cliente}}/g, client ? client.name : "Não identificado");
-              messageToAdmin = messageToAdmin.replace(/{{nota}}/g, res.ratingValue);
-              messageToAdmin = messageToAdmin.replace(/{{comentario}}/g, res.textValue || "Nenhum comentário.");
+              messageToAdmin = messageToAdmin.replace(
+                /{{cliente}}/g,
+                client ? client.name : "Não identificado",
+              );
+              messageToAdmin = messageToAdmin.replace(
+                /{{nota}}/g,
+                res.ratingValue,
+              );
+              messageToAdmin = messageToAdmin.replace(
+                /{{comentario}}/g,
+                res.textValue || "Nenhum comentário.",
+              );
 
               for (const number of numbersToNotify) {
                 try {
@@ -338,8 +347,14 @@ const submitSurveyResponses = async (
                 /{{cliente}}/g,
                 client.name.split(" ")[0],
               );
-              messageToClient = messageToClient.replace(/{{nota}}/g, res.ratingValue);
-              messageToClient = messageToClient.replace(/{{comentario}}/g, res.textValue || "Nenhum comentário.");
+              messageToClient = messageToClient.replace(
+                /{{nota}}/g,
+                res.ratingValue,
+              );
+              messageToClient = messageToClient.replace(
+                /{{comentario}}/g,
+                res.textValue || "Nenhum comentário.",
+              );
 
               try {
                 await whatsappService.sendTenantMessage(

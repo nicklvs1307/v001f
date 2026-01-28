@@ -51,6 +51,9 @@ const config = {
 };
 
 console.log("JWT Secret loaded:", config.jwtSecret ? "********" : "NOT SET");
-console.log("JWT Secret length:", config.jwtSecret ? config.jwtSecret.length : 0);
+console.log(
+  "JWT Secret length:",
+  config.jwtSecret ? config.jwtSecret.length : 0,
+);
 
 module.exports = config;

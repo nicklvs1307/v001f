@@ -45,17 +45,28 @@ const submitSurveyResponses = asyncHandler(async (req, res) => {
   if (client && (client.phone || client.email)) {
     let existingClient = null;
     if (client.phone) {
-      existingClient = await clientRepository.findClientByPhone(client.phone, tenantId);
+      existingClient = await clientRepository.findClientByPhone(
+        client.phone,
+        tenantId,
+      );
     }
     if (!existingClient && client.email) {
-      existingClient = await clientRepository.findClientByEmail(client.email, tenantId);
+      existingClient = await clientRepository.findClientByEmail(
+        client.email,
+        tenantId,
+      );
     }
 
     if (existingClient) {
       currentClient = existingClient;
-      currentRespondentSessionId = existingClient.respondentSessionId || uuidv4();
+      currentRespondentSessionId =
+        existingClient.respondentSessionId || uuidv4();
       if (!existingClient.respondentSessionId) {
-        await clientRepository.updateClient(existingClient.id, { respondentSessionId: currentRespondentSessionId }, tenantId);
+        await clientRepository.updateClient(
+          existingClient.id,
+          { respondentSessionId: currentRespondentSessionId },
+          tenantId,
+        );
       }
     } else {
       // Create new client if not found
@@ -98,17 +109,28 @@ const submitSurveyWithClient = asyncHandler(async (req, res) => {
   );
   // If client not found by phone, check by email
   if (!existingClient && client.email) {
-    existingClient = await clientRepository.findClientByEmail(client.email, tenantId);
+    existingClient = await clientRepository.findClientByEmail(
+      client.email,
+      tenantId,
+    );
   }
 
   if (!existingClient) {
-    throw new ApiError(404, "Cliente não encontrado com o telefone/email fornecido.");
+    throw new ApiError(
+      404,
+      "Cliente não encontrado com o telefone/email fornecido.",
+    );
   }
 
   // Use existing client's respondentSessionId or generate a new one if it's null
-  const currentRespondentSessionId = existingClient.respondentSessionId || uuidv4();
+  const currentRespondentSessionId =
+    existingClient.respondentSessionId || uuidv4();
   if (!existingClient.respondentSessionId) {
-    await clientRepository.updateClient(existingClient.id, { respondentSessionId: currentRespondentSessionId }, tenantId);
+    await clientRepository.updateClient(
+      existingClient.id,
+      { respondentSessionId: currentRespondentSessionId },
+      tenantId,
+    );
   }
 
   await publicSurveyRepository.submitSurveyResponses(

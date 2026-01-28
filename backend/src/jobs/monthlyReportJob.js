@@ -26,17 +26,19 @@ const monthlyReportTask = cron.schedule(
       }
 
       console.log(
-        `Encontradas ${configsToReport.length} configurações para receber relatórios mensais.`, 
+        `Encontradas ${configsToReport.length} configurações para receber relatórios mensais.`,
       );
 
       for (const config of configsToReport) {
         try {
-          console.log(`Gerando relatório mensal para o tenantId: ${config.tenantId}`);
+          console.log(
+            `Gerando relatório mensal para o tenantId: ${config.tenantId}`,
+          );
 
           const tenant = await tenantRepository.getTenantById(config.tenantId);
           if (!tenant) {
             console.warn(
-              `Tenant ${config.tenantId} não encontrado para a configuração de relatório.`, 
+              `Tenant ${config.tenantId} não encontrado para a configuração de relatório.`,
             );
             continue;
           }
@@ -52,7 +54,9 @@ const monthlyReportTask = cron.schedule(
             endOfLastMonth,
           );
 
-          const formattedMonth = format(lastMonth, "MMMM 'de' yyyy", { locale: ptBR });
+          const formattedMonth = format(lastMonth, "MMMM 'de' yyyy", {
+            locale: ptBR,
+          });
           const isoDate = format(endOfLastMonth, "yyyy-MM-dd");
 
           const baseUrl =

@@ -181,7 +181,9 @@ const sendTenantMessage = async (tenantId, number, message) => {
     const errorMessage = `[WhatsApp Service] Tentativa de envio para número inexistente no WhatsApp (${number}) no tenant ${tenantId}. Abortando.`;
     console.error(errorMessage);
     // Lança um erro claro que pode ser tratado pelo chamador
-    throw new Error("O número de WhatsApp fornecido não existe ou não pôde ser verificado.");
+    throw new Error(
+      "O número de WhatsApp fornecido não existe ou não pôde ser verificado.",
+    );
   }
 
   const finalNumber = normalizeNumber(number);
@@ -228,7 +230,9 @@ const sendTenantMediaMessage = async (tenantId, number, mediaUrl, caption) => {
   if (!numberExists) {
     const errorMessage = `[WhatsApp Service] Tentativa de envio de mídia para número inexistente (${number}) no tenant ${tenantId}. Abortando.`;
     console.error(errorMessage);
-    throw new Error("O número de WhatsApp fornecido não existe ou não pôde ser verificado.");
+    throw new Error(
+      "O número de WhatsApp fornecido não existe ou não pôde ser verificado.",
+    );
   }
 
   const finalNumber = normalizeNumber(number);
@@ -290,7 +294,9 @@ const sendTenantAudioMessage = async (tenantId, number, mediaUrl) => {
   if (!numberExists) {
     const errorMessage = `[WhatsApp Service] Tentativa de envio de áudio para número inexistente (${number}) no tenant ${tenantId}. Abortando.`;
     console.error(errorMessage);
-    throw new Error("O número de WhatsApp fornecido não existe ou não pôde ser verificado.");
+    throw new Error(
+      "O número de WhatsApp fornecido não existe ou não pôde ser verificado.",
+    );
   }
 
   const finalNumber = normalizeNumber(number);
@@ -560,10 +566,16 @@ const getInstanceStatus = async (tenantId) => {
       getAxiosConfig(config),
     );
     // Log para depuração
-    console.log("[WhatsappService] Resposta da API de status da instância:", JSON.stringify(response.data, null, 2));
+    console.log(
+      "[WhatsappService] Resposta da API de status da instância:",
+      JSON.stringify(response.data, null, 2),
+    );
 
     const instanceState = response.data?.instance?.state?.toLowerCase();
-    const newStatus = (instanceState === 'connected' || instanceState === 'open') ? 'connected' : 'disconnected';
+    const newStatus =
+      instanceState === "connected" || instanceState === "open"
+        ? "connected"
+        : "disconnected";
 
     if (config.instanceStatus !== newStatus) {
       await config.update({ instanceStatus: newStatus });
@@ -910,7 +922,9 @@ const getAllInstanceStatuses = async () => {
   });
 
   // 2. Cria um mapa de configurações para facilitar a busca
-  const configsMap = new Map(allConfigs.map(config => [config.tenantId, config]));
+  const configsMap = new Map(
+    allConfigs.map((config) => [config.tenantId, config]),
+  );
 
   // 3. Itera sobre TODOS os tenants e monta a resposta
   const statuses = await Promise.all(
@@ -932,7 +946,7 @@ const getAllInstanceStatuses = async () => {
             id: tenant.id,
             name: tenant.name,
           },
-          status: 'unconfigured',
+          status: "unconfigured",
           url: null,
           apiKey: null,
         };

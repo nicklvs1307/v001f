@@ -61,8 +61,14 @@ const automationService = {
   },
 
   updateAutomations: async (tenantId, data) => {
-    const { dailyReport, prizeRoulette, couponReminder, birthdayAutomation, detractorAutomation, postSaleAutomation } =
-      data;
+    const {
+      dailyReport,
+      prizeRoulette,
+      couponReminder,
+      birthdayAutomation,
+      detractorAutomation,
+      postSaleAutomation,
+    } = data;
 
     const configData = {
       dailyReportEnabled: dailyReport.enabled,
@@ -75,7 +81,7 @@ const automationService = {
       birthdayRewardType: birthdayAutomation.rewardType,
       birthdayRewardId: birthdayAutomation.rewardId,
       birthdayCouponValidityDays: birthdayAutomation.couponValidityDays,
-      
+
       sendDetractorMessageToClient: detractorAutomation.enabled,
       detractorMessageTemplate: detractorAutomation.messageTemplate,
       notifyDetractorToOwner: detractorAutomation.notifyOwner,
@@ -83,8 +89,12 @@ const automationService = {
       detractorOwnerPhoneNumbers: detractorAutomation.ownerPhoneNumbers,
 
       // Novos campos de Pós-Venda
-      postSaleDelayMinutes: postSaleAutomation ? postSaleAutomation.delayMinutes : 0,
-      postSaleMessageTemplate: postSaleAutomation ? postSaleAutomation.messageTemplate : null,
+      postSaleDelayMinutes: postSaleAutomation
+        ? postSaleAutomation.delayMinutes
+        : 0,
+      postSaleMessageTemplate: postSaleAutomation
+        ? postSaleAutomation.messageTemplate
+        : null,
       postSaleSurveyId: postSaleAutomation ? postSaleAutomation.surveyId : null,
     };
 

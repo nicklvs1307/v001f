@@ -1,7 +1,16 @@
-const { Client, Cupom, Resposta, CampanhaLog, sequelize } = require("../../models");
+const {
+  Client,
+  Cupom,
+  Resposta,
+  CampanhaLog,
+  sequelize,
+} = require("../../models");
 const { Op } = require("sequelize");
 const { now, formatInTimeZone } = require("../utils/dateUtils");
-const { calculateAgeDistribution, calculateGenderDistribution } = require("../utils/demographicsUtils");
+const {
+  calculateAgeDistribution,
+  calculateGenderDistribution,
+} = require("../utils/demographicsUtils");
 const ApiError = require("../errors/ApiError");
 
 class ClientRepository {
@@ -165,48 +174,59 @@ class ClientRepository {
     const whereClause = { tenantId };
     const currentYear = new Date().getFullYear();
 
-    if (month && month !== 'all') {
-        whereClause[Op.and] = [
-            sequelize.where(sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "birthDate"')), month)
-        ];
+    if (month && month !== "all") {
+      whereClause[Op.and] = [
+        sequelize.where(
+          sequelize.fn("EXTRACT", sequelize.literal('MONTH FROM "birthDate"')),
+          month,
+        ),
+      ];
     }
 
     if (searchTerm) {
-        whereClause[Op.or] = [
-            { name: { [Op.iLike]: `%${searchTerm}%` } },
-            { email: { [Op.iLike]: `%${searchTerm}%` } },
-            { phone: { [Op.iLike]: `%${searchTerm}%` } }
-        ];
+      whereClause[Op.or] = [
+        { name: { [Op.iLike]: `%${searchTerm}%` } },
+        { email: { [Op.iLike]: `%${searchTerm}%` } },
+        { phone: { [Op.iLike]: `%${searchTerm}%` } },
+      ];
     }
 
     // A associação agora está definida estaticamente no modelo Client
     return Client.findAll({
-        where: whereClause,
-        include: [
-            {
-                model: CampanhaLog,
-                as: 'campanhaLogs',
-                required: false, // LEFT JOIN
-                where: {
-                    variant: `birthday-automation-${currentYear}`
-                },
-                attributes: []
-            }
-        ],
-        attributes: {
-            include: [
-                [
-                    sequelize.literal(`(CASE WHEN "campanhaLogs"."id" IS NOT NULL THEN TRUE ELSE FALSE END)`),
-                    'messageSent'
-                ]
-            ]
+      where: whereClause,
+      include: [
+        {
+          model: CampanhaLog,
+          as: "campanhaLogs",
+          required: false, // LEFT JOIN
+          where: {
+            variant: `birthday-automation-${currentYear}`,
+          },
+          attributes: [],
         },
-        order: [
-            [sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "birthDate"')), 'ASC'],
-            [sequelize.fn('EXTRACT', sequelize.literal('DAY FROM "birthDate"')), 'ASC']
+      ],
+      attributes: {
+        include: [
+          [
+            sequelize.literal(
+              `(CASE WHEN "campanhaLogs"."id" IS NOT NULL THEN TRUE ELSE FALSE END)`,
+            ),
+            "messageSent",
+          ],
         ],
-        subQuery: false,
-        group: ['Client.id', 'campanhaLogs.id'] // Adicionar group by para evitar duplicatas
+      },
+      order: [
+        [
+          sequelize.fn("EXTRACT", sequelize.literal('MONTH FROM "birthDate"')),
+          "ASC",
+        ],
+        [
+          sequelize.fn("EXTRACT", sequelize.literal('DAY FROM "birthDate"')),
+          "ASC",
+        ],
+      ],
+      subQuery: false,
+      group: ["Client.id", "campanhaLogs.id"], // Adicionar group by para evitar duplicatas
     });
   }
 
@@ -309,12 +329,19 @@ class ClientRepository {
         {
           model: require("../../models").DeliveryOrder,
           as: "deliveryOrders",
-          order: [['orderDate', 'DESC']],
-        }
+          order: [["orderDate", "DESC"]],
+        },
       ],
       order: [
-        [{ model: require("../../models").DeliveryOrder, as: 'deliveryOrders' }, 'orderDate', 'DESC']
-      ]
+        [
+          {
+            model: require("../../models").DeliveryOrder,
+            as: "deliveryOrders",
+          },
+          "orderDate",
+          "DESC",
+        ],
+      ],
     });
 
     if (!client) {
@@ -353,41 +380,47 @@ class ClientRepository {
     // Processar Pedidos de Delivery
     const deliveryOrders = clientJSON.deliveryOrders || [];
     const totalOrders = deliveryOrders.length;
-    const totalSpent = deliveryOrders.reduce((sum, order) => sum + parseFloat(order.totalAmount || 0), 0);
+    const totalSpent = deliveryOrders.reduce(
+      (sum, order) => sum + parseFloat(order.totalAmount || 0),
+      0,
+    );
     const lastOrders = deliveryOrders.slice(0, 5);
 
     // Processar Preferências a partir dos pedidos
     const productCounts = {};
     const categoryCounts = {};
 
-    deliveryOrders.forEach(order => {
+    deliveryOrders.forEach((order) => {
       const payload = order.payload;
       if (payload && Array.isArray(payload.produtos)) {
-        payload.produtos.forEach(produto => {
+        payload.produtos.forEach((produto) => {
           if (produto.produto) {
-            productCounts[produto.produto] = (productCounts[produto.produto] || 0) + (produto.quantidade || 1);
+            productCounts[produto.produto] =
+              (productCounts[produto.produto] || 0) + (produto.quantidade || 1);
           }
           if (produto.categoria) {
-            categoryCounts[produto.categoria] = (categoryCounts[produto.categoria] || 0) + (produto.quantidade || 1);
+            categoryCounts[produto.categoria] =
+              (categoryCounts[produto.categoria] || 0) +
+              (produto.quantidade || 1);
           }
         });
       }
     });
 
     const topProducts = Object.entries(productCounts)
-                              .sort(([,a],[,b]) => b - a)
-                              .slice(0, 5)
-                              .map(([name, count]) => ({ name, count }));
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 5)
+      .map(([name, count]) => ({ name, count }));
 
     const topCategories = Object.entries(categoryCounts)
-                                .sort(([,a],[,b]) => b - a)
-                                .slice(0, 5)
-                                .map(([name, count]) => ({ name, count }));
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 5)
+      .map(([name, count]) => ({ name, count }));
 
     return {
       ...clientJSON,
-      cupons: undefined, 
-      respostas: undefined, 
+      cupons: undefined,
+      respostas: undefined,
       deliveryOrders: undefined,
       stats: {
         totalVisits,
@@ -421,7 +454,7 @@ class ClientRepository {
           sequelize.where(
             sequelize.fn(
               "EXTRACT",
-              sequelize.literal('MONTH FROM "birthDate" AT TIME ZONE \'UTC\''),
+              sequelize.literal("MONTH FROM \"birthDate\" AT TIME ZONE 'UTC'"),
             ),
             currentMonth,
           ),
@@ -436,21 +469,25 @@ class ClientRepository {
     });
 
     // 3. Média de Idade
-    const clientsWithBirthDate = clients.filter(c => c.birthDate);
+    const clientsWithBirthDate = clients.filter((c) => c.birthDate);
     const totalAge = clientsWithBirthDate.reduce((sum, client) => {
-        const birthYear = new Date(client.birthDate).getFullYear();
-        return sum + (now().getFullYear() - birthYear);
+      const birthYear = new Date(client.birthDate).getFullYear();
+      return sum + (now().getFullYear() - birthYear);
     }, 0);
     const averageAge =
-      clientsWithBirthDate.length > 0 ? Math.round(totalAge / clientsWithBirthDate.length) : 0;
+      clientsWithBirthDate.length > 0
+        ? Math.round(totalAge / clientsWithBirthDate.length)
+        : 0;
 
     // 4. & 5. Distribuição por Faixa Etária e Gênero usando o utilitário
     const ageDistributionData = calculateAgeDistribution(clients);
-    const ageDistribution = Object.entries(ageDistributionData).map(([name, count]) => ({
-      name,
-      count,
-    }));
-    
+    const ageDistribution = Object.entries(ageDistributionData).map(
+      ([name, count]) => ({
+        name,
+        count,
+      }),
+    );
+
     const genderDistributionData = calculateGenderDistribution(clients);
     const genderDistribution = Object.entries(genderDistributionData).map(
       ([name, value]) => ({ name, value }),

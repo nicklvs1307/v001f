@@ -54,7 +54,9 @@ const birthdayTask = cron.schedule(
               },
             });
             if (existingLog) {
-              console.log(`[BirthdayJob] Mensagem de aniversário para ${client.name} já foi enviada este ano. Pulando.`);
+              console.log(
+                `[BirthdayJob] Mensagem de aniversário para ${client.name} já foi enviada este ano. Pulando.`,
+              );
               continue;
             }
 
@@ -121,12 +123,12 @@ const birthdayTask = cron.schedule(
                   client.phone,
                   message,
                 );
-                
+
                 // 3. Criar log de campanha
                 await CampanhaLog.create({
                   campanhaId: null, // Nenhum ID de campanha formal
                   clienteId: client.id,
-                  status: 'sent',
+                  status: "sent",
                   variant: `birthday-automation-${currentYear}`,
                   sentAt: new Date(),
                 });

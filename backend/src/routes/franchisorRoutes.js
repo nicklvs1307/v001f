@@ -4,7 +4,7 @@ const franchisorController = require("../controllers/franchisorController");
 const { protect, authorize } = require("../middlewares/authMiddleware");
 
 // Proteger todas as rotas de franqueador com autenticação e verificação de papel
-router.use(protect, authorize(['Franqueador']));
+router.use(protect, authorize(["Franqueador"]));
 
 // Rota para o dashboard do franqueador
 router.get("/dashboard", franchisorController.getDashboard);

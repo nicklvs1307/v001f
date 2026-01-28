@@ -1,16 +1,22 @@
 const asyncHandler = require("express-async-handler");
 const atendenteService = require("../services/atendenteService");
 const ApiError = require("../errors/ApiError");
-const { validateTenantAccess, checkResourceTenant } = require("../utils/tenantUtils");
+const {
+  validateTenantAccess,
+  checkResourceTenant,
+} = require("../utils/tenantUtils");
 
 const atendenteController = {
   createAtendente: asyncHandler(async (req, res) => {
     const { name, status } = req.body;
-    
+
     const targetTenantId = validateTenantAccess(req.user, req.body.tenantId);
 
     if (!targetTenantId) {
-      throw new ApiError(400, "Tenant ID é obrigatório para criar um atendente.");
+      throw new ApiError(
+        400,
+        "Tenant ID é obrigatório para criar um atendente.",
+      );
     }
 
     const atendente = await atendenteService.createAtendente(
@@ -28,7 +34,9 @@ const atendenteController = {
     // Para listar, se for Super Admin sem tenantId específico, lista todos (null).
     // Se for user comum, lista só do seu tenant.
     const isSuperAdmin = req.user.role.name === "Super Admin";
-    const tenantId = isSuperAdmin ? req.query.tenantId || null : req.user.tenantId;
+    const tenantId = isSuperAdmin
+      ? req.query.tenantId || null
+      : req.user.tenantId;
 
     const atendentes = await atendenteService.getAllAtendentes(tenantId);
     res.status(200).json(atendentes);
@@ -36,7 +44,7 @@ const atendenteController = {
 
   getAtendenteById: asyncHandler(async (req, res) => {
     const { id } = req.params;
-    
+
     // Busca inicial (o serviço já pode filtrar por tenantId se passarmos, mas vamos verificar o recurso depois)
     const atendente = await atendenteService.getAtendenteById(id);
 
@@ -81,8 +89,11 @@ const atendenteController = {
 
     const atendente = await atendenteService.getAtendenteById(id);
     checkResourceTenant(atendente, req.user);
-    
-    const premiacoes = await atendenteService.getAtendentePremiacoes(id, atendente.tenantId);
+
+    const premiacoes = await atendenteService.getAtendentePremiacoes(
+      id,
+      atendente.tenantId,
+    );
 
     res.status(200).json(premiacoes);
   }),
@@ -93,7 +104,10 @@ const atendenteController = {
     const atendente = await atendenteService.getAtendenteById(id);
     checkResourceTenant(atendente, req.user);
 
-    const performance = await atendenteService.getAtendentePerformance(id, atendente.tenantId);
+    const performance = await atendenteService.getAtendentePerformance(
+      id,
+      atendente.tenantId,
+    );
 
     res.status(200).json(performance);
   }),

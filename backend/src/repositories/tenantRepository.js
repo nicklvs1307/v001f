@@ -8,25 +8,33 @@ const createTenantWithAdmin = async (tenantData, adminData) => {
     if (tenantData.cnpj === "") {
       tenantData.cnpj = null;
     }
-    
+
     // 1. Criar o Tenant
     const newTenant = await Tenant.create(tenantData, { transaction: t });
 
     // 2. Encontrar o Role de Admin
-    const adminRole = await Role.findOne({ where: { name: 'Admin' } }, { transaction: t });
+    const adminRole = await Role.findOne(
+      { where: { name: "Admin" } },
+      { transaction: t },
+    );
     if (!adminRole) {
-      throw new Error("O papel 'Admin' não foi encontrado. Execute os seeders.");
+      throw new Error(
+        "O papel 'Admin' não foi encontrado. Execute os seeders.",
+      );
     }
 
     // 3. Criar o Usuário Admin (senha já vem hasheada do controller)
-    const adminUser = await Usuario.create({
-      tenantId: newTenant.id,
-      roleId: adminRole.id,
-      name: adminData.name,
-      email: adminData.email,
-      passwordHash: adminData.passwordHash, // Espera-se a senha já hasheada
-      franchisorId: newTenant.franchisorId, // Se aplicável
-    }, { transaction: t });
+    const adminUser = await Usuario.create(
+      {
+        tenantId: newTenant.id,
+        roleId: adminRole.id,
+        name: adminData.name,
+        email: adminData.email,
+        passwordHash: adminData.passwordHash, // Espera-se a senha já hasheada
+        franchisorId: newTenant.franchisorId, // Se aplicável
+      },
+      { transaction: t },
+    );
 
     await t.commit();
 
@@ -36,7 +44,6 @@ const createTenantWithAdmin = async (tenantData, adminData) => {
     delete userResult.passwordHash;
 
     return { tenant: tenantResult, user: userResult };
-
   } catch (error) {
     await t.rollback();
     throw error; // Re-throw para ser tratado pelo asyncHandler no controller
@@ -120,7 +127,7 @@ const getTenantById = async (id, tenantId = null) => {
       "deliveryMuchUsername",
       "deliveryMuchPassword",
       "deliveryMuchToken",
-      "deliveryMuchTokenExpiresAt"
+      "deliveryMuchTokenExpiresAt",
     ],
     raw: true,
   });
@@ -193,7 +200,14 @@ const findIfoodEnabledTenants = async () => {
       ifoodAccessToken: { [Op.ne]: null },
       ifoodRefreshToken: { [Op.ne]: null }, // Ensure refresh token is present
     },
-    attributes: ['id', 'name', 'ifoodMerchantId', 'ifoodAccessToken', 'ifoodRefreshToken', 'ifoodTokenExpiresAt'],
+    attributes: [
+      "id",
+      "name",
+      "ifoodMerchantId",
+      "ifoodAccessToken",
+      "ifoodRefreshToken",
+      "ifoodTokenExpiresAt",
+    ],
   });
 };
 
@@ -206,13 +220,13 @@ const findDeliveryMuchEnabledTenants = async () => {
       deliveryMuchPassword: { [Op.ne]: null },
     },
     attributes: [
-      'id', 
-      'deliveryMuchClientId', 
-      'deliveryMuchClientSecret', 
-      'deliveryMuchUsername', 
-      'deliveryMuchPassword', 
-      'deliveryMuchToken', 
-      'deliveryMuchTokenExpiresAt'
+      "id",
+      "deliveryMuchClientId",
+      "deliveryMuchClientSecret",
+      "deliveryMuchUsername",
+      "deliveryMuchPassword",
+      "deliveryMuchToken",
+      "deliveryMuchTokenExpiresAt",
     ],
   });
 };

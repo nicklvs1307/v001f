@@ -15,23 +15,32 @@ exports.createUser = asyncHandler(async (req, res) => {
   let targetTenantId = tenantId;
   let targetFranchisorId = franchisorId;
 
-  if (requestingUser.role === 'Super Admin') {
+  if (requestingUser.role === "Super Admin") {
     // Super Admin can do anything
-  } else if (requestingUser.role === 'Franqueador') {
+  } else if (requestingUser.role === "Franqueador") {
     targetFranchisorId = requestingUser.franchisorId;
     if (tenantId) {
       // Check if the tenant belongs to the franchisor
-      const tenant = await Tenant.findOne({ where: { id: tenantId, franchisorId: requestingUser.franchisorId } });
+      const tenant = await Tenant.findOne({
+        where: { id: tenantId, franchisorId: requestingUser.franchisorId },
+      });
       if (!tenant) {
-        throw new ApiError(403, "Você não tem permissão para criar usuários para este tenant.");
+        throw new ApiError(
+          403,
+          "Você não tem permissão para criar usuários para este tenant.",
+        );
       }
     }
-  } else { // Admin
+  } else {
+    // Admin
     targetTenantId = requestingUser.tenantId;
   }
 
   if (!targetTenantId && !targetFranchisorId) {
-    throw new ApiError(400, "Tenant ID ou Franchisor ID é obrigatório para criar um usuário.");
+    throw new ApiError(
+      400,
+      "Tenant ID ou Franchisor ID é obrigatório para criar um usuário.",
+    );
   }
 
   // Verificar se o email já existe
@@ -62,7 +71,7 @@ exports.createUser = asyncHandler(async (req, res) => {
     name,
     email,
     passwordHash,
-    targetFranchisorId
+    targetFranchisorId,
   );
 
   // --- NOTIFICATION ---
@@ -89,9 +98,9 @@ exports.getUsers = asyncHandler(async (req, res) => {
   let tenantId = null;
   let franchisorId = null;
 
-  if (requestingUser.role === 'Franqueador') {
+  if (requestingUser.role === "Franqueador") {
     franchisorId = requestingUser.franchisorId;
-  } else if (requestingUser.role !== 'Super Admin') {
+  } else if (requestingUser.role !== "Super Admin") {
     tenantId = requestingUser.tenantId;
   }
 

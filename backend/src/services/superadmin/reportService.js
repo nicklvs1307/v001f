@@ -39,29 +39,33 @@ class ReportService {
 
     // Buscar distribuição real de planos
     const tenantsByPlanRaw = await Tenant.findAll({
-      attributes: ['plan', [sequelize.fn('COUNT', sequelize.col('id')), 'count']],
-      group: ['plan'],
-      raw: true
+      attributes: [
+        "plan",
+        [sequelize.fn("COUNT", sequelize.col("id")), "count"],
+      ],
+      group: ["plan"],
+      raw: true,
     });
 
     // Buscar detalhes dos planos para calcular MRR
     const allPlans = await Plan.findAll({ raw: true });
-    const planMap = new Map(allPlans.map(p => [p.name.toLowerCase(), p])); // Normalizar nome para chave
+    const planMap = new Map(allPlans.map((p) => [p.name.toLowerCase(), p])); // Normalizar nome para chave
 
     let totalMRR = 0;
-    const tenantsByPlan = tenantsByPlanRaw.map(item => {
+    const tenantsByPlan = tenantsByPlanRaw.map((item) => {
       // Tentar encontrar o plano pelo nome (string) armazenado no tenant
       // Nota: Idealmente o tenant deveria ter planId (UUID), mas estamos usando string 'plan' por legado
-      const planName = item.plan ? item.plan.toLowerCase() : 'basic';
-      const planInfo = planMap.get(planName) || planMap.get('básico') || { price: 0, name: item.plan };
-      
+      const planName = item.plan ? item.plan.toLowerCase() : "basic";
+      const planInfo = planMap.get(planName) ||
+        planMap.get("básico") || { price: 0, name: item.plan };
+
       const count = parseInt(item.count, 10);
       totalMRR += count * parseFloat(planInfo.price || 0);
 
       return {
-        name: item.plan || 'Desconhecido',
+        name: item.plan || "Desconhecido",
         value: count,
-        revenue: count * parseFloat(planInfo.price || 0)
+        revenue: count * parseFloat(planInfo.price || 0),
       };
     });
 
@@ -119,19 +123,15 @@ class ReportService {
         raw: true,
       });
 
-    const [
-      clientCounts,
-      campaignCounts,
-      surveyCounts,
-      responseCounts,
-    ] = await Promise.all([
-      countQuery(Client),
-      countQuery(Campanha, {
-        status: { [Op.in]: ["processing", "scheduled"] },
-      }),
-      countQuery(Pesquisa),
-      countQuery(Resposta),
-    ]);
+    const [clientCounts, campaignCounts, surveyCounts, responseCounts] =
+      await Promise.all([
+        countQuery(Client),
+        countQuery(Campanha, {
+          status: { [Op.in]: ["processing", "scheduled"] },
+        }),
+        countQuery(Pesquisa),
+        countQuery(Resposta),
+      ]);
 
     const createCountMap = (counts) =>
       new Map(counts.map((c) => [c.tenantId, c.count]));

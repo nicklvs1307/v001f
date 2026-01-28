@@ -15,7 +15,10 @@ const premiacaoController = {
         : requestingUser.tenantId; // Admin só pode buscar do seu próprio tenant
 
     if (!tenantId) {
-      throw new ApiError(400, "Tenant ID é obrigatório para buscar premiações.");
+      throw new ApiError(
+        400,
+        "Tenant ID é obrigatório para buscar premiações.",
+      );
     }
 
     const premiacoes = await premiacaoRepository.getAllPremiacoes(tenantId);

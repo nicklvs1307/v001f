@@ -25,17 +25,19 @@ const weeklyReportTask = cron.schedule(
       }
 
       console.log(
-        `Encontradas ${configsToReport.length} configurações para receber relatórios semanais.`, 
+        `Encontradas ${configsToReport.length} configurações para receber relatórios semanais.`,
       );
 
       for (const config of configsToReport) {
         try {
-          console.log(`Gerando relatório semanal para o tenantId: ${config.tenantId}`);
+          console.log(
+            `Gerando relatório semanal para o tenantId: ${config.tenantId}`,
+          );
 
           const tenant = await tenantRepository.getTenantById(config.tenantId);
           if (!tenant) {
             console.warn(
-              `Tenant ${config.tenantId} não encontrado para a configuração de relatório.`, 
+              `Tenant ${config.tenantId} não encontrado para a configuração de relatório.`,
             );
             continue;
           }
@@ -43,7 +45,7 @@ const weeklyReportTask = cron.schedule(
           const zonedNow = now();
           const lastWeek = subWeeks(zonedNow, 1);
           const startOfLastWeek = startOfWeek(lastWeek, { weekStartsOn: 1 }); // Monday
-          const endOfLastWeek = endOfWeek(lastWeek, { weekStartsOn: 1 });   // Sunday
+          const endOfLastWeek = endOfWeek(lastWeek, { weekStartsOn: 1 }); // Sunday
 
           const weeklySummary = await dashboardRepository.getSummary(
             config.tenantId,

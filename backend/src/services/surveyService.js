@@ -307,9 +307,14 @@ const getSurveyResultsById = async (surveyId, tenantId = null) => {
   });
 
   const birthDates = [];
-  const uniqueClients = [...new Map(allRatingResponses.map(r => [r.client?.id, r.client])).values()].filter(Boolean);
-  
-  formattedResults.demographics.ageDistribution = calculateAgeDistribution(uniqueClients);
+  const uniqueClients = [
+    ...new Map(
+      allRatingResponses.map((r) => [r.client?.id, r.client]),
+    ).values(),
+  ].filter(Boolean);
+
+  formattedResults.demographics.ageDistribution =
+    calculateAgeDistribution(uniqueClients);
 
   formattedResults.wordCloudData =
     await resultRepository.getWordCloudDataForSurvey(surveyId, tenantId);

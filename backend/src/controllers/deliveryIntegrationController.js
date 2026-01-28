@@ -10,8 +10,13 @@ const deliveryIntegrationController = {
 
     // Processar o pedido em segundo plano
     setTimeout(() => {
-        deliveryIntegrationService.processUaiRangoOrder(payload).catch(error => {
-            console.error("Erro assíncrono ao processar webhook do Uai Rango:", error);
+      deliveryIntegrationService
+        .processUaiRangoOrder(payload)
+        .catch((error) => {
+          console.error(
+            "Erro assíncrono ao processar webhook do Uai Rango:",
+            error,
+          );
         });
     }, 0);
   }),

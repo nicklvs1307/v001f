@@ -42,7 +42,10 @@ const getCriteriaScores = async (
     if (type === "NPS") {
       const npsResult = ratingService.calculateNPS(
         // Adiciona o tipo da pergunta para o ratingService funcionar corretamente
-        allResponses.map(r => ({...r.get({ plain: true }), pergunta: { type: 'rating_0_10' }}))
+        allResponses.map((r) => ({
+          ...r.get({ plain: true }),
+          pergunta: { type: "rating_0_10" },
+        })),
       );
       return {
         criterion: criterio.name,
@@ -56,7 +59,10 @@ const getCriteriaScores = async (
     } else if (type === "CSAT" || type === "Star") {
       const csatResult = ratingService.calculateCSAT(
         // Adiciona o tipo da pergunta para o ratingService funcionar corretamente
-        allResponses.map(r => ({...r.get({ plain: true }), pergunta: { type: 'rating_1_5' }}))
+        allResponses.map((r) => ({
+          ...r.get({ plain: true }),
+          pergunta: { type: "rating_1_5" },
+        })),
       );
       return {
         criterion: criterio.name,

@@ -52,7 +52,9 @@ class ResultService {
           .filter((v) => v !== null);
         const sum = ratings.reduce((acc, curr) => acc + curr, 0);
         result.averageRating =
-          ratings.length > 0 ? parseFloat((sum / ratings.length).toFixed(2)) : 0;
+          ratings.length > 0
+            ? parseFloat((sum / ratings.length).toFixed(2))
+            : 0;
         result.allRatings = ratings;
       } else if (question.type === "multiple_choice") {
         const optionsCount = {};
@@ -60,7 +62,10 @@ class ResultService {
           question.options.forEach((opt) => (optionsCount[opt] = 0));
         }
         questionResponses.forEach((r) => {
-          if (r.selectedOption && optionsCount.hasOwnProperty(r.selectedOption)) {
+          if (
+            r.selectedOption &&
+            optionsCount.hasOwnProperty(r.selectedOption)
+          ) {
             optionsCount[r.selectedOption]++;
           }
         });

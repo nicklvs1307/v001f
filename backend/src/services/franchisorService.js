@@ -11,10 +11,10 @@ class FranchisorService {
   async getTenantIdsForFranchisor(franchisorId) {
     const tenants = await Tenant.findAll({
       where: { franchisorId },
-      attributes: ['id'],
+      attributes: ["id"],
       raw: true,
     });
-    return tenants.map(t => t.id);
+    return tenants.map((t) => t.id);
   }
 
   /**
@@ -25,7 +25,10 @@ class FranchisorService {
    */
   async getAggregatedDashboardData(franchisorId, queryParams) {
     if (!franchisorId) {
-      throw new ApiError(401, "Acesso não autorizado. ID de franqueador não encontrado.");
+      throw new ApiError(
+        401,
+        "Acesso não autorizado. ID de franqueador não encontrado.",
+      );
     }
 
     // 1. Obter a lista de tenant IDs para este franqueador
@@ -43,7 +46,7 @@ class FranchisorService {
       startDate,
       endDate,
       period,
-      surveyId
+      surveyId,
     );
 
     return dashboardData;
@@ -56,12 +59,23 @@ class FranchisorService {
    */
   async getFranchisees(franchisorId) {
     if (!franchisorId) {
-      throw new ApiError(401, "Acesso não autorizado. ID de franqueador não encontrado.");
+      throw new ApiError(
+        401,
+        "Acesso não autorizado. ID de franqueador não encontrado.",
+      );
     }
 
     const franchisees = await Tenant.findAll({
       where: { franchisorId },
-      attributes: ['id', 'name', 'email', 'phone', 'uairangoEstablishmentId', 'document', 'createdAt'],
+      attributes: [
+        "id",
+        "name",
+        "email",
+        "phone",
+        "uairangoEstablishmentId",
+        "document",
+        "createdAt",
+      ],
     });
 
     return franchisees;

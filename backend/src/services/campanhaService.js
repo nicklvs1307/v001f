@@ -294,9 +294,15 @@ class CampanhaService {
             where: {
               tenantId: tenantId,
               [Op.and]: [
-                sequelize.where(sequelize.fn('EXTRACT', sequelize.literal('MONTH FROM "birthDate"')), criterio.month)
-              ]
-            }
+                sequelize.where(
+                  sequelize.fn(
+                    "EXTRACT",
+                    sequelize.literal('MONTH FROM "birthDate"'),
+                  ),
+                  criterio.month,
+                ),
+              ],
+            },
           });
         }
         return [];

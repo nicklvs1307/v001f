@@ -5,7 +5,7 @@ const PLAN_LIMITS = {
     canUseRoulette: false,
     canUseWhatsappAutomation: false,
     canUseFranchisor: false,
-    label: 'Básico'
+    label: "Básico",
   },
   pro: {
     maxUsers: 5,
@@ -13,7 +13,7 @@ const PLAN_LIMITS = {
     canUseRoulette: true,
     canUseWhatsappAutomation: true,
     canUseFranchisor: false,
-    label: 'Profissional'
+    label: "Profissional",
   },
   enterprise: {
     maxUsers: 999,
@@ -21,8 +21,8 @@ const PLAN_LIMITS = {
     canUseRoulette: true,
     canUseWhatsappAutomation: true,
     canUseFranchisor: true,
-    label: 'Enterprise'
-  }
+    label: "Enterprise",
+  },
 };
 
 module.exports = { PLAN_LIMITS };

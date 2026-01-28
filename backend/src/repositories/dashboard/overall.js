@@ -4,7 +4,10 @@ const sequelize = require("sequelize");
 const { Op } = sequelize;
 const { now, getUtcDateRange } = require("../../utils/dateUtils");
 const { buildWhereClause } = require("../../utils/filterUtils");
-const { calculateAgeDistribution, calculateGenderDistribution } = require("../../utils/demographicsUtils");
+const {
+  calculateAgeDistribution,
+  calculateGenderDistribution,
+} = require("../../utils/demographicsUtils");
 const ratingService = require("../../services/ratingService");
 const { getResponseChart } = require("./charts");
 
@@ -121,7 +124,9 @@ const getOverallResults = async function (
   );
 
   // 4. Processar dados demográficos
-  const uniqueClients = [...new Map(allResponses.map(r => [r.client?.id, r.client])).values()].filter(Boolean);
+  const uniqueClients = [
+    ...new Map(allResponses.map((r) => [r.client?.id, r.client])).values(),
+  ].filter(Boolean);
   const demographics = {
     ageDistribution: calculateAgeDistribution(uniqueClients),
     genderDistribution: calculateGenderDistribution(uniqueClients),

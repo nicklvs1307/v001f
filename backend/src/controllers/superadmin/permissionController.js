@@ -1,5 +1,10 @@
 const asyncHandler = require("express-async-handler");
-const { Permissao, Role, RolePermissao, sequelize } = require("../../../models");
+const {
+  Permissao,
+  Role,
+  RolePermissao,
+  sequelize,
+} = require("../../../models");
 const ApiError = require("../../errors/ApiError");
 
 // @desc    Listar todas as permissões disponíveis no sistema
@@ -8,7 +13,10 @@ const ApiError = require("../../errors/ApiError");
 exports.getAllPermissions = asyncHandler(async (req, res) => {
   // Agrupar permissões por módulo para facilitar o frontend
   const permissions = await Permissao.findAll({
-    order: [['module', 'ASC'], ['action', 'ASC']]
+    order: [
+      ["module", "ASC"],
+      ["action", "ASC"],
+    ],
   });
   res.json(permissions);
 });
@@ -18,13 +26,15 @@ exports.getAllPermissions = asyncHandler(async (req, res) => {
 // @access  Super Admin
 exports.getAllSystemRoles = asyncHandler(async (req, res) => {
   const roles = await Role.findAll({
-    include: [{
-      model: Permissao,
-      as: 'permissoes',
-      attributes: ['id', 'module', 'action'],
-      through: { attributes: [] }
-    }],
-    order: [['name', 'ASC']]
+    include: [
+      {
+        model: Permissao,
+        as: "permissoes",
+        attributes: ["id", "module", "action"],
+        through: { attributes: [] },
+      },
+    ],
+    order: [["name", "ASC"]],
   });
   res.json(roles);
 });
@@ -52,16 +62,16 @@ exports.updateRolePermissions = asyncHandler(async (req, res) => {
     // 1. Remover todas as permissões atuais desse cargo
     await RolePermissao.destroy({
       where: { roleId },
-      transaction: t
+      transaction: t,
     });
 
     // 2. Inserir as novas permissões
     if (permissionIds.length > 0) {
-      const newPermissions = permissionIds.map(permId => ({
+      const newPermissions = permissionIds.map((permId) => ({
         roleId,
-        permissaoId: permId
+        permissaoId: permId,
       }));
-      
+
       await RolePermissao.bulkCreate(newPermissions, { transaction: t });
     }
 
@@ -69,16 +79,17 @@ exports.updateRolePermissions = asyncHandler(async (req, res) => {
 
     // Retornar o role atualizado com as permissões
     const updatedRole = await Role.findByPk(roleId, {
-      include: [{
-        model: Permissao,
-        as: 'permissoes',
-        attributes: ['id', 'module', 'action'],
-        through: { attributes: [] }
-      }]
+      include: [
+        {
+          model: Permissao,
+          as: "permissoes",
+          attributes: ["id", "module", "action"],
+          through: { attributes: [] },
+        },
+      ],
     });
 
     res.json(updatedRole);
-
   } catch (error) {
     await t.rollback();
     throw new ApiError(500, "Erro ao atualizar permissões do cargo.");

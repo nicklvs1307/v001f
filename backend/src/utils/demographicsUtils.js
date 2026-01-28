@@ -14,7 +14,7 @@ function calculateAgeDistribution(clients) {
     "55+": 0,
     "N/A": 0,
   };
-  const clientsWithBirthDate = clients.filter(c => c.birthDate);
+  const clientsWithBirthDate = clients.filter((c) => c.birthDate);
   const currentYear = now().getFullYear();
 
   clientsWithBirthDate.forEach((client) => {
@@ -26,7 +26,7 @@ function calculateAgeDistribution(clients) {
     else if (age >= 55) ageGroups["55+"]++;
     else ageGroups["N/A"]++;
   });
-  
+
   // Add count for clients without birthDate
   ageGroups["N/A"] += clients.length - clientsWithBirthDate.length;
 
@@ -39,20 +39,24 @@ function calculateAgeDistribution(clients) {
  * @returns {object} An object with genders as keys and their counts as values.
  */
 function calculateGenderDistribution(clients) {
-    const genderDistribution = { masculino: 0, feminino: 0, outro: 0, "não informado": 0 };
-    clients.forEach((client) => {
-        const gender = (client.gender || "não informado").toLowerCase();
-        if (genderDistribution.hasOwnProperty(gender)) {
-            genderDistribution[gender]++;
-        } else {
-            genderDistribution["outro"]++;
-        }
-    });
-    return genderDistribution;
+  const genderDistribution = {
+    masculino: 0,
+    feminino: 0,
+    outro: 0,
+    "não informado": 0,
+  };
+  clients.forEach((client) => {
+    const gender = (client.gender || "não informado").toLowerCase();
+    if (genderDistribution.hasOwnProperty(gender)) {
+      genderDistribution[gender]++;
+    } else {
+      genderDistribution["outro"]++;
+    }
+  });
+  return genderDistribution;
 }
 
-
 module.exports = {
-    calculateAgeDistribution,
-    calculateGenderDistribution,
+  calculateAgeDistribution,
+  calculateGenderDistribution,
 };

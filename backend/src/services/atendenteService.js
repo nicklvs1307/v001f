@@ -18,7 +18,10 @@ const createAtendente = async (tenantId, name, status) => {
   } catch (error) {
     if (error.name === "SequelizeUniqueConstraintError") {
       // Em uma chance astronômica de colisão, informa o erro.
-      throw new ApiError(500, "Falha ao gerar um código único. Tente novamente.");
+      throw new ApiError(
+        500,
+        "Falha ao gerar um código único. Tente novamente.",
+      );
     }
     throw error; // Lança outros erros
   }
@@ -29,25 +32,24 @@ const getAllAtendentes = (tenantId) => {
 };
 
 const getAtendenteById = (id, tenantId) => {
-    return atendenteRepository.getAtendenteById(id, tenantId);
+  return atendenteRepository.getAtendenteById(id, tenantId);
 };
 
 const updateAtendente = (id, tenantId, name, status) => {
-    return atendenteRepository.updateAtendente(id, tenantId, name, status);
+  return atendenteRepository.updateAtendente(id, tenantId, name, status);
 };
 
 const deleteAtendente = (id, tenantId) => {
-    return atendenteRepository.deleteAtendente(id, tenantId);
+  return atendenteRepository.deleteAtendente(id, tenantId);
 };
 
 const getAtendentePremiacoes = (id, tenantId) => {
-    return atendenteRepository.findPremiacoesByAtendenteId(id, tenantId);
+  return atendenteRepository.findPremiacoesByAtendenteId(id, tenantId);
 };
 
 const getAtendentePerformance = (id, tenantId) => {
-    return atendenteRepository.findAtendentePerformanceById(id, tenantId);
+  return atendenteRepository.findAtendentePerformanceById(id, tenantId);
 };
-
 
 module.exports = {
   createAtendente,

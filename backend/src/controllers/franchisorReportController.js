@@ -6,15 +6,18 @@ const franchisorReportController = {
     const { franchisorId } = req.user;
     const { format } = req.query; // pdf or csv
 
-    const report = await franchisorReportService.generateConsolidatedReport(franchisorId, format);
+    const report = await franchisorReportService.generateConsolidatedReport(
+      franchisorId,
+      format,
+    );
 
-    if (format === 'pdf') {
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', 'attachment; filename=report.pdf');
+    if (format === "pdf") {
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader("Content-Disposition", "attachment; filename=report.pdf");
       report.pipe(res);
     } else {
-      res.setHeader('Content-Type', 'text/csv');
-      res.setHeader('Content-Disposition', 'attachment; filename=report.csv');
+      res.setHeader("Content-Type", "text/csv");
+      res.setHeader("Content-Disposition", "attachment; filename=report.csv");
       res.status(200).send(report);
     }
   }),

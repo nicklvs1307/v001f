@@ -131,10 +131,10 @@ const getSummary = async (
     registrationsInPeriod = await Client.count({ where: whereClause });
   }
 
-  const totalSurveysResponded = await Resposta.count({ 
-    distinct: true, 
-    col: "respondentSessionId", 
-    where: { ...responseWhereClause, respondentSessionId: { [Op.ne]: null } } 
+  const totalSurveysResponded = await Resposta.count({
+    distinct: true,
+    col: "respondentSessionId",
+    where: { ...responseWhereClause, respondentSessionId: { [Op.ne]: null } },
   });
   const couponsGeneratedInPeriod = await Cupom.count({ where: whereClause });
 
@@ -173,7 +173,7 @@ const getSummary = async (
     },
     registrations: registrationsInPeriod,
     registrationsConversion:
-    totalSurveysResponded > 0
+      totalSurveysResponded > 0
         ? parseFloat(
             ((registrationsInPeriod / totalSurveysResponded) * 100).toFixed(2),
           )
@@ -271,11 +271,33 @@ const getSurveysRespondedChart = async (
   const surveysByPeriod = await Resposta.findAll({
     where: whereClause,
     attributes: [
-      [fn("date_trunc", period, literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`)), "period"],
+      [
+        fn(
+          "date_trunc",
+          period,
+          literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`),
+        ),
+        "period",
+      ],
       [fn("COUNT", fn("DISTINCT", col("respondentSessionId"))), "count"],
     ],
-    group: [fn("date_trunc", period, literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`))],
-    order: [[fn("date_trunc", period, literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`)), "ASC"]],
+    group: [
+      fn(
+        "date_trunc",
+        period,
+        literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`),
+      ),
+    ],
+    order: [
+      [
+        fn(
+          "date_trunc",
+          period,
+          literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`),
+        ),
+        "ASC",
+      ],
+    ],
   });
 
   return surveysByPeriod.map((item) => ({
@@ -312,11 +334,33 @@ const getResponseChart = async (
   const responsesByPeriod = await Resposta.findAll({
     where: whereClause,
     attributes: [
-      [fn("date_trunc", period, literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`)), "period"],
+      [
+        fn(
+          "date_trunc",
+          period,
+          literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`),
+        ),
+        "period",
+      ],
       [fn("COUNT", col("id")), "count"],
     ],
-    group: [fn("date_trunc", period, literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`))],
-    order: [[fn("date_trunc", period, literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`)), "ASC"]],
+    group: [
+      fn(
+        "date_trunc",
+        period,
+        literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`),
+      ),
+    ],
+    order: [
+      [
+        fn(
+          "date_trunc",
+          period,
+          literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`),
+        ),
+        "ASC",
+      ],
+    ],
   });
 
   return responsesByPeriod.map((item) => ({
@@ -332,15 +376,15 @@ const getFeedbacks = async (
   tenantId = null,
   startDate = null,
   endDate = null,
-  npsClassification = 'all',
+  npsClassification = "all",
   page = 1,
   limit = 10,
 ) => {
   const sessionFilterWhereClause = {
     [Op.or]: [
       { ratingValue: { [Op.ne]: null } },
-      { textValue: { [Op.ne]: null, [Op.ne]: "" } }
-    ]
+      { textValue: { [Op.ne]: null, [Op.ne]: "" } },
+    ],
   };
 
   if (tenantId) {
@@ -350,18 +394,19 @@ const getFeedbacks = async (
       sessionFilterWhereClause.tenantId = tenantId;
     }
   }
-  if (startDate && endDate) sessionFilterWhereClause.createdAt = { [Op.between]: [startDate, endDate] };
+  if (startDate && endDate)
+    sessionFilterWhereClause.createdAt = { [Op.between]: [startDate, endDate] };
 
   // Etapa de Pré-filtragem para classificação NPS
-  if (npsClassification && npsClassification !== 'all') {
-    const npsQuestionType = 'rating_0_10';
+  if (npsClassification && npsClassification !== "all") {
+    const npsQuestionType = "rating_0_10";
     let ratingWhere;
 
-    if (npsClassification === 'promoters') {
+    if (npsClassification === "promoters") {
       ratingWhere = { [Op.gte]: 9 };
-    } else if (npsClassification === 'neutrals') {
+    } else if (npsClassification === "neutrals") {
       ratingWhere = { [Op.between]: [7, 8] };
-    } else if (npsClassification === 'detractors') {
+    } else if (npsClassification === "detractors") {
       ratingWhere = { [Op.lte]: 6 };
     }
 
@@ -370,20 +415,29 @@ const getFeedbacks = async (
         where: {
           tenantId: sessionFilterWhereClause.tenantId,
           createdAt: sessionFilterWhereClause.createdAt,
-          ratingValue: ratingWhere
+          ratingValue: ratingWhere,
         },
-        include: [{
-          model: Pergunta,
-          as: 'pergunta',
-          where: { type: npsQuestionType },
-          attributes: []
-        }],
-        attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('respondentSessionId')), 'respondentSessionId']],
+        include: [
+          {
+            model: Pergunta,
+            as: "pergunta",
+            where: { type: npsQuestionType },
+            attributes: [],
+          },
+        ],
+        attributes: [
+          [
+            Sequelize.fn("DISTINCT", Sequelize.col("respondentSessionId")),
+            "respondentSessionId",
+          ],
+        ],
         raw: true,
-      }).then(sessions => sessions.map(s => s.respondentSessionId));
-      
+      }).then((sessions) => sessions.map((s) => s.respondentSessionId));
+
       // Adiciona o filtro de IDs de sessão à cláusula principal
-      sessionFilterWhereClause.respondentSessionId = { [Op.in]: classifiedSessionIds };
+      sessionFilterWhereClause.respondentSessionId = {
+        [Op.in]: classifiedSessionIds,
+      };
     }
   }
 
@@ -391,83 +445,93 @@ const getFeedbacks = async (
   const distinctSessionIdsResult = await Resposta.findAll({
     where: sessionFilterWhereClause,
     attributes: [
-      [Sequelize.fn('DISTINCT', Sequelize.col('respondentSessionId')), 'respondentSessionId'],
-      [Sequelize.fn('MIN', Sequelize.col('createdAt')), 'firstResponseAt']
+      [
+        Sequelize.fn("DISTINCT", Sequelize.col("respondentSessionId")),
+        "respondentSessionId",
+      ],
+      [Sequelize.fn("MIN", Sequelize.col("createdAt")), "firstResponseAt"],
     ],
-    group: ['respondentSessionId'],
-    order: [['firstResponseAt', 'DESC']],
+    group: ["respondentSessionId"],
+    order: [["firstResponseAt", "DESC"]],
     limit,
     offset: (page - 1) * limit,
     raw: true,
   });
 
-  const sessionIds = distinctSessionIdsResult.map(s => s.respondentSessionId);
+  const sessionIds = distinctSessionIdsResult.map((s) => s.respondentSessionId);
   if (sessionIds.length === 0) return { count: 0, rows: [] };
 
   // 2. Buscar todas as respostas para essas sessões
   const allResponsesInTheseSessions = await Resposta.findAll({
     where: { respondentSessionId: { [Op.in]: sessionIds } },
     include: [
-      { model: Pergunta, as: 'pergunta', attributes: ['text', 'type'] },
-      { model: Client, as: 'client', attributes: ['name', 'phone', 'email'] },
-      { 
-        model: Tratativa, 
-        as: 'tratativa', 
+      { model: Pergunta, as: "pergunta", attributes: ["text", "type"] },
+      { model: Client, as: "client", attributes: ["name", "phone", "email"] },
+      {
+        model: Tratativa,
+        as: "tratativa",
         required: false,
         on: {
-          respondentSessionId: { [Op.col]: 'Resposta.respondentSessionId' }
-        }
-      }
+          respondentSessionId: { [Op.col]: "Resposta.respondentSessionId" },
+        },
+      },
     ],
-    order: [['createdAt', 'ASC']]
+    order: [["createdAt", "ASC"]],
   });
 
   // 3. Agrupar e formatar por sessão
-  const groupedFeedbacksMap = allResponsesInTheseSessions.reduce((acc, response) => {
-    const sessionId = response.respondentSessionId;
-    if (!acc[sessionId]) {
-      acc[sessionId] = {
-        sessionId: sessionId,
-        client: response.client ? { 
-          name: response.client.name,
-          phone: response.client.phone,
-          email: response.client.email
-        } : null,
-        status: response.tratativa?.status || 'PENDENTE',
-        notes: response.tratativa?.notes || '',
-        createdAt: response.createdAt,
-        responses: [],
-      };
-    }
+  const groupedFeedbacksMap = allResponsesInTheseSessions.reduce(
+    (acc, response) => {
+      const sessionId = response.respondentSessionId;
+      if (!acc[sessionId]) {
+        acc[sessionId] = {
+          sessionId: sessionId,
+          client: response.client
+            ? {
+                name: response.client.name,
+                phone: response.client.phone,
+                email: response.client.email,
+              }
+            : null,
+          status: response.tratativa?.status || "PENDENTE",
+          notes: response.tratativa?.notes || "",
+          createdAt: response.createdAt,
+          responses: [],
+        };
+      }
 
-    let answerValue = response.textValue || response.selectedOption;
-    if (response.ratingValue !== null) {
-      answerValue = response.ratingValue;
-    }
-    
-    acc[sessionId].responses.push({
-      perguntaId: response.perguntaId,
-      question: response.pergunta?.text,
-      answer: answerValue,
-      questionType: response.pergunta?.type,
-      ratingValue: response.ratingValue,
-    });
-    
-    if (response.createdAt > new Date(acc[sessionId].createdAt)) {
-      acc[sessionId].createdAt = response.createdAt;
-    }
+      let answerValue = response.textValue || response.selectedOption;
+      if (response.ratingValue !== null) {
+        answerValue = response.ratingValue;
+      }
 
-    return acc;
-  }, {});
+      acc[sessionId].responses.push({
+        perguntaId: response.perguntaId,
+        question: response.pergunta?.text,
+        answer: answerValue,
+        questionType: response.pergunta?.type,
+        ratingValue: response.ratingValue,
+      });
+
+      if (response.createdAt > new Date(acc[sessionId].createdAt)) {
+        acc[sessionId].createdAt = response.createdAt;
+      }
+
+      return acc;
+    },
+    {},
+  );
 
   // 4. Formatar o resultado final
-  const formattedRows = Object.values(groupedFeedbacksMap).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const formattedRows = Object.values(groupedFeedbacksMap).sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+  );
 
   // Contagem total para paginação (baseada no número de sessões distintas)
   const totalCount = await Resposta.count({
     where: sessionFilterWhereClause,
     distinct: true,
-    col: 'respondentSessionId'
+    col: "respondentSessionId",
   });
 
   return {
@@ -548,24 +612,26 @@ const getScoresByCriteria = async (
       return result;
     }
 
-    const allResponses = criterio.perguntas.flatMap(p => p.respostas || []);
+    const allResponses = criterio.perguntas.flatMap((p) => p.respostas || []);
     if (allResponses.length === 0) {
       return result;
     }
-    
+
     result.total = allResponses.length;
 
     let questionType = null;
-    const firstQuestionWithAnswers = criterio.perguntas.find(p => p.respostas && p.respostas.length > 0);
-    if(firstQuestionWithAnswers) {
-        questionType = firstQuestionWithAnswers.type;
+    const firstQuestionWithAnswers = criterio.perguntas.find(
+      (p) => p.respostas && p.respostas.length > 0,
+    );
+    if (firstQuestionWithAnswers) {
+      questionType = firstQuestionWithAnswers.type;
     } else {
-        const firstQuestion = criterio.perguntas[0];
-        if (firstQuestion) {
-            questionType = firstQuestion.type;
-        } else {
-            return result;
-        }
+      const firstQuestion = criterio.perguntas[0];
+      if (firstQuestion) {
+        questionType = firstQuestion.type;
+      } else {
+        return result;
+      }
     }
 
     if (questionType === "rating_0_10") {
@@ -577,17 +643,19 @@ const getScoresByCriteria = async (
       result.detractors = npsResult.detractors;
     } else if (questionType === "rating_1_5" || questionType === "rating") {
       result.scoreType = "CSAT";
-      result.satisfied = allResponses.filter(r => r.ratingValue >= 4).length;
-      result.neutral = allResponses.filter(r => r.ratingValue === 3).length;
-      result.unsatisfied = allResponses.filter(r => r.ratingValue < 3).length;
+      result.satisfied = allResponses.filter((r) => r.ratingValue >= 4).length;
+      result.neutral = allResponses.filter((r) => r.ratingValue === 3).length;
+      result.unsatisfied = allResponses.filter((r) => r.ratingValue < 3).length;
       if (result.total > 0) {
-        result.satisfactionRate = parseFloat(((result.satisfied / result.total) * 100).toFixed(1));
+        result.satisfactionRate = parseFloat(
+          ((result.satisfied / result.total) * 100).toFixed(1),
+        );
       }
       result.promoters = result.satisfied;
       result.neutrals = result.neutral;
       result.detractors = result.unsatisfied;
     } else {
-        result.scoreType = "Outro";
+      result.scoreType = "Outro";
     }
 
     return result;
@@ -670,7 +738,14 @@ const getNpsTrendData = async (
       },
     ],
     attributes: [
-      [fn("date_trunc", period, literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`)), "period"],
+      [
+        fn(
+          "date_trunc",
+          period,
+          literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`),
+        ),
+        "period",
+      ],
       [
         fn("SUM", literal(`CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END`)),
         "promoters",
@@ -681,12 +756,32 @@ const getNpsTrendData = async (
       ],
       [fn("COUNT", col("Resposta.id")), "total"],
     ],
-    group: [fn("date_trunc", period, literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`))],
-    order: [[fn("date_trunc", period, literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`)), "ASC"]],
+    group: [
+      fn(
+        "date_trunc",
+        period,
+        literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`),
+      ),
+    ],
+    order: [
+      [
+        fn(
+          "date_trunc",
+          period,
+          literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`),
+        ),
+        "ASC",
+      ],
+    ],
   });
 
   return trendData.map((item) => {
-    const { period: datePeriod, promoters: p, detractors: d, total: t } = item.dataValues;
+    const {
+      period: datePeriod,
+      promoters: p,
+      detractors: d,
+      total: t,
+    } = item.dataValues;
     const promoters = parseInt(p) || 0;
     const detractors = parseInt(d) || 0;
     const total = parseInt(t) || 0;
@@ -694,11 +789,7 @@ const getNpsTrendData = async (
     return {
       period: formatInTimeZone(
         datePeriod,
-        period === "day"
-          ? "dd/MM"
-          : period === "week"
-            ? "ww/yyyy"
-            : "MM/yyyy",
+        period === "day" ? "dd/MM" : period === "week" ? "ww/yyyy" : "MM/yyyy",
       ),
       nps: parseFloat(nps.toFixed(1)),
     };
@@ -732,7 +823,14 @@ const getEvolutionData = async (
   const responseTrends = await Resposta.findAll({
     where: whereClause,
     attributes: [
-      [fn("date_trunc", period, literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`)), "period"],
+      [
+        fn(
+          "date_trunc",
+          period,
+          literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`),
+        ),
+        "period",
+      ],
       [
         fn(
           "SUM",
@@ -781,8 +879,23 @@ const getEvolutionData = async (
       [fn("COUNT", col("Resposta.id")), "responses"],
     ],
     include: [{ model: Pergunta, as: "pergunta", attributes: [] }],
-    group: [fn("date_trunc", period, literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`))],
-    order: [[fn("date_trunc", period, literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`)), "ASC"]],
+    group: [
+      fn(
+        "date_trunc",
+        period,
+        literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`),
+      ),
+    ],
+    order: [
+      [
+        fn(
+          "date_trunc",
+          period,
+          literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`),
+        ),
+        "ASC",
+      ],
+    ],
     raw: true,
   });
 
@@ -1268,19 +1381,27 @@ const getAttendantsPerformance = async (tenantId, startDate, endDate) => {
       atendenteId: { [Op.in]: attendantIds },
       ratingValue: { [Op.ne]: null },
     },
-    include: [{
-      model: Pergunta,
-      as: 'pergunta',
-      where: { type: 'rating_0_10' },
-      attributes: []
-    }],
-    attributes: [
-      'atendenteId',
-      [fn('SUM', literal('CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END')), 'promoters'],
-      [fn('SUM', literal('CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END')), 'detractors'],
-      [fn('COUNT', col('Resposta.id')), 'total'],
+    include: [
+      {
+        model: Pergunta,
+        as: "pergunta",
+        where: { type: "rating_0_10" },
+        attributes: [],
+      },
     ],
-    group: ['atendenteId'],
+    attributes: [
+      "atendenteId",
+      [
+        fn("SUM", literal('CASE WHEN "ratingValue" >= 9 THEN 1 ELSE 0 END')),
+        "promoters",
+      ],
+      [
+        fn("SUM", literal('CASE WHEN "ratingValue" <= 6 THEN 1 ELSE 0 END')),
+        "detractors",
+      ],
+      [fn("COUNT", col("Resposta.id")), "total"],
+    ],
+    group: ["atendenteId"],
     raw: true,
   });
 
@@ -1300,33 +1421,33 @@ const getAttendantsPerformance = async (tenantId, startDate, endDate) => {
   const surveyCounts = await Resposta.findAll({
     where: { ...whereClause, atendenteId: { [Op.in]: attendantIds } },
     attributes: [
-      'atendenteId',
-      [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'surveyCount'],
+      "atendenteId",
+      [fn("COUNT", fn("DISTINCT", col("respondentSessionId"))), "surveyCount"],
     ],
-    group: ['atendenteId'],
+    group: ["atendenteId"],
     raw: true,
   });
 
   // 3.1 Contar cadastros (Clients) vinculados aos atendentes via respondentSessionId
   // Precisamos encontrar Clients cujo respondentSessionId corresponde a uma resposta deste atendente
   // A melhor forma performática é buscar as sessões dos atendentes e contar os clients
-  
+
   // Primeiro, buscamos todas as sessões vinculadas a cada atendente no período
   const sessionsByAttendantRaw = await Resposta.findAll({
-    where: { 
-      ...whereClause, 
+    where: {
+      ...whereClause,
       atendenteId: { [Op.in]: attendantIds },
-      respondentSessionId: { [Op.ne]: null }
+      respondentSessionId: { [Op.ne]: null },
     },
-    attributes: ['atendenteId', 'respondentSessionId'],
-    group: ['atendenteId', 'respondentSessionId'], // Dedup sessions per attendant
-    raw: true
+    attributes: ["atendenteId", "respondentSessionId"],
+    group: ["atendenteId", "respondentSessionId"], // Dedup sessions per attendant
+    raw: true,
   });
 
   // Mapa: SessionId -> AtendenteId
   const sessionToAttendantMap = {};
   const allSessionIds = [];
-  sessionsByAttendantRaw.forEach(s => {
+  sessionsByAttendantRaw.forEach((s) => {
     sessionToAttendantMap[s.respondentSessionId] = s.atendenteId;
     allSessionIds.push(s.respondentSessionId);
   });
@@ -1334,27 +1455,28 @@ const getAttendantsPerformance = async (tenantId, startDate, endDate) => {
   // Agora contamos os clients que têm esses sessionIds e foram criados no período (ou sempre, dependendo da regra. Vamos usar o período do filtro para consistência)
   const clientWhereClause = {
     respondentSessionId: { [Op.in]: allSessionIds },
-    tenantId: tenantId
+    tenantId: tenantId,
   };
-  
+
   if (startDate && endDate) {
-     clientWhereClause.createdAt = { [Op.between]: [startDate, endDate] };
+    clientWhereClause.createdAt = { [Op.between]: [startDate, endDate] };
   } else if (startDate) {
-     clientWhereClause.createdAt = { [Op.gte]: startDate };
+    clientWhereClause.createdAt = { [Op.gte]: startDate };
   }
 
   const clientsFound = await Client.findAll({
     where: clientWhereClause,
-    attributes: ['id', 'respondentSessionId'],
-    raw: true
+    attributes: ["id", "respondentSessionId"],
+    raw: true,
   });
 
   // Agrupar contagem por atendente
   const registrationsByAttendant = {};
-  clientsFound.forEach(client => {
+  clientsFound.forEach((client) => {
     const atendenteId = sessionToAttendantMap[client.respondentSessionId];
     if (atendenteId) {
-        registrationsByAttendant[atendenteId] = (registrationsByAttendant[atendenteId] || 0) + 1;
+      registrationsByAttendant[atendenteId] =
+        (registrationsByAttendant[atendenteId] || 0) + 1;
     }
   });
 
@@ -1369,18 +1491,22 @@ const getAttendantsPerformance = async (tenantId, startDate, endDate) => {
   const attendantsData = attendants.map((attendant) => {
     const performance = countsByAttendant[attendant.id] || { responses: 0 };
     const registrations = registrationsByAttendant[attendant.id] || 0;
-    
+
     return {
       id: attendant.id,
       name: attendant.name,
-      responses: performance.responses, 
+      responses: performance.responses,
       registrations: registrations, // Valor real calculado
       currentNPS: npsByAttendant[attendant.id] || 0,
-      currentCSAT: 0, 
+      currentCSAT: 0,
       npsGoal: attendant.meta?.npsGoal ? parseFloat(attendant.meta.npsGoal) : 0,
-      responsesGoal: attendant.meta?.responsesGoal ? parseInt(attendant.meta.responsesGoal) : 0, // Adicionado meta de respostas
-      registrationsGoal: attendant.meta?.registrationsGoal ? parseInt(attendant.meta.registrationsGoal) : 0, // Adicionado meta de cadastros
-      csatGoal: 0, 
+      responsesGoal: attendant.meta?.responsesGoal
+        ? parseInt(attendant.meta.responsesGoal)
+        : 0, // Adicionado meta de respostas
+      registrationsGoal: attendant.meta?.registrationsGoal
+        ? parseInt(attendant.meta.registrationsGoal)
+        : 0, // Adicionado meta de cadastros
+      csatGoal: 0,
     };
   });
 
@@ -1578,7 +1704,7 @@ const getDetails = async (tenantId, startDate, endDate, category) => {
   } else {
     where.tenantId = { [Op.ne]: null };
   }
-  
+
   if (startDate && endDate) {
     where.createdAt = { [Op.between]: [startDate, endDate] };
   } else if (startDate) {
@@ -1773,7 +1899,7 @@ const getMonthSummaryData = async (tenantId, startDate, endDate) => {
     .map((date) => {
       const dailyResponses = responsesByDate[date];
       const dayResult = ratingService.calculateNPS(dailyResponses);
-      
+
       accumulatedPromoters += dayResult.promoters;
       accumulatedDetractors += dayResult.detractors;
       accumulatedTotal += dayResult.total;
@@ -1842,7 +1968,11 @@ const getMonthSummaryData = async (tenantId, startDate, endDate) => {
   };
 };
 
-const getDeliveryStats = async (tenantId = null, startDate = null, endDate = null) => {
+const getDeliveryStats = async (
+  tenantId = null,
+  startDate = null,
+  endDate = null,
+) => {
   const whereClause = {};
   if (tenantId) {
     if (Array.isArray(tenantId)) {
@@ -1865,17 +1995,17 @@ const getDeliveryStats = async (tenantId = null, startDate = null, endDate = nul
   // Pedidos por Plataforma
   const ordersByPlatform = await DeliveryOrder.findAll({
     where: whereClause,
-    attributes: ['platform', [fn('COUNT', col('id')), 'count']],
-    group: ['platform'],
-    raw: true
+    attributes: ["platform", [fn("COUNT", col("id")), "count"]],
+    group: ["platform"],
+    raw: true,
   });
 
   // Status das Pesquisas de Delivery
   const surveyStatusStats = await DeliveryOrder.findAll({
     where: whereClause,
-    attributes: ['surveyStatus', [fn('COUNT', col('id')), 'count']],
-    group: ['surveyStatus'],
-    raw: true
+    attributes: ["surveyStatus", [fn("COUNT", col("id")), "count"]],
+    group: ["surveyStatus"],
+    raw: true,
   });
 
   // Conversão: Quantos pedidos geraram uma resposta?
@@ -1885,11 +2015,14 @@ const getDeliveryStats = async (tenantId = null, startDate = null, endDate = nul
 
   return {
     totalOrders,
-    byPlatform: ordersByPlatform.map(item => ({ name: item.platform, value: parseInt(item.count) })),
+    byPlatform: ordersByPlatform.map((item) => ({
+      name: item.platform,
+      value: parseInt(item.count),
+    })),
     surveyStatus: surveyStatusStats.reduce((acc, item) => {
-        acc[item.surveyStatus] = parseInt(item.count);
-        return acc;
-    }, {})
+      acc[item.surveyStatus] = parseInt(item.count);
+      return acc;
+    }, {}),
   };
 };
 
@@ -1971,55 +2104,65 @@ const getTopClientsByResponses = async (tenantId, limit = 10) => {
   return Client.findAll({
     where: whereClause,
     attributes: [
-      'id',
-      'name',
-      'phone',
-      [Sequelize.fn('COUNT', Sequelize.col('respostas.id')), 'responseCount']
+      "id",
+      "name",
+      "phone",
+      [Sequelize.fn("COUNT", Sequelize.col("respostas.id")), "responseCount"],
     ],
-    include: [{
-      model: Resposta,
-      as: 'respostas',
-      attributes: [],
-      required: true,
-    }],
-    group: ['Client.id'],
-    order: [[Sequelize.literal('"responseCount"'), 'DESC']],
+    include: [
+      {
+        model: Resposta,
+        as: "respostas",
+        attributes: [],
+        required: true,
+      },
+    ],
+    group: ["Client.id"],
+    order: [[Sequelize.literal('"responseCount"'), "DESC"]],
     limit,
     subQuery: false,
   });
 };
 
 const getTopClientsByRedemptions = async (tenantId, limit = 10) => {
-    const whereClause = {
-        status: 'used'
-    };
-    if (tenantId) {
-        if (Array.isArray(tenantId)) {
-            whereClause.tenantId = { [Op.in]: tenantId };
-        } else {
-            whereClause.tenantId = tenantId;
-        }
+  const whereClause = {
+    status: "used",
+  };
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
     }
+  }
 
-    return Cupom.findAll({
-        where: whereClause,
-        attributes: [
-            'clienteId',
-            [Sequelize.fn('COUNT', Sequelize.col('Cupom.id')), 'redemptionCount']
-        ],
-        include: [{
-            model: Client,
-            as: 'client',
-            attributes: ['name', 'phone'],
-            required: true
-        }],
-        group: ['clienteId', 'client.id'],
-        order: [[Sequelize.literal('"redemptionCount" DESC')]],
-        limit,
-    });
+  return Cupom.findAll({
+    where: whereClause,
+    attributes: [
+      "clienteId",
+      [Sequelize.fn("COUNT", Sequelize.col("Cupom.id")), "redemptionCount"],
+    ],
+    include: [
+      {
+        model: Client,
+        as: "client",
+        attributes: ["name", "phone"],
+        required: true,
+      },
+    ],
+    group: ["clienteId", "client.id"],
+    order: [[Sequelize.literal('"redemptionCount" DESC')]],
+    limit,
+  });
 };
 
-const getAttendantResponsesTimeseries = async (tenantId, period, startDate, endDate, atendenteId = null) => {
+const getAttendantResponsesTimeseries = async (
+  tenantId,
+  period,
+  startDate,
+  endDate,
+  atendenteId = null,
+) => {
   const whereClause = {
     tenantId: tenantId,
     atendenteId: { [Op.ne]: null },
@@ -2039,14 +2182,45 @@ const getAttendantResponsesTimeseries = async (tenantId, period, startDate, endD
   const responses = await Resposta.findAll({
     where: whereClause,
     attributes: [
-      'atendenteId',
-      [fn('date_trunc', period, literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`)), 'period'],
+      "atendenteId",
+      [
+        fn(
+          "date_trunc",
+          period,
+          literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`),
+        ),
+        "period",
+      ],
       // Revertido para contar sessões únicas, conforme a regra de negócio.
-      [fn('COUNT', fn('DISTINCT', col('respondentSessionId'))), 'count'],
+      [fn("COUNT", fn("DISTINCT", col("respondentSessionId"))), "count"],
     ],
-    include: [{ model: Atendente, as: 'atendente', attributes: ['name'], required: true }],
-    group: ['atendenteId', 'atendente.id', fn('date_trunc', period, literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`))],
-    order: [[fn('date_trunc', period, literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`)), 'ASC']],
+    include: [
+      {
+        model: Atendente,
+        as: "atendente",
+        attributes: ["name"],
+        required: true,
+      },
+    ],
+    group: [
+      "atendenteId",
+      "atendente.id",
+      fn(
+        "date_trunc",
+        period,
+        literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`),
+      ),
+    ],
+    order: [
+      [
+        fn(
+          "date_trunc",
+          period,
+          literal(`"Resposta"."createdAt" AT TIME ZONE '${TIMEZONE}'`),
+        ),
+        "ASC",
+      ],
+    ],
     raw: true,
     nest: true,
   });
@@ -2055,9 +2229,9 @@ const getAttendantResponsesTimeseries = async (tenantId, period, startDate, endD
   const allPeriods = new Set();
 
   // Process all responses from the query
-  responses.forEach(item => {
+  responses.forEach((item) => {
     const attendantName = item.atendente.name;
-    const formattedPeriod = formatInTimeZone(item.period, 'yyyy-MM-dd');
+    const formattedPeriod = formatInTimeZone(item.period, "yyyy-MM-dd");
     const count = parseInt(item.count, 10);
 
     if (!seriesByAttendant[attendantName]) {
@@ -2072,11 +2246,11 @@ const getAttendantResponsesTimeseries = async (tenantId, period, startDate, endD
   const sortedPeriods = Array.from(allPeriods).sort();
   const attendantNames = Object.keys(seriesByAttendant);
 
-  const finalChartData = sortedPeriods.map(period => {
+  const finalChartData = sortedPeriods.map((period) => {
     const chartEntry = {
-      period: formatInTimeZone(new Date(period), 'dd/MM'),
+      period: formatInTimeZone(new Date(period), "dd/MM"),
     };
-    attendantNames.forEach(name => {
+    attendantNames.forEach((name) => {
       chartEntry[name] = seriesByAttendant[name][period] || 0;
     });
     return chartEntry;

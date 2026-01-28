@@ -3,7 +3,7 @@ const atendenteMetaService = require("../services/atendenteMetaService");
 const ApiError = require("../errors/ApiError");
 const { validateTenantAccess } = require("../utils/tenantUtils");
 
-const VALID_PERIODS = ['DIARIO', 'SEMANAL', 'MENSAL'];
+const VALID_PERIODS = ["DIARIO", "SEMANAL", "MENSAL"];
 
 const atendenteMetaController = {
   // @desc    Cria ou atualiza a meta de um atendente
@@ -11,9 +11,15 @@ const atendenteMetaController = {
   // @access  Private (Super Admin, Admin)
   createOrUpdateMeta: asyncHandler(async (req, res) => {
     const { atendenteId } = req.params;
-    const { 
-      npsGoal, responsesGoal, registrationsGoal, period,
-      dias_trabalhados, nps_premio_valor, respostas_premio_valor, cadastros_premio_valor 
+    const {
+      npsGoal,
+      responsesGoal,
+      registrationsGoal,
+      period,
+      dias_trabalhados,
+      nps_premio_valor,
+      respostas_premio_valor,
+      cadastros_premio_valor,
     } = req.body;
 
     if (!atendenteId) {
@@ -21,7 +27,10 @@ const atendenteMetaController = {
     }
 
     if (period && !VALID_PERIODS.includes(period)) {
-        throw new ApiError(400, `Período inválido. Valores aceitos: ${VALID_PERIODS.join(', ')}`);
+      throw new ApiError(
+        400,
+        `Período inválido. Valores aceitos: ${VALID_PERIODS.join(", ")}`,
+      );
     }
 
     const tenantId = validateTenantAccess(req.user, req.body.tenantId);
@@ -30,9 +39,15 @@ const atendenteMetaController = {
       throw new ApiError(400, "Tenant ID é obrigatório para definir metas.");
     }
 
-    const metaData = { 
-      npsGoal, responsesGoal, registrationsGoal, period: period || 'MENSAL',
-      dias_trabalhados, nps_premio_valor, respostas_premio_valor, cadastros_premio_valor
+    const metaData = {
+      npsGoal,
+      responsesGoal,
+      registrationsGoal,
+      period: period || "MENSAL",
+      dias_trabalhados,
+      nps_premio_valor,
+      respostas_premio_valor,
+      cadastros_premio_valor,
     };
 
     const meta = await atendenteMetaService.createOrUpdateMeta(
@@ -51,7 +66,7 @@ const atendenteMetaController = {
   // @access  Private (Super Admin, Admin)
   getMetaByAtendenteId: asyncHandler(async (req, res) => {
     const { atendenteId } = req.params;
-    
+
     const tenantId = validateTenantAccess(req.user, req.query.tenantId);
 
     if (!tenantId) {
@@ -62,7 +77,7 @@ const atendenteMetaController = {
       atendenteId,
       tenantId,
     );
-    
+
     // Nota: Se não tiver meta, retorna null ou erro? O frontend espera objeto ou 404?
     // O código anterior retornava 404. Vamos manter, mas é discutível.
     if (!meta) {
@@ -93,7 +108,7 @@ const atendenteMetaController = {
   // @access  Private (Super Admin, Admin)
   deleteMeta: asyncHandler(async (req, res) => {
     const { atendenteId } = req.params;
-    
+
     const tenantId = validateTenantAccess(req.user, req.query.tenantId);
 
     if (!tenantId) {

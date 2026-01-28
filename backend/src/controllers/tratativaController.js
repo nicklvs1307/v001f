@@ -7,8 +7,8 @@ exports.upsertTratativa = asyncHandler(async (req, res) => {
   const { status, notes } = req.body;
   const tenantId = req.user.tenantId;
 
-  let tratativa = await Tratativa.findOne({ 
-    where: { respondentSessionId: sessionId, tenantId } 
+  let tratativa = await Tratativa.findOne({
+    where: { respondentSessionId: sessionId, tenantId },
   });
 
   if (tratativa) {
@@ -19,8 +19,8 @@ exports.upsertTratativa = asyncHandler(async (req, res) => {
     tratativa = await Tratativa.create({
       respondentSessionId: sessionId,
       tenantId,
-      status: status || 'PENDENTE',
-      notes: notes || ''
+      status: status || "PENDENTE",
+      notes: notes || "",
     });
   }
 

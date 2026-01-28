@@ -7,7 +7,7 @@ const ApiError = require("../../errors/ApiError");
 // @access  Super Admin
 exports.getAllPlans = asyncHandler(async (req, res) => {
   const plans = await Plan.findAll({
-    order: [['price', 'ASC']]
+    order: [["price", "ASC"]],
   });
   res.json(plans);
 });
@@ -27,7 +27,7 @@ exports.createPlan = asyncHandler(async (req, res) => {
     price,
     description,
     features,
-    active: active !== undefined ? active : true
+    active: active !== undefined ? active : true,
   });
 
   res.status(201).json(plan);
@@ -51,7 +51,7 @@ exports.updatePlan = asyncHandler(async (req, res) => {
     price,
     description,
     features,
-    active
+    active,
   });
 
   res.json(plan);

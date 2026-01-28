@@ -76,6 +76,11 @@ const whatsappConfigController = {
         ownerMessageTemplate: config.detractorOwnerMessageTemplate,
         ownerPhoneNumbers: config.detractorOwnerPhoneNumbers,
       },
+      postSaleAutomation: {
+        delayMinutes: config.postSaleDelayMinutes,
+        messageTemplate: config.postSaleMessageTemplate,
+        surveyId: config.postSaleSurveyId,
+      },
     };
 
     res.json(response);
@@ -114,8 +119,13 @@ const whatsappConfigController = {
       sendDetractorMessageToClient: data.detractorAutomation.enabled,
       detractorMessageTemplate: data.detractorAutomation.messageTemplate,
       notifyDetractorToOwner: data.detractorAutomation.notifyOwner,
-      detractorOwnerMessageTemplate: data.detractorAutomation.ownerMessageTemplate,
+      detractorOwnerMessageTemplate:
+        data.detractorAutomation.ownerMessageTemplate,
       ownerPhoneNumbers: data.detractorAutomation.ownerPhoneNumbers,
+      // Mapeamento para postSaleAutomation
+      postSaleDelayMinutes: data.postSaleAutomation.delayMinutes,
+      postSaleMessageTemplate: data.postSaleAutomation.messageTemplate,
+      postSaleSurveyId: data.postSaleAutomation.surveyId || null,
     };
     await config.update(configUpdateData);
 

@@ -58,27 +58,29 @@ class CupomRepository {
 
     // 1. Separate counts for robustness
     const totalCupons = await Cupom.count({ where: whereClause });
-    const usedCupons = await Cupom.count({ where: { ...whereClause, status: 'used' } });
+    const usedCupons = await Cupom.count({
+      where: { ...whereClause, status: "used" },
+    });
     const expiredCupons = await Cupom.count({
       where: {
         ...whereClause,
-        status: { [Op.ne]: 'used' },
+        status: { [Op.ne]: "used" },
         dataValidade: { [Op.lt]: today },
       },
     });
     const activeCupons = await Cupom.count({
       where: {
         ...whereClause,
-        status: 'active',
+        status: "active",
         dataValidade: { [Op.gte]: today },
       },
     });
     const expiringSoonCupons = await Cupom.count({
-        where: {
-            ...whereClause,
-            status: 'active',
-            dataValidade: { [Op.between]: [today, sevenDaysFromNow] },
-        },
+      where: {
+        ...whereClause,
+        status: "active",
+        dataValidade: { [Op.between]: [today, sevenDaysFromNow] },
+      },
     });
 
     // 2. Group by reward NAME instead of type

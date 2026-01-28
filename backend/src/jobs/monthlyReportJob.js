@@ -54,6 +54,12 @@ const monthlyReportTask = cron.schedule(
             endOfLastMonth,
           );
 
+          const surveySummaries = await dashboardRepository.getSummaryBySurvey(
+            config.tenantId,
+            startOfLastMonth,
+            endOfLastMonth,
+          );
+
           const formattedMonth = format(lastMonth, "MMMM 'de' yyyy", {
             locale: ptBR,
           });
@@ -63,14 +69,26 @@ const monthlyReportTask = cron.schedule(
             process.env.FRONTEND_URL || "https://loyalfood.towersfy.com";
           const reportUrl = `${baseUrl}/relatorios/mensal?date=${isoDate}`;
 
-          const message =
+          let message =
             `*Relatório Mensal ${tenant.name}*\n\n` +
             `Aqui está o resumo da experiência dos seus clientes em ${formattedMonth}!\n` +
-            `📊 Total de respostas: ${monthlySummary.totalResponses}\n` +
-            `🟢 Número de Promotores: ${monthlySummary.nps.promoters}\n` +
-            `🟡 Número de Neutros: ${monthlySummary.nps.neutrals}\n` +
-            `🔴 Número de Detratores: ${monthlySummary.nps.detractors}\n\n` +
-            `🔗 Para acessar o relatório completo, visite ${reportUrl}`;
+            `📊 *Total Geral de respostas:* ${monthlySummary.totalResponses}\n` +
+            `🟢 Promotores: ${monthlySummary.nps.promoters}\n` +
+            `🟡 Neutros: ${monthlySummary.nps.neutrals}\n` +
+            `🔴 Detratores: ${monthlySummary.nps.detractors}\n\n`;
+
+          if (surveySummaries && surveySummaries.length > 0) {
+            message += `*Detalhamento por Pesquisa:*\n`;
+            surveySummaries.forEach((s) => {
+              message +=
+                `\n📋 _${s.surveyTitle}_\n` +
+                `Respostas: ${s.totalResponses}\n` +
+                `🟢 ${s.nps.promoters} | 🟡 ${s.nps.neutrals} | 🔴 ${s.nps.detractors}\n`;
+            });
+            message += `\n`;
+          }
+
+          message += `🔗 Para acessar o relatório completo, visite ${reportUrl}`;
 
           const phoneNumbers = config.reportPhoneNumbers
             .split(",")

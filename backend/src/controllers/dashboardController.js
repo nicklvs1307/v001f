@@ -226,7 +226,13 @@ module.exports = {
       surveyId,
     );
 
-    res.status(200).json(reportData);
+    const surveySummaries = await dashboardRepository.getSummaryBySurvey(
+      req.tenantId,
+      startDate,
+      endDate,
+    );
+
+    res.status(200).json({ ...reportData, surveySummaries });
   }),
 
   getDemographicsData: asyncHandler(async (req, res) => {

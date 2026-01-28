@@ -83,6 +83,12 @@ const dailyReportTask = cron.schedule(
             endOfTwoDaysAgoZoned,
           );
 
+          const surveySummaries = await dashboardRepository.getSummaryBySurvey(
+            config.tenantId,
+            startOfYesterdayZoned,
+            endOfYesterdayZoned,
+          );
+
           // Calculate difference
           const diff =
             yesterdaySummary.totalResponses - twoDaysAgoSummary.totalResponses;
@@ -97,14 +103,26 @@ const dailyReportTask = cron.schedule(
           const reportUrl = `${baseUrl}/relatorios/diario?date=${isoDate}`;
 
           // Construct the new message
-          const message =
-            `*Relatorio Diario ${tenant.name}*\n\n` +
+          let message =
+            `*Relatório Diário ${tenant.name}*\n\n` +
             `Aqui está o resumo da experiência dos seus clientes no dia ${formattedDate}!\n` +
-            `📊 Total de respostas: ${yesterdaySummary.totalResponses} ${diffText}\n` +
-            `🟢 Número de Promotores: ${yesterdaySummary.nps.promoters}\n` +
-            `🟡 Número de Neutros: ${yesterdaySummary.nps.neutrals}\n` +
-            `🔴 Número de Detratores: ${yesterdaySummary.nps.detractors}\n\n` +
-            `🔗 Para acessar o sistema, visite ${reportUrl}`;
+            `📊 *Total Geral de respostas:* ${yesterdaySummary.totalResponses} ${diffText}\n` +
+            `🟢 Promotores: ${yesterdaySummary.nps.promoters}\n` +
+            `🟡 Neutros: ${yesterdaySummary.nps.neutrals}\n` +
+            `🔴 Detratores: ${yesterdaySummary.nps.detractors}\n\n`;
+
+          if (surveySummaries && surveySummaries.length > 0) {
+            message += `*Detalhamento por Pesquisa:*\n`;
+            surveySummaries.forEach((s) => {
+              message +=
+                `\n📋 _${s.surveyTitle}_\n` +
+                `Respostas: ${s.totalResponses}\n` +
+                `🟢 ${s.nps.promoters} | 🟡 ${s.nps.neutrals} | 🔴 ${s.nps.detractors}\n`;
+            });
+            message += `\n`;
+          }
+
+          message += `🔗 Para acessar o sistema, visite ${reportUrl}`;
 
           // Send to each configured number using sendTenantMessage
           const phoneNumbers = config.reportPhoneNumbers

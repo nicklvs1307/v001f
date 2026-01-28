@@ -53,6 +53,12 @@ const weeklyReportTask = cron.schedule(
             endOfLastWeek,
           );
 
+          const surveySummaries = await dashboardRepository.getSummaryBySurvey(
+            config.tenantId,
+            startOfLastWeek,
+            endOfLastWeek,
+          );
+
           const formattedStartDate = format(startOfLastWeek, "dd/MM/yyyy");
           const formattedEndDate = format(endOfLastWeek, "dd/MM/yyyy");
           const isoDate = format(endOfLastWeek, "yyyy-MM-dd");
@@ -61,14 +67,26 @@ const weeklyReportTask = cron.schedule(
             process.env.FRONTEND_URL || "https://loyalfood.towersfy.com";
           const reportUrl = `${baseUrl}/relatorios/semanal?date=${isoDate}`;
 
-          const message =
+          let message =
             `*Relatório Semanal ${tenant.name}*\n\n` +
             `Aqui está o resumo da experiência dos seus clientes na semana de ${formattedStartDate} a ${formattedEndDate}!\n` +
-            `📊 Total de respostas: ${weeklySummary.totalResponses}\n` +
-            `🟢 Número de Promotores: ${weeklySummary.nps.promoters}\n` +
-            `🟡 Número de Neutros: ${weeklySummary.nps.neutrals}\n` +
-            `🔴 Número de Detratores: ${weeklySummary.nps.detractors}\n\n` +
-            `🔗 Para acessar o relatório completo, visite ${reportUrl}`;
+            `📊 *Total Geral de respostas:* ${weeklySummary.totalResponses}\n` +
+            `🟢 Promotores: ${weeklySummary.nps.promoters}\n` +
+            `🟡 Neutros: ${weeklySummary.nps.neutrals}\n` +
+            `🔴 Detratores: ${weeklySummary.nps.detractors}\n\n`;
+
+          if (surveySummaries && surveySummaries.length > 0) {
+            message += `*Detalhamento por Pesquisa:*\n`;
+            surveySummaries.forEach((s) => {
+              message +=
+                `\n📋 _${s.surveyTitle}_\n` +
+                `Respostas: ${s.totalResponses}\n` +
+                `🟢 ${s.nps.promoters} | 🟡 ${s.nps.neutrals} | 🔴 ${s.nps.detractors}\n`;
+            });
+            message += `\n`;
+          }
+
+          message += `🔗 Para acessar o relatório completo, visite ${reportUrl}`;
 
           const phoneNumbers = config.reportPhoneNumbers
             .split(",")

@@ -2156,6 +2156,62 @@ const getTopClientsByRedemptions = async (tenantId, limit = 10) => {
   });
 };
 
+const getSummaryBySurvey = async (
+  tenantId = null,
+  startDate = null,
+  endDate = null,
+) => {
+  const whereClause = {
+    respondentSessionId: { [Op.ne]: null },
+  };
+
+  if (tenantId) {
+    if (Array.isArray(tenantId)) {
+      whereClause.tenantId = { [Op.in]: tenantId };
+    } else {
+      whereClause.tenantId = tenantId;
+    }
+  }
+
+  if (startDate && endDate) {
+    whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+  } else if (startDate) {
+    whereClause.createdAt = { [Op.gte]: startDate };
+  } else if (endDate) {
+    whereClause.createdAt = { [Op.lte]: endDate };
+  }
+
+  // 1. Encontrar todas as pesquisas que tiveram respostas no período
+  const surveysWithResponses = await Resposta.findAll({
+    where: whereClause,
+    attributes: [[fn("DISTINCT", col("pesquisaId")), "pesquisaId"]],
+    raw: true,
+  });
+
+  const surveyIds = surveysWithResponses
+    .map((s) => s.pesquisaId)
+    .filter((id) => id !== null);
+
+  const results = [];
+
+  for (const surveyId of surveyIds) {
+    // Buscar o título da pesquisa
+    const survey = await Pesquisa.findByPk(surveyId, { attributes: ["title"] });
+    const summary = await getSummary(tenantId, startDate, endDate, surveyId);
+
+    results.push({
+      surveyId,
+      surveyTitle: survey ? survey.title : "Pesquisa s/ Título",
+      ...summary,
+    });
+  }
+
+  // Adicionar também o "Geral" para manter compatibilidade ou facilitar o uso
+  // const overallSummary = await getSummary(tenantId, startDate, endDate);
+
+  return results;
+};
+
 const getAttendantResponsesTimeseries = async (
   tenantId,
   period,
@@ -2264,6 +2320,7 @@ const getAttendantResponsesTimeseries = async (
 
 const dashboardRepository = {
   getSummary,
+  getSummaryBySurvey,
   getSurveysRespondedChart,
   getResponseChart,
   getFeedbacks,

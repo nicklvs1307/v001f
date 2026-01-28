@@ -8,7 +8,16 @@ import {
     Paper,
     TextField,
     useTheme,
-    Button
+    Button,
+    Box,
+    Divider,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Chip
 } from '@mui/material';
 import { format, startOfWeek, endOfWeek } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -158,6 +167,48 @@ const ReportPage = ({ reportType }) => {
                     <MetricCard title="Respostas com Cadastro" value={clientStatusCounts?.withClient ?? 0} icon={<CheckCircle fontSize="large" />} />
                 </Grid>
             </Grid>
+
+            {reportData.surveySummaries && reportData.surveySummaries.length > 0 && (
+                <Paper elevation={2} sx={{ p: 3, mb: 4 }}>
+                    <Typography variant="h6" gutterBottom fontWeight="bold" sx={{ mb: 2 }}>
+                        Desempenho por Pesquisa
+                    </Typography>
+                    <Divider sx={{ mb: 2 }} />
+                    <TableContainer>
+                        <Table size="small">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Pesquisa</TableCell>
+                                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>Total Respostas</TableCell>
+                                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>Promotores (🟢)</TableCell>
+                                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>Neutros (🟡)</TableCell>
+                                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>Detratores (🔴)</TableCell>
+                                    <TableCell align="center" sx={{ fontWeight: 'bold' }}>NPS</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {reportData.surveySummaries.map((s) => (
+                                    <TableRow key={s.surveyId}>
+                                        <TableCell>{s.surveyTitle}</TableCell>
+                                        <TableCell align="center">{s.totalResponses}</TableCell>
+                                        <TableCell align="center" sx={{ color: 'success.main', fontWeight: 'bold' }}>{s.nps.promoters}</TableCell>
+                                        <TableCell align="center" sx={{ color: 'warning.main', fontWeight: 'bold' }}>{s.nps.neutrals}</TableCell>
+                                        <TableCell align="center" sx={{ color: 'error.main', fontWeight: 'bold' }}>{s.nps.detractors}</TableCell>
+                                        <TableCell align="center">
+                                            <Chip 
+                                                label={s.nps.npsScore.toFixed(1)} 
+                                                size="small"
+                                                color={s.nps.npsScore >= 70 ? 'success' : s.nps.npsScore >= 50 ? 'primary' : s.nps.npsScore >= 0 ? 'warning' : 'error'}
+                                                sx={{ fontWeight: 'bold' }}
+                                            />
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Paper>
+            )}
             
             <RelatorioDashboard data={chartData} reportType={reportType} trendTitle={config.trendTitle} />
 

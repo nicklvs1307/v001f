@@ -9,13 +9,25 @@ import {
   FormControlLabel,
   Switch,
   Box,
+  Typography,
+  Chip,
 } from '@mui/material';
+
+const commonRules = [
+  "Válido apenas para consumo no local",
+  "Não cumulativo com outras promoções",
+  "Válido de segunda a quinta-feira",
+  "Apresentar cupom ao fazer o pedido",
+  "Válido por tempo limitado",
+  "Consumo mínimo de R$ 50,00",
+  "Um cupom por mesa/atendimento"
+];
 
 const RecompensaForm = ({ open, handleClose, recompensa, handleSubmit }) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    conditionDescription: '', // Campo restaurado
+    conditionDescription: '', 
     pointsRequired: '',
     active: true,
   });
@@ -25,7 +37,7 @@ const RecompensaForm = ({ open, handleClose, recompensa, handleSubmit }) => {
       setFormData({
         name: recompensa.name || '',
         description: recompensa.description || '',
-        conditionDescription: recompensa.conditionDescription || '', // Campo restaurado
+        conditionDescription: recompensa.conditionDescription || '', 
         pointsRequired: recompensa.pointsRequired || '',
         active: recompensa.active !== undefined ? recompensa.active : true,
       });
@@ -48,13 +60,21 @@ const RecompensaForm = ({ open, handleClose, recompensa, handleSubmit }) => {
     }));
   };
 
+  const addRule = (rule) => {
+    const current = formData.conditionDescription || '';
+    const separator = current && !current.endsWith('\n') ? '\n' : '';
+    setFormData(prev => ({
+      ...prev,
+      conditionDescription: current + separator + rule
+    }));
+  };
+
   const onSubmit = () => {
-    // Apenas os campos do formulário serão enviados
     handleSubmit(formData);
   };
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>{recompensa ? 'Editar Recompensa' : 'Criar Nova Recompensa'}</DialogTitle>
       <DialogContent>
         <TextField
@@ -67,35 +87,54 @@ const RecompensaForm = ({ open, handleClose, recompensa, handleSubmit }) => {
           variant="outlined"
           value={formData.name}
           onChange={handleChange}
-          sx={{ mb: 2 }}
+          sx={{ mb: 2, mt: 1 }}
         />
         <TextField
           margin="dense"
           name="description"
-          label="Descrição"
+          label="Descrição Interna"
           type="text"
           fullWidth
           multiline
-          rows={3}
+          rows={2}
           variant="outlined"
           value={formData.description}
           onChange={handleChange}
           sx={{ mb: 2 }}
+          helperText="Ex: 10% de desconto no prato feito"
         />
-        {/* Campo restaurado */}
-        <TextField
-          margin="dense"
-          name="conditionDescription"
-          label="Regras e Condições (visível para o cliente)"
-          type="text"
-          fullWidth
-          multiline
-          rows={3}
-          variant="outlined"
-          value={formData.conditionDescription || ''}
-          onChange={handleChange}
-          sx={{ mb: 2 }}
-        />
+        
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="subtitle2" sx={{ mb: 1, color: 'text.secondary' }}>
+            Regras e Condições (Visível para o cliente)
+          </Typography>
+          <TextField
+            margin="dense"
+            name="conditionDescription"
+            placeholder="Digite uma regra por linha..."
+            fullWidth
+            multiline
+            rows={4}
+            variant="outlined"
+            value={formData.conditionDescription || ''}
+            onChange={handleChange}
+          />
+          <Box sx={{ mt: 1.5, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            <Typography variant="caption" sx={{ display: 'block', width: '100%', mb: 0.5, fontWeight: 'bold' }}>
+              Sugestões rápidas (clique para adicionar):
+            </Typography>
+            {commonRules.map((rule, idx) => (
+              <Chip 
+                key={idx} 
+                label={rule} 
+                size="small" 
+                onClick={() => addRule(rule)}
+                sx={{ cursor: 'pointer' }}
+              />
+            ))}
+          </Box>
+        </Box>
+
         <TextField
           margin="dense"
           name="pointsRequired"
@@ -107,7 +146,7 @@ const RecompensaForm = ({ open, handleClose, recompensa, handleSubmit }) => {
           onChange={handleChange}
           sx={{ mb: 2 }}
         />
-        <Box sx={{ mt: 2 }}>
+        <Box sx={{ mt: 1 }}>
           <FormControlLabel
             control={
               <Switch
@@ -121,9 +160,9 @@ const RecompensaForm = ({ open, handleClose, recompensa, handleSubmit }) => {
           />
         </Box>
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ p: 3 }}>
         <Button onClick={handleClose} color="secondary">Cancelar</Button>
-        <Button onClick={onSubmit} color="primary">{recompensa ? 'Salvar' : 'Criar'}</Button>
+        <Button onClick={onSubmit} variant="contained" color="primary">{recompensa ? 'Salvar Alterações' : 'Criar Recompensa'}</Button>
       </DialogActions>
     </Dialog>
   );

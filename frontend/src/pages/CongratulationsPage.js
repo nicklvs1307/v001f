@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Typography, Box, Alert, Paper, CircularProgress, Button, Snackbar } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'; // Novo ícone para regras
 import { useLocation } from 'react-router-dom';
 import { keyframes } from '@mui/system';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
@@ -146,13 +147,23 @@ const CongratulationsComponent = ({ premio, cupom, tenant }) => {
                     </Box>
 
                     {premio.recompensa?.conditionDescription && (
-                        <Paper elevation={0} sx={{ textAlign: 'left', p: 2, mt: 3, backgroundColor: theme.palette.grey[50], borderRadius: '10px' }}>
-                            <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
-                                Regras e Condições:
+                        <Paper elevation={0} sx={{ textAlign: 'left', p: 3, mt: 3, backgroundColor: '#fcfcfc', borderRadius: '15px', border: '1px solid #eee' }}>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 800, mb: 2, color: '#444', display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <CheckCircleOutlineIcon sx={{ color: theme.palette.success.main }} />
+                                Regras de Uso:
                             </Typography>
-                            {premio.recompensa.conditionDescription.split('\n').map((line, index) => (
-                                line.trim() && <Typography key={index} variant="body2" component="p" sx={{mb: 0.5}}>- {line}</Typography>
-                            ))}
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                                {premio.recompensa.conditionDescription.split('\n').map((line, index) => (
+                                    line.trim() && (
+                                        <Box key={index} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+                                            <Box sx={{ minWidth: 6, height: 6, borderRadius: '50%', backgroundColor: theme.palette.primary.main, mt: 1 }} />
+                                            <Typography variant="body2" sx={{ color: '#555', lineHeight: 1.4, fontWeight: 500 }}>
+                                                {line.trim()}
+                                            </Typography>
+                                        </Box>
+                                    )
+                                ))}
+                            </Box>
                         </Paper>
                     )}
 

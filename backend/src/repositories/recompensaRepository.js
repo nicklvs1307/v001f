@@ -7,6 +7,7 @@ const createRecompensa = async (
   description,
   pointsRequired,
   active,
+  conditionDescription,
 ) => {
   return Recompensa.create({
     tenantId,
@@ -14,6 +15,7 @@ const createRecompensa = async (
     description,
     pointsRequired,
     active,
+    conditionDescription,
   });
 };
 
@@ -40,9 +42,10 @@ const updateRecompensa = async (
   description,
   pointsRequired,
   active,
+  conditionDescription,
 ) => {
   const [updatedRows, [updatedRecompensa]] = await Recompensa.update(
-    { name, description, pointsRequired, active },
+    { name, description, pointsRequired, active, conditionDescription },
     { where: { id, tenantId }, returning: true },
   );
   return updatedRecompensa;

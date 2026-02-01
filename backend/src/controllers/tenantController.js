@@ -224,6 +224,8 @@ exports.updateMe = asyncHandler(async (req, res) => {
     deliveryMuchClientSecret,
     deliveryMuchUsername,
     deliveryMuchPassword,
+    primaryColor,
+    secondaryColor,
   } = req.body;
 
   if (!tenantId) {
@@ -244,6 +246,8 @@ exports.updateMe = asyncHandler(async (req, res) => {
     deliveryMuchClientSecret,
     deliveryMuchUsername,
     deliveryMuchPassword,
+    primaryColor,
+    secondaryColor,
   };
 
   const updatedTenant = await tenantRepository.updateTenant(

@@ -4,7 +4,7 @@ const ApiError = require("../errors/ApiError");
 
 const recompensaController = {
   createRecompensa: asyncHandler(async (req, res) => {
-    const { name, description, pointsRequired, active } = req.body;
+    const { name, description, pointsRequired, active, conditionDescription } = req.body;
     const requestingUser = req.user;
 
     const targetTenantId =
@@ -26,6 +26,7 @@ const recompensaController = {
       description,
       pointsRequired,
       active,
+      conditionDescription,
     );
 
     res.status(201).json(newRecompensa);
@@ -75,7 +76,7 @@ const recompensaController = {
 
   updateRecompensa: asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { name, description, pointsRequired, active } = req.body;
+    const { name, description, pointsRequired, active, conditionDescription } = req.body;
     const requestingUser = req.user;
     const tenantId =
       requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
@@ -106,6 +107,7 @@ const recompensaController = {
       description,
       pointsRequired,
       active,
+      conditionDescription,
     );
 
     if (!updatedRecompensa) {

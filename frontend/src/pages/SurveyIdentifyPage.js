@@ -229,3 +229,5 @@ const SurveyIdentifyPage = () => {
         </Box>
     );
 };
+
+export default SurveyIdentifyPage;

@@ -8,6 +8,13 @@ import publicRoletaService from '../services/publicRoletaService';
 import roletaSpinService from '../services/roletaSpinService';
 import SpinTheWheel from '../components/roleta/SpinTheWheel';
 import getDynamicTheme from '../getDynamicTheme';
+import { keyframes } from '@mui/system';
+
+const kenBurns = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+`;
 
 const RoulettePage = ({ spinData }) => {
   const { tenantId, pesquisaId, clientId } = useParams();
@@ -237,6 +244,25 @@ const RoulettePage = ({ spinData }) => {
 
   return (
     <ThemeProvider theme={dynamicTheme}>
+      <Box sx={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, overflow: 'hidden' }}>
+        {/* Camada 1: Imagem com Ken Burns */}
+        <Box 
+          sx={{ 
+            position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+            backgroundImage: 'url(/bg-roleta.png)', 
+            backgroundSize: 'cover', backgroundPosition: 'center',
+            animation: `${kenBurns} 20s infinite ease-in-out`
+          }} 
+        />
+        {/* Camada 2: Filtro de Cor Dinâmico */}
+        <Box 
+          sx={{ 
+            position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+            background: `linear-gradient(135deg, ${dynamicTheme.palette.primary.main}dd 0%, ${dynamicTheme.palette.secondary.main}dd 100%)`,
+            backdropFilter: 'blur(2px)'
+          }} 
+        />
+      </Box>
       {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} recycle={false} numberOfPieces={200} />}
       <RoulettePageComponent
         survey={survey}
@@ -292,27 +318,35 @@ const RoulettePageComponent = ({ survey, tenant, roletaConfig, isSpinning, winni
   };
 
   return (
-    <Box sx={{ background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`, minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', p: { xs: 1, sm: 2 }, textAlign: 'center' }}>
-      <Container maxWidth="md">
-          <Box sx={{ padding: { xs: '5px 20px', sm: '15px 30px' }, color: 'white', mt: { xs: -2, sm: 0 } }}>
+    <Box sx={{ 
+      minHeight: '100vh', display: 'flex', flexDirection: 'column', 
+      justifyContent: 'flex-start', alignItems: 'center', 
+      p: { xs: 1, sm: 2 }, textAlign: 'center',
+      position: 'relative',
+      zIndex: 1
+    }}>
+      <Container maxWidth="md" sx={{ pt: { xs: 6, sm: 8 } }}>
+          <Box sx={{ padding: { xs: '5px 20px', sm: '15px 30px' }, color: 'white', mb: 2 }}>
             <Typography 
                 variant="h4" 
                 component="h1" 
                 gutterBottom
                 sx={{ 
                     fontWeight: 900, 
-                    fontSize: { xs: '1.8rem', sm: '2.5rem' },
+                    fontSize: { xs: '1.6rem', sm: '2.5rem' },
                     textShadow: '0 4px 10px rgba(0,0,0,0.3)',
-                    background: 'rgba(255,255,255,0.1)',
-                    borderRadius: '15px',
-                    p: 1.5,
+                    background: 'rgba(255,255,255,0.15)',
+                    backdropFilter: 'blur(5px)',
+                    borderRadius: '20px',
+                    p: 2,
                     display: 'inline-block',
-                    border: '1px solid rgba(255,255,255,0.2)'
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    lineHeight: 1.2
                 }}
             >
               Gire a Roleta e Ganhe um Prêmio!
             </Typography>
-            <Typography variant="subtitle1" sx={{ mt: 1, opacity: 0.9, fontWeight: 500 }}>
+            <Typography variant="subtitle1" sx={{ mt: 2, opacity: 0.9, fontWeight: 500, textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
               {survey.title}
             </Typography>
           </Box>

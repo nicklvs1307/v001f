@@ -12,7 +12,7 @@ import { keyframes } from '@mui/system';
 
 const kenBurns = keyframes`
   0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  50% { transform: scale(1.25); }
   100% { transform: scale(1); }
 `;
 
@@ -244,22 +244,24 @@ const RoulettePage = ({ spinData }) => {
 
   return (
     <ThemeProvider theme={dynamicTheme}>
-      <Box sx={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, overflow: 'hidden' }}>
+      <Box sx={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, overflow: 'hidden', backgroundColor: '#000' }}>
         {/* Camada 1: Imagem com Ken Burns */}
         <Box 
           sx={{ 
             position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
             backgroundImage: 'url(/bg-roleta.png)', 
             backgroundSize: 'cover', backgroundPosition: 'center',
-            animation: `${kenBurns} 20s infinite ease-in-out`
+            animation: `${kenBurns} 20s infinite ease-in-out`,
+            opacity: 0.8
           }} 
         />
         {/* Camada 2: Filtro de Cor Dinâmico */}
         <Box 
           sx={{ 
             position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-            background: `linear-gradient(135deg, ${dynamicTheme.palette.primary.main}dd 0%, ${dynamicTheme.palette.secondary.main}dd 100%)`,
-            backdropFilter: 'blur(2px)'
+            background: `linear-gradient(135deg, ${dynamicTheme.palette.primary.main}88 0%, ${dynamicTheme.palette.secondary.main}88 100%)`,
+            mixBlendMode: 'overlay',
+            backdropFilter: 'blur(1px)'
           }} 
         />
       </Box>

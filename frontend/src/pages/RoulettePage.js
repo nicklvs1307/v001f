@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import Confetti from 'react-confetti';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import { Container, Box, Typography, Button, CircularProgress, Alert } from '@mui/material';
 import publicSurveyService from '../services/publicSurveyService';
@@ -20,6 +21,7 @@ const RoulettePage = ({ spinData }) => {
   const [dynamicTheme, setDynamicTheme] = useState(null);
   const [winningIndex, setWinningIndex] = useState(-1);
   const [isSpinning, setIsSpinning] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const spinResultRef = useRef(spinResult);
   spinResultRef.current = spinResult;
@@ -35,6 +37,10 @@ const RoulettePage = ({ spinData }) => {
             let actualTenant;
 
             if (spinData) {
+// ... (lógica existente mantida implicitamente pelo contexto, mas focando na estrutura ao redor)
+// Como o bloco é grande, vou focar em substituir handleAnimationComplete e o return
+// Mas primeiro preciso garantir que as variáveis de estado sejam adicionadas corretamente.
+// Vou substituir apenas as declarações de estado e o handleAnimationComplete.
 
               // Se spinData for fornecido (acesso via token)
 
@@ -174,11 +180,16 @@ const RoulettePage = ({ spinData }) => {
 
   const handleAnimationComplete = useCallback(() => {
     setIsSpinning(false);
+    
+    // Ativar confetes se ganhou prêmio
+    if (spinResultRef.current?.premio && !spinResultRef.current.premio.isNoPrizeOption) {
+        setShowConfetti(true);
+    }
+
     // Adiciona um atraso de 4 segundos antes de enviar a mensagem e navegar
     setTimeout(async () => {
       if (spinResultRef.current && spinResultRef.current.premio) {
         if (spinResultRef.current.premio.isNoPrizeOption) {
-          // Se for a opção "Não foi dessa vez", exibe a mensagem no console e navega para uma página apropriada
           console.log(spinResultRef.current.message);
           navigate('/nao-ganhou', {
             state: {
@@ -195,7 +206,7 @@ const RoulettePage = ({ spinData }) => {
           navigate('/parabens', { state: { premio: spinResultRef.current.premio, cupom: spinResultRef.current.cupom, tenantId: tenant.id } });
         }
       }
-    }, 4000); // Atraso de 4 segundos
+    }, 4000); 
   }, [navigate, tenant]);
 
   if (loading || !dynamicTheme) {
@@ -226,6 +237,7 @@ const RoulettePage = ({ spinData }) => {
 
   return (
     <ThemeProvider theme={dynamicTheme}>
+      {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} recycle={false} numberOfPieces={200} />}
       <RoulettePageComponent
         survey={survey}
         tenant={tenant}
@@ -250,17 +262,39 @@ const RoulettePageComponent = ({ survey, tenant, roletaConfig, isSpinning, winni
     theme.palette.primary.dark || theme.palette.primary.main,
     theme.palette.secondary.dark || theme.palette.secondary.main,
   ];
-  const buttonNextStyle = { background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, color: 'white', borderRadius: '50px', padding: { xs: '8px 16px', sm: '12px 25px' }, fontWeight: 600, '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 5px 15px rgba(0, 0, 0, 0.1)' } };
+
+  // Estilo do Botão Turbinado
+  const buttonNextStyle = { 
+    background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, 
+    color: 'white', 
+    borderRadius: '50px', 
+    padding: { xs: '18px 60px', sm: '12px 40px' }, // Aumentado significativamente
+    fontSize: { xs: '1.3rem', sm: '1.1rem' }, // Fonte maior
+    fontWeight: 800, 
+    letterSpacing: '1px',
+    boxShadow: '0 8px 25px rgba(0, 0, 0, 0.3)',
+    width: { xs: '90%', sm: 'auto' }, // Quase largura total no mobile
+    transition: 'all 0.3s ease',
+    animation: !isSpinning && !roletaConfig.hasSpun ? 'pulse-button 2s infinite' : 'none',
+    '@keyframes pulse-button': {
+      '0%': { transform: 'scale(1)', boxShadow: '0 8px 25px rgba(0, 0, 0, 0.3)' },
+      '50%': { transform: 'scale(1.05)', boxShadow: '0 12px 35px rgba(0, 0, 0, 0.4)' },
+      '100%': { transform: 'scale(1)', boxShadow: '0 8px 25px rgba(0, 0, 0, 0.3)' },
+    },
+    '&:hover': { 
+      transform: 'translateY(-3px) scale(1.02)', 
+      boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)' 
+    },
+    '&:disabled': {
+      background: '#ccc',
+      animation: 'none'
+    }
+  };
 
   return (
     <Box sx={{ background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`, minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', p: { xs: 1, sm: 2 }, textAlign: 'center' }}>
       <Container maxWidth="md">
           <Box sx={{ padding: { xs: '20px', sm: '30px' }, color: 'white' }}>
-            {tenant?.logoUrl && (
-              <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
-                <img src={`${process.env.REACT_APP_API_URL}${tenant.logoUrl}`} alt="Logo" style={{ maxHeight: { xs: '50px', sm: '70px' }, maxWidth: { xs: '120px', sm: '180px' }, objectFit: 'contain' }} />
-              </Box>
-            )}
             <Typography variant="h4" component="h1" gutterBottom>
               Gire a Roleta e Ganhe um Prêmio!
             </Typography>
@@ -282,6 +316,7 @@ const RoulettePageComponent = ({ survey, tenant, roletaConfig, isSpinning, winni
                 segColors={segColors}
                 winningIndex={winningIndex}
                 onAnimationComplete={handleAnimationComplete}
+                logoUrl={tenant?.logoUrl ? `${process.env.REACT_APP_API_URL}${tenant.logoUrl}` : null}
               />
             </Box>
 

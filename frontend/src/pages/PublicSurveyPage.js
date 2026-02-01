@@ -23,8 +23,10 @@ import {
     DialogTitle,
     Slide,
     DialogActions,
+    Fade,
+    Grow,
 } from '@mui/material';
-import { Star, StarBorder } from '@mui/icons-material';
+import { Star, StarBorder, CheckCircle } from '@mui/icons-material';
 import publicSurveyService from '../services/publicSurveyService';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import getDynamicTheme from '../getDynamicTheme';
@@ -171,6 +173,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
         if (survey.askForAttendant && !selectedAtendente) {
             setAtendenteError('O nome do atendente é obrigatório.');
             setSubmitLoading(false);
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll para erro
             return;
         }
 
@@ -188,6 +191,9 @@ const SurveyComponent = ({ survey, tenantId }) => {
                 handleNavigation(response);
             }
         } catch (err) {
+            console.error("Erro no envio:", err);
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll para erro
+            
             if (err.response && err.response.data && err.response.data.errors && Array.isArray(err.response.data.errors)) {
                 const attendantBackendError = err.response.data.errors.find(e => e.msg === 'O nome do atendente é obrigatório.');
                 if (attendantBackendError) {
@@ -195,8 +201,10 @@ const SurveyComponent = ({ survey, tenantId }) => {
                 } else {
                     setSubmitError(err.response.data.errors.map(e => e.msg).join(', ') || 'Ocorreu um erro de validação.');
                 }
+            } else if (err.code === 'ECONNABORTED') {
+                 setSubmitError('A conexão demorou muito. Verifique sua internet e tente novamente.');
             } else {
-                setSubmitError(err.message || 'Ocorreu um erro ao enviar suas respostas.');
+                setSubmitError(err.message || 'Ocorreu um erro ao enviar suas respostas. Verifique sua conexão.');
             }
         } finally {
             setSubmitLoading(false);
@@ -205,7 +213,8 @@ const SurveyComponent = ({ survey, tenantId }) => {
 
     const renderQuestionType = (question) => {
         const answer = answers[question.id];
-        if (!answer && question.type !== 'attendant_selection') return null;
+        // Proteção contra undefined, embora a lógica de display já filtre
+        if ((!answer && question.type !== 'attendant_selection') || !question) return null;
 
         switch (question.type) {
             case 'attendant_selection':
@@ -218,7 +227,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
                             label="Selecione o Atendente"
                             onChange={(e) => {
                                 setSelectedAtendente(e.target.value);
-                                setAtendenteError(null); // Clear error on change
+                                setAtendenteError(null); 
                             }}
                         >
                             <MenuItem value=""><em>Não me lembro</em></MenuItem>
@@ -231,57 +240,110 @@ const SurveyComponent = ({ survey, tenantId }) => {
                 return (
                     <Box>
                         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, my: 2, flexWrap: 'wrap' }}>
-                            {[...Array(6).keys()].slice(1).map(value => ( // Stars 1 to 5
-                                <IconButton key={value} onClick={() => handleAnswerChange(question.id, value)} onMouseEnter={() => setHoverRatings({ ...hoverRatings, [question.id]: value })} onMouseLeave={() => setHoverRatings({ ...hoverRatings, [question.id]: 0 })} sx={{ color: (hoverRatings[question.id] || answer.valor) >= value ? '#ffc107' : '#ddd', transform: (hoverRatings[question.id] || answer.valor) === value ? 'scale(1.2)' : 'scale(1)', transition: 'all 0.2s ease' }}>
-                                    {(hoverRatings[question.id] || answer.valor) >= value ? <Star sx={{ fontSize: { xs: '28px', sm: '40px' } }} /> : <StarBorder sx={{ fontSize: { xs: '28px', sm: '40px' } }} />}
-                                </IconButton>
+                            {[...Array(6).keys()].slice(1).map(value => ( 
+                                <Grow in={true} timeout={value * 200} key={value}>
+                                    <IconButton 
+                                        onClick={() => handleAnswerChange(question.id, value)} 
+                                        sx={{ 
+                                            color: (answer.valor) >= value ? '#ffc107' : '#e0e0e0', 
+                                            transform: (answer.valor) === value ? 'scale(1.3)' : 'scale(1)', 
+                                            transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)', // Efeito de mola
+                                            '&:active': { transform: 'scale(0.9)' }
+                                        }}
+                                    >
+                                        {(answer.valor) >= value ? <Star sx={{ fontSize: { xs: '38px', sm: '48px' }, filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }} /> : <StarBorder sx={{ fontSize: { xs: '38px', sm: '48px' } }} />}
+                                    </IconButton>
+                                </Grow>
                             ))}
                         </Box>
-                        <Box sx={{ width: '100%', textAlign: 'center', fontSize: '12px', color: '#777' }}>
-                            <span>onde 1 estrela é ruim e 5 é excelente</span>
+                        <Box sx={{ width: '100%', textAlign: 'center', fontSize: '12px', color: '#777', mt: 1 }}>
+                            <span>Toque nas estrelas para avaliar</span>
                         </Box>
                     </Box>
                 );
             case 'rating_0_10':
                 return (
                     <Box>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, my: 2, flexWrap: 'wrap' }}>
-                            {[...Array(11).keys()].map(value => ( // Numbers 0 to 10
-                                <IconButton key={value} onClick={() => handleAnswerChange(question.id, value)} onMouseEnter={() => setHoverRatings({ ...hoverRatings, [question.id]: value })} onMouseLeave={() => setHoverRatings({ ...hoverRatings, [question.id]: 0 })} sx={{
-                                    width: { xs: 40, sm: 50 },
-                                    height: { xs: 40, sm: 50 },
-                                    borderRadius: '50%',
-                                    border: `2px solid ${(hoverRatings[question.id] || answer.valor) === value ? theme.palette.primary.main : '#ddd'}`,
-                                    backgroundColor: (hoverRatings[question.id] || answer.valor) === value ? theme.palette.primary.main : 'transparent',
-                                    color: (hoverRatings[question.id] || answer.valor) === value ? 'white' : theme.palette.text.primary,
-                                    fontSize: { xs: '1rem', sm: '1.2rem' },
-                                    fontWeight: 'bold',
-                                    transition: 'all 0.2s ease',
-                                    '&:hover': {
-                                        backgroundColor: theme.palette.primary.light,
-                                        color: 'white',
-                                        border: `2px solid ${theme.palette.primary.main}`,
-                                    }
-                                }}>
-                                    {value}
-                                </IconButton>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: { xs: 0.5, sm: 1 }, my: 3, flexWrap: 'wrap' }}>
+                            {[...Array(11).keys()].map((value, index) => ( 
+                                <Grow in={true} timeout={index * 100} key={value}>
+                                    <Box
+                                        onClick={() => handleAnswerChange(question.id, value)}
+                                        sx={{
+                                            width: { xs: 35, sm: 45 },
+                                            height: { xs: 35, sm: 45 },
+                                            borderRadius: '12px', // Quadrado arredondado é mais moderno que círculo
+                                            border: `2px solid ${(answer.valor) === value ? theme.palette.primary.main : '#e0e0e0'}`,
+                                            backgroundColor: (answer.valor) === value ? theme.palette.primary.main : 'transparent',
+                                            color: (answer.valor) === value ? 'white' : theme.palette.text.secondary,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontSize: { xs: '0.9rem', sm: '1.1rem' },
+                                            fontWeight: 'bold',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s ease',
+                                            boxShadow: (answer.valor) === value ? '0 4px 10px rgba(0,0,0,0.2)' : 'none',
+                                            transform: (answer.valor) === value ? 'translateY(-5px)' : 'none',
+                                            '&:hover': {
+                                                borderColor: theme.palette.primary.main,
+                                            }
+                                        }}
+                                    >
+                                        {value}
+                                    </Box>
+                                </Grow>
                             ))}
                         </Box>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#777' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#777', px: 1 }}>
                             <span>{question.criterio?.minLabel || 'Pouco Provável'}</span>
                             <span>{question.criterio?.maxLabel || 'Muito Provável'}</span>
                         </Box>
                     </Box>
                 );
             case 'free_text':
-                return <TextField fullWidth multiline rows={4} placeholder="Sua resposta..." value={answer.valor || ''} onChange={(e) => handleAnswerChange(question.id, e.target.value)} sx={{ mt: 2 }} />;
+                return <TextField fullWidth multiline rows={4} variant="outlined" placeholder="Digite sua resposta aqui..." value={answer.valor || ''} onChange={(e) => handleAnswerChange(question.id, e.target.value)} sx={{ mt: 2, backgroundColor: '#f9f9f9', borderRadius: '10px', '& fieldset': { borderRadius: '10px' } }} />;
             case 'multiple_choice':
                 return (
-                    <RadioGroup value={answer.valor || ''} onChange={(e) => handleAnswerChange(question.id, e.target.value)} sx={{ mt: 2 }}>
-                        {question.options.map((opcao, index) => (
-                            <FormControlLabel key={index} value={String(opcao.text)} control={<Radio />} label={opcao.text} />
-                        ))}
-                    </RadioGroup>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 3 }}>
+                        {(question.options || []).map((opcao, index) => {
+                            const isSelected = String(answer.valor) === String(opcao.text);
+                            return (
+                                <Box
+                                    key={index}
+                                    onClick={() => handleAnswerChange(question.id, String(opcao.text))}
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        padding: '15px 20px',
+                                        borderRadius: '15px',
+                                        border: `2px solid ${isSelected ? theme.palette.primary.main : '#eee'}`,
+                                        backgroundColor: isSelected ? `${theme.palette.primary.main}15` : 'white', // 15 = transparência hex
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s ease',
+                                        boxShadow: isSelected ? '0 4px 12px rgba(0,0,0,0.1)' : '0 2px 5px rgba(0,0,0,0.05)',
+                                        '&:hover': {
+                                            borderColor: theme.palette.primary.light,
+                                            transform: 'translateY(-2px)'
+                                        }
+                                    }}
+                                >
+                                    <Typography sx={{ fontWeight: isSelected ? 600 : 400, color: isSelected ? theme.palette.primary.dark : 'text.primary' }}>
+                                        {opcao.text}
+                                    </Typography>
+                                    <Box sx={{ 
+                                        width: 24, height: 24, borderRadius: '50%', 
+                                        border: `2px solid ${isSelected ? theme.palette.primary.main : '#ccc'}`,
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        backgroundColor: isSelected ? theme.palette.primary.main : 'transparent'
+                                    }}>
+                                        {isSelected && <CheckCircle sx={{ color: 'white', fontSize: 20 }} />}
+                                    </Box>
+                                </Box>
+                            );
+                        })}
+                    </Box>
                 );
             default:
                 return <Typography>Tipo de pergunta não suportado.</Typography>;
@@ -305,15 +367,22 @@ const SurveyComponent = ({ survey, tenantId }) => {
                     <Box sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
                         {submitError && <Alert severity="error" sx={{ mb: 2 }}>{submitError}</Alert>}
                         <>
-                            <Box sx={{ height: '6px', backgroundColor: '#f0f0f0', borderRadius: '3px', mb: 4, overflow: 'hidden' }}>
-                                <Box sx={{ height: '100%', width: `${progress}%`, background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, transition: 'width 0.5s ease' }} />
-                            </Box>
+                        {/* Progress Bar */}
+                        <Box sx={{ height: '8px', backgroundColor: '#f0f0f0', borderRadius: '10px', mb: 4, overflow: 'hidden', boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)' }}>
+                            <Box sx={{ height: '100%', width: `${progress}%`, background: `linear-gradient(90deg, ${theme.palette.secondary.main}, ${theme.palette.primary.main})`, transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)', borderRadius: '10px' }} />
+                        </Box>
+
+                        <Fade in={true} key={currentQuestionIndex} timeout={500}>
                             <Box>
-                                <Typography variant="h6" sx={{ mb: 2, color: '#333', fontSize: { xs: '1rem', sm: '1.25rem' } }}>{currentQuestion?.text}</Typography>
+                                <Typography variant="h6" sx={{ mb: 3, color: '#222', fontSize: { xs: '1.1rem', sm: '1.4rem' }, fontWeight: 600, lineHeight: 1.3 }}>{currentQuestion?.text}</Typography>
+                                
                                 {currentQuestion && renderQuestionType(currentQuestion)}
-                                {(currentQuestion?.type === 'rating_1_5' || currentQuestion?.type === 'rating_0_10') && <TextField fullWidth label="Comentários adicionais (opcional)" multiline rows={2} value={answers[currentQuestion.id]?.comentario || ''} onChange={(e) => handleCommentChange(currentQuestion.id, e.target.value)} sx={{ mt: 3 }} />}
+                                
+                                {(currentQuestion?.type === 'rating_1_5' || currentQuestion?.type === 'rating_0_10') && <TextField fullWidth label="Gostaria de comentar algo? (Opcional)" multiline rows={2} value={answers[currentQuestion.id]?.comentario || ''} onChange={(e) => handleCommentChange(currentQuestion.id, e.target.value)} sx={{ mt: 4, backgroundColor: '#fcfcfc' }} variant="filled" />}
                             </Box>
-                            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', mt: 4, gap: { xs: 2, sm: 0 } }}>
+                        </Fade>
+
+                        <Box sx={{ display: 'flex', flexDirection: { xs: 'column-reverse', sm: 'row' }, justifyContent: 'space-between', mt: 5, gap: { xs: 2, sm: 0 }, paddingTop: 3, borderTop: '1px solid #f0f0f0' }}>
                                 <Button onClick={handlePrev} disabled={currentQuestionIndex === 0} sx={{ backgroundColor: '#f0f0f0', color: '#555', borderRadius: '50px', padding: '12px 25px', fontWeight: 600, '&:hover': { backgroundColor: '#e0e0e0' } }}>Anterior</Button>
                                 {currentQuestionIndex === displayedQuestions.length - 1 ? <Button onClick={handleSubmit} disabled={submitLoading} sx={buttonNextStyle}>{submitLoading ? <CircularProgress size={24} color="inherit" /> : 'Enviar Avaliação'}</Button> : <Button onClick={handleNext} sx={buttonNextStyle}>Próxima</Button>}
                             </Box>

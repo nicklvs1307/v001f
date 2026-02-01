@@ -8,7 +8,8 @@ import {
     Button,
     Box,
     CircularProgress,
-    Alert
+    Alert,
+    Fade // Importado Fade
 } from '@mui/material';
 import publicSurveyService from '../services/publicSurveyService';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
@@ -79,22 +80,14 @@ const IdentificationFormComponent = ({ tenant }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    // ... (handlePhoneChange and handleSubmit remain same)
     const handlePhoneChange = (e) => {
         let value = e.target.value.replace(/\D/g, '');
-        if (value.length > 11) {
-            value = value.slice(0, 11);
-        }
-    
-        if (value.length > 10) {
-            value = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
-        } else if (value.length > 6) {
-            value = `(${value.slice(0, 2)}) ${value.slice(2, 6)}-${value.slice(6)}`;
-        } else if (value.length > 2) {
-            value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
-        } else if (value.length > 0) {
-            value = `(${value}`;
-        }
-    
+        if (value.length > 11) value = value.slice(0, 11);
+        if (value.length > 10) value = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
+        else if (value.length > 6) value = `(${value.slice(0, 2)}) ${value.slice(2, 6)}-${value.slice(6)}`;
+        else if (value.length > 2) value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+        else if (value.length > 0) value = `(${value}`;
         setPhone(value);
     };
 
@@ -118,7 +111,7 @@ const IdentificationFormComponent = ({ tenant }) => {
                 atendenteId,
                 client: { phone },
                 tenantId,
-                respondentSessionId, // Adicionado para manter a sessão
+                respondentSessionId, 
             });
             localStorage.setItem('clientPhone', phone);
             navigate(`/roleta/${tenantId}/${surveyIdentifier}/${response.clienteId}`);
@@ -135,7 +128,7 @@ const IdentificationFormComponent = ({ tenant }) => {
 
     const headerStyle = {
         background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
-        padding: { xs: '20px', sm: '30px' },
+        padding: { xs: '30px 20px', sm: '40px' },
         textAlign: 'center',
         color: 'white'
     };
@@ -143,11 +136,27 @@ const IdentificationFormComponent = ({ tenant }) => {
     const buttonStyle = {
         background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
         color: 'white',
-        padding: '12px 0',
+        padding: '16px 0',
+        borderRadius: '50px',
+        fontWeight: 700,
+        fontSize: '1.1rem',
+        textTransform: 'none',
+        boxShadow: '0 8px 15px rgba(0,0,0,0.1)',
         '&:hover': {
             transform: 'translateY(-2px)',
-            boxShadow: '0 5px 15px rgba(0, 0, 0, 0.2)'
+            boxShadow: '0 12px 20px rgba(0, 0, 0, 0.2)'
         }
+    };
+
+    const inputSx = {
+        '& .MuiOutlinedInput-root': {
+            borderRadius: '12px',
+            backgroundColor: '#f9f9f9',
+            '& fieldset': { borderColor: '#e0e0e0' },
+            '&:hover fieldset': { borderColor: theme.palette.primary.light },
+            '&.Mui-focused fieldset': { borderColor: theme.palette.primary.main },
+        },
+        mb: 2
     };
 
     return (
@@ -159,53 +168,56 @@ const IdentificationFormComponent = ({ tenant }) => {
             alignItems: 'center',
             p: { xs: 1, sm: 2 }
         }}>
-            <Paper elevation={10} sx={{ borderRadius: '20px', overflow: 'hidden', maxWidth: '500px', width: '100%', margin: '0 16px' }}>
-                <Box sx={headerStyle}>
-                    {tenant?.logoUrl && (
-                         <Box sx={{
-                            width: { xs: 80, sm: 100 }, 
-                            height: { xs: 80, sm: 100 }, 
-                            borderRadius: '50%', backgroundColor: 'white',
-                            margin: '0 auto 15px', display: 'flex', justifyContent: 'center', alignItems: 'center',
-                            boxShadow: '0 5px 15px rgba(0, 0, 0, 0.2)', border: '5px solid rgba(255, 255, 255, 0.3)'
-                        }}>
-                            <img src={`${process.env.REACT_APP_API_URL}${tenant.logoUrl}`} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
-                        </Box>
-                    )}
-                    <Typography variant="h5" component="h1" sx={{ mb: 1, fontWeight: 'bold', fontSize: { xs: '1.2rem', sm: '1.5rem' } }}>
-                        Identifique-se para Continuar
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
-                        Digite seu número de telefone para prosseguir.
-                    </Typography>
-                </Box>
+            <Fade in={true} timeout={600}>
+                <Paper elevation={10} sx={{ borderRadius: '25px', overflow: 'hidden', maxWidth: '500px', width: '100%', margin: '0 16px' }}>
+                    <Box sx={headerStyle}>
+                        {tenant?.logoUrl && (
+                             <Box sx={{
+                                width: { xs: 80, sm: 100 }, 
+                                height: { xs: 80, sm: 100 }, 
+                                borderRadius: '50%', backgroundColor: 'white',
+                                margin: '0 auto 15px', display: 'flex', justifyContent: 'center', alignItems: 'center',
+                                boxShadow: '0 5px 15px rgba(0, 0, 0, 0.2)', border: '4px solid rgba(255, 255, 255, 0.3)'
+                            }}>
+                                <img src={`${process.env.REACT_APP_API_URL}${tenant.logoUrl}`} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                            </Box>
+                        )}
+                        <Typography variant="h5" component="h1" sx={{ mb: 1, fontWeight: 800, fontSize: { xs: '1.4rem', sm: '1.8rem' } }}>
+                            Bem-vindo de volta!
+                        </Typography>
+                        <Typography variant="body2" sx={{ opacity: 0.9, fontSize: '0.95rem' }}>
+                            Confirme seu telefone para girar a roleta.
+                        </Typography>
+                    </Box>
 
-                <Box component="form" onSubmit={handleSubmit} sx={{ p: { xs: 2, sm: 4 } }}>
-                    {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-                    <TextField 
-                        margin="normal" 
-                        required 
-                        fullWidth 
-                        id="phone" 
-                        label="Telefone (com DDD)" 
-                        name="phone" 
-                        autoComplete="tel" 
-                        autoFocus
-                        value={phone} 
-                        onChange={handlePhoneChange} 
-                        inputMode="numeric" 
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        disabled={loading}
-                        sx={{ mt: 3, ...buttonStyle }}
-                    >
-                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Finalizar Avaliação'}
-                    </Button>
-                </Box>
-            </Paper>
+                    <Box component="form" onSubmit={handleSubmit} sx={{ p: { xs: 3, sm: 5 } }}>
+                        {error && <Alert severity="error" sx={{ mb: 3, borderRadius: '10px' }}>{error}</Alert>}
+                        <TextField 
+                            margin="normal" 
+                            required 
+                            fullWidth 
+                            id="phone" 
+                            label="Seu Telefone (com DDD)" 
+                            name="phone" 
+                            autoComplete="tel" 
+                            autoFocus
+                            value={phone} 
+                            onChange={handlePhoneChange} 
+                            inputMode="numeric" 
+                            sx={inputSx}
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            disabled={loading}
+                            sx={{ mt: 3, ...buttonStyle }}
+                        >
+                            {loading ? <CircularProgress size={24} color="inherit" /> : 'Confirmar e Girar'}
+                        </Button>
+                    </Box>
+                </Paper>
+            </Fade>
         </Box>
     );
 };

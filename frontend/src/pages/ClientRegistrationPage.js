@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Typography, Box, CircularProgress, Alert, Paper, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { TextField, Button, Typography, Box, CircularProgress, Alert, Paper, FormControl, InputLabel, Select, MenuItem, Fade } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import clientService from '../services/clientService';
 import publicSurveyService from '../services/publicSurveyService';
@@ -128,8 +128,16 @@ const RegistrationFormComponent = ({ tenant }) => {
             sessionStorage.removeItem('surveyState');
             navigate(`/roleta/${tenantId}/${pesquisaId}/${response.client.id}`);
         } catch (err) {
+            // Tratamento de erro específico para duplicidade
             if (err.response?.status === 409) {
-                setError("Este número de telefone já está cadastrado. Por favor, volte e use a opção 'Já tenho cadastro'.");
+                const errorMessage = err.response?.data?.message || '';
+                if (errorMessage.toLowerCase().includes('email')) {
+                    setError("Este endereço de e-mail já está sendo usado por outro cliente.");
+                } else if (errorMessage.toLowerCase().includes('whatsapp') || errorMessage.toLowerCase().includes('telefone')) {
+                    setError("Este número de telefone já possui cadastro. Volte e escolha a opção 'Já tenho cadastro'.");
+                } else {
+                    setError("Já existe um cadastro com estes dados (Email ou Telefone).");
+                }
             } else {
                 setError(err.response?.data?.message || 'Erro ao registrar cliente.');
             }
@@ -140,7 +148,7 @@ const RegistrationFormComponent = ({ tenant }) => {
 
     const headerStyle = {
         background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
-        padding: { xs: '20px', sm: '30px' },
+        padding: { xs: '30px 20px', sm: '40px' },
         textAlign: 'center',
         color: 'white'
     };
@@ -148,11 +156,28 @@ const RegistrationFormComponent = ({ tenant }) => {
     const buttonStyle = {
         background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
         color: 'white',
-        padding: '12px 0',
+        padding: '16px 0',
+        borderRadius: '50px',
+        fontWeight: 700,
+        fontSize: '1.1rem',
+        textTransform: 'none',
+        boxShadow: '0 8px 15px rgba(0,0,0,0.1)',
         '&:hover': {
             transform: 'translateY(-2px)',
-            boxShadow: '0 5px 15px rgba(0, 0, 0, 0.2)'
+            boxShadow: '0 12px 20px rgba(0, 0, 0, 0.2)'
         }
+    };
+
+    // Estilo moderno para inputs
+    const inputSx = {
+        '& .MuiOutlinedInput-root': {
+            borderRadius: '12px',
+            backgroundColor: '#f9f9f9',
+            '& fieldset': { borderColor: '#e0e0e0' },
+            '&:hover fieldset': { borderColor: theme.palette.primary.light },
+            '&.Mui-focused fieldset': { borderColor: theme.palette.primary.main },
+        },
+        mb: 2
     };
 
     return (
@@ -164,53 +189,58 @@ const RegistrationFormComponent = ({ tenant }) => {
             alignItems: 'center',
             p: { xs: 1, sm: 2 }
         }}>
-            <Paper elevation={10} sx={{ borderRadius: '20px', overflow: 'hidden', maxWidth: '500px', width: '100%', margin: '0 16px' }}>
-                <Box sx={headerStyle}>
-                    {tenant?.logoUrl && (
-                         <Box sx={{
-                            width: { xs: 80, sm: 100 }, 
-                            height: { xs: 80, sm: 100 }, 
-                            borderRadius: '50%', backgroundColor: 'white',
-                            margin: '0 auto 15px', display: 'flex', justifyContent: 'center', alignItems: 'center',
-                            boxShadow: '0 5px 15px rgba(0, 0, 0, 0.2)', border: '5px solid rgba(255, 255, 255, 0.3)'
-                        }}>
-                            <img src={`${process.env.REACT_APP_API_URL}${tenant.logoUrl}`} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
-                        </Box>
-                    )}
-                    <Typography variant="h5" component="h1" sx={{ mb: 1, fontWeight: 'bold', fontSize: { xs: '1.2rem', sm: '1.5rem' } }}>
-                        Participe e Ganhe Prêmios!
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
-                        Preencha seus dados para participar da roleta de prêmios!
-                    </Typography>
-                </Box>
+            <Fade in={true} timeout={600}>
+                <Paper elevation={10} sx={{ borderRadius: '25px', overflow: 'hidden', maxWidth: '500px', width: '100%', margin: '0 16px' }}>
+                    <Box sx={headerStyle}>
+                        {tenant?.logoUrl && (
+                             <Box sx={{
+                                width: { xs: 80, sm: 100 }, 
+                                height: { xs: 80, sm: 100 }, 
+                                borderRadius: '50%', backgroundColor: 'white',
+                                margin: '0 auto 15px', display: 'flex', justifyContent: 'center', alignItems: 'center',
+                                boxShadow: '0 5px 15px rgba(0, 0, 0, 0.2)', border: '4px solid rgba(255, 255, 255, 0.3)'
+                            }}>
+                                <img src={`${process.env.REACT_APP_API_URL}${tenant.logoUrl}`} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                            </Box>
+                        )}
+                        <Typography variant="h5" component="h1" sx={{ mb: 1, fontWeight: 800, fontSize: { xs: '1.4rem', sm: '1.8rem' } }}>
+                            Participe e Ganhe!
+                        </Typography>
+                        <Typography variant="body2" sx={{ opacity: 0.9, fontSize: '0.95rem' }}>
+                            Preencha rapidinho para liberar a roleta.
+                        </Typography>
+                    </Box>
 
-                <Box component="form" onSubmit={handleSubmit} sx={{ p: { xs: 2, sm: 4 } }}>
-                    {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-                    <TextField margin="normal" required fullWidth id="name" label="Nome Completo" name="name" autoComplete="name" autoFocus value={clientData.name} onChange={handleChange} />
-                    <TextField margin="normal" fullWidth id="email" label="Endereço de Email (Opcional)" name="email" autoComplete="email" value={clientData.email} onChange={handleChange} />
-                    <TextField margin="normal" required fullWidth id="phone" label="Telefone (com DDD)" name="phone" autoComplete="tel" value={clientData.phone} onChange={handlePhoneChange} inputMode="numeric" />
-                    <TextField margin="normal" required fullWidth id="birthDate" label="Data de Nascimento" name="birthDate" type="text" placeholder="DD/MM/AAAA" value={clientData.birthDate} onChange={handleDateChange} inputMode="numeric" />
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel id="gender-label">Gênero</InputLabel>
-                        <Select
-                            labelId="gender-label"
-                            id="gender"
-                            name="gender"
-                            value={clientData.gender}
-                            label="Gênero"
-                            onChange={handleChange}
-                        >
-                            <MenuItem value="Masculino">Masculino</MenuItem>
-                            <MenuItem value="Feminino">Feminino</MenuItem>
-                            <MenuItem value="Prefiro não responder">Prefiro não responder</MenuItem>
-                        </Select>
-                    </FormControl>
-                    <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, ...buttonStyle }} disabled={loading}>
-                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Cadastrar e Girar a Roleta'}
-                    </Button>
-                </Box>
-            </Paper>
+                    <Box component="form" onSubmit={handleSubmit} sx={{ p: { xs: 3, sm: 5 } }}>
+                        {error && <Alert severity="error" sx={{ mb: 3, borderRadius: '10px' }}>{error}</Alert>}
+                        
+                        <TextField margin="normal" required fullWidth id="name" label="Nome Completo" name="name" autoComplete="name" autoFocus value={clientData.name} onChange={handleChange} sx={inputSx} />
+                        <TextField margin="normal" fullWidth id="email" label="Endereço de Email (Opcional)" name="email" autoComplete="email" value={clientData.email} onChange={handleChange} sx={inputSx} />
+                        <TextField margin="normal" required fullWidth id="phone" label="Telefone (com DDD)" name="phone" autoComplete="tel" value={clientData.phone} onChange={handlePhoneChange} inputMode="numeric" sx={inputSx} />
+                        <TextField margin="normal" required fullWidth id="birthDate" label="Data de Nascimento" name="birthDate" type="text" placeholder="DD/MM/AAAA" value={clientData.birthDate} onChange={handleDateChange} inputMode="numeric" sx={inputSx} />
+                        
+                        <FormControl fullWidth margin="normal" sx={inputSx}>
+                            <InputLabel id="gender-label">Gênero</InputLabel>
+                            <Select
+                                labelId="gender-label"
+                                id="gender"
+                                name="gender"
+                                value={clientData.gender}
+                                label="Gênero"
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="Masculino">Masculino</MenuItem>
+                                <MenuItem value="Feminino">Feminino</MenuItem>
+                                <MenuItem value="Prefiro não responder">Prefiro não responder</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                        <Button type="submit" fullWidth variant="contained" sx={{ mt: 2, ...buttonStyle }} disabled={loading}>
+                            {loading ? <CircularProgress size={24} color="inherit" /> : 'Cadastrar e Girar Roleta'}
+                        </Button>
+                    </Box>
+                </Paper>
+            </Fade>
         </Box>
     );
 };

@@ -1,14 +1,24 @@
 import React, { useEffect, useRef, useCallback, useMemo, useState } from 'react';
 import { Box } from '@mui/material';
 
-const SpinTheWheel = ({ items, onAnimationComplete, segColors, winningIndex }) => {
+const SpinTheWheel = ({ items, onAnimationComplete, segColors, winningIndex, logoUrl }) => {
   const canvasRef = useRef(null);
   const rotationRef = useRef(0);
   const animationFrameId = useRef(null);
   const [wheelSize, setWheelSize] = useState(300);
+  const [logoImg, setLogoImg] = useState(null);
 
   const center = wheelSize / 2;
   const radius = center - 15;
+
+  useEffect(() => {
+    if (logoUrl) {
+      const img = new Image();
+      img.src = logoUrl;
+      img.crossOrigin = "anonymous";
+      img.onload = () => setLogoImg(img);
+    }
+  }, [logoUrl]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -113,45 +123,91 @@ const SpinTheWheel = ({ items, onAnimationComplete, segColors, winningIndex }) =
         let fontSize = Math.max(8, Math.floor(wheelSize / 28));
         ctx.font = `bold ${fontSize}px Poppins`;
 
-        const maxTextWidth = radius * Math.sin(segmentAngle / 2) * 2 * 0.8;
-        while (ctx.measureText(text).width > maxTextWidth && fontSize > 8) {
-          fontSize -= 1;
-          ctx.font = `bold ${fontSize}px Poppins`;
+        const maxTextWidth = radius * Math.sin(segmentAngle / 2) * 2 * 0.85; // Aumentar levemente a área útil
+        
+        // Função para quebrar texto em linhas
+        const words = text.split(' ');
+        let lines = [];
+        let currentLine = words[0];
+
+        for (let i = 1; i < words.length; i++) {
+            const width = ctx.measureText(currentLine + " " + words[i]).width;
+            if (width < maxTextWidth) {
+                currentLine += " " + words[i];
+            } else {
+                lines.push(currentLine);
+                currentLine = words[i];
+            }
+        }
+        lines.push(currentLine);
+
+        // Se tiver muitas linhas, diminui a fonte
+        if (lines.length > 2) {
+             fontSize = Math.max(8, fontSize - (lines.length * 1.5));
+             ctx.font = `bold ${fontSize}px Poppins, sans-serif`;
         }
 
-        let displaytext = text;
-        if (ctx.measureText(text).width > maxTextWidth) {
-          let len = text.length;
-          while (ctx.measureText(displaytext + '...').width > maxTextWidth && len > 0) {
-            len--;
-            displaytext = text.substring(0, len);
-          }
-          displaytext += '...';
-        }
+        const lineHeight = fontSize * 1.1;
+        const totalHeight = lines.length * lineHeight;
+        let startY = -totalHeight / 2 + lineHeight / 2;
 
-        ctx.fillText(displaytext, textRadius, 0);
+        lines.forEach((line, i) => {
+             ctx.fillText(line, textRadius + (lines.length > 1 ? 10 : 0), startY + (i * lineHeight));
+        });
+        
         ctx.restore();
 
         startAngle = endAngle;
       });
 
-      ctx.fillStyle = '#FFD700';
-      ctx.beginPath();
-      ctx.arc(center, center, 15, 0, 2 * Math.PI);
-      ctx.fill();
+      // Centro da Roleta com Logo
+      const centerRadius = 35; // Raio aumentado para logo
 
-      ctx.strokeStyle = '#FFF';
-      ctx.lineWidth = 3;
+      ctx.save();
+      // Sombra externa do centro
+      ctx.shadowColor = "rgba(0,0,0,0.5)";
+      ctx.shadowBlur = 10;
+      
+      // Fundo Dourado/Branco
+      const gradient = ctx.createRadialGradient(center, center, 5, center, center, centerRadius);
+      gradient.addColorStop(0, '#FFF');
+      gradient.addColorStop(1, '#FFD700');
+      ctx.fillStyle = gradient;
+      
+      ctx.beginPath();
+      ctx.arc(center, center, centerRadius, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.shadowBlur = 0; // Reset sombra
+
+      // Desenhar Logo se existir
+      if (logoImg) {
+        ctx.save();
+        ctx.beginPath();
+        // Área de recorte um pouco menor que o raio total
+        ctx.arc(center, center, centerRadius - 4, 0, 2 * Math.PI);
+        ctx.clip();
+        // Desenha a imagem centralizada
+        ctx.drawImage(logoImg, center - (centerRadius - 4), center - (centerRadius - 4), (centerRadius - 4) * 2, (centerRadius - 4) * 2);
+        ctx.restore();
+      }
+      
+      // Borda do centro (anel)
+      ctx.strokeStyle = '#FFD700'; // Ouro
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(center, center, centerRadius, 0, 2 * Math.PI);
       ctx.stroke();
 
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+      // Borda branca fina interna
+      ctx.strokeStyle = '#FFF';
+      ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(center, center, 8, 0, 2 * Math.PI);
-      ctx.fill();
+      ctx.arc(center, center, centerRadius - 2, 0, 2 * Math.PI);
+      ctx.stroke();
 
       ctx.restore();
     },
-    [coloredItems, center, radius, wheelSize]
+    [coloredItems, center, radius, wheelSize, logoImg]
   );
 
   useEffect(() => {
@@ -218,11 +274,21 @@ const SpinTheWheel = ({ items, onAnimationComplete, segColors, winningIndex }) =
         position: 'relative',
         width: wheelSize,
         height: wheelSize,
-        filter: 'drop-shadow(0 0 20px rgba(255, 215, 0, 0.3))',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        animation: !isSpinning && winningIndex === -1 ? 'pulse-wheel 4s infinite ease-in-out' : 'none',
+        '@keyframes pulse-wheel': {
+          '0%': { transform: 'scale(1)', filter: 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.2))' },
+          '50%': { transform: 'scale(1.02)', filter: 'drop-shadow(0 0 30px rgba(255, 215, 0, 0.4))' },
+          '100%': { transform: 'scale(1)', filter: 'drop-shadow(0 0 15px rgba(255, 215, 0, 0.2))' },
+        },
+        // Efeito de brilho intenso se tiver ganhado
+        ...(winningIndex !== -1 && !isSpinning && {
+          filter: 'drop-shadow(0 0 40px rgba(255, 215, 0, 0.8))',
+          transition: 'filter 0.5s ease-in-out'
+        })
       }}
     >
       <canvas
@@ -233,12 +299,15 @@ const SpinTheWheel = ({ items, onAnimationComplete, segColors, winningIndex }) =
         style={{
           borderRadius: '50%',
           border: '12px solid #FFD700',
-          boxShadow: '0 0 30px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.5)',
+          boxShadow: winningIndex !== -1 && !isSpinning 
+            ? '0 0 50px rgba(255, 215, 0, 0.6), inset 0 0 20px rgba(0, 0, 0, 0.5)' 
+            : '0 0 30px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.5)',
           userSelect: 'none',
           background: '#F1FAEE',
-          transition: 'transform 0.1s',
           position: 'relative',
           zIndex: 1,
+          willChange: 'transform', // Otimização de Performance
+          transform: 'translateZ(0)', // Hack para ativar GPU
         }}
       />
       <Box
@@ -255,6 +324,12 @@ const SpinTheWheel = ({ items, onAnimationComplete, segColors, winningIndex }) =
           borderTop: `${pointerSize * 1.6}px solid #FFD700`,
           zIndex: 10,
           filter: 'drop-shadow(0 0 5px #FFD700)',
+          // Se estiver parado no vencedor, a seta brilha mais
+          animation: winningIndex !== -1 && !isSpinning ? 'bounce-pointer 0.5s infinite alternate' : 'none',
+          '@keyframes bounce-pointer': {
+            'from': { transform: 'translateX(-50%) translateY(0)' },
+            'to': { transform: 'translateX(-50%) translateY(-5px)' }
+          },
           '&::after': {
             content: '""',
             position: 'absolute',

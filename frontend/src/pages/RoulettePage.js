@@ -294,29 +294,44 @@ const RoulettePageComponent = ({ survey, tenant, roletaConfig, isSpinning, winni
   return (
     <Box sx={{ background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`, minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', p: { xs: 1, sm: 2 }, textAlign: 'center' }}>
       <Container maxWidth="md">
-          <Box sx={{ padding: { xs: '20px', sm: '30px' }, color: 'white' }}>
-            <Typography variant="h4" component="h1" gutterBottom>
+          <Box sx={{ padding: { xs: '5px 20px', sm: '15px 30px' }, color: 'white', mt: { xs: -2, sm: 0 } }}>
+            <Typography 
+                variant="h4" 
+                component="h1" 
+                gutterBottom
+                sx={{ 
+                    fontWeight: 900, 
+                    fontSize: { xs: '1.8rem', sm: '2.5rem' },
+                    textShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                    background: 'rgba(255,255,255,0.1)',
+                    borderRadius: '15px',
+                    p: 1.5,
+                    display: 'inline-block',
+                    border: '1px solid rgba(255,255,255,0.2)'
+                }}
+            >
               Gire a Roleta e Ganhe um Prêmio!
             </Typography>
-            <Typography variant="subtitle1">
+            <Typography variant="subtitle1" sx={{ mt: 1, opacity: 0.9, fontWeight: 500 }}>
               {survey.title}
             </Typography>
           </Box>
 
-          <Box sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
+          <Box sx={{ p: { xs: 1, sm: 3 } }}>
             {roletaConfig.hasSpun && !spinResult && (
               <Alert severity="info" sx={{ mb: 2, bgcolor: 'rgba(255, 255, 255, 0.2)', color: 'white' }}>
                 Você já girou a roleta para esta pesquisa.
               </Alert>
             )}
 
-            <Box sx={{ my: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Box sx={{ my: { xs: 2, sm: 4 }, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <SpinTheWheel
                 items={roletaConfig.items || []}
                 segColors={segColors}
                 winningIndex={winningIndex}
                 onAnimationComplete={handleAnimationComplete}
                 logoUrl={tenant?.logoUrl ? `${process.env.REACT_APP_API_URL}${tenant.logoUrl}` : null}
+                isSpinning={isSpinning}
               />
             </Box>
 
@@ -329,6 +344,22 @@ const RoulettePageComponent = ({ survey, tenant, roletaConfig, isSpinning, winni
             </Button>
           </Box>
       </Container>
+
+      {/* Rodapé Voltaki */}
+      <Box sx={{ mt: 'auto', pb: 3, opacity: 0.8, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
+        <Typography variant="caption" sx={{ color: 'white', fontWeight: 500, fontSize: '0.7rem', letterSpacing: '1px' }}>
+          POWERED BY
+        </Typography>
+        <img 
+          src="/logo.png" 
+          alt="Voltaki Logo" 
+          style={{ 
+            height: '25px', 
+            filter: 'brightness(0) invert(1)', // Deixa a logo branca para combinar com o fundo
+            opacity: 0.9
+          }} 
+        />
+      </Box>
     </Box>
   );
 }

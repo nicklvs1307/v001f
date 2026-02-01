@@ -115,17 +115,19 @@ const SpinTheWheel = ({ items, onAnimationComplete, segColors, winningIndex, log
         const angMeio = startAngle + segmentAngle / 2;
         ctx.rotate(angMeio);
 
-        const textRadius = radius * 0.5;
+        // Ajuste do raio do texto: empurrado mais para a borda (0.68)
+        const textRadius = radius * 0.68; 
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
         const text = item.name || item.title;
-        let fontSize = Math.max(8, Math.floor(wheelSize / 28));
-        ctx.font = `bold ${fontSize}px Poppins`;
+        // Fonte aumentada: de wheelSize/28 para wheelSize/22
+        let fontSize = Math.max(10, Math.floor(wheelSize / 22)); 
+        ctx.font = `bold ${fontSize}px Poppins, sans-serif`;
 
-        const maxTextWidth = radius * Math.sin(segmentAngle / 2) * 2 * 0.85; // Aumentar levemente a área útil
+        const maxTextWidth = radius * Math.sin(segmentAngle / 2) * 2 * 0.85;
         
-        // Função para quebrar texto em linhas
+        // ... (lógica de linhas)
         const words = text.split(' ');
         let lines = [];
         let currentLine = words[0];
@@ -141,9 +143,8 @@ const SpinTheWheel = ({ items, onAnimationComplete, segColors, winningIndex, log
         }
         lines.push(currentLine);
 
-        // Se tiver muitas linhas, diminui a fonte
         if (lines.length > 2) {
-             fontSize = Math.max(8, fontSize - (lines.length * 1.5));
+             fontSize = Math.max(10, fontSize - (lines.length * 1.2));
              ctx.font = `bold ${fontSize}px Poppins, sans-serif`;
         }
 
@@ -152,7 +153,7 @@ const SpinTheWheel = ({ items, onAnimationComplete, segColors, winningIndex, log
         let startY = -totalHeight / 2 + lineHeight / 2;
 
         lines.forEach((line, i) => {
-             ctx.fillText(line, textRadius + (lines.length > 1 ? 10 : 0), startY + (i * lineHeight));
+             ctx.fillText(line, textRadius, startY + (i * lineHeight));
         });
         
         ctx.restore();
@@ -160,8 +161,10 @@ const SpinTheWheel = ({ items, onAnimationComplete, segColors, winningIndex, log
         startAngle = endAngle;
       });
 
-      // Centro da Roleta com Logo
-      const centerRadius = 35; // Raio aumentado para logo
+      ctx.restore(); 
+
+      // --- CENTRO DA ROLETA COM LOGO (Aumentado para 48) ---
+      const centerRadius = 48; 
 
       ctx.save();
       // Sombra externa do centro

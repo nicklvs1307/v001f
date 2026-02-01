@@ -29,7 +29,9 @@ const CompanyProfilePage = () => {
         cnpj: '',
         description: '',
         reportPhone: '',
-        logoUrl: ''
+        logoUrl: '',
+        primaryColor: '#FC4C35',
+        secondaryColor: '#1EBFAE'
     });
     const [selectedFile, setSelectedFile] = useState(null);
     const [preview, setPreview] = useState(null);
@@ -85,6 +87,8 @@ const CompanyProfilePage = () => {
                 cnpj: formData.cnpj,
                 description: formData.description,
                 reportPhone: formData.reportPhone,
+                primaryColor: formData.primaryColor,
+                secondaryColor: formData.secondaryColor,
             };
             
             await tenantService.update(dataToUpdate);
@@ -246,6 +250,35 @@ const CompanyProfilePage = () => {
                                                 helperText="Número que receberá os relatórios diários/semanais via WhatsApp."
                                                 value={formData.reportPhone || ''}
                                                 onChange={handleChange}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <Typography variant="h6" sx={{ mt: 2 }}>Identidade Visual</Typography>
+                                        </Grid>
+                                        
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                fullWidth
+                                                type="color"
+                                                name="primaryColor"
+                                                label="Cor Primária"
+                                                value={formData.primaryColor || '#FC4C35'}
+                                                onChange={handleChange}
+                                                InputLabelProps={{ shrink: true }}
+                                                helperText="Cor principal de botões e cabeçalhos."
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                fullWidth
+                                                type="color"
+                                                name="secondaryColor"
+                                                label="Cor Secundária"
+                                                value={formData.secondaryColor || '#1EBFAE'}
+                                                onChange={handleChange}
+                                                InputLabelProps={{ shrink: true }}
+                                                helperText="Cor de destaque para degradês e ícones."
                                             />
                                         </Grid>
                                     </Grid>

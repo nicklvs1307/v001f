@@ -1587,32 +1587,79 @@ const getAttendantDetails = async (
 
   if (!attendant) throw new Error("Atendente não encontrado.");
 
+  // 1. Buscar todas as respostas com perguntas e critérios
   const responses = await Resposta.findAll({
-    where: whereClause,
-    include: [{ model: Pergunta, as: "pergunta", attributes: ["type"] }],
+    where: {
+      ...whereClause,
+      ratingValue: { [Op.ne]: null }
+    },
+    include: [
+      { 
+        model: Pergunta, 
+        as: "pergunta", 
+        attributes: ["type", "text"],
+        include: [{ model: Criterio, as: "criterio", attributes: ["name"] }]
+      }
+    ],
   });
 
-  responses.forEach((response) => {
-    const { ratingValue, pergunta } = response;
-    if (!pergunta || ratingValue === null) return;
-    if (pergunta.type === "rating_1_5" || pergunta.type === "rating") {
-      csatTotalScore += ratingValue;
-      csatCount++;
+  // 2. Agrupar performance por critério
+  const criteriaStats = {};
+  let totalNpsResponses = [];
+  
+  responses.forEach((resp) => {
+    const critName = resp.pergunta?.criterio?.name || "Geral";
+    if (!criteriaStats[critName]) {
+      criteriaStats[critName] = { sum: 0, count: 0, type: resp.pergunta?.type };
+    }
+    
+    criteriaStats[critName].sum += resp.ratingValue;
+    criteriaStats[critName].count += 1;
+
+    if (resp.pergunta?.type === "rating_0_10") {
+      totalNpsResponses.push(resp);
     }
   });
 
-  const npsResponses = responses.filter(
-    (r) => r.pergunta?.type === "rating_0_10" && r.ratingValue !== null,
-  );
-  const npsResult = ratingService.calculateNPS(npsResponses);
-  const npsScore = npsResult.npsScore;
+  const criteriaResults = Object.keys(criteriaStats).map(name => {
+    const stat = criteriaStats[name];
+    return {
+      name,
+      average: parseFloat((stat.sum / stat.count).toFixed(1)),
+      total: stat.count
+    };
+  });
 
-  const csatAverageScore = csatCount > 0 ? csatTotalScore / csatCount : 0;
+  // 3. Calcular NPS Geral do período
+  const npsResult = ratingService.calculateNPS(totalNpsResponses);
 
+  // 4. Contar Pesquisas Únicas e Cadastros
+  const totalUniqueSurveys = await Resposta.count({
+    where: whereClause,
+    distinct: true,
+    col: "respondentSessionId"
+  });
+
+  const sessions = await Resposta.findAll({
+    where: { ...whereClause, respondentSessionId: { [Op.ne]: null } },
+    attributes: [[fn("DISTINCT", col("respondentSessionId")), "sessionId"]],
+    raw: true,
+  });
+  const sessionIds = sessions.map(s => s.sessionId);
+  
+  const registrationCount = sessionIds.length > 0 ? await Client.count({
+    where: {
+      tenantId,
+      respondentSessionId: { [Op.in]: sessionIds },
+      createdAt: whereClause.createdAt || { [Op.ne]: null }
+    }
+  }) : 0;
+
+  // 5. Feedbacks Recentes
   const recentFeedbacks = await Resposta.findAll({
     where: { ...whereClause, textValue: { [Op.ne]: null, [Op.ne]: "" } },
     order: [["createdAt", "DESC"]],
-    limit: 10,
+    limit: 15,
     include: [{ model: Client, as: "client", attributes: ["name"] }],
   });
 
@@ -1620,21 +1667,21 @@ const getAttendantDetails = async (
     attendant: {
       id: attendant.id,
       name: attendant.name,
-      npsGoal: attendant.meta?.npsGoal,
-      csatGoal: 0,
-      responsesGoal: attendant.meta?.responsesGoal,
+      code: attendant.code,
+      meta: attendant.meta
     },
-    performance: {
-      nps: parseFloat(npsScore.toFixed(1)),
-      csat: parseFloat(csatAverageScore.toFixed(1)),
-      totalResponses: responses.length,
+    stats: {
+      nps: npsResult.npsScore,
+      npsDetails: npsResult,
+      totalResponses: totalUniqueSurveys,
+      totalRegistrations: registrationCount,
+      criteria: criteriaResults
     },
-    recentFeedbacks: recentFeedbacks.map((fb) => ({
+    feedbacks: recentFeedbacks.map((fb) => ({
       date: formatInTimeZone(fb.createdAt, "dd/MM/yyyy HH:mm"),
       client: fb.client?.name || "Anônimo",
       rating: fb.ratingValue,
       comment: fb.textValue,
-      respondentSessionId: fb.respondentSessionId,
     })),
   };
 };

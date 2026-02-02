@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Container,
   Typography,
@@ -24,9 +24,23 @@ import {
   Avatar,
   Card,
   CardContent,
-  Tooltip as MuiTooltip
+  Tooltip as MuiTooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
+  Rating
 } from '@mui/material';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  LineChart, Line 
+} from 'recharts';
+import CloseIcon from '@mui/icons-material/Close';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import StarIcon from '@mui/icons-material/Star';
 import PeopleIcon from '@mui/icons-material/People';
@@ -34,6 +48,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import FeedbackIcon from '@mui/icons-material/Feedback';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dashboardService from '../services/dashboardService';
 import GenericMetricCard from '../components/Dashboard/GenericMetricCard';
 import AttendantRankingCard from '../components/Dashboard/AttendantRankingCard';
@@ -51,42 +66,61 @@ const AtendenteDashboardPage = () => {
   const [timeSeriesData, setTimeSeriesData] = useState({ chartData: [], attendantNames: [] });
   const [timeSeriesLoading, setTimeSeriesLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        setError('');
-        const attendantsPerformance = await dashboardService.getAttendantsPerformance();
-        setPerformanceData(attendantsPerformance || []);
-      } catch (err) {
-        setError(err.message || 'Falha ao carregar o painel de atendentes.');
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Estados para o Modal de Auditoria
+  const [auditModalOpen, setAuditModalOpen] = useState(false);
+  const [auditData, setAuditModalData] = useState(null);
+  const [auditLoading, setAuditLoading] = useState(false);
+  const [auditDateRange, setAuditDateRange] = useState({ startDate: null, endDate: null });
+  const [currentAttendantId, setCurrentAttendantId] = useState(null);
 
-    fetchData();
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const attendantsPerformance = await dashboardService.getAttendantsPerformance();
+      setPerformanceData(attendantsPerformance || []);
+    } catch (err) {
+      setError(err.message || 'Falha ao carregar o painel de atendentes.');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
-    const fetchTimeSeriesData = async () => {
-      try {
-        setTimeSeriesLoading(true);
-        const params = { period: timeSeriesPeriod };
-        if (selectedAttendant !== 'all') {
-          params.atendenteId = selectedAttendant;
-        }
-        const data = await dashboardService.getAttendantResponsesTimeseries(params);
-        setTimeSeriesData(data || { chartData: [], attendantNames: [] });
-      } catch (err) {
-        // Handle error for time series data
-      } finally {
-        setTimeSeriesLoading(false);
-      }
-    };
-    fetchTimeSeriesData();
-  }, [timeSeriesPeriod, selectedAttendant]);
+    fetchData();
+  }, [fetchData]);
 
+  const fetchAttendantAudit = async (id, dates = auditDateRange) => {
+    setAuditLoading(true);
+    try {
+      const params = {};
+      if (dates.startDate) params.startDate = dates.startDate.toISOString();
+      if (dates.endDate) params.endDate = dates.endDate.toISOString();
+      
+      const data = await dashboardService.getAttendantDetails(id, params);
+      setAuditModalData(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setAuditLoading(false);
+    }
+  };
+
+  const handleOpenAudit = (atendente) => {
+    setCurrentAttendantId(atendente.id);
+    setAuditModalOpen(true);
+    fetchAttendantAudit(atendente.id);
+  };
+
+  const handleAuditDateChange = (name, value) => {
+    const newDates = { ...auditDateRange, [name]: value };
+    setAuditDateRange(newDates);
+    if (currentAttendantId) {
+      fetchAttendantAudit(currentAttendantId, newDates);
+    }
+  };
+
+  // ... (useMemo e outros useEffects permanecem iguais)
   const {
     totalAttendants,
     totalResponses,
@@ -117,22 +151,24 @@ const AtendenteDashboardPage = () => {
     };
   }, [performanceData]);
 
-  if (loading) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column' }}>
-        <CircularProgress size={60} />
-        <Typography sx={{ mt: 2 }}>Carregando visão estratégica dos atendentes...</Typography>
-      </Box>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container maxWidth="xl" sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
-        <Alert severity="error">{error}</Alert>
-      </Container>
-    );
-  }
+  useEffect(() => {
+    const fetchTimeSeriesData = async () => {
+      try {
+        setTimeSeriesLoading(true);
+        const params = { period: timeSeriesPeriod };
+        if (selectedAttendant !== 'all') {
+          params.atendenteId = selectedAttendant;
+        }
+        const data = await dashboardService.getAttendantResponsesTimeseries(params);
+        setTimeSeriesData(data || { chartData: [], attendantNames: [] });
+      } catch (err) {
+        // Handle error for time series data
+      } finally {
+        setTimeSeriesLoading(false);
+      }
+    };
+    fetchTimeSeriesData();
+  }, [timeSeriesPeriod, selectedAttendant]);
 
   const ProgressBarWithLabel = ({ value, label, goal, color = 'primary' }) => (
     <Box sx={{ mb: 1 }}>
@@ -286,7 +322,7 @@ const AtendenteDashboardPage = () => {
       <Grid container spacing={3} sx={{ mt: 2 }}>
         <Grid item xs={12}>
           <Paper elevation={3} sx={{ p: 3, borderRadius: '15px' }}>
-            <Typography variant="h6" fontWeight="bold" gutterBottom>Progresso de Metas Individuais</Typography>
+            <Typography variant="h6" fontWeight="bold" gutterBottom>Progresso de Metas Individuais (Clique para Auditar)</Typography>
             <TableContainer>
               <Table>
                 <TableHead>
@@ -301,7 +337,12 @@ const AtendenteDashboardPage = () => {
                 <TableBody>
                   {performanceData.length > 0 ? (
                     performanceData.map((atendente) => (
-                      <TableRow key={atendente.id} hover>
+                      <TableRow 
+                        key={atendente.id} 
+                        hover 
+                        onClick={() => handleOpenAudit(atendente)}
+                        sx={{ cursor: 'pointer', '&:hover': { bgcolor: 'rgba(0,0,0,0.02)' } }}
+                      >
                         <TableCell>
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                             <Avatar sx={{ bgcolor: theme.palette.primary.main, fontSize: '0.9rem' }}>
@@ -364,6 +405,117 @@ const AtendenteDashboardPage = () => {
           </Paper>
         </Grid>
       </Grid>
+
+      {/* MODAL DE AUDITORIA INDIVIDUAL */}
+      <Dialog 
+        open={auditModalOpen} 
+        onClose={() => setAuditModalOpen(false)}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{ sx: { borderRadius: '20px' } }}
+      >
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Avatar sx={{ width: 50, height: 50, bgcolor: 'primary.main' }}>
+              {auditData?.attendant?.name?.substring(0, 2).toUpperCase()}
+            </Avatar>
+            <Box>
+              <Typography variant="h5" fontWeight="bold">Auditoria: {auditData?.attendant?.name}</Typography>
+              <Typography variant="caption" color="textSecondary">Código de Identificação: {auditData?.attendant?.code}</Typography>
+            </Box>
+          </Box>
+          <IconButton onClick={() => setAuditModalOpen(false)}><CloseIcon /></IconButton>
+        </DialogTitle>
+        
+        <DialogContent dividers sx={{ p: 3, bgcolor: '#fbfbfb' }}>
+          {/* Filtros de Data dentro do Modal */}
+          <Box sx={{ mb: 4, display: 'flex', gap: 2, alignItems: 'center', bgcolor: 'white', p: 2, borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+            <CalendarMonthIcon color="action" />
+            <Typography variant="body2" fontWeight="bold">Filtrar Período:</Typography>
+            <DatePicker
+              label="Início"
+              value={auditDateRange.startDate}
+              onChange={(val) => handleAuditDateChange('startDate', val)}
+              slotProps={{ textField: { size: 'small' } }}
+            />
+            <DatePicker
+              label="Fim"
+              value={auditDateRange.endDate}
+              onChange={(val) => handleAuditDateChange('endDate', val)}
+              slotProps={{ textField: { size: 'small' } }}
+            />
+          </Box>
+
+          {auditLoading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 5 }}><CircularProgress /></Box>
+          ) : auditData ? (
+            <Grid container spacing={3}>
+              {/* KPIs Rápidos do Atendente */}
+              <Grid item xs={12} md={4}>
+                <Paper sx={{ p: 2, textAlign: 'center', borderRadius: '12px' }}>
+                  <Typography variant="caption" color="textSecondary">NPS NO PERÍODO</Typography>
+                  <Typography variant="h4" fontWeight="bold" color="primary">{auditData.stats.nps.toFixed(0)}</Typography>
+                  <Typography variant="caption" sx={{ display: 'block' }}>{auditData.stats.totalResponses} avaliações</Typography>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Paper sx={{ p: 2, textAlign: 'center', borderRadius: '12px' }}>
+                  <Typography variant="caption" color="textSecondary">CADASTROS GERADOS</Typography>
+                  <Typography variant="h4" fontWeight="bold" color="success.main">{auditData.stats.totalRegistrations}</Typography>
+                  <Typography variant="caption" sx={{ display: 'block' }}>Conversão de {( (auditData.stats.totalRegistrations / (auditData.stats.totalResponses || 1)) * 100).toFixed(1)}%</Typography>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Paper sx={{ p: 2, textAlign: 'center', borderRadius: '12px' }}>
+                  <Typography variant="caption" color="textSecondary">BÔNUS ATUAL</Typography>
+                  <Typography variant="h4" fontWeight="bold" color="warning.main">R$ { (performanceData.find(a => a.id === currentAttendantId)?.bonus?.totalEarned || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) }</Typography>
+                  <Typography variant="caption" sx={{ display: 'block' }}>Baseado nas metas do mês</Typography>
+                </Paper>
+              </Grid>
+
+              {/* Raio-X por Critérios */}
+              <Grid item xs={12}>
+                <Paper sx={{ p: 3, borderRadius: '12px' }}>
+                  <Typography variant="h6" fontWeight="bold" gutterBottom>Performance por Critério (Raio-X)</Typography>
+                  <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>Como os clientes avaliam especificamente este atendente em cada ponto:</Typography>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <BarChart data={auditData.stats.criteria} layout="vertical" margin={{ left: 50 }}>
+                      <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                      <XAxis type="number" domain={[0, 10]} hide />
+                      <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} width={100} />
+                      <Tooltip cursor={{ fill: 'transparent' }} />
+                      <Bar dataKey="average" fill={theme.palette.primary.main} radius={[0, 5, 5, 0]} barSize={20}>
+                        <Legend />
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </Paper>
+              </Grid>
+
+              {/* Feedbacks Recentes */}
+              <Grid item xs={12}>
+                <Typography variant="h6" fontWeight="bold" sx={{ mt: 2, mb: 1 }}>Feedbacks Recentes para este Atendente</Typography>
+                <List>
+                  {auditData.feedbacks.length > 0 ? auditData.feedbacks.map((fb, i) => (
+                    <Paper key={i} variant="outlined" sx={{ mb: 2, p: 2, borderRadius: '12px' }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                        <Typography variant="subtitle2" fontWeight="bold">{fb.client}</Typography>
+                        <Typography variant="caption" color="textSecondary">{fb.date}</Typography>
+                      </Box>
+                      <Rating value={fb.rating} readOnly size="small" max={10} sx={{ mb: 1 }} />
+                      <Typography variant="body2" sx={{ fontStyle: 'italic', color: 'text.secondary' }}>
+                        "{fb.comment}"
+                      </Typography>
+                    </Paper>
+                  )) : (
+                    <Alert severity="info">Nenhum feedback em texto registrado para este período.</Alert>
+                  )}
+                </List>
+              </Grid>
+            </Grid>
+          ) : null}
+        </DialogContent>
+      </Dialog>
       
     </Container>
   );

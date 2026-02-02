@@ -126,14 +126,26 @@ class AuditRepository {
     const transaction = await sequelize.transaction();
 
     try {
-      // 1. Buscar o cliente para achar o cupom
+      // 1. Buscar uma das respostas para descobrir qual é a Pesquisa (pesquisaId)
+      const firstResponse = await Resposta.findOne({
+        where: { respondentSessionId, tenantId },
+        transaction
+      });
+
+      if (!firstResponse) {
+        throw new Error("Sessão de resposta não encontrada.");
+      }
+
+      const { pesquisaId } = firstResponse;
+
+      // 2. Buscar o cliente associado a esta sessão
       const client = await Client.findOne({
         where: { respondentSessionId, tenantId },
         transaction
       });
 
       if (client) {
-        // 2. Invalida o cupom associado
+        // 3. Invalida APENAS o cupom desta pesquisa para este cliente
         await Cupom.update(
           { 
             status: 'canceled',
@@ -142,6 +154,7 @@ class AuditRepository {
           { 
             where: { 
               clienteId: client.id, 
+              pesquisaId: pesquisaId, // Filtro crucial adicionado aqui
               tenantId,
               status: { [Op.in]: ['active', 'pending'] }
             },
@@ -150,10 +163,9 @@ class AuditRepository {
         );
       }
 
-      // 3. Marca as respostas como canceladas
+      // 4. Marca as respostas daquela sessão como canceladas (lógica mantida)
       await Resposta.update(
         { 
-          // Assumindo que você adicionará estas colunas na tabela 'respostas'
           // isCanceled: true, 
           // cancellationReason: reason 
         },

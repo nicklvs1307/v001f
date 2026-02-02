@@ -1491,22 +1491,68 @@ const getAttendantsPerformance = async (tenantId, startDate, endDate) => {
   const attendantsData = attendants.map((attendant) => {
     const performance = countsByAttendant[attendant.id] || { responses: 0 };
     const registrations = registrationsByAttendant[attendant.id] || 0;
+    const currentNPS = npsByAttendant[attendant.id] || 0;
+
+    // Metas configuradas
+    const npsGoal = attendant.meta?.npsGoal ? parseFloat(attendant.meta.npsGoal) : 0;
+    const responsesGoal = attendant.meta?.responsesGoal ? parseInt(attendant.meta.responsesGoal) : 0;
+    const registrationsGoal = attendant.meta?.registrationsGoal ? parseInt(attendant.meta.registrationsGoal) : 0;
+
+    // Cálculo de Progresso (%)
+    const npsProgress = npsGoal > 0 ? Math.min(Math.round((currentNPS / npsGoal) * 100), 100) : 0;
+    const responsesProgress = responsesGoal > 0 ? Math.min(Math.round((performance.responses / responsesGoal) * 100), 100) : 0;
+    const registrationsProgress = registrationsGoal > 0 ? Math.min(Math.round((registrations / registrationsGoal) * 100), 100) : 0;
+
+    // Lógica de Bônus (Calcula o valor acumulado baseado no que foi batido)
+    let totalBonusEarned = 0;
+    const bonusDetails = [];
+
+    if (npsGoal > 0 && currentNPS >= npsGoal) {
+      const value = parseFloat(attendant.meta.nps_premio_valor || 0);
+      totalBonusEarned += value;
+      if (value > 0) bonusDetails.push({ type: 'NPS', value });
+    }
+    if (responsesGoal > 0 && performance.responses >= responsesGoal) {
+      const value = parseFloat(attendant.meta.respostas_premio_valor || 0);
+      totalBonusEarned += value;
+      if (value > 0) bonusDetails.push({ type: 'Respostas', value });
+    }
+    if (registrationsGoal > 0 && registrations >= registrationsGoal) {
+      const value = parseFloat(attendant.meta.cadastros_premio_valor || 0);
+      totalBonusEarned += value;
+      if (value > 0) bonusDetails.push({ type: 'Cadastros', value });
+    }
 
     return {
       id: attendant.id,
       name: attendant.name,
+      code: attendant.code,
       responses: performance.responses,
-      registrations: registrations, // Valor real calculado
-      currentNPS: npsByAttendant[attendant.id] || 0,
-      currentCSAT: 0,
-      npsGoal: attendant.meta?.npsGoal ? parseFloat(attendant.meta.npsGoal) : 0,
-      responsesGoal: attendant.meta?.responsesGoal
-        ? parseInt(attendant.meta.responsesGoal)
-        : 0, // Adicionado meta de respostas
-      registrationsGoal: attendant.meta?.registrationsGoal
-        ? parseInt(attendant.meta.registrationsGoal)
-        : 0, // Adicionado meta de cadastros
-      csatGoal: 0,
+      registrations: registrations,
+      currentNPS: currentNPS,
+      // Metas
+      goals: {
+        nps: npsGoal,
+        responses: responsesGoal,
+        registrations: registrationsGoal
+      },
+      // Progresso (Mastigado para o Frontend)
+      progress: {
+        nps: npsProgress,
+        responses: responsesProgress,
+        registrations: registrationsProgress,
+        isNpsMet: npsGoal > 0 && currentNPS >= npsGoal,
+        isResponsesMet: responsesGoal > 0 && performance.responses >= responsesGoal,
+        isRegistrationsMet: registrationsGoal > 0 && registrations >= registrationsGoal
+      },
+      // Dados Financeiros
+      bonus: {
+        totalEarned: totalBonusEarned,
+        details: bonusDetails,
+        totalPotential: parseFloat(attendant.meta.nps_premio_valor || 0) + 
+                        parseFloat(attendant.meta.respostas_premio_valor || 0) + 
+                        parseFloat(attendant.meta.cadastros_premio_valor || 0)
+      }
     };
   });
 

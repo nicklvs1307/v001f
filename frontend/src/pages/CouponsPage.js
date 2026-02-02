@@ -11,7 +11,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  IconButton,
   CircularProgress,
   Alert,
   Dialog,
@@ -29,8 +28,6 @@ import {
   Snackbar,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import PersonIcon from '@mui/icons-material/Person';
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
@@ -40,6 +37,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
+import SearchIcon from '@mui/icons-material/Search';
 import cupomService from '../services/cupomService';
 import recompensaService from '../services/recompensaService';
 import { formatDateForDisplay } from '../utils/dateUtils';
@@ -68,47 +66,16 @@ const CupomListPage = () => {
     startDate: null,
     endDate: null,
   });
+  const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
   // Estados para cancelamento
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
 
   const fetchCupons = useCallback(async (appliedFilters) => {
-    // ... (mantém o existente)
-  }, []);
-
-  // ... (mantém efeitos e handlers existentes até handleCloseDetailsDialog)
-
-  const handleOpenCancelDialog = () => {
-    setOpenCancelDialog(true);
-  };
-
-  const handleCloseCancelDialog = () => {
-    setOpenCancelDialog(false);
-    setCancelReason('');
-  };
-
-  const handleCancelCupom = async () => {
-    if (!selectedCupom || !cancelReason.trim()) {
-      setNotification({ open: true, message: 'Motivo do cancelamento é obrigatório.', severity: 'warning' });
-      return;
-    }
-
-    setIsSubmitting(true);
     try {
-      await cupomService.cancelCupom(selectedCupom.id, cancelReason);
-      setNotification({ open: true, message: 'Cupom cancelado com sucesso!', severity: 'success' });
-      handleCloseCancelDialog();
-      handleCloseDetailsDialog();
-      fetchCupons(filters);
-    } catch (err) {
-      setNotification({ open: true, message: err.message || 'Falha ao cancelar o cupom.', severity: 'error' });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // ... (mantém o restante até o return)
+      setLoading(true);
       const data = await cupomService.getAllCupons(appliedFilters);
       setCupons(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -122,14 +89,14 @@ const CupomListPage = () => {
   useEffect(() => {
     const timerId = setTimeout(() => {
       setFilters((prev) => ({ ...prev, search: searchTerm }));
-    }, 500); // 500ms de delay
+    }, 500);
 
     return () => {
       clearTimeout(timerId);
     };
   }, [searchTerm]);
 
-  // Efeito para buscar os dados quando os filtros (exceto o search) mudam
+  // Efeito para buscar os dados quando os filtros mudam
   useEffect(() => {
     fetchCupons(filters);
   }, [filters, fetchCupons]);
@@ -203,7 +170,6 @@ const CupomListPage = () => {
   };
 
   const handleRowClick = (cupom) => {
-    if (cupom.status === 'used' || cupom.status === 'expired') return;
     setSelectedCupom(cupom);
     setOpenDetailsDialog(true);
   };
@@ -211,6 +177,35 @@ const CupomListPage = () => {
   const handleCloseDetailsDialog = () => {
     setOpenDetailsDialog(false);
     setSelectedCupom(null);
+  };
+
+  const handleOpenCancelDialog = () => {
+    setOpenCancelDialog(true);
+  };
+
+  const handleCloseCancelDialog = () => {
+    setOpenCancelDialog(false);
+    setCancelReason('');
+  };
+
+  const handleCancelCupom = async () => {
+    if (!selectedCupom || !cancelReason.trim()) {
+      setNotification({ open: true, message: 'Motivo do cancelamento é obrigatório.', severity: 'warning' });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await cupomService.cancelCupom(selectedCupom.id, cancelReason);
+      setNotification({ open: true, message: 'Cupom cancelado com sucesso!', severity: 'success' });
+      handleCloseCancelDialog();
+      handleCloseDetailsDialog();
+      fetchCupons(filters);
+    } catch (err) {
+      setNotification({ open: true, message: err.message || 'Falha ao cancelar o cupom.', severity: 'error' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleValidateCupom = async () => {
@@ -250,6 +245,10 @@ const CupomListPage = () => {
         color = 'error';
         label = 'Expirado';
         break;
+      case 'canceled':
+        color = 'error';
+        label = 'Cancelado';
+        break;
       default:
         color = 'default';
         label = status;
@@ -259,26 +258,15 @@ const CupomListPage = () => {
   };
 
   const handleCloseNotification = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
+    if (reason === 'clickaway') return;
     setNotification({ ...notification, open: false });
   };
 
-  // O loading principal agora é mais sobre a busca inicial
   if (loading && cupons.length === 0) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
         <CircularProgress />
         <Typography>Carregando cupons...</Typography>
-      </Container>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
-        <Alert severity="error">{error}</Alert>
       </Container>
     );
   }
@@ -297,6 +285,8 @@ const CupomListPage = () => {
         </Button>
       </Box>
 
+      {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
+
       <Paper elevation={2} sx={{ p: 2, mb: 3 }}>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} sm={6} md={3}>
@@ -308,6 +298,9 @@ const CupomListPage = () => {
               onChange={handleSearchChange}
               variant="outlined"
               size="small"
+              InputProps={{
+                startAdornment: <SearchIcon color="action" sx={{ mr: 1 }} />,
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={2}>
@@ -323,6 +316,7 @@ const CupomListPage = () => {
                 <MenuItem value="active">Ativo</MenuItem>
                 <MenuItem value="used">Utilizado</MenuItem>
                 <MenuItem value="expired">Expirado</MenuItem>
+                <MenuItem value="canceled">Cancelado</MenuItem>
                 <MenuItem value="pending">Pendente</MenuItem>
               </Select>
             </FormControl>
@@ -385,19 +379,18 @@ const CupomListPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {loading && (
+              {loading ? (
                 <TableRow>
                   <TableCell colSpan={6} align="center">
                     <CircularProgress size={24} />
                   </TableCell>
                 </TableRow>
-              )}
-              {!loading && cupons.map((cupom) => (
+              ) : cupons.map((cupom) => (
                 <TableRow 
                   key={cupom.id} 
                   onClick={() => handleRowClick(cupom)} 
                   hover
-                  style={{ cursor: (cupom.status === 'used' || cupom.status === 'expired') ? 'default' : 'pointer' }}
+                  style={{ cursor: 'pointer' }}
                 >
                   <TableCell>{cupom.codigo}</TableCell>
                   <TableCell>{cupom.recompensa?.name}</TableCell>
@@ -497,15 +490,13 @@ const CupomListPage = () => {
               color="primary" 
               variant="contained"
               disabled={isSubmitting || (selectedCupom.status !== 'active' && selectedCupom.status !== 'pending')}
-              startIcon={isSubmitting ? <CircularProgress size={20} /> : <CheckCircleIcon />}
+              startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : <CheckCircleIcon />}
             >
               Validar Cupom
             </Button>
           </DialogActions>
         </Dialog>
       )}
-
-      {/* Dialog para Gerar Novo Cupom ... (código omitido para brevidade) */}
 
       {/* Dialog para Cancelar Cupom */}
       <Dialog open={openCancelDialog} onClose={handleCloseCancelDialog}>
@@ -538,7 +529,7 @@ const CupomListPage = () => {
             variant="contained"
             disabled={isSubmitting || !cancelReason.trim()}
           >
-            {isSubmitting ? <CircularProgress size={24} /> : 'Confirmar Cancelamento'}
+            {isSubmitting ? <CircularProgress size={24} color="inherit" /> : 'Confirmar Cancelamento'}
           </Button>
         </DialogActions>
       </Dialog>

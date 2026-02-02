@@ -129,6 +129,10 @@ const findAtendentePerformanceById = async (atendenteId, tenantId) => {
   };
 };
 
+const createPremiacao = async (data) => {
+  return AtendentePremiacao.create(data);
+};
+
 module.exports = {
   createAtendente,
   getAllAtendentes,
@@ -137,4 +141,5 @@ module.exports = {
   deleteAtendente,
   findPremiacoesByAtendenteId,
   findAtendentePerformanceById,
+  createPremiacao,
 };

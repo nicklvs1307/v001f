@@ -51,6 +51,10 @@ const getAtendentePerformance = (id, tenantId) => {
   return atendenteRepository.findAtendentePerformanceById(id, tenantId);
 };
 
+const registerPremiacao = (data) => {
+  return atendenteRepository.createPremiacao(data);
+};
+
 module.exports = {
   createAtendente,
   getAllAtendentes,
@@ -59,4 +63,5 @@ module.exports = {
   deleteAtendente,
   getAtendentePremiacoes,
   getAtendentePerformance,
+  registerPremiacao,
 };

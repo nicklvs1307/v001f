@@ -111,6 +111,33 @@ const atendenteController = {
 
     res.status(200).json(performance);
   }),
+
+  awardBonus: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { valor_premio, descricao_premio, metricValueAchieved, atendenteMetaId } = req.body;
+    const { tenantId } = req.user;
+
+    if (!valor_premio || !descricao_premio) {
+      throw new ApiError(400, "Valor e descrição do prêmio são obrigatórios.");
+    }
+
+    const atendente = await atendenteService.getAtendenteById(id, tenantId);
+    if (!atendente) {
+      throw new ApiError(404, "Atendente não encontrado.");
+    }
+
+    const premiacao = await atendenteService.registerPremiacao({
+      atendenteId: id,
+      tenantId,
+      atendenteMetaId,
+      valor_premio,
+      descricao_premio,
+      metricValueAchieved,
+      dateAwarded: new Date()
+    });
+
+    res.status(201).json({ message: "Prêmio registrado com sucesso!", premiacao });
+  }),
 };
 
 module.exports = atendenteController;

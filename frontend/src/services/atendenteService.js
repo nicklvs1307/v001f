@@ -43,6 +43,11 @@ const atendenteService = {
     const response = await apiAuthenticated.get(`${ATENDENTE_API_URL}/${id}/performance`);
     return response.data;
   },
+
+  awardBonus: async (id, awardData) => {
+    const response = await apiAuthenticated.post(`${ATENDENTE_API_URL}/${id}/premiacoes`, awardData);
+    return response.data;
+  },
 };
 
 export default atendenteService;

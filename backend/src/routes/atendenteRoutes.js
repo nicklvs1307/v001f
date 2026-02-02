@@ -67,4 +67,16 @@ router.get(
   atendenteController.getAtendentePerformance,
 );
 
+router.post(
+  "/:id/premiacoes",
+  [
+    check("id", "ID do atendente inválido").isUUID().not().isEmpty(),
+    check("valor_premio", "Valor do prêmio é obrigatório").isDecimal(),
+    check("descricao_premio", "Descrição do prêmio é obrigatória").not().isEmpty()
+  ],
+  validate,
+  authorize("atendentes:update"),
+  atendenteController.awardBonus,
+);
+
 module.exports = router;

@@ -33,7 +33,11 @@ import {
   List,
   ListItem,
   ListItemText,
-  Rating
+  Rating,
+  Button,
+  DialogActions,
+  TextField,
+  Snackbar
 } from '@mui/material';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -48,8 +52,10 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import FeedbackIcon from '@mui/icons-material/Feedback';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dashboardService from '../services/dashboardService';
+import atendenteService from '../services/atendenteService';
 import GenericMetricCard from '../components/Dashboard/GenericMetricCard';
 import AttendantRankingCard from '../components/Dashboard/AttendantRankingCard';
 
@@ -72,6 +78,12 @@ const AtendenteDashboardPage = () => {
   const [auditLoading, setAuditLoading] = useState(false);
   const [auditDateRange, setAuditDateRange] = useState({ startDate: null, endDate: null });
   const [currentAttendantId, setCurrentAttendantId] = useState(null);
+
+  // Estados para Premiação (Fechamento)
+  const [awardDialogOpen, setAwardDialogOpen] = useState(false);
+  const [awardDescription, setAwardDescription] = useState('');
+  const [awarding, setAwarding] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
   const fetchData = useCallback(async () => {
     try {
@@ -117,6 +129,32 @@ const AtendenteDashboardPage = () => {
     setAuditDateRange(newDates);
     if (currentAttendantId) {
       fetchAttendantAudit(currentAttendantId, newDates);
+    }
+  };
+
+  const handleAwardBonus = async () => {
+    if (!currentAttendantId || !auditData) return;
+    
+    const currentAttendantPerf = performanceData.find(a => a.id === currentAttendantId);
+    if (!currentAttendantPerf) return;
+
+    setAwarding(true);
+    try {
+      await atendenteService.awardBonus(currentAttendantId, {
+        valor_premio: currentAttendantPerf.bonus.totalEarned,
+        descricao_premio: awardDescription || `Fechamento de Meta - ${new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}`,
+        metricValueAchieved: auditData.stats.nps,
+        atendenteMetaId: auditData.attendant.meta?.id
+      });
+      
+      setSnackbar({ open: true, message: 'Prêmio registrado com sucesso!', severity: 'success' });
+      setAwardDialogOpen(false);
+      setAwardDescription('');
+      fetchData(); // Recarregar dados para atualizar dashboard
+    } catch (err) {
+      setSnackbar({ open: true, message: 'Erro ao registrar prêmio.', severity: 'error' });
+    } finally {
+      setAwarding(false);
     }
   };
 
@@ -466,10 +504,19 @@ const AtendenteDashboardPage = () => {
                 </Paper>
               </Grid>
               <Grid item xs={12} md={4}>
-                <Paper sx={{ p: 2, textAlign: 'center', borderRadius: '12px' }}>
-                  <Typography variant="caption" color="textSecondary">BÔNUS ATUAL</Typography>
+                <Paper sx={{ p: 2, textAlign: 'center', borderRadius: '12px', border: '2px solid transparent', borderColor: theme.palette.warning.light }}>
+                  <Typography variant="caption" color="textSecondary">BÔNUS CALCULADO</Typography>
                   <Typography variant="h4" fontWeight="bold" color="warning.main">R$ { (performanceData.find(a => a.id === currentAttendantId)?.bonus?.totalEarned || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) }</Typography>
-                  <Typography variant="caption" sx={{ display: 'block' }}>Baseado nas metas do mês</Typography>
+                  <Button 
+                    size="small" 
+                    variant="contained" 
+                    color="warning" 
+                    sx={{ mt: 1, textTransform: 'none', fontWeight: 'bold' }}
+                    onClick={() => setAwardDialogOpen(true)}
+                    disabled={(performanceData.find(a => a.id === currentAttendantId)?.bonus?.totalEarned || 0) <= 0}
+                  >
+                    Confirmar Pagamento
+                  </Button>
                 </Paper>
               </Grid>
 
@@ -516,6 +563,50 @@ const AtendenteDashboardPage = () => {
           ) : null}
         </DialogContent>
       </Dialog>
+
+      {/* DIÁLOGO DE CONFIRMAÇÃO DE PREMIAÇÃO */}
+      <Dialog open={awardDialogOpen} onClose={() => setAwardDialogOpen(false)}>
+        <DialogTitle>Confirmar Pagamento de Bônus</DialogTitle>
+        <DialogContent>
+          <Typography gutterBottom>
+            Você está registrando o pagamento de <strong>R$ { (performanceData.find(a => a.id === currentAttendantId)?.bonus?.totalEarned || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) }</strong> para o atendente <strong>{auditData?.attendant?.name}</strong>.
+          </Typography>
+          <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
+            Este valor será registrado permanentemente no histórico de premiações do funcionário.
+          </Typography>
+          <TextField
+            fullWidth
+            label="Descrição do Prêmio (Opcional)"
+            placeholder="Ex: Bônus metas batidas - Fevereiro/2026"
+            value={awardDescription}
+            onChange={(e) => setAwardDescription(e.target.value)}
+            variant="outlined"
+          />
+        </DialogContent>
+        <DialogActions sx={{ p: 3 }}>
+          <Button onClick={() => setAwardDialogOpen(false)} color="inherit">Cancelar</Button>
+          <Button 
+            onClick={handleAwardBonus} 
+            variant="contained" 
+            color="success" 
+            disabled={awarding}
+            startIcon={awarding ? <CircularProgress size={20} color="inherit" /> : <CheckCircleIcon />}
+          >
+            Confirmar e Registrar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert severity={snackbar.severity} onClose={() => setSnackbar({ ...snackbar, open: false })}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       
     </Container>
   );

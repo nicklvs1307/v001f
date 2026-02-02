@@ -47,6 +47,17 @@ router
     cupomController.deleteCupom,
   );
 
+router.post(
+  "/:id/cancel",
+  [
+    check("id", "ID do cupom inválido").isUUID().not().isEmpty(),
+    check("reason", "Motivo do cancelamento é obrigatório").not().isEmpty(),
+  ],
+  validate,
+  authorize("cupons:delete"), // Usando permissão de delete para cancelamento lógico
+  cupomController.cancelCupom,
+);
+
 // Rota para validação de cupom (pode ser acessada por um papel específico, como 'Validador de Cupom')
 router.post(
   "/validate",

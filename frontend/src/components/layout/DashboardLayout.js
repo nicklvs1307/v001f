@@ -111,6 +111,7 @@ const DashboardLayout = () => {
             text: 'Pesquisas', icon: <AssignmentIcon />, roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN],
             children: [
                 { text: 'Listar Pesquisas', path: '/dashboard/pesquisas', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
+                { text: 'Auditoria', path: '/dashboard/pesquisas/auditoria', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN], badge: 'NOVO' },
                 { text: 'Criar Nova Pesquisa', path: '/dashboard/pesquisas/create', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
                 { text: 'Critérios', path: '/dashboard/criterios', roles: [ROLES.SUPER_ADMIN, ROLES.ADMIN] },
             ],

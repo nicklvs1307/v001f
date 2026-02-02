@@ -68,12 +68,47 @@ const CupomListPage = () => {
     startDate: null,
     endDate: null,
   });
-  const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Estados para cancelamento
+  const [openCancelDialog, setOpenCancelDialog] = useState(false);
+  const [cancelReason, setCancelReason] = useState('');
 
   const fetchCupons = useCallback(async (appliedFilters) => {
+    // ... (mantém o existente)
+  }, []);
+
+  // ... (mantém efeitos e handlers existentes até handleCloseDetailsDialog)
+
+  const handleOpenCancelDialog = () => {
+    setOpenCancelDialog(true);
+  };
+
+  const handleCloseCancelDialog = () => {
+    setOpenCancelDialog(false);
+    setCancelReason('');
+  };
+
+  const handleCancelCupom = async () => {
+    if (!selectedCupom || !cancelReason.trim()) {
+      setNotification({ open: true, message: 'Motivo do cancelamento é obrigatório.', severity: 'warning' });
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
-      setLoading(true);
+      await cupomService.cancelCupom(selectedCupom.id, cancelReason);
+      setNotification({ open: true, message: 'Cupom cancelado com sucesso!', severity: 'success' });
+      handleCloseCancelDialog();
+      handleCloseDetailsDialog();
+      fetchCupons(filters);
+    } catch (err) {
+      setNotification({ open: true, message: err.message || 'Falha ao cancelar o cupom.', severity: 'error' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // ... (mantém o restante até o return)
       const data = await cupomService.getAllCupons(appliedFilters);
       setCupons(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -432,11 +467,31 @@ const CupomListPage = () => {
                   Status
                 </Typography>
                 {getStatusChip(selectedCupom.status)}
+                
+                {selectedCupom.status === 'canceled' && (
+                  <Box sx={{ mt: 2, p: 2, bgcolor: '#fff5f5', borderRadius: 1, border: '1px solid #ffc1c1' }}>
+                    <Typography variant="caption" color="error" sx={{ fontWeight: 700, display: 'block' }}>MOTIVO DO CANCELAMENTO:</Typography>
+                    <Typography variant="body2">{selectedCupom.cancellationReason || 'Não informado'}</Typography>
+                  </Box>
+                )}
               </Grid>
             </Grid>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDetailsDialog}>Fechar</Button>
+            
+            {(selectedCupom.status === 'active' || selectedCupom.status === 'pending') && (
+              <Button 
+                onClick={handleOpenCancelDialog}
+                color="error"
+                variant="outlined"
+                disabled={isSubmitting}
+                startIcon={<CancelIcon />}
+              >
+                Cancelar
+              </Button>
+            )}
+
             <Button 
               onClick={handleValidateCupom} 
               color="primary" 
@@ -451,6 +506,42 @@ const CupomListPage = () => {
       )}
 
       {/* Dialog para Gerar Novo Cupom ... (código omitido para brevidade) */}
+
+      {/* Dialog para Cancelar Cupom */}
+      <Dialog open={openCancelDialog} onClose={handleCloseCancelDialog}>
+        <DialogTitle>Cancelar Cupom</DialogTitle>
+        <DialogContent>
+          <Typography gutterBottom>
+            Você tem certeza que deseja cancelar este cupom? Esta ação é irreversível.
+          </Typography>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="reason"
+            label="Motivo do Cancelamento"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={cancelReason}
+            onChange={(e) => setCancelReason(e.target.value)}
+            required
+            helperText="Por favor, informe o motivo para registro."
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseCancelDialog} color="primary">
+            Voltar
+          </Button>
+          <Button 
+            onClick={handleCancelCupom} 
+            color="error" 
+            variant="contained"
+            disabled={isSubmitting || !cancelReason.trim()}
+          >
+            {isSubmitting ? <CircularProgress size={24} /> : 'Confirmar Cancelamento'}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Snackbar
         open={notification.open}

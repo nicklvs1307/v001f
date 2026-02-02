@@ -2,41 +2,33 @@ import apiAuthenticated from './apiAuthenticated';
 
 const CUPOM_API_URL = '/cupons';
 
+const deleteCupom = async (id) => {
+    try {
+        const response = await apiAuthenticated.delete(`/cupons/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const cancelCupom = async (id, reason) => {
+    try {
+        const response = await apiAuthenticated.post(`/cupons/${id}/cancel`, { reason });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const cupomService = {
-  generateCupom: async (cupomData) => {
-    const response = await apiAuthenticated.post(`${CUPOM_API_URL}/generate`, cupomData);
-    return response.data;
-  },
-
-  getAllCupons: async (params) => {
-    const response = await apiAuthenticated.get(CUPOM_API_URL, { params });
-    return response.data;
-  },
-
-  getCupomById: async (id) => {
-    const response = await apiAuthenticated.get(`${CUPOM_API_URL}/${id}`);
-    return response.data;
-  },
-
-  validateCupom: async (codigo) => {
-    const response = await apiAuthenticated.post(`${CUPOM_API_URL}/validate`, { codigo });
-    return response.data;
-  },
-
-  getCuponsSummary: async () => {
-    const response = await apiAuthenticated.get(`${CUPOM_API_URL}/summary`);
-    return response.data;
-  },
-
-  getCupomByCodigo: async (codigo) => {
-    const response = await apiAuthenticated.get(`${CUPOM_API_URL}/codigo/${codigo}`);
-    return response.data;
-  },
-
-  deleteCupom: async (id) => {
-    const response = await apiAuthenticated.delete(`${CUPOM_API_URL}/${id}`);
-    return response.data;
-  },
+    getAllCupons,
+    getCuponsSummary,
+    validateCupom,
+    getCupomByCodigo,
+    getCupomById,
+    generateCupom,
+    deleteCupom,
+    cancelCupom
 };
 
 export default cupomService;

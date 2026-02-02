@@ -211,6 +211,45 @@ const cupomController = {
 
     res.status(200).json({ message: "Cupom deletado com sucesso!" });
   }),
+
+  cancelCupom: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { reason } = req.body;
+    const requestingUser = req.user;
+    const tenantId =
+      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+
+    if (!reason) {
+      throw new ApiError(400, "O motivo do cancelamento é obrigatório.");
+    }
+
+    const cupom = await cupomRepository.getCupomById(id, tenantId);
+
+    if (!cupom) {
+      throw new ApiError(404, "Cupom não encontrado.");
+    }
+
+    if (
+      requestingUser.role !== "Super Admin" &&
+      cupom.tenantId !== requestingUser.tenantId
+    ) {
+      throw new ApiError(
+        403,
+        "Você não tem permissão para cancelar este cupom.",
+      );
+    }
+
+    const updatedCupom = await cupomRepository.updateCupom(
+      cupom.id,
+      cupom.tenantId,
+      {
+        status: "canceled",
+        cancellationReason: reason,
+      },
+    );
+
+    res.status(200).json({ message: "Cupom cancelado com sucesso!", cupom: updatedCupom });
+  }),
 };
 
 module.exports = cupomController;

@@ -58,6 +58,7 @@ const SurveyCreatePage = React.lazy(() => import('../pages/SurveyCreatePage'));
 const BirthdayClientsPage = React.lazy(() => import('../pages/BirthdayClientsPage'));
 const ResultsOverviewPage = React.lazy(() => import('../pages/ResultsOverviewPage'));
 const SurveyResultsPage = React.lazy(() => import('../pages/SurveyResultsPage'));
+const SurveyAuditPage = React.lazy(() => import('../pages/SurveyAuditPage'));
 const ClientDashboardPage = React.lazy(() => import('../pages/ClientDashboardPage'));
 const ClientDetailsPage = React.lazy(() => import('../pages/ClientDetailsPage'));
 const AutomationsPage = React.lazy(() => import('../pages/AutomationsPage'));
@@ -165,6 +166,7 @@ const AppRoutes = () => {
               <Route path="cargos" element={<RolesPage />} />
               {/* <Route path="locatarios" element={<TenantsPage />} /> */} {/* Movido para superadmin */}
               <Route path="pesquisas" element={<SurveysPage />} />
+              <Route path="pesquisas/auditoria" element={<SurveyAuditPage />} />
               <Route path="pesquisas/create" element={<SurveyCreatePage />} />
               <Route path="pesquisas/edit/:id" element={<SurveyCreatePage />} />
               <Route path="pesquisas/results/:id" element={<SurveyResultsPage />} />

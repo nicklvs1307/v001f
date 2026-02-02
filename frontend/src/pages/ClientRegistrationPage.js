@@ -68,9 +68,14 @@ const RegistrationFormComponent = ({ tenant }) => {
     const [clientData, setClientData] = useState({ name: '', email: '', phone: '', birthDate: '', gender: '' });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [fieldErrors, setFieldErrors] = useState({});
 
     const handleChange = (e) => {
         setClientData({ ...clientData, [e.target.name]: e.target.value });
+        // Limpar erro do campo ao digitar
+        if (fieldErrors[e.target.name]) {
+            setFieldErrors({ ...fieldErrors, [e.target.name]: '' });
+        }
     };
 
     const handleDateChange = (e) => {
@@ -86,6 +91,9 @@ const RegistrationFormComponent = ({ tenant }) => {
         }
     
         setClientData({ ...clientData, birthDate: value });
+        if (fieldErrors.birthDate) {
+            setFieldErrors({ ...fieldErrors, birthDate: '' });
+        }
     };
 
     const handlePhoneChange = (e) => {
@@ -105,12 +113,17 @@ const RegistrationFormComponent = ({ tenant }) => {
         }
     
         setClientData({ ...clientData, phone: value });
+        if (fieldErrors.phone) {
+            setFieldErrors({ ...fieldErrors, phone: '' });
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
+        setFieldErrors({});
+
         try {
             const storedState = sessionStorage.getItem('surveyState');
             if (!storedState) {
@@ -128,18 +141,27 @@ const RegistrationFormComponent = ({ tenant }) => {
             sessionStorage.removeItem('surveyState');
             navigate(`/roleta/${tenantId}/${pesquisaId}/${response.client.id}`);
         } catch (err) {
-            // Tratamento de erro específico para duplicidade
-            if (err.response?.status === 409) {
-                const errorMessage = err.response?.data?.message || '';
+            console.error("Erro no registro:", err);
+            const status = err.response?.status;
+            const data = err.response?.data;
+
+            if (status === 400 && data?.errors) {
+                // Erros de validação do backend (agora retornam um objeto { campo: msg })
+                setFieldErrors(data.errors);
+                setError("Por favor, verifique os campos destacados.");
+            } else if (status === 409) {
+                // Erros de duplicidade
+                const errorMessage = data?.message || '';
                 if (errorMessage.toLowerCase().includes('email')) {
-                    setError("Este endereço de e-mail já está sendo usado por outro cliente.");
+                    setFieldErrors({ email: "Este e-mail já está em uso." });
                 } else if (errorMessage.toLowerCase().includes('whatsapp') || errorMessage.toLowerCase().includes('telefone')) {
+                    setFieldErrors({ phone: "Este número já possui cadastro." });
                     setError("Este número de telefone já possui cadastro. Volte e escolha a opção 'Já tenho cadastro'.");
                 } else {
-                    setError("Já existe um cadastro com estes dados (Email ou Telefone).");
+                    setError("Já existe um cadastro com estes dados.");
                 }
             } else {
-                setError(err.response?.data?.message || 'Erro ao registrar cliente.');
+                setError(data?.message || 'Erro ao registrar cliente.');
             }
         } finally {
             setLoading(false);
@@ -214,12 +236,67 @@ const RegistrationFormComponent = ({ tenant }) => {
                     <Box component="form" onSubmit={handleSubmit} sx={{ p: { xs: 3, sm: 5 } }}>
                         {error && <Alert severity="error" sx={{ mb: 3, borderRadius: '10px' }}>{error}</Alert>}
                         
-                        <TextField margin="normal" required fullWidth id="name" label="Nome Completo" name="name" autoComplete="name" autoFocus value={clientData.name} onChange={handleChange} sx={inputSx} />
-                        <TextField margin="normal" fullWidth id="email" label="Endereço de Email (Opcional)" name="email" autoComplete="email" value={clientData.email} onChange={handleChange} sx={inputSx} />
-                        <TextField margin="normal" required fullWidth id="phone" label="Telefone (com DDD)" name="phone" autoComplete="tel" value={clientData.phone} onChange={handlePhoneChange} inputMode="numeric" sx={inputSx} />
-                        <TextField margin="normal" required fullWidth id="birthDate" label="Data de Nascimento" name="birthDate" type="text" placeholder="DD/MM/AAAA" value={clientData.birthDate} onChange={handleDateChange} inputMode="numeric" sx={inputSx} />
+                        <TextField 
+                            margin="normal" 
+                            required 
+                            fullWidth 
+                            id="name" 
+                            label="Nome Completo" 
+                            name="name" 
+                            autoComplete="name" 
+                            autoFocus 
+                            value={clientData.name} 
+                            onChange={handleChange} 
+                            error={!!fieldErrors.name}
+                            helperText={fieldErrors.name}
+                            sx={inputSx} 
+                        />
+                        <TextField 
+                            margin="normal" 
+                            fullWidth 
+                            id="email" 
+                            label="Endereço de Email (Opcional)" 
+                            name="email" 
+                            autoComplete="email" 
+                            value={clientData.email} 
+                            onChange={handleChange} 
+                            error={!!fieldErrors.email}
+                            helperText={fieldErrors.email}
+                            sx={inputSx} 
+                        />
+                        <TextField 
+                            margin="normal" 
+                            required 
+                            fullWidth 
+                            id="phone" 
+                            label="Telefone (com DDD)" 
+                            name="phone" 
+                            autoComplete="tel" 
+                            value={clientData.phone} 
+                            onChange={handlePhoneChange} 
+                            inputMode="numeric" 
+                            error={!!fieldErrors.phone}
+                            helperText={fieldErrors.phone}
+                            sx={inputSx} 
+                        />
+                        <TextField 
+                            margin="normal" 
+                            required 
+                            fullWidth 
+                            id="birthDate" 
+                            label="Data de Nascimento" 
+                            name="birthDate" 
+                            type="text" 
+                            placeholder="DD/MM/AAAA" 
+                            value={clientData.birthDate} 
+                            onChange={handleDateChange} 
+                            inputMode="numeric" 
+                            error={!!fieldErrors.birthDate}
+                            helperText={fieldErrors.birthDate}
+                            sx={inputSx} 
+                        />
                         
-                        <FormControl fullWidth margin="normal" sx={inputSx}>
+                        <FormControl fullWidth margin="normal" error={!!fieldErrors.gender} sx={inputSx}>
                             <InputLabel id="gender-label">Gênero</InputLabel>
                             <Select
                                 labelId="gender-label"
@@ -233,6 +310,7 @@ const RegistrationFormComponent = ({ tenant }) => {
                                 <MenuItem value="Feminino">Feminino</MenuItem>
                                 <MenuItem value="Prefiro não responder">Prefiro não responder</MenuItem>
                             </Select>
+                            {/* Opcional: mostrar erro do gênero também se necessário, usando FormHelperText do MUI */}
                         </FormControl>
 
                         <Button type="submit" fullWidth variant="contained" sx={{ mt: 2, ...buttonStyle }} disabled={loading}>

@@ -12,7 +12,7 @@ const { Op } = require("sequelize");
  * @returns {object} A cláusula 'where' do Sequelize.
  */
 function buildWhereClause(options = {}) {
-  const { tenantId, surveyId, dateRange, dateField = "createdAt" } = options;
+  const { tenantId, surveyId, dateRange, dateField = "createdAt", includeCanceled = false } = options;
   const where = {};
 
   if (tenantId) {
@@ -21,6 +21,12 @@ function buildWhereClause(options = {}) {
   if (surveyId) {
     where.pesquisaId = surveyId;
   }
+  
+  // Filtro para ignorar registros cancelados por padrão
+  if (!includeCanceled) {
+    // where.isCanceled = false; // Descomente esta linha após rodar a migration
+  }
+
   if (dateRange && dateRange.startDate && dateRange.endDate) {
     where[dateField] = {
       [Op.between]: [dateRange.startDate, dateRange.endDate],

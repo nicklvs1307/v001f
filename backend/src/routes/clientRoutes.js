@@ -48,7 +48,7 @@ router.post(
   "/register",
   [
     check("name", "Nome do cliente é obrigatório").not().isEmpty(),
-    check("email", "Email do cliente inválido").optional().isEmail(),
+    check("email", "Email do cliente inválido").optional({ checkFalsy: true }).isEmail(),
     check("phone", "Telefone do cliente é obrigatório").not().isEmpty(),
     birthDateValidator, // Usa o validador reutilizável
     check("respondentSessionId", "ID da sessão de resposta é obrigatório")
@@ -84,7 +84,7 @@ router
     authorize(["Admin"]),
     [
       check("name", "Nome do cliente é obrigatório").not().isEmpty(),
-      check("email", "Email do cliente inválido").optional().isEmail(),
+      check("email", "Email do cliente inválido").optional({ checkFalsy: true }).isEmail(),
       check("phone", "Telefone do cliente é obrigatório").not().isEmpty(),
       birthDateValidator, // Usa o validador reutilizável
       check("respondentSessionId", "ID da sessão do respondente inválido")
@@ -127,7 +127,7 @@ router
         .optional()
         .not()
         .isEmpty(),
-      check("email", "Email do cliente inválido").optional().isEmail(),
+      check("email", "Email do cliente inválido").optional({ checkFalsy: true }).isEmail(),
       check("phone", "Telefone do cliente deve ser uma string não vazia")
         .optional()
         .not()

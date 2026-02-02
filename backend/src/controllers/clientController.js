@@ -14,6 +14,8 @@ exports.publicRegisterClient = asyncHandler(async (req, res) => {
   const { name, email, phone, birthDate, respondentSessionId, gender } =
     req.body;
 
+  const sanitizedEmail = email || null;
+
   // Tratamento para birthDate
   let parsedBirthDate = null;
   if (birthDate) {
@@ -36,9 +38,9 @@ exports.publicRegisterClient = asyncHandler(async (req, res) => {
     }
 
     // Verificar unicidade de Email e Telefone antes de qualquer outra coisa
-    if (email) {
+    if (sanitizedEmail) {
       const existingClientByEmail = await clientRepository.findClientByEmail(
-        email,
+        sanitizedEmail,
         tenantId,
         { transaction },
       );
@@ -68,7 +70,7 @@ exports.publicRegisterClient = asyncHandler(async (req, res) => {
       // Se encontrou o cliente anônimo, atualiza com os dados do formulário
       const updatedClient = await clientRepository.updateClient(
         client.id,
-        { name, email, phone, birthDate: parsedBirthDate, gender },
+        { name, email: sanitizedEmail, phone, birthDate: parsedBirthDate, gender },
         tenantId,
         { transaction },
       );
@@ -92,7 +94,7 @@ exports.publicRegisterClient = asyncHandler(async (req, res) => {
     const newClient = await clientRepository.createClient(
       {
         name,
-        email,
+        email: sanitizedEmail,
         phone,
         birthDate: parsedBirthDate,
         tenantId,
@@ -129,6 +131,7 @@ exports.publicRegisterClient = asyncHandler(async (req, res) => {
 // @access  Private (Admin)
 exports.createClient = asyncHandler(async (req, res) => {
   const { name, email, phone, birthDate } = req.body;
+  const sanitizedEmail = email || null;
   const tenantId = req.user.tenantId; // Associa o cliente ao tenant do usuário logado
 
   if (!tenantId) {
@@ -143,9 +146,9 @@ exports.createClient = asyncHandler(async (req, res) => {
   }
 
   // Verificar unicidade de Email e Telefone
-  if (email) {
+  if (sanitizedEmail) {
     const existingClientByEmail = await clientRepository.findClientByEmail(
-      email,
+      sanitizedEmail,
       tenantId,
     );
     if (existingClientByEmail) {
@@ -165,7 +168,7 @@ exports.createClient = asyncHandler(async (req, res) => {
 
   const newClient = await clientRepository.createClient({
     name,
-    email,
+    email: sanitizedEmail,
     phone,
     birthDate,
     tenantId,
@@ -257,6 +260,7 @@ exports.getClientDetails = asyncHandler(async (req, res) => {
 exports.updateClient = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { name, email, phone, birthDate } = req.body;
+  const sanitizedEmail = email === "" ? null : email;
   const tenantId = req.user.tenantId;
 
   if (!name) {
@@ -264,9 +268,9 @@ exports.updateClient = asyncHandler(async (req, res) => {
   }
 
   // Verificar unicidade de Email e Telefone
-  if (email) {
+  if (sanitizedEmail) {
     const existingClient = await clientRepository.findClientByEmail(
-      email,
+      sanitizedEmail,
       tenantId,
     );
     if (existingClient && existingClient.id !== id) {
@@ -286,7 +290,7 @@ exports.updateClient = asyncHandler(async (req, res) => {
 
   const updatedClient = await clientRepository.updateClient(
     id,
-    { name, email, phone, birthDate },
+    { name, email: sanitizedEmail, phone, birthDate },
     tenantId,
   );
 

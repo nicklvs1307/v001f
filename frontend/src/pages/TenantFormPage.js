@@ -31,6 +31,7 @@ const TenantFormPage = () => {
         adminEmail: '',
         adminPassword: '',
         franchisorId: franchisorId || '', // Inicializar com o parâmetro da URL
+        gmb_link: '',
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -142,6 +143,15 @@ const TenantFormPage = () => {
                         rows={4}
                         value={formData.description}
                         onChange={handleChange}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        name="gmb_link"
+                        label="Link de Avaliação do Google"
+                        value={formData.gmb_link || ''}
+                        onChange={handleChange}
+                        helperText="Link para redirecionar o cliente para avaliar no Google após ganhar um prêmio."
                     />
 
                     {!isEditMode && (

@@ -1,8 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Box, Alert, Paper, CircularProgress, Button, Snackbar } from '@mui/material';
+import { 
+    Typography, 
+    Box, 
+    Alert, 
+    Paper, 
+    CircularProgress, 
+    Button, 
+    Snackbar,
+    Dialog,
+    DialogContent,
+    Fade,
+    IconButton,
+    Rating,
+    Avatar
+} from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'; // Novo ícone para regras
+import CloseIcon from '@mui/icons-material/Close';
+import GoogleIcon from '@mui/icons-material/Google';
+import StarsIcon from '@mui/icons-material/Stars';
 import { useLocation } from 'react-router-dom';
 import { keyframes } from '@mui/system';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
@@ -69,6 +86,17 @@ const CongratulationsComponent = ({ premio, cupom, tenant }) => {
     const theme = useTheme();
     const { width, height } = useWindowSize();
     const [copySuccess, setCopySuccess] = useState(false);
+    const [gmbOpen, setGmbOpen] = useState(false);
+
+    useEffect(() => {
+        // Abre o popup do Google após 2 segundos se houver o link
+        if (tenant?.gmb_link) {
+            const timer = setTimeout(() => {
+                setGmbOpen(true);
+            }, 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [tenant]);
 
     if (!premio || !cupom) {
         return (
@@ -183,6 +211,93 @@ const CongratulationsComponent = ({ premio, cupom, tenant }) => {
                 message="Código copiado para a área de transferência!"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             />
+
+            {/* Popup do Google Bonitão */}
+            <Dialog
+                open={gmbOpen}
+                onClose={() => setGmbOpen(false)}
+                maxWidth="xs"
+                fullWidth
+                PaperProps={{
+                    sx: {
+                        borderRadius: '24px',
+                        padding: 0,
+                        overflow: 'hidden',
+                        boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
+                    }
+                }}
+            >
+                <Box sx={{ 
+                    background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                    p: 4,
+                    textAlign: 'center',
+                    color: 'white',
+                    position: 'relative'
+                }}>
+                    <IconButton 
+                        onClick={() => setGmbOpen(false)}
+                        sx={{ position: 'absolute', right: 8, top: 8, color: 'white' }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                    <Avatar sx={{ 
+                        width: 80, 
+                        height: 80, 
+                        bgcolor: 'white', 
+                        margin: '0 auto 16px',
+                        boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
+                    }}>
+                        <GoogleIcon sx={{ fontSize: 40, color: '#4285F4' }} />
+                    </Avatar>
+                    <Typography variant="h5" sx={{ fontWeight: 800, mb: 1 }}>
+                        Gostou do seu prêmio?
+                    </Typography>
+                    <Typography variant="body1" sx={{ opacity: 0.9 }}>
+                        Sua avaliação no Google nos ajuda muito a continuar presenteando nossos clientes!
+                    </Typography>
+                </Box>
+                <DialogContent sx={{ p: 4, textAlign: 'center' }}>
+                    <Box sx={{ mb: 3 }}>
+                        <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1, textTransform: 'uppercase', letterSpacing: 1 }}>
+                            Avalie com 5 estrelas
+                        </Typography>
+                        <Rating value={5} readOnly size="large" sx={{ color: '#ffc107' }} />
+                    </Box>
+                    
+                    <Button
+                        variant="contained"
+                        fullWidth
+                        size="large"
+                        startIcon={<StarsIcon />}
+                        onClick={() => {
+                            window.open(tenant.gmb_link, '_blank');
+                            setGmbOpen(false);
+                        }}
+                        sx={{
+                            borderRadius: '50px',
+                            py: 1.5,
+                            fontSize: '1.1rem',
+                            fontWeight: 'bold',
+                            textTransform: 'none',
+                            background: '#4285F4',
+                            boxShadow: '0 4px 14px 0 rgba(66, 133, 244, 0.39)',
+                            '&:hover': {
+                                background: '#357ae8',
+                                boxShadow: '0 6px 20px rgba(66, 133, 244, 0.23)',
+                            }
+                        }}
+                    >
+                        Avaliar no Google
+                    </Button>
+                    
+                    <Button 
+                        onClick={() => setGmbOpen(false)}
+                        sx={{ mt: 2, color: 'text.secondary', textTransform: 'none' }}
+                    >
+                        Agora não, obrigado
+                    </Button>
+                </DialogContent>
+            </Dialog>
         </Box>
     );
 };

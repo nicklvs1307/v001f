@@ -31,7 +31,8 @@ const CompanyProfilePage = () => {
         reportPhone: '',
         logoUrl: '',
         primaryColor: '#FC4C35',
-        secondaryColor: '#1EBFAE'
+        secondaryColor: '#1EBFAE',
+        gmb_link: ''
     });
     const [selectedFile, setSelectedFile] = useState(null);
     const [preview, setPreview] = useState(null);
@@ -89,6 +90,7 @@ const CompanyProfilePage = () => {
                 reportPhone: formData.reportPhone,
                 primaryColor: formData.primaryColor,
                 secondaryColor: formData.secondaryColor,
+                gmb_link: formData.gmb_link,
             };
             
             await tenantService.update(dataToUpdate);
@@ -249,6 +251,17 @@ const CompanyProfilePage = () => {
                                                 label="Telefone para Relatórios"
                                                 helperText="Número que receberá os relatórios diários/semanais via WhatsApp."
                                                 value={formData.reportPhone || ''}
+                                                onChange={handleChange}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField
+                                                fullWidth
+                                                name="gmb_link"
+                                                label="Link de Avaliação do Google (GMB)"
+                                                placeholder="https://g.page/r/your-id/review"
+                                                helperText="Link direto para a página de avaliação do seu estabelecimento no Google."
+                                                value={formData.gmb_link || ''}
                                                 onChange={handleChange}
                                             />
                                         </Grid>

@@ -100,6 +100,7 @@ exports.updateTenant = asyncHandler(async (req, res) => {
     logoUrl,
     primaryColor,
     secondaryColor,
+    gmb_link,
   } = req.body;
 
   const updatedTenant = await tenantRepository.updateTenant(id, {
@@ -112,6 +113,7 @@ exports.updateTenant = asyncHandler(async (req, res) => {
     logoUrl,
     primaryColor,
     secondaryColor,
+    gmb_link,
   });
 
   if (!updatedTenant) {
@@ -248,6 +250,7 @@ exports.updateMe = asyncHandler(async (req, res) => {
     deliveryMuchPassword,
     primaryColor,
     secondaryColor,
+    gmb_link,
   };
 
   const updatedTenant = await tenantRepository.updateTenant(

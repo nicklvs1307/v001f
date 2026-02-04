@@ -80,10 +80,6 @@ const PublicSurveyPage = () => {
     );
 };
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
-
 // Componente de UI que usa o tema fornecido
 const SurveyComponent = ({ survey, tenantId }) => {
     const { pesquisaId } = useParams();
@@ -98,8 +94,6 @@ const SurveyComponent = ({ survey, tenantId }) => {
     const [submitLoading, setSubmitLoading] = useState(false);
     const [submitError, setSubmitError] = useState(null);
     const [atendenteError, setAtendenteError] = useState(null); // Added attendant error state
-    const [gmbModalOpen, setGmbModalOpen] = useState(false);
-    const [gmbLink, setGmbLink] = useState('');
     const [submissionResponse, setSubmissionResponse] = useState(null);
 
     useEffect(() => {
@@ -183,13 +177,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
             const response = await publicSurveyService.submitSurveyResponses(pesquisaId, submissionData.respostas, submissionData.atendenteId);
             setSubmissionResponse(response); // Salva a resposta completa no estado
 
-            if (response && response.gmb_link) {
-                setGmbLink(response.gmb_link);
-                setGmbModalOpen(true);
-                // A navegação ocorrerá após o fechamento do modal
-            } else {
-                handleNavigation(response);
-            }
+            handleNavigation(response);
         } catch (err) {
             console.error("Erro no envio:", err);
             window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll para erro
@@ -390,34 +378,6 @@ const SurveyComponent = ({ survey, tenantId }) => {
                     </Box>
                 </Paper>
             </Container>
-            <Dialog
-                open={gmbModalOpen}
-                TransitionComponent={Transition}
-                keepMounted
-                onClose={() => {
-                    setGmbModalOpen(false);
-                    handleNavigation(submissionResponse);
-                }}
-                aria-describedby="gmb-review-dialog-slide-description"
-                maxWidth="sm"
-                fullWidth
-            >
-                <DialogTitle>{"Sua opinião é muito importante!"}</DialogTitle>
-                <DialogContent>
-                    <Typography>Para nos ajudar a melhorar ainda mais, por favor, deixe uma avaliação no Google. Você será redirecionado para a página de avaliação.</Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => {
-                        setGmbModalOpen(false);
-                        handleNavigation(submissionResponse);
-                    }}>Pular</Button>
-                    <Button onClick={() => {
-                        window.open(gmbLink, '_blank');
-                        setGmbModalOpen(false);
-                        handleNavigation(submissionResponse);
-                    }} autoFocus>Avaliar Agora</Button>
-                </DialogActions>
-            </Dialog>
         </Box>
     );
 };

@@ -90,13 +90,13 @@ const submitSurveyResponses = asyncHandler(async (req, res) => {
 });
 
 const submitSurveyWithClient = asyncHandler(async (req, res) => {
-  const { surveyId, respostas, atendenteId, client } = req.body;
+  const { surveyId, respondentSessionId, client } = req.body;
 
-  if (!surveyId || !respostas || !client || !client.phone) {
-    throw new ApiError(400, "Dados insuficientes para submeter a pesquisa.");
+  if (!respondentSessionId || !client || !client.phone) {
+    throw new ApiError(400, "Dados insuficientes para confirmar o cliente.");
   }
 
-  // Obter o tenantId a partir do surveyId
+  // Obter o tenantId a partir do surveyId (ou das respostas existentes)
   const survey = await publicSurveyRepository.getPublicSurveyById(surveyId);
   if (!survey) {
     throw new ApiError(404, "Pesquisa não encontrada.");
@@ -107,7 +107,7 @@ const submitSurveyWithClient = asyncHandler(async (req, res) => {
     client.phone,
     tenantId,
   );
-  // If client not found by phone, check by email
+
   if (!existingClient && client.email) {
     existingClient = await clientRepository.findClientByEmail(
       client.email,
@@ -118,34 +118,29 @@ const submitSurveyWithClient = asyncHandler(async (req, res) => {
   if (!existingClient) {
     throw new ApiError(
       404,
-      "Cliente não encontrado com o telefone/email fornecido.",
+      "Cliente não encontrado com os dados fornecidos.",
     );
   }
 
-  // Use existing client's respondentSessionId or generate a new one if it's null
-  const currentRespondentSessionId =
-    existingClient.respondentSessionId || uuidv4();
+  // Atualiza o respondentSessionId do cliente se estiver vazio
   if (!existingClient.respondentSessionId) {
     await clientRepository.updateClient(
       existingClient.id,
-      { respondentSessionId: currentRespondentSessionId },
+      { respondentSessionId: respondentSessionId },
       tenantId,
     );
   }
 
-  await publicSurveyRepository.submitSurveyResponses(
-    surveyId,
-    respostas,
-    currentRespondentSessionId, // Use the correct respondentSessionId
+  // Vincula as respostas que foram enviadas anteriormente de forma anônima
+  await publicSurveyRepository.linkResponsesToClient(
+    respondentSessionId,
     existingClient.id,
-    atendenteId,
-    req.app.get("io"),
   );
 
-  res.status(201).json({
-    message: "Respostas enviadas com sucesso!",
+  res.status(200).json({
+    message: "Identidade confirmada e respostas vinculadas com sucesso!",
     clienteId: existingClient.id,
-    respondentSessionId: currentRespondentSessionId, // Return the used respondentSessionId
+    respondentSessionId: respondentSessionId,
   });
 });
 

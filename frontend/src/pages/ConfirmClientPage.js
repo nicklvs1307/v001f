@@ -1,83 +1,215 @@
-import React, { useState, useEffect } from 'react';
-import { Typography, Box, Button, Paper, CircularProgress, Alert } from '@mui/material';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import PublicPageLayout from '../components/layout/PublicPageLayout';
-import publicSurveyService from '../services/publicSurveyService'; // Supondo que haverá um serviço para isso
+import React, { useState, useEffect, useMemo } from 'react';
+import { 
+    Typography, 
+    Box, 
+    Button, 
+    Paper, 
+    CircularProgress, 
+    Alert, 
+    Container,
+    Fade,
+    Avatar
+} from '@mui/material';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ThemeProvider } from '@mui/material/styles';
+import { Person as PersonIcon, Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
+import publicSurveyService from '../services/publicSurveyService';
+import getDynamicTheme from '../getDynamicTheme';
 
 const ConfirmClientPage = () => {
     const navigate = useNavigate();
-    const location = useLocation();
     const { surveyId } = useParams();
-    const [phone, setPhone] = useState('');
-    const [loading, setLoading] = useState(false);
+    
+    const [loading, setLoading] = useState(true);
+    const [submitLoading, setSubmitLoading] = useState(false);
     const [error, setError] = useState('');
+    const [surveyData, setSurveyData] = useState(null);
+    const [dynamicTheme, setDynamicTheme] = useState(null);
+    const [phone, setPhone] = useState('');
     const [surveyState, setSurveyState] = useState(null);
 
     useEffect(() => {
-        const storedState = sessionStorage.getItem('surveyState');
-        const storedPhone = localStorage.getItem('clientPhone');
+        const init = async () => {
+            try {
+                const storedState = sessionStorage.getItem('surveyState');
+                const storedPhone = localStorage.getItem('clientPhone');
 
-        if (!storedState || !storedPhone || !surveyId) {
-            console.error("Estado da pesquisa, telefone ou ID não encontrado. Redirecionando.");
-            navigate('/login'); // Redireciona para uma página segura
-            return;
-        }
+                if (!storedState || !storedPhone || !surveyId) {
+                    console.error("Dados insuficientes para confirmação.");
+                    navigate('/'); 
+                    return;
+                }
 
-        setSurveyState(JSON.parse(storedState));
-        setPhone(storedPhone);
+                const parsedState = JSON.parse(storedState);
+                setSurveyState(parsedState);
+                setPhone(storedPhone);
+
+                // Carrega dados da pesquisa para manter a identidade visual
+                const data = await publicSurveyService.getPublicSurveyById(surveyId);
+                setSurveyData(data);
+                
+                const theme = getDynamicTheme({ 
+                    primaryColor: data.primaryColor, 
+                    secondaryColor: data.secondaryColor 
+                });
+                setDynamicTheme(theme);
+            } catch (err) {
+                console.error("Erro ao inicializar página de confirmação:", err);
+                setError("Ocorreu um erro ao carregar seus dados.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        init();
     }, [navigate, surveyId]);
 
     const handleConfirm = async () => {
-        setLoading(true);
+        setSubmitLoading(true);
         setError('');
         try {
             const payload = {
                 surveyId,
-                respostas: surveyState.answers,
-                atendenteId: surveyState.atendenteId,
+                respondentSessionId: surveyState.respondentSessionId,
                 client: { phone },
-                tenantId: surveyState.tenantId,
             };
 
             const response = await publicSurveyService.submitSurveyWithClient(payload);
-            sessionStorage.removeItem('surveyState'); // Limpa o estado após o uso
+            sessionStorage.removeItem('surveyState'); 
             navigate(`/roleta/${surveyState.tenantId}/${surveyId}/${response.clienteId}`);
         } catch (err) {
-            setError(err.message || 'Ocorreu um erro ao confirmar sua identidade.');
-            setLoading(false);
+            console.error("Erro ao confirmar cliente:", err);
+            setError(err.response?.data?.message || err.message || 'Ocorreu um erro ao confirmar sua identidade.');
+        } finally {
+            setSubmitLoading(false);
         }
     };
 
     const handleDeny = () => {
         localStorage.removeItem('clientPhone');
-        // Navega para a identificação, garantindo que tenantId e surveyId estejam na URL
         if (surveyState && surveyState.tenantId && surveyId) {
             navigate(`/identificacao-pesquisa/${surveyState.tenantId}/${surveyId}`);
         } else {
-            navigate('/login'); // Fallback
+            navigate('/');
         }
     };
 
+    if (loading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: '#f5f5f5' }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    if (!dynamicTheme || !surveyData) {
+        return <Box sx={{ p: 4 }}><Alert severity="error">{error || 'Erro ao carregar tema.'}</Alert></Box>;
+    }
+
+    const primaryColor = surveyData.primaryColor || '#FC4C35';
+    const secondaryColor = surveyData.secondaryColor || '#1EBFAE';
+
     return (
-        <PublicPageLayout maxWidth="sm">
-            <Paper elevation={3} sx={{ p: 4, textAlign: 'center' }}>
-                <Typography variant="h5" component="h1" gutterBottom>
-                    Já nos conhecemos?
-                </Typography>
-                <Typography variant="body1" sx={{ mb: 4 }}>
-                    Você é o cliente com o telefone <strong>{phone}</strong>?
-                </Typography>
-                {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <Button variant="contained" color="primary" size="large" onClick={handleConfirm} disabled={loading}>
-                        {loading ? <CircularProgress size={24} /> : 'Sim, sou eu'}
-                    </Button>
-                    <Button variant="outlined" color="secondary" size="large" onClick={handleDeny} disabled={loading}>
-                        Não, sou outra pessoa
-                    </Button>
-                </Box>
-            </Paper>
-        </PublicPageLayout>
+        <ThemeProvider theme={dynamicTheme}>
+            <Box sx={{ 
+                background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`, 
+                minHeight: '100vh', 
+                display: 'flex', 
+                justifyContent: 'center', 
+                alignItems: 'center', 
+                p: 2 
+            }}>
+                <Container maxWidth="xs">
+                    <Fade in={true} timeout={800}>
+                        <Paper elevation={10} sx={{ 
+                            p: { xs: 3, sm: 4 }, 
+                            textAlign: 'center', 
+                            borderRadius: '24px',
+                            boxShadow: '0 15px 35px rgba(0,0,0,0.2)'
+                        }}>
+                            <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
+                                <Avatar sx={{ 
+                                    width: 80, 
+                                    height: 80, 
+                                    bgcolor: `${primaryColor}15`, 
+                                    color: primaryColor,
+                                    border: `2px solid ${primaryColor}`
+                                }}>
+                                    <PersonIcon sx={{ fontSize: 45 }} />
+                                </Avatar>
+                            </Box>
+
+                            <Typography variant="h5" fontWeight="800" gutterBottom sx={{ color: '#222' }}>
+                                Olá novamente!
+                            </Typography>
+                            
+                            <Typography variant="body1" sx={{ mb: 4, color: '#666', lineHeight: 1.6 }}>
+                                Identificamos que você já participou antes. Este é o seu telefone?
+                                <Box component="span" sx={{ 
+                                    display: 'block', 
+                                    fontSize: '1.4rem', 
+                                    fontWeight: 'bold', 
+                                    color: primaryColor,
+                                    mt: 1,
+                                    letterSpacing: '1px'
+                                }}>
+                                    {phone}
+                                </Box>
+                            </Typography>
+
+                            {error && <Alert severity="error" sx={{ mb: 3, borderRadius: '12px' }}>{error}</Alert>}
+
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                <Button 
+                                    variant="contained" 
+                                    size="large" 
+                                    fullWidth
+                                    startIcon={!submitLoading && <CheckIcon />}
+                                    onClick={handleConfirm} 
+                                    disabled={submitLoading}
+                                    sx={{ 
+                                        py: 1.5,
+                                        fontSize: '1.1rem',
+                                        boxShadow: `0 8px 20px ${primaryColor}40`,
+                                        '&:hover': { transform: 'translateY(-2px)' }
+                                    }}
+                                >
+                                    {submitLoading ? <CircularProgress size={26} color="inherit" /> : 'Sim, sou eu'}
+                                </Button>
+                                
+                                <Button 
+                                    variant="outlined" 
+                                    color="inherit"
+                                    size="large" 
+                                    fullWidth
+                                    startIcon={<CloseIcon />}
+                                    onClick={handleDeny} 
+                                    disabled={submitLoading}
+                                    sx={{ 
+                                        py: 1.5,
+                                        color: '#666',
+                                        borderColor: '#ddd',
+                                        '&:hover': { borderColor: '#bbb', bgcolor: '#f9f9f9' }
+                                    }}
+                                >
+                                    Não, sou outra pessoa
+                                </Button>
+                            </Box>
+                            
+                            {surveyData.restaurantLogoUrl && (
+                                <Box sx={{ mt: 4, opacity: 0.6 }}>
+                                    <img 
+                                        src={`${process.env.REACT_APP_API_URL}${surveyData.restaurantLogoUrl}`} 
+                                        alt="Logo" 
+                                        style={{ height: '30px', filter: 'grayscale(100%)' }} 
+                                    />
+                                </Box>
+                            )}
+                        </Paper>
+                    </Fade>
+                </Container>
+            </Box>
+        </ThemeProvider>
     );
 };
 

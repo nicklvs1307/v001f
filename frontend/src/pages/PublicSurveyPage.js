@@ -149,7 +149,12 @@ const SurveyComponent = ({ survey, tenantId }) => {
 
     const handleNavigation = (response) => {
         const storedPhone = localStorage.getItem('clientPhone');
-        const surveyState = { respondentSessionId: response.respondentSessionId, answers: Object.values(answers).filter(a => a.perguntaId !== 'attendant-question' && a.valor !== null), tenantId: tenantId, atendenteId: selectedAtendente };
+        const surveyState = { 
+            respondentSessionId: response.respondentSessionId, 
+            answers: Object.values(answers).filter(a => a.perguntaId !== 'attendant-question' && a.valor !== null), 
+            tenantId: tenantId, 
+            atendenteId: selectedAtendente 
+        };
         sessionStorage.setItem('surveyState', JSON.stringify(surveyState));
 
         if (storedPhone) {

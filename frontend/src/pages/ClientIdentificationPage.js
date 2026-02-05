@@ -9,13 +9,19 @@ import {
     Box,
     CircularProgress,
     Alert,
-    Fade // Importado Fade
+    Fade,
+    Avatar,
+    InputAdornment
 } from '@mui/material';
+import { 
+    Phone as PhoneIcon, 
+    ArrowForward as ArrowForwardIcon, 
+    VpnKey as LoginIcon 
+} from '@mui/icons-material';
 import publicSurveyService from '../services/publicSurveyService';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import getDynamicTheme from '../getDynamicTheme';
 
-// Wrapper Component: Fetches data and provides theme
 const ClientIdentificationPage = () => {
     const { tenantId, pesquisaId } = useParams();
     const [tenant, setTenant] = useState(null);
@@ -29,7 +35,10 @@ const ClientIdentificationPage = () => {
                 try {
                     const tenantData = await publicSurveyService.getPublicTenantById(tenantId);
                     setTenant(tenantData);
-                    const theme = getDynamicTheme(tenantData.primaryColor, tenantData.secondaryColor);
+                    const theme = getDynamicTheme({ 
+                        primaryColor: tenantData.primaryColor, 
+                        secondaryColor: tenantData.secondaryColor 
+                    });
                     setDynamicTheme(theme);
                 } catch (error) {
                     console.error("Erro ao buscar tenant:", error);
@@ -47,16 +56,8 @@ const ClientIdentificationPage = () => {
 
     if (loading || !dynamicTheme) {
         return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', bgcolor: '#f5f5f5' }}>
                 <CircularProgress />
-            </Box>
-        );
-    }
-
-    if (error) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                <Alert severity="error">{error}</Alert>
             </Box>
         );
     }
@@ -68,11 +69,10 @@ const ClientIdentificationPage = () => {
     );
 };
 
-
 const IdentificationFormComponent = ({ tenant }) => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { surveyId, answers, tenantId, atendenteId, respondentSessionId } = location.state || {};
+    const { surveyId, tenantId, respondentSessionId } = location.state || {};
     const { pesquisaId } = useParams();
     const theme = useTheme();
 
@@ -80,7 +80,6 @@ const IdentificationFormComponent = ({ tenant }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // ... (handlePhoneChange and handleSubmit remain same)
     const handlePhoneChange = (e) => {
         let value = e.target.value.replace(/\D/g, '');
         if (value.length > 11) value = value.slice(0, 11);
@@ -92,14 +91,14 @@ const IdentificationFormComponent = ({ tenant }) => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        if (e) e.preventDefault();
         setLoading(true);
         setError(null);
 
         const surveyIdentifier = surveyId || pesquisaId;
 
-        if (!surveyIdentifier || !answers) {
-            setError("Dados da pesquisa não encontrados. Por favor, tente novamente.");
+        if (!surveyIdentifier || !respondentSessionId) {
+            setError("Sessão da pesquisa não encontrada. Por favor, volte e tente novamente.");
             setLoading(false);
             return;
         }
@@ -107,117 +106,128 @@ const IdentificationFormComponent = ({ tenant }) => {
         try {
             const response = await publicSurveyService.submitSurveyWithClient({
                 surveyId: surveyIdentifier,
-                respostas: answers,
-                atendenteId,
-                client: { phone },
-                tenantId,
-                respondentSessionId, 
+                respondentSessionId,
+                client: { phone }
             });
             localStorage.setItem('clientPhone', phone);
             navigate(`/roleta/${tenantId}/${surveyIdentifier}/${response.clienteId}`);
         } catch (err) {
+            console.error("Erro na identificação:", err);
             if (err.response?.status === 404) {
                 setError("Nenhum cliente encontrado com este telefone. Verifique o número digitado ou realize um novo cadastro.");
             } else {
-                setError(err.response?.data?.message || "Ocorreu um erro ao enviar suas informações.");
+                setError(err.response?.data?.message || "Ocorreu um erro ao verificar seu cadastro.");
             }
         } finally {
             setLoading(false);
         }
     };
 
-    const headerStyle = {
-        background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
-        padding: { xs: '30px 20px', sm: '40px' },
-        textAlign: 'center',
-        color: 'white'
-    };
-
-    const buttonStyle = {
-        background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
-        color: 'white',
-        padding: '16px 0',
-        borderRadius: '50px',
-        fontWeight: 700,
-        fontSize: '1.1rem',
-        textTransform: 'none',
-        boxShadow: '0 8px 15px rgba(0,0,0,0.1)',
-        '&:hover': {
-            transform: 'translateY(-2px)',
-            boxShadow: '0 12px 20px rgba(0, 0, 0, 0.2)'
-        }
-    };
-
-    const inputSx = {
-        '& .MuiOutlinedInput-root': {
-            borderRadius: '12px',
-            backgroundColor: '#f9f9f9',
-            '& fieldset': { borderColor: '#e0e0e0' },
-            '&:hover fieldset': { borderColor: theme.palette.primary.light },
-            '&.Mui-focused fieldset': { borderColor: theme.palette.primary.main },
-        },
-        mb: 2
-    };
+    const primaryColor = theme.palette.primary.main;
+    const secondaryColor = theme.palette.secondary.main;
 
     return (
         <Box sx={{
-            background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+            background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
             minHeight: '100vh',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            p: { xs: 1, sm: 2 }
+            p: 2
         }}>
-            <Fade in={true} timeout={600}>
-                <Paper elevation={10} sx={{ borderRadius: '25px', overflow: 'hidden', maxWidth: '500px', width: '100%', margin: '0 16px' }}>
-                    <Box sx={headerStyle}>
-                        {tenant?.logoUrl && (
-                             <Box sx={{
-                                width: { xs: 80, sm: 100 }, 
-                                height: { xs: 80, sm: 100 }, 
-                                borderRadius: '50%', backgroundColor: 'white',
-                                margin: '0 auto 15px', display: 'flex', justifyContent: 'center', alignItems: 'center',
-                                boxShadow: '0 5px 15px rgba(0, 0, 0, 0.2)', border: '4px solid rgba(255, 255, 255, 0.3)'
+            <Container maxWidth="xs">
+                <Fade in={true} timeout={800}>
+                    <Paper elevation={10} sx={{ 
+                        p: { xs: 3, sm: 4 }, 
+                        textAlign: 'center', 
+                        borderRadius: '24px',
+                        boxShadow: '0 15px 35px rgba(0,0,0,0.2)'
+                    }}>
+                        <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
+                            <Avatar sx={{ 
+                                width: 80, 
+                                height: 80, 
+                                bgcolor: `${primaryColor}15`, 
+                                color: primaryColor,
+                                border: `2px solid ${primaryColor}`
                             }}>
-                                <img src={`${process.env.REACT_APP_API_URL}${tenant.logoUrl}`} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
-                            </Box>
-                        )}
-                        <Typography variant="h5" component="h1" sx={{ mb: 1, fontWeight: 800, fontSize: { xs: '1.4rem', sm: '1.8rem' } }}>
+                                <LoginIcon sx={{ fontSize: 40 }} />
+                            </Avatar>
+                        </Box>
+
+                        <Typography variant="h5" fontWeight="800" gutterBottom sx={{ color: '#222' }}>
                             Bem-vindo de volta!
                         </Typography>
-                        <Typography variant="body2" sx={{ opacity: 0.9, fontSize: '0.95rem' }}>
-                            Confirme seu telefone para girar a roleta.
+                        
+                        <Typography variant="body1" sx={{ mb: 4, color: '#666' }}>
+                            Digite seu telefone cadastrado para continuar.
                         </Typography>
-                    </Box>
 
-                    <Box component="form" onSubmit={handleSubmit} sx={{ p: { xs: 3, sm: 5 } }}>
-                        {error && <Alert severity="error" sx={{ mb: 3, borderRadius: '10px' }}>{error}</Alert>}
-                        <TextField 
-                            margin="normal" 
-                            required 
-                            fullWidth 
-                            id="phone" 
-                            label="Seu Telefone (com DDD)" 
-                            name="phone" 
-                            autoComplete="tel" 
-                            autoFocus
-                            value={phone} 
-                            onChange={handlePhoneChange} 
-                            inputMode="numeric" 
-                            sx={inputSx}
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            disabled={loading}
-                            sx={{ mt: 3, ...buttonStyle }}
-                        >
-                            {loading ? <CircularProgress size={24} color="inherit" /> : 'Confirmar e Girar'}
-                        </Button>
-                    </Box>
-                </Paper>
-            </Fade>
+                        {error && <Alert severity="error" sx={{ mb: 3, borderRadius: '12px', textAlign: 'left' }}>{error}</Alert>}
+
+                        <Box component="form" onSubmit={handleSubmit}>
+                            <TextField 
+                                fullWidth
+                                placeholder="(00) 00000-0000"
+                                label="Seu Telefone"
+                                value={phone} 
+                                onChange={handlePhoneChange}
+                                inputMode="numeric"
+                                required
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <PhoneIcon color="action" />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                                sx={{ 
+                                    mb: 4,
+                                    '& .MuiOutlinedInput-root': {
+                                        borderRadius: '16px',
+                                        backgroundColor: '#fcfcfc'
+                                    }
+                                }}
+                            />
+
+                            <Button 
+                                type="submit"
+                                variant="contained" 
+                                size="large" 
+                                fullWidth
+                                endIcon={!loading && <ArrowForwardIcon />}
+                                disabled={loading || phone.length < 14}
+                                sx={{ 
+                                    py: 1.5,
+                                    fontSize: '1.1rem',
+                                    boxShadow: `0 8px 20px ${primaryColor}40`,
+                                    '&:hover': { transform: 'translateY(-2px)' }
+                                }}
+                            >
+                                {loading ? <CircularProgress size={26} color="inherit" /> : 'Confirmar e Continuar'}
+                            </Button>
+                            
+                            <Button 
+                                onClick={() => navigate(-1)}
+                                fullWidth
+                                sx={{ mt: 2, color: '#888', textTransform: 'none' }}
+                            >
+                                Voltar
+                            </Button>
+                        </Box>
+
+                        {tenant?.logoUrl && (
+                            <Box sx={{ mt: 4, opacity: 0.6, display: 'flex', justifyContent: 'center' }}>
+                                <img 
+                                    src={`${process.env.REACT_APP_API_URL}${tenant.logoUrl}`} 
+                                    alt="Logo" 
+                                    style={{ height: '30px', filter: 'grayscale(100%)' }} 
+                                />
+                            </Box>
+                        )}
+                    </Paper>
+                </Fade>
+            </Container>
         </Box>
     );
 };

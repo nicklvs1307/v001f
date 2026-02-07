@@ -2,7 +2,7 @@ const surveyRepository = require("../repositories/surveyRepository");
 const clientRepository = require("../repositories/clientRepository");
 const whatsappService = require("./whatsappService");
 const ApiError = require("../errors/ApiError");
-const { WhatsappConfig, DeliveryOrder, Survey } = require("../../models");
+const { WhatsappConfig, DeliveryOrder, Pesquisa } = require("../../models");
 
 const surveyTriggerService = {
   // Novo Método: Agenda a pesquisa baseada na configuração do Tenant
@@ -60,7 +60,7 @@ const surveyTriggerService = {
 
       let survey = null;
       if (config && config.postSaleSurveyId) {
-        survey = await Survey.findByPk(config.postSaleSurveyId);
+        survey = await Pesquisa.findByPk(config.postSaleSurveyId);
       }
 
       // Se não tiver específica configurada, pega a padrão

@@ -148,14 +148,25 @@ const SurveyComponent = ({ survey, tenantId }) => {
     };
 
     const handleNavigation = (response) => {
-        const storedPhone = localStorage.getItem('clientPhone');
+        let storedPhone = null;
+        try {
+            storedPhone = localStorage.getItem('clientPhone');
+        } catch (e) {
+            console.warn("Acesso ao localStorage negado:", e);
+        }
+
         const surveyState = { 
-            respondentSessionId: response.respondentSessionId, 
-            answers: Object.values(answers).filter(a => a.perguntaId !== 'attendant-question' && a.valor !== null), 
+            respondentSessionId: response?.respondentSessionId, 
+            answers: Object.values(answers || {}).filter(a => a?.perguntaId !== 'attendant-question' && a?.valor !== null), 
             tenantId: tenantId, 
             atendenteId: selectedAtendente 
         };
-        sessionStorage.setItem('surveyState', JSON.stringify(surveyState));
+
+        try {
+            sessionStorage.setItem('surveyState', JSON.stringify(surveyState));
+        } catch (e) {
+            console.warn("Acesso ao sessionStorage negado:", e);
+        }
 
         if (storedPhone) {
             navigate(`/confirmar-cliente/${pesquisaId}`);

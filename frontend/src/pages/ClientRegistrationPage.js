@@ -125,9 +125,15 @@ const RegistrationFormComponent = ({ tenant }) => {
         setFieldErrors({});
 
         try {
-            const storedState = sessionStorage.getItem('surveyState');
+            let storedState = null;
+            try {
+                storedState = sessionStorage.getItem('surveyState');
+            } catch (e) {
+                console.warn("Erro ao ler sessionStorage:", e);
+            }
+
             if (!storedState) {
-                throw new Error("Estado da pesquisa não encontrado. Por favor, tente novamente.");
+                throw new Error("Estado da pesquisa não encontrado. Por favor, tente novamente recarregando a página.");
             }
             const surveyState = JSON.parse(storedState);
 
@@ -137,8 +143,14 @@ const RegistrationFormComponent = ({ tenant }) => {
                 pesquisaId,
                 respondentSessionId: surveyState.respondentSessionId,
             });
-            localStorage.setItem('clientPhone', clientData.phone);
-            sessionStorage.removeItem('surveyState');
+
+            try {
+                localStorage.setItem('clientPhone', clientData.phone);
+                sessionStorage.removeItem('surveyState');
+            } catch (e) {
+                console.warn("Erro ao limpar/salvar storage:", e);
+            }
+
             navigate(`/roleta/${tenantId}/${pesquisaId}/${response.client.id}`);
         } catch (err) {
             console.error("Erro no registro:", err);
@@ -161,7 +173,7 @@ const RegistrationFormComponent = ({ tenant }) => {
                     setError("Já existe um cadastro com estes dados.");
                 }
             } else {
-                setError(data?.message || 'Erro ao registrar cliente.');
+                setError(data?.message || err.message || 'Erro ao registrar cliente.');
             }
         } finally {
             setLoading(false);

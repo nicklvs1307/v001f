@@ -36,21 +36,33 @@ const SurveyIdentifyPage = () => {
     };
 
     const handleIdentify = () => {
-        const storedState = sessionStorage.getItem('surveyState');
+        let storedState = null;
+        try {
+            storedState = sessionStorage.getItem('surveyState');
+        } catch (e) {
+            console.warn("Erro ao acessar sessionStorage:", e);
+        }
+
         if (!storedState) {
-            alert("Ocorreu um erro ao recuperar os dados da sua pesquisa. Por favor, tente novamente.");
+            alert("Ocorreu um erro ao recuperar os dados da sua pesquisa. Por favor, tente novamente ou cadastre-se como novo cliente.");
             return;
         }
-        const surveyState = JSON.parse(storedState);
-        navigate(`/identificacao-cliente/${tenantId}/${pesquisaId}`, { 
-            state: {
-                surveyId: pesquisaId,
-                answers: surveyState.answers,
-                tenantId: surveyState.tenantId,
-                atendenteId: surveyState.atendenteId,
-                respondentSessionId: surveyState.respondentSessionId
-            } 
-        });
+
+        try {
+            const surveyState = JSON.parse(storedState);
+            navigate(`/identificacao-cliente/${tenantId}/${pesquisaId}`, { 
+                state: {
+                    surveyId: pesquisaId,
+                    answers: surveyState.answers,
+                    tenantId: surveyState.tenantId,
+                    atendenteId: surveyState.atendenteId,
+                    respondentSessionId: surveyState.respondentSessionId
+                } 
+            });
+        } catch (e) {
+            console.error("Erro ao processar dados da sessão:", e);
+            alert("Sua sessão expirou ou é inválida. Por favor, recomece a pesquisa.");
+        }
     };
 
     const handleOpenModal = () => {

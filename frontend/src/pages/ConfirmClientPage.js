@@ -31,12 +31,19 @@ const ConfirmClientPage = () => {
     useEffect(() => {
         const init = async () => {
             try {
-                const storedState = sessionStorage.getItem('surveyState');
-                const storedPhone = localStorage.getItem('clientPhone');
+                let storedState = null;
+                let storedPhone = null;
+
+                try {
+                    storedState = sessionStorage.getItem('surveyState');
+                    storedPhone = localStorage.getItem('clientPhone');
+                } catch (storageErr) {
+                    console.warn("Erro de acesso ao storage:", storageErr);
+                }
 
                 if (!storedState || !storedPhone || !surveyId) {
                     console.error("Dados insuficientes para confirmação.");
-                    navigate('/'); 
+                    navigate(`/identificacao-pesquisa/${surveyData?.tenantId || 'erro'}/${surveyId}`); 
                     return;
                 }
 
@@ -62,7 +69,7 @@ const ConfirmClientPage = () => {
         };
 
         init();
-    }, [navigate, surveyId]);
+    }, [navigate, surveyId, surveyData?.tenantId]);
 
     const handleConfirm = async () => {
         setSubmitLoading(true);

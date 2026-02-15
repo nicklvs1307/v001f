@@ -38,6 +38,8 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import SearchIcon from '@mui/icons-material/Search';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import GavelIcon from '@mui/icons-material/Gavel';
 import cupomService from '../services/cupomService';
 import recompensaService from '../services/recompensaService';
 import { formatDateForDisplay } from '../utils/dateUtils';
@@ -419,7 +421,35 @@ const CupomListPage = () => {
                 <CardGiftcardIcon sx={{ verticalAlign: 'middle', mr: 1 }} /> Recompensa
               </Typography>
               <Typography variant="body1" color="text.secondary">{selectedCupom.recompensa?.name}</Typography>
+              <Typography variant="body2" color="text.secondary">{selectedCupom.recompensa?.description}</Typography>
             </Box>
+
+            {selectedCupom.recompensa?.conditionDescription && (
+              <>
+                <Divider sx={{ my: 2 }} />
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="h6" gutterBottom component="div" sx={{ display: 'flex', alignItems: 'center' }}>
+                    <GavelIcon sx={{ mr: 1 }} /> Regras e Condições
+                  </Typography>
+                  <Box sx={{ mt: 1, p: 2, bgcolor: '#f9f9f9', borderRadius: 1, border: '1px dashed #ccc' }}>
+                    <Typography variant="body2" sx={{ whiteSpace: 'pre-line' }}>
+                      {selectedCupom.recompensa.conditionDescription}
+                    </Typography>
+                  </Box>
+                </Box>
+              </>
+            )}
+
+            <Divider sx={{ my: 2 }} />
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="h6" gutterBottom component="div">
+                <AssignmentIcon sx={{ verticalAlign: 'middle', mr: 1 }} /> Origem (Pesquisa)
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                {selectedCupom.pesquisa?.title || 'Origem não identificada'}
+              </Typography>
+            </Box>
+
             <Divider sx={{ my: 2 }} />
             <Box sx={{ mb: 2 }}>
               <Typography variant="h6" gutterBottom component="div">

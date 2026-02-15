@@ -61,6 +61,7 @@ const birthdayTask = cron.schedule(
             }
 
             let rewardName = "";
+            let rewardRules = "";
             let cupomCode = "";
             let novoCupom = null;
 
@@ -75,6 +76,7 @@ const birthdayTask = cron.schedule(
               );
               if (recompensa) {
                 rewardName = recompensa.name;
+                rewardRules = recompensa.conditionDescription || "";
                 const expiryDate = endOfDay(
                   addDays(now(), config.birthdayCouponValidityDays),
                 );
@@ -94,6 +96,7 @@ const birthdayTask = cron.schedule(
               );
               if (roleta) {
                 rewardName = roleta.name; // Ou outro campo relevante da roleta
+                rewardRules = ""; // Roleta geralmente não tem regras fixas aqui
                 const expiryDate = endOfDay(
                   addDays(now(), config.birthdayCouponValidityDays),
                 );
@@ -116,9 +119,19 @@ const birthdayTask = cron.schedule(
 
               if (whatsappConfig && whatsappConfig.birthdayAutomationEnabled) {
                 let message = whatsappConfig.birthdayMessageTemplate;
-                message = message.replace(/{{cliente}}/g, client.name);
-                message = message.replace(/{{recompensa}}/g, rewardName);
-                message = message.replace(/{{cupom}}/g, cupomCode);
+
+                const regrasTexto = rewardRules
+                  ? rewardRules
+                      .split('\n')
+                      .filter(linha => linha.trim() !== '')
+                      .map(linha => `🔸 ${linha.trim()}`)
+                      .join('\n')
+                  : "🔸 Sem regras específicas.";
+
+                message = message.replace(/{{\s*cliente\s*}}/gi, client.name);
+                message = message.replace(/{{\s*recompensa\s*}}/gi, rewardName);
+                message = message.replace(/{{\s*cupom\s*}}/gi, cupomCode);
+                message = message.replace(/{{\s*regras\s*}}/gi, regrasTexto);
 
                 await whatsappService.sendTenantMessage(
                   config.tenantId,

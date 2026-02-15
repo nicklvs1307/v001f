@@ -150,6 +150,7 @@ class CampanhaService {
           ? campanha.recompensa.nome
           : "[RECOMPENSA_TESTE]",
         nomeCampanha: campanha.nome,
+        regras: campanha.recompensa?.conditionDescription,
       },
     );
 
@@ -183,22 +184,34 @@ class CampanhaService {
 
   _buildPersonalizedMessage(template, client, rewardData = {}) {
     let message = new Spinner(template).unspinRandom(); // Process spintax first
-    message = message.replace(/{{nome_cliente}}/g, client.name.split(" ")[0]);
+    message = message.replace(/{{\s*nome_cliente\s*}}/gi, client.name.split(" ")[0]);
     if (rewardData.codigo)
-      message = message.replace(/{{codigo_premio}}/g, rewardData.codigo);
+      message = message.replace(/{{\s*codigo_premio\s*}}/gi, rewardData.codigo);
     if (rewardData.dataValidade) {
       const formattedDate = new Date(
         rewardData.dataValidade,
       ).toLocaleDateString("pt-BR");
-      message = message.replace(/{{data_validade}}/g, formattedDate);
+      message = message.replace(/{{\s*data_validade\s*}}/gi, formattedDate);
     }
     if (rewardData.nomeRecompensa)
       message = message.replace(
-        /{{nome_recompensa}}/g,
+        /{{\s*nome_recompensa\s*}}/gi,
         rewardData.nomeRecompensa,
       );
     if (rewardData.nomeCampanha)
-      message = message.replace(/{{nome_campanha}}/g, rewardData.nomeCampanha);
+      message = message.replace(/{{\s*nome_campanha\s*}}/gi, rewardData.nomeCampanha);
+
+    // Suporte para regras de uso
+    const regrasTexto = rewardData.regras
+      ? rewardData.regras
+          .split('\n')
+          .filter(linha => linha.trim() !== '')
+          .map(linha => `🔸 ${linha.trim()}`)
+          .join('\n')
+      : "🔸 Sem regras específicas.";
+    
+    message = message.replace(/{{\s*regras\s*}}/gi, regrasTexto);
+
     return message;
   }
 
@@ -483,6 +496,7 @@ class CampanhaService {
             dataValidade: campanha.dataValidade,
             nomeRecompensa: campanha.recompensa ? campanha.recompensa.nome : "",
             nomeCampanha: campanha.nome,
+            regras: campanha.recompensa?.conditionDescription,
           },
         );
 

@@ -171,6 +171,12 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
           `[RoletaController] Todas as condições para enviar a mensagem de prêmio foram atendidas para o tenant ${tenantId}.`,
         );
 
+        console.log(`[RoletaController] Preparando mensagem para ${cliente.name}. Recompensa:`, {
+          name: recompensa.name,
+          hasCondition: !!recompensa.conditionDescription,
+          conditionLength: recompensa.conditionDescription?.length
+        });
+
         const regrasTexto = recompensa.conditionDescription
           ? recompensa.conditionDescription
               .split('\n')
@@ -184,10 +190,12 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
           whatsappConfig.prizeMessageTemplate ||
           "Parabéns, {{cliente}}! Você ganhou um prêmio: {{premio}}. Use o cupom {{cupom}} para resgatar.\n\n*Regras de uso:*\n{{regras}}";
         
-        message = message.replace("{{cliente}}", cliente.name.split(" ")[0]);
-        message = message.replace("{{premio}}", recompensa.name);
-        message = message.replace("{{cupom}}", novoCupom.codigo);
-        message = message.replace("{{regras}}", regrasTexto);
+        message = message.replace(/{{\s*cliente\s*}}/gi, cliente.name.split(" ")[0]);
+        message = message.replace(/{{\s*premio\s*}}/gi, recompensa.name);
+        message = message.replace(/{{\s*cupom\s*}}/gi, novoCupom.codigo);
+        message = message.replace(/{{\s*regras\s*}}/gi, regrasTexto);
+
+        console.log(`[RoletaController] Mensagem final formatada: ${message}`);
 
         await whatsappService.sendTenantMessage(
           tenantId,

@@ -64,7 +64,7 @@ exports.createTenant = asyncHandler(async (req, res) => {
 // @route   GET /api/tenants
 // @access  Private (Super Admin)
 exports.getTenants = asyncHandler(async (req, res) => {
-  const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
+  const tenantId = req.user.role.name === "Super Admin" ? null : req.user.tenantId;
   const tenants = await tenantRepository.getTenants(tenantId);
   res.status(200).json(tenants);
 });
@@ -74,7 +74,7 @@ exports.getTenants = asyncHandler(async (req, res) => {
 // @access  Private (Super Admin)
 exports.getTenantById = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
+  const tenantId = req.user.role.name === "Super Admin" ? null : req.user.tenantId;
 
   const tenant = await tenantRepository.getTenantById(id, tenantId);
 

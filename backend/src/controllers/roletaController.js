@@ -42,7 +42,7 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
     const hoursDiff = timeDiff / (1000 * 3600);
 
     if (hoursDiff < 24) {
-      throw new ApiError(429, "Você só pode girar a roleta uma vez por dia.");
+      throw new ApiError(429, "Você já girou a roleta recentemente. Tente novamente no seu próximo pedido ou visita.");
     }
   }
 
@@ -106,7 +106,7 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
   // --- MODIFICAÇÃO: Lidar com a opção "Não foi dessa vez" ---
   if (premioGanhador.isNoPrizeOption) {
     return res.status(200).json({
-      message: "Não foi dessa vez! Tente novamente em 24 horas.",
+      message: "Não foi dessa vez! Tente novamente no seu próximo pedido ou visita.",
       premio: {
         id: premioGanhador.id,
         nome: premioGanhador.nome,
@@ -171,13 +171,23 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
           `[RoletaController] Todas as condições para enviar a mensagem de prêmio foram atendidas para o tenant ${tenantId}.`,
         );
 
+        const regrasTexto = recompensa.conditionDescription
+          ? recompensa.conditionDescription
+              .split('\n')
+              .filter(linha => linha.trim() !== '')
+              .map(linha => `🔸 ${linha.trim()}`)
+              .join('\n')
+          : "🔸 Sem regras específicas.";
+
         let message =
           pesquisa.roletaPrizeMessage ||
           whatsappConfig.prizeMessageTemplate ||
-          "Parabéns, {{cliente}}! Você ganhou um prêmio: {{premio}}. Use o cupom {{cupom}} para resgatar.";
+          "Parabéns, {{cliente}}! Você ganhou um prêmio: {{premio}}. Use o cupom {{cupom}} para resgatar.\n\n*Regras de uso:*\n{{regras}}";
+        
         message = message.replace("{{cliente}}", cliente.name.split(" ")[0]);
         message = message.replace("{{premio}}", recompensa.name);
         message = message.replace("{{cupom}}", novoCupom.codigo);
+        message = message.replace("{{regras}}", regrasTexto);
 
         await whatsappService.sendTenantMessage(
           tenantId,

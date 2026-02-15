@@ -13,7 +13,7 @@ exports.createSurvey = asyncHandler(async (req, res) => {
 });
 
 exports.getSurveysList = asyncHandler(async (req, res) => {
-  const tenantId = req.user.role === "Super Admin" ? null : req.user.tenantId;
+  const tenantId = req.user.role.name === "Super Admin" ? null : req.user.tenantId;
   const { status } = req.query;
   const surveys = await surveyService.getSurveysList(tenantId, status);
   res.status(200).json(surveys);
@@ -55,7 +55,7 @@ exports.getSurveyResults = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const requestingUser = req.user;
   const tenantId =
-    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+    requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
   const results = await surveyService.getSurveyResultsById(id, tenantId);
 
@@ -64,7 +64,7 @@ exports.getSurveyResults = asyncHandler(async (req, res) => {
   }
 
   if (
-    requestingUser.role !== "Super Admin" &&
+    requestingUser.role.name !== "Super Admin" &&
     results.surveyTenantId !== requestingUser.tenantId
   ) {
     throw new ApiError(

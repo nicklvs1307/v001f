@@ -10,7 +10,7 @@ const premiacaoController = {
     const requestingUser = req.user;
 
     const tenantId =
-      requestingUser.role === "Super Admin"
+      requestingUser.role.name === "Super Admin"
         ? req.query.tenantId // Super Admin pode buscar por tenantId na query
         : requestingUser.tenantId; // Admin só pode buscar do seu próprio tenant
 

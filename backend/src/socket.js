@@ -37,7 +37,7 @@ const initSocket = (server) => {
     }
 
     // Super Admins can join a special room to receive all system-wide updates
-    if (socket.user.role === "Super Admin") {
+    if (socket.user.role.name === "Super Admin") {
       socket.join("super-admin");
       console.log(`User ${socket.user.id} joined super-admin room`);
     }

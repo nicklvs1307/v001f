@@ -9,7 +9,7 @@ const surveyTemplateController = {
   getAllTemplates: asyncHandler(async (req, res) => {
     const requestingUser = req.user;
     const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
     const templates = await surveyTemplateRepository.getAllTemplates(tenantId);
     res.status(200).json(templates);
@@ -31,7 +31,7 @@ const surveyTemplateController = {
     // Admin/Survey Creator só pode ver templates do sistema ou do seu próprio tenant
     const requestingUser = req.user;
     if (
-      requestingUser.role !== "Super Admin" &&
+      requestingUser.role.name !== "Super Admin" &&
       !template.isSystemTemplate &&
       template.tenantId !== requestingUser.tenantId
     ) {

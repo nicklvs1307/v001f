@@ -15,9 +15,9 @@ exports.createUser = asyncHandler(async (req, res) => {
   let targetTenantId = tenantId;
   let targetFranchisorId = franchisorId;
 
-  if (requestingUser.role === "Super Admin") {
+  if (requestingUser.role.name === "Super Admin") {
     // Super Admin can do anything
-  } else if (requestingUser.role === "Franqueador") {
+  } else if (requestingUser.role.name === "Franqueador") {
     targetFranchisorId = requestingUser.franchisorId;
     if (tenantId) {
       // Check if the tenant belongs to the franchisor
@@ -56,7 +56,7 @@ exports.createUser = asyncHandler(async (req, res) => {
   }
 
   // Um Admin ou Franqueador não pode criar um Super Admin
-  if (requestingUser.role !== "Super Admin" && role.name === "Super Admin") {
+  if (requestingUser.role.name !== "Super Admin" && role.name === "Super Admin") {
     throw new ApiError(403, "Você não pode criar um Super Admin.");
   }
 
@@ -98,9 +98,9 @@ exports.getUsers = asyncHandler(async (req, res) => {
   let tenantId = null;
   let franchisorId = null;
 
-  if (requestingUser.role === "Franqueador") {
+  if (requestingUser.role.name === "Franqueador") {
     franchisorId = requestingUser.franchisorId;
-  } else if (requestingUser.role !== "Super Admin") {
+  } else if (requestingUser.role.name !== "Super Admin") {
     tenantId = requestingUser.tenantId;
   }
 
@@ -114,7 +114,7 @@ exports.getUserById = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const requestingUser = req.user;
   const tenantId =
-    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+    requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
   const user = await userRepository.findById(id, tenantId);
 
@@ -125,7 +125,7 @@ exports.getUserById = asyncHandler(async (req, res) => {
   // Super Admin pode ver qualquer usuário
   // Admin só pode ver usuários do seu próprio tenant
   if (
-    requestingUser.role !== "Super Admin" &&
+    requestingUser.role.name !== "Super Admin" &&
     user.tenantId !== requestingUser.tenantId
   ) {
     throw new ApiError(403, "Você não tem permissão para ver este usuário.");
@@ -141,7 +141,7 @@ exports.updateUser = asyncHandler(async (req, res) => {
   const { name, email, roleId, password } = req.body;
   const requestingUser = req.user;
   const tenantId =
-    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+    requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
   const existingUser = await userRepository.findUserById(id, tenantId);
   if (!existingUser) {
@@ -153,9 +153,9 @@ exports.updateUser = asyncHandler(async (req, res) => {
   // Usuário comum só pode atualizar a si mesmo
   if (
     requestingUser.userId !== id && // Se não for o próprio usuário
-    requestingUser.role !== "Super Admin" && // E não for Super Admin
+    requestingUser.role.name !== "Super Admin" && // E não for Super Admin
     !(
-      requestingUser.role === "Admin" &&
+      requestingUser.role.name === "Admin" &&
       existingUser.tenantId === requestingUser.tenantId
     ) // E não for Admin do mesmo tenant
   ) {
@@ -166,7 +166,7 @@ exports.updateUser = asyncHandler(async (req, res) => {
   }
 
   // Um Admin não pode alterar o papel de um usuário para Super Admin
-  if (requestingUser.role !== "Super Admin" && roleId) {
+  if (requestingUser.role.name !== "Super Admin" && roleId) {
     const newRole = await userRepository.findRoleById(roleId);
     if (newRole && newRole.name === "Super Admin") {
       throw new ApiError(403, "Você não pode atribuir o papel de Super Admin.");
@@ -276,7 +276,7 @@ exports.deleteUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const requestingUser = req.user;
   const tenantId =
-    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+    requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
   const existingUser = await userRepository.findUserById(id, tenantId);
   if (!existingUser) {
@@ -286,7 +286,7 @@ exports.deleteUser = asyncHandler(async (req, res) => {
   // Super Admin pode deletar qualquer usuário
   // Admin só pode deletar usuários do seu próprio tenant
   if (
-    requestingUser.role !== "Super Admin" &&
+    requestingUser.role.name !== "Super Admin" &&
     existingUser.tenantId !== requestingUser.tenantId
   ) {
     throw new ApiError(

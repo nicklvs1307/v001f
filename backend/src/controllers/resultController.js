@@ -10,7 +10,7 @@ exports.getSurveyResults = asyncHandler(async (req, res) => {
   const { id } = req.params; // ID da pesquisa
   const requestingUser = req.user;
   const tenantId =
-    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+    requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
   // 1. Obter detalhes da pesquisa para verificação de permissão
   const survey = await resultRepository.getSurveyDetails(id, tenantId);
@@ -23,7 +23,7 @@ exports.getSurveyResults = asyncHandler(async (req, res) => {
   // Super Admin pode ver qualquer resultado
   // Outros usuários só podem ver resultados de pesquisas do seu próprio tenant
   if (
-    requestingUser.role !== "Super Admin" &&
+    requestingUser.role.name !== "Super Admin" &&
     survey.tenantId !== requestingUser.tenantId
   ) {
     throw new ApiError(

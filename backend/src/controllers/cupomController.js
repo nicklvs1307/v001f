@@ -17,7 +17,7 @@ const cupomController = {
     }
 
     const targetTenantId =
-      requestingUser.role === "Super Admin" && req.body.tenantId
+      requestingUser.role.name === "Super Admin" && req.body.tenantId
         ? req.body.tenantId
         : requestingUser.tenantId;
 
@@ -42,7 +42,7 @@ const cupomController = {
   getAllCupons: asyncHandler(async (req, res) => {
     const requestingUser = req.user;
     const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
     const filters = req.query;
     const cupons = await cupomRepository.getAllCupons(tenantId, filters);
     res.status(200).json(cupons);
@@ -52,7 +52,7 @@ const cupomController = {
     const { id } = req.params;
     const requestingUser = req.user;
     const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
     const cupom = await cupomRepository.getCupomById(id, tenantId);
 
@@ -61,7 +61,7 @@ const cupomController = {
     }
 
     if (
-      requestingUser.role !== "Super Admin" &&
+      requestingUser.role.name !== "Super Admin" &&
       cupom.tenantId !== requestingUser.tenantId
     ) {
       throw new ApiError(403, "Você não tem permissão para ver este cupom.");
@@ -74,7 +74,7 @@ const cupomController = {
     const { codigo } = req.body;
     const requestingUser = req.user;
     const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
     const cupom = await cupomRepository.getCupomByCodigo(codigo, tenantId);
 
@@ -83,7 +83,7 @@ const cupomController = {
     }
 
     if (
-      requestingUser.role !== "Super Admin" &&
+      requestingUser.role.name !== "Super Admin" &&
       cupom.tenantId !== requestingUser.tenantId
     ) {
       throw new ApiError(
@@ -157,7 +157,7 @@ const cupomController = {
   getCuponsSummary: asyncHandler(async (req, res) => {
     const requestingUser = req.user;
     const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
     const summary = await cupomRepository.getCuponsSummary(tenantId);
     res.status(200).json(summary);
@@ -167,7 +167,7 @@ const cupomController = {
     const { codigo } = req.params;
     const requestingUser = req.user;
     const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
     const cupom = await cupomRepository.getCupomByCodigo(codigo, tenantId);
 
@@ -176,7 +176,7 @@ const cupomController = {
     }
 
     if (
-      requestingUser.role !== "Super Admin" &&
+      requestingUser.role.name !== "Super Admin" &&
       cupom.tenantId !== requestingUser.tenantId
     ) {
       throw new ApiError(403, "Você não tem permissão para ver este cupom.");
@@ -189,7 +189,7 @@ const cupomController = {
     const { id } = req.params;
     const requestingUser = req.user;
     const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
     const cupom = await cupomRepository.getCupomById(id, tenantId);
 
@@ -198,7 +198,7 @@ const cupomController = {
     }
 
     if (
-      requestingUser.role !== "Super Admin" &&
+      requestingUser.role.name !== "Super Admin" &&
       cupom.tenantId !== requestingUser.tenantId
     ) {
       throw new ApiError(
@@ -217,7 +217,7 @@ const cupomController = {
     const { reason } = req.body;
     const requestingUser = req.user;
     const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
     if (!reason) {
       throw new ApiError(400, "O motivo do cancelamento é obrigatório.");
@@ -230,7 +230,7 @@ const cupomController = {
     }
 
     if (
-      requestingUser.role !== "Super Admin" &&
+      requestingUser.role.name !== "Super Admin" &&
       cupom.tenantId !== requestingUser.tenantId
     ) {
       throw new ApiError(

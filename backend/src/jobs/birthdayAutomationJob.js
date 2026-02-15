@@ -64,6 +64,10 @@ const birthdayTask = cron.schedule(
             let cupomCode = "";
             let novoCupom = null;
 
+            const clientFirstName = client.name.split(" ")[0].toUpperCase().replace(/[^A-Z0-9]/g, "");
+            const randomDigits = Math.floor(1000 + Math.random() * 9000);
+            cupomCode = `NIVER${clientFirstName}${randomDigits}`;
+
             // 1. Gerar Cupom
             if (config.birthdayRewardType === "recompensa") {
               const recompensa = await recompensaRepository.findById(
@@ -71,7 +75,6 @@ const birthdayTask = cron.schedule(
               );
               if (recompensa) {
                 rewardName = recompensa.name;
-                cupomCode = uuidv4().substring(0, 8).toUpperCase(); // Gera um código de cupom único
                 const expiryDate = endOfDay(
                   addDays(now(), config.birthdayCouponValidityDays),
                 );
@@ -91,7 +94,6 @@ const birthdayTask = cron.schedule(
               );
               if (roleta) {
                 rewardName = roleta.name; // Ou outro campo relevante da roleta
-                cupomCode = uuidv4().substring(0, 8).toUpperCase(); // Gera um código de cupom único
                 const expiryDate = endOfDay(
                   addDays(now(), config.birthdayCouponValidityDays),
                 );

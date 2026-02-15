@@ -8,7 +8,7 @@ const recompensaController = {
     const requestingUser = req.user;
 
     const targetTenantId =
-      requestingUser.role === "Super Admin" && req.body.tenantId
+      requestingUser.role.name === "Super Admin" && req.body.tenantId
         ? req.body.tenantId
         : requestingUser.tenantId;
 
@@ -35,7 +35,7 @@ const recompensaController = {
   getAllRecompensas: asyncHandler(async (req, res) => {
     const requestingUser = req.user;
     const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
     const { active } = req.query;
 
     const activeFilter =
@@ -52,7 +52,7 @@ const recompensaController = {
     const { id } = req.params;
     const requestingUser = req.user;
     const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
     // O nome correto da função no repositório original era findById
     const recompensa = await recompensaRepository.findById(id, tenantId);
@@ -62,7 +62,7 @@ const recompensaController = {
     }
 
     if (
-      requestingUser.role !== "Super Admin" &&
+      requestingUser.role.name !== "Super Admin" &&
       recompensa.tenantId !== requestingUser.tenantId
     ) {
       throw new ApiError(
@@ -79,7 +79,7 @@ const recompensaController = {
     const { name, description, pointsRequired, active, conditionDescription } = req.body;
     const requestingUser = req.user;
     const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
     const existingRecompensa = await recompensaRepository.findById(
       id,
@@ -90,7 +90,7 @@ const recompensaController = {
     }
 
     if (
-      requestingUser.role !== "Super Admin" &&
+      requestingUser.role.name !== "Super Admin" &&
       existingRecompensa.tenantId !== requestingUser.tenantId
     ) {
       throw new ApiError(
@@ -124,7 +124,7 @@ const recompensaController = {
     const { id } = req.params;
     const requestingUser = req.user;
     const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
     const existingRecompensa = await recompensaRepository.findById(
       id,
@@ -135,7 +135,7 @@ const recompensaController = {
     }
 
     if (
-      requestingUser.role !== "Super Admin" &&
+      requestingUser.role.name !== "Super Admin" &&
       existingRecompensa.tenantId !== requestingUser.tenantId
     ) {
       throw new ApiError(
@@ -155,7 +155,7 @@ const recompensaController = {
   getDashboard: asyncHandler(async (req, res) => {
     const requestingUser = req.user;
     const tenantId =
-      requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+      requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
     const dashboardData = await recompensaRepository.getDashboardData(tenantId);
     res.status(200).json(dashboardData);
   }),

@@ -15,11 +15,10 @@ const createSurvey = async (surveyData, requestingUser) => {
     );
   }
 
-  const targetTenantId =
-    requestingUser.role === "Super Admin" && surveyData.tenantId
-      ? surveyData.tenantId
-      : requestingUser.tenantId;
-
+      const targetTenantId =
+        requestingUser.role.name === "Super Admin" && surveyData.tenantId
+          ? surveyData.tenantId
+          : requestingUser.tenantId;
   if (!targetTenantId) {
     throw new ApiError(400, "Tenant ID é obrigatório para criar uma pesquisa.");
   }
@@ -44,7 +43,7 @@ const updateSurvey = async (surveyId, surveyData, requestingUser) => {
   }
 
   const tenantId =
-    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+    requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
   const existingSurvey = await surveyRepository.getSurveyTenantIdAndCreatorId(
     surveyId,
@@ -55,7 +54,7 @@ const updateSurvey = async (surveyId, surveyData, requestingUser) => {
   }
 
   if (
-    requestingUser.role !== "Super Admin" &&
+    requestingUser.role.name !== "Super Admin" &&
     existingSurvey.tenantId !== requestingUser.tenantId
   ) {
     throw new ApiError(
@@ -75,7 +74,7 @@ const updateSurvey = async (surveyId, surveyData, requestingUser) => {
 
 const deleteSurvey = async (surveyId, requestingUser) => {
   const tenantId =
-    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+    requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
   const existingSurvey = await surveyRepository.getSurveyTenantIdAndCreatorId(
     surveyId,
@@ -86,7 +85,7 @@ const deleteSurvey = async (surveyId, requestingUser) => {
   }
 
   if (
-    requestingUser.role !== "Super Admin" &&
+    requestingUser.role.name !== "Super Admin" &&
     (existingSurvey.tenantId !== requestingUser.tenantId ||
       existingSurvey.creatorId !== requestingUser.id)
   ) {
@@ -324,7 +323,7 @@ const getSurveyResultsById = async (surveyId, tenantId = null) => {
 
 const getSurveyById = async (surveyId, requestingUser) => {
   const tenantId =
-    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+    requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
   const survey = await surveyRepository.getSurveyById(surveyId, tenantId);
 
   if (!survey) {
@@ -333,7 +332,7 @@ const getSurveyById = async (surveyId, requestingUser) => {
 
   // A verificação de tenant já é feita no repositório, mas uma dupla verificação aqui é boa para segurança
   if (
-    requestingUser.role !== "Super Admin" &&
+    requestingUser.role.name !== "Super Admin" &&
     survey.tenantId !== requestingUser.tenantId
   ) {
     throw new ApiError(403, "Você não tem permissão para ver esta pesquisa.");
@@ -344,7 +343,7 @@ const getSurveyById = async (surveyId, requestingUser) => {
 
 const getSurveyStats = async (requestingUser) => {
   const tenantId =
-    requestingUser.role === "Super Admin" ? null : requestingUser.tenantId;
+    requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
   const stats = await surveyRepository.getSurveyStats(tenantId);
   return stats;
 };

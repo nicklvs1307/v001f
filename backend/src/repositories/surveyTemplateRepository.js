@@ -14,7 +14,7 @@ const surveyTemplateRepository = {
     const { name, description, questions, isSystemTemplate } = templateData;
 
     // Apenas Super Admins podem criar templates de sistema
-    if (isSystemTemplate && requestingUser.role !== "Super Admin") {
+    if (isSystemTemplate && requestingUser.role.name !== "Super Admin") {
       throw new ApiError(
         403,
         "Você não tem permissão para criar um template de sistema.",
@@ -40,7 +40,7 @@ const surveyTemplateRepository = {
     }
 
     // Apenas Super Admins podem editar templates de sistema
-    if (template.isSystemTemplate && requestingUser.role !== "Super Admin") {
+    if (template.isSystemTemplate && requestingUser.role.name !== "Super Admin") {
       throw new ApiError(
         403,
         "Você não tem permissão para editar um template de sistema.",
@@ -75,7 +75,7 @@ const surveyTemplateRepository = {
     }
 
     // Apenas Super Admins podem deletar templates de sistema
-    if (template.isSystemTemplate && requestingUser.role !== "Super Admin") {
+    if (template.isSystemTemplate && requestingUser.role.name !== "Super Admin") {
       throw new ApiError(
         403,
         "Você não tem permissão para deletar um template de sistema.",
@@ -214,7 +214,7 @@ const surveyTemplateRepository = {
 
       // Verificar se o usuário tem permissão para sobrescrever esta pesquisa
       if (
-        requestingUser.role !== "Super Admin" &&
+        requestingUser.role.name !== "Super Admin" &&
         survey.tenantId !== requestingUser.tenantId
       ) {
         throw new ApiError(

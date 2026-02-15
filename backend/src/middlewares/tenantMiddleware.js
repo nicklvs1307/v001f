@@ -2,7 +2,7 @@ const tenantMiddleware = (req, res, next) => {
   let tenantId;
 
   // Super Admin pode especificar um tenantId na query, ou ter acesso a todos (null)
-  if (req.user.role === "Super Admin") {
+  if (req.user.role.name === "Super Admin") {
     tenantId =
       req.query.tenantId || req.params.tenantId || req.body.tenantId || null;
   } else {

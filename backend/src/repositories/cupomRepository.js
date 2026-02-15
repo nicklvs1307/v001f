@@ -1,4 +1,4 @@
-const { Cupom, Recompensa, Client, Tenant } = require("../../models");
+const { Cupom, Recompensa, Client, Tenant, Pesquisa } = require("../../models");
 const { now } = require("../utils/dateUtils");
 const { Op, fn, col, literal } = require("sequelize");
 const { subDays, addDays } = require("date-fns");
@@ -18,6 +18,7 @@ class CupomRepository {
       { model: Recompensa, as: "recompensa" },
       { model: Client, as: "client" },
       { model: Tenant, as: "tenant" },
+      { model: Pesquisa, as: "pesquisa", attributes: ["title"] },
     ];
 
     if (filters.status) {
@@ -152,6 +153,7 @@ class CupomRepository {
       include: [
         { model: Recompensa, as: "recompensa" },
         { model: Client, as: "client" },
+        { model: Pesquisa, as: "pesquisa", attributes: ["title"] },
       ],
     });
   }
@@ -166,6 +168,7 @@ class CupomRepository {
       include: [
         { model: Recompensa, as: "recompensa" },
         { model: Client, as: "client" },
+        { model: Pesquisa, as: "pesquisa", attributes: ["title"] },
       ],
     });
   }

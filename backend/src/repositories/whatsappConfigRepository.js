@@ -66,6 +66,20 @@ class WhatsappConfigRepository {
   async deleteByTenantId(tenantId) {
     return await WhatsappConfig.destroy({ where: { tenantId } });
   }
+
+  async updateReportSentAt(configId, type) {
+    const field =
+      type === "daily"
+        ? "lastDailyReportSentAt"
+        : type === "weekly"
+          ? "lastWeeklyReportSentAt"
+          : "lastMonthlyReportSentAt";
+
+    return await WhatsappConfig.update(
+      { [field]: new Date() },
+      { where: { id: configId } },
+    );
+  }
 }
 
 module.exports = new WhatsappConfigRepository();

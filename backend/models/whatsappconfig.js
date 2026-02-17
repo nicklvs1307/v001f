@@ -190,6 +190,18 @@ module.exports = (sequelize, DataTypes) => {
     postSaleSurveyId: {
       type: DataTypes.UUID,
       allowNull: true,
+    },
+    lastDailyReportSentAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    lastWeeklyReportSentAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    lastMonthlyReportSentAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
     }
   }, {
     sequelize,

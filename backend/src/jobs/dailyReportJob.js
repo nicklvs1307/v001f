@@ -1,112 +1,87 @@
 const cron = require("node-cron");
-const { format, subDays } = require("date-fns");
+const { format, subDays, isSameDay } = require("date-fns");
 const {
   formatInTimeZone,
-  TIMEZONE,
   convertToUtc,
 } = require("../utils/dateUtils");
 const whatsappService = require("../services/whatsappService");
 const whatsappConfigRepository = require("../repositories/whatsappConfigRepository");
 const tenantRepository = require("../repositories/tenantRepository");
-const dashboardRepository = require("../repositories/dashboardRepository"); // Changed from resultRepository
+const dashboardRepository = require("../repositories/dashboardRepository");
 
-const schedule = "0 8 * * *"; // Every day at 8:00 AM
+// Cron rodando a cada 15 minutos para garantir redundância caso o servidor falhe no minuto exato.
+// Ele só enviará o relatório se ainda não tiver sido enviado hoje (após as 08:00 AM).
+const schedule = "*/15 * * * *";
 
 const dailyReportTask = cron.schedule(
   schedule,
   async () => {
-    console.log("Executando a tarefa de relatório diário...");
+    console.log("[Daily Report Job] Iniciando verificação de relatórios diários...");
 
     try {
-      // 1. Find all WhatsApp configurations with daily report enabled.
-      const configsToReport =
-        await whatsappConfigRepository.findAllWithDailyReportEnabled();
+      const now = new Date();
+      const hour = parseInt(formatInTimeZone(now, "HH"));
 
-      if (!configsToReport || configsToReport.length === 0) {
-        console.log(
-          "Nenhuma configuração de WhatsApp com relatório diário ativado encontrada.",
-        );
+      // Só envia relatórios a partir das 08:00 AM (Horário de Brasília)
+      if (hour < 8) {
+        console.log("[Daily Report Job] Fora do horário de envio (antes das 08:00 AM). Pulando...");
         return;
       }
 
-      console.log(
-        `Encontradas ${configsToReport.length} configurações para receber relatórios.`,
-      );
+      const configsToReport = await whatsappConfigRepository.findAllWithDailyReportEnabled();
 
-      // 2. For each configuration, generate and send the report.
+      if (!configsToReport || configsToReport.length === 0) {
+        console.log("[Daily Report Job] Nenhuma configuração com relatório diário ativado.");
+        return;
+      }
+
       for (const config of configsToReport) {
         try {
-          console.log(`Gerando relatório para o tenantId: ${config.tenantId}`);
-
-          const tenant = await tenantRepository.getTenantById(config.tenantId);
-          if (!tenant) {
-            console.warn(
-              `Tenant ${config.tenantId} não encontrado para a configuração de relatório.`,
-            );
-            continue;
+          // Verificar se já enviamos o relatório diário hoje
+          if (config.lastDailyReportSentAt) {
+            const lastSent = new Date(config.lastDailyReportSentAt);
+            if (isSameDay(lastSent, now)) {
+              console.log(`[Daily Report Job] Relatório já enviado hoje para tenant ${config.tenantId}.`);
+              continue;
+            }
           }
 
-          const today = new Date(); // Cron ensures this runs on the correct day in SP timezone context
+          console.log(`[Daily Report Job] Gerando relatório para tenant: ${config.tenantId}`);
 
-          // Yesterday
-          const yesterday = subDays(today, 1);
+          const tenant = await tenantRepository.getTenantById(config.tenantId);
+          if (!tenant) continue;
+
+          // Ontem
+          const yesterday = subDays(now, 1);
           const yesterdayDateString = formatInTimeZone(yesterday, "yyyy-MM-dd");
-          const startOfYesterdayZoned = convertToUtc(
-            new Date(`${yesterdayDateString}T00:00:00.000Z`),
-          );
-          const endOfYesterdayZoned = convertToUtc(
-            new Date(`${yesterdayDateString}T23:59:59.999Z`),
-          );
+          const startOfYesterdayZoned = convertToUtc(new Date(`${yesterdayDateString}T00:00:00.000Z`));
+          const endOfYesterdayZoned = convertToUtc(new Date(`${yesterdayDateString}T23:59:59.999Z`));
 
-          // Two days ago
-          const twoDaysAgo = subDays(today, 2);
-          const twoDaysAgoDateString = formatInTimeZone(
-            twoDaysAgo,
-            "yyyy-MM-dd",
-          );
-          const startOfTwoDaysAgoZoned = convertToUtc(
-            new Date(`${twoDaysAgoDateString}T00:00:00.000Z`),
-          );
-          const endOfTwoDaysAgoZoned = convertToUtc(
-            new Date(`${twoDaysAgoDateString}T23:59:59.999Z`),
-          );
+          // Anteontem (para comparação)
+          const twoDaysAgo = subDays(now, 2);
+          const twoDaysAgoDateString = formatInTimeZone(twoDaysAgo, "yyyy-MM-dd");
+          const startOfTwoDaysAgoZoned = convertToUtc(new Date(`${twoDaysAgoDateString}T00:00:00.000Z`));
+          const endOfTwoDaysAgoZoned = convertToUtc(new Date(`${twoDaysAgoDateString}T23:59:59.999Z`));
 
-          // Fetch summaries for both days using the timezone-aware dates
-          const yesterdaySummary = await dashboardRepository.getSummary(
-            config.tenantId,
-            startOfYesterdayZoned,
-            endOfYesterdayZoned,
-          );
-          const twoDaysAgoSummary = await dashboardRepository.getSummary(
-            config.tenantId,
-            startOfTwoDaysAgoZoned,
-            endOfTwoDaysAgoZoned,
-          );
+          const [yesterdaySummary, twoDaysAgoSummary, surveySummaries] = await Promise.all([
+            dashboardRepository.getSummary(config.tenantId, startOfYesterdayZoned, endOfYesterdayZoned),
+            dashboardRepository.getSummary(config.tenantId, startOfTwoDaysAgoZoned, endOfTwoDaysAgoZoned),
+            dashboardRepository.getSummaryBySurvey(config.tenantId, startOfYesterdayZoned, endOfYesterdayZoned)
+          ]);
 
-          const surveySummaries = await dashboardRepository.getSummaryBySurvey(
-            config.tenantId,
-            startOfYesterdayZoned,
-            endOfYesterdayZoned,
-          );
-
-          // Calculate difference
-          const diff =
-            yesterdaySummary.totalResponses - twoDaysAgoSummary.totalResponses;
+          const diff = yesterdaySummary.totalResponses - twoDaysAgoSummary.totalResponses;
           const diffArrow = diff > 0 ? "⬆" : diff < 0 ? "⬇" : "➖";
-          const diffText = `(${diffArrow} ${diff} respostas em relação ${format(twoDaysAgo, "dd/MM/yyyy")})`;
+          const diffText = `(${diffArrow} ${Math.abs(diff)} em relação a ${format(twoDaysAgo, "dd/MM/yyyy")})`;
 
-          // Format dates for the message
           const formattedDate = format(yesterday, "dd/MM/yyyy");
           const isoDate = format(yesterday, "yyyy-MM-dd");
-          const baseUrl =
-            process.env.FRONTEND_URL || "https://loyalfood.towersfy.com";
+          const baseUrl = process.env.FRONTEND_URL || "https://loyalfood.towersfy.com";
           const reportUrl = `${baseUrl}/relatorios/diario?date=${isoDate}`;
 
-          // Construct the new message
           let message =
             `*Relatório Diário ${tenant.name}*\n\n` +
             `Aqui está o resumo da experiência dos seus clientes no dia ${formattedDate}!\n` +
-            `📊 *Total Geral de respostas:* ${yesterdaySummary.totalResponses} ${diffText}\n` +
+            `📊 *Total de respostas:* ${yesterdaySummary.totalResponses} ${diffText}\n` +
             `🟢 Promotores: ${yesterdaySummary.nps.promoters}\n` +
             `🟡 Neutros: ${yesterdaySummary.nps.neutrals}\n` +
             `🔴 Detratores: ${yesterdaySummary.nps.detractors}\n\n`;
@@ -122,41 +97,33 @@ const dailyReportTask = cron.schedule(
             message += `\n`;
           }
 
-          message += `🔗 Para acessar o sistema, visite ${reportUrl}`;
+          message += `🔗 Acesse o painel: ${reportUrl}`;
 
-          // Send to each configured number using sendTenantMessage
-          const phoneNumbers = config.reportPhoneNumbers
-            .split(",")
-            .map((p) => p.trim())
-            .filter((p) => p);
+          const phoneNumbers = config.reportPhoneNumbers.split(",").map(p => p.trim()).filter(p => p);
+          let sentSuccessfully = false;
+
           for (const phoneNumber of phoneNumbers) {
             try {
-              await whatsappService.sendTenantMessage(
-                config.tenantId,
-                phoneNumber,
-                message,
-              );
-              console.log(
-                `Relatório para "${tenant.name}" enviado para ${phoneNumber}.`,
-              );
+              await whatsappService.sendTenantMessage(config.tenantId, phoneNumber, message);
+              console.log(`[Daily Report Job] Sucesso para ${tenant.name} (${phoneNumber}).`);
+              sentSuccessfully = true;
             } catch (error) {
-              console.error(
-                `Falha ao enviar relatório para o número ${phoneNumber} do tenant ${config.tenantId}:`,
-                error.message,
-              );
+              console.error(`[Daily Report Job] Falha ao enviar para ${phoneNumber}: ${error.message}`);
             }
           }
+
+          if (sentSuccessfully) {
+            await whatsappConfigRepository.updateReportSentAt(config.id, "daily");
+          }
+
         } catch (tenantError) {
-          console.error(
-            `Falha ao gerar relatório para o tenant ${config.tenantId}:`,
-            tenantError,
-          );
+          console.error(`[Daily Report Job] Erro no tenant ${config.tenantId}:`, tenantError);
         }
       }
 
-      console.log("Tarefa de relatório diário concluída.");
+      console.log("[Daily Report Job] Verificação concluída.");
     } catch (error) {
-      console.error("Erro ao executar a tarefa de relatório diário:", error);
+      console.error("[Daily Report Job] Erro crítico:", error);
     }
   },
   {
@@ -167,13 +134,8 @@ const dailyReportTask = cron.schedule(
 
 module.exports = {
   start: () => {
-    console.log(
-      "Agendador de relatório diário iniciado. A tarefa será executada todos os dias às 8:00.",
-    );
+    console.log("[Daily Report Job] Agendador iniciado (redundância a cada 15 min).");
     dailyReportTask.start();
   },
-  stop: () => {
-    console.log("Agendador de relatório diário parado.");
-    dailyReportTask.stop();
-  },
+  stop: () => dailyReportTask.stop(),
 };

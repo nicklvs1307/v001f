@@ -1,78 +1,73 @@
 const cron = require("node-cron");
-const { format, subMonths, startOfMonth, endOfMonth } = require("date-fns");
+const { format, subMonths, startOfMonth, endOfMonth, isSameMonth } = require("date-fns");
 const { ptBR } = require("date-fns/locale");
-const { now } = require("../utils/dateUtils");
+const { formatInTimeZone } = require("../utils/dateUtils");
 const whatsappService = require("../services/whatsappService");
 const whatsappConfigRepository = require("../repositories/whatsappConfigRepository");
 const tenantRepository = require("../repositories/tenantRepository");
 const dashboardRepository = require("../repositories/dashboardRepository");
 
-const schedule = "0 8 1 * *"; // Every 1st day of the month at 8:00 AM
+// Rodando a cada 4 horas para garantir redundância (todo dia 1º a partir das 08:00 AM)
+const schedule = "0 */4 * * *";
 
 const monthlyReportTask = cron.schedule(
   schedule,
   async () => {
-    console.log("Executando a tarefa de relatório mensal...");
+    console.log("[Monthly Report Job] Iniciando verificação de relatórios mensais...");
 
     try {
-      const configsToReport =
-        await whatsappConfigRepository.findAllWithMonthlyReportEnabled();
+      const now = new Date();
+      const dayOfMonth = parseInt(formatInTimeZone(now, "d"));
+      const hour = parseInt(formatInTimeZone(now, "HH"));
 
-      if (!configsToReport || configsToReport.length === 0) {
-        console.log(
-          "Nenhuma configuração de WhatsApp com relatório mensal ativado encontrada.",
-        );
+      // Só envia no dia 1º a partir das 08:00 AM
+      if (dayOfMonth !== 1 || hour < 8) {
+        console.log("[Monthly Report Job] Fora do dia ou horário de envio. Pulando...");
         return;
       }
 
-      console.log(
-        `Encontradas ${configsToReport.length} configurações para receber relatórios mensais.`,
-      );
+      const configsToReport = await whatsappConfigRepository.findAllWithMonthlyReportEnabled();
+
+      if (!configsToReport || configsToReport.length === 0) {
+        console.log("[Monthly Report Job] Nenhuma configuração com relatório mensal ativado.");
+        return;
+      }
 
       for (const config of configsToReport) {
         try {
-          console.log(
-            `Gerando relatório mensal para o tenantId: ${config.tenantId}`,
-          );
-
-          const tenant = await tenantRepository.getTenantById(config.tenantId);
-          if (!tenant) {
-            console.warn(
-              `Tenant ${config.tenantId} não encontrado para a configuração de relatório.`,
-            );
-            continue;
+          // Verificar se já enviamos o relatório mensal este mês
+          if (config.lastMonthlyReportSentAt) {
+            const lastSent = new Date(config.lastMonthlyReportSentAt);
+            if (isSameMonth(lastSent, now)) {
+              console.log(`[Monthly Report Job] Relatório mensal já enviado para tenant ${config.tenantId}.`);
+              continue;
+            }
           }
 
-          const zonedNow = now();
-          const lastMonth = subMonths(zonedNow, 1);
+          console.log(`[Monthly Report Job] Gerando relatório mensal para tenant: ${config.tenantId}`);
+
+          const tenant = await tenantRepository.getTenantById(config.tenantId);
+          if (!tenant) continue;
+
+          const lastMonth = subMonths(now, 1);
           const startOfLastMonth = startOfMonth(lastMonth);
           const endOfLastMonth = endOfMonth(lastMonth);
 
-          const monthlySummary = await dashboardRepository.getSummary(
-            config.tenantId,
-            startOfLastMonth,
-            endOfLastMonth,
-          );
+          const [monthlySummary, surveySummaries] = await Promise.all([
+            dashboardRepository.getSummary(config.tenantId, startOfLastMonth, endOfLastMonth),
+            dashboardRepository.getSummaryBySurvey(config.tenantId, startOfLastMonth, endOfLastMonth)
+          ]);
 
-          const surveySummaries = await dashboardRepository.getSummaryBySurvey(
-            config.tenantId,
-            startOfLastMonth,
-            endOfLastMonth,
-          );
-
-          const formattedMonth = format(lastMonth, "MMMM 'de' yyyy", {
-            locale: ptBR,
-          });
+          const formattedMonth = format(lastMonth, "MMMM 'de' yyyy", { locale: ptBR });
           const isoDate = format(endOfLastMonth, "yyyy-MM-dd");
 
-          const baseUrl =
-            process.env.FRONTEND_URL || "https://loyalfood.towersfy.com";
+          const baseUrl = process.env.FRONTEND_URL || "https://loyalfood.towersfy.com";
           const reportUrl = `${baseUrl}/relatorios/mensal?date=${isoDate}`;
 
           let message =
             `*Relatório Mensal ${tenant.name}*\n\n` +
             `Aqui está o resumo da experiência dos seus clientes em ${formattedMonth}!\n` +
-            `📊 *Total Geral de respostas:* ${monthlySummary.totalResponses}\n` +
+            `📊 *Total de respostas:* ${monthlySummary.totalResponses}\n` +
             `🟢 Promotores: ${monthlySummary.nps.promoters}\n` +
             `🟡 Neutros: ${monthlySummary.nps.neutrals}\n` +
             `🔴 Detratores: ${monthlySummary.nps.detractors}\n\n`;
@@ -88,40 +83,33 @@ const monthlyReportTask = cron.schedule(
             message += `\n`;
           }
 
-          message += `🔗 Para acessar o relatório completo, visite ${reportUrl}`;
+          message += `🔗 Acesse o relatório completo: ${reportUrl}`;
 
-          const phoneNumbers = config.reportPhoneNumbers
-            .split(",")
-            .map((p) => p.trim())
-            .filter((p) => p);
+          const phoneNumbers = config.reportPhoneNumbers.split(",").map(p => p.trim()).filter(p => p);
+          let sentSuccessfully = false;
+
           for (const phoneNumber of phoneNumbers) {
             try {
-              await whatsappService.sendTenantMessage(
-                config.tenantId,
-                phoneNumber,
-                message,
-              );
-              console.log(
-                `Relatório mensal para "${tenant.name}" enviado para ${phoneNumber}.`,
-              );
+              await whatsappService.sendTenantMessage(config.tenantId, phoneNumber, message);
+              console.log(`[Monthly Report Job] Sucesso para ${tenant.name} (${phoneNumber}).`);
+              sentSuccessfully = true;
             } catch (error) {
-              console.error(
-                `Falha ao enviar relatório mensal para o número ${phoneNumber} do tenant ${config.tenantId}:`,
-                error.message,
-              );
+              console.error(`[Monthly Report Job] Falha para ${phoneNumber}: ${error.message}`);
             }
           }
+
+          if (sentSuccessfully) {
+            await whatsappConfigRepository.updateReportSentAt(config.id, "monthly");
+          }
+
         } catch (tenantError) {
-          console.error(
-            `Falha ao gerar relatório mensal para o tenant ${config.tenantId}:`,
-            tenantError,
-          );
+          console.error(`[Monthly Report Job] Erro no tenant ${config.tenantId}:`, tenantError);
         }
       }
 
-      console.log("Tarefa de relatório mensal concluída.");
+      console.log("[Monthly Report Job] Verificação concluída.");
     } catch (error) {
-      console.error("Erro ao executar a tarefa de relatório mensal:", error);
+      console.error("[Monthly Report Job] Erro crítico:", error);
     }
   },
   {
@@ -132,13 +120,8 @@ const monthlyReportTask = cron.schedule(
 
 module.exports = {
   start: () => {
-    console.log(
-      "Agendador de relatório mensal iniciado. A tarefa será executada todo dia 1º, às 8:00.",
-    );
+    console.log("[Monthly Report Job] Agendador iniciado (redundância a cada 4 horas).");
     monthlyReportTask.start();
   },
-  stop: () => {
-    console.log("Agendador de relatório mensal parado.");
-    monthlyReportTask.stop();
-  },
+  stop: () => monthlyReportTask.stop(),
 };

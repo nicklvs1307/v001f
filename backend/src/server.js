@@ -99,7 +99,7 @@ const startServer = async () => {
     initWarmingUpProgressJob();
     initCampaignMonitorJob();
     awardProcessorJob.start();
-    ifoodPollingJob.start(); // Iniciar o job de polling do iFood
+    // ifoodPollingJob.start(); // Iniciar o job de polling do iFood
     deliveryMuchPollingJob.start(); // Iniciar o job de polling da Delivery Much
     postSaleSurveyJob.start(); // Iniciar processamento de pesquisas agendadas
 

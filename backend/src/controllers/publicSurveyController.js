@@ -15,7 +15,7 @@ const getPublicSurveyById = asyncHandler(async (req, res) => {
   // Verificar se o link está expirado
   if (survey.isLinkExpirable && survey.linkExpiresAt) {
     const expirationDate = new Date(survey.linkExpiresAt);
-    if (now() > expirationDate) {
+    if (new Date() > expirationDate) {
       throw new ApiError(410, "Este link de pesquisa expirou.");
     }
   }
@@ -62,7 +62,7 @@ const submitSurveyResponses = asyncHandler(async (req, res) => {
   // Verificar se o link está expirado antes de aceitar respostas
   if (survey.isLinkExpirable && survey.linkExpiresAt) {
     const expirationDate = new Date(survey.linkExpiresAt);
-    if (now() > expirationDate) {
+    if (new Date() > expirationDate) {
       throw new ApiError(410, "Este link de pesquisa expirou.");
     }
   }

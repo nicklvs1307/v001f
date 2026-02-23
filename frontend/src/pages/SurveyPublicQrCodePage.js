@@ -28,7 +28,7 @@ const SurveyPublicQrCodePage = () => {
     if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}><CircularProgress /></Box>;
     if (error) return <Container sx={{ mt: 4 }}><Alert severity="error">{error}</Alert></Container>;
 
-    const publicUrl = `${window.location.origin}/pesquisa/${tenantId}/${pesquisaId}`;
+    const publicUrl = `${window.location.origin}/pesquisa/${tenantId}/${survey.linkToken || pesquisaId}`;
 
     return (
         <Container maxWidth="sm" sx={{ py: 4, textAlign: 'center' }}>

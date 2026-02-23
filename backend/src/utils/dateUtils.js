@@ -126,14 +126,17 @@ module.exports = {
       return true; // Se não houver horários configurados, está sempre aberto
     }
 
+    // Usar data local de SP para verificar dia e hora
     const localDate = toZonedTime(checkDate, TIMEZONE);
     const dayOfWeek = localDate.getDay(); // 0 (Sun) to 6 (Sat)
-    const currentTime = format(localDate, "HH:mm");
+    
+    // Formatar como HH:mm para comparação de string (ex: "18:30")
+    const currentTime = format(localDate, "HH:mm", { timeZone: TIMEZONE });
 
     return operatingHours.some(config => {
       // config.days é um array de números (0-6)
       // config.startTime e config.endTime são strings "HH:mm"
-      const isDayMatch = config.days.includes(dayOfWeek);
+      const isDayMatch = (config.days || []).includes(dayOfWeek);
       if (!isDayMatch) return false;
 
       return currentTime >= config.startTime && currentTime <= config.endTime;

@@ -204,6 +204,7 @@ const getSurveysList = async (tenantId = null, status = "all") => {
       dueDate: survey.dueDate || null,
       isOpen: survey.isOpen,
       askForAttendant: survey.askForAttendant,
+      tenantId: survey.tenantId,
       isLinkExpirable: survey.isLinkExpirable,
       linkExpirationHours: survey.linkExpirationHours,
       linkToken: survey.linkToken,

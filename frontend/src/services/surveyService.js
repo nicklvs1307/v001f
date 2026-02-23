@@ -120,6 +120,15 @@ const getSurveyResults = async (surveyId) => {
     }
 };
 
+const renewSurveyLink = async (surveyId) => {
+    try {
+        const response = await apiAuthenticated.post(`/surveys/${surveyId}/renew-link`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const surveyService = {
     getSurveyById,
     createSurvey,
@@ -129,6 +138,7 @@ const surveyService = {
     getSurveyStats,
     getSurveysList,
     getSurveyResults,
+    renewSurveyLink,
 };
 
 export default surveyService;

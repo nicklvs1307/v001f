@@ -17,8 +17,12 @@ const getAtendentesByTenantId = async (tenantId) => {
   return atendentes;
 };
 
-const getPublicSurveyById = async (id) => {
-  const survey = await models.Pesquisa.findByPk(id, {
+const getPublicSurveyById = async (idOrToken) => {
+  const { Op } = require("sequelize");
+  const survey = await models.Pesquisa.findOne({
+    where: {
+      [Op.or]: [{ id: idOrToken }, { linkToken: idOrToken }],
+    },
     attributes: [
       "id",
       "title",
@@ -31,6 +35,9 @@ const getPublicSurveyById = async (id) => {
       "status",
       "recompensaId",
       "roletaId",
+      "isLinkExpirable",
+      "linkExpiresAt",
+      "operatingHours",
     ], // Adicionar 'status', 'recompensaId', 'roletaId'
     include: [
       {
@@ -76,6 +83,9 @@ const getPublicSurveyById = async (id) => {
     askForAttendant: survey.askForAttendant, // ADDED THIS LINE
     status: survey.status, // Adicionar status aqui
     roletaId: survey.roletaId, // Adicionar roletaId aqui
+    isLinkExpirable: survey.isLinkExpirable,
+    linkExpiresAt: survey.linkExpiresAt,
+    operatingHours: survey.operatingHours,
     // Adicionar informações do Tenant
     restaurantName: survey.tenant ? survey.tenant.name : null,
     restaurantLogoUrl: survey.tenant ? survey.tenant.logoUrl : null,
@@ -131,9 +141,13 @@ const submitSurveyResponses = async (
   atendenteId,
   io,
 ) => {
+  const { Op } = require("sequelize");
   const transaction = await sequelize.transaction();
   try {
-    const survey = await models.Pesquisa.findByPk(surveyId, {
+    const survey = await models.Pesquisa.findOne({
+      where: {
+        [Op.or]: [{ id: surveyId }, { linkToken: surveyId }],
+      },
       attributes: ["isOpen", "tenantId", "askForAttendant", "title"],
       include: [
         {

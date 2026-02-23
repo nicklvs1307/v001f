@@ -23,18 +23,55 @@ import {
   RadioGroup,
   Radio,
   FormLabel,
+  Checkbox,
+  ListItemText,
+  OutlinedInput,
+  IconButton,
 } from '@mui/material';
 import { Alert } from '@mui/material';
 import { SURVEY_STATUS } from '../../constants/surveyStatus';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import QuestionForm from './QuestionForm';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
+const DAYS_OF_WEEK = [
+  { id: 1, label: 'Segunda' },
+  { id: 2, label: 'Terça' },
+  { id: 3, label: 'Quarta' },
+  { id: 4, label: 'Quinta' },
+  { id: 5, label: 'Sexta' },
+  { id: 6, label: 'Sábado' },
+  { id: 0, label: 'Domingo' },
+];
+
 const SurveyForm = ({ initialData = {}, onSubmit, loading = false, error = null }) => {
   const formActions = useSurveyForm(initialData);
-  const { survey, errors, handleChange, handleAddQuestion, rewardType, handleRewardChange } = formActions;
+  const { survey, setSurvey, errors, handleChange, handleAddQuestion, rewardType, handleRewardChange } = formActions;
+
+  const handleAddOperatingHours = () => {
+    setSurvey(prev => ({
+      ...prev,
+      operatingHours: [...(prev.operatingHours || []), { days: [], startTime: '18:00', endTime: '23:00' }]
+    }));
+  };
+
+  const handleRemoveOperatingHours = (index) => {
+    setSurvey(prev => ({
+      ...prev,
+      operatingHours: prev.operatingHours.filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleOperatingHoursChange = (index, field, value) => {
+    setSurvey(prev => {
+      const newHours = [...prev.operatingHours];
+      newHours[index] = { ...newHours[index], [field]: value };
+      return { ...prev, operatingHours: newHours };
+    });
+  };
 
   const { criterios, loading: criteriosLoading, error: criteriosError } = useCriterios();
   const { atendentes, loading: atendentesLoading, error: atendentesError } = useAtendentes();
@@ -210,6 +247,115 @@ const SurveyForm = ({ initialData = {}, onSubmit, loading = false, error = null 
               </Select>
             </FormControl>
           </Grid>
+        </Grid>
+      </Paper>
+
+      <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h6" gutterBottom>Horário de Funcionamento</Typography>
+        <Typography variant="caption" display="block" sx={{ mb: 2 }}>
+          Defina os horários em que a pesquisa estará disponível para ser respondida. Se não houver nenhum configurado, ela estará sempre aberta.
+        </Typography>
+        
+        <Stack spacing={2}>
+          {(survey.operatingHours || []).map((config, index) => (
+            <Paper variant="outlined" sx={{ p: 2 }} key={index}>
+              <Grid container spacing={2} alignItems="center">
+                <Grid item xs={12} md={5}>
+                  <FormControl fullWidth size="small">
+                    <InputLabel>Dias da Semana</InputLabel>
+                    <Select
+                      multiple
+                      value={config.days}
+                      onChange={(e) => handleOperatingHoursChange(index, 'days', e.target.value)}
+                      input={<OutlinedInput label="Dias da Semana" />}
+                      renderValue={(selected) => selected.map(id => DAYS_OF_WEEK.find(d => d.id === id)?.label).join(', ')}
+                    >
+                      {DAYS_OF_WEEK.map((day) => (
+                        <MenuItem key={day.id} value={day.id}>
+                          <Checkbox checked={config.days.indexOf(day.id) > -1} />
+                          <ListItemText primary={day.label} />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={6} md={3}>
+                  <TextField
+                    label="Início"
+                    type="time"
+                    size="small"
+                    value={config.startTime}
+                    onChange={(e) => handleOperatingHoursChange(index, 'startTime', e.target.value)}
+                    fullWidth
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </Grid>
+                <Grid item xs={6} md={3}>
+                  <TextField
+                    label="Fim"
+                    type="time"
+                    size="small"
+                    value={config.endTime}
+                    onChange={(e) => handleOperatingHoursChange(index, 'endTime', e.target.value)}
+                    fullWidth
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={1}>
+                  <IconButton color="error" onClick={() => handleRemoveOperatingHours(index)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </Grid>
+              </Grid>
+            </Paper>
+          ))}
+        </Stack>
+        
+        <Button
+          startIcon={<AddIcon />}
+          onClick={handleAddOperatingHours}
+          variant="outlined"
+          size="small"
+          sx={{ mt: 2 }}
+        >
+          Adicionar Horário
+        </Button>
+      </Paper>
+
+      <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
+        <Typography variant="h6" gutterBottom>Segurança do Link</Typography>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={6}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={survey.isLinkExpirable || false}
+                  onChange={(e) => handleChange({ target: { name: 'isLinkExpirable', value: e.target.checked, type: 'checkbox', checked: e.target.checked } })}
+                  name="isLinkExpirable"
+                  color="primary"
+                />
+              }
+              label="Link e QR Code Expiráveis"
+            />
+            <Typography variant="caption" display="block" sx={{ ml: 4 }}>
+              Se ativado, o link deixará de funcionar após o tempo definido.
+            </Typography>
+          </Grid>
+          {survey.isLinkExpirable && (
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Horas para Expirar"
+                name="linkExpirationHours"
+                type="number"
+                value={survey.linkExpirationHours || 24}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+                inputProps={{ min: 1 }}
+                helperText="O link expirará após este número de horas a partir da geração."
+              />
+            </Grid>
+          )}
         </Grid>
       </Paper>
 

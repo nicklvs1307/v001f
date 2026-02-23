@@ -16,7 +16,6 @@ router.post(
   "/spin/:pesquisaId/:clientId",
   [
     check("pesquisaId", "ID da pesquisa é obrigatório")
-      .isUUID()
       .not()
       .isEmpty(),
     check("clientId", "ID do cliente é obrigatório").isUUID().not().isEmpty(),

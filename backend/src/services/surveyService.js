@@ -1,12 +1,14 @@
 const surveyRepository = require("../repositories/surveyRepository");
-const { convertFromTimeZone, now } = require("../utils/dateUtils");
+const { convertFromTimeZone, now, addHours } = require("../utils/dateUtils");
 const resultRepository = require("../repositories/resultRepository");
 const ApiError = require("../errors/ApiError");
 const ratingService = require("./ratingService"); // Importar o ratingService
 const { calculateAgeDistribution } = require("../utils/demographicsUtils");
+const { v4: uuidv4 } = require("uuid");
 
 const createSurvey = async (surveyData, requestingUser) => {
-  const { recompensaId, roletaId } = surveyData;
+  const { recompensaId, roletaId, isLinkExpirable, linkExpirationHours } =
+    surveyData;
 
   if (recompensaId && roletaId) {
     throw new ApiError(
@@ -15,25 +17,35 @@ const createSurvey = async (surveyData, requestingUser) => {
     );
   }
 
-      const targetTenantId =
-        requestingUser.role.name === "Super Admin" && surveyData.tenantId
-          ? surveyData.tenantId
-          : requestingUser.tenantId;
+  const targetTenantId =
+    requestingUser.role.name === "Super Admin" && surveyData.tenantId
+      ? surveyData.tenantId
+      : requestingUser.tenantId;
   if (!targetTenantId) {
     throw new ApiError(400, "Tenant ID é obrigatório para criar uma pesquisa.");
+  }
+
+  const linkToken = uuidv4();
+  let linkExpiresAt = null;
+
+  if (isLinkExpirable) {
+    linkExpiresAt = addHours(now(), linkExpirationHours || 24);
   }
 
   const survey = await surveyRepository.createSurvey({
     ...surveyData,
     tenantId: targetTenantId,
     creatorId: requestingUser.id,
+    linkToken,
+    linkExpiresAt,
   });
 
   return survey;
 };
 
 const updateSurvey = async (surveyId, surveyData, requestingUser) => {
-  const { recompensaId, roletaId } = surveyData;
+  const { recompensaId, roletaId, isLinkExpirable, linkExpirationHours } =
+    surveyData;
 
   if (recompensaId && roletaId) {
     throw new ApiError(
@@ -45,7 +57,7 @@ const updateSurvey = async (surveyId, surveyData, requestingUser) => {
   const tenantId =
     requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
-  const existingSurvey = await surveyRepository.getSurveyTenantIdAndCreatorId(
+  const existingSurvey = await surveyRepository.getSurveyById(
     surveyId,
     tenantId,
   );
@@ -63,9 +75,55 @@ const updateSurvey = async (surveyId, surveyData, requestingUser) => {
     );
   }
 
+  // Se o link passou a ser expirável ou se o tempo de expiração mudou, atualizamos linkExpiresAt
+  let linkExpiresAt = existingSurvey.linkExpiresAt;
+  if (isLinkExpirable && !existingSurvey.isLinkExpirable) {
+    linkExpiresAt = addHours(now(), linkExpirationHours || 24);
+  } else if (!isLinkExpirable) {
+    linkExpiresAt = null;
+  }
+
   const updatedSurvey = await surveyRepository.updateSurvey(
     surveyId,
-    surveyData,
+    { ...surveyData, linkExpiresAt },
+    tenantId,
+  );
+
+  return updatedSurvey;
+};
+
+const renewSurveyLink = async (surveyId, requestingUser) => {
+  const tenantId =
+    requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
+
+  const existingSurvey = await surveyRepository.getSurveyById(
+    surveyId,
+    tenantId,
+  );
+  if (!existingSurvey) {
+    throw new ApiError(404, "Pesquisa não encontrada.");
+  }
+
+  if (
+    requestingUser.role.name !== "Super Admin" &&
+    existingSurvey.tenantId !== requestingUser.tenantId
+  ) {
+    throw new ApiError(
+      403,
+      "Você não tem permissão para renovar o link desta pesquisa.",
+    );
+  }
+
+  const linkToken = uuidv4();
+  let linkExpiresAt = null;
+
+  if (existingSurvey.isLinkExpirable) {
+    linkExpiresAt = addHours(now(), existingSurvey.linkExpirationHours || 24);
+  }
+
+  const updatedSurvey = await surveyRepository.updateSurvey(
+    surveyId,
+    { linkToken, linkExpiresAt },
     tenantId,
   );
 
@@ -146,8 +204,13 @@ const getSurveysList = async (tenantId = null, status = "all") => {
       dueDate: survey.dueDate || null,
       isOpen: survey.isOpen,
       askForAttendant: survey.askForAttendant,
+      isLinkExpirable: survey.isLinkExpirable,
+      linkExpirationHours: survey.linkExpirationHours,
+      linkToken: survey.linkToken,
+      linkExpiresAt: survey.linkExpiresAt,
+      operatingHours: survey.operatingHours,
       perguntas: survey.perguntas.map((p) => ({ ...p })),
-      publicUrl: `${frontendUrl}/pesquisa/${survey.tenantId}/${survey.id}`,
+      publicUrl: `${frontendUrl}/pesquisa/${survey.tenantId}/${survey.linkToken || survey.id}`,
     };
   });
 };
@@ -351,6 +414,7 @@ const getSurveyStats = async (requestingUser) => {
 module.exports = {
   createSurvey,
   updateSurvey,
+  renewSurveyLink,
   deleteSurvey,
   getSurveysList,
   getSurveyResultsById,

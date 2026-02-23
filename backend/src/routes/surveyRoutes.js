@@ -83,10 +83,25 @@ router.post(
     check("askForAttendant", "O campo 'askForAttendant' deve ser um booleano")
       .optional()
       .isBoolean(),
+    check("isLinkExpirable", "O campo 'isLinkExpirable' deve ser um booleano")
+      .optional()
+      .isBoolean(),
+    check(
+      "linkExpirationHours",
+      "O campo 'linkExpirationHours' deve ser um número inteiro",
+    )
+      .optional()
+      .isInt({ min: 1 }),
     ...surveyQuestionsValidation, // Reutiliza a validação de perguntas
   ],
   validate,
   surveyController.createSurvey,
+);
+
+router.post(
+  "/:id/renew-link",
+  authorize("surveys:update"),
+  surveyController.renewSurveyLink,
 );
 
 // Rotas para obter, atualizar e deletar uma pesquisa específica
@@ -115,6 +130,15 @@ router
       check("askForAttendant", "O campo 'askForAttendant' deve ser um booleano")
         .optional()
         .isBoolean(),
+      check("isLinkExpirable", "O campo 'isLinkExpirable' deve ser um booleano")
+        .optional()
+        .isBoolean(),
+      check(
+        "linkExpirationHours",
+        "O campo 'linkExpirationHours' deve ser um número inteiro",
+      )
+        .optional()
+        .isInt({ min: 1 }),
       ...surveyQuestionsValidation, // Reutiliza a validação de perguntas
     ],
     validate,

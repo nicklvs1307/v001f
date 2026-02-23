@@ -77,6 +77,31 @@ module.exports = (sequelize, DataTypes) => {
     roletaPrizeMessage: {
       type: DataTypes.TEXT,
       allowNull: true,
+    },
+    isLinkExpirable: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false
+    },
+    linkExpirationHours: {
+      type: DataTypes.INTEGER,
+      defaultValue: 24,
+      allowNull: false
+    },
+    linkToken: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      unique: true
+    },
+    linkExpiresAt: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    operatingHours: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+      defaultValue: []
     }
   }, {
     sequelize,

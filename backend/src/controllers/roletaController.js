@@ -20,7 +20,12 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
     throw new ApiError(400, "ID do cliente e da pesquisa são obrigatórios.");
   }
 
-  const pesquisa = await Pesquisa.findByPk(pesquisaId);
+  const { Op } = require("sequelize");
+  const pesquisa = await Pesquisa.findOne({
+    where: {
+      [Op.or]: [{ id: pesquisaId }, { linkToken: pesquisaId }],
+    },
+  });
   if (!pesquisa || !pesquisa.roletaId) {
     throw new ApiError(404, "Roleta não configurada para esta pesquisa.");
   }
@@ -33,7 +38,7 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
   // Verificar se o cliente já girou a roleta para esta pesquisa recentemente
   const latestCupom = await cupomRepository.findByClientAndSurvey(
     clientId,
-    pesquisaId,
+    pesquisa.id,
   );
   if (latestCupom) {
     const currentTime = now();
@@ -138,7 +143,7 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
     recompensaId: recompensa.id,
     codigo: codigoCupom,
     clienteId: clientId,
-    pesquisaId: pesquisaId, // Adicionar o ID da pesquisa
+    pesquisaId: pesquisa.id, // Adicionar o ID real da pesquisa
     dataValidade: dataValidade,
     dataGeracao: new Date(),
     status: "active",
@@ -254,14 +259,19 @@ exports.getRoletaConfig = asyncHandler(async (req, res) => {
     throw new ApiError(400, "ID da pesquisa e do cliente são obrigatórios.");
   }
 
-  const pesquisa = await Pesquisa.findByPk(pesquisaId);
+  const { Op } = require("sequelize");
+  const pesquisa = await Pesquisa.findOne({
+    where: {
+      [Op.or]: [{ id: pesquisaId }, { linkToken: pesquisaId }],
+    },
+  });
   if (!pesquisa || !pesquisa.roletaId) {
     return res.status(200).json({ items: [], hasSpun: false });
   }
 
   const latestCupom = await cupomRepository.findByClientAndSurvey(
     clientId,
-    pesquisaId,
+    pesquisa.id,
   );
   let hasSpunRecently = false;
   if (latestCupom) {

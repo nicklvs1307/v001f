@@ -32,6 +32,11 @@ const createSurvey = async (surveyData) => {
     recompensaId,
     roletaId,
     roletaPrizeMessage,
+    isLinkExpirable,
+    linkExpirationHours,
+    linkToken,
+    linkExpiresAt,
+    operatingHours,
   } = surveyData;
 
   const transaction = await sequelize.transaction();
@@ -53,6 +58,11 @@ const createSurvey = async (surveyData) => {
         recompensaId,
         roletaId,
         roletaPrizeMessage,
+        isLinkExpirable,
+        linkExpirationHours,
+        linkToken,
+        linkExpiresAt,
+        operatingHours,
       },
       { transaction },
     );
@@ -119,6 +129,11 @@ const getSurveyById = async (id, tenantId = null) => {
       "recompensaId",
       "roletaId",
       "roletaPrizeMessage",
+      "isLinkExpirable",
+      "linkExpirationHours",
+      "linkToken",
+      "linkExpiresAt",
+      "operatingHours",
     ],
   });
 
@@ -142,6 +157,11 @@ const getSurveyById = async (id, tenantId = null) => {
     recompensaId: survey.recompensaId,
     roletaId: survey.roletaId,
     roletaPrizeMessage: survey.roletaPrizeMessage,
+    isLinkExpirable: survey.isLinkExpirable,
+    linkExpirationHours: survey.linkExpirationHours,
+    linkToken: survey.linkToken,
+    linkExpiresAt: survey.linkExpiresAt,
+    operatingHours: survey.operatingHours,
     questions: survey.perguntas.map((q) => ({
       ...q.toJSON(),
     })),
@@ -164,6 +184,11 @@ const updateSurvey = async (id, surveyData, tenantId = null) => {
     recompensaId,
     roletaId,
     roletaPrizeMessage,
+    isLinkExpirable,
+    linkExpirationHours,
+    linkToken,
+    linkExpiresAt,
+    operatingHours,
   } = surveyData;
 
   const transaction = await sequelize.transaction();
@@ -186,6 +211,11 @@ const updateSurvey = async (id, surveyData, tenantId = null) => {
         recompensaId,
         roletaId,
         roletaPrizeMessage,
+        isLinkExpirable,
+        linkExpirationHours,
+        linkToken,
+        linkExpiresAt,
+        operatingHours,
       },
       { where: whereClause, transaction },
     );
@@ -345,6 +375,11 @@ const findAllForList = async (tenantId = null, status = "all") => {
       "expectedRespondents",
       "askForAttendant",
       "tenantId",
+      "isLinkExpirable",
+      "linkExpirationHours",
+      "linkToken",
+      "linkExpiresAt",
+      "operatingHours",
     ],
     order: [["createdAt", "DESC"]],
   });

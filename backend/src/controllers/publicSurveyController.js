@@ -3,6 +3,7 @@ const publicSurveyRepository = require("../repositories/publicSurveyRepository")
 const clientRepository = require("../repositories/clientRepository");
 const { v4: uuidv4 } = require("uuid");
 const ApiError = require("../errors/ApiError");
+const { now, isWithinOperatingHours } = require("../utils/dateUtils");
 
 const getPublicSurveyById = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -10,6 +11,23 @@ const getPublicSurveyById = asyncHandler(async (req, res) => {
   if (!survey) {
     throw new ApiError(404, "Pesquisa não encontrada.");
   }
+
+  // Verificar se o link está expirado
+  if (survey.isLinkExpirable && survey.linkExpiresAt) {
+    const expirationDate = new Date(survey.linkExpiresAt);
+    if (now() > expirationDate) {
+      throw new ApiError(410, "Este link de pesquisa expirou.");
+    }
+  }
+
+  // Verificar horários de funcionamento
+  if (!isWithinOperatingHours(survey.operatingHours)) {
+    throw new ApiError(
+      403,
+      "Esta pesquisa não está disponível no momento devido ao horário de funcionamento.",
+    );
+  }
+
   res.json(survey);
 });
 
@@ -40,6 +58,23 @@ const submitSurveyResponses = asyncHandler(async (req, res) => {
   if (!survey) {
     throw new ApiError(404, "Pesquisa não encontrada.");
   }
+
+  // Verificar se o link está expirado antes de aceitar respostas
+  if (survey.isLinkExpirable && survey.linkExpiresAt) {
+    const expirationDate = new Date(survey.linkExpiresAt);
+    if (now() > expirationDate) {
+      throw new ApiError(410, "Este link de pesquisa expirou.");
+    }
+  }
+
+  // Verificar horários de funcionamento antes de aceitar respostas
+  if (!isWithinOperatingHours(survey.operatingHours)) {
+    throw new ApiError(
+      403,
+      "Esta pesquisa não está disponível no momento devido ao horário de funcionamento.",
+    );
+  }
+
   const tenantId = survey.tenantId;
 
   if (client && (client.phone || client.email)) {

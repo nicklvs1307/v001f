@@ -8,6 +8,7 @@ const {
   startOfMonth,
   endOfMonth,
   addDays,
+  addHours,
 } = require("date-fns");
 const { ptBR } = require("date-fns/locale");
 const { toZonedTime, fromZonedTime, format } = require("date-fns-tz");
@@ -119,4 +120,23 @@ module.exports = {
   startOfMonth: (date) => startOfMonth(toZonedTime(date, TIMEZONE)),
   endOfMonth: (date) => endOfMonth(toZonedTime(date, TIMEZONE)),
   addDays: (date, days) => addDays(toZonedTime(date, TIMEZONE), days),
+  addHours: (date, hours) => addHours(toZonedTime(date, TIMEZONE), hours),
+  isWithinOperatingHours: (operatingHours, checkDate = new Date()) => {
+    if (!operatingHours || !Array.isArray(operatingHours) || operatingHours.length === 0) {
+      return true; // Se não houver horários configurados, está sempre aberto
+    }
+
+    const localDate = toZonedTime(checkDate, TIMEZONE);
+    const dayOfWeek = localDate.getDay(); // 0 (Sun) to 6 (Sat)
+    const currentTime = format(localDate, "HH:mm");
+
+    return operatingHours.some(config => {
+      // config.days é um array de números (0-6)
+      // config.startTime e config.endTime são strings "HH:mm"
+      const isDayMatch = config.days.includes(dayOfWeek);
+      if (!isDayMatch) return false;
+
+      return currentTime >= config.startTime && currentTime <= config.endTime;
+    });
+  }
 };

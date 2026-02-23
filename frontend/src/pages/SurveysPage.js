@@ -28,6 +28,8 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import PersonIcon from '@mui/icons-material/Person';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import QrCodeIcon from '@mui/icons-material/QrCode';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Link } from '@mui/material';
 import surveyService from '../services/surveyService';
 import AuthContext from '../context/AuthContext';
@@ -96,6 +98,18 @@ const SurveyListPage = () => {
             showNotification('Falha ao gerar o QR Code.', 'error'); // Use global notification
         } finally {
             setQrCodeLoading(false);
+        }
+    };
+
+    const handleRenewLink = async (surveyId) => {
+        if (window.confirm('Tem certeza que deseja renovar o link desta pesquisa? O link atual deixará de funcionar imediatamente.')) {
+            try {
+                await surveyService.renewSurveyLink(surveyId);
+                showNotification('Link da pesquisa renovado com sucesso!', 'success');
+                fetchSurveyData();
+            } catch (err) {
+                showNotification(err.message || 'Falha ao renovar o link.', 'error');
+            }
         }
     };
 
@@ -337,6 +351,15 @@ const SurveyListPage = () => {
                                     </Typography>
                                     <Typography variant="caption" color="text.secondary">Data limite</Typography>
                                 </Grid>
+                                {survey.isLinkExpirable && (
+                                    <Grid item xs={6} md={3}>
+                                        <Typography variant="body2" color={new Date(survey.linkExpiresAt) < new Date() ? 'error' : 'text.primary'}>
+                                            <AccessTimeIcon fontSize="small" sx={{ verticalAlign: 'middle', mr: 0.5 }} />
+                                            {formatDateForDisplay(survey.linkExpiresAt, 'dd/MM/yyyy HH:mm')}
+                                        </Typography>
+                                        <Typography variant="caption" color="text.secondary">Link expira em</Typography>
+                                    </Grid>
+                                )}
                             </Grid>
 
                             <Box sx={{ mt: 3 }}>
@@ -379,6 +402,22 @@ const SurveyListPage = () => {
                                     onClick={() => handleGenerateQrCode(survey.publicUrl)}
                                 >
                                     <QrCodeIcon fontSize="small" sx={{ mr: 0.5 }} /> QR Code
+                                </Button>
+                                <Button 
+                                    variant="outlined" 
+                                    size="small" 
+                                    sx={{ mr: 1 }} 
+                                    onClick={() => handleRenewLink(survey.id)}
+                                >
+                                    <RefreshIcon fontSize="small" sx={{ mr: 0.5 }} /> Renovar Link
+                                </Button>
+                                <Button 
+                                    variant="outlined" 
+                                    size="small" 
+                                    sx={{ mr: 1 }} 
+                                    onClick={() => window.open(`${window.location.origin}/pesquisa-qrcode/${survey.tenantId}/${survey.linkToken || survey.id}`, '_blank')}
+                                >
+                                    <RestaurantIcon fontSize="small" sx={{ mr: 0.5 }} /> Link Garçons
                                 </Button>
                                 <Button 
                                     variant="outlined" 

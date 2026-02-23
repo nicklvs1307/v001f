@@ -32,7 +32,8 @@ import { ThemeProvider, useTheme } from '@mui/material/styles';
 import getDynamicTheme from '../getDynamicTheme';
 
 const isValidUUID = (uuid) => {
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    // UUID v4 regex
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     return uuidRegex.test(uuid);
 };
 
@@ -57,7 +58,15 @@ const PublicSurveyPage = () => {
                 const theme = getDynamicTheme({ primaryColor: data.primaryColor, secondaryColor: data.secondaryColor });
                 setDynamicTheme(theme);
             })
-            .catch(err => setError(err.message || 'Ocorreu um erro ao carregar a pesquisa.'))
+            .catch(err => {
+                if (err.response && err.response.status === 410) {
+                    setError('Este link de pesquisa expirou. Por favor, solicite um novo link ou QR Code.');
+                } else if (err.response && err.response.status === 403) {
+                    setError(err.response.data.message || 'Esta pesquisa não está disponível no momento devido ao horário de funcionamento.');
+                } else {
+                    setError(err.message || 'Ocorreu um erro ao carregar a pesquisa.');
+                }
+            })
             .finally(() => setLoading(false));
     }, [pesquisaId]);
 
@@ -169,9 +178,9 @@ const SurveyComponent = ({ survey, tenantId }) => {
         }
 
         if (storedPhone) {
-            navigate(`/confirmar-cliente/${pesquisaId}`);
+            navigate(`/confirmar-cliente/${survey.linkToken || pesquisaId}`);
         } else {
-            navigate(`/identificacao-pesquisa/${tenantId}/${pesquisaId}`);
+            navigate(`/identificacao-pesquisa/${tenantId}/${survey.linkToken || pesquisaId}`);
         }
     };
 
@@ -190,7 +199,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
         try {
             const finalAnswers = Object.values(answers).filter(a => a.perguntaId !== 'attendant-question' && a.valor !== null);
             const submissionData = { respostas: finalAnswers, atendenteId: selectedAtendente };
-            const response = await publicSurveyService.submitSurveyResponses(pesquisaId, submissionData.respostas, submissionData.atendenteId);
+            const response = await publicSurveyService.submitSurveyResponses(survey.linkToken || pesquisaId, submissionData.respostas, submissionData.atendenteId);
             setSubmissionResponse(response); // Salva a resposta completa no estado
 
             handleNavigation(response);

@@ -46,6 +46,15 @@ exports.deleteSurvey = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Pesquisa deletada com sucesso." });
 });
 
+exports.renewSurveyLink = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const updatedSurvey = await surveyService.renewSurveyLink(id, req.user);
+  res.status(200).json({
+    message: "Link da pesquisa renovado com sucesso!",
+    survey: updatedSurvey,
+  });
+});
+
 exports.getSurveyStats = asyncHandler(async (req, res) => {
   const stats = await surveyService.getSurveyStats(req.user);
   res.status(200).json(stats);

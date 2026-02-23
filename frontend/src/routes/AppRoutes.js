@@ -10,6 +10,7 @@ import PublicLayout from '../components/layout/PublicLayout';
 import LoginPage from '../pages/LoginPage';
 import LandingPage from '../pages/LandingPage';
 import PublicSurveyPage from '../pages/PublicSurveyPage';
+import SurveyPublicQrCodePage from '../pages/SurveyPublicQrCodePage';
 import ClientRegistrationPage from '../pages/ClientRegistrationPage';
 import RoulettePage from '../pages/RoulettePage';
 import CongratulationsPage from '../pages/CongratulationsPage';
@@ -110,6 +111,7 @@ const AppRoutes = () => {
         <Route path="/politica-de-privacidade" element={<PrivacyPolicyPage />} />
         <Route path="/termos-de-servico" element={<TermsOfServicePage />} />
         <Route path="/pesquisa/:tenantId/:pesquisaId" element={<PublicSurveyPage />} />
+        <Route path="/pesquisa-qrcode/:tenantId/:pesquisaId" element={<SurveyPublicQrCodePage />} />
         <Route path="/identificacao-pesquisa/:tenantId/:pesquisaId" element={<SurveyIdentifyPage />} />
         <Route path="/identificacao-cliente/:tenantId/:pesquisaId" element={<ClientIdentificationPage />} />
         <Route path="/confirmar-cliente/:surveyId" element={<ConfirmClientPage />} />

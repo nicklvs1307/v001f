@@ -7,7 +7,7 @@ const validate = require("../middlewares/validationMiddleware");
 // Rota pública para obter detalhes de uma pesquisa
 router.get(
   "/surveys/:id",
-  [param("id", "ID da pesquisa inválido").isUUID().not().isEmpty()],
+  [param("id", "ID da pesquisa inválido").not().isEmpty()],
   validate,
   publicSurveyController.getPublicSurveyById,
 );
@@ -32,7 +32,7 @@ router.get(
 router.post(
   "/surveys/:id/responses",
   [
-    param("id", "ID da pesquisa inválido").isUUID().not().isEmpty(),
+    param("id", "ID da pesquisa inválido").not().isEmpty(),
     check("clientId", "ID do cliente inválido").optional().isUUID(),
     check("respostas", "Respostas são obrigatórias e devem ser um array")
       .isArray()
@@ -50,7 +50,11 @@ router.post(
     check("atendenteId").custom(async (value, { req }) => {
       const surveyId = req.params.id;
       const { Pesquisa } = require("../../models");
-      const survey = await Pesquisa.findByPk(surveyId, {
+      const { Op } = require("sequelize");
+      const survey = await Pesquisa.findOne({
+        where: {
+          [Op.or]: [{ id: surveyId }, { linkToken: surveyId }],
+        },
         attributes: ["askForAttendant"],
       });
 
@@ -77,6 +81,12 @@ router.post(
 // Rota para submeter pesquisa + cliente identificado por telefone
 router.post(
   "/surveys/submit-with-client",
+  [
+    check("surveyId", "ID da pesquisa inválido").not().isEmpty(),
+    check("respondentSessionId", "Sessão inválida").not().isEmpty(),
+    check("client.phone", "Telefone é obrigatório").not().isEmpty(),
+  ],
+  validate,
   publicSurveyController.submitSurveyWithClient,
 );
 

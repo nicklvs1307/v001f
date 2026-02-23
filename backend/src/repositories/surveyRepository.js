@@ -225,55 +225,60 @@ const updateSurvey = async (id, surveyData, tenantId = null) => {
       return null;
     }
 
-    // 2. Busca as perguntas existentes no banco
-    const existingQuestions = await Pergunta.findAll({
-      where: { pesquisaId: id },
-      transaction,
-    });
-    const existingQuestionIds = existingQuestions.map((q) => q.id);
-    const incomingQuestionIds = questions.map((q) => q.id).filter((qId) => qId); // Filtra IDs undefined/null
-
-    // 3. Determina as ações (criar, atualizar, deletar)
-    const questionIdsToDelete = existingQuestionIds.filter(
-      (qId) => !incomingQuestionIds.includes(qId),
-    );
-    const questionsToCreate = questions.filter((q) => !q.id);
-    const questionsToUpdate = questions.filter(
-      (q) => q.id && existingQuestionIds.includes(q.id),
-    );
-
-    // 4. Executa as ações
-    if (questionIdsToDelete.length > 0) {
-      await Pergunta.destroy({
-        where: { id: questionIdsToDelete },
+    // Se questions for undefined, apenas atualizamos os campos da pesquisa e pulamos a lógica de perguntas
+    if (questions) {
+      // 2. Busca as perguntas existentes no banco
+      const existingQuestions = await Pergunta.findAll({
+        where: { pesquisaId: id },
         transaction,
       });
-    }
+      const existingQuestionIds = existingQuestions.map((q) => q.id);
+      const incomingQuestionIds = questions
+        .map((q) => q.id)
+        .filter((qId) => qId); // Filtra IDs undefined/null
 
-    if (questionsToCreate.length > 0) {
-      const newQuestions = questionsToCreate.map((q, index) => ({
-        pesquisaId: id,
-        text: q.text,
-        type: q.type,
-        options: q.options || null,
-        order: questions.findIndex((iq) => iq === q) + 1, // Mantém a ordem da requisição
-        criterioId: q.criterioId || null,
-      }));
-      await Pergunta.bulkCreate(newQuestions, { transaction });
-    }
+      // 3. Determina as ações (criar, atualizar, deletar)
+      const questionIdsToDelete = existingQuestionIds.filter(
+        (qId) => !incomingQuestionIds.includes(qId),
+      );
+      const questionsToCreate = questions.filter((q) => !q.id);
+      const questionsToUpdate = questions.filter(
+        (q) => q.id && existingQuestionIds.includes(q.id),
+      );
 
-    if (questionsToUpdate.length > 0) {
-      for (const q of questionsToUpdate) {
-        await Pergunta.update(
-          {
-            text: q.text,
-            type: q.type,
-            options: q.options || null,
-            order: questions.findIndex((iq) => iq.id === q.id) + 1, // Mantém a ordem da requisição
-            criterioId: q.criterioId || null,
-          },
-          { where: { id: q.id }, transaction },
-        );
+      // 4. Executa as ações
+      if (questionIdsToDelete.length > 0) {
+        await Pergunta.destroy({
+          where: { id: questionIdsToDelete },
+          transaction,
+        });
+      }
+
+      if (questionsToCreate.length > 0) {
+        const newQuestions = questionsToCreate.map((q, index) => ({
+          pesquisaId: id,
+          text: q.text,
+          type: q.type,
+          options: q.options || null,
+          order: questions.findIndex((iq) => iq === q) + 1, // Mantém a ordem da requisição
+          criterioId: q.criterioId || null,
+        }));
+        await Pergunta.bulkCreate(newQuestions, { transaction });
+      }
+
+      if (questionsToUpdate.length > 0) {
+        for (const q of questionsToUpdate) {
+          await Pergunta.update(
+            {
+              text: q.text,
+              type: q.type,
+              options: q.options || null,
+              order: questions.findIndex((iq) => iq.id === q.id) + 1, // Mantém a ordem da requisição
+              criterioId: q.criterioId || null,
+            },
+            { where: { id: q.id }, transaction },
+          );
+        }
       }
     }
 

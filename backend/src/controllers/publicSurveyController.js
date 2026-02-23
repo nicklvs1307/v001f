@@ -16,7 +16,12 @@ const getPublicSurveyById = asyncHandler(async (req, res) => {
   if (survey.isLinkExpirable && survey.linkExpiresAt) {
     const expirationDate = new Date(survey.linkExpiresAt);
     if (new Date() > expirationDate) {
-      throw new ApiError(410, "Este link de pesquisa expirou.");
+      const { formatInTimeZone } = require("../utils/dateUtils");
+      const formattedDate = formatInTimeZone(expirationDate, "dd/MM/yyyy HH:mm");
+      throw new ApiError(
+        410,
+        `Este link de pesquisa expirou em ${formattedDate}.`,
+      );
     }
   }
 
@@ -63,7 +68,12 @@ const submitSurveyResponses = asyncHandler(async (req, res) => {
   if (survey.isLinkExpirable && survey.linkExpiresAt) {
     const expirationDate = new Date(survey.linkExpiresAt);
     if (new Date() > expirationDate) {
-      throw new ApiError(410, "Este link de pesquisa expirou.");
+      const { formatInTimeZone } = require("../utils/dateUtils");
+      const formattedDate = formatInTimeZone(expirationDate, "dd/MM/yyyy HH:mm");
+      throw new ApiError(
+        410,
+        `Este link de pesquisa expirou em ${formattedDate}.`,
+      );
     }
   }
 

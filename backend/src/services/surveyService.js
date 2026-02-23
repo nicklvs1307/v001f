@@ -1,5 +1,5 @@
 const surveyRepository = require("../repositories/surveyRepository");
-const { convertFromTimeZone, now, addHours } = require("../utils/dateUtils");
+const { convertFromTimeZone, now, nowUTC, addHours } = require("../utils/dateUtils");
 const resultRepository = require("../repositories/resultRepository");
 const ApiError = require("../errors/ApiError");
 const ratingService = require("./ratingService"); // Importar o ratingService
@@ -29,7 +29,7 @@ const createSurvey = async (surveyData, requestingUser) => {
   let linkExpiresAt = null;
 
   if (isLinkExpirable) {
-    linkExpiresAt = addHours(now(), linkExpirationHours || 24);
+    linkExpiresAt = addHours(nowUTC(), linkExpirationHours || 24);
   }
 
   const survey = await surveyRepository.createSurvey({
@@ -78,7 +78,7 @@ const updateSurvey = async (surveyId, surveyData, requestingUser) => {
   // Se o link passou a ser expirável ou se o tempo de expiração mudou, atualizamos linkExpiresAt
   let linkExpiresAt = existingSurvey.linkExpiresAt;
   if (isLinkExpirable && !existingSurvey.isLinkExpirable) {
-    linkExpiresAt = addHours(now(), linkExpirationHours || 24);
+    linkExpiresAt = addHours(nowUTC(), linkExpirationHours || 24);
   } else if (!isLinkExpirable) {
     linkExpiresAt = null;
   }
@@ -118,7 +118,7 @@ const renewSurveyLink = async (surveyId, requestingUser) => {
   let linkExpiresAt = null;
 
   if (existingSurvey.isLinkExpirable) {
-    linkExpiresAt = addHours(now(), existingSurvey.linkExpirationHours || 24);
+    linkExpiresAt = addHours(nowUTC(), existingSurvey.linkExpirationHours || 24);
   }
 
   const updatedSurvey = await surveyRepository.updateSurvey(

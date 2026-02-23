@@ -3,7 +3,7 @@ const publicSurveyRepository = require("../repositories/publicSurveyRepository")
 const clientRepository = require("../repositories/clientRepository");
 const { v4: uuidv4 } = require("uuid");
 const ApiError = require("../errors/ApiError");
-const { now, isWithinOperatingHours } = require("../utils/dateUtils");
+const { nowUTC, isWithinOperatingHours } = require("../utils/dateUtils");
 
 const getPublicSurveyById = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -15,7 +15,7 @@ const getPublicSurveyById = asyncHandler(async (req, res) => {
   // Verificar se o link está expirado
   if (survey.isLinkExpirable && survey.linkExpiresAt) {
     const expirationDate = new Date(survey.linkExpiresAt);
-    if (new Date() > expirationDate) {
+    if (nowUTC() > expirationDate) {
       const { formatInTimeZone } = require("../utils/dateUtils");
       const formattedDate = formatInTimeZone(expirationDate, "dd/MM/yyyy HH:mm");
       throw new ApiError(
@@ -67,7 +67,7 @@ const submitSurveyResponses = asyncHandler(async (req, res) => {
   // Verificar se o link está expirado antes de aceitar respostas
   if (survey.isLinkExpirable && survey.linkExpiresAt) {
     const expirationDate = new Date(survey.linkExpiresAt);
-    if (new Date() > expirationDate) {
+    if (nowUTC() > expirationDate) {
       const { formatInTimeZone } = require("../utils/dateUtils");
       const formattedDate = formatInTimeZone(expirationDate, "dd/MM/yyyy HH:mm");
       throw new ApiError(

@@ -16,11 +16,19 @@ const { toZonedTime, fromZonedTime, format } = require("date-fns-tz");
 const TIMEZONE = "America/Sao_Paulo";
 
 /**
- * Retorna a data e hora atual no fuso horário de São Paulo.
+ * Retorna a data e hora atual no fuso horário de São Paulo para fins de lógica/exibição.
  * @returns {Date} A data e hora atual em São Paulo.
  */
 const now = () => {
   return toZonedTime(new Date(), TIMEZONE);
+};
+
+/**
+ * Retorna a data e hora atual em UTC para salvamento em banco de dados.
+ * @returns {Date}
+ */
+const nowUTC = () => {
+  return new Date();
 };
 
 /**
@@ -105,6 +113,7 @@ const getPeriodDateRange = (
 module.exports = {
   TIMEZONE,
   now,
+  nowUTC,
   convertToTimeZone,
   convertToUtc,
   formatInTimeZone,
@@ -120,26 +129,28 @@ module.exports = {
   startOfMonth: (date) => startOfMonth(toZonedTime(date, TIMEZONE)),
   endOfMonth: (date) => endOfMonth(toZonedTime(date, TIMEZONE)),
   addDays: (date, days) => addDays(toZonedTime(date, TIMEZONE), days),
-  addHours: (date, hours) => addHours(toZonedTime(date, TIMEZONE), hours),
+  addHours: (date, hours) => addHours(date, hours), // Use date-fns directly, no zoning here
   isWithinOperatingHours: (operatingHours, checkDate = new Date()) => {
-    if (!operatingHours || !Array.isArray(operatingHours) || operatingHours.length === 0) {
+    if (
+      !operatingHours ||
+      !Array.isArray(operatingHours) ||
+      operatingHours.length === 0
+    ) {
       return true; // Se não houver horários configurados, está sempre aberto
     }
 
     // Usar data local de SP para verificar dia e hora
     const localDate = toZonedTime(checkDate, TIMEZONE);
     const dayOfWeek = localDate.getDay(); // 0 (Sun) to 6 (Sat)
-    
+
     // Formatar como HH:mm para comparação de string (ex: "18:30")
     const currentTime = format(localDate, "HH:mm", { timeZone: TIMEZONE });
 
-    return operatingHours.some(config => {
-      // config.days é um array de números (0-6)
-      // config.startTime e config.endTime são strings "HH:mm"
+    return operatingHours.some((config) => {
       const isDayMatch = (config.days || []).includes(dayOfWeek);
       if (!isDayMatch) return false;
 
       return currentTime >= config.startTime && currentTime <= config.endTime;
     });
-  }
+  },
 };

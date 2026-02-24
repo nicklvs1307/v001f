@@ -50,6 +50,11 @@ const automationService = {
         messageTemplate: config.postSaleMessageTemplate,
         surveyId: config.postSaleSurveyId,
       },
+      waiterLinkAutomation: {
+        enabled: config.waiterLinkAutomationEnabled,
+        messageTemplate: config.waiterLinkMessageTemplate,
+        phoneNumbers: config.waiterLinkPhoneNumbers,
+      },
       detractorAutomation: {
         enabled: config.sendDetractorMessageToClient,
         messageTemplate: config.detractorMessageTemplate,
@@ -68,6 +73,7 @@ const automationService = {
       birthdayAutomation,
       detractorAutomation,
       postSaleAutomation,
+      waiterLinkAutomation,
     } = data;
 
     const configData = {
@@ -96,6 +102,11 @@ const automationService = {
         ? postSaleAutomation.messageTemplate
         : null,
       postSaleSurveyId: postSaleAutomation ? postSaleAutomation.surveyId : null,
+
+      // Novo campo de Link do Garçom
+      waiterLinkAutomationEnabled: waiterLinkAutomation ? waiterLinkAutomation.enabled : false,
+      waiterLinkMessageTemplate: waiterLinkAutomation ? waiterLinkAutomation.messageTemplate : null,
+      waiterLinkPhoneNumbers: waiterLinkAutomation ? waiterLinkAutomation.phoneNumbers : null,
     };
 
     await whatsappConfigRepository.updateByTenant(tenantId, configData);
@@ -162,6 +173,36 @@ const automationService = {
       );
     }
     return { message: "Relatório de teste enviado com sucesso!" };
+  },
+
+  triggerWaiterLinkUpdate: async (tenantId, surveyTitle, newLink) => {
+    try {
+      const config = await whatsappConfigRepository.findByTenant(tenantId);
+      if (!config || !config.waiterLinkAutomationEnabled || !config.waiterLinkPhoneNumbers) {
+        return;
+      }
+
+      const messageTemplate = config.waiterLinkMessageTemplate || "Olá! O novo link da pesquisa {{pesquisa}} é: {{link}}";
+      const message = messageTemplate
+        .replace("{{pesquisa}}", surveyTitle)
+        .replace("{{link}}", newLink);
+
+      const numbersArray = config.waiterLinkPhoneNumbers
+        .split(",")
+        .map((num) => num.trim())
+        .filter((num) => num);
+
+      for (const number of numbersArray) {
+        try {
+          await whatsappService.sendTenantMessage(tenantId, number, message);
+          console.log(`[Automation] Link de garçom enviado para ${number} (Tenant: ${tenantId})`);
+        } catch (err) {
+          console.error(`[Automation] Erro ao enviar link de garçom para ${number}:`, err.message);
+        }
+      }
+    } catch (error) {
+      console.error("[Automation] Erro no trigger de link de garçom:", error.message);
+    }
   },
 };
 

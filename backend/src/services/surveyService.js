@@ -3,6 +3,7 @@ const { convertFromTimeZone, now, nowUTC, addHours } = require("../utils/dateUti
 const resultRepository = require("../repositories/resultRepository");
 const ApiError = require("../errors/ApiError");
 const ratingService = require("./ratingService"); // Importar o ratingService
+const automationService = require("./automationService");
 const { calculateAgeDistribution } = require("../utils/demographicsUtils");
 const { v4: uuidv4 } = require("uuid");
 
@@ -89,6 +90,13 @@ const updateSurvey = async (surveyId, surveyData, requestingUser) => {
     tenantId,
   );
 
+  // Trigger automation for waiter link update if it was just enabled
+  if (isLinkExpirable && !existingSurvey.isLinkExpirable) {
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+    const publicUrl = `${frontendUrl}/pesquisa/${updatedSurvey.tenantId}/${updatedSurvey.linkToken || updatedSurvey.id}`;
+    automationService.triggerWaiterLinkUpdate(updatedSurvey.tenantId, updatedSurvey.title, publicUrl);
+  }
+
   return updatedSurvey;
 };
 
@@ -126,6 +134,16 @@ const renewSurveyLink = async (surveyId, requestingUser) => {
     { linkToken, linkExpiresAt },
     tenantId,
   );
+
+  // Trigger automation for waiter link update
+  if (updatedSurvey.isLinkExpirable) {
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+    const publicUrl = `${frontendUrl}/pesquisa/${updatedSurvey.tenantId}/${updatedSurvey.linkToken || updatedSurvey.id}`;
+    
+    // Usamos await ou não dependendo se queremos que seja assíncrono. 
+    // Como é uma mensagem de WhatsApp, melhor não travar a resposta da API.
+    automationService.triggerWaiterLinkUpdate(updatedSurvey.tenantId, updatedSurvey.title, publicUrl);
+  }
 
   return updatedSurvey;
 };

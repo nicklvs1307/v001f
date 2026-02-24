@@ -32,6 +32,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CakeIcon from '@mui/icons-material/Cake';
 import SmsFailedOutlinedIcon from '@mui/icons-material/SmsFailedOutlined';
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
+import LinkIcon from '@mui/icons-material/Link';
 
 import automationService from '../services/automationService';
 import recompensaService from '../services/recompensaService';
@@ -65,6 +66,11 @@ const initialAutomationState = {
     messageTemplate: 'Olá {{cliente}}! Agradecemos o seu pedido. Poderia nos dar um feedback rápido para melhorarmos? {{link_pesquisa}}',
     surveyId: '',
   },
+  waiterLinkAutomation: {
+    enabled: false,
+    messageTemplate: 'Olá! O novo link da pesquisa {{pesquisa}} é: {{link}}',
+    phoneNumbers: '',
+  },
 };
 
 const AutomationItem = styled(Paper)(({ theme }) => ({
@@ -80,7 +86,7 @@ const AutomationItem = styled(Paper)(({ theme }) => ({
 const AutomationsPage = () => {
   const [automations, setAutomations] = useState(initialAutomationState);
   const [originalAutomations, setOriginalAutomations] = useState(initialAutomationState);
-  const [open, setOpen] = useState({ dailyReport: false, weeklyReport: false, monthlyReport: false, prizeRoulette: false, couponReminder: false, birthdayAutomation: false, detractorAutomation: false, postSaleAutomation: false });
+  const [open, setOpen] = useState({ dailyReport: false, weeklyReport: false, monthlyReport: false, prizeRoulette: false, couponReminder: false, birthdayAutomation: false, detractorAutomation: false, postSaleAutomation: false, waiterLinkAutomation: false });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -476,6 +482,56 @@ const AutomationsPage = () => {
                 </FormControl>
               )}
               <AutomationTester automationType="birthday" onTestSent={handleTestSent} />
+            </Box>
+          </Collapse>
+        </AutomationItem>
+
+        {/* Automação de Link do Garçom (Expirável) */}
+        <AutomationItem>
+          <ListItem onClick={() => setOpen(prev => ({ ...prev, waiterLinkAutomation: !prev.waiterLinkAutomation }))} sx={{ cursor: 'pointer' }}>
+            <ListItemIcon><LinkIcon /></ListItemIcon>
+            <ListItemText 
+                primary="Link do Garçom / Expirável" 
+                secondary="Notificar números específicos quando um link de pesquisa expira ou é renovado." 
+            />
+            <Switch
+              edge="end"
+              onChange={() => handleToggle('waiterLinkAutomation')}
+              checked={automations.waiterLinkAutomation.enabled}
+              onClick={(e) => e.stopPropagation()}
+            />
+            {open.waiterLinkAutomation ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={open.waiterLinkAutomation} timeout="auto" unmountOnExit>
+            <Box sx={{ p: 2, pl: 4, borderTop: '1px solid #eee' }}>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                Esta automação envia o novo link para os números abaixo sempre que o link de uma pesquisa (com expiração ativa) for renovado.
+              </Typography>
+
+              <TextField
+                label="Números de Telefone"
+                value={automations.waiterLinkAutomation.phoneNumbers || ''}
+                onChange={(e) => handleChange('waiterLinkAutomation', 'phoneNumbers', e.target.value)}
+                fullWidth
+                multiline
+                rows={2}
+                helperText="Insira os números com DDI e DDD, separados por vírgula."
+                margin="normal"
+                disabled={!automations.waiterLinkAutomation.enabled}
+              />
+
+              <TextField
+                label="Mensagem Template"
+                value={automations.waiterLinkAutomation.messageTemplate}
+                onChange={(e) => handleChange('waiterLinkAutomation', 'messageTemplate', e.target.value)}
+                fullWidth
+                multiline
+                rows={3}
+                helperText="Variáveis: {{pesquisa}}, {{link}}"
+                margin="normal"
+                disabled={!automations.waiterLinkAutomation.enabled}
+              />
+              {/* Nota: Se quiser um testador, precisaria adicionar suporte em AutomationTester */}
             </Box>
           </Collapse>
         </AutomationItem>

@@ -202,6 +202,20 @@ module.exports = (sequelize, DataTypes) => {
     lastMonthlyReportSentAt: {
       type: DataTypes.DATE,
       allowNull: true,
+    },
+    waiterLinkAutomationEnabled: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    waiterLinkMessageTemplate: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      defaultValue: 'Olá! O novo link da pesquisa é: {{link}}',
+    },
+    waiterLinkPhoneNumbers: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     }
   }, {
     sequelize,

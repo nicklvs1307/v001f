@@ -81,6 +81,11 @@ const whatsappConfigController = {
         messageTemplate: config.postSaleMessageTemplate,
         surveyId: config.postSaleSurveyId,
       },
+      waiterLinkAutomation: {
+        enabled: config.waiterLinkAutomationEnabled,
+        messageTemplate: config.waiterLinkMessageTemplate,
+        phoneNumbers: config.waiterLinkPhoneNumbers,
+      },
     };
 
     res.json(response);
@@ -126,6 +131,10 @@ const whatsappConfigController = {
       postSaleDelayMinutes: data.postSaleAutomation.delayMinutes,
       postSaleMessageTemplate: data.postSaleAutomation.messageTemplate,
       postSaleSurveyId: data.postSaleAutomation.surveyId || null,
+      // Mapeamento para waiterLinkAutomation
+      waiterLinkAutomationEnabled: data.waiterLinkAutomation.enabled,
+      waiterLinkMessageTemplate: data.waiterLinkAutomation.messageTemplate,
+      waiterLinkPhoneNumbers: data.waiterLinkAutomation.phoneNumbers,
     };
     await config.update(configUpdateData);
 

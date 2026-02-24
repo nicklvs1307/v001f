@@ -13,8 +13,8 @@ const task = cron.schedule(
     console.log("[Job] Iniciando verificação de cupons expirados...");
 
     try {
-      const today = now();
-      const startOfToday = startOfDay(today);
+      const { getStartOfDayUTC } = require("../utils/dateUtils");
+      const startOfToday = getStartOfDayUTC(now());
 
       const [updateCount] = await Cupom.update(
         { status: "expired" },

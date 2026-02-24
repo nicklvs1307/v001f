@@ -15,9 +15,10 @@ const weeklyReportTask = cron.schedule(
     console.log("[Weekly Report Job] Iniciando verificação de relatórios semanais...");
 
     try {
-      const now = new Date();
-      const dayOfWeek = parseInt(formatInTimeZone(now, "i")); // 1 = Segunda, 7 = Domingo
-      const hour = parseInt(formatInTimeZone(now, "HH"));
+      const { now: getZonedNow } = require("../utils/dateUtils");
+      const now = getZonedNow();
+      const dayOfWeek = now.getDay() === 0 ? 7 : now.getDay(); // Converter 0 (Dom) para 7 se necessário, ou usar direto se a lógica for baseada em 1-7
+      const hour = now.getHours();
 
       // Só envia na segunda-feira (1) a partir das 08:00 AM
       if (dayOfWeek !== 1 || hour < 8) {
@@ -49,8 +50,9 @@ const weeklyReportTask = cron.schedule(
           if (!tenant) continue;
 
           const lastWeek = subWeeks(now, 1);
-          const startOfLastWeek = startOfWeek(lastWeek, { weekStartsOn: 1 });
-          const endOfLastWeek = endOfWeek(lastWeek, { weekStartsOn: 1 });
+          const { convertToUtc } = require("../utils/dateUtils");
+          const startOfLastWeek = convertToUtc(startOfWeek(lastWeek, { weekStartsOn: 1 }));
+          const endOfLastWeek = convertToUtc(endOfWeek(lastWeek, { weekStartsOn: 1 }));
 
           const [weeklySummary, surveySummaries] = await Promise.all([
             dashboardRepository.getSummary(config.tenantId, startOfLastWeek, endOfLastWeek),

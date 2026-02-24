@@ -70,6 +70,7 @@ const birthdayTask = cron.schedule(
             cupomCode = `NIVER${clientFirstName}${randomDigits}`;
 
             // 1. Gerar Cupom
+            const { convertToUtc, getEndOfDayUTC } = require("../utils/dateUtils");
             if (config.birthdayRewardType === "recompensa") {
               const recompensa = await recompensaRepository.findById(
                 config.birthdayRewardId,
@@ -77,7 +78,7 @@ const birthdayTask = cron.schedule(
               if (recompensa) {
                 rewardName = recompensa.name;
                 rewardRules = recompensa.conditionDescription || "";
-                const expiryDate = endOfDay(
+                const expiryDate = getEndOfDayUTC(
                   addDays(now(), config.birthdayCouponValidityDays),
                 );
                 novoCupom = await cupomRepository.create({
@@ -86,7 +87,7 @@ const birthdayTask = cron.schedule(
                   clienteId: client.id,
                   tenantId: config.tenantId,
                   dataValidade: expiryDate,
-                  dataGeracao: new Date(),
+                  dataGeracao: convertToUtc(now()),
                   status: "active",
                 });
               }
@@ -97,7 +98,7 @@ const birthdayTask = cron.schedule(
               if (roleta) {
                 rewardName = roleta.name; // Ou outro campo relevante da roleta
                 rewardRules = ""; // Roleta geralmente não tem regras fixas aqui
-                const expiryDate = endOfDay(
+                const expiryDate = getEndOfDayUTC(
                   addDays(now(), config.birthdayCouponValidityDays),
                 );
                 novoCupom = await cupomRepository.create({
@@ -106,7 +107,7 @@ const birthdayTask = cron.schedule(
                   clienteId: client.id,
                   tenantId: config.tenantId,
                   dataValidade: expiryDate,
-                  dataGeracao: new Date(),
+                  dataGeracao: convertToUtc(now()),
                   status: "active",
                 });
               }

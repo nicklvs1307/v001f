@@ -902,11 +902,33 @@ const getEvolutionData = async (
   const registrationTrends = await Client.findAll({
     where: whereClause,
     attributes: [
-      [fn("date_trunc", period, col("createdAt")), "period"],
+      [
+        fn(
+          "date_trunc",
+          period,
+          literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`),
+        ),
+        "period",
+      ],
       [fn("COUNT", col("id")), "registrations"],
     ],
-    group: [fn("date_trunc", period, col("createdAt"))],
-    order: [[fn("date_trunc", period, col("createdAt")), "ASC"]],
+    group: [
+      fn(
+        "date_trunc",
+        period,
+        literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`),
+      ),
+    ],
+    order: [
+      [
+        fn(
+          "date_trunc",
+          period,
+          literal(`"createdAt" AT TIME ZONE '${TIMEZONE}'`),
+        ),
+        "ASC",
+      ],
+    ],
     raw: true,
   });
 

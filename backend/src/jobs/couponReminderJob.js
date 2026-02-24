@@ -52,6 +52,8 @@ const task = cron.schedule(
 
         const todayInZone = now();
         const targetDate = addDays(todayInZone, daysBefore);
+        const { getStartOfDayUTC, getEndOfDayUTC } = require("../utils/dateUtils");
+        
         console.log(`[Job] Data alvo para o tenant ${tenantId}: ${targetDate}`);
 
         const couponsToRemind = await Cupom.findAll({
@@ -59,8 +61,8 @@ const task = cron.schedule(
             tenantId,
             status: "active",
             dataValidade: {
-              [Op.gte]: startOfDay(targetDate),
-              [Op.lt]: endOfDay(targetDate),
+              [Op.gte]: getStartOfDayUTC(targetDate),
+              [Op.lt]: getEndOfDayUTC(targetDate),
             },
           },
           include: [

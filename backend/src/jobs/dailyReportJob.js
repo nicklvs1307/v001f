@@ -19,8 +19,9 @@ const dailyReportTask = cron.schedule(
     console.log("[Daily Report Job] Iniciando verificação de relatórios diários...");
 
     try {
-      const now = new Date();
-      const hour = parseInt(formatInTimeZone(now, "HH"));
+      const { now: getZonedNow } = require("../utils/dateUtils");
+      const now = getZonedNow();
+      const hour = now.getHours();
 
       // Só envia relatórios a partir das 08:00 AM (Horário de Brasília)
       if (hour < 8) {
@@ -51,17 +52,17 @@ const dailyReportTask = cron.schedule(
           const tenant = await tenantRepository.getTenantById(config.tenantId);
           if (!tenant) continue;
 
-          // Ontem
+          // Ontem (Horário de Brasília)
           const yesterday = subDays(now, 1);
-          const yesterdayDateString = formatInTimeZone(yesterday, "yyyy-MM-dd");
-          const startOfYesterdayZoned = convertToUtc(new Date(`${yesterdayDateString}T00:00:00.000Z`));
-          const endOfYesterdayZoned = convertToUtc(new Date(`${yesterdayDateString}T23:59:59.999Z`));
+          const { getStartOfDayUTC, getEndOfDayUTC } = require("../utils/dateUtils");
+          
+          const startOfYesterdayZoned = getStartOfDayUTC(yesterday);
+          const endOfYesterdayZoned = getEndOfDayUTC(yesterday);
 
           // Anteontem (para comparação)
           const twoDaysAgo = subDays(now, 2);
-          const twoDaysAgoDateString = formatInTimeZone(twoDaysAgo, "yyyy-MM-dd");
-          const startOfTwoDaysAgoZoned = convertToUtc(new Date(`${twoDaysAgoDateString}T00:00:00.000Z`));
-          const endOfTwoDaysAgoZoned = convertToUtc(new Date(`${twoDaysAgoDateString}T23:59:59.999Z`));
+          const startOfTwoDaysAgoZoned = getStartOfDayUTC(twoDaysAgo);
+          const endOfTwoDaysAgoZoned = getEndOfDayUTC(twoDaysAgo);
 
           const [yesterdaySummary, twoDaysAgoSummary, surveySummaries] = await Promise.all([
             dashboardRepository.getSummary(config.tenantId, startOfYesterdayZoned, endOfYesterdayZoned),

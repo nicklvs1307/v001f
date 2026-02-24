@@ -16,9 +16,10 @@ const monthlyReportTask = cron.schedule(
     console.log("[Monthly Report Job] Iniciando verificação de relatórios mensais...");
 
     try {
-      const now = new Date();
-      const dayOfMonth = parseInt(formatInTimeZone(now, "d"));
-      const hour = parseInt(formatInTimeZone(now, "HH"));
+      const { now: getZonedNow } = require("../utils/dateUtils");
+      const now = getZonedNow();
+      const dayOfMonth = now.getDate();
+      const hour = now.getHours();
 
       // Só envia no dia 1º a partir das 08:00 AM
       if (dayOfMonth !== 1 || hour < 8) {
@@ -50,8 +51,9 @@ const monthlyReportTask = cron.schedule(
           if (!tenant) continue;
 
           const lastMonth = subMonths(now, 1);
-          const startOfLastMonth = startOfMonth(lastMonth);
-          const endOfLastMonth = endOfMonth(lastMonth);
+          const { convertToUtc } = require("../utils/dateUtils");
+          const startOfLastMonth = convertToUtc(startOfMonth(lastMonth));
+          const endOfLastMonth = convertToUtc(endOfMonth(lastMonth));
 
           const [monthlySummary, surveySummaries] = await Promise.all([
             dashboardRepository.getSummary(config.tenantId, startOfLastMonth, endOfLastMonth),

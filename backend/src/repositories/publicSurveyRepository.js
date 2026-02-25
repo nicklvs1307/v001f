@@ -148,7 +148,7 @@ const submitSurveyResponses = async (
       where: {
         [Op.or]: [{ id: surveyId }, { linkToken: surveyId }],
       },
-      attributes: ["isOpen", "tenantId", "askForAttendant", "title"],
+      attributes: ["id", "isOpen", "tenantId", "askForAttendant", "title"],
       include: [
         {
           model: models.Pergunta,
@@ -192,7 +192,7 @@ const submitSurveyResponses = async (
 
       // Mapeamento do valor da resposta para o campo correto no banco de dados
       const responseData = {
-        pesquisaId: surveyId,
+        pesquisaId: survey.id,
         perguntaId: res.perguntaId,
         respondentSessionId: respondentSessionId,
         clienteId: clienteId,

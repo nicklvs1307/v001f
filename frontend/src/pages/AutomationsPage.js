@@ -486,13 +486,13 @@ const AutomationsPage = () => {
           </Collapse>
         </AutomationItem>
 
-        {/* Automação de Link do Garçom (Expirável) */}
+        {/* Automação de Link do Garçom (QR Code) */}
         <AutomationItem>
           <ListItem onClick={() => setOpen(prev => ({ ...prev, waiterLinkAutomation: !prev.waiterLinkAutomation }))} sx={{ cursor: 'pointer' }}>
             <ListItemIcon><LinkIcon /></ListItemIcon>
             <ListItemText 
-                primary="Link do Garçom / Expirável" 
-                secondary="Notificar números específicos quando um link de pesquisa expira ou é renovado." 
+                primary="Link do Garçom (QR Code)" 
+                secondary="Notificar números específicos com o link da página do QR Code quando a pesquisa é renovada." 
             />
             <Switch
               edge="end"
@@ -505,7 +505,7 @@ const AutomationsPage = () => {
           <Collapse in={open.waiterLinkAutomation} timeout="auto" unmountOnExit>
             <Box sx={{ p: 2, pl: 4, borderTop: '1px solid #eee' }}>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                Esta automação envia o novo link para os números abaixo sempre que o link de uma pesquisa (com expiração ativa) for renovado.
+                Esta automação envia o link da página do QR Code para os números abaixo sempre que o link de uma pesquisa (com expiração ativa) for renovado.
               </Typography>
 
               <TextField
@@ -527,7 +527,7 @@ const AutomationsPage = () => {
                 fullWidth
                 multiline
                 rows={3}
-                helperText="Variáveis: {{pesquisa}}, {{link}}"
+                helperText="Variáveis: {{pesquisa}}, {{link}} (Link do QR Code)"
                 margin="normal"
                 disabled={!automations.waiterLinkAutomation.enabled}
               />

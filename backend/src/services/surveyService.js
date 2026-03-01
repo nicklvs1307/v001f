@@ -100,6 +100,31 @@ const updateSurvey = async (surveyId, surveyData, requestingUser) => {
   return updatedSurvey;
 };
 
+const _renewSurveyLinkLogic = async (surveyId, tenantId, existingSurvey) => {
+  const { v4: uuidv4 } = require("uuid");
+  const linkToken = uuidv4();
+  let linkExpiresAt = null;
+
+  if (existingSurvey.isLinkExpirable) {
+    linkExpiresAt = addHours(nowUTC(), existingSurvey.linkExpirationHours || 24);
+  }
+
+  const updatedSurvey = await surveyRepository.updateSurvey(
+    surveyId,
+    { linkToken, linkExpiresAt },
+    tenantId,
+  );
+
+  // Trigger automation for waiter link update - APENAS se a pesquisa solicita atendente
+  if (updatedSurvey.isLinkExpirable && updatedSurvey.askForAttendant) {
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+    const waiterQrCodeUrl = `${frontendUrl}/pesquisa-qrcode/${updatedSurvey.tenantId}/${updatedSurvey.linkToken || updatedSurvey.id}`;
+    automationService.triggerWaiterLinkUpdate(updatedSurvey.tenantId, updatedSurvey.title, waiterQrCodeUrl);
+  }
+
+  return updatedSurvey;
+};
+
 const renewSurveyLink = async (surveyId, requestingUser) => {
   const tenantId =
     requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
@@ -122,30 +147,14 @@ const renewSurveyLink = async (surveyId, requestingUser) => {
     );
   }
 
-  const linkToken = uuidv4();
-  let linkExpiresAt = null;
+  return await _renewSurveyLinkLogic(surveyId, tenantId, existingSurvey);
+};
 
-  if (existingSurvey.isLinkExpirable) {
-    linkExpiresAt = addHours(nowUTC(), existingSurvey.linkExpirationHours || 24);
-  }
-
-  const updatedSurvey = await surveyRepository.updateSurvey(
-    surveyId,
-    { linkToken, linkExpiresAt },
-    tenantId,
-  );
-
-  // Trigger automation for waiter link update
-  if (updatedSurvey.isLinkExpirable) {
-    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
-    const waiterQrCodeUrl = `${frontendUrl}/pesquisa-qrcode/${updatedSurvey.tenantId}/${updatedSurvey.linkToken || updatedSurvey.id}`;
-    
-    // Usamos await ou não dependendo se queremos que seja assíncrono. 
-    // Como é uma mensagem de WhatsApp, melhor não travar a resposta da API.
-    automationService.triggerWaiterLinkUpdate(updatedSurvey.tenantId, updatedSurvey.title, waiterQrCodeUrl);
-  }
-
-  return updatedSurvey;
+// Nova função para uso do sistema (automações)
+const renewSurveyLinkSystem = async (surveyId, tenantId) => {
+  const existingSurvey = await surveyRepository.getSurveyById(surveyId, tenantId);
+  if (!existingSurvey) return null;
+  return await _renewSurveyLinkLogic(surveyId, tenantId, existingSurvey);
 };
 
 const deleteSurvey = async (surveyId, requestingUser) => {
@@ -434,6 +443,7 @@ module.exports = {
   createSurvey,
   updateSurvey,
   renewSurveyLink,
+  renewSurveyLinkSystem, // Adicionado aqui
   deleteSurvey,
   getSurveysList,
   getSurveyResultsById,

@@ -75,11 +75,27 @@ const surveyTriggerService = {
         return;
       }
 
-      // 3. Construir a URL pública da pesquisa
-      const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
-      const publicSurveyUrl = `${frontendUrl}/pesquisa/${tenantId}/${survey.id}?clientId=${client.id}&deliveryOrderId=${deliveryOrderId}`;
+      // 3. Verificar expiração e renovar se necessário (Segurança: Automações nunca enviam links expirados)
+      if (survey.isLinkExpirable && survey.linkExpiresAt) {
+        const { nowUTC } = require("../utils/dateUtils");
+        const expirationDate = new Date(survey.linkExpiresAt);
+        
+        if (nowUTC() > expirationDate) {
+          console.log(`[SurveyTrigger] Link da pesquisa ${survey.id} expirado. Renovando para envio de automação...`);
+          const surveyService = require("./surveyService");
+          const updatedSurvey = await surveyService.renewSurveyLinkSystem(survey.id, tenantId);
+          if (updatedSurvey) {
+            survey = updatedSurvey;
+          }
+        }
+      }
 
-      // 4. Montar a mensagem usando o template
+      // 4. Construir a URL pública da pesquisa (usamos linkToken se disponível para maior segurança)
+      const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+      const surveyIdentifier = survey.linkToken || survey.id;
+      const publicSurveyUrl = `${frontendUrl}/pesquisa/${tenantId}/${surveyIdentifier}?clientId=${client.id}&deliveryOrderId=${deliveryOrderId}`;
+
+      // 5. Montar a mensagem usando o template
       let messageTemplate =
         config?.postSaleMessageTemplate ||
         "Olá {{cliente}}! Agradecemos o seu pedido. Poderia nos dar um feedback rápido para melhorarmos? {{link_pesquisa}}";
@@ -89,10 +105,10 @@ const surveyTriggerService = {
         .replace("{{link_pesquisa}}", publicSurveyUrl)
         .replace("{{nome}}", client.name || "cliente"); // Alias comum
 
-      // 5. Enviar a mensagem via WhatsApp
+      // 6. Enviar a mensagem via WhatsApp
       await whatsappService.sendTenantMessage(tenantId, client.phone, message);
 
-      // 6. Atualizar status no DeliveryOrder
+      // 7. Atualizar status no DeliveryOrder
       await DeliveryOrder.update(
         {
           surveyStatus: "SENT",

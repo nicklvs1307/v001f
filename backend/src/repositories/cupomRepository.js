@@ -13,6 +13,10 @@ class CupomRepository {
   }
 
   async getAllCupons(tenantId = null, filters = {}) {
+    const page = parseInt(filters.page) || 1;
+    const limit = parseInt(filters.limit) || 10;
+    const offset = (page - 1) * limit;
+
     const whereClause = tenantId ? { tenantId } : {};
     const include = [
       { model: Recompensa, as: "recompensa" },
@@ -35,6 +39,12 @@ class CupomRepository {
       };
     }
 
+    if (filters.useStartDate && filters.useEndDate) {
+      whereClause.dataUtilizacao = {
+        [Op.between]: [new Date(filters.useStartDate), new Date(filters.useEndDate)],
+      };
+    }
+
     if (filters.search) {
       const searchTerm = `%${filters.search}%`;
       whereClause[Op.or] = [
@@ -44,11 +54,22 @@ class CupomRepository {
       ];
     }
 
-    return Cupom.findAll({
+    const { count, rows } = await Cupom.findAndCountAll({
       where: whereClause,
       include: include,
       order: [["dataGeracao", "DESC"]],
+      limit: limit,
+      offset: offset,
+      distinct: true, // Necessário quando usamos include para contar corretamente
     });
+
+    return {
+      cupons: rows,
+      total: count,
+      page,
+      limit,
+      totalPages: Math.ceil(count / limit),
+    };
   }
 
   async getCuponsSummary(tenantId = null) {

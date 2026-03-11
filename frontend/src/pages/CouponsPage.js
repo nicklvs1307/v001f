@@ -26,6 +26,7 @@ import {
   Grid,
   Divider,
   Snackbar,
+  TablePagination,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import AddIcon from '@mui/icons-material/Add';
@@ -58,6 +59,11 @@ const CupomListPage = () => {
   const [selectedCupom, setSelectedCupom] = useState(null);
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   
+  // Estados para paginação
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalCupons, setTotalCupons] = useState(0);
+
   // Estado para o valor do input de busca, separado dos filtros da API
   const [searchTerm, setSearchTerm] = useState('');
   
@@ -67,6 +73,8 @@ const CupomListPage = () => {
     recompensaId: '',
     startDate: null,
     endDate: null,
+    useStartDate: null,
+    useEndDate: null,
   });
   const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -75,11 +83,22 @@ const CupomListPage = () => {
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
 
-  const fetchCupons = useCallback(async (appliedFilters) => {
+  const fetchCupons = useCallback(async (appliedFilters, currentPage, currentRowsPerPage) => {
     try {
       setLoading(true);
-      const data = await cupomService.getAllCupons(appliedFilters);
-      setCupons(Array.isArray(data) ? data : []);
+      const data = await cupomService.getAllCupons({
+        ...appliedFilters,
+        page: currentPage + 1,
+        limit: currentRowsPerPage
+      });
+      
+      if (data && data.cupons) {
+        setCupons(data.cupons);
+        setTotalCupons(data.total);
+      } else {
+        setCupons(Array.isArray(data) ? data : []);
+        setTotalCupons(Array.isArray(data) ? data.length : 0);
+      }
     } catch (err) {
       setError(err.message || 'Erro ao buscar cupons.');
     } finally {
@@ -91,6 +110,7 @@ const CupomListPage = () => {
   useEffect(() => {
     const timerId = setTimeout(() => {
       setFilters((prev) => ({ ...prev, search: searchTerm }));
+      setPage(0); // Volta para a primeira página ao pesquisar
     }, 500);
 
     return () => {
@@ -98,26 +118,24 @@ const CupomListPage = () => {
     };
   }, [searchTerm]);
 
-  // Efeito para buscar os dados quando os filtros mudam
+  // Efeito para buscar os dados quando os filtros ou paginação mudam
   useEffect(() => {
-    fetchCupons(filters);
-  }, [filters, fetchCupons]);
+    fetchCupons(filters, page, rowsPerPage);
+  }, [filters, page, rowsPerPage, fetchCupons]);
 
-  useEffect(() => {
-    const fetchRecompensas = async () => {
-      try {
-        const data = await recompensaService.getAll();
-        setRecompensas(Array.isArray(data) ? data : []);
-      } catch (err) {
-        console.error('Erro ao buscar recompensas:', err);
-      }
-    };
-    fetchRecompensas();
-  }, []);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   const handleNonSearchFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
+    setPage(0); // Reseta para a primeira página ao mudar filtros
   };
   
   const handleSearchChange = (e) => {
@@ -136,7 +154,10 @@ const CupomListPage = () => {
       recompensaId: '',
       startDate: null,
       endDate: null,
+      useStartDate: null,
+      useEndDate: null,
     });
+    setPage(0);
   };
 
   const handleOpenGenerateForm = () => {
@@ -164,7 +185,7 @@ const CupomListPage = () => {
     try {
       await cupomService.generateCupom(newCupomData);
       setNotification({ open: true, message: 'Cupom gerado com sucesso!', severity: 'success' });
-      fetchCupons(filters);
+      fetchCupons(filters, page, rowsPerPage);
       handleCloseGenerateForm();
     } catch (err) {
       setNotification({ open: true, message: err.message || 'Falha ao gerar cupom.', severity: 'error' });
@@ -202,7 +223,7 @@ const CupomListPage = () => {
       setNotification({ open: true, message: 'Cupom cancelado com sucesso!', severity: 'success' });
       handleCloseCancelDialog();
       handleCloseDetailsDialog();
-      fetchCupons(filters);
+      fetchCupons(filters, page, rowsPerPage);
     } catch (err) {
       setNotification({ open: true, message: err.message || 'Falha ao cancelar o cupom.', severity: 'error' });
     } finally {
@@ -218,7 +239,7 @@ const CupomListPage = () => {
       await cupomService.validateCupom(selectedCupom.codigo);
       setNotification({ open: true, message: 'Cupom validado com sucesso!', severity: 'success' });
       handleCloseDetailsDialog();
-      fetchCupons(filters);
+      fetchCupons(filters, page, rowsPerPage);
     } catch (err) {
       setNotification({ open: true, message: err.message || 'Falha ao validar o cupom.', severity: 'error' });
     } finally {
@@ -339,9 +360,10 @@ const CupomListPage = () => {
               </Select>
             </FormControl>
           </Grid>
+
           <Grid item xs={12} sm={6} md={2}>
             <DatePicker
-              label="Data Início"
+              label="Gerado em (Início)"
               value={filters.startDate}
               onChange={(date) => handleDateChange('startDate', date)}
               renderInput={(params) => <TextField {...params} fullWidth size="small" />}
@@ -349,7 +371,7 @@ const CupomListPage = () => {
           </Grid>
           <Grid item xs={12} sm={6} md={2}>
             <DatePicker
-              label="Data Fim"
+              label="Gerado em (Fim)"
               value={filters.endDate}
               onChange={(date) => handleDateChange('endDate', date)}
               renderInput={(params) => <TextField {...params} fullWidth size="small" />}
@@ -360,9 +382,34 @@ const CupomListPage = () => {
               fullWidth
               variant="outlined"
               onClick={handleClearFilters}
+              size="small"
+              sx={{ height: '40px' }}
             >
               Limpar
             </Button>
+          </Grid>
+
+          {/* Segunda linha de filtros para utilização */}
+          <Grid item xs={12} md={3}>
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5, fontWeight: 'bold' }}>
+              FILTRAR POR DATA DE UTILIZAÇÃO:
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6} md={2}>
+            <DatePicker
+              label="Usado em (Início)"
+              value={filters.useStartDate}
+              onChange={(date) => handleDateChange('useStartDate', date)}
+              renderInput={(params) => <TextField {...params} fullWidth size="small" />}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={2}>
+            <DatePicker
+              label="Usado em (Fim)"
+              value={filters.useEndDate}
+              onChange={(date) => handleDateChange('useEndDate', date)}
+              renderInput={(params) => <TextField {...params} fullWidth size="small" />}
+            />
           </Grid>
         </Grid>
       </Paper>
@@ -410,6 +457,17 @@ const CupomListPage = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          component="div"
+          count={totalCupons}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          labelRowsPerPage="Linhas por página:"
+          labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count !== -1 ? count : `mais de ${to}`}`}
+        />
       </Paper>
 
       {selectedCupom && (

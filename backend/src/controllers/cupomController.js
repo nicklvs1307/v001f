@@ -27,13 +27,21 @@ const cupomController = {
 
     const codigo = uuidv4(); // Gerar um código único para o cupom
 
+    // Garantir que a data de validade seja o final do dia (23:59:59)
+    let finalDataValidade = dataValidade;
+    if (dataValidade) {
+      const date = new Date(dataValidade);
+      date.setHours(23, 59, 59, 999);
+      finalDataValidade = date;
+    }
+
     const cupom = await cupomRepository.create({
       tenantId: targetTenantId,
       recompensaId,
       codigo,
       clienteId,
       dataGeracao: now(),
-      dataValidade,
+      dataValidade: finalDataValidade,
     });
 
     res.status(201).json({ message: "Cupom gerado com sucesso!", cupom });

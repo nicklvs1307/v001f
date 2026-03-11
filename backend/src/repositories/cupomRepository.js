@@ -1,7 +1,7 @@
 const { Cupom, Recompensa, Client, Tenant, Pesquisa } = require("../../models");
 const { now } = require("../utils/dateUtils");
 const { Op, fn, col, literal } = require("sequelize");
-const { subDays, addDays } = require("date-fns");
+const { subDays, addDays, startOfDay, endOfDay } = require("date-fns");
 
 class CupomRepository {
   async bulkCreate(cupons) {
@@ -35,13 +35,13 @@ class CupomRepository {
 
     if (filters.startDate && filters.endDate) {
       whereClause.dataGeracao = {
-        [Op.between]: [new Date(filters.startDate), new Date(filters.endDate)],
+        [Op.between]: [startOfDay(new Date(filters.startDate)), endOfDay(new Date(filters.endDate))],
       };
     }
 
     if (filters.useStartDate && filters.useEndDate) {
       whereClause.dataUtilizacao = {
-        [Op.between]: [new Date(filters.useStartDate), new Date(filters.useEndDate)],
+        [Op.between]: [startOfDay(new Date(filters.useStartDate)), endOfDay(new Date(filters.useEndDate))],
       };
     }
 

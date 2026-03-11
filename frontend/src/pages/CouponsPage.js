@@ -73,8 +73,6 @@ const CupomListPage = () => {
     recompensaId: '',
     startDate: null,
     endDate: null,
-    useStartDate: null,
-    useEndDate: null,
   });
   const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -154,8 +152,6 @@ const CupomListPage = () => {
       recompensaId: '',
       startDate: null,
       endDate: null,
-      useStartDate: null,
-      useEndDate: null,
     });
     setPage(0);
   };
@@ -363,7 +359,7 @@ const CupomListPage = () => {
 
           <Grid item xs={12} sm={6} md={2}>
             <DatePicker
-              label="Gerado em (Início)"
+              label={filters.status === 'used' ? "Usado em (Início)" : "Gerado em (Início)"}
               value={filters.startDate}
               onChange={(date) => handleDateChange('startDate', date)}
               renderInput={(params) => <TextField {...params} fullWidth size="small" />}
@@ -371,7 +367,7 @@ const CupomListPage = () => {
           </Grid>
           <Grid item xs={12} sm={6} md={2}>
             <DatePicker
-              label="Gerado em (Fim)"
+              label={filters.status === 'used' ? "Usado em (Fim)" : "Gerado em (Fim)"}
               value={filters.endDate}
               onChange={(date) => handleDateChange('endDate', date)}
               renderInput={(params) => <TextField {...params} fullWidth size="small" />}
@@ -387,29 +383,6 @@ const CupomListPage = () => {
             >
               Limpar
             </Button>
-          </Grid>
-
-          {/* Segunda linha de filtros para utilização */}
-          <Grid item xs={12} md={3}>
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5, fontWeight: 'bold' }}>
-              FILTRAR POR DATA DE UTILIZAÇÃO:
-            </Typography>
-          </Grid>
-          <Grid item xs={12} sm={6} md={2}>
-            <DatePicker
-              label="Usado em (Início)"
-              value={filters.useStartDate}
-              onChange={(date) => handleDateChange('useStartDate', date)}
-              renderInput={(params) => <TextField {...params} fullWidth size="small" />}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={2}>
-            <DatePicker
-              label="Usado em (Fim)"
-              value={filters.useEndDate}
-              onChange={(date) => handleDateChange('useEndDate', date)}
-              renderInput={(params) => <TextField {...params} fullWidth size="small" />}
-            />
           </Grid>
         </Grid>
       </Paper>

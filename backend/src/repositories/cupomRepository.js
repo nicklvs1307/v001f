@@ -34,14 +34,9 @@ class CupomRepository {
     }
 
     if (filters.startDate && filters.endDate) {
-      whereClause.dataGeracao = {
+      const dateField = filters.status === 'used' ? 'dataUtilizacao' : 'dataGeracao';
+      whereClause[dateField] = {
         [Op.between]: [startOfDay(new Date(filters.startDate)), endOfDay(new Date(filters.endDate))],
-      };
-    }
-
-    if (filters.useStartDate && filters.useEndDate) {
-      whereClause.dataUtilizacao = {
-        [Op.between]: [startOfDay(new Date(filters.useStartDate)), endOfDay(new Date(filters.useEndDate))],
       };
     }
 

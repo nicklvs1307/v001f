@@ -7,27 +7,29 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import SuperAdminLayout from '../components/layout/SuperAdminLayout'; // Importar SuperAdminLayout
 import FranchisorLayout from '../components/layout/FranchisorLayout'; // Importar FranchisorLayout
 import PublicLayout from '../components/layout/PublicLayout';
-import LoginPage from '../pages/LoginPage';
-import LandingPage from '../pages/LandingPage';
-import PublicSurveyPage from '../pages/PublicSurveyPage';
-import SurveyPublicQrCodePage from '../pages/SurveyPublicQrCodePage';
-import ClientRegistrationPage from '../pages/ClientRegistrationPage';
-import RoulettePage from '../pages/RoulettePage';
-import CongratulationsPage from '../pages/CongratulationsPage';
-import CupomValidationPage from '../pages/CupomValidationPage';
-import ThankYouPage from '../pages/ThankYouPage';
-import SurveyIdentifyPage from '../pages/SurveyIdentifyPage';
-import ConfirmClientPage from '../pages/ConfirmClientPage';
-import ClientIdentificationPage from '../pages/ClientIdentificationPage';
-import RoletaSpinPage from '../pages/RoletaSpinPage';
-import NoPrizePage from '../pages/NoPrizePage'; // Adicionar esta linha
-import PrivacyPolicyPage from '../pages/PrivacyPolicyPage';
-import CompanyProfilePage from '../pages/CompanyProfilePage';
-import ReputationPage from '../pages/ReputationPage';
-const TermsOfServicePage = React.lazy(() => import('../pages/TermsOfServicePage'));
-const IntegrationsPage = React.lazy(() => import('../pages/IntegrationsPage')); // Adicionando a nova página
 
-// Páginas
+// Páginas Públicas - Carregamento Preguiçoso (Lazy Loading)
+const LoginPage = React.lazy(() => import('../pages/LoginPage'));
+const LandingPage = React.lazy(() => import('../pages/LandingPage'));
+const PublicSurveyPage = React.lazy(() => import('../pages/PublicSurveyPage'));
+const SurveyPublicQrCodePage = React.lazy(() => import('../pages/SurveyPublicQrCodePage'));
+const ClientRegistrationPage = React.lazy(() => import('../pages/ClientRegistrationPage'));
+const RoulettePage = React.lazy(() => import('../pages/RoulettePage'));
+const CongratulationsPage = React.lazy(() => import('../pages/CongratulationsPage'));
+const CupomValidationPage = React.lazy(() => import('../pages/CupomValidationPage'));
+const ThankYouPage = React.lazy(() => import('../pages/ThankYouPage'));
+const SurveyIdentifyPage = React.lazy(() => import('../pages/SurveyIdentifyPage'));
+const ConfirmClientPage = React.lazy(() => import('../pages/ConfirmClientPage'));
+const ClientIdentificationPage = React.lazy(() => import('../pages/ClientIdentificationPage'));
+const RoletaSpinPage = React.lazy(() => import('../pages/RoletaSpinPage'));
+const NoPrizePage = React.lazy(() => import('../pages/NoPrizePage'));
+const PrivacyPolicyPage = React.lazy(() => import('../pages/PrivacyPolicyPage'));
+const CompanyProfilePage = React.lazy(() => import('../pages/CompanyProfilePage'));
+const ReputationPage = React.lazy(() => import('../pages/ReputationPage'));
+const TermsOfServicePage = React.lazy(() => import('../pages/TermsOfServicePage'));
+const IntegrationsPage = React.lazy(() => import('../pages/IntegrationsPage')); 
+
+// Páginas Privadas - Carregamento Preguiçoso (Lazy Loading)
 const DashboardPage = React.lazy(() => import('../pages/DashboardPage'));
 const UsersPage = React.lazy(() => import('../pages/UsersPage'));
 const UserFormPage = React.lazy(() => import('../pages/UserFormPage'));
@@ -47,7 +49,7 @@ const CampaignDetailsPage = React.lazy(() => import('../pages/CampaignDetailsPag
 const ClientsPage = React.lazy(() => import('../pages/ClientsPage'));
 const AttendantsPage = React.lazy(() => import('../pages/AttendantsPage'));
 const AttendantGoalsPage = React.lazy(() => import('../pages/AttendantGoalsPage'));
-const AttendantGoalDetailsPage = React.lazy(() => import('../pages/AttendantGoalDetailsPage')); // Nova página
+const AttendantGoalDetailsPage = React.lazy(() => import('../pages/AttendantGoalDetailsPage')); 
 const RoletasPage = React.lazy(() => import('../pages/RoletasPage'));
 const RoletaFormPage = React.lazy(() => import('../pages/RoletaFormPage'));
 const WhatsappConfigPage = React.lazy(() => import('../pages/WhatsappConfigPage'));
@@ -73,7 +75,7 @@ const ComparativoPesquisaPage = React.lazy(() => import('../pages/Geral/Comparat
 const EvolucaoPage = React.lazy(() => import('../pages/Geral/EvolucaoPage'));
 const BenchmarkingPage = React.lazy(() => import('../pages/Geral/BenchmarkingPage'));
 const NuvemDePalavrasPage = React.lazy(() => import('../pages/Geral/NuvemDePalavrasPage'));
-const PremiacaoHistoricoPage = React.lazy(() => import('../pages/PremiacaoHistoricoPage')); // Novo componente
+const PremiacaoHistoricoPage = React.lazy(() => import('../pages/PremiacaoHistoricoPage')); 
 
 const SenderPoolPage = React.lazy(() => import('../pages/SenderPoolPage'));
 const SenderConnectPage = React.lazy(() => import('../pages/SenderConnectPage'));
@@ -88,8 +90,8 @@ const FranchisorUsersPage = React.lazy(() => import('../pages/FranchisorUsersPag
 const FranchisorUserFormPage = React.lazy(() => import('../pages/FranchisorUserFormPage'));
 const FranchisorTenantFormPage = React.lazy(() => import('../pages/FranchisorTenantFormPage'));
 const FranchisorReportsPage = React.lazy(() => import('../pages/FranchisorReportsPage'));
-const PlansPage = React.lazy(() => import('../pages/PlansPage')); // Nova Página de Planos
-const SuperAdminRolesPage = React.lazy(() => import('../pages/SuperAdminRolesPage')); // Nova Página de Roles do Superadmin
+const PlansPage = React.lazy(() => import('../pages/PlansPage')); 
+const SuperAdminRolesPage = React.lazy(() => import('../pages/SuperAdminRolesPage')); 
 
 const RespostasPainelPage = React.lazy(() => import('../pages/Respostas/PainelPage'));
 const RespostasGestaoPage = React.lazy(() => import('../pages/Respostas/GestaoPage'));
@@ -118,7 +120,7 @@ const AppRoutes = () => {
         <Route path="/cadastro-cliente/:tenantId/:pesquisaId" element={<ClientRegistrationPage />} />
         <Route path="/roleta/:tenantId/:pesquisaId/:clientId" element={<PublicLayout><RoulettePage /></PublicLayout>} />
         <Route path="/parabens" element={<CongratulationsPage />} />
-        <Route path="/nao-ganhou" element={<NoPrizePage />} /> {/* Adicionar esta linha */}
+        <Route path="/nao-ganhou" element={<NoPrizePage />} /> 
         <Route path="/validar-cupom/:cupomId" element={<CupomValidationPage />} />
         <Route path="/agradecimento" element={<ThankYouPage />} />
         <Route path="/roleta/spin/:token" element={<RoletaSpinPage />} />
@@ -135,10 +137,10 @@ const AppRoutes = () => {
               <Route path="tenants/edit/:id" element={<TenantFormPage />} />
                         <Route path="franchisors" element={<FranchisorsPage />} />
                         <Route path="franchisors/new" element={<FranchisorFormPage />} />
-                        <Route path="franchisors/:id" element={<FranchisorDashboardPage />} /> {/* Dashboard da Franquia */}
+                        <Route path="franchisors/:id" element={<FranchisorDashboardPage />} /> 
                         <Route path="franchisors/edit/:id" element={<FranchisorFormPage />} />
-                        <Route path="plans" element={<PlansPage />} /> {/* Gestão de Planos */}
-                        <Route path="roles" element={<SuperAdminRolesPage />} /> {/* Gestão de Permissões Global */}
+                        <Route path="plans" element={<PlansPage />} /> 
+                        <Route path="roles" element={<SuperAdminRolesPage />} /> 
                         <Route path="whatsapp-config" element={<WhatsappConfigPage />} />              <Route path="sender-pool" element={<SenderPoolPage />} />
               <Route path="senders/:id/connect" element={<SenderConnectPage />} />
               <Route path="reports/system-overview" element={<SystemReportsPage />} />
@@ -156,7 +158,6 @@ const AppRoutes = () => {
               <Route path="users/new" element={<FranchisorUserFormPage />} />
               <Route path="users/edit/:id" element={<FranchisorUserFormPage />} />
               <Route path="reports" element={<FranchisorReportsPage />} />
-              {/* Adicionar outras rotas do franqueador aqui, como a de gestão de franqueados */}
             </Route>
 
             {/* Painel Principal do Tenant */}
@@ -166,7 +167,6 @@ const AppRoutes = () => {
               <Route path="usuarios/new" element={<UserFormPage />} />
               <Route path="usuarios/edit/:id" element={<UserFormPage />} />
               <Route path="cargos" element={<RolesPage />} />
-              {/* <Route path="locatarios" element={<TenantsPage />} /> */} {/* Movido para superadmin */}
               <Route path="pesquisas" element={<SurveysPage />} />
               <Route path="pesquisas/auditoria" element={<SurveyAuditPage />} />
               <Route path="pesquisas/create" element={<SurveyCreatePage />} />
@@ -190,7 +190,7 @@ const AppRoutes = () => {
               <Route path="clientes/dashboard" element={<ClientDashboardPage />} />
               <Route path="atendentes" element={<AttendantsPage />} />
               <Route path="metas-atendentes" element={<AttendantGoalsPage />} />
-              <Route path="metas-atendentes/:atendenteId" element={<AttendantGoalDetailsPage />} /> {/* Nova Rota de Detalhes */}
+              <Route path="metas-atendentes/:atendenteId" element={<AttendantGoalDetailsPage />} /> 
               <Route path="atendentes-dashboard" element={<AtendenteDashboardPage />} />
               <Route path="resultados" element={<ResultsOverviewPage />} />
 
@@ -203,7 +203,6 @@ const AppRoutes = () => {
               <Route path="roletas" element={<RoletasPage />} />
               <Route path="roletas/nova" element={<RoletaFormPage />} />
               <Route path="roletas/editar/:id" element={<RoletaFormPage />} />
-              {/* <Route path="config-whatsapp" element={<WhatsappConfigPage />} /> */} {/* Movido para superadmin */}
               <Route path="whatsapp-connect" element={<WhatsappConnectPage />} />
               <Route path="whatsapp/automations" element={<AutomationsPage />} />
               <Route path="profile" element={<ProfilePage />} />
@@ -218,7 +217,7 @@ const AppRoutes = () => {
               <Route path="geral/evolucao" element={<EvolucaoPage />} />
               <Route path="geral/benchmarking" element={<BenchmarkingPage />} />
               <Route path="geral/nuvem-de-palavras" element={<NuvemDePalavrasPage />} />
-              <Route path="premiacoes/historico" element={<PremiacaoHistoricoPage />} /> {/* Nova rota de histórico de premiações */}
+              <Route path="premiacoes/historico" element={<PremiacaoHistoricoPage />} /> 
             </Route>
           </Route>
 

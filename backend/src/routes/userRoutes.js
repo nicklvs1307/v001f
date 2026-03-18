@@ -5,6 +5,7 @@ const userController = require("../controllers/userController");
 const { protect, authorize } = require("../middlewares/authMiddleware");
 const validate = require("../middlewares/validationMiddleware");
 const createMulterConfig = require("../config/multerConfig");
+const { processImage } = require("../middlewares/imageProcessor");
 
 const uploadProfilePictureMiddleware = createMulterConfig(
   "profile-pictures",
@@ -39,6 +40,7 @@ router.post(
   "/:id/upload-profile-picture",
   authorize("users:update"), // Permissão para atualizar usuário
   uploadProfilePictureMiddleware, // 'profilePicture' é o nome do campo no formulário
+  processImage({ width: 300, quality: 80 }), // Processa imagem (Redimensiona e WebP)
   userController.uploadProfilePicture,
 );
 

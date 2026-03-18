@@ -25,10 +25,17 @@ const RoulettePage = ({ spinData }) => {
   const [error, setError] = useState('');
   const [spinResult, setSpinResult] = useState(null);
   const [tenant, setTenant] = useState(null);
-  const [dynamicTheme, setDynamicTheme] = useState(null);
   const [winningIndex, setWinningIndex] = useState(-1);
   const [isSpinning, setIsSpinning] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+
+  const dynamicTheme = useMemo(() => {
+    if (!tenant) return null;
+    return getDynamicTheme({ 
+      primaryColor: tenant.primaryColor, 
+      secondaryColor: tenant.secondaryColor 
+    });
+  }, [tenant]);
 
   const spinResultRef = useRef(spinResult);
   spinResultRef.current = spinResult;
@@ -41,29 +48,13 @@ const RoulettePage = ({ spinData }) => {
       let currentTenantId, currentPesquisaId, currentClientId, currentRoletaId;
       let roletaData, clientData;
 
-            let actualTenant;
-
             if (spinData) {
-// ... (lógica existente mantida implicitamente pelo contexto, mas focando na estrutura ao redor)
-// Como o bloco é grande, vou focar em substituir handleAnimationComplete e o return
-// Mas primeiro preciso garantir que as variáveis de estado sejam adicionadas corretamente.
-// Vou substituir apenas as declarações de estado e o handleAnimationComplete.
-
-              // Se spinData for fornecido (acesso via token)
-
               currentTenantId = spinData.roleta.tenantId;
-
-              currentPesquisaId = spinData.campanhaId; // Assumindo que campanhaId pode ser usado como pesquisaId para contexto
-
+              currentPesquisaId = spinData.campanhaId; 
               currentClientId = spinData.clienteId;
-
               currentRoletaId = spinData.roletaId;
-
               roletaData = spinData.roleta;
-
               clientData = spinData.client;
-
-      
 
               setRoletaConfig({
                 items: roletaData.premios.map(p => ({
@@ -74,83 +65,40 @@ const RoulettePage = ({ spinData }) => {
               });
 
               setTenant(spinData.roleta.tenant);
-
-              setSurvey({ title: 'Gire a Roleta e Ganhe um Prêmio!', roletaId: spinData.roletaId }); // Mock de survey para contexto
-
-              actualTenant = spinData.roleta.tenant;
-
-      
-
+              setSurvey({ title: 'Gire a Roleta e Ganhe um Prêmio!', roletaId: spinData.roletaId }); 
             } else {
-
-              // Se acesso via parâmetros de URL (rota antiga)
-
               currentTenantId = tenantId;
-
               currentPesquisaId = pesquisaId;
-
               currentClientId = clientId;
 
-      
-
               if (!currentTenantId || !currentPesquisaId) {
-
                 setError("ID do restaurante ou da pesquisa não encontrado na URL.");
-
                 return;
-
               }
 
-      
-
               const [surveyResponse, tenantResponse] = await Promise.all([
-
                 publicSurveyService.getPublicSurveyById(currentPesquisaId),
-
                 publicSurveyService.getPublicTenantById(currentTenantId),
-
               ]);
 
-      
-
               setSurvey(surveyResponse);
-
               setTenant(tenantResponse);
 
-                            const configData = await publicRoletaService.getRoletaConfig(currentPesquisaId, currentClientId);
-
-                            setRoletaConfig({
-
-                              items: configData.data.items.map(item => ({
-
-                                ...item,
-
-                                isNoPrizeOption: item.isNoPrizeOption || false,
-
-                              })),
-
-                              hasSpun: configData.data.hasSpun
-
-                            });
-
-              actualTenant = tenantResponse;
-
+              const configData = await publicRoletaService.getRoletaConfig(currentPesquisaId, currentClientId);
+              setRoletaConfig({
+                items: configData.data.items.map(item => ({
+                  ...item,
+                  isNoPrizeOption: item.isNoPrizeOption || false,
+                })),
+                hasSpun: configData.data.hasSpun
+              });
             }
-
-      
-
-                  const theme = getDynamicTheme({ primaryColor: actualTenant?.primaryColor, secondaryColor: actualTenant?.secondaryColor });
-
-      
-
-                  setDynamicTheme(theme);
-
     } catch (err) {
       setError(err.message || 'Erro ao carregar dados da pesquisa ou roleta.');
     } finally {
       setLoading(false);
     }
-  }, [tenantId, pesquisaId, clientId, spinData]); // Removido 'tenant' das dependências para evitar loop infinito
+  }, [tenantId, pesquisaId, clientId, spinData]); 
 
   useEffect(() => {
     fetchData();

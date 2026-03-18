@@ -24,9 +24,16 @@ const ConfirmClientPage = () => {
     const [submitLoading, setSubmitLoading] = useState(false);
     const [error, setError] = useState('');
     const [surveyData, setSurveyData] = useState(null);
-    const [dynamicTheme, setDynamicTheme] = useState(null);
     const [phone, setPhone] = useState('');
     const [surveyState, setSurveyState] = useState(null);
+
+    const dynamicTheme = useMemo(() => {
+        if (!surveyData) return null;
+        return getDynamicTheme({ 
+            primaryColor: surveyData.primaryColor, 
+            secondaryColor: surveyData.secondaryColor 
+        });
+    }, [surveyData]);
 
     useEffect(() => {
         const init = async () => {
@@ -54,12 +61,6 @@ const ConfirmClientPage = () => {
                 // Carrega dados da pesquisa para manter a identidade visual
                 const data = await publicSurveyService.getPublicSurveyById(surveyId);
                 setSurveyData(data);
-                
-                const theme = getDynamicTheme({ 
-                    primaryColor: data.primaryColor, 
-                    secondaryColor: data.secondaryColor 
-                });
-                setDynamicTheme(theme);
             } catch (err) {
                 console.error("Erro ao inicializar página de confirmação:", err);
                 setError("Ocorreu um erro ao carregar seus dados.");

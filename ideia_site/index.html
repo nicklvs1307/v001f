@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voltaki - A receita para a recorrência do seu restaurante</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
+    
+    <!-- SEO & Meta Tags -->
+    <meta name="description" content="Transforme clientes de uma visita em fãs recorrentes com o Voltaki, o CRM para restaurantes focado em automação, feedback e aumento da retenção.">
+    <meta name="keywords" content="CRM para restaurante, retenção de clientes, marketing para restaurante, feedback de clientes, automação whatsapp">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.voltaki.com/">
+    <meta property="og:title" content="Voltaki - A receita para a recorrência do seu restaurante">
+    <meta property="og:description" content="Transforme clientes de uma visita em fãs recorrentes com o Voltaki.">
+    <meta property="og:image" content="logo.png">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://www.voltaki.com/">
+    <meta property="twitter:title" content="Voltaki - A receita para a recorrência do seu restaurante">
+    <meta property="twitter:description" content="Transforme clientes de uma visita em fãs recorrentes com o Voltaki.">
+    <meta property="twitter:image" content="logo.png">
+
+    <!-- Stylesheets -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div id="scroll-progress"></div>
+
+    <!-- Barra de Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <img src="logo.png" alt="Logo Voltaki" class="navbar-logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#problema">O Problema</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#solucao">A Solução</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary ms-2" href="#contato">Agendar Demo</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Seção Hero -->
+    <section id="hero" class="d-flex align-items-center justify-content-center text-center vh-100 shape-divider-bottom wave shadow">
+        <div class="container">
+            <div class="typing-wrapper">
+                <h1 id="typing-effect"></h1>
+            </div>
+            <a href="#solucao" id="hero-cta-btn" class="btn btn-primary btn-lg px-5 py-3 rounded-pill mt-5">QUERO AUMENTAR MINHA RECORRÊNCIA</a>
+        </div>
+    </section>
+
+    <!-- Seção Problema -->
+    <section id="problema" class="shape-divider-top wave shadow shape-divider-bottom wave shadow pt-5">
+        <div class="container">
+            <div class="text-center mb-5 pt-5 fade-in-element">
+                <h2 class="fw-bold display-5">O Dilema do <span class="text-highlight-neon">Dono do Restaurante</span></h2>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="points-container">
+                        <div class="row">
+                            <div class="col-md-6 col-lg-6 mb-4 fade-in-element">
+                                <div class="point glass-card" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-perspective="1000">
+                                    <lord-icon class="icon-size-md" src="https://cdn.lordicon.com/ppyvfomi.json" trigger="loop-on-hover" delay="1000" colors="primary:#F0F0F0,secondary:#FF8C00"></lord-icon>
+                                    <p>Concorrência acirrada e clientes cada vez mais exigentes.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 mb-4 fade-in-element">
+                                <div class="point glass-card" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-perspective="1000">
+                                    <lord-icon class="icon-size-md" src="https://cdn.lordicon.com/flvisirw.json" trigger="loop-on-hover" delay="1500" colors="primary:#F0F0F0,secondary:#FF8C00"></lord-icon>
+                                    <p>Altas taxas de aplicativos de delivery que corroem sua margem de lucro.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 mb-4 fade-in-element">
+                                <div class="point glass-card" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-perspective="1000">
+                                    <lord-icon class="icon-size-md" src="https://cdn.lordicon.com/mdgrhyca.json" trigger="loop-on-hover" delay="2000" colors="primary:#F0F0F0,secondary:#FF8C00"></lord-icon>
+                                    <p>Dificuldade de saber quem é o seu cliente e se ele está satisfeito.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6 mb-4 fade-in-element">
+                                <div class="point glass-card" data-tilt data-tilt-max="5" data-tilt-speed="400" data-tilt-perspective="1000">
+                                    <lord-icon class="icon-size-md" src="https://cdn.lordicon.com/wxnxiano.json" trigger="loop-on-hover" delay="2500" colors="primary:#F0F0F0,secondary:#FF8C00"></lord-icon>
+                                    <p>Programas de fidelidade genéricos que não engajam e não trazem retorno.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Seção Implicação (Custo) -->
+    <section id="implicacao" class="shape-divider-top wave shadow shape-divider-bottom wave shadow">
+        <div class="container">
+            <div class="text-center mb-5 fade-in-element">
+                <h2 class="fw-bold display-5">A Batalha pela <span class="text-highlight-neon">Atenção</span> (e pelo <span class="text-highlight-neon">Lucro</span>)</h2>
+                <p class="lead text-muted">Na guerra dos restaurantes, o cliente fiel é o seu maior trunfo.</p>
+            </div>
+
+            <div class="row align-items-center justify-content-center g-5">
+                <div class="col-lg-8 col-md-12">
+                    <div class="implication-point glass-card mb-4 fade-in-element" data-step-delay="100">
+                        <div class="implication-icon">
+                            <i class="bi bi-currency-dollar"></i>
+                        </div>
+                        <p>Conquistar um novo cliente custa <strong>5 a 7 vezes mais</strong> do que manter um cliente que você já tem. Onde seu esforço está focado?</p>
+                    </div>
+                    <div class="implication-point glass-card mb-4 fade-in-element" data-step-delay="200">
+                        <div class="implication-icon">
+                            <i class="bi bi-bucket"></i>
+                        </div>
+                        <p>Depender apenas de novos clientes é como tentar <strong>encher um balde furado</strong>. O verdadeiro lucro está na recorrência.</p>
+                    </div>
+                    <div class="implication-point glass-card fade-in-element" data-step-delay="300">
+                        <div class="implication-icon">
+                            <i class="bi bi-graph-down-arrow"></i>
+                        </div>
+                        <p>Um aumento de apenas <strong>5% na retenção</strong> de clientes pode aumentar a lucratividade em <strong>25% a 95%</strong>. Você está deixando dinheiro na mesa.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Seção Implicação (Taxas) -->
+    <section id="implicacao-taxas" class="shape-divider-top wave shadow shape-divider-bottom pointy shadow">
+        <div class="section-overlay"></div>
+        <div class="container">
+            <div class="text-center mb-5 fade-in-element">
+                <h2 class="fw-bold display-5">O <span class="text-highlight-neon">Sócio Oculto</span> que Leva seu Lucro</h2>
+            </div>
+            <div class="socio-oculto-container">
+                <div class="chart-wrapper fade-in-element">
+                    <canvas id="fees-chart"></canvas>
+                    <div id="profit-center" class="profit-center-hidden">
+                        <span>Seu Lucro</span>
+                        <p>6%</p>
+                    </div>
+                </div>
+                <div class="socio-data fade-in-element">
+                    <div class="impact-box glass-card">
+                        <div class="impact-box-content">
+                            <p class="impact-number">Até 26%</p>
+                            <p class="impact-text">Do valor do seu pedido pode ir para as plataformas de delivery em taxas e comissões.</p>
+                        </div>
+                    </div>
+                    <div class="impact-box glass-card">
+                        <div class="impact-box-content">
+                            <p class="impact-number">+12%</p>
+                            <p class="impact-text">Aumento projetado no custo dos anúncios em 2026.</p>
+                        </div>
+                    </div>
+                    <div class="impact-box glass-card">
+                        <div class="impact-box-content">
+                            <lord-icon class="icon-size-sm" src="https://cdn.lordicon.com/qbqhgevc.json" trigger="loop-on-hover" delay="2000" colors="primary:#F0F0F0,secondary:#FF8C00"></lord-icon>
+                            <div>
+                                <p class="impact-number impact-number-small">Dados Valiosos</p>
+                                <p class="impact-text">Os dados do seu cliente pertencem à plataforma, não a você.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Ciclo Vicioso / Cliente Alugado -->
+    <section id="cliente-alugado" class="shape-divider-top pointy shadow shape-divider-bottom wave shadow">
+        <div class="container">
+            <div class="text-center mb-5 pb-4 fade-in-element">
+                <h2 class="fw-bold display-5">O Ciclo Vicioso do <span class="text-highlight-neon">Cliente Alugado</span></h2>
+                <p class="lead text-muted">Por que você paga várias vezes pela mesma pessoa?</p>
+            </div>
+
+            <div class="vicious-cycle-container">
+                <!-- Linha Conectora de Fundo -->
+                <div class="cycle-connector"></div>
+
+                <!-- Etapa 1 -->
+                <div class="row cycle-step-row justify-content-center align-items-center">
+                    <div class="col-md-5 order-md-1">
+                        <div class="cycle-card left-card glass-card fade-in-element">
+                            <div class="card-content">
+                                <h3><span class="step-number">1</span>Você Paga para Anunciar</h3>
+                                <p>Você investe em tráfego pago para alcançar clientes, sejam eles novos ou antigos.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1 text-center order-md-2">
+                        <div class="cycle-icon fade-in-element" data-step-delay="100">
+                            <i class="bi bi-megaphone-fill"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-5 order-md-3"></div>
+                </div>
+
+                <!-- Etapa 2 -->
+                <div class="row cycle-step-row justify-content-center align-items-center">
+                    <div class="col-md-5 order-md-3">
+                        <div class="cycle-card right-card glass-card fade-in-element">
+                            <div class="card-content">
+                                <h3><span class="step-number">2</span>O Cliente vai para o App</h3>
+                                <p>Ele é direcionado para a plataforma, onde você paga <strong>até 26% de taxa</strong> e os dados não são seus.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1 text-center order-md-2">
+                        <div class="cycle-icon fade-in-element" data-step-delay="100">
+                             <i class="bi bi-phone-fill"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-5 order-md-1"></div>
+                </div>
+
+                <!-- Etapa 3 -->
+                <div class="row cycle-step-row justify-content-center align-items-center">
+                    <div class="col-md-5 order-md-1">
+                        <div class="cycle-card left-card glass-card fade-in-element">
+                             <div class="card-content">
+                                <h3><span class="step-number">3</span>A Conveniência Vence</h3>
+                                <p>Na próxima vez, o cliente abre o app por hábito e é bombardeado por <strong>seus concorrentes.</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1 text-center order-md-2">
+                        <div class="cycle-icon fade-in-element" data-step-delay="100">
+                            <i class="bi bi-shop-window"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-5 order-md-3"></div>
+                </div>
+
+                <!-- Etapa 4 -->
+                <div class="row cycle-step-row justify-content-center align-items-center">
+                    <div class="col-md-5 order-md-3">
+                        <div class="cycle-card right-card glass-card fade-in-element">
+                             <div class="card-content">
+                                <h3><span class="step-number">4</span>Você Paga de Novo</h3>
+                                <p>O ciclo recomeça. Você paga novamente para tentar alcançar o <strong>mesmo cliente.</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="col-md-1 text-center order-md-2">
+                        <div class="cycle-icon fade-in-element" data-step-delay="100">
+                           <i class="bi bi-arrow-repeat"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-5 order-md-1"></div>
+                </div>
+            </div>
+
+            <div class="highlight-box glass-card mt-5 fade-in-element text-center">
+                <h3 class="need-payoff">Chega de aluguel. É hora de construir seu próprio ativo.</h3>
+                <a href="#contato" class="btn btn-primary mt-4">Quero Quebrar o Ciclo</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Abismo da Expectativa -->
+    <section id="abismo" class="shape-divider-top wave shadow shape-divider-bottom wave shadow">
+        <div class="container">
+            <div class="text-center mb-5 pb-4 fade-in-element">
+                <h2 class="fw-bold display-5">O Jogo Mudou: O que o Novo <span class="text-highlight-neon">Consumidor</span> Realmente Quer?</h2>
+            </div>
+            
+            <div class="row justify-content-center g-4 g-lg-5">
+                <!-- Card 1: Ser Ouvido -->
+                <div class="col-lg-4 col-md-6 mb-4 fade-in-element">
+                    <div class="abyss-card-new h-100 glass-card text-center">
+                        <lord-icon
+                            src="https://cdn.lordicon.com/zwhkzizg.json"
+                            trigger="loop-on-hover"
+                            delay="1000"
+                            colors="primary:#F0F0F0,secondary:#FF8C00"
+                            class="icon-size-lg mb-4">
+                        </lord-icon>
+                        <h3>Ser Ouvido e Valorizado</h3>
+                        <p>Ele quer dar feedback e saber que sua opinião importa, transformando uma simples refeição em um diálogo construtivo.</p>
+                    </div>
+                </div>
+
+                <!-- Card 2: Conexão -->
+                <div class="col-lg-4 col-md-6 mb-4 fade-in-element" data-step-delay="200">
+                    <div class="abyss-card-new h-100 glass-card text-center">
+                        <lord-icon
+                            src="https://cdn.lordicon.com/pkmjgwwg.json"
+                            trigger="loop-on-hover"
+                            delay="1000"
+                            colors="primary:#F0F0F0,secondary:#FF8C00"
+                            class="icon-size-lg mb-4">
+                        </lord-icon>
+                        <h3>Comunicação que Conecta</h3>
+                        <p>Ele quer receber ofertas e novidades diretamente de você, sentindo-se parte de uma comunidade exclusiva, livre do ruído dos apps.</p>
+                    </div>
+                </div>
+
+                <!-- Card 3: Recompensas -->
+                <div class="col-lg-4 col-md-6 mb-4 fade-in-element" data-step-delay="400">
+                    <div class="abyss-card-new h-100 glass-card text-center">
+                        <lord-icon
+                            src="https://cdn.lordicon.com/lupuorrc.json"
+                            trigger="loop-on-hover"
+                            delay="1000"
+                            colors="primary:#F0F0F0,secondary:#FF8C00"
+                            class="icon-size-lg mb-4">
+                        </lord-icon>
+                        <h3>Recompensas que Engajam</h3>
+                        <p>Ele quer ser reconhecido por sua lealdade com benefícios reais e uma jornada gamificada que o incentiva a voltar sempre.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="final-implication fade-in-element text-center mt-5 pt-4">
+                <h3 class="need-payoff">E se você pudesse construir a ponte para o novo consumidor?</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Need-Payoff (Transição) -->
+    <section id="need-payoff" class="shadow shape-divider-top wave shadow shape-divider-bottom wave shadow">
+        <div class="container text-center fade-in-element">
+            <h2 id="transforme-titulo" class="fw-bold animated-typing-title"></h2> <!-- Novo título animado -->
+            
+            <div class="row justify-content-center g-4 mt-3">
+                <!-- Card 1: WhatsApp -->
+                <div class="col-md-4 mb-4">
+                    <div class="need-payoff-card glass-card text-center h-100">
+                        <i class="bi bi-whatsapp icon-size-lg mb-3"></i>
+                        <h3>Conquiste um Contato Direto</h3>
+                        <p>Transforme cada cliente em um contato direto no seu WhatsApp, construindo uma base de dados valiosa e sem intermediários.</p>
+                    </div>
+                </div>
+                <!-- Card 2: Experiência -->
+                <div class="col-md-4 mb-4">
+                    <div class="need-payoff-card glass-card text-center h-100">
+                        <i class="bi bi-arrow-repeat icon-size-lg mb-3"></i>
+                        <h3>Reverta Experiências em Tempo Real</h3>
+                        <p>Aja em tempo real para reverter uma experiência ruim, transformando detratores em defensores da sua marca.</p>
+                    </div>
+                </div>
+                <!-- Card 3: Lucro -->
+                <div class="col-md-4 mb-4">
+                    <div class="need-payoff-card glass-card text-center h-100">
+                        <i class="bi bi-graph-up-arrow icon-size-lg mb-3"></i>
+                        <h3>Aumente o Lucro e a Autonomia</h3>
+                        <p>Reduza sua dependência de aplicativos de delivery e aumente significativamente seu lucro e controle sobre o cliente.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Dores vs Soluções -->
+    <section id="comparativo" class="shape-divider-top wave shadow shape-divider-bottom blobs shadow">
+        <div class="section-overlay"></div>
+        <div class="container">
+            <div class="text-center mb-5 fade-in-element">
+                <h2 class="fw-bold display-5">O Cenário Comum vs. <span class="text-highlight-neon">Uma Nova Estratégia</span></h2>
+                <p class="lead text-muted">Veja como o Voltaki transforma desafios em oportunidades de crescimento.</p>
+            </div>
+
+            <div class="row g-5 justify-content-center">
+                <!-- Coluna de Desafios -->
+                <div class="col-lg-6">
+                    <h3 class="text-center fw-bold mb-4">O Cenário Comum</h3>
+                    <div class="comparison-cards-container">
+                        <div class="pain-card glass-card fade-in-element">
+                            <i class="bi bi-x-circle card-icon text-danger"></i>
+                            <p>Taxas de até 26% que corroem seu lucro.</p>
+                        </div>
+                        <div class="pain-card glass-card fade-in-element" data-step-delay="100">
+                            <i class="bi bi-x-circle card-icon text-danger"></i>
+                            <p>Custo constante para "readquirir" clientes que já te conhecem.</p>
+                        </div>
+                        <div class="pain-card glass-card fade-in-element" data-step-delay="200">
+                            <i class="bi bi-x-circle card-icon text-danger"></i>
+                            <p>Você não sabe quem é seu cliente, o que ele quer ou se vai voltar.</p>
+                        </div>
+                        <div class="pain-card glass-card fade-in-element" data-step-delay="300">
+                            <i class="bi bi-x-circle card-icon text-danger"></i>
+                            <p>Fidelidade genérica que não engaja e não cria lealdade.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coluna de Estratégias -->
+                <div class="col-lg-6">
+                    <h3 class="text-center fw-bold mb-4">Uma Nova Estratégia com <img src="logo.png" alt="Logo Voltaki" class="voltaki-logo-heading"></h3>
+                    <div class="comparison-cards-container">
+                        <div class="solution-card glass-card fade-in-element">
+                            <i class="bi bi-check-circle-fill card-icon text-success"></i>
+                            <p><strong>Lucro 100% Seu:</strong> Venda direta sem intermediários e sem taxas.</p>
+                        </div>
+                        <div class="solution-card glass-card fade-in-element" data-step-delay="100">
+                            <i class="bi bi-check-circle-fill card-icon text-success"></i>
+                            <p><strong>Comunicação Direta:</strong> Construa sua base de clientes e fale com eles via WhatsApp.</p>
+                        </div>
+                        <div class="solution-card glass-card fade-in-element" data-step-delay="200">
+                            <i class="bi bi-check-circle-fill card-icon text-success"></i>
+                            <p><strong>Sua Base de Dados:</strong> Conheça quem compra de você e tome decisões inteligentes.</p>
+                        </div>
+                        <div class="solution-card glass-card fade-in-element" data-step-delay="300">
+                            <i class="bi bi-check-circle-fill card-icon text-success"></i>
+                            <p><strong>Fidelidade que Converte:</strong> Crie uma jornada gamificada que incentiva o retorno.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cta-container fade-in-element text-center mt-5 pt-4">
+                <a href="#contato" class="btn btn-primary btn-lg">Chega de pagar para ter seu próprio cliente</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Solução / Features -->
+    <section id="solucao" class="shape-divider-top blobs shadow shape-divider-bottom wave shadow pt-5">
+        <div class="container">
+            <div class="text-center mb-5 fade-in-element">
+                <h2 class="fw-bold display-4">A receita completa para a <span class="text-highlight-neon">recorrência</span></h2>
+                <p class="lead text-muted">Ferramentas poderosas para transformar clientes em fãs.</p>
+            </div>
+            <div class="features-grid-v2">
+                <div class="feature-item-v2 glass-card fade-in-element">
+                    <i class="bi bi-people-fill feature-icon"></i>
+                    <h3 class="feature-title">Base de Clientes Própria</h3>
+                    <p>Assuma o controle e pare de alugar seus clientes das grandes plataformas.</p>
+                </div>
+                <div class="feature-item-v2 glass-card fade-in-element">
+                    <i class="bi bi-graph-up-arrow feature-icon"></i>
+                    <h3 class="feature-title">Relatórios Inteligentes</h3>
+                    <p>Decisões baseadas em dados com dashboards completos e em tempo real.</p>
+                </div>
+                <div class="feature-item-v2 glass-card fade-in-element">
+                    <i class="bi bi-star-fill feature-icon"></i>
+                    <h3 class="feature-title">Pesquisas de Satisfação</h3>
+                    <p>Ouça seu cliente, reverta detratores e identifique seus promotores.</p>
+                </div>
+                <div class="feature-item-v2 glass-card fade-in-element">
+                    <i class="bi bi-trophy-fill feature-icon"></i>
+                    <h3 class="feature-title">Retenção com Gamificação</h3>
+                    <p>Crie programas de fidelidade que realmente engajam e incentivam o retorno.</p>
+                </div>
+                <div class="feature-item-v2 glass-card fade-in-element">
+                    <i class="bi bi-robot feature-icon"></i>
+                    <h3 class="feature-title">Automação de Marketing</h3>
+                    <p>Envie mensagens personalizadas e automáticas para o público certo.</p>
+                </div>
+                <div class="feature-item-v2 glass-card fade-in-element">
+                    <i class="bi bi-whatsapp feature-icon"></i>
+                    <h3 class="feature-title">Integração com WhatsApp</h3>
+                    <p>Canal direto de comunicação e vendas, sem intermediários e sem taxas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Como Funciona -->
+    <section id="como-funciona" class="shape-divider-top wave shadow shape-divider-bottom pointy shadow pt-5">
+        <div class="container">
+            <div class="text-center mb-5 pt-5 fade-in-element">
+                <h2 class="fw-bold display-5">Como o <img src="logo.png" alt="Logo Voltaki" class="voltaki-logo-heading"> Transforma seu Restaurante</h2>
+                <p class="lead text-muted">Descubra o fluxo simples e poderoso que fideliza seus clientes.</p>
+            </div>
+            <div class="row justify-content-center how-it-works-grid">
+                <!-- SVG para a linha de conexão -->
+                <svg class="connector-line" width="100%" height="100%">
+                    <path d="" stroke="rgba(255, 87, 34, 0.5)" stroke-width="3" stroke-dasharray="10,5" fill="none" />
+                </svg>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="how-it-works-step glass-card fade-in-element" data-step-delay="0" data-step="1">
+                        <lord-icon class="icon-size-lg" src="https://cdn.lordicon.com/qcffztrg.json" trigger="loop-on-hover" colors="primary:#F0F0F0,secondary:#FF8C00"></lord-icon>
+                        <h3>1. Cliente Escaneia</h3>
+                        <p>Seu cliente escaneia um QR Code único e personalizado na mesa ou no balcão.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="how-it-works-step glass-card fade-in-element" data-step-delay="200" data-step="2">
+                        <lord-icon class="icon-size-lg" src="https://cdn.lordicon.com/ribwzptc.json" trigger="loop-on-hover" colors="primary:#F0F0F0,secondary:#FF8C00"></lord-icon>
+                        <h3>2. Cliente Interage</h3>
+                        <p>Ele dá o feedback sobre a experiência e opta por receber novidades via WhatsApp.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="how-it-works-step glass-card fade-in-element" data-step-delay="400" data-step="3">
+                        <lord-icon class="icon-size-lg" src="https://cdn.lordicon.com/lupuorrc.json" trigger="loop-on-hover" colors="primary:#F0F0F0,secondary:#FF8C00"></lord-icon>
+                        <h3>3. Você Fideliza</h3>
+                        <p>Você coleta dados, personaliza o marketing e transforma clientes em fãs recorrentes.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="how-it-works-cta text-center mt-5 fade-in-element">
+                <a href="#solucao" class="btn btn-primary btn-lg px-5 py-3 rounded-pill">Ver Soluções Detalhadas</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Dashboard Preview -->
+    <section id="dashboard-preview" class="shape-divider-top pointy shadow shape-divider-bottom blobs shadow">
+        <div class="container">
+            <div class="text-center mb-5 fade-in-element">
+                <h2 class="fw-bold display-4">Seu restaurante na palma da <span class="text-highlight-neon">sua mão</span></h2>
+                <p class="lead text-muted">Visualize o crescimento, entenda seus clientes e tome decisões mais inteligentes.</p>
+            </div>
+            <div class="dashboard-mockup glass-card fade-in-element">
+                <div class="dashboard-sidebar">
+                    <div class="sidebar-logo">
+                        <img src="logo.png" alt="Logo Voltaki">
+                    </div>
+                    <ul class="sidebar-nav">
+                        <li class="active"><i class="bi bi-grid-fill"></i> Resumo</li>
+                        <li><i class="bi bi-people-fill"></i> Clientes</li>
+                        <li><i class="bi bi-chat-left-text-fill"></i> Feedbacks</li>
+                        <li><i class="bi bi-graph-up-arrow"></i> Relatórios</li>
+                        <li><i class="bi bi-gear-fill"></i> Configurações</li>
+                    </ul>
+                </div>
+                <div class="dashboard-main">
+                    <div class="dashboard-header">
+                        <h3>Visão Geral</h3>
+                        <div class="header-actions">
+                            <span><i class="bi bi-calendar-event"></i> Últimos 30 dias</span>
+                            <button class="btn btn-sm btn-primary">Exportar</button>
+                        </div>
+                    </div>
+                    <div class="dashboard-kpis">
+                        <div class="kpi-card">
+                            <p class="kpi-value">8.9</p>
+                            <p class="kpi-label">NPS Geral</p>
+                            <span class="kpi-trend text-success"><i class="bi bi-arrow-up"></i> 0.5</span>
+                        </div>
+                        <div class="kpi-card">
+                            <p class="kpi-value">1,204</p>
+                            <p class="kpi-label">Feedbacks Coletados</p>
+                             <span class="kpi-trend text-success"><i class="bi bi-arrow-up"></i> 12%</span>
+                        </div>
+                        <div class="kpi-card">
+                            <p class="kpi-value">78%</p>
+                            <p class="kpi-label">Taxa de Retorno</p>
+                             <span class="kpi-trend text-success"><i class="bi bi-arrow-up"></i> 5%</span>
+                        </div>
+                        <div class="kpi-card">
+                            <p class="kpi-value">22</p>
+                            <p class="kpi-label">Detratores Revertidos</p>
+                             <span class="kpi-trend text-success"><i class="bi bi-arrow-up"></i> 3</span>
+                        </div>
+                    </div>
+                    <div class="dashboard-charts">
+                        <div class="chart-container-mock">
+                            <p class="chart-title-mock">Evolução do NPS</p>
+                            <div class="chart-bar-mock" style="height: 60%;"></div>
+                            <div class="chart-bar-mock" style="height: 75%;"></div>
+                            <div class="chart-bar-mock" style="height: 70%;"></div>
+                            <div class="chart-bar-mock" style="height: 85%;"></div>
+                        </div>
+                        <div class="chart-container-mock">
+                            <p class="chart-title-mock">Clientes: Novos vs Recorrentes</p>
+                             <div class="chart-pie-mock"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Depoimentos -->
+    <section id="depoimentos" class="shape-divider-top blobs shadow shape-divider-bottom wave shadow">
+        <div class="container">
+            <div class="text-center mb-5 fade-in-element">
+                <h2 class="fw-bold">Quem usa, confia e recomenda</h2>
+                <p class="text-muted">Veja o que donos de restaurantes como você estão dizendo.</p>
+            </div>
+            <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="row justify-content-center">
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <p class="card-text fst-italic">"O Voltaki mudou nosso relacionamento com os clientes. Saber em tempo real a opinião deles e poder agir na hora não tem preço. Nossa retenção aumentou 25%!"</p>
+                                    </div>
+                                    <div class="card-footer d-flex align-items-center">
+                                        <div class="testimonial-author-img me-3">
+                                            <img src="rafael-perfil.png" class="rounded-circle main-img" alt="Rafael">
+                                            <img src="logo-roma.png" class="company-logo" alt="Logo Pizzaria Roma">
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">Rafael</h6>
+                                            <small class="text-muted">Dono, Pizzaria Roma</small>
+                                            <div class="text-warning">
+                                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row justify-content-center">
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <p class="card-text fst-italic">"Finalmente conseguimos criar um canal de comunicação direto com nossos clientes. As campanhas de WhatsApp são um sucesso e o custo é muito menor que os anúncios que fazíamos."</p>
+                                    </div>
+                                    <div class="card-footer d-flex align-items-center">
+                                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop" class="rounded-circle me-3" alt="Cliente 2">
+                                        <div>
+                                            <h6 class="mb-0">Juliana Martins</h6>
+                                            <small class="text-muted">Gerente, Hamburgueria Artesanal</small>
+                                             <div class="text-warning">
+                                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row justify-content-center">
+                             <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <p class="card-text fst-italic">"A calculadora de ROI me abriu os olhos. Não tinha noção do quanto estava perdendo com as taxas dos aplicativos. O Voltaki se pagou em menos de 2 meses."</p>
+                                    </div>
+                                    <div class="card-footer d-flex align-items-center">
+                                        <img src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&h=100&fit=crop" class="rounded-circle me-3" alt="Cliente 3">
+                                        <div>
+                                            <h6 class="mb-0">Ricardo Souza</h6>
+                                            <small class="text-muted">Proprietário, Comida Mineira da Vovó</small>
+                                             <div class="text-warning">
+                                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Resultado Final -->
+    <section id="resultado-final" class="shape-divider-top wave shadow shape-divider-bottom pointy shadow">
+        <div class="container text-center">
+            <!-- Título principal -->
+            <h2 class="fw-bold display-5 mb-5 fade-in-element">O Resultado: Uma Transformação Real</h2>
+
+            <div class="row g-5 justify-content-center align-items-center">
+
+                <!-- Coluna ANTES -->
+                <div class="col-lg-5 fade-in-element" data-step-delay="100">
+                    <div class="result-card before-card glass-card h-100">
+                        <h3 class="mb-4">O Cenário Antigo</h3>
+                        <div class="result-item">
+                            <i class="bi bi-x-circle-fill text-danger"></i>
+                            <p>Taxas de apps que corroem o lucro</p>
+                        </div>
+                        <div class="result-item">
+                            <i class="bi bi-x-circle-fill text-danger"></i>
+                            <p>Gastos excessivos com anúncios</p>
+                        </div>
+                         <div class="result-item">
+                            <i class="bi bi-x-circle-fill text-danger"></i>
+                            <p>Clientes anônimos e sem conexão</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ícone de seta de transformação -->
+                <div class="col-lg-1 text-center d-none d-lg-block fade-in-element" data-step-delay="200">
+                    <i class="bi bi-arrow-right-circle-fill display-2 text-primary"></i>
+                </div>
+
+                <!-- Coluna DEPOIS -->
+                <div class="col-lg-5 fade-in-element" data-step-delay="300">
+                    <div class="result-card after-card glass-card h-100">
+                         <h3 class="mb-4">A Nova Realidade</h3>
+                         <div class="result-item">
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <p>Mais clientes fiéis e recorrentes</p>
+                        </div>
+                        <div class="result-item">
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <p>Mais controle sobre sua base</p>
+                        </div>
+                        <div class="result-item">
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <p>Mais lucro direto no seu bolso</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Calculadora -->
+    <section id="calculadora" class="shape-divider-top pointy shadow shape-divider-bottom blobs shadow">
+        <div class="container">
+            <div class="slide-content calculator-slide">
+                <h2 class="fw-bold display-5 text-center mb-5 fade-in-element">Desafio da Economia: Veja quanto você <span class="text-highlight-neon">deixa na mesa</span> hoje!</h2>
+                <div class="calculator-grid">
+                    <div class="calculator-inputs glass-card p-4 fade-in-element">
+                        <h3 class="mb-4">Ajuste os controles e veja a mágica acontecer:</h3>
+                        <div class="mb-3">
+                            <label for="faturamento-apps" class="form-label">Faturamento Mensal em Apps (R$)</label>
+                            <input type="range" id="faturamento-apps" class="form-range" min="0" max="500000" step="5000" value="15000">
+                            <span class="range-value" id="faturamento-apps-value">R$ 15.000</span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="investimento-marketing" class="form-label">Investimento Mensal em Marketing (R$)</label>
+                            <input type="range" id="investimento-marketing" class="form-range" min="0" max="50000" step="500" value="2000">
+                            <span class="range-value" id="investimento-marketing-value">R$ 2.000</span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="taxa-apps" class="form-label">Taxa Média dos Apps (%)</label>
+                            <input type="range" id="taxa-apps" class="form-range" min="0" max="30" step="1" value="20">
+                            <span class="range-value" id="taxa-apps-value">20%</span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="reducao-marketing" class="form-label">Redução Potencial com Marketing de Retenção (%)</label>
+                            <input type="range" id="reducao-marketing" class="form-range" min="0" max="100" step="5" value="50">
+                            <span class="range-value" id="reducao-marketing-value">50%</span>
+                        </div>
+                    </div>
+                    <div class="calculator-results fade-in-element">
+                        <h3 class="mb-4 text-center">Sua economia potencial:</h3>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="result-box glass-card text-center p-3">
+                                    <span class="d-block text-muted">Economia com Taxas</span>
+                                    <p id="economia-taxas" class="display-6 fw-bold">R$ 3.000,00</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="result-box glass-card text-center p-3">
+                                    <span class="d-block text-muted">Economia com Marketing</span>
+                                    <p id="economia-marketing" class="display-6 fw-bold">R$ 1.000,00</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-4">
+                                <div class="result-box total-savings glass-card text-center p-4">
+                                    <span class="d-block text-muted">Economia Total Mensal</span>
+                                    <p id="economia-total" class="display-5 fw-bold text-success">R$ 4.000,00</p>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-4 text-center">
+                                <span class="d-block text-muted">Potencial de Economia Anual</span>
+                                <p id="potencial-anual" class="display-4 fw-bold text-primary">R$ 48.000,00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calculator-chart fade-in-element">
+                        <canvas id="savings-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Call to Action (CTA) -->
+    <section id="contato" class="shape-divider-top blobs shadow shape-divider-bottom wave shadow py-5 text-center">
+        <div class="container">
+            <h2 class="fw-bold mb-4">Pronto para encher a casa com seus próprios clientes?</h2>
+            <p class="lead mb-4">Agende uma demonstração de 15 minutos e veja o Voltaki em ação.</p>
+            <a href="https://wa.me/5535998374007?text=Olá!%20Vi%20a%20apresentação%20do%20Voltaki%20e%20gostaria%20de%20agendar%20uma%20demonstração." target="_blank" class="btn btn-primary btn-lg px-5 py-3 rounded-pill">Agendar Demonstração Gratuita</a>
+            <p class="mt-4 text-muted">Ou entre em contato pelo <a href="https://wa.me/5535998374007?text=Olá!%20Vi%20a%20apresentação%20do%20Voltaki%20e%20gostaria%20de%20agendar%20uma%20demonstração." target="_blank">WhatsApp: (35) 99837-4007</a></p>
+        </div>
+    </section>
+
+    <!-- Seção FAQ -->
+    <section id="faq" class="shape-divider-top wave shadow shape-divider-bottom pointy shadow">
+        <div class="container">
+            <div class="text-center mb-5 fade-in-element">
+                <h2 class="fw-bold">Perguntas Frequentes</h2>
+                <p class="text-muted">Ainda tem dúvidas? A gente responde.</p>
+            </div>
+            <div class="accordion accordion-flush fade-in-element" id="faqAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="flush-headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                            Preciso ter algum sistema para usar o Voltaki?
+                        </button>
+                    </h2>
+                    <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">Não! O Voltaki é 100% independente e não precisa de integração com nenhum sistema que você já utilize. Você pode começar a usar agora mesmo, sem nenhuma dor de cabeça técnica.</div>
+                    </div>
+                </div>
+                 <div class="accordion-item">
+                    <h2 class="accordion-header" id="flush-headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                            Meus clientes precisam baixar algum aplicativo?
+                        </button>
+                    </h2>
+                    <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">De forma alguma. A beleza do Voltaki está na simplicidade. Seu cliente simplesmente escaneia o QR Code com a câmera do celular e toda a interação acontece no navegador, de forma rápida e intuitiva.</div>
+                    </div>
+                </div>
+                 <div class="accordion-item">
+                    <h2 class="accordion-header" id="flush-headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                            Como funciona a automação de marketing pelo WhatsApp?
+                        </button>
+                    </h2>
+                    <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">Nossa plataforma permite que você crie campanhas segmentadas. Por exemplo, você pode enviar uma oferta especial automaticamente para clientes que não voltam há mais de 30 dias, ou para aqueles que deram uma nota alta e são promotores da sua marca. Tudo com mensagens personalizadas que parecem ter sido escritas na hora.</div>
+                    </div>
+                </div>
+                 <div class="accordion-item">
+                    <h2 class="accordion-header" id="flush-headingFour">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour">
+                            O que acontece se um cliente der um feedback negativo?
+                        </button>
+                    </h2>
+                    <div id="flush-collapseFour" class="accordion-collapse collapse" aria-labelledby="flush-headingFour" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">Você é notificado em tempo real! O sistema alerta você ou seu gerente imediatamente, permitindo que você aja na hora para reverter a situação, seja com uma conversa, um pedido de desculpas ou um voucher. Isso transforma uma experiência ruim em uma oportunidade de fidelização.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rodapé -->
+<footer id="footer" class="footer-section">
+    <div class="container">
+        <div class="row justify-content-between gy-5">
+
+            <div class="col-lg-4 col-md-12 footer-info">
+                <a href="index.html" class="logo d-flex align-items-center">
+                    <img src="logo.png" alt="Voltaki Logo">
+                </a>
+                <p>O Voltaki é a sua plataforma completa para transformar clientes de uma visita em fãs recorrentes, construindo um canal de lucro direto e previsível para o seu restaurante.</p>
+                <div class="social-links d-flex mt-4">
+                    <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-6 footer-links">
+                <h4>Navegação</h4>
+                <ul>
+                    <li><a href="#hero">Início</a></li>
+                    <li><a href="#problema">O Problema</a></li>
+                    <li><a href="#solucao">A Solução</a></li>
+                    <li><a href="#calculadora">Calculadora</a></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-2 col-6 footer-links">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Termos de Serviço</a></li>
+                    <li><a href="#">Política de Privacidade</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+                <h4>Fale Conosco</h4>
+                <p>
+                    <strong>WhatsApp:</strong> <a href="https://wa.me/5535998374007?text=Olá!%20Vi%20a%20apresentação%20do%20Voltaki%20e%20gostaria%20de%20agendar%20uma%20demonstração.">(35) 99837-4007</a><br>
+                    <strong>Email:</strong> contato@voltaki.com<br>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="copyright">
+            &copy; Copyright <strong><span>Voltaki</span></strong>. Todos os direitos reservados
+        </div>
+        <div class="credits">
+            Desenvolvido por <a href="https://voltaki.com/">Voltaki</a>
+        </div>
+    </div>
+</footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="script.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vanilla-tilt@1.7.2/dist/vanilla-tilt.min.js"></script>
+    <div id="fake-notification-container"></div>
+    <!-- Botão Scroll-to-Top -->
+    <button id="scrollToTopBtn" class="btn btn-primary rounded-circle">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+</body>
+</html>

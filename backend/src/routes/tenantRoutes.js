@@ -5,6 +5,7 @@ const tenantController = require("../controllers/tenantController");
 const { protect, authorize } = require("../middlewares/authMiddleware");
 const validate = require("../middlewares/validationMiddleware");
 const createMulterConfig = require("../config/multerConfig");
+const { processImage } = require("../middlewares/imageProcessor");
 
 const uploadLogoMiddleware = createMulterConfig("logos", "logo");
 
@@ -39,6 +40,7 @@ router.post(
   "/:id/upload-logo",
   authorize("tenants:update"), // Permissão para atualizar tenant
   uploadLogoMiddleware, // 'logo' é o nome do campo no formulário
+  processImage({ width: 400, quality: 85 }), // Processa imagem (Redimensiona e WebP)
   tenantController.uploadLogo,
 );
 

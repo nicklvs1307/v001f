@@ -16,6 +16,7 @@ exports.createTenant = asyncHandler(async (req, res) => {
     email,
     cnpj,
     description, // Tenant data
+    gmb_link,
     adminName,
     adminEmail,
     adminPassword, // Admin user data
@@ -35,7 +36,15 @@ exports.createTenant = asyncHandler(async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const passwordHash = await bcrypt.hash(adminPassword, salt);
 
-  const tenantData = { name, address, phone, email, cnpj, description };
+  const tenantData = {
+    name,
+    address,
+    phone,
+    email,
+    cnpj,
+    description,
+    gmb_link,
+  };
   const adminData = {
     name: adminName,
     email: adminEmail,
@@ -101,6 +110,12 @@ exports.updateTenant = asyncHandler(async (req, res) => {
     primaryColor,
     secondaryColor,
     gmb_link,
+    reportPhoneNumber,
+    uairangoEstablishmentId,
+    deliveryMuchClientId,
+    deliveryMuchClientSecret,
+    deliveryMuchUsername,
+    deliveryMuchPassword,
   } = req.body;
 
   const updatedTenant = await tenantRepository.updateTenant(id, {
@@ -114,6 +129,12 @@ exports.updateTenant = asyncHandler(async (req, res) => {
     primaryColor,
     secondaryColor,
     gmb_link,
+    reportPhoneNumber,
+    uairangoEstablishmentId,
+    deliveryMuchClientId,
+    deliveryMuchClientSecret,
+    deliveryMuchUsername,
+    deliveryMuchPassword,
   });
 
   if (!updatedTenant) {
@@ -228,6 +249,7 @@ exports.updateMe = asyncHandler(async (req, res) => {
     deliveryMuchPassword,
     primaryColor,
     secondaryColor,
+    gmb_link,
   } = req.body;
 
   if (!tenantId) {

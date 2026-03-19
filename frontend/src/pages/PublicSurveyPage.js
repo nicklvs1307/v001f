@@ -75,6 +75,7 @@ const Rating1to5 = React.memo(({ question, answer, onChange }) => (
                 <IconButton 
                     key={value}
                     onClick={() => onChange(question.id, value)} 
+                    aria-label={`Avaliar com ${value} estrelas`}
                     style={{ 
                         color: (answer?.valor) >= value ? '#ffc107' : '#e0e0e0', 
                         transform: (answer?.valor) === value ? 'scale(1.2)' : 'scale(1)', 
@@ -369,16 +370,17 @@ const SurveyComponent = ({ survey, tenantId }) => {
                             {renderQuestionInput(question)}
 
                             {(question.type.startsWith('rating')) && (
-                                <TextField 
-                                    fullWidth 
-                                    label="Comentário (opcional)" 
-                                    multiline 
-                                    rows={2} 
-                                    value={answers[question.id]?.comentario || ''} 
-                                    onChange={(e) => handleCommentChange(question.id, e.target.value)} 
-                                    sx={{ mt: 1.5 }} 
-                                    variant="standard"
-                                />
+                                <div style={{ marginTop: '16px' }}>
+                                    <TextField 
+                                        fullWidth 
+                                        label="Comentário (opcional)" 
+                                        multiline 
+                                        rows={2} 
+                                        value={answers[question.id]?.comentario || ''} 
+                                        onChange={(e) => handleCommentChange(question.id, e.target.value)} 
+                                        variant="standard"
+                                    />
+                                </div>
                             )}
                         </div>
                     ))}

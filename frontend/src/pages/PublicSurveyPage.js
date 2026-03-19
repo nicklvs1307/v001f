@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, startTransition } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
     Container,
@@ -31,94 +31,101 @@ const isValidUUID = (uuid) => {
 // --- Componentes de Pergunta Memorizados ---
 
 const Rating1to5 = React.memo(({ question, answer, onChange }) => (
-    <Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, my: 2, flexWrap: 'wrap' }}>
+    <div style={{ textAlign: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', margin: '16px 0', flexWrap: 'wrap' }}>
             {[1, 2, 3, 4, 5].map(value => (
                 <IconButton 
                     key={value}
                     onClick={() => onChange(question.id, value)} 
-                    sx={{ 
+                    style={{ 
                         color: (answer?.valor) >= value ? '#ffc107' : '#e0e0e0', 
                         transform: (answer?.valor) === value ? 'scale(1.2)' : 'scale(1)', 
                         transition: 'color 0.2s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                        padding: { xs: '8px', sm: '12px' }
+                        padding: '8px'
                     }}
                 >
-                    {(answer?.valor) >= value ? <Star sx={{ fontSize: { xs: 38, sm: 48 } }} /> : <StarBorder sx={{ fontSize: { xs: 38, sm: 48 } }} />}
+                    {(answer?.valor) >= value ? <Star style={{ fontSize: '40px' }} /> : <StarBorder style={{ fontSize: '40px' }} />}
                 </IconButton>
             ))}
-        </Box>
-        <Typography variant="caption" sx={{ display: 'block', textAlign: 'center', color: '#777' }}>
+        </div>
+        <p style={{ fontSize: '12px', textAlign: 'center', color: '#777', margin: 0 }}>
             Toque nas estrelas para avaliar
-        </Typography>
-    </Box>
+        </p>
+    </div>
 ));
 
 const Rating0to10 = React.memo(({ question, answer, onChange, theme }) => {
     const values = useMemo(() => [...Array(11).keys()], []);
+    const primaryMain = theme.palette.primary.main;
+    const textSecondary = theme.palette.text.secondary;
+
     return (
-        <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: { xs: 0.5, sm: 1 }, my: 3, flexWrap: 'wrap' }}>
-                {values.map((value) => (
-                    <Box
-                        key={value}
-                        onClick={() => onChange(question.id, value)}
-                        sx={{
-                            width: { xs: 32, sm: 42 },
-                            height: { xs: 32, sm: 42 },
-                            borderRadius: '10px',
-                            border: `2px solid ${(answer?.valor) === value ? theme.palette.primary.main : '#e0e0e0'}`,
-                            backgroundColor: (answer?.valor) === value ? theme.palette.primary.main : 'transparent',
-                            color: (answer?.valor) === value ? 'white' : theme.palette.text.secondary,
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontSize: '0.9rem', fontWeight: 'bold', cursor: 'pointer', 
-                            transition: 'all 0.2s ease',
-                            '&:hover': { borderColor: theme.palette.primary.main }
-                        }}
-                    >
-                        {value}
-                    </Box>
-                ))}
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#777', px: 1 }}>
+        <div style={{ width: '100%' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '4px', margin: '24px 0', flexWrap: 'wrap' }}>
+                {values.map((value) => {
+                    const isSelected = (answer?.valor) === value;
+                    return (
+                        <div
+                            key={value}
+                            onClick={() => onChange(question.id, value)}
+                            style={{
+                                width: '36px',
+                                height: '36px',
+                                borderRadius: '10px',
+                                border: `2px solid ${isSelected ? primaryMain : '#e0e0e0'}`,
+                                backgroundColor: isSelected ? primaryMain : 'transparent',
+                                color: isSelected ? 'white' : textSecondary,
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                fontSize: '0.9rem', fontWeight: 'bold', cursor: 'pointer', 
+                                transition: 'all 0.15s ease'
+                            }}
+                        >
+                            {value}
+                        </div>
+                    );
+                })}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#777', padding: '0 8px' }}>
                 <span>{question.criterio?.minLabel || 'Pouco Provável'}</span>
                 <span>{question.criterio?.maxLabel || 'Muito Provável'}</span>
-            </Box>
-        </Box>
+            </div>
+        </div>
     );
 });
 
-const MultipleChoice = React.memo(({ question, answer, onChange, theme }) => (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mt: 3 }}>
-        {(question.options || []).map((opcao, index) => {
-            const isSelected = String(answer?.valor) === String(opcao.text);
-            return (
-                <Box
-                    key={index}
-                    onClick={() => onChange(question.id, String(opcao.text))}
-                    sx={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        padding: '12px 18px', borderRadius: '12px',
-                        border: `2px solid ${isSelected ? theme.palette.primary.main : '#eee'}`,
-                        backgroundColor: isSelected ? `${theme.palette.primary.main}10` : 'white',
-                        cursor: 'pointer', transition: 'all 0.2s ease',
-                        '&:hover': { transform: 'translateY(-1px)', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }
-                    }}
-                >
-                    <Typography sx={{ fontWeight: isSelected ? 600 : 400 }}>{opcao.text}</Typography>
-                    <Box sx={{ 
-                        width: 22, height: 22, borderRadius: '50%', 
-                        border: `2px solid ${isSelected ? theme.palette.primary.main : '#ccc'}`,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        backgroundColor: isSelected ? theme.palette.primary.main : 'transparent'
-                    }}>
-                        {isSelected && <CheckCircle sx={{ color: 'white', fontSize: 18 }} />}
-                    </Box>
-                </Box>
-            );
-        })}
-    </Box>
-));
+const MultipleChoice = React.memo(({ question, answer, onChange, theme }) => {
+    const primaryMain = theme.palette.primary.main;
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '20px' }}>
+            {(question.options || []).map((opcao, index) => {
+                const isSelected = String(answer?.valor) === String(opcao.text);
+                return (
+                    <div
+                        key={index}
+                        onClick={() => onChange(question.id, String(opcao.text))}
+                        style={{
+                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                            padding: '12px 18px', borderRadius: '12px',
+                            border: `2px solid ${isSelected ? primaryMain : '#eee'}`,
+                            backgroundColor: isSelected ? `${primaryMain}15` : 'white',
+                            cursor: 'pointer', transition: 'all 0.15s ease'
+                        }}
+                    >
+                        <span style={{ fontWeight: isSelected ? 600 : 400, fontSize: '1rem' }}>{opcao.text}</span>
+                        <div style={{ 
+                            width: '22px', height: '22px', borderRadius: '50%', 
+                            border: `2px solid ${isSelected ? primaryMain : '#ccc'}`,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            backgroundColor: isSelected ? primaryMain : 'transparent'
+                        }}>
+                            {isSelected && <CheckCircle style={{ color: 'white', fontSize: '16px' }} />}
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    );
+});
 
 // --- Componente Principal ---
 
@@ -180,6 +187,18 @@ const SurveyComponent = ({ survey, tenantId }) => {
     const [submitLoading, setSubmitLoading] = useState(false);
     const [submitError, setSubmitError] = useState(null);
     const [atendenteError, setAtendenteError] = useState(null);
+    
+    // Renderização progressiva: começa com 3 e carrega o resto em chunks
+    const [visibleCount, setVisibleCount] = useState(3);
+
+    useEffect(() => {
+        if (visibleCount < (survey.questions || []).length) {
+            const timer = setTimeout(() => {
+                setVisibleCount(prev => prev + 5);
+            }, 100);
+            return () => clearTimeout(timer);
+        }
+    }, [visibleCount, survey.questions]);
 
     useEffect(() => {
         if (survey.askForAttendant) {
@@ -188,11 +207,16 @@ const SurveyComponent = ({ survey, tenantId }) => {
     }, [survey.askForAttendant, tenantId]);
 
     const handleAnswerChange = useCallback((perguntaId, value) => {
-        setAnswers(prev => ({ ...prev, [perguntaId]: { ...prev[perguntaId], valor: value } }));
+        // startTransition libera a thread principal para feedback visual imediato
+        startTransition(() => {
+            setAnswers(prev => ({ ...prev, [perguntaId]: { ...prev[perguntaId], valor: value } }));
+        });
     }, []);
 
     const handleCommentChange = useCallback((perguntaId, comment) => {
-        setAnswers(prev => ({ ...prev, [perguntaId]: { ...prev[perguntaId], comentario: comment } }));
+        startTransition(() => {
+            setAnswers(prev => ({ ...prev, [perguntaId]: { ...prev[perguntaId], comentario: comment } }));
+        });
     }, []);
 
     const handleSubmit = async () => {
@@ -292,8 +316,15 @@ const SurveyComponent = ({ survey, tenantId }) => {
 
                     {/* Questions List */}
                     <Box sx={{ p: { xs: 2, sm: 3 } }}>
-                        {(survey.questions || []).map((question, index) => (
-                            <Box key={question.id} sx={{ mb: 5, '&:last-child': { mb: 0 } }}>
+                        {(survey.questions || []).slice(0, visibleCount).map((question, index) => (
+                            <div 
+                                key={question.id} 
+                                style={{ 
+                                    marginBottom: '40px', 
+                                    contentVisibility: 'auto', 
+                                    containIntrinsicSize: '1px 200px'
+                                }}
+                            >
                                 <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 600, fontSize: '1.05rem', display: 'flex', alignItems: 'flex-start' }}>
                                     <Box component="span" sx={{ mr: 1, color: theme.palette.primary.main }}>{index + 1}.</Box>
                                     {question.text}
@@ -314,7 +345,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
                                         variant="standard"
                                     />
                                 )}
-                            </Box>
+                            </div>
                         ))}
 
                         {/* Atendente Selection */}

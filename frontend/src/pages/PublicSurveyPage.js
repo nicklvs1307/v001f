@@ -166,7 +166,15 @@ const SurveyComponent = ({ survey, tenantId }) => {
     const navigate = useNavigate();
     const theme = useTheme();
 
-    const [answers, setAnswers] = useState({});
+    // Inicialização direta do estado para evitar re-render no mount
+    const [answers, setAnswers] = useState(() => {
+        const initial = {};
+        (survey.questions || []).forEach(p => {
+            initial[p.id] = { perguntaId: p.id, tipo: p.type, valor: null, comentario: '' };
+        });
+        return initial;
+    });
+
     const [atendentes, setAtendentes] = useState([]);
     const [selectedAtendente, setSelectedAtendente] = useState('');
     const [submitLoading, setSubmitLoading] = useState(false);
@@ -174,16 +182,10 @@ const SurveyComponent = ({ survey, tenantId }) => {
     const [atendenteError, setAtendenteError] = useState(null);
 
     useEffect(() => {
-        const initialAnswers = {};
-        (survey.questions || []).forEach(p => {
-            initialAnswers[p.id] = { perguntaId: p.id, tipo: p.type, valor: null, comentario: '' };
-        });
-        setAnswers(initialAnswers);
-
         if (survey.askForAttendant) {
             publicSurveyService.getPublicAtendentes(tenantId).then(setAtendentes).catch(() => {});
         }
-    }, [survey, tenantId]);
+    }, [survey.askForAttendant, tenantId]);
 
     const handleAnswerChange = useCallback((perguntaId, value) => {
         setAnswers(prev => ({ ...prev, [perguntaId]: { ...prev[perguntaId], valor: value } }));
@@ -239,27 +241,34 @@ const SurveyComponent = ({ survey, tenantId }) => {
 
     return (
         <Box sx={{ 
-            background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`, 
+            bgcolor: theme.palette.primary.main, // Simplificado para cor sólida inicial para acelerar pintura
+            backgroundImage: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`, 
             minHeight: '100vh', 
             py: { xs: 2, sm: 4 },
             px: 2
         }}>
-            <Container maxWidth="sm">
-                <Paper elevation={10} sx={{ borderRadius: '24px', overflow: 'hidden', mb: 4 }}>
+            <Container maxWidth="sm" sx={{ py: 0 }}>
+                <Paper elevation={4} sx={{ borderRadius: '24px', overflow: 'hidden', mb: 4, bgcolor: '#fff' }}>
                     {/* Header */}
-                    <Box sx={{ p: 4, textAlign: 'center', background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, color: 'white' }}>
+                    <Box sx={{ 
+                        p: 3, 
+                        textAlign: 'center', 
+                        background: theme.palette.secondary.main, // Cor sólida por padrão
+                        backgroundImage: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, 
+                        color: 'white' 
+                    }}>
                         <Box sx={{ 
-                            width: 90, 
-                            height: 90, 
+                            width: 80, 
+                            height: 80, 
                             bgcolor: 'white', 
                             borderRadius: '50%', 
-                            m: '0 auto 15px', 
+                            m: '0 auto 12px', 
                             display: 'flex', 
                             alignItems: 'center', 
                             justifyContent: 'center', 
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                            overflow: 'hidden', // Garante que nada saia do círculo
-                            border: '3px solid rgba(255,255,255,0.3)' // Adiciona uma borda suave para acabamento
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                            overflow: 'hidden',
+                            border: '2px solid rgba(255,255,255,0.3)'
                         }}>
                             {survey.restaurantLogoUrl ? (
                                 <img 
@@ -268,24 +277,24 @@ const SurveyComponent = ({ survey, tenantId }) => {
                                     style={{ 
                                         width: '100%', 
                                         height: '100%', 
-                                        objectFit: 'cover' // Preenche o círculo sem sobrar cantos brancos
+                                        objectFit: 'cover'
                                     }} 
                                 />
                             ) : (
-                                <Star sx={{ color: theme.palette.primary.main, fontSize: 40 }} />
+                                <Star sx={{ color: theme.palette.primary.main, fontSize: 35 }} />
                             )}
                         </Box>
-                        <Typography variant="h5" fontWeight="bold">{survey.title}</Typography>
+                        <Typography variant="h5" fontWeight="bold" sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>{survey.title}</Typography>
                         {survey.description && (
-                            <Typography variant="body2" sx={{ mt: 1, opacity: 0.9 }}>{survey.description}</Typography>
+                            <Typography variant="body2" sx={{ mt: 0.5, opacity: 0.9 }}>{survey.description}</Typography>
                         )}
                     </Box>
 
                     {/* Questions List */}
-                    <Box sx={{ p: { xs: 2, sm: 4 } }}>
+                    <Box sx={{ p: { xs: 2, sm: 3 } }}>
                         {(survey.questions || []).map((question, index) => (
-                            <Box key={question.id} sx={{ mb: 6, '&:last-child': { mb: 0 } }}>
-                                <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, fontSize: '1.1rem', display: 'flex', alignItems: 'flex-start' }}>
+                            <Box key={question.id} sx={{ mb: 5, '&:last-child': { mb: 0 } }}>
+                                <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 600, fontSize: '1.05rem', display: 'flex', alignItems: 'flex-start' }}>
                                     <Box component="span" sx={{ mr: 1, color: theme.palette.primary.main }}>{index + 1}.</Box>
                                     {question.text}
                                     {question.required && <Box component="span" sx={{ color: 'error.main', ml: 0.5 }}>*</Box>}
@@ -301,7 +310,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
                                         rows={2} 
                                         value={answers[question.id]?.comentario || ''} 
                                         onChange={(e) => handleCommentChange(question.id, e.target.value)} 
-                                        sx={{ mt: 2 }} 
+                                        sx={{ mt: 1.5 }} 
                                         variant="standard"
                                     />
                                 )}

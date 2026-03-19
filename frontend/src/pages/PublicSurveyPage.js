@@ -383,59 +383,58 @@ const SurveyComponent = ({ survey, tenantId }) => {
                         </div>
                     ))}
 
-                        {/* Atendente Selection */}
-                        {survey.askForAttendant && (
-                            <Box sx={{ mt: 6, pt: 4, borderTop: '1px solid #eee' }}>
-                                <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, fontSize: '1.1rem' }}>
-                                    Qual atendente realizou o seu atendimento?
-                                </Typography>
-                                <FormControl fullWidth error={!!atendenteError} variant="outlined">
-                                    <InputLabel>Selecione o Atendente</InputLabel>
-                                    <Select 
-                                        value={selectedAtendente} 
-                                        label="Selecione o Atendente" 
-                                        onChange={(e) => {
-                                            setSelectedAtendente(e.target.value);
-                                            setAtendenteError(null);
-                                        }}
-                                    >
-                                        <MenuItem value=""><em>Não me lembro / Outro</em></MenuItem>
-                                        {atendentes.map(a => <MenuItem key={a.id} value={a.id}>{a.name}</MenuItem>)}
-                                    </Select>
-                                    {atendenteError && <FormHelperText>{atendenteError}</FormHelperText>}
-                                </FormControl>
-                            </Box>
-                        )}
+                    {/* Atendente Selection */}
+                    {survey.askForAttendant && (
+                        <div style={{ marginTop: '48px', paddingTop: '32px', borderTop: '1px solid #eee' }}>
+                            <h3 style={{ margin: '0 0 16px', fontSize: '1.05rem', fontWeight: 600, color: '#333' }}>
+                                Qual atendente realizou o seu atendimento?
+                            </h3>
+                            <FormControl fullWidth error={!!atendenteError} variant="outlined">
+                                <InputLabel>Selecione o Atendente</InputLabel>
+                                <Select 
+                                    value={selectedAtendente} 
+                                    label="Selecione o Atendente" 
+                                    onChange={(e) => {
+                                        setSelectedAtendente(e.target.value);
+                                        setAtendenteError(null);
+                                    }}
+                                >
+                                    <MenuItem value=""><em>Não me lembro / Outro</em></MenuItem>
+                                    {atendentes.map(a => <MenuItem key={a.id} value={a.id}>{a.name}</MenuItem>)}
+                                </Select>
+                                {atendenteError && <FormHelperText>{atendenteError}</FormHelperText>}
+                            </FormControl>
+                        </div>
+                    )}
 
-                        {submitError && (
-                            <Alert severity="error" sx={{ mt: 4, borderRadius: '12px' }}>{submitError}</Alert>
-                        )}
+                    {submitError && (
+                        <Alert severity="error" sx={{ mt: 4, borderRadius: '12px' }}>{submitError}</Alert>
+                    )}
 
-                        <Box sx={{ mt: 6, textAlign: 'center' }}>
-                            <Button 
-                                variant="contained" 
-                                size="large"
-                                onClick={handleSubmit} 
-                                disabled={submitLoading}
-                                sx={{ 
-                                    px: 8, 
-                                    py: 1.5, 
-                                    borderRadius: '50px',
-                                    fontSize: '1.1rem',
-                                    boxShadow: `0 8px 20px ${theme.palette.primary.main}40`
-                                }}
-                            >
-                                {submitLoading ? <CircularProgress size={26} color="inherit" /> : 'Finalizar Pesquisa'}
-                            </Button>
-                        </Box>
-                    </Box>
-                </Paper>
-                
-                <Box sx={{ textAlign: 'center', pb: 4, color: 'rgba(255,255,255,0.7)' }}>
-                    <Typography variant="caption">Powered by Voltaki</Typography>
-                </Box>
-            </Container>
-        </Box>
+                    <div style={{ marginTop: '48px', textAlign: 'center' }}>
+                        <Button 
+                            variant="contained" 
+                            size="large"
+                            onClick={handleSubmit} 
+                            disabled={submitLoading}
+                            sx={{ 
+                                px: 8, 
+                                py: 1.5, 
+                                borderRadius: '50px',
+                                fontSize: '1.1rem',
+                                boxShadow: `0 8px 20px ${theme.palette.primary.main}40`
+                            }}
+                        >
+                            {submitLoading ? <CircularProgress size={26} color="inherit" /> : 'Finalizar Pesquisa'}
+                        </Button>
+                    </div>
+                </div>
+            </div>
+            
+            <div style={{ textAlign: 'center', paddingBottom: '32px', color: 'rgba(255,255,255,0.7)', marginTop: '16px' }}>
+                <span style={{ fontSize: '12px' }}>Powered by Voltaki</span>
+            </div>
+        </div>
     );
 };
 

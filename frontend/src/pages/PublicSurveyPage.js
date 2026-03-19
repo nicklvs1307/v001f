@@ -193,6 +193,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
 
     const currentQuestion = displayedQuestions[currentQuestionIndex];
     const progress = (displayedQuestions.length ? ((currentQuestionIndex + 1) / displayedQuestions.length) * 100 : 0);
+    const answer = currentQuestion ? answers[currentQuestion.id] : null;
 
     const handleAnswerChange = useCallback((perguntaId, value) => {
         setAnswers(prev => ({ ...prev, [perguntaId]: { ...prev[perguntaId], valor: value } }));

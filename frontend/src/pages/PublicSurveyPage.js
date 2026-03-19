@@ -15,20 +15,58 @@ import {
     Select,
     MenuItem,
     FormHelperText,
-    Fade,
-    Grow,
 } from '@mui/material';
 import { Star, StarBorder, CheckCircle } from '@mui/icons-material';
 import publicSurveyService from '../services/publicSurveyService';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import getDynamicTheme from '../getDynamicTheme';
 
+// Estilos críticos em JS para evitar processamento do Emotion no LCP
+const CRITICAL_STYLES = {
+    container: {
+        minHeight: '100vh',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '20px 16px',
+        boxSizing: 'border-box',
+        fontFamily: 'Roboto, Helvetica, Arial, sans-serif'
+    },
+    paper: {
+        width: '100%',
+        maxWidth: '552px',
+        backgroundColor: '#fff',
+        borderRadius: '24px',
+        overflow: 'hidden',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+    },
+    header: {
+        padding: '32px 16px',
+        textAlign: 'center',
+        color: '#fff'
+    },
+    logoContainer: {
+        width: '80px',
+        height: '80px',
+        backgroundColor: '#fff',
+        borderRadius: '50%',
+        margin: '0 auto 12px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        border: '2px solid rgba(255,255,255,0.3)'
+    }
+};
+
 const isValidUUID = (uuid) => {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     return uuidRegex.test(uuid);
 };
 
-// --- Componentes de Pergunta Memorizados ---
+// --- Componentes de Pergunta Otimizados ---
 
 const Rating1to5 = React.memo(({ question, answer, onChange }) => (
     <div style={{ textAlign: 'center' }}>
@@ -158,7 +196,23 @@ const PublicSurveyPage = () => {
             .finally(() => setLoading(false));
     }, [pesquisaId]);
 
-    if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}><CircularProgress /></Box>;
+    // Renderização do esqueleto ultra-rápido para LCP
+    if (loading && !surveyData) {
+        return (
+            <div style={{ ...CRITICAL_STYLES.container, backgroundColor: '#f5f5f5' }}>
+                <div style={CRITICAL_STYLES.paper}>
+                    <div style={{ ...CRITICAL_STYLES.header, backgroundColor: '#ccc' }}>
+                        <div style={CRITICAL_STYLES.logoContainer} />
+                        <div style={{ width: '60%', height: '24px', backgroundColor: 'rgba(255,255,255,0.3)', margin: '0 auto', borderRadius: '4px' }} />
+                    </div>
+                    <div style={{ padding: '32px', textAlign: 'center' }}>
+                        <CircularProgress size={40} />
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     if (error) return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}><Alert severity="error">{error}</Alert></Box>;
 
     return (
@@ -173,7 +227,6 @@ const SurveyComponent = ({ survey, tenantId }) => {
     const navigate = useNavigate();
     const theme = useTheme();
 
-    // Inicialização direta do estado para evitar re-render no mount
     const [answers, setAnswers] = useState(() => {
         const initial = {};
         (survey.questions || []).forEach(p => {
@@ -188,14 +241,13 @@ const SurveyComponent = ({ survey, tenantId }) => {
     const [submitError, setSubmitError] = useState(null);
     const [atendenteError, setAtendenteError] = useState(null);
     
-    // Renderização progressiva: começa com 3 e carrega o resto em chunks
     const [visibleCount, setVisibleCount] = useState(3);
 
     useEffect(() => {
         if (visibleCount < (survey.questions || []).length) {
             const timer = setTimeout(() => {
                 setVisibleCount(prev => prev + 5);
-            }, 100);
+            }, 50);
             return () => clearTimeout(timer);
         }
     }, [visibleCount, survey.questions]);
@@ -207,7 +259,6 @@ const SurveyComponent = ({ survey, tenantId }) => {
     }, [survey.askForAttendant, tenantId]);
 
     const handleAnswerChange = useCallback((perguntaId, value) => {
-        // startTransition libera a thread principal para feedback visual imediato
         startTransition(() => {
             setAnswers(prev => ({ ...prev, [perguntaId]: { ...prev[perguntaId], valor: value } }));
         });
@@ -220,7 +271,6 @@ const SurveyComponent = ({ survey, tenantId }) => {
     }, []);
 
     const handleSubmit = async () => {
-        // Validação básica
         const missingRequired = survey.questions
             .filter(q => q.required && !answers[q.id]?.valor);
         
@@ -264,89 +314,74 @@ const SurveyComponent = ({ survey, tenantId }) => {
     };
 
     return (
-        <Box sx={{ 
-            bgcolor: theme.palette.primary.main, // Simplificado para cor sólida inicial para acelerar pintura
-            backgroundImage: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`, 
-            minHeight: '100vh', 
-            py: { xs: 2, sm: 4 },
-            px: 2
+        <div style={{ 
+            ...CRITICAL_STYLES.container, 
+            backgroundColor: theme.palette.primary.main,
+            backgroundImage: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`
         }}>
-            <Container maxWidth="sm" sx={{ py: 0 }}>
-                <Paper elevation={4} sx={{ borderRadius: '24px', overflow: 'hidden', mb: 4, bgcolor: '#fff' }}>
-                    {/* Header */}
-                    <Box sx={{ 
-                        p: 3, 
-                        textAlign: 'center', 
-                        background: theme.palette.secondary.main, // Cor sólida por padrão
-                        backgroundImage: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, 
-                        color: 'white' 
-                    }}>
-                        <Box sx={{ 
-                            width: 80, 
-                            height: 80, 
-                            bgcolor: 'white', 
-                            borderRadius: '50%', 
-                            m: '0 auto 12px', 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            justifyContent: 'center', 
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                            overflow: 'hidden',
-                            border: '2px solid rgba(255,255,255,0.3)'
-                        }}>
-                            {survey.restaurantLogoUrl ? (
-                                <img 
-                                    src={`${process.env.REACT_APP_API_URL}${survey.restaurantLogoUrl}`} 
-                                    alt="Logo" 
-                                    style={{ 
-                                        width: '100%', 
-                                        height: '100%', 
-                                        objectFit: 'cover'
-                                    }} 
-                                />
-                            ) : (
-                                <Star sx={{ color: theme.palette.primary.main, fontSize: 35 }} />
-                            )}
-                        </Box>
-                        <Typography variant="h5" fontWeight="bold" sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>{survey.title}</Typography>
-                        {survey.description && (
-                            <Typography variant="body2" sx={{ mt: 0.5, opacity: 0.9 }}>{survey.description}</Typography>
+            <div style={CRITICAL_STYLES.paper}>
+                {/* Header em HTML Puro para LCP Instantâneo */}
+                <div style={{ 
+                    ...CRITICAL_STYLES.header, 
+                    backgroundColor: theme.palette.secondary.main,
+                    backgroundImage: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`
+                }}>
+                    <div style={CRITICAL_STYLES.logoContainer}>
+                        {survey.restaurantLogoUrl ? (
+                            <img 
+                                src={`${process.env.REACT_APP_API_URL}${survey.restaurantLogoUrl}`} 
+                                alt="Logo" 
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                            />
+                        ) : (
+                            <Star style={{ color: theme.palette.primary.main, fontSize: '35px' }} />
                         )}
-                    </Box>
+                    </div>
+                    <h1 style={{ margin: 0, fontSize: '22px', fontWeight: 'bold' }}>{survey.title}</h1>
+                    {survey.description && (
+                        <p style={{ margin: '8px 0 0', fontSize: '14px', opacity: 0.9 }}>{survey.description}</p>
+                    )}
+                </div>
 
-                    {/* Questions List */}
-                    <Box sx={{ p: { xs: 2, sm: 3 } }}>
-                        {(survey.questions || []).slice(0, visibleCount).map((question, index) => (
-                            <div 
-                                key={question.id} 
-                                style={{ 
-                                    marginBottom: '40px', 
-                                    contentVisibility: 'auto', 
-                                    containIntrinsicSize: '1px 200px'
-                                }}
-                            >
-                                <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 600, fontSize: '1.05rem', display: 'flex', alignItems: 'flex-start' }}>
-                                    <Box component="span" sx={{ mr: 1, color: theme.palette.primary.main }}>{index + 1}.</Box>
-                                    {question.text}
-                                    {question.required && <Box component="span" sx={{ color: 'error.main', ml: 0.5 }}>*</Box>}
-                                </Typography>
-                                
-                                {renderQuestionInput(question)}
+                <div style={{ padding: '24px 16px' }}>
+                    {(survey.questions || []).slice(0, visibleCount).map((question, index) => (
+                        <div 
+                            key={question.id} 
+                            style={{ 
+                                marginBottom: '40px', 
+                                contentVisibility: 'auto', 
+                                containIntrinsicSize: '1px 200px'
+                            }}
+                        >
+                            <h2 style={{ 
+                                margin: '0 0 16px', 
+                                fontSize: '1.05rem', 
+                                fontWeight: 600, 
+                                display: 'flex', 
+                                alignItems: 'flex-start',
+                                color: '#333'
+                            }}>
+                                <span style={{ marginRight: '8px', color: theme.palette.primary.main }}>{index + 1}.</span>
+                                {question.text}
+                                {question.required && <span style={{ color: '#d32f2f', marginLeft: '4px' }}>*</span>}
+                            </h2>
+                            
+                            {renderQuestionInput(question)}
 
-                                {(question.type.startsWith('rating')) && (
-                                    <TextField 
-                                        fullWidth 
-                                        label="Comentário (opcional)" 
-                                        multiline 
-                                        rows={2} 
-                                        value={answers[question.id]?.comentario || ''} 
-                                        onChange={(e) => handleCommentChange(question.id, e.target.value)} 
-                                        sx={{ mt: 1.5 }} 
-                                        variant="standard"
-                                    />
-                                )}
-                            </div>
-                        ))}
+                            {(question.type.startsWith('rating')) && (
+                                <TextField 
+                                    fullWidth 
+                                    label="Comentário (opcional)" 
+                                    multiline 
+                                    rows={2} 
+                                    value={answers[question.id]?.comentario || ''} 
+                                    onChange={(e) => handleCommentChange(question.id, e.target.value)} 
+                                    sx={{ mt: 1.5 }} 
+                                    variant="standard"
+                                />
+                            )}
+                        </div>
+                    ))}
 
                         {/* Atendente Selection */}
                         {survey.askForAttendant && (

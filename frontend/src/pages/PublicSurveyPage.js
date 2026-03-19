@@ -309,7 +309,17 @@ const SurveyComponent = ({ survey, tenantId }) => {
             case 'rating_1_5': return <Rating1to5 question={question} answer={answer} onChange={handleAnswerChange} />;
             case 'rating_0_10': return <Rating0to10 question={question} answer={answer} onChange={handleAnswerChange} theme={theme} />;
             case 'multiple_choice': return <MultipleChoice question={question} answer={answer} onChange={handleAnswerChange} theme={theme} />;
-            case 'free_text': return <TextField fullWidth multiline rows={3} placeholder="Sua resposta..." value={answer?.valor || ''} onChange={(e) => handleAnswerChange(question.id, e.target.value)} variant="outlined" sx={{ mt: 1 }} />;
+            case 'free_text': return (
+                <textarea 
+                    style={{ 
+                        width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ccc', 
+                        fontFamily: 'inherit', fontSize: '1rem', minHeight: '100px', boxSizing: 'border-box'
+                    }}
+                    placeholder="Sua resposta..."
+                    value={answer?.valor || ''}
+                    onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+                />
+            );
             default: return null;
         }
     };
@@ -371,46 +381,48 @@ const SurveyComponent = ({ survey, tenantId }) => {
 
                             {(question.type.startsWith('rating')) && (
                                 <div style={{ marginTop: '16px' }}>
-                                    <TextField 
-                                        fullWidth 
-                                        label="Comentário (opcional)" 
-                                        multiline 
-                                        rows={2} 
+                                    <label style={{ display: 'block', fontSize: '12px', color: '#666', marginBottom: '4px' }}>Comentário (opcional)</label>
+                                    <textarea 
+                                        style={{ 
+                                            width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd', 
+                                            fontFamily: 'inherit', fontSize: '0.9rem', minHeight: '60px', boxSizing: 'border-box'
+                                        }}
                                         value={answers[question.id]?.comentario || ''} 
                                         onChange={(e) => handleCommentChange(question.id, e.target.value)} 
-                                        variant="standard"
                                     />
                                 </div>
                             )}
                         </div>
                     ))}
 
-                    {/* Atendente Selection */}
                     {survey.askForAttendant && (
                         <div style={{ marginTop: '48px', paddingTop: '32px', borderTop: '1px solid #eee' }}>
-                            <h3 style={{ margin: '0 0 16px', fontSize: '1.05rem', fontWeight: 600, color: '#333' }}>
+                            <label htmlFor="attendant-select" style={{ display: 'block', margin: '0 0 12px', fontSize: '1.05rem', fontWeight: 600, color: '#333' }}>
                                 Qual atendente realizou o seu atendimento?
-                            </h3>
-                            <FormControl fullWidth error={!!atendenteError} variant="outlined">
-                                <InputLabel>Selecione o Atendente</InputLabel>
-                                <Select 
-                                    value={selectedAtendente} 
-                                    label="Selecione o Atendente" 
-                                    onChange={(e) => {
-                                        setSelectedAtendente(e.target.value);
-                                        setAtendenteError(null);
-                                    }}
-                                >
-                                    <MenuItem value=""><em>Não me lembro / Outro</em></MenuItem>
-                                    {atendentes.map(a => <MenuItem key={a.id} value={a.id}>{a.name}</MenuItem>)}
-                                </Select>
-                                {atendenteError && <FormHelperText>{atendenteError}</FormHelperText>}
-                            </FormControl>
+                            </label>
+                            <select 
+                                id="attendant-select"
+                                value={selectedAtendente} 
+                                onChange={(e) => {
+                                    setSelectedAtendente(e.target.value);
+                                    setAtendenteError(null);
+                                }}
+                                style={{ 
+                                    width: '100%', padding: '12px', borderRadius: '8px', border: `1px solid ${atendenteError ? '#d32f2f' : '#ccc'}`,
+                                    fontSize: '1rem', backgroundColor: '#fff', cursor: 'pointer'
+                                }}
+                            >
+                                <option value="">Não me lembro / Outro</option>
+                                {atendentes.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
+                            </select>
+                            {atendenteError && <p style={{ color: '#d32f2f', fontSize: '12px', marginTop: '4px' }}>{atendenteError}</p>}
                         </div>
                     )}
 
                     {submitError && (
-                        <Alert severity="error" sx={{ mt: 4, borderRadius: '12px' }}>{submitError}</Alert>
+                        <div style={{ marginTop: '24px', padding: '12px', borderRadius: '12px', backgroundColor: '#fdeded', color: '#5f2120', fontSize: '0.9rem', border: '1px solid #ef9a9a' }}>
+                            {submitError}
+                        </div>
                     )}
 
                     <div style={{ marginTop: '48px', textAlign: 'center' }}>

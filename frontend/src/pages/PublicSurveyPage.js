@@ -248,9 +248,29 @@ const SurveyComponent = ({ survey, tenantId }) => {
                 <Paper elevation={10} sx={{ borderRadius: '24px', overflow: 'hidden', mb: 4 }}>
                     {/* Header */}
                     <Box sx={{ p: 4, textAlign: 'center', background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, color: 'white' }}>
-                        <Box sx={{ width: 90, height: 90, bgcolor: 'white', borderRadius: '50%', m: '0 auto 15px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+                        <Box sx={{ 
+                            width: 90, 
+                            height: 90, 
+                            bgcolor: 'white', 
+                            borderRadius: '50%', 
+                            m: '0 auto 15px', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center', 
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                            overflow: 'hidden', // Garante que nada saia do círculo
+                            border: '3px solid rgba(255,255,255,0.3)' // Adiciona uma borda suave para acabamento
+                        }}>
                             {survey.restaurantLogoUrl ? (
-                                <img src={`${process.env.REACT_APP_API_URL}${survey.restaurantLogoUrl}`} alt="Logo" style={{ width: '80%', height: '80%', objectFit: 'contain' }} />
+                                <img 
+                                    src={`${process.env.REACT_APP_API_URL}${survey.restaurantLogoUrl}`} 
+                                    alt="Logo" 
+                                    style={{ 
+                                        width: '100%', 
+                                        height: '100%', 
+                                        objectFit: 'cover' // Preenche o círculo sem sobrar cantos brancos
+                                    }} 
+                                />
                             ) : (
                                 <Star sx={{ color: theme.palette.primary.main, fontSize: 40 }} />
                             )}
@@ -337,7 +357,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
                 </Paper>
                 
                 <Box sx={{ textAlign: 'center', pb: 4, color: 'rgba(255,255,255,0.7)' }}>
-                    <Typography variant="caption">Powered by Feedeliza</Typography>
+                    <Typography variant="caption">Powered by Voltaki</Typography>
                 </Box>
             </Container>
         </Box>

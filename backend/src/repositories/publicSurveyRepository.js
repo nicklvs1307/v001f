@@ -36,6 +36,7 @@ const getPublicSurveyById = async (idOrToken) => {
       "recompensaId",
       "roletaId",
       "isLinkExpirable",
+      "linkToken",
       "linkExpiresAt",
       "operatingHours",
       "askForCpf",
@@ -154,7 +155,7 @@ const submitSurveyResponses = async (
       where: {
         [Op.or]: [{ id: surveyId }, { linkToken: surveyId }],
       },
-      attributes: ["id", "isOpen", "tenantId", "askForAttendant", "title"],
+      attributes: ["id", "isOpen", "tenantId", "askForAttendant", "title", "linkToken"],
       include: [
         {
           model: models.Pergunta,

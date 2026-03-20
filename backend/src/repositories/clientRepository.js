@@ -266,6 +266,10 @@ class ClientRepository {
     return Client.findOne({ where: { phone, tenantId }, ...options });
   }
 
+  async findClientByCpf(cpf, tenantId, options = {}) {
+    return Client.findOne({ where: { cpf, tenantId }, ...options });
+  }
+
   async findAndCountAllByTenant(tenantId, page, limit, orderBy, order, filter) {
     const offset = (page - 1) * limit;
     const whereClause = { tenantId };
@@ -275,6 +279,7 @@ class ClientRepository {
         { name: { [Op.iLike]: `%${filter}%` } },
         { email: { [Op.iLike]: `%${filter}%` } },
         { phone: { [Op.iLike]: `%${filter}%` } },
+        { cpf: { [Op.iLike]: `%${filter}%` } },
       ];
     }
 

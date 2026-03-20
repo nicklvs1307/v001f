@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM('active', 'inactive'),
       defaultValue: 'active',
       allowNull: false
+    },
+    phone: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   }, {
     sequelize,

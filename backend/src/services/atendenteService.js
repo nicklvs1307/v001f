@@ -5,7 +5,7 @@ const { customAlphabet } = require("nanoid");
 // Gera códigos de 6 caracteres alfanuméricos em maiúsculas. Ex: "A5T8B1"
 const nanoid = customAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 6);
 
-const createAtendente = async (tenantId, name, status) => {
+const createAtendente = async (tenantId, name, status, phone) => {
   const code = nanoid();
   try {
     const atendente = await atendenteRepository.createAtendente(
@@ -13,6 +13,7 @@ const createAtendente = async (tenantId, name, status) => {
       name,
       status,
       code,
+      phone,
     );
     return atendente;
   } catch (error) {
@@ -35,8 +36,8 @@ const getAtendenteById = (id, tenantId) => {
   return atendenteRepository.getAtendenteById(id, tenantId);
 };
 
-const updateAtendente = (id, tenantId, name, status) => {
-  return atendenteRepository.updateAtendente(id, tenantId, name, status);
+const updateAtendente = (id, tenantId, name, status, phone) => {
+  return atendenteRepository.updateAtendente(id, tenantId, name, status, phone);
 };
 
 const deleteAtendente = (id, tenantId) => {

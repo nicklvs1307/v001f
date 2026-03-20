@@ -11,12 +11,15 @@ import {
     Alert,
     Fade,
     Avatar,
-    InputAdornment
+    InputAdornment,
+    Tabs,
+    Tab
 } from '@mui/material';
 import { 
     Phone as PhoneIcon, 
     ArrowForward as ArrowForwardIcon, 
-    VpnKey as LoginIcon 
+    VpnKey as LoginIcon,
+    Badge as BadgeIcon
 } from '@mui/icons-material';
 import publicSurveyService from '../services/publicSurveyService';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
@@ -25,24 +28,31 @@ import getDynamicTheme from '../getDynamicTheme';
 const ClientIdentificationPage = () => {
     const { tenantId, pesquisaId } = useParams();
     const [tenant, setTenant] = useState(null);
+    const [survey, setSurvey] = useState(null);
     const [dynamicTheme, setDynamicTheme] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchTenant = async () => {
+        const fetchData = async () => {
             if (tenantId) {
                 try {
-                    const tenantData = await publicSurveyService.getPublicTenantById(tenantId);
+                    const [tenantData, surveyData] = await Promise.all([
+                        publicSurveyService.getPublicTenantById(tenantId),
+                        pesquisaId ? publicSurveyService.getPublicSurveyById(pesquisaId) : Promise.resolve(null)
+                    ]);
+
                     setTenant(tenantData);
+                    setSurvey(surveyData);
+
                     const theme = getDynamicTheme({ 
                         primaryColor: tenantData.primaryColor, 
                         secondaryColor: tenantData.secondaryColor 
                     });
                     setDynamicTheme(theme);
                 } catch (error) {
-                    console.error("Erro ao buscar tenant:", error);
-                    setError("Não foi possível carregar as informações do restaurante.");
+                    console.error("Erro ao buscar dados:", error);
+                    setError("Não foi possível carregar as informações.");
                 } finally {
                     setLoading(false);
                 }
@@ -51,8 +61,8 @@ const ClientIdentificationPage = () => {
                 setError("ID do restaurante não encontrado na URL.");
             }
         };
-        fetchTenant();
-    }, [tenantId]);
+        fetchData();
+    }, [tenantId, pesquisaId]);
 
     if (loading || !dynamicTheme) {
         return (
@@ -64,21 +74,28 @@ const ClientIdentificationPage = () => {
 
     return (
         <ThemeProvider theme={dynamicTheme}>
-            <IdentificationFormComponent tenant={tenant} />
+            <IdentificationFormComponent tenant={tenant} survey={survey} />
         </ThemeProvider>
     );
 };
 
-const IdentificationFormComponent = ({ tenant }) => {
+const IdentificationFormComponent = ({ tenant, survey }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const { surveyId, tenantId, respondentSessionId } = location.state || {};
     const { pesquisaId } = useParams();
     const theme = useTheme();
 
+    const [tabValue, setTabValue] = useState(0); // 0: Telefone, 1: CPF
     const [phone, setPhone] = useState('');
+    const [cpf, setCpf] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    const handleTabChange = (event, newValue) => {
+        setTabValue(newValue);
+        setError(null);
+    };
 
     const handlePhoneChange = (e) => {
         let value = e.target.value.replace(/\D/g, '');
@@ -88,6 +105,20 @@ const IdentificationFormComponent = ({ tenant }) => {
         else if (value.length > 2) value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
         else if (value.length > 0) value = `(${value}`;
         setPhone(value);
+    };
+
+    const handleCpfChange = (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 11) value = value.slice(0, 11);
+        
+        if (value.length > 9) {
+            value = `${value.slice(0, 3)}.${value.slice(3, 6)}.${value.slice(6, 9)}-${value.slice(9)}`;
+        } else if (value.length > 6) {
+            value = `${value.slice(0, 3)}.${value.slice(3, 6)}.${value.slice(6)}`;
+        } else if (value.length > 3) {
+            value = `${value.slice(0, 3)}.${value.slice(3)}`;
+        }
+        setCpf(value);
     };
 
     const handleSubmit = async (e) => {
@@ -103,18 +134,25 @@ const IdentificationFormComponent = ({ tenant }) => {
             return;
         }
 
+        const clientPayload = tabValue === 0 ? { phone } : { cpf };
+
         try {
             const response = await publicSurveyService.submitSurveyWithClient({
                 surveyId: surveyIdentifier,
                 respondentSessionId,
-                client: { phone }
+                client: clientPayload
             });
-            localStorage.setItem('clientPhone', phone);
+            
+            if (tabValue === 0) {
+                localStorage.setItem('clientPhone', phone);
+            }
+            
             navigate(`/roleta/${tenantId}/${surveyIdentifier}/${response.clienteId}`);
         } catch (err) {
             console.error("Erro na identificação:", err);
             if (err.response?.status === 404) {
-                setError("Nenhum cliente encontrado com este telefone. Verifique o número digitado ou realize um novo cadastro.");
+                const tipo = tabValue === 0 ? "telefone" : "CPF";
+                setError(`Nenhum cliente encontrado com este ${tipo}. Verifique os dados ou realize um novo cadastro.`);
             } else {
                 setError(err.response?.data?.message || "Ocorreu um erro ao verificar seu cadastro.");
             }
@@ -141,7 +179,8 @@ const IdentificationFormComponent = ({ tenant }) => {
                         p: { xs: 3, sm: 4 }, 
                         textAlign: 'center', 
                         borderRadius: '24px',
-                        boxShadow: '0 15px 35px rgba(0,0,0,0.2)'
+                        boxShadow: '0 15px 35px rgba(0,0,0,0.2)',
+                        overflow: 'hidden'
                     }}>
                         <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
                             <Avatar sx={{ 
@@ -159,36 +198,77 @@ const IdentificationFormComponent = ({ tenant }) => {
                             Bem-vindo de volta!
                         </Typography>
                         
-                        <Typography variant="body1" sx={{ mb: 4, color: '#666' }}>
-                            Digite seu telefone cadastrado para continuar.
+                        <Typography variant="body1" sx={{ mb: 3, color: '#666' }}>
+                            Como você prefere se identificar?
                         </Typography>
+
+                        {survey?.askForCpf && (
+                            <Tabs 
+                                value={tabValue} 
+                                onChange={handleTabChange} 
+                                centered 
+                                sx={{ 
+                                    mb: 4,
+                                    '& .MuiTabs-indicator': { height: 3, borderRadius: '3px' }
+                                }}
+                            >
+                                <Tab icon={<PhoneIcon />} label="Telefone" sx={{ textTransform: 'none', fontWeight: 700 }} />
+                                <Tab icon={<BadgeIcon />} label="CPF" sx={{ textTransform: 'none', fontWeight: 700 }} />
+                            </Tabs>
+                        )}
 
                         {error && <Alert severity="error" sx={{ mb: 3, borderRadius: '12px', textAlign: 'left' }}>{error}</Alert>}
 
                         <Box component="form" onSubmit={handleSubmit}>
-                            <TextField 
-                                fullWidth
-                                placeholder="(00) 00000-0000"
-                                label="Seu Telefone"
-                                value={phone} 
-                                onChange={handlePhoneChange}
-                                inputMode="numeric"
-                                required
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <PhoneIcon color="action" />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                sx={{ 
-                                    mb: 4,
-                                    '& .MuiOutlinedInput-root': {
-                                        borderRadius: '16px',
-                                        backgroundColor: '#fcfcfc'
-                                    }
-                                }}
-                            />
+                            {tabValue === 0 ? (
+                                <TextField 
+                                    fullWidth
+                                    placeholder="(00) 00000-0000"
+                                    label="Seu Telefone"
+                                    value={phone} 
+                                    onChange={handlePhoneChange}
+                                    inputMode="numeric"
+                                    required
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <PhoneIcon color="action" />
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                    sx={{ 
+                                        mb: 4,
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: '16px',
+                                            backgroundColor: '#fcfcfc'
+                                        }
+                                    }}
+                                />
+                            ) : (
+                                <TextField 
+                                    fullWidth
+                                    placeholder="000.000.000-00"
+                                    label="Seu CPF"
+                                    value={cpf} 
+                                    onChange={handleCpfChange}
+                                    inputMode="numeric"
+                                    required
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <BadgeIcon color="action" />
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                    sx={{ 
+                                        mb: 4,
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: '16px',
+                                            backgroundColor: '#fcfcfc'
+                                        }
+                                    }}
+                                />
+                            )}
 
                             <Button 
                                 type="submit"
@@ -196,7 +276,7 @@ const IdentificationFormComponent = ({ tenant }) => {
                                 size="large" 
                                 fullWidth
                                 endIcon={!loading && <ArrowForwardIcon />}
-                                disabled={loading || phone.length < 14}
+                                disabled={loading || (tabValue === 0 ? phone.length < 14 : cpf.length < 14)}
                                 sx={{ 
                                     py: 1.5,
                                     fontSize: '1.1rem',

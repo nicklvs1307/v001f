@@ -48,6 +48,11 @@ const atendenteService = {
     const response = await apiAuthenticated.post(`${ATENDENTE_API_URL}/${id}/premiacoes`, awardData);
     return response.data;
   },
+
+  sendSurveyLink: async (data) => {
+    const response = await apiAuthenticated.post(`${ATENDENTE_API_URL}/send-link`, data);
+    return response.data;
+  },
 };
 
 export default atendenteService;

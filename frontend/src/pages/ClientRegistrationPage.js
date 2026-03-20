@@ -8,23 +8,30 @@ import getDynamicTheme from '../getDynamicTheme';
 
 // Wrapper Component: Fetches data and provides theme
 const ClientRegistrationPage = () => {
-    const { tenantId } = useParams();
+    const { tenantId, pesquisaId } = useParams();
     const [tenant, setTenant] = useState(null);
+    const [survey, setSurvey] = useState(null);
     const [dynamicTheme, setDynamicTheme] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchTenant = async () => {
+        const fetchData = async () => {
             if (tenantId) {
                 try {
-                    const tenantData = await publicSurveyService.getPublicTenantById(tenantId);
+                    const [tenantData, surveyData] = await Promise.all([
+                        publicSurveyService.getPublicTenantById(tenantId),
+                        pesquisaId ? publicSurveyService.getPublicSurveyById(pesquisaId) : Promise.resolve(null)
+                    ]);
+                    
                     setTenant(tenantData);
+                    setSurvey(surveyData);
+                    
                     const theme = getDynamicTheme({ primaryColor: tenantData.primaryColor, secondaryColor: tenantData.secondaryColor });
                     setDynamicTheme(theme);
                 } catch (error) {
-                    console.error("Erro ao buscar tenant:", error);
-                    setError("Não foi possível carregar as informações do restaurante.");
+                    console.error("Erro ao buscar dados:", error);
+                    setError("Não foi possível carregar as informações.");
                 } finally {
                     setLoading(false);
                 }
@@ -33,8 +40,8 @@ const ClientRegistrationPage = () => {
                 setError("ID do restaurante não encontrado na URL.");
             }
         };
-        fetchTenant();
-    }, [tenantId]);
+        fetchData();
+    }, [tenantId, pesquisaId]);
 
     if (loading || !dynamicTheme) {
         return (
@@ -54,18 +61,18 @@ const ClientRegistrationPage = () => {
 
     return (
         <ThemeProvider theme={dynamicTheme}>
-            <RegistrationFormComponent tenant={tenant} />
+            <RegistrationFormComponent tenant={tenant} survey={survey} />
         </ThemeProvider>
     );
 };
 
 // UI Component: Renders the form using the provided theme
-const RegistrationFormComponent = ({ tenant }) => {
+const RegistrationFormComponent = ({ tenant, survey }) => {
     const { tenantId, pesquisaId } = useParams();
     const navigate = useNavigate();
     const theme = useTheme(); // Now uses the correct, dynamic theme
 
-    const [clientData, setClientData] = useState({ name: '', email: '', phone: '', birthDate: '', gender: '' });
+    const [clientData, setClientData] = useState({ name: '', email: '', phone: '', birthDate: '', gender: '', cpf: '' });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [fieldErrors, setFieldErrors] = useState({});
@@ -75,6 +82,24 @@ const RegistrationFormComponent = ({ tenant }) => {
         // Limpar erro do campo ao digitar
         if (fieldErrors[e.target.name]) {
             setFieldErrors({ ...fieldErrors, [e.target.name]: '' });
+        }
+    };
+
+    const handleCpfChange = (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 11) value = value.slice(0, 11);
+        
+        if (value.length > 9) {
+            value = `${value.slice(0, 3)}.${value.slice(3, 6)}.${value.slice(6, 9)}-${value.slice(9)}`;
+        } else if (value.length > 6) {
+            value = `${value.slice(0, 3)}.${value.slice(3, 6)}.${value.slice(6)}`;
+        } else if (value.length > 3) {
+            value = `${value.slice(0, 3)}.${value.slice(3)}`;
+        }
+        
+        setClientData({ ...clientData, cpf: value });
+        if (fieldErrors.cpf) {
+            setFieldErrors({ ...fieldErrors, cpf: '' });
         }
     };
 
@@ -276,6 +301,22 @@ const RegistrationFormComponent = ({ tenant }) => {
                             helperText={fieldErrors.email}
                             sx={inputSx} 
                         />
+                        {survey?.askForCpf && (
+                            <TextField 
+                                margin="normal" 
+                                required={survey.requireCpf}
+                                fullWidth 
+                                id="cpf" 
+                                label={survey.requireCpf ? "CPF (Obrigatório)" : "CPF (Opcional)"}
+                                name="cpf" 
+                                value={clientData.cpf} 
+                                onChange={handleCpfChange} 
+                                inputMode="numeric" 
+                                error={!!fieldErrors.cpf}
+                                helperText={fieldErrors.cpf}
+                                sx={inputSx} 
+                            />
+                        )}
                         <TextField 
                             margin="normal" 
                             required 

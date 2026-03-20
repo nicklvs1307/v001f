@@ -8,8 +8,8 @@ const {
 const { Op, fn, col, literal, Sequelize } = require("sequelize");
 const { startOfMonth } = require("date-fns");
 
-const createAtendente = async (tenantId, name, status, code) => {
-  return Atendente.create({ tenantId, name, status, code });
+const createAtendente = async (tenantId, name, status, code, phone) => {
+  return Atendente.create({ tenantId, name, status, code, phone });
 };
 
 const getAllAtendentes = async (tenantId) => {
@@ -25,9 +25,9 @@ const getAtendenteById = async (id, tenantId = null) => {
   return Atendente.findOne({ where: whereClause });
 };
 
-const updateAtendente = async (id, tenantId, name, status) => {
+const updateAtendente = async (id, tenantId, name, status, phone) => {
   const [updatedRows, [updatedAtendente]] = await Atendente.update(
-    { name, status },
+    { name, status, phone },
     { where: { id, tenantId }, returning: true },
   );
   return updatedAtendente;

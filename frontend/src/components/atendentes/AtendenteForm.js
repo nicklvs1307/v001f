@@ -32,25 +32,32 @@ const AtendenteForm = ({ initialData, onAtendenteCreated, onAtendenteUpdated, on
 
     try {
       if (initialData) {
-        try {
-          await onAtendenteUpdated(formData);
-        } catch (updateError) {
-          console.error('Error in onAtendenteUpdated:', updateError);
-          onError(updateError.message);
-        }
+        await onAtendenteUpdated(formData);
       } else {
-        try {
-          await onAtendenteCreated(formData);
-        } catch (createError) {
-          console.error('Error in onAtendenteCreated:', createError);
-          onError(createError.message);
-        }
+        await onAtendenteCreated(formData);
       }
       onClose();
     } catch (err) {
       console.error('Form submission error:', err);
       onError(err.message);
     }
+  };
+
+  const handlePhoneChange = (e) => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length > 11) value = value.slice(0, 11);
+    
+    if (value.length > 10) {
+        value = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
+    } else if (value.length > 6) {
+        value = `(${value.slice(0, 2)}) ${value.slice(2, 6)}-${value.slice(6)}`;
+    } else if (value.length > 2) {
+        value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+    } else if (value.length > 0) {
+        value = `(${value}`;
+    }
+    
+    handleChange({ target: { name: 'phone', value } });
   };
 
   return (
@@ -72,6 +79,19 @@ const AtendenteForm = ({ initialData, onAtendenteCreated, onAtendenteUpdated, on
         required
         error={!!nameError}
         helperText={nameError}
+      />
+
+      <TextField
+        margin="dense"
+        name="phone"
+        label="WhatsApp (com DDD)"
+        type="text"
+        fullWidth
+        variant="outlined"
+        value={formData.phone || ''}
+        onChange={handlePhoneChange}
+        placeholder="(00) 00000-0000"
+        sx={{ mb: 2 }}
       />
 
       <FormControl fullWidth variant="outlined" margin="dense">

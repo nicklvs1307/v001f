@@ -190,6 +190,49 @@ const SurveyForm = ({ initialData = {}, onSubmit, loading = false, error = null 
               Permite que o respondente selecione um atendente.
             </Typography>
           </Grid>
+          
+          <Grid item xs={12} sm={6}>
+            <FormControlLabel
+              control={<Switch checked={survey.askForCpf || false} onChange={handleChange} name="askForCpf" color="primary" />}
+              label="Pedir CPF"
+            />
+            <Typography variant="caption" display="block" sx={{ ml: 4 }}>
+              Solicita o CPF do cliente na identificação.
+            </Typography>
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <FormControlLabel
+              control={
+                <Switch 
+                  checked={survey.requireCpf || false} 
+                  onChange={handleChange} 
+                  name="requireCpf" 
+                  color="primary" 
+                  disabled={!survey.askForCpf}
+                />
+              }
+              label="Exigir CPF"
+            />
+            <Typography variant="caption" display="block" sx={{ ml: 4 }}>
+              Torna o preenchimento do CPF obrigatório.
+            </Typography>
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Limite de Respostas por Cliente"
+              name="responseLimit"
+              type="number"
+              value={survey.responseLimit || 0}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              inputProps={{ min: 0 }}
+              helperText="Defina quantas vezes o mesmo cliente pode participar. 0 significa sem limite."
+            />
+          </Grid>
+
           <Grid item xs={12} sm={6}>
             <TextField
               label="Número de Respondentes Esperados (Opcional)"

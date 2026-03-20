@@ -1,49 +1,38 @@
-📊 ANÁLISE DE PERFORMANCE - REACT
-
-Estou analisando a performance de uma tela em um sistema React.
-
-📈 Métricas coletadas (Lighthouse):
-
-First Contentful Paint (FCP): 1.0s
-
-Largest Contentful Paint (LCP): 7.4s
-
-Total Blocking Time (TBT): 3580ms
-
-Speed Index: 7.6s
-
-CLS: 0
-
-🧠 Contexto:
-
-Aplicação em React
-
-O problema ocorre ao carregar a tela de confirmação de cliente
-
-O conteúdo inicial aparece rápido, mas o conteúdo principal demora para renderizar
-
-Existe bloqueio da thread principal por JavaScript
-
-🔍 Sintomas:
-
-Tela demora para mostrar conteúdo completo
-
-Interações ficam travadas inicialmente
-
-Sensação de lentidão após carregamento
-
-🎯 Objetivo:
-
-Analise esses dados e identifique:
-
-As causas mais prováveis do alto TBT e LCP em uma aplicação React
-
-Quais padrões de código podem estar causando isso
-
-Como identificar esses problemas no código
-
-Sugestões práticas e específicas de otimização (nível código)
-
-Estratégias para reduzir tempo de renderização e bloqueio da thread
-
-Responda de forma técnica e direta, focando em soluções reais.
+ => ERROR [build 6/6] RUN npm run build                                                                                                       247.1s
+------
+ > [build 6/6] RUN npm run build:
+1.757
+1.757 > frontend@0.1.0 build
+1.757 > react-scripts build
+1.757
+3.605 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+5.467 Creating an optimized production build...
+5.959 Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+5.959   npx update-browserslist-db@latest
+5.959   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+236.6 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+238.4 Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+238.4   npx update-browserslist-db@latest
+238.4   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+246.6 Failed to compile.
+246.6
+246.6 [eslint]
+246.6 src/pages/PublicSurveyPage.js
+246.6 Syntax error: Expected corresponding JSX closing tag for <div>. (431:20) (431:20)
+246.6
+246.6
+246.9 npm notice
+246.9 npm notice New major version of npm available! 10.8.2 -> 11.12.0
+246.9 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.12.0
+246.9 npm notice To update run: npm install -g npm@11.12.0
+246.9 npm notice
+------
+Dockerfile:14
+--------------------
+  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
+  13 |
+  14 | >>> RUN npm run build
+  15 |
+  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1

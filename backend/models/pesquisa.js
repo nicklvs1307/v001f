@@ -102,6 +102,21 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.JSONB,
       allowNull: true,
       defaultValue: []
+    },
+    askForCpf: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false
+    },
+    requireCpf: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false
+    },
+    responseLimit: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      allowNull: true
     }
   }, {
     sequelize,

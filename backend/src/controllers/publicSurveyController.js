@@ -87,14 +87,26 @@ const submitSurveyResponses = asyncHandler(async (req, res) => {
 
   const tenantId = survey.tenantId;
 
-  if (client && (client.phone || client.email)) {
+  if (client && (client.phone || client.email || client.cpf)) {
     let existingClient = null;
-    if (client.phone) {
+    
+    // Prioridade 1: CPF
+    if (client.cpf) {
+      existingClient = await clientRepository.findClientByCpf(
+        client.cpf,
+        tenantId,
+      );
+    }
+    
+    // Prioridade 2: Telefone (se não encontrou por CPF)
+    if (!existingClient && client.phone) {
       existingClient = await clientRepository.findClientByPhone(
         client.phone,
         tenantId,
       );
     }
+    
+    // Prioridade 3: Email
     if (!existingClient && client.email) {
       existingClient = await clientRepository.findClientByEmail(
         client.email,
@@ -106,10 +118,23 @@ const submitSurveyResponses = asyncHandler(async (req, res) => {
       currentClient = existingClient;
       currentRespondentSessionId =
         existingClient.respondentSessionId || uuidv4();
+      
+      // Atualizar dados que podem estar faltando
+      const updateData = {};
       if (!existingClient.respondentSessionId) {
+        updateData.respondentSessionId = currentRespondentSessionId;
+      }
+      if (!existingClient.cpf && client.cpf) {
+        updateData.cpf = client.cpf;
+      }
+      if (!existingClient.phone && client.phone) {
+        updateData.phone = client.phone;
+      }
+
+      if (Object.keys(updateData).length > 0) {
         await clientRepository.updateClient(
           existingClient.id,
-          { respondentSessionId: currentRespondentSessionId },
+          updateData,
           tenantId,
         );
       }
@@ -120,6 +145,20 @@ const submitSurveyResponses = asyncHandler(async (req, res) => {
         tenantId,
         respondentSessionId: currentRespondentSessionId,
       });
+    }
+
+    // Verificar limite de respostas
+    if (survey.responseLimit > 0 && currentClient) {
+      const responseCount = await publicSurveyRepository.countResponsesByClient(
+        survey.id,
+        currentClient.id,
+      );
+      if (responseCount >= survey.responseLimit) {
+        throw new ApiError(
+          403,
+          `Você já atingiu o limite de ${survey.responseLimit} participações permitido para esta pesquisa.`,
+        );
+      }
     }
   }
 
@@ -137,21 +176,32 @@ const submitSurveyResponses = asyncHandler(async (req, res) => {
 const submitSurveyWithClient = asyncHandler(async (req, res) => {
   const { surveyId, respondentSessionId, client } = req.body;
 
-  if (!respondentSessionId || !client || !client.phone) {
+  if (!respondentSessionId || !client || (!client.phone && !client.cpf)) {
     throw new ApiError(400, "Dados insuficientes para confirmar o cliente.");
   }
 
-  // Obter o tenantId a partir do surveyId (ou das respostas existentes)
+  // Obter o tenantId a partir do surveyId
   const survey = await publicSurveyRepository.getPublicSurveyById(surveyId);
   if (!survey) {
     throw new ApiError(404, "Pesquisa não encontrada.");
   }
   const tenantId = survey.tenantId;
 
-  let existingClient = await clientRepository.findClientByPhone(
-    client.phone,
-    tenantId,
-  );
+  let existingClient = null;
+
+  if (client.cpf) {
+    existingClient = await clientRepository.findClientByCpf(
+      client.cpf,
+      tenantId,
+    );
+  }
+
+  if (!existingClient && client.phone) {
+    existingClient = await clientRepository.findClientByPhone(
+      client.phone,
+      tenantId,
+    );
+  }
 
   if (!existingClient && client.email) {
     existingClient = await clientRepository.findClientByEmail(
@@ -167,11 +217,36 @@ const submitSurveyWithClient = asyncHandler(async (req, res) => {
     );
   }
 
-  // Atualiza o respondentSessionId do cliente se estiver vazio
+  // Verificar limite de respostas
+  if (survey.responseLimit > 0) {
+    const responseCount = await publicSurveyRepository.countResponsesByClient(
+      survey.id,
+      existingClient.id,
+    );
+    if (responseCount >= survey.responseLimit) {
+      throw new ApiError(
+        403,
+        `Você já atingiu o limite de ${survey.responseLimit} participações permitido para esta pesquisa.`,
+      );
+    }
+  }
+
+  // Atualiza dados do cliente se estiverem vazios
+  const updateData = {};
   if (!existingClient.respondentSessionId) {
+    updateData.respondentSessionId = respondentSessionId;
+  }
+  if (!existingClient.cpf && client.cpf) {
+    updateData.cpf = client.cpf;
+  }
+  if (!existingClient.phone && client.phone) {
+    updateData.phone = client.phone;
+  }
+
+  if (Object.keys(updateData).length > 0) {
     await clientRepository.updateClient(
       existingClient.id,
-      { respondentSessionId: respondentSessionId },
+      updateData,
       tenantId,
     );
   }

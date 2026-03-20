@@ -8,7 +8,7 @@ const {
 
 const atendenteController = {
   createAtendente: asyncHandler(async (req, res) => {
-    const { name, status } = req.body;
+    const { name, status, phone } = req.body;
 
     const targetTenantId = validateTenantAccess(req.user, req.body.tenantId);
 
@@ -23,6 +23,7 @@ const atendenteController = {
       targetTenantId,
       name,
       status,
+      phone,
     );
 
     res
@@ -55,7 +56,7 @@ const atendenteController = {
 
   updateAtendente: asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { name, status } = req.body;
+    const { name, status, phone } = req.body;
 
     const existingAtendente = await atendenteService.getAtendenteById(id);
     checkResourceTenant(existingAtendente, req.user);
@@ -65,6 +66,7 @@ const atendenteController = {
       existingAtendente.tenantId,
       name,
       status,
+      phone,
     );
 
     res.status(200).json({
@@ -82,6 +84,63 @@ const atendenteController = {
     await atendenteService.deleteAtendente(id, existingAtendente.tenantId);
 
     res.status(200).json({ message: "Atendente deletado com sucesso." });
+  }),
+
+  sendSurveyLink: asyncHandler(async (req, res) => {
+    const { atendenteIds, pesquisaId, all } = req.body;
+    const { tenantId } = req.user;
+
+    if (!pesquisaId) {
+      throw new ApiError(400, "ID da pesquisa é obrigatório.");
+    }
+
+    const survey = await require("../repositories/publicSurveyRepository").getPublicSurveyById(pesquisaId);
+    if (!survey) {
+      throw new ApiError(404, "Pesquisa não encontrada.");
+    }
+
+    let targets = [];
+    if (all) {
+      targets = await atendenteService.getAllAtendentes(tenantId);
+    } else {
+      if (!Array.isArray(atendenteIds) || atendenteIds.length === 0) {
+        throw new ApiError(400, "IDs dos atendentes são obrigatórios.");
+      }
+      for (const id of atendenteIds) {
+        const atendente = await atendenteService.getAtendenteById(id, tenantId);
+        if (atendente) targets.push(atendente);
+      }
+    }
+
+    const whatsappService = require("../services/whatsappService");
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+    
+    let successCount = 0;
+    let failCount = 0;
+
+    for (const atendente of targets) {
+      if (!atendente.phone) {
+        failCount++;
+        continue;
+      }
+
+      const linkToken = survey.linkToken || survey.id;
+      const personalizedLink = `${frontendUrl}/pesquisa/${tenantId}/${linkToken}?atendenteId=${atendente.id}`;
+      const message = `Olá ${atendente.name}! Aqui está o seu link/QR Code pessoal para a pesquisa "${survey.title}": ${personalizedLink}`;
+
+      try {
+        await whatsappService.sendTenantMessage(tenantId, atendente.phone, message);
+        successCount++;
+      } catch (error) {
+        console.error(`Erro ao enviar para atendente ${atendente.name}:`, error);
+        failCount++;
+      }
+    }
+
+    res.status(200).json({ 
+      message: "Processo de envio concluído.",
+      results: { total: targets.length, success: successCount, failed: failCount }
+    });
   }),
 
   getAtendentePremiacoes: asyncHandler(async (req, res) => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, startTransition } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import {
     Container,
     Box,
@@ -226,6 +226,7 @@ const PublicSurveyPage = () => {
 const SurveyComponent = ({ survey, tenantId }) => {
     const { pesquisaId } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const theme = useTheme();
 
     const [answers, setAnswers] = useState(() => {
@@ -238,6 +239,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
 
     const [atendentes, setAtendentes] = useState([]);
     const [selectedAtendente, setSelectedAtendente] = useState('');
+    const [isAtendentePreDefined, setIsAtendentePreDefined] = useState(false);
     const [submitLoading, setSubmitLoading] = useState(false);
     const [submitError, setSubmitError] = useState(null);
     const [atendenteError, setAtendenteError] = useState(null);
@@ -254,10 +256,19 @@ const SurveyComponent = ({ survey, tenantId }) => {
     }, [visibleCount, survey.questions]);
 
     useEffect(() => {
+        // Verificar se há atendenteId na URL
+        const params = new URLSearchParams(location.search);
+        const atendenteIdFromUrl = params.get('atendenteId');
+        
+        if (atendenteIdFromUrl) {
+            setSelectedAtendente(atendenteIdFromUrl);
+            setIsAtendentePreDefined(true);
+        }
+
         if (survey.askForAttendant) {
             publicSurveyService.getPublicAtendentes(tenantId).then(setAtendentes).catch(() => {});
         }
-    }, [survey.askForAttendant, tenantId]);
+    }, [survey.askForAttendant, tenantId, location.search]);
 
     const handleAnswerChange = useCallback((perguntaId, value) => {
         startTransition(() => {
@@ -295,7 +306,11 @@ const SurveyComponent = ({ survey, tenantId }) => {
             sessionStorage.setItem('surveyState', JSON.stringify(surveyState));
             
             const storedPhone = localStorage.getItem('clientPhone');
-            navigate(storedPhone ? `/confirmar-cliente/${survey.linkToken || pesquisaId}` : `/identificacao-pesquisa/${tenantId}/${survey.linkToken || pesquisaId}`);
+            const baseUrl = storedPhone ? `/confirmar-cliente/${survey.linkToken || pesquisaId}` : `/identificacao-pesquisa/${tenantId}/${survey.linkToken || pesquisaId}`;
+            
+            // Manter atendenteId no redirecionamento se necessário (opcional, mas bom para consistência)
+            const redirectUrl = isAtendentePreDefined ? `${baseUrl}?atendenteId=${selectedAtendente}` : baseUrl;
+            navigate(redirectUrl);
         } catch (err) {
             setSubmitError('Erro ao enviar respostas.');
         } finally {
@@ -395,7 +410,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
                         </div>
                     ))}
 
-                    {survey.askForAttendant && (
+                    {survey.askForAttendant && !isAtendentePreDefined && (
                         <div style={{ marginTop: '48px', paddingTop: '32px', borderTop: '1px solid #eee' }}>
                             <label htmlFor="attendant-select" style={{ display: 'block', margin: '0 0 12px', fontSize: '1.05rem', fontWeight: 600, color: '#333' }}>
                                 Qual atendente realizou o seu atendimento?
@@ -416,6 +431,14 @@ const SurveyComponent = ({ survey, tenantId }) => {
                                 {atendentes.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
                             </select>
                             {atendenteError && <p style={{ color: '#d32f2f', fontSize: '12px', marginTop: '4px' }}>{atendenteError}</p>}
+                        </div>
+                    )}
+
+                    {isAtendentePreDefined && survey.askForAttendant && (
+                        <div style={{ marginTop: '24px', textAlign: 'center', opacity: 0.7 }}>
+                            <Typography variant="caption" sx={{ fontStyle: 'italic' }}>
+                                Atendimento identificado: <strong>{atendentes.find(a => a.id === selectedAtendente)?.name || 'Carregando...'}</strong>
+                            </Typography>
                         </div>
                     )}
 

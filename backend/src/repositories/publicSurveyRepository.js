@@ -38,6 +38,9 @@ const getPublicSurveyById = async (idOrToken) => {
       "isLinkExpirable",
       "linkExpiresAt",
       "operatingHours",
+      "askForCpf",
+      "requireCpf",
+      "responseLimit",
     ], // Adicionar 'status', 'recompensaId', 'roletaId'
     include: [
       {
@@ -86,6 +89,9 @@ const getPublicSurveyById = async (idOrToken) => {
     isLinkExpirable: survey.isLinkExpirable,
     linkExpiresAt: survey.linkExpiresAt,
     operatingHours: survey.operatingHours,
+    askForCpf: survey.askForCpf,
+    requireCpf: survey.requireCpf,
+    responseLimit: survey.responseLimit,
     // Adicionar informações do Tenant
     restaurantName: survey.tenant ? survey.tenant.name : null,
     restaurantLogoUrl: survey.tenant ? survey.tenant.logoUrl : null,
@@ -414,6 +420,17 @@ const findTenantIdBySession = async (respondentSessionId) => {
     attributes: ["tenantId"],
   });
   return response ? response.tenantId : null;
+};
+
+const countResponsesByClient = async (surveyId, clienteId) => {
+  return await models.Resposta.count({
+    where: {
+      pesquisaId: surveyId,
+      clienteId,
+    },
+    distinct: true,
+    col: 'respondentSessionId',
+  });
 };
 
 const linkResponsesToClient = async (

@@ -53,6 +53,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    cpf: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   }, {
     sequelize,
     modelName: 'Client',
@@ -77,6 +81,16 @@ module.exports = (sequelize, DataTypes) => {
         name: 'unique_tenant_phone',
         where: {
           phone: {
+            [Op.ne]: null,
+          },
+        },
+      },
+      {
+        unique: true,
+        fields: ['tenantId', 'cpf'],
+        name: 'unique_tenant_cpf',
+        where: {
+          cpf: {
             [Op.ne]: null,
           },
         },

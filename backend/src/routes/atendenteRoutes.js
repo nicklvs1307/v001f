@@ -22,6 +22,12 @@ router.get(
   atendenteController.getAllAtendentes,
 );
 
+router.post(
+  "/send-link",
+  authorize("atendentes:update"),
+  atendenteController.sendSurveyLink,
+);
+
 router
   .route("/:id")
   .get(

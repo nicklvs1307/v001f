@@ -27,7 +27,7 @@ const AtendenteQRCodeModal = ({ open, onClose, atendente }) => {
             surveyService.getSurveysList()
                 .then(data => {
                     // Filtrar apenas pesquisas ativas
-                    setSurveys(data.filter(s => s.status === 'active'));
+                    setSurveys(data.filter(s => s.rawStatus === 'active' || s.status === 'Ativa'));
                 })
                 .catch(err => console.error("Erro ao buscar pesquisas:", err))
                 .finally(() => setLoading(false));

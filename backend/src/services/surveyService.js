@@ -224,6 +224,7 @@ const getSurveysList = async (tenantId = null, status = "all") => {
       title: survey.title,
       description: survey.description,
       status: statusText,
+      rawStatus: survey.status,
       statusColor: statusColor,
       progress: parseFloat(progress.toFixed(2)),
       respondents: survey.currentRespondents,

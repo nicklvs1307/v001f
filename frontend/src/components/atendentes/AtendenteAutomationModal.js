@@ -30,7 +30,7 @@ const AtendenteAutomationModal = ({ open, onClose, selectedIds, all }) => {
             setLoading(true);
             surveyService.getSurveysList()
                 .then(data => {
-                    setSurveys(data.filter(s => s.status === 'active'));
+                    setSurveys(data.filter(s => s.rawStatus === 'active' || s.status === 'Ativa'));
                 })
                 .catch(err => console.error("Erro ao buscar pesquisas:", err))
                 .finally(() => setLoading(false));

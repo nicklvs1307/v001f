@@ -26,13 +26,40 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
       [Op.or]: [{ id: pesquisaId }, { linkToken: pesquisaId }],
     },
   });
+  
   if (!pesquisa || !pesquisa.roletaId) {
     throw new ApiError(404, "Roleta não configurada para esta pesquisa.");
+  }
+
+  // --- TRAVA DE SEGURANÇA 1: Validar se o link expirou ---
+  if (pesquisa.isLinkExpirable && pesquisa.linkExpiresAt) {
+    const expirationDate = new Date(pesquisa.linkExpiresAt);
+    if (new Date() > expirationDate) {
+      throw new ApiError(410, "Este link de pesquisa e roleta já expirou.");
+    }
+    
+    // Se é expirável, proibir acesso pelo ID fixo (UUID) para forçar o uso do linkToken renovável
+    if (pesquisaId === pesquisa.id) {
+       throw new ApiError(403, "Acesso negado. Utilize o link oficial da pesquisa.");
+    }
   }
 
   const cliente = await clientRepository.getClientById(clientId);
   if (!cliente) {
     throw new ApiError(404, "Cliente não encontrado.");
+  }
+
+  // --- TRAVA DE SEGURANÇA 2: Validar se o cliente respondeu à pesquisa ---
+  const { Resposta } = require("../../models");
+  const respondeu = await Resposta.findOne({
+    where: {
+      pesquisaId: pesquisa.id,
+      clienteId: clientId
+    }
+  });
+
+  if (!respondeu) {
+    throw new ApiError(403, "Você precisa responder à pesquisa antes de girar a roleta.");
   }
 
   // Verificar se o cliente já girou a roleta para esta pesquisa recentemente

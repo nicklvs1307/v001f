@@ -26,11 +26,11 @@ const getAtendenteById = async (id, tenantId = null) => {
 };
 
 const updateAtendente = async (id, tenantId, name, status, phone) => {
-  const [updatedRows, [updatedAtendente]] = await Atendente.update(
+  await Atendente.update(
     { name, status, phone },
-    { where: { id, tenantId }, returning: true },
+    { where: { id, tenantId } },
   );
-  return updatedAtendente;
+  return Atendente.findOne({ where: { id, tenantId } });
 };
 
 const deleteAtendente = async (id, tenantId) => {

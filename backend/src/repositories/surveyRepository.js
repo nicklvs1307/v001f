@@ -238,11 +238,6 @@ const updateSurvey = async (id, surveyData, tenantId = null) => {
       { where: whereClause, transaction },
     );
 
-    if (updatedRows === 0) {
-      await transaction.rollback();
-      return null;
-    }
-
     // Se questions for undefined, apenas atualizamos os campos da pesquisa e pulamos a lógica de perguntas
     if (questions) {
       // 2. Busca as perguntas existentes no banco

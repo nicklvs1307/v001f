@@ -28,7 +28,7 @@ const AtendenteAutomationModal = ({ open, onClose, selectedIds, all }) => {
     useEffect(() => {
         if (open) {
             setLoading(true);
-            surveyService.getSurveys()
+            surveyService.getSurveysList()
                 .then(data => {
                     setSurveys(data.filter(s => s.status === 'active'));
                 })

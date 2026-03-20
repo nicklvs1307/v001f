@@ -1,38 +1,25 @@
- => ERROR [build 6/6] RUN npm run build                                                                                                       247.1s
-------
- > [build 6/6] RUN npm run build:
-1.757
-1.757 > frontend@0.1.0 build
-1.757 > react-scripts build
-1.757
-3.605 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-5.467 Creating an optimized production build...
-5.959 Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
-5.959   npx update-browserslist-db@latest
-5.959   Why you should do it regularly: https://github.com/browserslist/update-db#readme
-236.6 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
-238.4 Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
-238.4   npx update-browserslist-db@latest
-238.4   Why you should do it regularly: https://github.com/browserslist/update-db#readme
-246.6 Failed to compile.
-246.6
-246.6 [eslint]
-246.6 src/pages/PublicSurveyPage.js
-246.6 Syntax error: Expected corresponding JSX closing tag for <div>. (431:20) (431:20)
-246.6
-246.6
-246.9 npm notice
-246.9 npm notice New major version of npm available! 10.8.2 -> 11.12.0
-246.9 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.12.0
-246.9 npm notice To update run: npm install -g npm@11.12.0
-246.9 npm notice
-------
-Dockerfile:14
---------------------
-  12 |     ENV REACT_APP_API_URL=$REACT_APP_API_URL
-  13 |
-  14 | >>> RUN npm run build
-  15 |
-  16 |     # Estágio 2: Production - Serve os arquivos estáticos com Nginx
---------------------
-ERROR: failed to build: failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+AuthContext.js:37 User data from AuthContext: Object
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+react-dom.production.min.js:188 TypeError: W.A.getSurveys is not a function
+    at AtendenteQRCodeModal.js:27:27
+    at rl (react-dom.production.min.js:243:332)
+    at wc (react-dom.production.min.js:285:111)
+    at react-dom.production.min.js:282:409
+    at xc (react-dom.production.min.js:280:398)
+    at lc (react-dom.production.min.js:272:439)
+    at qo (react-dom.production.min.js:127:105)
+    at react-dom.production.min.js:266:273
+ds @ react-dom.production.min.js:188
+react-dom.production.min.js:127 Uncaught TypeError: W.A.getSurveys is not a function
+    at AtendenteQRCodeModal.js:27:27
+    at rl (react-dom.production.min.js:243:332)
+    at wc (react-dom.production.min.js:285:111)
+    at react-dom.production.min.js:282:409
+    at xc (react-dom.production.min.js:280:398)
+    at lc (react-dom.production.min.js:272:439)
+    at qo (react-dom.production.min.js:127:105)
+    at react-dom.production.min.js:266:273

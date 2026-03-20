@@ -37,6 +37,9 @@ const createSurvey = async (surveyData) => {
     linkToken,
     linkExpiresAt,
     operatingHours,
+    askForCpf,
+    requireCpf,
+    responseLimit,
   } = surveyData;
 
   const transaction = await sequelize.transaction();
@@ -63,6 +66,9 @@ const createSurvey = async (surveyData) => {
         linkToken,
         linkExpiresAt,
         operatingHours,
+        askForCpf,
+        requireCpf,
+        responseLimit,
       },
       { transaction },
     );
@@ -134,6 +140,9 @@ const getSurveyById = async (id, tenantId = null) => {
       "linkToken",
       "linkExpiresAt",
       "operatingHours",
+      "askForCpf",
+      "requireCpf",
+      "responseLimit",
     ],
   });
 
@@ -162,6 +171,9 @@ const getSurveyById = async (id, tenantId = null) => {
     linkToken: survey.linkToken,
     linkExpiresAt: survey.linkExpiresAt,
     operatingHours: survey.operatingHours,
+    askForCpf: survey.askForCpf,
+    requireCpf: survey.requireCpf,
+    responseLimit: survey.responseLimit,
     questions: survey.perguntas.map((q) => ({
       ...q.toJSON(),
     })),
@@ -189,6 +201,9 @@ const updateSurvey = async (id, surveyData, tenantId = null) => {
     linkToken,
     linkExpiresAt,
     operatingHours,
+    askForCpf,
+    requireCpf,
+    responseLimit,
   } = surveyData;
 
   const transaction = await sequelize.transaction();
@@ -216,6 +231,9 @@ const updateSurvey = async (id, surveyData, tenantId = null) => {
         linkToken,
         linkExpiresAt,
         operatingHours,
+        askForCpf,
+        requireCpf,
+        responseLimit,
       },
       { where: whereClause, transaction },
     );
@@ -385,6 +403,9 @@ const findAllForList = async (tenantId = null, status = "all") => {
       "linkToken",
       "linkExpiresAt",
       "operatingHours",
+      "askForCpf",
+      "requireCpf",
+      "responseLimit",
     ],
     order: [["createdAt", "DESC"]],
   });

@@ -33,17 +33,16 @@ module.exports = {
       // 3. Obter IDs das permissões e criar associações
       for (const p of permissionsToGrant) {
         const [perms] = await queryInterface.sequelize.query(
-          `SELECT id FROM permissions WHERE module = '${p.module}' AND action = '${p.action}' LIMIT 1;`,
+          `SELECT id FROM permissoes WHERE module = '${p.module}' AND action = '${p.action}' LIMIT 1;`,
           { transaction }
         );
 
         if (perms.length > 0) {
-          const permissionId = perms[0].id;
-          // Inserir na tabela role_permissions se não existir
-          await queryInterface.bulkInsert('role_permissions', [{
-            id: uuidv4(),
+          const permissaoId = perms[0].id;
+          // Inserir na tabela role_permissoes se não existir
+          await queryInterface.bulkInsert('role_permissoes', [{
             roleId: roleId,
-            permissionId: permissionId,
+            permissaoId: permissaoId,
             createdAt: new Date(),
             updatedAt: new Date()
           }], { transaction, ignoreDuplicates: true });
@@ -68,7 +67,7 @@ module.exports = {
       );
 
       if (roles.length > 0) {
-        await queryInterface.bulkDelete('role_permissions', { roleId: roles[0].id }, { transaction });
+        await queryInterface.bulkDelete('role_permissoes', { roleId: roles[0].id }, { transaction });
       }
       await transaction.commit();
     } catch (error) {

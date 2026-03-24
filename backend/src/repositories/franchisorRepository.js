@@ -31,7 +31,7 @@ const franchisorRepository = {
         {
           model: Tenant,
           as: "tenants",
-          attributes: ["id", "name", "status", "logoUrl", "phone", "createdAt"],
+          attributes: ["id", "name", "status", "logoUrl", "phone", "city", "state", "createdAt"],
         },
       ],
     });

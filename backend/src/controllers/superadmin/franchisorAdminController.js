@@ -1,23 +1,63 @@
 const asyncHandler = require("express-async-handler");
+const bcrypt = require("bcryptjs");
 const franchisorRepository = require("../../repositories/franchisorRepository");
+const authRepository = require("../../repositories/authRepository");
+const userRepository = require("../../repositories/userRepository");
 const ApiError = require("../../errors/ApiError");
 
 // @desc    Criar uma nova franqueadora
 // @route   POST /api/superadmin/franchisors
 // @access  Private (Super Admin)
 exports.createFranchisor = asyncHandler(async (req, res) => {
-  const { name, cnpj, email, phone } = req.body;
+  const { name, cnpj, email, phone, adminName, adminEmail, adminPassword } = req.body;
 
   if (!name) {
     throw new ApiError(400, "O nome da franqueadora é obrigatório.");
   }
 
+  // Se o usuário passou os dados do administrador, vamos validar
+  if (adminEmail || adminPassword) {
+    if (!adminName || !adminEmail || !adminPassword) {
+      throw new ApiError(400, "Para criar um usuário administrador, forneça Nome, E-mail e Senha.");
+    }
+
+    // Verificar se o email já existe
+    const existingUser = await authRepository.findUserByEmail(adminEmail);
+    if (existingUser) {
+      throw new ApiError(400, "O e-mail do administrador já está cadastrado em outra conta.");
+    }
+  }
+
+  // 1. Criar a Franqueadora
   const franchisorData = { name, cnpj, email, phone };
   const newFranchisor = await franchisorRepository.create(franchisorData);
+
+  // 2. Criar o Usuário Administrador da Franquia (se fornecido)
+  let adminUser = null;
+  if (adminName && adminEmail && adminPassword) {
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(adminPassword, salt);
+
+    // Buscar Role 'Franqueador'
+    const role = await authRepository.findRoleByName("Franqueador");
+    if (!role) {
+      throw new ApiError(500, "A Role 'Franqueador' não foi encontrada. Certifique-se de rodar os seeders.");
+    }
+
+    adminUser = await userRepository.createUser(
+      null, // tenantId (franqueador não pertence a um restaurante específico)
+      role.id,
+      adminName,
+      adminEmail,
+      passwordHash,
+      newFranchisor.id // franchisorId
+    );
+  }
 
   res.status(201).json({
     message: "Franqueadora criada com sucesso!",
     franchisor: newFranchisor,
+    admin: adminUser ? { id: adminUser.id, email: adminUser.email } : null
   });
 });
 

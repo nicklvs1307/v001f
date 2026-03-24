@@ -14,6 +14,9 @@ const FranchisorFormPage = () => {
         cnpj: '',
         email: '',
         phone: '',
+        adminName: '',
+        adminEmail: '',
+        adminPassword: '',
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -109,6 +112,44 @@ const FranchisorFormPage = () => {
                             fullWidth
                         />
                     </Box>
+
+                    {!isEditMode && (
+                        <>
+                            <Box sx={{ mt: 4, mb: 2 }}>
+                                <Typography variant="h6">Dados do Administrador da Franquia</Typography>
+                                <Typography variant="caption" color="text.secondary">Estes dados serão usados para o primeiro acesso à plataforma.</Typography>
+                            </Box>
+                            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 2 }}>
+                                <TextField
+                                    name="adminName"
+                                    label="Nome do Administrador"
+                                    value={formData.adminName}
+                                    onChange={handleChange}
+                                    required={!isEditMode}
+                                    fullWidth
+                                />
+                                <TextField
+                                    name="adminEmail"
+                                    label="E-mail de Acesso"
+                                    type="email"
+                                    value={formData.adminEmail}
+                                    onChange={handleChange}
+                                    required={!isEditMode}
+                                    fullWidth
+                                />
+                                <TextField
+                                    name="adminPassword"
+                                    label="Senha de Acesso"
+                                    type="password"
+                                    value={formData.adminPassword}
+                                    onChange={handleChange}
+                                    required={!isEditMode}
+                                    fullWidth
+                                />
+                            </Box>
+                        </>
+                    )}
+
                     {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
                     <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
                         <Button type="submit" variant="contained" disabled={loading}>

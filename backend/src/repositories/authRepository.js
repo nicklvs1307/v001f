@@ -11,6 +11,7 @@ const findUserByEmail = async (email) => {
       "profilePictureUrl",
       "tenantId",
       "roleId",
+      "franchisorId",
     ],
     include: [{ model: Tenant, as: "tenant", attributes: ["name"] }],
   });

@@ -73,6 +73,7 @@ exports.login = asyncHandler(async (req, res) => {
   const payload = {
     userId: user.id,
     tenantId: user.tenantId,
+    franchisorId: user.franchisorId,
     role: roleName,
     name: user.name, // Adicionar o nome do usuário
     profilePictureUrl: user.profilePictureUrl, // Adicionar a URL da foto de perfil

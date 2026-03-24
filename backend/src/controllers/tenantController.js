@@ -71,21 +71,30 @@ exports.createTenant = asyncHandler(async (req, res) => {
 
 // @desc    Listar tenants
 // @route   GET /api/tenants
-// @access  Private (Super Admin)
+// @access  Private (Super Admin ou Franqueador)
 exports.getTenants = asyncHandler(async (req, res) => {
-  const tenantId = req.user.role.name === "Super Admin" ? null : req.user.tenantId;
-  const tenants = await tenantRepository.getTenants(tenantId);
+  const isSuperAdmin = req.user.role.name === "Super Admin";
+  const isFranchisor = req.user.role.name === "Franqueador";
+  
+  const tenantId = isSuperAdmin || isFranchisor ? null : req.user.tenantId;
+  const franchisorId = isFranchisor ? req.user.franchisorId : null;
+
+  const tenants = await tenantRepository.getTenants(tenantId, franchisorId);
   res.status(200).json(tenants);
 });
 
 // @desc    Obter um tenant por ID
 // @route   GET /api/tenants/:id
-// @access  Private (Super Admin)
+// @access  Private (Super Admin, Franqueador ou Admin)
 exports.getTenantById = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const tenantId = req.user.role.name === "Super Admin" ? null : req.user.tenantId;
+  const isSuperAdmin = req.user.role.name === "Super Admin";
+  const isFranchisor = req.user.role.name === "Franqueador";
 
-  const tenant = await tenantRepository.getTenantById(id, tenantId);
+  const tenantId = isSuperAdmin || isFranchisor ? null : req.user.tenantId;
+  const franchisorId = isFranchisor ? req.user.franchisorId : null;
+
+  const tenant = await tenantRepository.getTenantById(id, tenantId, franchisorId);
 
   if (!tenant) {
     throw new ApiError(404, "Tenant não encontrado.");

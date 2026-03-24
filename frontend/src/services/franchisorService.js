@@ -1,11 +1,13 @@
 import api from './api';
 
 const franchisorService = {
-  getDashboard: (params) => {
-    return api.get('/franchisor/dashboard', { params });
+  getDashboard: async (params) => {
+    const response = await api.get('/franchisor/dashboard', { params });
+    return response.data;
   },
-  getFranchisees: () => {
-    return api.get('/franchisor/franchisees');
+  getFranchisees: async () => {
+    const response = await api.get('/franchisor/franchisees');
+    return response.data;
   }
 };
 

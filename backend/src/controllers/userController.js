@@ -109,64 +109,80 @@ exports.getUsers = asyncHandler(async (req, res) => {
 });
 
 // @desc    Obter um usuário por ID
-// @access  Private (Super Admin ou Admin)
+// @access  Private (Super Admin, Franqueador ou Admin)
 exports.getUserById = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const requestingUser = req.user;
-  const tenantId =
-    requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
-  const user = await userRepository.findById(id, tenantId);
+  const user = await userRepository.findById(id);
 
   if (!user) {
     throw new ApiError(404, "Usuário não encontrado.");
   }
 
-  // Super Admin pode ver qualquer usuário
-  // Admin só pode ver usuários do seu próprio tenant
-  if (
-    requestingUser.role.name !== "Super Admin" &&
-    user.tenantId !== requestingUser.tenantId
-  ) {
-    throw new ApiError(403, "Você não tem permissão para ver este usuário.");
+  const isSuperAdmin = requestingUser.role.name === "Super Admin";
+  const isFranchisor = requestingUser.role.name === "Franqueador";
+  const isAdmin = requestingUser.role.name === "Admin";
+
+  // Verificação de permissão
+  if (isSuperAdmin) {
+    // Super Admin pode tudo
+  } else if (isFranchisor) {
+    // Franqueador só vê usuários da sua franquia ou de seus tenants
+    const isFromOwnFranchise = user.franchisorId === requestingUser.franchisorId;
+    if (!isFromOwnFranchise) {
+      throw new ApiError(403, "Você não tem permissão para ver este usuário.");
+    }
+  } else if (isAdmin) {
+    // Admin só vê usuários do seu próprio tenant
+    if (user.tenantId !== requestingUser.tenantId) {
+      throw new ApiError(403, "Você não tem permissão para ver este usuário.");
+    }
+  } else {
+    // Outros usuários só veem a si mesmos
+    if (requestingUser.id !== id) {
+      throw new ApiError(403, "Você não tem permissão para ver este usuário.");
+    }
   }
 
   res.status(200).json(user);
 });
 
 // @desc    Atualizar um usuário
-// @access  Private (Super Admin ou Admin)
+// @access  Private (Super Admin, Franqueador ou Admin)
 exports.updateUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { name, email, roleId, password } = req.body;
   const requestingUser = req.user;
-  const tenantId =
-    requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
-  const existingUser = await userRepository.findUserById(id, tenantId);
+  const existingUser = await userRepository.findById(id);
   if (!existingUser) {
     throw new ApiError(404, "Usuário não encontrado.");
   }
 
-  // Super Admin pode atualizar qualquer usuário
-  // Tenant Admin só pode atualizar usuários do seu próprio tenant
-  // Usuário comum só pode atualizar a si mesmo
-  if (
-    requestingUser.userId !== id && // Se não for o próprio usuário
-    requestingUser.role.name !== "Super Admin" && // E não for Super Admin
-    !(
-      requestingUser.role.name === "Admin" &&
-      existingUser.tenantId === requestingUser.tenantId
-    ) // E não for Admin do mesmo tenant
-  ) {
-    throw new ApiError(
-      403,
-      "Você não tem permissão para atualizar este usuário.",
-    );
+  const isSuperAdmin = requestingUser.role.name === "Super Admin";
+  const isFranchisor = requestingUser.role.name === "Franqueador";
+  const isAdmin = requestingUser.role.name === "Admin";
+
+  // Verificação de permissão para atualização
+  let hasPermission = false;
+
+  if (isSuperAdmin) {
+    hasPermission = true;
+  } else if (isFranchisor) {
+    hasPermission = existingUser.franchisorId === requestingUser.franchisorId;
+  } else if (isAdmin) {
+    hasPermission = existingUser.tenantId === requestingUser.tenantId;
+  } else if (requestingUser.id === id) {
+    hasPermission = true;
   }
 
-  // Um Admin não pode alterar o papel de um usuário para Super Admin
-  if (requestingUser.role.name !== "Super Admin" && roleId) {
+  if (!hasPermission) {
+    throw new ApiError(403, "Você não tem permissão para atualizar este usuário.");
+  }
+
+  // Um não-Super Admin não pode alterar o papel para Super Admin
+  if (!isSuperAdmin && roleId) {
     const newRole = await userRepository.findRoleById(roleId);
     if (newRole && newRole.name === "Super Admin") {
       throw new ApiError(403, "Você não pode atribuir o papel de Super Admin.");
@@ -271,32 +287,37 @@ exports.uploadProfilePicture = asyncHandler(async (req, res) => {
 
 // @desc    Deletar um usuário
 // @route   DELETE /api/users/:id
-// @access  Private (Super Admin ou Tenant Admin)
+// @access  Private (Super Admin, Franqueador ou Admin)
 exports.deleteUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const requestingUser = req.user;
-  const tenantId =
-    requestingUser.role.name === "Super Admin" ? null : requestingUser.tenantId;
 
-  const existingUser = await userRepository.findUserById(id, tenantId);
+  const existingUser = await userRepository.findById(id);
   if (!existingUser) {
     throw new ApiError(404, "Usuário não encontrado.");
   }
 
-  // Super Admin pode deletar qualquer usuário
-  // Admin só pode deletar usuários do seu próprio tenant
-  if (
-    requestingUser.role.name !== "Super Admin" &&
-    existingUser.tenantId !== requestingUser.tenantId
-  ) {
-    throw new ApiError(
-      403,
-      "Você não tem permissão para deletar este usuário.",
-    );
+  const isSuperAdmin = requestingUser.role.name === "Super Admin";
+  const isFranchisor = requestingUser.role.name === "Franqueador";
+  const isAdmin = requestingUser.role.name === "Admin";
+
+  // Verificação de permissão para exclusão
+  let hasPermission = false;
+
+  if (isSuperAdmin) {
+    hasPermission = true;
+  } else if (isFranchisor) {
+    hasPermission = existingUser.franchisorId === requestingUser.franchisorId;
+  } else if (isAdmin) {
+    hasPermission = existingUser.tenantId === requestingUser.tenantId;
+  }
+
+  if (!hasPermission) {
+    throw new ApiError(403, "Você não tem permissão para deletar este usuário.");
   }
 
   // Não permitir que um usuário se delete
-  if (requestingUser.userId === id) {
+  if (requestingUser.id === id) {
     throw new ApiError(403, "Você não pode deletar seu próprio usuário.");
   }
 

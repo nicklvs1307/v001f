@@ -179,7 +179,7 @@ const FranchisorDashboardPage = () => {
                     startIcon={<AddIcon />}
                     onClick={() => navigate(isSuperAdmin 
                         ? `/superadmin/tenants/new?franchisorId=${franchisorId}` 
-                        : `/franchisor/franchisees/new` // Rota específica para o franqueador criar tenant
+                        : `/franchisor/franchisees/new` 
                     )}
                 >
                     Adicionar Restaurante

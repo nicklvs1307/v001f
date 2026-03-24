@@ -8,38 +8,52 @@ import {
     TextField,
     Button,
     CircularProgress,
-    Alert
+    Alert,
+    Grid,
+    Divider
 } from '@mui/material';
 import tenantService from '../services/tenantService';
-import { useNotification } from '../context/NotificationContext';
+import toast from 'react-hot-toast';
 
 const FranchisorTenantFormPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { showNotification } = useNotification();
     const [formData, setFormData] = useState({
         name: '',
         address: '',
         phone: '',
         email: '',
         cnpj: '',
-        description: ''
+        description: '',
+        adminName: '',
+        adminEmail: '',
+        adminPassword: ''
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
+    const isEditMode = !!id;
+
     useEffect(() => {
         if (id) {
-            setLoading(true);
-            tenantService.getTenantById(id)
-                .then(response => {
-                    setFormData(response.data);
+            const fetchTenant = async () => {
+                setLoading(true);
+                try {
+                    const response = await tenantService.getTenantById(id);
+                    setFormData({
+                        ...response.data,
+                        adminName: '', // Não carregamos senha ou dados sensíveis do admin para edição simples aqui
+                        adminEmail: '',
+                        adminPassword: ''
+                    });
+                } catch (err) {
+                    setError('Falha ao carregar dados do franqueado.');
+                    toast.error('Falha ao carregar dados do franqueado.');
+                } finally {
                     setLoading(false);
-                })
-                .catch(err => {
-                    setError('Failed to fetch tenant data.');
-                    setLoading(false);
-                });
+                }
+            };
+            fetchTenant();
         }
     }, [id]);
 
@@ -52,93 +66,169 @@ const FranchisorTenantFormPage = () => {
         e.preventDefault();
         setLoading(true);
         setError('');
+
         try {
-            if (id) {
+            if (isEditMode) {
+                // Na edição, o backend pode não exigir adminName/Email/Password se não forem enviados
                 await tenantService.updateTenant(id, formData);
-                showNotification('Franqueado atualizado com sucesso!', 'success');
+                toast.success('Franqueado atualizado com sucesso!');
             } else {
                 await tenantService.createTenant(formData);
-                showNotification('Franqueado criado com sucesso!', 'success');
+                toast.success('Franqueado criado com sucesso!');
             }
             navigate('/franchisor/franchisees');
         } catch (err) {
-            const errorMessage = err.response?.data?.message || 'An error occurred.';
+            const errorMessage = err.response?.data?.message || 'Ocorreu um erro ao salvar.';
             setError(errorMessage);
-            showNotification(errorMessage, 'error');
+            toast.error(errorMessage);
+        } finally {
             setLoading(false);
         }
     };
 
-    if (loading && id) {
-        return <CircularProgress />;
+    if (loading && isEditMode) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 10 }}>
+                <CircularProgress />
+            </Box>
+        );
     }
 
     return (
-        <Container maxWidth="md">
-            <Paper sx={{ p: 4, mt: 4 }}>
-                <Typography variant="h4" component="h1" gutterBottom>
-                    {id ? 'Editar Franqueado' : 'Novo Franqueado'}
+        <Container maxWidth="md" sx={{ py: 4 }}>
+            <Paper sx={{ p: 4 }}>
+                <Typography variant="h4" component="h1" gutterBottom fontWeight="bold">
+                    {isEditMode ? 'Editar Restaurante' : 'Novo Restaurante'}
                 </Typography>
-                {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
+                    Preencha os dados da unidade e do administrador responsável.
+                </Typography>
+
+                {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
+
                 <form onSubmit={handleSubmit}>
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        name="name"
-                        label="Nome"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                    />
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        name="address"
-                        label="Endereço"
-                        value={formData.address}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        name="phone"
-                        label="Telefone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        name="email"
-                        label="Email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        name="cnpj"
-                        label="CNPJ"
-                        value={formData.cnpj}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        name="description"
-                        label="Descrição"
-                        multiline
-                        rows={4}
-                        value={formData.description}
-                        onChange={handleChange}
-                    />
-                    <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-                        <Button onClick={() => navigate('/franchisor/franchisees')} sx={{ mr: 2 }}>
+                    <Typography variant="h6" gutterBottom color="primary">
+                        Dados da Unidade
+                    </Typography>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                name="name"
+                                label="Nome do Restaurante"
+                                value={formData.name}
+                                onChange={handleChange}
+                                required
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                name="cnpj"
+                                label="CNPJ"
+                                value={formData.cnpj}
+                                onChange={handleChange}
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                name="email"
+                                label="Email de Contato"
+                                type="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                name="phone"
+                                label="Telefone"
+                                value={formData.phone}
+                                onChange={handleChange}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                name="address"
+                                label="Endereço Completo"
+                                value={formData.address}
+                                onChange={handleChange}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                name="description"
+                                label="Descrição / Notas"
+                                multiline
+                                rows={2}
+                                value={formData.description}
+                                onChange={handleChange}
+                            />
+                        </Grid>
+                    </Grid>
+
+                    {!isEditMode && (
+                        <>
+                            <Divider sx={{ my: 4 }} />
+                            <Typography variant="h6" gutterBottom color="primary">
+                                Dados do Administrador da Unidade
+                            </Typography>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        margin="normal"
+                                        name="adminName"
+                                        label="Nome Completo do Admin"
+                                        value={formData.adminName}
+                                        onChange={handleChange}
+                                        required={!isEditMode}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <TextField
+                                        fullWidth
+                                        margin="normal"
+                                        name="adminEmail"
+                                        label="E-mail de Acesso"
+                                        type="email"
+                                        value={formData.adminEmail}
+                                        onChange={handleChange}
+                                        required={!isEditMode}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <TextField
+                                        fullWidth
+                                        margin="normal"
+                                        name="adminPassword"
+                                        label="Senha de Acesso"
+                                        type="password"
+                                        value={formData.adminPassword}
+                                        onChange={handleChange}
+                                        required={!isEditMode}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </>
+                    )}
+
+                    <Box sx={{ mt: 5, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+                        <Button variant="outlined" onClick={() => navigate('/franchisor/franchisees')}>
                             Cancelar
                         </Button>
-                        <Button type="submit" variant="contained" disabled={loading}>
-                            {loading ? <CircularProgress size={24} /> : (id ? 'Atualizar' : 'Criar')}
+                        <Button type="submit" variant="contained" size="large" disabled={loading}>
+                            {loading ? <CircularProgress size={24} /> : (isEditMode ? 'Salvar Alterações' : 'Criar Unidade')}
                         </Button>
                     </Box>
                 </form>

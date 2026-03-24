@@ -81,8 +81,15 @@ const createTenant = async (tenantData) => {
   };
 };
 
-const getTenants = async (tenantId = null) => {
-  const whereClause = tenantId ? { id: tenantId } : {};
+const getTenants = async (tenantId = null, franchisorId = null) => {
+  const whereClause = {};
+  if (tenantId) {
+    whereClause.id = tenantId;
+  }
+  if (franchisorId) {
+    whereClause.franchisorId = franchisorId;
+  }
+
   return Tenant.findAll({
     where: whereClause,
     attributes: [
@@ -103,9 +110,16 @@ const getTenants = async (tenantId = null) => {
   });
 };
 
-const getTenantById = async (id, tenantId = null) => {
-  const whereClause = tenantId ? { id, id: tenantId } : { id };
-  return Tenant.findByPk(id, {
+const getTenantById = async (id, tenantId = null, franchisorId = null) => {
+  const whereClause = { id };
+  if (tenantId) {
+    whereClause.id = tenantId;
+  }
+  if (franchisorId) {
+    whereClause.franchisorId = franchisorId;
+  }
+
+  return Tenant.findOne({
     where: whereClause,
     attributes: [
       "id",
@@ -135,6 +149,7 @@ const getTenantById = async (id, tenantId = null) => {
       "deliveryMuchPassword",
       "deliveryMuchToken",
       "deliveryMuchTokenExpiresAt",
+      "franchisorId",
     ],
     raw: true,
   });

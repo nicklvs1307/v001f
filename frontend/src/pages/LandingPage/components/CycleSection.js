@@ -1,11 +1,11 @@
 import React from 'react';
 import { Box, Container, Typography, Grid, Button } from '@mui/material';
-import { FaMegaphone, FaMobileAlt, FaStore, FaArrowRight, FaSync } from 'react-icons/fa';
+import { FaBullhorn, FaMobileAlt, FaStore, FaArrowRight, FaSync } from 'react-icons/fa';
 import GlassCard from './GlassCard';
 
 const steps = [
   {
-    icon: <FaMegaphone />,
+    icon: <FaBullhorn />,
     title: "1. Você Paga para Anunciar",
     description: "Você investe em tráfego pago para alcançar clientes, sejam eles novos ou antigos.",
     align: 'left'

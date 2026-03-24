@@ -3,6 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 import apiAuthenticated, { setupAuthObserver } from '../services/apiAuthenticated'; // Para configurar o observer
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
+import { ROLES } from '../constants/roles';
 
 const AuthContext = createContext({
   user: null,
@@ -54,10 +55,12 @@ export const AuthProvider = ({ children }) => {
             const userData = await authService.verifyToken();
             setUser(userData);
 
+            const userRole = typeof userData?.role === 'string' ? userData.role : userData?.role?.name;
+
             // Redirecionamento baseado no papel (Role)
-            if (userData.role && userData.role.name === 'Super Admin') {
+            if (userRole === ROLES.SUPER_ADMIN) {
                 navigate('/superadmin');
-            } else if (userData.role && userData.role.name === 'Franqueador') {
+            } else if (userRole === ROLES.FRANQUEADOR) {
                 navigate('/franchisor');
             } else {
                 navigate('/dashboard');

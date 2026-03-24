@@ -5,5 +5,7 @@ export const ROLES = {
   GARCOM: 'Garçom',
   SURVEY_CREATOR: 'Survey Creator',
   TENANT_ADMIN: 'Tenant Admin',
+  FRANQUEADOR: 'Franqueador',
+  ATENDENTE: 'Atendente',
   // Adicione outros roles conforme necessário
 };

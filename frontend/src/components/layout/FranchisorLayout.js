@@ -95,7 +95,9 @@ const FranchisorLayout = () => {
         </div>
     );
 
-    if (user?.role?.name !== ROLES.FRANQUEADOR) {
+    const userRole = typeof user?.role === 'string' ? user.role : user?.role?.name;
+
+    if (userRole !== ROLES.FRANQUEADOR) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
                 <Typography variant="h4">Acesso não autorizado.</Typography>

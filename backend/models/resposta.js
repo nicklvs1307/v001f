@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       Resposta.belongsTo(models.Pesquisa, { foreignKey: 'pesquisaId', as: 'pesquisa' });
       Resposta.belongsTo(models.Atendente, { foreignKey: 'atendenteId', as: 'atendente' });
       Resposta.belongsTo(models.Tenant, { foreignKey: 'tenantId', as: 'tenant' });
-      Resposta.belongsTo(models.Client, { foreignKey: 'respondentSessionId', targetKey: 'respondentSessionId', as: 'client' });
+      Resposta.belongsTo(models.Client, { foreignKey: 'clienteId', as: 'client' });
       Resposta.hasOne(models.Tratativa, { foreignKey: 'respondentSessionId', sourceKey: 'respondentSessionId', as: 'tratativa' });
     }
   }
@@ -50,6 +50,16 @@ module.exports = (sequelize, DataTypes) => {
     respondentSessionId: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    clienteId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: 'clients',
+        key: 'id',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL',
     },
     ratingValue: {
       type: DataTypes.INTEGER

@@ -33,7 +33,7 @@ const AttendantDetailsModal = ({ open, handleClose, data, loading, error }) => {
         width: '90%',
         maxWidth: '1000px',
         bgcolor: 'background.paper',
-        border: '2px solid #000',
+        borderRadius: '12px',
         boxShadow: 24,
         p: 4,
         display: 'flex',

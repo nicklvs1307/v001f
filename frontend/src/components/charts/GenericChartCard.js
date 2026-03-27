@@ -4,16 +4,17 @@ import { Paper, Typography, Box, CircularProgress } from '@mui/material';
 const GenericChartCard = ({ title, subTitle, loading, children }) => {
     return (
         <Paper 
-            elevation={2} 
+            elevation={0} 
             sx={{ 
                 p: 2, 
                 display: 'flex', 
                 flexDirection: 'column', 
                 height: { xs: 300, md: 400 },
                 borderRadius: '12px',
+                border: '1px solid #e2e8f0',
             }}
         >
-            <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid #eee`, pb: 1, mb: 1 }}>
+            <Typography variant="subtitle1" fontWeight={600} color="text.primary" sx={{ pb: 1, mb: 1 }}>
                 {title}
             </Typography>
             {subTitle && (

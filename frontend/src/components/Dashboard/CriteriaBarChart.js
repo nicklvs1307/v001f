@@ -14,8 +14,8 @@ const CriteriaBarChart = ({ data }) => {
     }));
 
     return (
-        <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 }, display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 2 }}>
+        <Paper elevation={0} sx={{ p: 2, height: { xs: 300, md: 400 }, display: 'flex', flexDirection: 'column', border: '1px solid #e2e8f0', borderRadius: '12px' }}>
+            <Typography variant="subtitle1" fontWeight={600} color="text.primary" sx={{ pb: 1, mb: 2 }}>
                 Scores por Critério
             </Typography>
             <ResponsiveContainer width="100%" height="100%">

@@ -1,86 +1,83 @@
 
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import {
     Container,
     Typography,
     Box,
-    Paper,
     Grid,
-    List,
-    ListItem,
-    ListItemText,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
     TextField,
-    InputAdornment,
-    IconButton,
-    useTheme,
-    CircularProgress,
-    Alert
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import AuthContext from '../context/AuthContext';
 
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { ptBR } from 'date-fns/locale';
-import { formatDateForDisplay, getStartOfDayUTC, getEndOfDayUTC } from '../utils/dateUtils';
+import { getStartOfDayUTC, getEndOfDayUTC } from '../utils/dateUtils';
 
 import dashboardService from '../services/dashboardService';
 import DetailsModal from '../components/Dashboard/DetailsModal';
 import AttendantDetailsModal from '../components/Dashboard/AttendantDetailsModal';
-import ChartCard from '../components/charts/ChartCard';
-import DashboardSummaryMetricCard from '../components/Dashboard/DashboardSummaryMetricCard'; // Importa o DashboardSummaryMetricCard
-import SummaryMetrics from '../components/Dashboard/SummaryMetrics'; // Importa o SummaryMetrics
-import ResponseCharts from '../components/Dashboard/ResponseCharts'; // Importa o ResponseCharts
-import AttendantPerformance from '../components/Dashboard/AttendantPerformance'; // Importa o AttendantPerformance
-import CriteriaChart from '../components/Dashboard/CriteriaChart'; // Importa o CriteriaChart
-import RecentFeedbacks from '../components/Dashboard/RecentFeedbacks'; // Importa o RecentFeedbacks
-import NpsTrendChart from '../components/Dashboard/NpsTrendChart'; // Importa o NpsTrendChart
-import ConversionChart from '../components/Dashboard/ConversionChart'; // Importa o ConversionChart
+import SummaryMetrics from '../components/Dashboard/SummaryMetrics';
+import ResponseCharts from '../components/Dashboard/ResponseCharts';
+import AttendantPerformance from '../components/Dashboard/AttendantPerformance';
+import CriteriaChart from '../components/Dashboard/CriteriaChart';
+import RecentFeedbacks from '../components/Dashboard/RecentFeedbacks';
+import NpsTrendChart from '../components/Dashboard/NpsTrendChart';
+import ConversionChart from '../components/Dashboard/ConversionChart';
 
 
+
+const headerStyles = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    mb: 4,
+    flexWrap: 'wrap',
+    gap: 2,
+};
+
+const welcomeStyles = {
+    display: 'flex',
+    flexDirection: 'column',
+};
+
+const dateFilterStyles = {
+    display: 'flex',
+    gap: 2,
+    alignItems: 'center',
+    flexWrap: 'wrap',
+};
+
+const sectionTitleStyles = {
+    mb: 3,
+};
 
 const DashboardPage = () => {
     const { user } = useContext(AuthContext);
-    const theme = useTheme();
 
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
 
-    // State for the details modal
     const [modalOpen, setModalOpen] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
     const [modalData, setModalData] = useState([]);
     const [modalLoading, setModalLoading] = useState(false);
     const [modalError, setModalError] = useState('');
 
-    // State for the attendant details modal
     const [attendantModalOpen, setAttendantModalOpen] = useState(false);
     const [attendantModalData, setAttendantModalData] = useState(null);
     const [attendantModalLoading, setAttendantModalLoading] = useState(false);
     const [attendantModalError, setAttendantModalError] = useState('');
-    const [attendantSearch, setAttendantSearch] = useState('');
 
-    const handleCardClick = async (category, title) => {
+    const handleCardClick = useCallback(async (category, title) => {
         setModalTitle(title || `Detalhes de ${category}`);
         setModalOpen(true);
         setModalLoading(true);
         try {
             const params = {};
-            if (startDate) {
-                params.startDate = getStartOfDayUTC(startDate);
-            }
-            if (endDate) {
-                params.endDate = getEndOfDayUTC(endDate);
-            }
+            if (startDate) params.startDate = getStartOfDayUTC(startDate);
+            if (endDate) params.endDate = getEndOfDayUTC(endDate);
             const data = await dashboardService.getDetails(category, params);
             setModalData(data);
         } catch (err) {
@@ -88,26 +85,22 @@ const DashboardPage = () => {
         } finally {
             setModalLoading(false);
         }
-    };
+    }, [startDate, endDate]);
 
-    const handleCloseModal = () => {
+    const handleCloseModal = useCallback(() => {
         setModalOpen(false);
         setModalTitle('');
         setModalData([]);
         setModalError('');
-    };
+    }, []);
 
-    const handleAttendantClick = async (attendantId) => {
+    const handleAttendantClick = useCallback(async (attendantId) => {
         setAttendantModalOpen(true);
         setAttendantModalLoading(true);
         try {
             const params = {};
-            if (startDate) {
-                params.startDate = getStartOfDayUTC(startDate);
-            }
-            if (endDate) {
-                params.endDate = getEndOfDayUTC(endDate);
-            }
+            if (startDate) params.startDate = getStartOfDayUTC(startDate);
+            if (endDate) params.endDate = getEndOfDayUTC(endDate);
             const data = await dashboardService.getAttendantDetails(attendantId, params);
             setAttendantModalData(data);
         } catch (err) {
@@ -115,9 +108,9 @@ const DashboardPage = () => {
         } finally {
             setAttendantModalLoading(false);
         }
-    };
+    }, [startDate, endDate]);
 
-    const handleFeedbackClick = async (sessionId) => {
+    const handleFeedbackClick = useCallback(async (sessionId) => {
         setModalTitle('Detalhes da Resposta');
         setModalOpen(true);
         setModalLoading(true);
@@ -129,36 +122,42 @@ const DashboardPage = () => {
         } finally {
             setModalLoading(false);
         }
-    };
+    }, []);
 
-    const handleCloseAttendantModal = () => {
+    const handleCloseAttendantModal = useCallback(() => {
         setAttendantModalOpen(false);
         setAttendantModalData(null);
         setAttendantModalError('');
-    };
+    }, []);
 
     return (
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Typography variant="h4" component="h1" gutterBottom>
-                    Dashboard de Análise
-                </Typography>
-                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
-                        <Box sx={{ display: 'flex', gap: 2 }}>
-                            <DatePicker
-                                label="Data de Início"
-                                value={startDate}
-                                onChange={(newValue) => setStartDate(newValue)}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
-                            <DatePicker
-                                label="Data de Fim"
-                                value={endDate}
-                                onChange={(newValue) => setEndDate(newValue)}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
-                        </Box>
-                    </LocalizationProvider>
+        <Container maxWidth="xl" sx={{ py: 3 }}>
+            <Box sx={headerStyles}>
+                <Box sx={welcomeStyles}>
+                    <Typography variant="h4" component="h1" fontWeight={700} color="text.primary">
+                        Olá, {user?.name || 'Usuário'}
+                    </Typography>
+                    <Typography variant="body1" color="text.secondary" sx={{ mt: 0.5 }}>
+                        Veja o que está acontecendo com seus clientes
+                    </Typography>
+                </Box>
+                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
+                    <Box sx={dateFilterStyles}>
+                        <DatePicker
+                            label="Data de Início"
+                            value={startDate}
+                            onChange={(newValue) => setStartDate(newValue)}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                        <Typography variant="body2" color="text.secondary">até</Typography>
+                        <DatePicker
+                            label="Data de Fim"
+                            value={endDate}
+                            onChange={(newValue) => setEndDate(newValue)}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </Box>
+                </LocalizationProvider>
             </Box>
 
             <SummaryMetrics startDate={startDate} endDate={endDate} handleCardClick={handleCardClick} />
@@ -180,36 +179,61 @@ const DashboardPage = () => {
                 error={attendantModalError}
             />
 
-            <Grid container spacing={2} sx={{ mb: 4 }}>
-              <ResponseCharts startDate={startDate} endDate={endDate} />
+            <Box sx={sectionTitleStyles}>
+                <Typography variant="h6" fontWeight={600} color="text.primary">
+                    Visão Geral
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    Respostas e pesquisas por período
+                </Typography>
+            </Box>
+            <Grid container spacing={3} sx={{ mb: 5 }}>
+                <ResponseCharts startDate={startDate} endDate={endDate} />
             </Grid>
 
-            <Grid container spacing={2} sx={{ mb: 4 }}>
-                <AttendantPerformance
-                  startDate={startDate}
-                  endDate={endDate}
-                  handleAttendantClick={handleAttendantClick}
-                />
-
-
+            <Box sx={sectionTitleStyles}>
+                <Typography variant="h6" fontWeight={600} color="text.primary">
+                    Análise de Desempenho
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    Tendência de NPS e scores por critério
+                </Typography>
+            </Box>
+            <Grid container spacing={3} sx={{ mb: 5 }}>
+                <NpsTrendChart startDate={startDate} endDate={endDate} />
                 <CriteriaChart startDate={startDate} endDate={endDate} />
             </Grid>
 
-            <Grid container spacing={2} sx={{ mb: 4 }}>
-                <RecentFeedbacks
-                  startDate={startDate}
-                  endDate={endDate}
-                  handleFeedbackClick={handleFeedbackClick}
+            <Box sx={sectionTitleStyles}>
+                <Typography variant="h6" fontWeight={600} color="text.primary">
+                    Equipe e Feedbacks
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    Performance dos atendentes e feedbacks recentes
+                </Typography>
+            </Box>
+            <Grid container spacing={3} sx={{ mb: 5 }}>
+                <AttendantPerformance
+                    startDate={startDate}
+                    endDate={endDate}
+                    handleAttendantClick={handleAttendantClick}
                 />
-
-                <NpsTrendChart startDate={startDate} endDate={endDate} />
+                <RecentFeedbacks
+                    startDate={startDate}
+                    endDate={endDate}
+                    handleFeedbackClick={handleFeedbackClick}
+                />
             </Grid>
 
-
-
+            <Box sx={sectionTitleStyles}>
+                <Typography variant="h6" fontWeight={600} color="text.primary">
+                    Conversão
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    Análise do funil de conversão
+                </Typography>
+            </Box>
             <ConversionChart startDate={startDate} endDate={endDate} handleCardClick={handleCardClick} />
-
-
         </Container>
     );
 };

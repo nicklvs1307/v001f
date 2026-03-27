@@ -12,19 +12,21 @@ const MetricCard = ({ title, value, percentage, arrow, color, children, onClick 
     const theme = useTheme();
 
     return (
-        <Paper elevation={2} sx={{
+        <Paper elevation={0} sx={{
             p: 2,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
             height: '100%',
             borderLeft: `4px solid ${color || theme.palette.primary.main}`,
-            backgroundColor: 'white',
+            border: '1px solid #e2e8f0',
+            borderLeftColor: color || theme.palette.primary.main,
+            borderRadius: '12px',
             cursor: onClick ? 'pointer' : 'default',
-            transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+            transition: 'all 0.2s ease',
             '&:hover': {
-                transform: onClick ? 'scale(1.02)' : 'none',
-                boxShadow: onClick ? theme.shadows[4] : theme.shadows[2],
+                transform: onClick ? 'translateY(-2px)' : 'none',
+                boxShadow: onClick ? '0 4px 12px rgba(0,0,0,0.1)' : 'none',
             }
         }}
         onClick={onClick}

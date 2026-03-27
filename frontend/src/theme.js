@@ -46,15 +46,15 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    fontSize: 12, // Reduz o tamanho da fonte base
-    h1: { fontSize: '2.2rem' },
-    h2: { fontSize: '1.8rem' },
-    h3: { fontSize: '1.5rem' },
-    h4: { fontSize: '1.3rem' },
-    h5: { fontSize: '1.1rem' },
-    h6: { fontSize: '0.9rem' },
-    body1: { fontSize: '0.8rem' },
-    body2: { fontSize: '0.7rem' },
+    fontSize: 14,
+    h1: { fontSize: '2.2rem', fontWeight: 700 },
+    h2: { fontSize: '1.8rem', fontWeight: 700 },
+    h3: { fontSize: '1.5rem', fontWeight: 600 },
+    h4: { fontSize: '1.3rem', fontWeight: 600 },
+    h5: { fontSize: '1.1rem', fontWeight: 600 },
+    h6: { fontSize: '1rem', fontWeight: 600 },
+    body1: { fontSize: '0.875rem', lineHeight: 1.6 },
+    body2: { fontSize: '0.8125rem', lineHeight: 1.5 },
     button: { textTransform: 'none' }
   },
   components: {

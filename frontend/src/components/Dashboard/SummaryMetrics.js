@@ -1,11 +1,92 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid, useTheme, CircularProgress, Alert, Typography } from '@mui/material';
-import MetricCard from './DashboardSummaryMetricCard';
+import {
+    Grid,
+    useTheme,
+    CircularProgress,
+    Alert,
+    Typography,
+    Paper,
+    Box,
+} from '@mui/material';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import StarIcon from '@mui/icons-material/Star';
+import ChatIcon from '@mui/icons-material/Chat';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import PeopleIcon from '@mui/icons-material/People';
 import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
 import dashboardService from '../../services/dashboardService';
 
-const SummaryMetrics = ({ startDate, endDate }) => {
+const kpiConfig = [
+    {
+        key: 'nps',
+        title: 'NPS Geral',
+        icon: BarChartIcon,
+        iconBg: '#eff6ff',
+        iconColor: '#3b82f6',
+        getValue: (s) => s?.nps?.npsScore?.toFixed(0),
+        getTrend: null,
+        navigateTo: null,
+    },
+    {
+        key: 'csat',
+        title: 'Satisfação (CSAT)',
+        icon: StarIcon,
+        iconBg: '#f0fdf4',
+        iconColor: '#22c55e',
+        getValue: (s) => s?.csat?.averageScore?.toFixed(1),
+        getTrend: null,
+        navigateTo: null,
+    },
+    {
+        key: 'responses',
+        title: 'Total de Respostas',
+        icon: ChatIcon,
+        iconBg: '#fef3c7',
+        iconColor: '#f59e0b',
+        getValue: (s) => s?.totalResponses,
+        getTrend: null,
+        navigateTo: '/dashboard/respostas/gestao?npsClassification=all',
+    },
+    {
+        key: 'promoters',
+        title: 'Promotores',
+        icon: TrendingUpIcon,
+        iconBg: '#dcfce7',
+        iconColor: '#16a34a',
+        getValue: (s) => s?.nps?.promoters,
+        getPercent: (s) => s?.nps?.total > 0 ? ((s?.nps?.promoters / s?.nps?.total) * 100).toFixed(1) : '0',
+        navigateTo: '/dashboard/respostas/gestao?npsClassification=promoters',
+    },
+    {
+        key: 'coupons',
+        title: 'Cupons Utilizados',
+        icon: ConfirmationNumberIcon,
+        iconBg: '#fce7f3',
+        iconColor: '#ec4899',
+        getValue: (s) => s?.couponsUsed,
+        getPercent: (s) => s?.couponsUsedConversion,
+        navigateTo: null,
+    },
+];
+
+const cardStyles = (iconBg, hasClick) => ({
+    background: 'white',
+    borderRadius: '12px',
+    padding: '20px',
+    border: '1px solid #e2e8f0',
+    transition: 'all 0.2s ease',
+    cursor: hasClick ? 'pointer' : 'default',
+    height: '100%',
+    '&:hover': {
+        transform: hasClick ? 'translateY(-2px)' : 'none',
+        boxShadow: hasClick ? '0 4px 12px rgba(0,0,0,0.1)' : 'none',
+    },
+});
+
+const SummaryMetrics = ({ startDate, endDate, handleCardClick }) => {
     const theme = useTheme();
     const navigate = useNavigate();
     const [summary, setSummary] = useState(null);
@@ -20,160 +101,85 @@ const SummaryMetrics = ({ startDate, endDate }) => {
                 setLoading(true);
                 setError('');
                 const params = {};
-                if (startDate) {
-                    params.startDate = getStartOfDayUTC(startDate);
-                }
-                if (endDate) {
-                    params.endDate = getEndOfDayUTC(endDate);
-                }
+                if (startDate) params.startDate = getStartOfDayUTC(startDate);
+                if (endDate) params.endDate = getEndOfDayUTC(endDate);
                 const data = await dashboardService.getSummary(params);
-                if (isActive) {
-                    setSummary(data);
-                }
+                if (isActive) setSummary(data);
             } catch (err) {
-                if (isActive) {
-                    setError(err.message || 'Falha ao carregar o resumo dos dados.');
-                }
+                if (isActive) setError(err.message || 'Falha ao carregar o resumo dos dados.');
             } finally {
-                if (isActive) {
-                    setLoading(false);
-                }
+                if (isActive) setLoading(false);
             }
         };
 
         fetchSummaryData();
-
-        return () => {
-            isActive = false;
-        };
+        return () => { isActive = false; };
     }, [startDate, endDate]);
 
     if (loading) {
         return (
-            <Grid item xs={12}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
                 <CircularProgress />
-                <Alert severity="info">Carregando métricas de resumo...</Alert>
-            </Grid>
+            </Box>
         );
     }
 
     if (error) {
-        return (
-            <Grid item xs={12}>
-                <Alert severity="error">{error}</Alert>
-            </Grid>
-        );
+        return <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>;
     }
 
     if (!summary) {
-        return (
-            <Grid item xs={12}>
-                <Alert severity="info">Nenhum dado de resumo encontrado para o período selecionado.</Alert>
-            </Grid>
-        );
+        return <Alert severity="info" sx={{ mb: 3 }}>Nenhum dado de resumo encontrado para o período selecionado.</Alert>;
     }
 
     return (
-        <Grid container spacing={2} sx={{ mb: 4 }}>
-            <Grid item xs={12} md={6} lg={3}>
-                <MetricCard
-                    title="NPS Geral"
-                    value={summary?.nps?.npsScore?.toFixed(0)}
-                    color={theme.palette.primary.main}
-                />
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-                <MetricCard
-                    title="Média de Satisfação"
-                    value={summary?.csat?.averageScore?.toFixed(1)}
-                    color={theme.palette.secondary.main}
-                />
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-                <MetricCard
-                    title="Total de Respostas"
-                    value={summary?.totalResponses}
-                    color={theme.palette.info.main}
-                    onClick={() => navigate('/dashboard/respostas/gestao?npsClassification=all')}
-                />
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-                <MetricCard
-                    title="Promotores (NPS)"
-                    value={summary?.nps?.promoters}
-                    percentage={summary?.nps?.total > 0 ? ((summary?.nps?.promoters / summary?.nps?.total) * 100).toFixed(1) : 0}
-                    color={theme.palette.success.main}
-                    onClick={() => navigate('/dashboard/respostas/gestao?npsClassification=promoters')}
-                />
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-                <MetricCard
-                    title="Detratores (NPS)"
-                    value={summary?.nps?.detractors}
-                    percentage={summary?.nps?.total > 0 ? ((summary?.nps?.detractors / summary?.nps?.total) * 100).toFixed(1) : 0}
-                    color={theme.palette.error.main}
-                    onClick={() => navigate('/dashboard/respostas/gestao?npsClassification=detractors')}
-                />
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-                <MetricCard
-                    title="Neutros (NPS)"
-                    value={summary?.nps?.neutrals}
-                    percentage={summary?.nps?.total > 0 ? ((summary?.nps?.neutrals / summary?.nps?.total) * 100).toFixed(1) : 0}
-                    color={theme.palette.secondary.main}
-                    onClick={() => navigate('/dashboard/respostas/gestao?npsClassification=neutrals')}
-                />
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-                <MetricCard
-                    title="Satisfeitos (CSAT)"
-                    value={summary?.csat?.satisfied}
-                    percentage={summary?.csat?.total > 0 ? ((summary?.csat?.satisfied / summary?.csat?.total) * 100).toFixed(1) : 0}
-                    color={theme.palette.success.main}
-                />
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-                <MetricCard
-                    title="Insatisfeitos (CSAT)"
-                    value={summary?.csat?.unsatisfied}
-                    percentage={summary?.csat?.total > 0 ? ((summary?.csat?.unsatisfied / summary?.csat?.total) * 100).toFixed(1) : 0}
-                    color={theme.palette.error.main}
-                />
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-                <MetricCard
-                    title="Cadastros"
-                    value={summary?.registrations}
-                    percentage={summary?.registrationsConversion}
-                    arrow="up"
-                >
-                    <Typography variant="caption" color="text.secondary">conversão</Typography>
-                </MetricCard>
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-                <MetricCard
-                    title="Aniversariantes do Mês"
-                    value={summary?.ambassadorsMonth}
-                />
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-                <MetricCard
-                    title="Cupons Gerados"
-                    value={summary?.couponsGenerated}
-                >
-                    <Typography variant="caption" color="text.secondary">{summary?.couponsGeneratedPeriod}</Typography>
-                </MetricCard>
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-                <MetricCard
-                    title="Cupons Utilizados"
-                    value={summary?.couponsUsed}
-                    percentage={summary?.couponsUsedConversion}
-                    arrow="down"
-                >
-                    <Typography variant="caption" color="text.secondary">conversão</Typography>
-                </MetricCard>
-            </Grid>
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+            {kpiConfig.map((kpi) => {
+                const Icon = kpi.icon;
+                const value = kpi.getValue(summary);
+                const percent = kpi.getPercent ? kpi.getPercent(summary) : null;
+                const hasClick = !!kpi.navigateTo || kpi.key === 'responses';
+
+                return (
+                    <Grid item xs={12} sm={6} md={2.4} key={kpi.key}>
+                        <Paper
+                            elevation={0}
+                            sx={cardStyles(kpi.iconBg, hasClick)}
+                            onClick={() => {
+                                if (kpi.navigateTo) navigate(kpi.navigateTo);
+                                if (kpi.key === 'responses') navigate(kpi.navigateTo);
+                            }}
+                        >
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
+                                <Typography variant="body2" color="text.secondary" fontWeight={600} textTransform="uppercase" sx={{ fontSize: '0.7rem', letterSpacing: '0.05em' }}>
+                                    {kpi.title}
+                                </Typography>
+                                <Box sx={{
+                                    width: 36,
+                                    height: 36,
+                                    borderRadius: '10px',
+                                    backgroundColor: kpi.iconBg,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}>
+                                    <Icon sx={{ fontSize: 20, color: kpi.iconColor }} />
+                                </Box>
+                            </Box>
+                            <Typography variant="h4" component="div" fontWeight={700} color="text.primary" sx={{ lineHeight: 1.2 }}>
+                                {value}
+                            </Typography>
+                            {percent !== null && (
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 1 }}>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {percent}% do total
+                                    </Typography>
+                                </Box>
+                            )}
+                        </Paper>
+                    </Grid>
+                );
+            })}
         </Grid>
     );
 };

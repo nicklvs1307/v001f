@@ -20,18 +20,6 @@ import {
 } from 'recharts';
 import dashboardService from '../../services/dashboardService';
 import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
-import { keyframes } from '@mui/system';
-
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
 
 const ResponseCharts = ({ startDate, endDate }) => {
     const theme = useTheme();
@@ -101,13 +89,12 @@ const ResponseCharts = ({ startDate, endDate }) => {
 
     return (
         <>
-            {/* Gráfico de Respostas por Período */}
-            <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 } }}>
-                    <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
+            <Grid item xs={12} md={6}>
+                <Paper elevation={0} sx={{ p: 2, height: { xs: 300, md: 400 }, border: '1px solid #e2e8f0', borderRadius: '12px' }}>
+                    <Typography variant="subtitle1" fontWeight={600} color="text.primary" sx={{ pb: 1, mb: 1 }}>
                         Respostas por Período
                     </Typography>
-                    <Typography variant="subtitle2" color="text.secondary" mb={2}>
+                    <Typography variant="body2" color="text.secondary" mb={2}>
                         Total de perguntas respondidas por período.
                     </Typography>
                     <ResponsiveContainer width="100%" height={280}>
@@ -129,13 +116,12 @@ const ResponseCharts = ({ startDate, endDate }) => {
                 </Paper>
             </Grid>
 
-            {/* Gráfico de Pesquisas Respondidas por Período */}
-            <Grid item xs={12} md={6} sx={{ animation: `${fadeIn} 0.5s ease-out` }}>
-                <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 } }}>
-                    <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
+            <Grid item xs={12} md={6}>
+                <Paper elevation={0} sx={{ p: 2, height: { xs: 300, md: 400 }, border: '1px solid #e2e8f0', borderRadius: '12px' }}>
+                    <Typography variant="subtitle1" fontWeight={600} color="text.primary" sx={{ pb: 1, mb: 1 }}>
                         Pesquisas Respondidas por Período
                     </Typography>
-                    <Typography variant="subtitle2" color="text.secondary" mb={2}>
+                    <Typography variant="body2" color="text.secondary" mb={2}>
                         Número de clientes únicos que responderam por período.
                     </Typography>
                     <ResponsiveContainer width="100%" height={280}>

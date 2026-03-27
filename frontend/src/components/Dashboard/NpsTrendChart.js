@@ -19,18 +19,6 @@ import {
 } from 'recharts';
 import { getStartOfDayUTC, getEndOfDayUTC } from '../../utils/dateUtils';
 import dashboardService from '../../services/dashboardService';
-import { keyframes } from '@mui/system';
-
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
 
 const NpsTrendChart = ({ startDate, endDate }) => {
     const theme = useTheme();
@@ -95,8 +83,8 @@ const NpsTrendChart = ({ startDate, endDate }) => {
 
     return (
         <Grid item xs={12} md={6}>
-            <Paper elevation={2} sx={{ p: 2, height: { xs: 300, md: 400 } }}>
-                <Typography variant="subtitle1" color="text.secondary" sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 1, mb: 1 }}>
+            <Paper elevation={0} sx={{ p: 2, height: { xs: 300, md: 400 }, border: '1px solid #e2e8f0', borderRadius: '12px' }}>
+                <Typography variant="subtitle1" fontWeight={600} color="text.primary" sx={{ pb: 1, mb: 1 }}>
                     Tendência de NPS
                 </Typography>
                 <ResponsiveContainer width="100%" height={280}>

@@ -7,17 +7,18 @@ const ChartCard = ({ title, score, scoreLabel, data, colors, loading }) => {
 
     return (
         <Paper 
-            elevation={3} 
+            elevation={0} 
             sx={{ 
                 p: 3, 
                 height: '100%', 
                 display: 'flex', 
                 flexDirection: 'column', 
-                borderRadius: '16px', 
-                boxShadow: '0 4px 20px 0 rgba(0,0,0,0.1)',
-                transition: 'transform 0.3s ease-in-out',
+                borderRadius: '12px', 
+                border: '1px solid #e2e8f0',
+                transition: 'all 0.2s ease',
                 '&:hover': {
-                    transform: 'translateY(-5px)'
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                 }
             }}
         >

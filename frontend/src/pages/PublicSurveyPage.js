@@ -1,126 +1,87 @@
-import React, { useState, useEffect, useMemo, useCallback, startTransition } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import {
-    Container,
-    Box,
-    Typography,
-    Paper,
-    Button,
-    CircularProgress,
-    Alert,
-    IconButton,
-    TextField,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    FormHelperText,
-} from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import Alert from '@mui/material/Alert';
+import Typography from '@mui/material/Typography';
 import { Star, StarBorder, CheckCircle } from '@mui/icons-material';
 import publicSurveyService from '../services/publicSurveyService';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import getDynamicTheme from '../getDynamicTheme';
 
-// Estilos críticos em JS para evitar processamento do Emotion no LCP
 const CRITICAL_STYLES = {
     container: {
-        minHeight: '100vh',
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: '20px 16px',
-        boxSizing: 'border-box',
+        minHeight: '100vh', width: '100%', display: 'flex', flexDirection: 'column',
+        alignItems: 'center', padding: '20px 16px', boxSizing: 'border-box',
         fontFamily: 'Roboto, Helvetica, Arial, sans-serif'
     },
     paper: {
-        width: '100%',
-        maxWidth: '552px',
-        backgroundColor: '#fff',
-        borderRadius: '24px',
-        overflow: 'hidden',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+        width: '100%', maxWidth: '552px', backgroundColor: '#fff',
+        borderRadius: '24px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
     },
-    header: {
-        padding: '32px 16px',
-        textAlign: 'center',
-        color: '#fff'
-    },
+    header: { padding: '32px 16px', textAlign: 'center', color: '#fff' },
     logoContainer: {
-        width: '80px',
-        height: '80px',
-        backgroundColor: '#fff',
-        borderRadius: '50%',
-        margin: '0 auto 12px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'hidden',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        border: '2px solid rgba(255,255,255,0.3)'
+        width: '80px', height: '80px', backgroundColor: '#fff', borderRadius: '50%',
+        margin: '0 auto 12px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', border: '2px solid rgba(255,255,255,0.3)'
     }
 };
 
-const isValidUUID = (uuid) => {
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    return uuidRegex.test(uuid);
-};
-
-// --- Componentes de Pergunta Otimizados ---
+const isValidUUID = (uuid) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(uuid);
 
 const Rating1to5 = React.memo(({ question, answer, onChange }) => (
     <div style={{ textAlign: 'center' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', margin: '16px 0', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', margin: '16px 0', flexWrap: 'wrap' }} role="radiogroup" aria-label={`Avaliação: ${question.text}`}>
             {[1, 2, 3, 4, 5].map(value => (
-                <IconButton 
+                <button
                     key={value}
-                    onClick={() => onChange(question.id, value)} 
+                    onClick={() => onChange(question.id, value)}
                     aria-label={`Avaliar com ${value} estrelas`}
-                    style={{ 
-                        color: (answer?.valor) >= value ? '#ffc107' : '#e0e0e0', 
-                        transform: (answer?.valor) === value ? 'scale(1.2)' : 'scale(1)', 
+                    aria-pressed={answer?.valor >= value}
+                    style={{
+                        color: (answer?.valor) >= value ? '#ffc107' : '#e0e0e0',
+                        transform: (answer?.valor) === value ? 'scale(1.2)' : 'scale(1)',
                         transition: 'color 0.2s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                        padding: '8px'
+                        padding: '12px', minWidth: '48px', minHeight: '48px',
+                        background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center'
                     }}
                 >
                     {(answer?.valor) >= value ? <Star style={{ fontSize: '40px' }} /> : <StarBorder style={{ fontSize: '40px' }} />}
-                </IconButton>
+                </button>
             ))}
         </div>
-        <p style={{ fontSize: '12px', textAlign: 'center', color: '#777', margin: 0 }}>
-            Toque nas estrelas para avaliar
-        </p>
+        <p style={{ fontSize: '12px', textAlign: 'center', color: '#777', margin: 0 }}>Toque nas estrelas para avaliar</p>
     </div>
 ));
 
 const Rating0to10 = React.memo(({ question, answer, onChange, theme }) => {
-    const values = useMemo(() => [...Array(11).keys()], []);
     const primaryMain = theme.palette.primary.main;
     const textSecondary = theme.palette.text.secondary;
 
     return (
         <div style={{ width: '100%' }}>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '4px', margin: '24px 0', flexWrap: 'wrap' }}>
-                {values.map((value) => {
-                    const isSelected = (answer?.valor) === value;
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '4px', margin: '24px 0', flexWrap: 'wrap' }} role="radiogroup" aria-label={`Nota de 0 a 10: ${question.text}`}>
+                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value) => {
+                    const isSelected = answer?.valor === value;
                     return (
-                        <div
+                        <button
                             key={value}
                             onClick={() => onChange(question.id, value)}
+                            aria-label={`Nota ${value}`}
+                            aria-pressed={isSelected}
                             style={{
-                                width: '36px',
-                                height: '36px',
-                                borderRadius: '10px',
+                                width: '44px', height: '44px', borderRadius: '10px', cursor: 'pointer',
                                 border: `2px solid ${isSelected ? primaryMain : '#e0e0e0'}`,
                                 backgroundColor: isSelected ? primaryMain : 'transparent',
                                 color: isSelected ? 'white' : textSecondary,
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                fontSize: '0.9rem', fontWeight: 'bold', cursor: 'pointer', 
-                                transition: 'all 0.15s ease'
+                                fontSize: '0.9rem', fontWeight: 'bold', transition: 'all 0.15s ease',
+                                padding: 0
                             }}
                         >
                             {value}
-                        </div>
+                        </button>
                     );
                 })}
             </div>
@@ -135,38 +96,38 @@ const Rating0to10 = React.memo(({ question, answer, onChange, theme }) => {
 const MultipleChoice = React.memo(({ question, answer, onChange, theme }) => {
     const primaryMain = theme.palette.primary.main;
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '20px' }}>
-            {(question.options || []).map((opcao, index) => {
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '20px' }} role="radiogroup" aria-label={question.text}>
+            {(question.options || []).map((opcao) => {
                 const isSelected = String(answer?.valor) === String(opcao.text);
                 return (
-                    <div
-                        key={index}
+                    <button
+                        key={opcao.id || opcao.text}
                         onClick={() => onChange(question.id, String(opcao.text))}
+                        aria-pressed={isSelected}
                         style={{
                             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                            padding: '12px 18px', borderRadius: '12px',
+                            padding: '14px 18px', borderRadius: '12px', minHeight: '48px',
                             border: `2px solid ${isSelected ? primaryMain : '#eee'}`,
                             backgroundColor: isSelected ? `${primaryMain}15` : 'white',
-                            cursor: 'pointer', transition: 'all 0.15s ease'
+                            cursor: 'pointer', transition: 'all 0.15s ease',
+                            fontFamily: 'inherit', fontSize: '1rem', textAlign: 'left', width: '100%'
                         }}
                     >
-                        <span style={{ fontWeight: isSelected ? 600 : 400, fontSize: '1rem' }}>{opcao.text}</span>
-                        <div style={{ 
-                            width: '22px', height: '22px', borderRadius: '50%', 
+                        <span style={{ fontWeight: isSelected ? 600 : 400 }}>{opcao.text}</span>
+                        <div style={{
+                            width: '22px', height: '22px', borderRadius: '50%', flexShrink: 0,
                             border: `2px solid ${isSelected ? primaryMain : '#ccc'}`,
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             backgroundColor: isSelected ? primaryMain : 'transparent'
                         }}>
                             {isSelected && <CheckCircle style={{ color: 'white', fontSize: '16px' }} />}
                         </div>
-                    </div>
+                    </button>
                 );
             })}
         </div>
     );
 });
-
-// --- Componente Principal ---
 
 const PublicSurveyPage = () => {
     const { tenantId, pesquisaId } = useParams();
@@ -176,13 +137,12 @@ const PublicSurveyPage = () => {
 
     const dynamicTheme = useMemo(() => {
         if (!surveyData) return null;
-        return getDynamicTheme({ 
-            primaryColor: surveyData.primaryColor, 
-            secondaryColor: surveyData.secondaryColor 
-        });
+        return getDynamicTheme({ primaryColor: surveyData.primaryColor, secondaryColor: surveyData.secondaryColor });
     }, [surveyData]);
 
     useEffect(() => {
+        const controller = new AbortController();
+
         if (!pesquisaId || !isValidUUID(pesquisaId)) {
             setError('ID da pesquisa inválido.');
             setLoading(false);
@@ -190,14 +150,20 @@ const PublicSurveyPage = () => {
         }
 
         publicSurveyService.getPublicSurveyById(pesquisaId)
-            .then(setSurveyData)
+            .then(data => {
+                if (!controller.signal.aborted) setSurveyData(data);
+            })
             .catch(err => {
+                if (controller.signal.aborted) return;
                 setError(err.response?.status === 410 ? 'Link expirado.' : 'Erro ao carregar pesquisa.');
             })
-            .finally(() => setLoading(false));
+            .finally(() => {
+                if (!controller.signal.aborted) setLoading(false);
+            });
+
+        return () => controller.abort();
     }, [pesquisaId]);
 
-    // Renderização do esqueleto ultra-rápido para LCP
     if (loading && !surveyData) {
         return (
             <div style={{ ...CRITICAL_STYLES.container, backgroundColor: '#f5f5f5' }}>
@@ -243,49 +209,36 @@ const SurveyComponent = ({ survey, tenantId }) => {
     const [submitLoading, setSubmitLoading] = useState(false);
     const [submitError, setSubmitError] = useState(null);
     const [atendenteError, setAtendenteError] = useState(null);
-    
-    const [visibleCount, setVisibleCount] = useState(3);
 
     useEffect(() => {
-        if (visibleCount < (survey.questions || []).length) {
-            const timer = setTimeout(() => {
-                setVisibleCount(prev => prev + 5);
-            }, 50);
-            return () => clearTimeout(timer);
-        }
-    }, [visibleCount, survey.questions]);
-
-    useEffect(() => {
-        // Verificar se há atendenteId na URL
         const params = new URLSearchParams(location.search);
         const atendenteIdFromUrl = params.get('atendenteId');
-        
         if (atendenteIdFromUrl) {
             setSelectedAtendente(atendenteIdFromUrl);
             setIsAtendentePreDefined(true);
         }
 
         if (survey.askForAttendant) {
-            publicSurveyService.getPublicAtendentes(tenantId).then(setAtendentes).catch(() => {});
+            const controller = new AbortController();
+            publicSurveyService.getPublicAtendentes(tenantId)
+                .then(data => {
+                    if (!controller.signal.aborted) setAtendentes(data);
+                })
+                .catch(() => {});
+            return () => controller.abort();
         }
     }, [survey.askForAttendant, tenantId, location.search]);
 
     const handleAnswerChange = useCallback((perguntaId, value) => {
-        startTransition(() => {
-            setAnswers(prev => ({ ...prev, [perguntaId]: { ...prev[perguntaId], valor: value } }));
-        });
+        setAnswers(prev => ({ ...prev, [perguntaId]: { ...prev[perguntaId], valor: value } }));
     }, []);
 
     const handleCommentChange = useCallback((perguntaId, comment) => {
-        startTransition(() => {
-            setAnswers(prev => ({ ...prev, [perguntaId]: { ...prev[perguntaId], comentario: comment } }));
-        });
+        setAnswers(prev => ({ ...prev, [perguntaId]: { ...prev[perguntaId], comentario: comment } }));
     }, []);
 
-    const handleSubmit = async () => {
-        const missingRequired = survey.questions
-            .filter(q => q.required && !answers[q.id]?.valor);
-        
+    const handleSubmit = useCallback(async () => {
+        const missingRequired = survey.questions.filter(q => q.required && !answers[q.id]?.valor);
         if (missingRequired.length > 0) {
             setSubmitError('Por favor, responda todas as perguntas obrigatórias.');
             return;
@@ -301,14 +254,12 @@ const SurveyComponent = ({ survey, tenantId }) => {
         try {
             const finalAnswers = Object.values(answers).filter(a => a.valor !== null);
             const response = await publicSurveyService.submitSurveyResponses(survey.linkToken || pesquisaId, finalAnswers, selectedAtendente);
-            
+
             const surveyState = { respondentSessionId: response.respondentSessionId, answers: finalAnswers, tenantId, atendenteId: selectedAtendente };
             sessionStorage.setItem('surveyState', JSON.stringify(surveyState));
-            
+
             const storedPhone = localStorage.getItem('clientPhone');
             const baseUrl = storedPhone ? `/confirmar-cliente/${survey.linkToken || pesquisaId}` : `/identificacao-pesquisa/${tenantId}/${survey.linkToken || pesquisaId}`;
-            
-            // Manter atendenteId no redirecionamento se necessário (opcional, mas bom para consistência)
             const redirectUrl = isAtendentePreDefined ? `${baseUrl}?atendenteId=${selectedAtendente}` : baseUrl;
             navigate(redirectUrl);
         } catch (err) {
@@ -316,7 +267,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
         } finally {
             setSubmitLoading(false);
         }
-    };
+    }, [answers, survey, selectedAtendente, pesquisaId, tenantId, isAtendentePreDefined, navigate]);
 
     const renderQuestionInput = (question) => {
         const answer = answers[question.id];
@@ -325,9 +276,11 @@ const SurveyComponent = ({ survey, tenantId }) => {
             case 'rating_0_10': return <Rating0to10 question={question} answer={answer} onChange={handleAnswerChange} theme={theme} />;
             case 'multiple_choice': return <MultipleChoice question={question} answer={answer} onChange={handleAnswerChange} theme={theme} />;
             case 'free_text': return (
-                <textarea 
-                    style={{ 
-                        width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ccc', 
+                <textarea
+                    aria-label={question.text}
+                    maxLength={2000}
+                    style={{
+                        width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #ccc',
                         fontFamily: 'inherit', fontSize: '1rem', minHeight: '100px', boxSizing: 'border-box'
                     }}
                     placeholder="Sua resposta..."
@@ -340,70 +293,52 @@ const SurveyComponent = ({ survey, tenantId }) => {
     };
 
     return (
-        <div style={{ 
-            ...CRITICAL_STYLES.container, 
-            backgroundColor: theme.palette.primary.main,
+        <div style={{
+            ...CRITICAL_STYLES.container,
             backgroundImage: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`
         }}>
             <div style={CRITICAL_STYLES.paper}>
-                {/* Header em HTML Puro para LCP Instantâneo */}
-                <div style={{ 
-                    ...CRITICAL_STYLES.header, 
-                    backgroundColor: theme.palette.secondary.main,
+                <div style={{
+                    ...CRITICAL_STYLES.header,
                     backgroundImage: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`
                 }}>
                     <div style={CRITICAL_STYLES.logoContainer}>
                         {survey.restaurantLogoUrl ? (
-                            <img 
-                                src={`${process.env.REACT_APP_API_URL}${survey.restaurantLogoUrl}`} 
-                                alt="Logo" 
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                            />
+                            <img src={`${process.env.REACT_APP_API_URL}${survey.restaurantLogoUrl}`} alt={survey.restaurantName || 'Logo'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         ) : (
                             <Star style={{ color: theme.palette.primary.main, fontSize: '35px' }} />
                         )}
                     </div>
                     <h1 style={{ margin: 0, fontSize: '22px', fontWeight: 'bold' }}>{survey.title}</h1>
-                    {survey.description && (
-                        <p style={{ margin: '8px 0 0', fontSize: '14px', opacity: 0.9 }}>{survey.description}</p>
-                    )}
+                    {survey.description && <p style={{ margin: '8px 0 0', fontSize: '14px', opacity: 0.9 }}>{survey.description}</p>}
                 </div>
 
                 <div style={{ padding: '24px 16px' }}>
-                    {(survey.questions || []).slice(0, visibleCount).map((question, index) => (
-                        <div 
-                            key={question.id} 
-                            style={{ 
-                                marginBottom: '40px', 
-                                contentVisibility: 'auto', 
-                                containIntrinsicSize: '1px 200px'
-                            }}
-                        >
-                            <h2 style={{ 
-                                margin: '0 0 16px', 
-                                fontSize: '1.05rem', 
-                                fontWeight: 600, 
-                                display: 'flex', 
-                                alignItems: 'flex-start',
-                                color: '#333'
+                    {(survey.questions || []).map((question, index) => (
+                        <div key={question.id} style={{ marginBottom: '40px' }}>
+                            <h2 style={{
+                                margin: '0 0 16px', fontSize: '1.05rem', fontWeight: 600,
+                                display: 'flex', alignItems: 'flex-start', color: '#333'
                             }}>
                                 <span style={{ marginRight: '8px', color: theme.palette.primary.main }}>{index + 1}.</span>
                                 {question.text}
-                                {question.required && <span style={{ color: '#d32f2f', marginLeft: '4px' }}>*</span>}
+                                {question.required && <span style={{ color: '#d32f2f', marginLeft: '4px' }} aria-hidden="true">*</span>}
                             </h2>
-                            
+
                             {renderQuestionInput(question)}
 
-                            {(question.type.startsWith('rating')) && (
+                            {question.type.startsWith('rating') && (
                                 <div style={{ marginTop: '16px' }}>
-                                    <label style={{ display: 'block', fontSize: '12px', color: '#666', marginBottom: '4px' }}>Comentário (opcional)</label>
-                                    <textarea 
-                                        style={{ 
-                                            width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd', 
+                                    <label htmlFor={`comment-${question.id}`} style={{ display: 'block', fontSize: '12px', color: '#666', marginBottom: '4px' }}>Comentário (opcional)</label>
+                                    <textarea
+                                        id={`comment-${question.id}`}
+                                        maxLength={2000}
+                                        style={{
+                                            width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd',
                                             fontFamily: 'inherit', fontSize: '0.9rem', minHeight: '60px', boxSizing: 'border-box'
                                         }}
-                                        value={answers[question.id]?.comentario || ''} 
-                                        onChange={(e) => handleCommentChange(question.id, e.target.value)} 
+                                        value={answers[question.id]?.comentario || ''}
+                                        onChange={(e) => handleCommentChange(question.id, e.target.value)}
                                     />
                                 </div>
                             )}
@@ -415,15 +350,13 @@ const SurveyComponent = ({ survey, tenantId }) => {
                             <label htmlFor="attendant-select" style={{ display: 'block', margin: '0 0 12px', fontSize: '1.05rem', fontWeight: 600, color: '#333' }}>
                                 Qual atendente realizou o seu atendimento?
                             </label>
-                            <select 
+                            <select
                                 id="attendant-select"
-                                value={selectedAtendente} 
-                                onChange={(e) => {
-                                    setSelectedAtendente(e.target.value);
-                                    setAtendenteError(null);
-                                }}
-                                style={{ 
-                                    width: '100%', padding: '12px', borderRadius: '8px', border: `1px solid ${atendenteError ? '#d32f2f' : '#ccc'}`,
+                                value={selectedAtendente}
+                                onChange={(e) => { setSelectedAtendente(e.target.value); setAtendenteError(null); }}
+                                style={{
+                                    width: '100%', padding: '12px', borderRadius: '8px',
+                                    border: `1px solid ${atendenteError ? '#d32f2f' : '#ccc'}`,
                                     fontSize: '1rem', backgroundColor: '#fff', cursor: 'pointer'
                                 }}
                             >
@@ -443,22 +376,16 @@ const SurveyComponent = ({ survey, tenantId }) => {
                     )}
 
                     {submitError && (
-                        <div style={{ marginTop: '24px', padding: '12px', borderRadius: '12px', backgroundColor: '#fdeded', color: '#5f2120', fontSize: '0.9rem', border: '1px solid #ef9a9a' }}>
+                        <div role="alert" style={{ marginTop: '24px', padding: '12px', borderRadius: '12px', backgroundColor: '#fdeded', color: '#5f2120', fontSize: '0.9rem', border: '1px solid #ef9a9a' }}>
                             {submitError}
                         </div>
                     )}
 
                     <div style={{ marginTop: '48px', textAlign: 'center' }}>
-                        <Button 
-                            variant="contained" 
-                            size="large"
-                            onClick={handleSubmit} 
-                            disabled={submitLoading}
-                            sx={{ 
-                                px: 8, 
-                                py: 1.5, 
-                                borderRadius: '50px',
-                                fontSize: '1.1rem',
+                        <Button
+                            variant="contained" size="large" onClick={handleSubmit} disabled={submitLoading}
+                            sx={{
+                                px: 8, py: 1.5, borderRadius: '50px', fontSize: '1.1rem',
                                 boxShadow: `0 8px 20px ${theme.palette.primary.main}40`
                             }}
                         >
@@ -467,7 +394,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
                     </div>
                 </div>
             </div>
-            
+
             <div style={{ textAlign: 'center', paddingBottom: '32px', color: 'rgba(255,255,255,0.7)', marginTop: '16px' }}>
                 <span style={{ fontSize: '12px' }}>Powered by Voltaki</span>
             </div>

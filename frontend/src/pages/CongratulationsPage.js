@@ -1,32 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { 
-    Typography, 
-    Box, 
-    Alert, 
-    Paper, 
-    CircularProgress, 
-    Button, 
-    Snackbar,
-    Dialog,
-    DialogContent,
-    Fade,
-    IconButton,
-    Rating,
-    Avatar
-} from '@mui/material';
+import React, { useEffect, useState, useCallback, Suspense, lazy } from 'react';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Alert from '@mui/material/Alert';
+import Paper from '@mui/material/Paper';
+import CircularProgress from '@mui/material/CircularProgress';
+import Button from '@mui/material/Button';
+import Snackbar from '@mui/material/Snackbar';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import IconButton from '@mui/material/IconButton';
+import Rating from '@mui/material/Rating';
+import Avatar from '@mui/material/Avatar';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'; // Novo ícone para regras
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import GoogleIcon from '@mui/icons-material/Google';
 import StarsIcon from '@mui/icons-material/Stars';
 import { useLocation } from 'react-router-dom';
 import { keyframes } from '@mui/system';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
-import ReactConfetti from 'react-confetti';
 import useWindowSize from '../hooks/useWindowSize';
 import getDynamicTheme from '../getDynamicTheme';
 import publicSurveyService from '../services/publicSurveyService';
+
+const ReactConfetti = lazy(() => import('react-confetti'));
 
 const floatAnimation = keyframes`
   0% { transform: translateY(0px); }
@@ -39,9 +37,10 @@ const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+    return `${day}/${month}/${date.getFullYear()}`;
 };
+
+const loadingBoxSx = { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' };
 
 const CongratulationsPage = () => {
     const location = useLocation();
@@ -52,28 +51,31 @@ const CongratulationsPage = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
+        const controller = new AbortController();
+
         if (tenantId) {
             publicSurveyService.getPublicTenantById(tenantId)
                 .then(tenantData => {
+                    if (controller.signal.aborted) return;
                     setTenant(tenantData);
-                    const theme = getDynamicTheme({ primaryColor: tenantData.primaryColor, secondaryColor: tenantData.secondaryColor });
-                    setDynamicTheme(theme);
+                    setDynamicTheme(getDynamicTheme({ primaryColor: tenantData.primaryColor, secondaryColor: tenantData.secondaryColor }));
                 })
-                .catch(err => setError('Não foi possível carregar o tema da empresa.'))
-                .finally(() => setLoading(false));
+                .catch(() => {
+                    if (!controller.signal.aborted) setError('Não foi possível carregar o tema da empresa.');
+                })
+                .finally(() => {
+                    if (!controller.signal.aborted) setLoading(false);
+                });
         } else {
             setError('ID da empresa não encontrado.');
             setLoading(false);
         }
+
+        return () => controller.abort();
     }, [tenantId]);
 
-    if (loading || !dynamicTheme) {
-        return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><CircularProgress /></Box>;
-    }
-
-    if (error) {
-        return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Alert severity="error">{error}</Alert></Box>;
-    }
+    if (loading) return <Box sx={loadingBoxSx}><CircularProgress /></Box>;
+    if (error) return <Box sx={loadingBoxSx}><Alert severity="error">{error}</Alert></Box>;
 
     return (
         <ThemeProvider theme={dynamicTheme}>
@@ -87,75 +89,102 @@ const CongratulationsComponent = ({ premio, cupom, tenant }) => {
     const { width, height } = useWindowSize();
     const [copySuccess, setCopySuccess] = useState(false);
     const [gmbOpen, setGmbOpen] = useState(false);
+    const [showConfetti, setShowConfetti] = useState(true);
 
     useEffect(() => {
-        // Abre o popup do Google após 2 segundos se houver o link
         if (tenant?.gmb_link) {
-            const timer = setTimeout(() => {
-                setGmbOpen(true);
-            }, 2000);
+            const timer = setTimeout(() => setGmbOpen(true), 2000);
             return () => clearTimeout(timer);
         }
-    }, [tenant]);
+    }, [tenant?.gmb_link]);
+
+    const handleCopyCode = useCallback(() => {
+        if (cupom?.codigo) {
+            navigator.clipboard.writeText(cupom.codigo)
+                .then(() => setCopySuccess(true))
+                .catch(() => {});
+        }
+    }, [cupom?.codigo]);
 
     if (!premio || !cupom) {
         return (
             <Box sx={{ background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
-                <Box sx={{ maxWidth: '800px', width: '100%', backgroundColor: 'white', borderRadius: '20px', boxShadow: '0 15px 30px rgba(0, 0, 0, 0.2)', overflow: 'hidden', textAlign: 'center', position: 'relative', p: 3 }}>
+                <Box sx={{ maxWidth: '800px', width: '100%', backgroundColor: 'white', borderRadius: '20px', boxShadow: '0 15px 30px rgba(0, 0, 0, 0.2)', textAlign: 'center', p: 3 }}>
                     <Alert severity="error">Erro: Dados do prêmio ou cupom não encontrados.</Alert>
                 </Box>
             </Box>
         );
     }
-    
+
     const formattedValidity = formatDate(cupom.dataValidade);
 
-    const handleCopyCode = () => {
-        if (cupom.codigo) {
-            navigator.clipboard.writeText(cupom.codigo);
-            setCopySuccess(true);
-        }
-    };
-
     return (
-        <Box sx={{ background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', p: { xs: 1, sm: 2 }, position: 'relative' }}>
-            <ReactConfetti width={width} height={height} style={{ zIndex: 9999 }} />
-            <Box sx={{ maxWidth: '800px', width: '100%', backgroundColor: 'white', borderRadius: '20px', boxShadow: '0 15px 30px rgba(0, 0, 0, 0.2)', overflow: 'hidden', textAlign: 'center', position: 'relative', zIndex: 2, margin: { xs: '0 16px', sm: 0 } }}>
-                <Box sx={{ background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`, padding: { xs: '30px 20px', sm: '40px 20px' }, color: 'white', position: 'relative', zIndex: 2 }}>
+        <Box sx={{
+            background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
+            minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center',
+            p: { xs: 1, sm: 2 }, position: 'relative'
+        }}>
+            {showConfetti && (
+                <Suspense fallback={null}>
+                    <ReactConfetti
+                        width={width} height={height}
+                        recycle={false} numberOfPieces={200}
+                        style={{ zIndex: 9999 }}
+                        onConfettiComplete={() => setShowConfetti(false)}
+                    />
+                </Suspense>
+            )}
+
+            <Box sx={{
+                maxWidth: '800px', width: '100%', backgroundColor: 'white', borderRadius: '20px',
+                boxShadow: '0 15px 30px rgba(0, 0, 0, 0.2)', overflow: 'hidden',
+                textAlign: 'center', position: 'relative', zIndex: 2, margin: { xs: '0 16px', sm: 0 }
+            }}>
+                <Box sx={{
+                    background: `linear-gradient(135deg, ${theme.palette.secondary.main} 0%, ${theme.palette.primary.main} 100%)`,
+                    padding: { xs: '30px 20px', sm: '40px 20px' }, color: 'white', position: 'relative', zIndex: 2
+                }}>
                     {tenant?.logoUrl && (
                         <Box sx={{ mb: 2 }}>
-                            <img src={`${process.env.REACT_APP_API_URL}${tenant.logoUrl}`} alt="Logo" style={{ maxHeight: '70px', maxWidth: '180px', objectFit: 'contain' }} />
+                            <img src={`${process.env.REACT_APP_API_URL}${tenant.logoUrl}`} alt={tenant.name || 'Logo'} style={{ maxHeight: '70px', maxWidth: '180px', objectFit: 'contain' }} />
                         </Box>
                     )}
-                    <Typography variant="h3" component="h1" gutterBottom sx={{ fontSize: { xs: '2rem', sm: '3rem' }, marginBottom: '10px', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)', fontWeight: 'bold' }}>🎉 Parabéns! 🎉</Typography>
-                    <Typography variant="h5" component="h2" sx={{ fontSize: { xs: '1.1rem', sm: '1.5rem' }, opacity: 0.9 }}>Você acaba de ganhar um prêmio especial!</Typography>
+                    <Typography variant="h3" component="h1" gutterBottom sx={{ fontSize: { xs: '2rem', sm: '3rem' }, textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)', fontWeight: 'bold' }}>
+                        Parabéns!
+                    </Typography>
+                    <Typography variant="h5" component="h2" sx={{ fontSize: { xs: '1.1rem', sm: '1.5rem' }, opacity: 0.9 }}>
+                        Você acaba de ganhar um prêmio especial!
+                    </Typography>
                 </Box>
+
                 <Box sx={{ padding: { xs: '20px', sm: '30px', md: '40px' }, position: 'relative', zIndex: 2 }}>
-                    
-                    <Paper elevation={3} sx={{ background: `linear-gradient(45deg, ${theme.palette.background.default}, ${theme.palette.grey[100]})`, borderRadius: '15px', padding: { xs: '20px', sm: '30px' }, margin: '30px 0', border: `2px dashed ${theme.palette.error.main}`, position: 'relative', animation: `${floatAnimation} 3s ease-in-out infinite` }}>
-                        <Typography variant="h6" sx={{ fontSize: { xs: '1.2rem', sm: '1.8rem' }, color: theme.palette.error.main, marginBottom: '15px' }}>Sua Recompensa:</Typography>
+                    <Paper elevation={3} sx={{
+                        background: `linear-gradient(45deg, ${theme.palette.background.default}, ${theme.palette.grey[100]})`,
+                        borderRadius: '15px', padding: { xs: '20px', sm: '30px' }, margin: '30px 0',
+                        border: `2px dashed ${theme.palette.error.main}`, position: 'relative',
+                        animation: `${floatAnimation} 3s ease-in-out infinite`
+                    }}>
+                        <Typography variant="h6" sx={{ fontSize: { xs: '1.2rem', sm: '1.8rem' }, color: theme.palette.error.main, marginBottom: '15px' }}>
+                            Sua Recompensa:
+                        </Typography>
                         <Typography variant="h4" component="p" sx={{ fontWeight: 'bold', fontSize: { xs: '1.8rem', sm: '2.2rem' }, color: theme.palette.primary.dark, mt: 2, mb: 2 }}>
                             {premio.nome}
                         </Typography>
-                        
+
                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-                            <Box 
+                            <Box
                                 onClick={handleCopyCode}
-                                sx={{ 
-                                    fontSize: { xs: '1.5rem', sm: '2.5rem' }, 
-                                    fontWeight: 'bold', 
-                                    background: 'white', 
-                                    padding: { xs: '10px 20px', sm: '15px 30px' }, 
-                                    borderRadius: '10px', 
-                                    letterSpacing: '2px', 
-                                    color: theme.palette.primary.main, 
-                                    border: `2px solid ${theme.palette.primary.main}`, 
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 1,
-                                    '&:hover': { backgroundColor: '#f0f0f0' },
-                                    wordBreak: 'break-all'
+                                role="button"
+                                tabIndex={0}
+                                aria-label={`Código do cupom: ${cupom.codigo}. Toque para copiar.`}
+                                onKeyDown={(e) => e.key === 'Enter' && handleCopyCode()}
+                                sx={{
+                                    fontSize: { xs: '1.5rem', sm: '2.5rem' }, fontWeight: 'bold',
+                                    background: 'white', padding: { xs: '10px 20px', sm: '15px 30px' },
+                                    borderRadius: '10px', letterSpacing: '2px', color: theme.palette.primary.main,
+                                    border: `2px solid ${theme.palette.primary.main}`, cursor: 'pointer',
+                                    display: 'flex', alignItems: 'center', gap: 1,
+                                    '&:hover': { backgroundColor: '#f0f0f0' }, wordBreak: 'break-all'
                                 }}
                             >
                                 {cupom.codigo}
@@ -169,7 +198,7 @@ const CongratulationsComponent = ({ premio, cupom, tenant }) => {
                         <Typography sx={{ mt: 2 }}>Use este código em sua próxima visita para resgatar sua recompensa.</Typography>
                     </Paper>
 
-                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, color: '#666', mb: 2 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, color: '#555', mb: 2 }}>
                         <CameraAltIcon fontSize="small" />
                         <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Dica: Tire um print desta tela para não perder!</Typography>
                     </Box>
@@ -204,96 +233,38 @@ const CongratulationsComponent = ({ premio, cupom, tenant }) => {
                 </Box>
             </Box>
 
-            <Snackbar
-                open={copySuccess}
-                autoHideDuration={3000}
-                onClose={() => setCopySuccess(false)}
-                message="Código copiado para a área de transferência!"
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            />
+            <Snackbar open={copySuccess} autoHideDuration={3000} onClose={() => setCopySuccess(false)} message="Código copiado!" anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} />
 
-            {/* Popup do Google Bonitão */}
-            <Dialog
-                open={gmbOpen}
-                onClose={() => setGmbOpen(false)}
-                maxWidth="xs"
-                fullWidth
-                PaperProps={{
-                    sx: {
-                        borderRadius: '24px',
-                        padding: 0,
-                        overflow: 'hidden',
-                        boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
-                    }
-                }}
-            >
-                <Box sx={{ 
+            <Dialog open={gmbOpen} onClose={() => setGmbOpen(false)} maxWidth="xs" fullWidth
+                PaperProps={{ sx: { borderRadius: '24px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' } }}>
+                <Box sx={{
                     background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-                    p: 4,
-                    textAlign: 'center',
-                    color: 'white',
-                    position: 'relative'
+                    p: 4, textAlign: 'center', color: 'white', position: 'relative'
                 }}>
-                    <IconButton 
-                        onClick={() => setGmbOpen(false)}
-                        sx={{ position: 'absolute', right: 8, top: 8, color: 'white' }}
-                    >
+                    <IconButton onClick={() => setGmbOpen(false)} sx={{ position: 'absolute', right: 8, top: 8, color: 'white' }} aria-label="Fechar">
                         <CloseIcon />
                     </IconButton>
-                    <Avatar sx={{ 
-                        width: 80, 
-                        height: 80, 
-                        bgcolor: 'white', 
-                        margin: '0 auto 16px',
-                        boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
-                    }}>
+                    <Avatar sx={{ width: 80, height: 80, bgcolor: 'white', margin: '0 auto 16px', boxShadow: '0 8px 16px rgba(0,0,0,0.1)' }}>
                         <GoogleIcon sx={{ fontSize: 40, color: '#4285F4' }} />
                     </Avatar>
-                    <Typography variant="h5" sx={{ fontWeight: 800, mb: 1 }}>
-                        Gostou do seu prêmio?
-                    </Typography>
-                    <Typography variant="body1" sx={{ opacity: 0.9 }}>
-                        Sua avaliação no Google nos ajuda muito a continuar presenteando nossos clientes!
-                    </Typography>
+                    <Typography variant="h5" sx={{ fontWeight: 800, mb: 1 }}>Gostou do seu prêmio?</Typography>
+                    <Typography variant="body1" sx={{ opacity: 0.9 }}>Sua avaliação no Google nos ajuda muito!</Typography>
                 </Box>
                 <DialogContent sx={{ p: 4, textAlign: 'center' }}>
                     <Box sx={{ mb: 3 }}>
-                        <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1, textTransform: 'uppercase', letterSpacing: 1 }}>
-                            Avalie com 5 estrelas
-                        </Typography>
+                        <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1, textTransform: 'uppercase', letterSpacing: 1 }}>Avalie com 5 estrelas</Typography>
                         <Rating value={5} readOnly size="large" sx={{ color: '#ffc107' }} />
                     </Box>
-                    
-                    <Button
-                        variant="contained"
-                        fullWidth
-                        size="large"
-                        startIcon={<StarsIcon />}
-                        onClick={() => {
-                            window.open(tenant.gmb_link, '_blank');
-                            setGmbOpen(false);
-                        }}
+                    <Button variant="contained" fullWidth size="large" startIcon={<StarsIcon />}
+                        onClick={() => { window.open(tenant.gmb_link, '_blank', 'noopener,noreferrer'); setGmbOpen(false); }}
                         sx={{
-                            borderRadius: '50px',
-                            py: 1.5,
-                            fontSize: '1.1rem',
-                            fontWeight: 'bold',
-                            textTransform: 'none',
-                            background: '#4285F4',
-                            boxShadow: '0 4px 14px 0 rgba(66, 133, 244, 0.39)',
-                            '&:hover': {
-                                background: '#357ae8',
-                                boxShadow: '0 6px 20px rgba(66, 133, 244, 0.23)',
-                            }
-                        }}
-                    >
+                            borderRadius: '50px', py: 1.5, fontSize: '1.1rem', fontWeight: 'bold', textTransform: 'none',
+                            background: '#4285F4', boxShadow: '0 4px 14px 0 rgba(66, 133, 244, 0.39)',
+                            '&:hover': { background: '#357ae8' }
+                        }}>
                         Avaliar no Google
                     </Button>
-                    
-                    <Button 
-                        onClick={() => setGmbOpen(false)}
-                        sx={{ mt: 2, color: 'text.secondary', textTransform: 'none' }}
-                    >
+                    <Button onClick={() => setGmbOpen(false)} sx={{ mt: 2, color: 'text.secondary', textTransform: 'none' }}>
                         Agora não, obrigado
                     </Button>
                 </DialogContent>

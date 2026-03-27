@@ -1,5 +1,7 @@
 import React from 'react';
-import { Typography, Box, Button, Paper } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import PublicPageLayout from '../components/layout/PublicPageLayout';
 

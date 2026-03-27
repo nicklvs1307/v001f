@@ -9,6 +9,7 @@ export const setupAuthObserver = (logoutHandler) => {
 // Crie uma nova instância do Axios para requisições autenticadas
 const apiAuthenticated = axios.create({
   baseURL: `${process.env.REACT_APP_API_URL || ''}/api`,
+  timeout: 15000,
 });
 
 // Adicionar um interceptor de requisição para incluir o token JWT
@@ -29,14 +30,11 @@ apiAuthenticated.interceptors.request.use(
 apiAuthenticated.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('API Error:', error.response?.status, error.response?.data || error.message);
     if (error.response && error.response.status === 401) {
       if (logoutObserver) {
-        console.warn('Redirecting to login due to 401');
-        logoutObserver(); // Chama a função de logout registrada
+        logoutObserver();
       }
     }
-    // Rejeita a promessa para que o erro possa ser tratado no local da chamada
     return Promise.reject(error);
   }
 );

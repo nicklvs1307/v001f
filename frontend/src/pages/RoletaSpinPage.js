@@ -1,9 +1,10 @@
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { CircularProgress, Alert, Container, Typography } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import Alert from '@mui/material/Alert';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
 import roletaSpinService from '../services/roletaSpinService';
-import RoulettePage from './RoulettePage'; // Reutilizaremos a página da roleta
 
 const RoletaSpinPage = () => {
   const { token } = useParams();
@@ -11,43 +12,61 @@ const RoletaSpinPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [spinData, setSpinData] = useState(null);
+  const timeoutRef = useRef(null);
+  const RoulettePageRef = useRef(null);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const validateToken = async () => {
       try {
         const response = await roletaSpinService.validateToken(token);
-        setSpinData(response.data);
+        if (!controller.signal.aborted) setSpinData(response.data);
       } catch (err) {
+        if (controller.signal.aborted) return;
         setError(err.response?.data?.message || 'Token inválido ou expirado.');
-        // Redireciona para uma página de erro ou login após um tempo
-        setTimeout(() => navigate('/login'), 5000);
+        timeoutRef.current = setTimeout(() => {
+          if (!controller.signal.aborted) navigate('/login');
+        }, 5000);
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     };
 
     validateToken();
+
+    return () => {
+      controller.abort();
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, [token, navigate]);
+
+  useEffect(() => {
+    if (spinData) {
+      import('./RoulettePage').then(mod => {
+        RoulettePageRef.current = mod.default;
+      });
+    }
+  }, [spinData]);
 
   if (loading) {
     return (
       <Container sx={{ textAlign: 'center', mt: 10 }}>
         <CircularProgress />
-        <Typography>Validando seu acesso...</Typography>
+        <Typography sx={{ mt: 2 }}>Validando seu acesso...</Typography>
       </Container>
     );
   }
 
   if (error) {
     return (
-      <Container sx={{ mt: 10 }}>
+      <Container sx={{ mt: 10, textAlign: 'center' }}>
         <Alert severity="error">{error}</Alert>
       </Container>
     );
   }
 
-  // Se o token for válido, renderiza a página da roleta com os dados obtidos
-  // A página RoulettePage precisará ser adaptada para receber esses dados
+  const RoulettePage = RoulettePageRef.current || require('./RoulettePage').default;
   return <RoulettePage spinData={spinData} />;
 };
 

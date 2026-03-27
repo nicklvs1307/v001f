@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { 
-    Typography, 
-    Box, 
-    Button, 
-    Paper, 
-    CircularProgress, 
-    Alert, 
-    Container,
-    Fade,
-    Avatar
-} from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
+import CircularProgress from '@mui/material/CircularProgress';
+import Alert from '@mui/material/Alert';
+import Container from '@mui/material/Container';
+import Fade from '@mui/material/Fade';
+import Avatar from '@mui/material/Avatar';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
-import { Person as PersonIcon, Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
+import PersonIcon from '@mui/icons-material/Person';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import publicSurveyService from '../services/publicSurveyService';
 import getDynamicTheme from '../getDynamicTheme';
 
@@ -36,6 +36,8 @@ const ConfirmClientPage = () => {
     }, [surveyData]);
 
     useEffect(() => {
+        let cancelled = false;
+
         const init = async () => {
             try {
                 let storedState = null;
@@ -50,27 +52,31 @@ const ConfirmClientPage = () => {
 
                 if (!storedState || !storedPhone || !surveyId) {
                     console.error("Dados insuficientes para confirmação.");
-                    navigate(`/identificacao-pesquisa/${surveyData?.tenantId || 'erro'}/${surveyId}`); 
+                    navigate('/');
                     return;
                 }
 
                 const parsedState = JSON.parse(storedState);
+
+                if (cancelled) return;
                 setSurveyState(parsedState);
                 setPhone(storedPhone);
 
-                // Carrega dados da pesquisa para manter a identidade visual
                 const data = await publicSurveyService.getPublicSurveyById(surveyId);
+                if (cancelled) return;
                 setSurveyData(data);
             } catch (err) {
+                if (cancelled) return;
                 console.error("Erro ao inicializar página de confirmação:", err);
                 setError("Ocorreu um erro ao carregar seus dados.");
             } finally {
-                setLoading(false);
+                if (!cancelled) setLoading(false);
             }
         };
 
         init();
-    }, [navigate, surveyId, surveyData?.tenantId]);
+        return () => { cancelled = true; };
+    }, [navigate, surveyId]);
 
     const handleConfirm = async () => {
         setSubmitLoading(true);

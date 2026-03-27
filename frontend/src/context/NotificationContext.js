@@ -1,32 +1,31 @@
 import React, { createContext, useState, useContext, useCallback } from 'react';
-import { Snackbar, Alert } from '@mui/material';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 const NotificationContext = createContext(null);
 
 export const NotificationProvider = ({ children }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('error'); // Default to error
+  const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
-  const showNotification = useCallback((message, severity = 'error') => {
+  const showNotification = useCallback((message, severity = 'info') => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
     setSnackbarOpen(true);
   }, []);
 
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
+  const handleCloseSnackbar = useCallback((event, reason) => {
+    if (reason === 'clickaway') return;
     setSnackbarOpen(false);
-  };
+  }, []);
 
   return (
     <NotificationContext.Provider value={{ showNotification }}>
       {children}
       <Snackbar
         open={snackbarOpen}
-        autoHideDuration={6000}
+        autoHideDuration={4000}
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       >
@@ -41,7 +40,7 @@ export const NotificationProvider = ({ children }) => {
 export const useNotification = () => {
   const context = useContext(NotificationContext);
   if (!context) {
-    throw new Error('useNotification must be used within an NotificationProvider');
+    throw new Error('useNotification must be used within a NotificationProvider');
   }
   return context;
 };

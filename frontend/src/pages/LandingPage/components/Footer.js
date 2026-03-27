@@ -1,6 +1,11 @@
 import React from 'react';
-import { Box, Container, Grid, Typography, IconButton, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
+import { Link as RouterLink } from 'react-router-dom';
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaWhatsapp } from 'react-icons/fa';
 
 const Footer = () => (
@@ -27,8 +32,8 @@ const Footer = () => (
         <Grid item xs={6} md={2}>
           <Typography variant="h6" sx={{ fontWeight: 800, mb: 3, color: 'white' }}>Legal</Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-            <Button component={Link} to="/termos-de-servico" sx={{ p: 0, justifyContent: 'flex-start', color: 'rgba(255,255,255,0.6)', textTransform: 'none', '&:hover': { color: '#FF5722' } }}>Termos de Uso</Button>
-            <Button component={Link} to="/politica-de-privacidade" sx={{ p: 0, justifyContent: 'flex-start', color: 'rgba(255,255,255,0.6)', textTransform: 'none', '&:hover': { color: '#FF5722' } }}>Privacidade</Button>
+            <Button component={RouterLink} to="/termos-de-servico" sx={{ p: 0, justifyContent: 'flex-start', color: 'rgba(255,255,255,0.6)', textTransform: 'none', '&:hover': { color: '#FF5722' } }}>Termos de Uso</Button>
+            <Button component={RouterLink} to="/politica-de-privacidade" sx={{ p: 0, justifyContent: 'flex-start', color: 'rgba(255,255,255,0.6)', textTransform: 'none', '&:hover': { color: '#FF5722' } }}>Privacidade</Button>
           </Box>
         </Grid>
         

@@ -1,20 +1,27 @@
-import React, { useState } from 'react';
-import { 
-  AppBar, Toolbar, Button, Container, Box, IconButton, Drawer, 
-  List, ListItem, ListItemButton, ListItemText 
-} from '@mui/material';
-import { Link } from 'react-router-dom';
+import React, { useState, useCallback } from 'react';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import { Link as RouterLink } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 
 const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const toggleDrawer = (open) => (event) => {
+  const toggleDrawer = useCallback((open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
     setDrawerOpen(open);
-  };
+  }, []);
 
   const navLinks = [
     { text: 'O Problema', href: '#problema' },
@@ -30,10 +37,15 @@ const Header = () => {
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
     >
-      <List>
+      <List aria-label="Menu de navegação">
         {navLinks.map((link) => (
           <ListItem key={link.text} disablePadding>
-            <ListItemButton component="a" href={link.href} sx={{ color: 'white' }}>
+            <ListItemButton 
+              component="a" 
+              href={link.href} 
+              sx={{ color: 'white' }}
+              aria-label={`Navegar para ${link.text}`}
+            >
               <ListItemText primary={link.text} />
             </ListItemButton>
           </ListItem>
@@ -77,7 +89,7 @@ const Header = () => {
 
           <Box sx={{ display: { xs: 'none', md: 'block' } }}>
             <Button 
-              component={Link} 
+              component={RouterLink} 
               to="/login" 
               variant="contained" 
               sx={{ 
@@ -94,7 +106,7 @@ const Header = () => {
 
           <IconButton
             color="inherit"
-            aria-label="open drawer"
+            aria-label="Abrir menu de navegação"
             edge="end"
             onClick={toggleDrawer(true)}
             sx={{ display: { md: 'none' } }}

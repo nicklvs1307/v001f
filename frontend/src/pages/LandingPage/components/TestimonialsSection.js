@@ -1,5 +1,9 @@
 import React from 'react';
-import { Box, Container, Typography, Grid, Avatar } from '@mui/material';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Avatar from '@mui/material/Avatar';
 import GlassCard from './GlassCard';
 
 const testimonials = [

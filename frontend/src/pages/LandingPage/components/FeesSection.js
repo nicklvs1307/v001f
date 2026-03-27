@@ -1,10 +1,13 @@
-import React from 'react';
-import { Box, Container, Typography, Grid } from '@mui/material';
+import React, { useMemo } from 'react';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import { FaChartLine, FaExclamationTriangle, FaShieldAlt } from 'react-icons/fa';
+import { FaShieldAlt } from 'react-icons/fa';
 import GlassCard from './GlassCard';
 
-const data = [
+const chartData = [
   { name: 'Taxas de Plataforma', value: 26, color: '#FF5722' },
   { name: 'Marketing', value: 8, color: '#4A90E2' },
   { name: 'Custo Operacional', value: 60, color: '#5A6A7B' },
@@ -12,6 +15,7 @@ const data = [
 ];
 
 const FeesSection = () => {
+  const data = useMemo(() => chartData, []);
   return (
     <Box
       id="taxas"

@@ -1,6 +1,10 @@
-import React, { useState, useMemo } from 'react';
-import { Box, Container, Typography, Grid, Slider, Paper } from '@mui/material';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import React, { useState, useMemo, useCallback } from 'react';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Slider from '@mui/material/Slider';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import GlassCard from './GlassCard';
 
 const CalculatorSection = () => {
@@ -70,14 +74,17 @@ const CalculatorSection = () => {
               <Box sx={{ mb: 5 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                   <Typography sx={{ fontWeight: 600, color: 'rgba(255,255,255,0.9)' }}>Faturamento Mensal (Apps)</Typography>
-                  <Typography sx={{ fontWeight: 800, color: '#FF5722' }}>{formatCurrency(faturamento)}</Typography>
+                  <Typography sx={{ fontWeight: 800, color: '#FF5722' }} id="faturamento-value">{formatCurrency(faturamento)}</Typography>
                 </Box>
                 <Slider
                   value={faturamento}
                   min={0}
                   max={500000}
                   step={5000}
-                  onChange={(e, val) => setFaturamento(val)}
+                  onChange={(_, val) => setFaturamento(val)}
+                  aria-label="Faturamento mensal em aplicativos de entrega"
+                  valueLabelDisplay="auto"
+                  valueLabelFormat={formatCurrency}
                   sx={{ color: '#FF5722' }}
                 />
               </Box>
@@ -85,14 +92,17 @@ const CalculatorSection = () => {
               <Box sx={{ mb: 5 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                   <Typography sx={{ fontWeight: 600, color: 'rgba(255,255,255,0.9)' }}>Investimento em Marketing</Typography>
-                  <Typography sx={{ fontWeight: 800, color: '#4A90E2' }}>{formatCurrency(investimento)}</Typography>
+                  <Typography sx={{ fontWeight: 800, color: '#4A90E2' }} id="investimento-value">{formatCurrency(investimento)}</Typography>
                 </Box>
                 <Slider
                   value={investimento}
                   min={0}
                   max={50000}
                   step={500}
-                  onChange={(e, val) => setInvestimento(val)}
+                  onChange={(_, val) => setInvestimento(val)}
+                  aria-label="Investimento mensal em marketing"
+                  valueLabelDisplay="auto"
+                  valueLabelFormat={formatCurrency}
                   sx={{ color: '#4A90E2' }}
                 />
               </Box>
@@ -100,14 +110,17 @@ const CalculatorSection = () => {
               <Box sx={{ mb: 5 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                   <Typography sx={{ fontWeight: 600, color: 'rgba(255,255,255,0.9)' }}>Taxa Média dos Apps</Typography>
-                  <Typography sx={{ fontWeight: 800, color: '#FF5722' }}>{taxa}%</Typography>
+                  <Typography sx={{ fontWeight: 800, color: '#FF5722' }} id="taxa-value">{taxa}%</Typography>
                 </Box>
                 <Slider
                   value={taxa}
                   min={0}
                   max={35}
                   step={1}
-                  onChange={(e, val) => setTaxa(val)}
+                  onChange={(_, val) => setTaxa(val)}
+                  aria-label="Taxa média cobrada pelos aplicativos de entrega"
+                  valueLabelDisplay="auto"
+                  valueLabelFormat={(v) => `${v}%`}
                   sx={{ color: '#FF5722' }}
                 />
               </Box>
@@ -115,14 +128,17 @@ const CalculatorSection = () => {
               <Box sx={{ mb: 0 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                   <Typography sx={{ fontWeight: 600, color: 'rgba(255,255,255,0.9)' }}>Redução de Custo de Marketing</Typography>
-                  <Typography sx={{ fontWeight: 800, color: '#4A90E2' }}>{reducao}%</Typography>
+                  <Typography sx={{ fontWeight: 800, color: '#4A90E2' }} id="reducao-value">{reducao}%</Typography>
                 </Box>
                 <Slider
                   value={reducao}
                   min={0}
                   max={100}
                   step={5}
-                  onChange={(e, val) => setReducao(val)}
+                  onChange={(_, val) => setReducao(val)}
+                  aria-label="Porcentagem de redução de custo de marketing"
+                  valueLabelDisplay="auto"
+                  valueLabelFormat={(v) => `${v}%`}
                   sx={{ color: '#4A90E2' }}
                 />
               </Box>

@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Container, Typography, Button } from '@mui/material';
+import React, { useState, useEffect, useCallback } from 'react';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 
 const phrases = [
   "Aumente sua recorrência e faturamento.",
@@ -16,8 +19,10 @@ const HeroSection = () => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
+    let mounted = true;
     const currentPhrase = phrases[phraseIndex];
     const timeout = setTimeout(() => {
+      if (!mounted) return;
       if (!isDeleting && letterIndex < currentPhrase.length) {
         setText(currentPhrase.substring(0, letterIndex + 1));
         setLetterIndex(letterIndex + 1);
@@ -25,14 +30,14 @@ const HeroSection = () => {
         setText(currentPhrase.substring(0, letterIndex - 1));
         setLetterIndex(letterIndex - 1);
       } else if (!isDeleting && letterIndex === currentPhrase.length) {
-        setTimeout(() => setIsDeleting(true), 2000);
+        if (mounted) setTimeout(() => setIsDeleting(true), 2000);
       } else if (isDeleting && letterIndex === 0) {
         setIsDeleting(false);
         setPhraseIndex((phraseIndex + 1) % phrases.length);
       }
     }, isDeleting ? 50 : 100);
 
-    return () => clearTimeout(timeout);
+    return () => { mounted = false; clearTimeout(timeout); };
   }, [letterIndex, isDeleting, phraseIndex]);
 
   return (
@@ -87,6 +92,7 @@ const HeroSection = () => {
 
       <Container sx={{ position: 'relative', zIndex: 1 }}>
         <Typography
+          component="h1"
           variant="h1"
           sx={{
             fontSize: { xs: '2.5rem', sm: '3.5rem', md: '4.5rem' },
@@ -97,16 +103,21 @@ const HeroSection = () => {
             textShadow: '0 0 20px rgba(255, 87, 34, 0.3)',
           }}
         >
-          {text}
-          <Box component="span" sx={{ 
-            display: 'inline-block',
-            width: '4px',
-            height: { xs: '40px', md: '60px' },
-            backgroundColor: '#FF5722',
-            ml: 1,
-            verticalAlign: 'middle',
-            animation: 'blink 1s infinite'
-          }} />
+          <Box component="span" sx={{ display: 'block', mb: 1 }}>
+            Aumente sua recorrência e faturamento.
+          </Box>
+          <Box component="span" sx={{ display: 'block', color: '#FF8A65' }}>
+            {text}
+            <Box component="span" sx={{ 
+              display: 'inline-block',
+              width: '4px',
+              height: { xs: '40px', md: '60px' },
+              backgroundColor: '#FF5722',
+              ml: 1,
+              verticalAlign: 'middle',
+              animation: 'blink 1s infinite'
+            }} />
+          </Box>
         </Typography>
 
         <Typography

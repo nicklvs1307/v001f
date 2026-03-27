@@ -1,7 +1,7 @@
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
-  spacing: 5, // Reduz o espaçamento base (padrão é 8)
+  spacing: 5,
   palette: {
     primary: {
       main: '#1B2432',
@@ -10,6 +10,15 @@ const theme = createTheme({
     secondary: {
       main: '#1EBFAE',
       contrastText: '#FFFFFF',
+    },
+    landing: {
+      background: '#0D1B2A',
+      backgroundSecondary: '#1a2a3a',
+      accent: '#FF5722',
+      accentLight: '#FF8A65',
+      accentHover: '#e64a19',
+      blue: '#4A90E2',
+      teal: '#2A9D8F',
     },
     gender: {
       masculino: '#2196f3',

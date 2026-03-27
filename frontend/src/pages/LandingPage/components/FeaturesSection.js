@@ -1,7 +1,30 @@
 import React from 'react';
-import { Box, Container, Typography, Grid } from '@mui/material';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
 import { FaPoll, FaChartLine, FaGift, FaBullhorn, FaTachometerAlt, FaDice } from 'react-icons/fa';
 import GlassCard from './GlassCard';
+
+const featureIconStyles = {
+  color: '#FF5722',
+  fontSize: '3.5rem',
+  mb: 3,
+  filter: 'drop-shadow(0 0 10px rgba(255,87,34,0.3))'
+};
+
+const featureCardStyles = {
+  p: 5,
+  textAlign: 'center',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  borderBottom: '4px solid transparent',
+  '&:hover': {
+    borderBottom: '4px solid #FF5722'
+  }
+};
 
 const features = [
   { icon: <FaPoll />, title: 'Pesquisas de Satisfação', description: 'Crie pesquisas personalizadas e descubra o que seus clientes realmente pensam em tempo real.' },
@@ -27,19 +50,8 @@ const FeaturesSection = () => (
       <Grid container spacing={4}>
         {features.map((feature, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
-            <GlassCard sx={{ 
-              p: 5, 
-              textAlign: 'center', 
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              borderBottom: '4px solid transparent',
-              '&:hover': {
-                borderBottom: '4px solid #FF5722'
-              }
-            }}>
-              <Box sx={{ color: '#FF5722', fontSize: '3.5rem', mb: 3, filter: 'drop-shadow(0 0 10px rgba(255,87,34,0.3))' }}>{feature.icon}</Box>
+            <GlassCard sx={featureCardStyles}>
+              <Box sx={featureIconStyles}>{feature.icon}</Box>
               <Typography variant="h5" sx={{ fontWeight: 800, mb: 2, color: 'white' }}>{feature.title}</Typography>
               <Typography sx={{ color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>{feature.description}</Typography>
             </GlassCard>

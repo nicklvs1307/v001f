@@ -1,5 +1,8 @@
 import React from 'react';
-import { Box, Container, Typography, Grid } from '@mui/material';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
 import { FaUserTimes, FaPercentage, FaSearch, FaGamepad } from 'react-icons/fa';
 import GlassCard from './GlassCard';
 

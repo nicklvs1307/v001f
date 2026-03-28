@@ -19,7 +19,11 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const logout = useCallback(() => {
-        localStorage.removeItem('userToken');
+        try {
+            localStorage.removeItem('userToken');
+        } catch (e) {
+            console.warn("localStorage block on logout", e);
+        }
         delete apiAuthenticated.defaults.headers.common['Authorization'];
         setUser(null);
         navigate('/login');
@@ -30,7 +34,12 @@ export const AuthProvider = ({ children }) => {
         setupAuthObserver(logout);
 
         const checkUser = async () => {
-            const token = localStorage.getItem('userToken');
+            let token = null;
+            try {
+                token = localStorage.getItem('userToken');
+            } catch (e) {
+                console.warn("localStorage block on init", e);
+            }
             if (token) {
                 try {
                     const userData = await authService.verifyToken();
@@ -50,7 +59,11 @@ export const AuthProvider = ({ children }) => {
     const login = async (credentials) => {
         try {
             const { token } = await authService.login(credentials);
-            localStorage.setItem('userToken', token);
+            try {
+                localStorage.setItem('userToken', token);
+            } catch (e) {
+                console.error("Failed to save token to localStorage (probably private mode)", e);
+            }
             const userData = await authService.verifyToken();
             setUser(userData);
 

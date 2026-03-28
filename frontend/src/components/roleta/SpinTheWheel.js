@@ -120,7 +120,7 @@ const SpinTheWheel = ({ items, onAnimationComplete, segColors, winningIndex, log
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        const text = item.name || item.title;
+        const text = item.name || item.title || '';
         // Fonte aumentada: de wheelSize/28 para wheelSize/22
         let fontSize = Math.max(10, Math.floor(wheelSize / 22)); 
         ctx.font = `bold ${fontSize}px Poppins, sans-serif`;
@@ -167,9 +167,7 @@ const SpinTheWheel = ({ items, onAnimationComplete, segColors, winningIndex, log
       const centerRadius = 48; 
 
       ctx.save();
-      // Sombra externa do centro
-      ctx.shadowColor = "rgba(0,0,0,0.5)";
-      ctx.shadowBlur = 10;
+      // Sombra removida para otimizar performance no iOS
       
       // Fundo Dourado/Branco
       const gradient = ctx.createRadialGradient(center, center, 5, center, center, centerRadius);
@@ -180,7 +178,6 @@ const SpinTheWheel = ({ items, onAnimationComplete, segColors, winningIndex, log
       ctx.beginPath();
       ctx.arc(center, center, centerRadius, 0, 2 * Math.PI);
       ctx.fill();
-      ctx.shadowBlur = 0; // Reset sombra
 
       // Desenhar Logo se existir
       if (logoImg) {
@@ -221,10 +218,11 @@ const SpinTheWheel = ({ items, onAnimationComplete, segColors, winningIndex, log
 
   const animateSpin = useCallback(
     (targetRotationRadians, duration = 5000) => {
-      const start = performance.now();
+      let start = null;
       const initialRotationRadians = rotationRef.current;
 
       const animate = (currentTime) => {
+        if (!start) start = currentTime;
         const elapsed = currentTime - start;
         let progress = elapsed / duration;
         if (progress > 1) progress = 1;

@@ -13,7 +13,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Fade from '@mui/material/Fade';
 import { ThemeProvider } from '@mui/material/styles';
 import { useParams, useNavigate } from 'react-router-dom';
-import clientService from '../services/clientService';
 import publicSurveyService from '../services/publicSurveyService';
 import getDynamicTheme from '../getDynamicTheme';
 
@@ -56,8 +55,8 @@ const ClientRegistrationPage = () => {
         const fetchData = async () => {
             try {
                 const [tenantData, surveyData] = await Promise.all([
-                    publicSurveyService.getPublicTenantById(tenantId),
-                    pesquisaId ? publicSurveyService.getPublicSurveyById(pesquisaId) : Promise.resolve(null)
+                    publicSurveyService.getPublicTenantById(tenantId, controller.signal),
+                    pesquisaId ? publicSurveyService.getPublicSurveyById(pesquisaId, controller.signal) : Promise.resolve(null)
                 ]);
                 if (controller.signal.aborted) return;
                 setTenant(tenantData);
@@ -157,7 +156,7 @@ const RegistrationFormComponent = ({ tenant, survey }) => {
             }
             const surveyState = JSON.parse(storedState);
 
-            const response = await clientService.registerClient({
+            const response = await publicSurveyService.registerPublicClient({
                 ...clientData, tenantId, pesquisaId,
                 respondentSessionId: surveyState.respondentSessionId,
             });
@@ -193,8 +192,8 @@ const RegistrationFormComponent = ({ tenant, survey }) => {
         }
     };
 
-    const primaryColor = '#FC4C35';
-    const secondaryColor = '#1EBFAE';
+    const primaryColor = tenant?.primaryColor || '#FC4C35';
+    const secondaryColor = tenant?.secondaryColor || '#1EBFAE';
 
     const inputSx = {
         '& .MuiOutlinedInput-root': {

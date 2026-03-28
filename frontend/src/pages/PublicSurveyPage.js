@@ -149,7 +149,7 @@ const PublicSurveyPage = () => {
             return;
         }
 
-        publicSurveyService.getPublicSurveyById(pesquisaId)
+        publicSurveyService.getPublicSurveyById(pesquisaId, controller.signal)
             .then(data => {
                 if (!controller.signal.aborted) setSurveyData(data);
             })
@@ -220,9 +220,18 @@ const SurveyComponent = ({ survey, tenantId }) => {
 
         if (survey.askForAttendant) {
             const controller = new AbortController();
-            publicSurveyService.getPublicAtendentes(tenantId)
+            publicSurveyService.getPublicAtendentes(tenantId, controller.signal)
                 .then(data => {
-                    if (!controller.signal.aborted) setAtendentes(data);
+                    if (!controller.signal.aborted) {
+                        setAtendentes(data);
+                        if (atendenteIdFromUrl) {
+                            const exists = data.some(a => a.id === atendenteIdFromUrl);
+                            if (!exists) {
+                                setIsAtendentePreDefined(false);
+                                setSelectedAtendente('');
+                            }
+                        }
+                    }
                 })
                 .catch(() => {});
             return () => controller.abort();
@@ -238,7 +247,8 @@ const SurveyComponent = ({ survey, tenantId }) => {
     }, []);
 
     const handleSubmit = useCallback(async () => {
-        const missingRequired = survey.questions.filter(q => q.required && !answers[q.id]?.valor);
+        setSubmitError(null);
+        const missingRequired = survey.questions.filter(q => q.required && (answers[q.id]?.valor === null || answers[q.id]?.valor === ''));
         if (missingRequired.length > 0) {
             setSubmitError('Por favor, responda todas as perguntas obrigatórias.');
             return;

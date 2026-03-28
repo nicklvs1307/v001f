@@ -7,7 +7,12 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('userToken');
+    let token = null;
+    try {
+      token = localStorage.getItem('userToken');
+    } catch (e) {
+      console.warn("Storage restricted", e);
+    }
     if (!token) return;
 
     const newSocket = io(process.env.REACT_APP_API_URL || 'http://localhost:3001', {

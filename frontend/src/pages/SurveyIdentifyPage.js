@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -18,6 +18,8 @@ import LoginIcon from '@mui/icons-material/Login';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useNavigate, useParams } from 'react-router-dom';
 import publicSurveyService from '../services/publicSurveyService';
+import { ThemeProvider } from '@mui/material/styles';
+import getDynamicTheme from '../getDynamicTheme';
 
 const loadingBoxSx = { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' };
 
@@ -32,7 +34,7 @@ const SurveyIdentifyPage = () => {
     useEffect(() => {
         const controller = new AbortController();
 
-        publicSurveyService.getPublicTenantById(tenantId)
+        publicSurveyService.getPublicTenantById(tenantId, controller.signal)
             .then(tenantData => {
                 if (!controller.signal.aborted) setTenant(tenantData);
             })
@@ -66,16 +68,7 @@ const SurveyIdentifyPage = () => {
         }
 
         try {
-            const surveyState = JSON.parse(storedState);
-            navigate(`/identificacao-cliente/${tenantId}/${pesquisaId}`, {
-                state: {
-                    surveyId: pesquisaId,
-                    answers: surveyState.answers,
-                    tenantId: surveyState.tenantId,
-                    atendenteId: surveyState.atendenteId,
-                    respondentSessionId: surveyState.respondentSessionId
-                }
-            });
+            navigate(`/identificacao-cliente/${tenantId}/${pesquisaId}`);
         } catch (e) {
             console.error("Erro ao processar dados da sessão:", e);
             showSnackbar("Sua sessão expirou ou é inválida. Por favor, recomece a pesquisa.");
@@ -92,16 +85,23 @@ const SurveyIdentifyPage = () => {
         handleRegister();
     }, [handleRegister]);
 
+    const dynamicTheme = useMemo(() => {
+        if (!tenant) return null;
+        return getDynamicTheme({ primaryColor: tenant.primaryColor, secondaryColor: tenant.secondaryColor });
+    }, [tenant]);
+
     if (loading) return <Box sx={loadingBoxSx}><CircularProgress /></Box>;
+    if (!dynamicTheme) return <Box sx={loadingBoxSx}><Alert severity="error">Erro ao carregar tema.</Alert></Box>;
 
     const primaryColor = tenant?.primaryColor || '#6a11cb';
     const secondaryColor = tenant?.secondaryColor || '#2575fc';
 
     return (
-        <Box sx={{
-            background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-            minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2
-        }}>
+        <ThemeProvider theme={dynamicTheme}>
+            <Box sx={{
+                background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', p: 2
+            }}>
             <Grow in={true} timeout={800}>
                 <Paper elevation={20} sx={{ borderRadius: '25px', overflow: 'hidden', maxWidth: '480px', width: '100%' }}>
                     <Box sx={{
@@ -115,7 +115,7 @@ const SurveyIdentifyPage = () => {
                                 margin: '0 auto 20px', display: 'flex', justifyContent: 'center', alignItems: 'center',
                                 boxShadow: '0 8px 20px rgba(0, 0, 0, 0.2)', border: '4px solid rgba(255, 255, 255, 0.4)'
                             }}>
-                                <img src={tenant.logoUrl} alt={`${tenant.name || 'Empresa'} logo`} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                                <img src={`${process.env.REACT_APP_API_URL}${tenant.logoUrl}`} alt={`${tenant.name || 'Empresa'} logo`} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
                             </Box>
                         )}
                         <Typography variant="h5" component="h1" sx={{ mb: 1, fontWeight: 800 }}>Quase lá!</Typography>
@@ -232,6 +232,7 @@ const SurveyIdentifyPage = () => {
                 </Alert>
             </Snackbar>
         </Box>
+        </ThemeProvider>
     );
 };
 

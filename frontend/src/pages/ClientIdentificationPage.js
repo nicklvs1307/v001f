@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -20,6 +20,24 @@ import BadgeIcon from '@mui/icons-material/Badge';
 import { ThemeProvider } from '@mui/material/styles';
 import publicSurveyService from '../services/publicSurveyService';
 import getDynamicTheme from '../getDynamicTheme';
+
+const isValidCPF = (cpf) => {
+    const digits = cpf.replace(/\D/g, '');
+    if (digits.length !== 11) return false;
+    if (/^(\d)\1+$/.test(digits)) return false;
+
+    let sum = 0;
+    for (let i = 0; i < 9; i++) sum += parseInt(digits[i]) * (10 - i);
+    let remainder = (sum * 10) % 11;
+    if (remainder === 10) remainder = 0;
+    if (remainder !== parseInt(digits[9])) return false;
+
+    sum = 0;
+    for (let i = 0; i < 10; i++) sum += parseInt(digits[i]) * (11 - i);
+    remainder = (sum * 10) % 11;
+    if (remainder === 10) remainder = 0;
+    return remainder === parseInt(digits[10]);
+};
 
 const loadingBoxSx = { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', bgcolor: '#f5f5f5' };
 
@@ -42,8 +60,8 @@ const ClientIdentificationPage = () => {
         const fetchData = async () => {
             try {
                 const [tenantData, surveyData] = await Promise.all([
-                    publicSurveyService.getPublicTenantById(tenantId),
-                    pesquisaId ? publicSurveyService.getPublicSurveyById(pesquisaId) : Promise.resolve(null)
+                    publicSurveyService.getPublicTenantById(tenantId, controller.signal),
+                    pesquisaId ? publicSurveyService.getPublicSurveyById(pesquisaId, controller.signal) : Promise.resolve(null)
                 ]);
 
                 if (controller.signal.aborted) return;
@@ -78,8 +96,6 @@ const ClientIdentificationPage = () => {
 
 const IdentificationFormComponent = ({ tenant, survey }) => {
     const navigate = useNavigate();
-    const location = useLocation();
-    const { surveyId, respondentSessionId } = location.state || {};
     const { pesquisaId, tenantId } = useParams();
 
     const [tabValue, setTabValue] = useState(0);
@@ -120,13 +136,24 @@ const IdentificationFormComponent = ({ tenant, survey }) => {
         setLoading(true);
         setError(null);
 
-        const surveyIdentifier = surveyId || pesquisaId;
+        if (tabValue === 1 && !isValidCPF(cpf)) {
+            setError("CPF inválido. Verifique os dígitos.");
+            setLoading(false);
+            return;
+        }
 
-        if (!surveyIdentifier || !respondentSessionId) {
+        let storedState = null;
+        try { storedState = sessionStorage.getItem('surveyState'); } catch {}
+
+        if (!storedState) {
             setError("Sessão da pesquisa não encontrada. Por favor, volte e tente novamente.");
             setLoading(false);
             return;
         }
+
+        const surveyState = JSON.parse(storedState);
+        const respondentSessionId = surveyState.respondentSessionId;
+        const surveyIdentifier = pesquisaId;
 
         const clientPayload = tabValue === 0 ? { phone } : { cpf };
 
@@ -138,6 +165,8 @@ const IdentificationFormComponent = ({ tenant, survey }) => {
             });
 
             if (tabValue === 0) localStorage.setItem('clientPhone', phone);
+            try { sessionStorage.removeItem('surveyState'); } catch {}
+            
             navigate(`/roleta/${tenantId}/${surveyIdentifier}/${response.clienteId}`);
         } catch (err) {
             if (err.response?.status === 404) {
@@ -149,7 +178,7 @@ const IdentificationFormComponent = ({ tenant, survey }) => {
         } finally {
             setLoading(false);
         }
-    }, [surveyId, pesquisaId, respondentSessionId, tabValue, phone, cpf, tenantId, navigate]);
+    }, [pesquisaId, tabValue, phone, cpf, tenantId, navigate]);
 
     const isDisabled = loading || (tabValue === 0 ? phone.length < 14 : cpf.length < 14);
 

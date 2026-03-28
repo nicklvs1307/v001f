@@ -32,7 +32,7 @@ const isValidUUID = (uuid) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][
 
 const Rating1to5 = React.memo(({ question, answer, onChange }) => (
     <div style={{ textAlign: 'center' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', margin: '16px 0', flexWrap: 'wrap' }} role="radiogroup" aria-label={`Avaliação: ${question.text}`}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '2px', margin: '16px 0', flexWrap: 'nowrap' }} role="radiogroup" aria-label={`Avaliação: ${question.text}`}>
             {[1, 2, 3, 4, 5].map(value => (
                 <button
                     key={value}
@@ -43,7 +43,7 @@ const Rating1to5 = React.memo(({ question, answer, onChange }) => (
                         color: (answer?.valor) >= value ? '#ffc107' : '#e0e0e0',
                         transform: (answer?.valor) === value ? 'scale(1.2)' : 'scale(1)',
                         transition: 'color 0.2s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                        padding: '12px', minWidth: '48px', minHeight: '48px',
+                        padding: '8px', minWidth: '44px', minHeight: '44px',
                         background: 'none', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center'
                     }}
                 >

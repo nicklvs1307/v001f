@@ -75,12 +75,20 @@ const ClientRegistrationPage = () => {
 
     const dynamicTheme = useMemo(() => {
         if (!tenant) return null;
-        return getDynamicTheme({ primaryColor: tenant.primaryColor, secondaryColor: tenant.secondaryColor });
+        // Valores padrão seguros para cores dinâmicas
+        const primaryColor = tenant.primaryColor || '#6a11cb';
+        const secondaryColor = tenant.secondaryColor || '#2575fc';
+        try {
+            return getDynamicTheme({ primaryColor, secondaryColor });
+        } catch (err) {
+            console.error('Erro ao criar tema dinâmico:', err);
+            return null;
+        }
     }, [tenant]);
 
     if (loading) return <Box sx={loadingBoxSx}><CircularProgress /></Box>;
     if (error) return <Box sx={loadingBoxSx}><Alert severity="error">{error}</Alert></Box>;
-    if (!dynamicTheme) return <Box sx={loadingBoxSx}><Alert severity="error">Erro ao carregar tema.</Alert></Box>;
+    if (!dynamicTheme) return <Box sx={loadingBoxSx}><Alert severity="error">Erro ao carregar tema. Por favor, recarregue a página.</Alert></Box>;
 
     return (
         <ThemeProvider theme={dynamicTheme}>

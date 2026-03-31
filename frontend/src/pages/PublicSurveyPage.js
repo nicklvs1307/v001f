@@ -137,7 +137,15 @@ const PublicSurveyPage = () => {
 
     const dynamicTheme = useMemo(() => {
         if (!surveyData) return null;
-        return getDynamicTheme({ primaryColor: surveyData.primaryColor, secondaryColor: surveyData.secondaryColor });
+        // Valores padrão seguros para cores dinâmicas
+        const primaryColor = surveyData.primaryColor || '#FC4C35';
+        const secondaryColor = surveyData.secondaryColor || '#1EBFAE';
+        try {
+            return getDynamicTheme({ primaryColor, secondaryColor });
+        } catch (err) {
+            console.error('Erro ao criar tema dinâmico:', err);
+            return null;
+        }
     }, [surveyData]);
 
     useEffect(() => {

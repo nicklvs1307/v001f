@@ -31,14 +31,29 @@ const SurveyIdentifyPage = () => {
     const [open, setOpen] = useState(false);
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'error' });
 
+    const [tenantError, setTenantError] = useState(null);
+
     useEffect(() => {
         const controller = new AbortController();
 
         publicSurveyService.getPublicTenantById(tenantId, controller.signal)
             .then(tenantData => {
-                if (!controller.signal.aborted) setTenant(tenantData);
+                if (!controller.signal.aborted) {
+                    // Garantir que as cores não sejam null/undefined
+                    const safeTenant = {
+                        ...tenantData,
+                        primaryColor: tenantData.primaryColor || '#6a11cb',
+                        secondaryColor: tenantData.secondaryColor || '#2575fc',
+                    };
+                    setTenant(safeTenant);
+                }
             })
-            .catch(() => {})
+            .catch((error) => {
+                if (!controller.signal.aborted) {
+                    console.error('Erro ao carregar tenant:', error);
+                    setTenantError(error.message || 'Erro ao carregar dados do restaurante');
+                }
+            })
             .finally(() => {
                 if (!controller.signal.aborted) setLoading(false);
             });
@@ -87,11 +102,20 @@ const SurveyIdentifyPage = () => {
 
     const dynamicTheme = useMemo(() => {
         if (!tenant) return null;
-        return getDynamicTheme({ primaryColor: tenant.primaryColor, secondaryColor: tenant.secondaryColor });
+        // Valores padrão seguros para cores dinâmicas
+        const primaryColor = tenant.primaryColor || '#6a11cb';
+        const secondaryColor = tenant.secondaryColor || '#2575fc';
+        try {
+            return getDynamicTheme({ primaryColor, secondaryColor });
+        } catch (error) {
+            console.error('Erro ao criar tema dinâmico:', error);
+            return null;
+        }
     }, [tenant]);
 
     if (loading) return <Box sx={loadingBoxSx}><CircularProgress /></Box>;
-    if (!dynamicTheme) return <Box sx={loadingBoxSx}><Alert severity="error">Erro ao carregar tema.</Alert></Box>;
+    if (tenantError) return <Box sx={loadingBoxSx}><Alert severity="error">{tenantError} <Button onClick={() => window.location.reload()} size="small">Recarregar</Button></Alert></Box>;
+    if (!dynamicTheme || !tenant) return <Box sx={loadingBoxSx}><Alert severity="error">Erro ao carregar tema. <Button onClick={() => window.location.reload()} size="small">Recarregar</Button></Alert></Box>;
 
     const primaryColor = tenant?.primaryColor || '#6a11cb';
     const secondaryColor = tenant?.secondaryColor || '#2575fc';

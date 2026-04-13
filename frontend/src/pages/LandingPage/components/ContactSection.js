@@ -27,7 +27,7 @@ const ContactSection = () => {
     
     const message = `Olá! Gostaria de uma demonstração do Voltaki.%0A%0A*Dados do Lead:*%0A👤 *Nome:* ${formData.nome}%0A📧 *E-mail:* ${formData.email}%0A📱 *Telefone:* ${formData.telefone}`;
     
-    const whatsappUrl = `https://wa.me/5535998374007?text=${message}`;
+    const whatsappUrl = `https://wa.me/5535991090766?text=${message}`;
     
     window.open(whatsappUrl, '_blank');
   };
@@ -48,7 +48,7 @@ const ContactSection = () => {
               variant="contained"
               size="large"
               startIcon={<FaWhatsapp />}
-              href="https://wa.me/5535998374007?text=Olá! Vi a apresentação do Voltaki e gostaria de agendar uma demonstração."
+              href="https://wa.me/5535991090766?text=Olá! Vi a apresentação do Voltaki e gostaria de agendar uma demonstração."
               target="_blank"
               sx={{
                 px: 6,

@@ -73,8 +73,8 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
     const timeDiff = currentTime.getTime() - lastSpinTime.getTime();
     const hoursDiff = timeDiff / (1000 * 3600);
 
-    if (hoursDiff < 24) {
-      throw new ApiError(429, "Você já girou a roleta recentemente. Tente novamente no seu próximo pedido ou visita.");
+    if (hoursDiff < 15) {
+      throw new ApiError(429, "Você já girou a roleta recentemente. Aguarde 15 horas para girar novamente.");
     }
   }
 
@@ -306,7 +306,7 @@ exports.getRoletaConfig = asyncHandler(async (req, res) => {
     const lastSpinTime = new Date(latestCupom.dataGeracao);
     const timeDiff = currentTime.getTime() - lastSpinTime.getTime();
     const hoursDiff = timeDiff / (1000 * 3600);
-    if (hoursDiff < 24) {
+    if (hoursDiff < 15) {
       hasSpunRecently = true;
     }
   }

@@ -1,25 +1,79 @@
-AuthContext.js:37 User data from AuthContext: Object
-The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
-The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
-The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
-The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
-The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
-react-dom.production.min.js:188 TypeError: W.A.getSurveys is not a function
-    at AtendenteQRCodeModal.js:27:27
-    at rl (react-dom.production.min.js:243:332)
-    at wc (react-dom.production.min.js:285:111)
-    at react-dom.production.min.js:282:409
-    at xc (react-dom.production.min.js:280:398)
-    at lc (react-dom.production.min.js:272:439)
-    at qo (react-dom.production.min.js:127:105)
-    at react-dom.production.min.js:266:273
-ds @ react-dom.production.min.js:188
-react-dom.production.min.js:127 Uncaught TypeError: W.A.getSurveys is not a function
-    at AtendenteQRCodeModal.js:27:27
-    at rl (react-dom.production.min.js:243:332)
-    at wc (react-dom.production.min.js:285:111)
-    at react-dom.production.min.js:282:409
-    at xc (react-dom.production.min.js:280:398)
-    at lc (react-dom.production.min.js:272:439)
-    at qo (react-dom.production.min.js:127:105)
-    at react-dom.production.min.js:266:273
+== 20260323231710-add-permissions-to-franchisor-role: migrating =======
+Erro ao conceder permissões ao Franqueador: Error
+    at Query.run (/usr/src/app/node_modules/sequelize/lib/dialects/postgres/query.js:50:25)
+    at /usr/src/app/node_modules/sequelize/lib/sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Object.up (/usr/src/app/seeders/20260323231710-add-permissions-to-franchisor-role.js:35:25) {
+  name: 'SequelizeDatabaseError',
+  parent: error: relation "permissions" does not exist
+      at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
+      at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
+      at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
+      at Socket.<anonymous> (/usr/src/app/node_modules/pg-protocol/dist/index.js:11:42)
+      at Socket.emit (node:events:517:28)
+      at addChunk (node:internal/streams/readable:368:12)
+      at readableAddChunk (node:internal/streams/readable:341:9)
+      at Readable.push (node:internal/streams/readable:278:10)
+      at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
+    length: 110,
+    severity: 'ERROR',
+    code: '42P01',
+    detail: undefined,
+    hint: undefined,
+    position: '16',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '1381',
+    routine: 'parserOpenTable',
+    sql: "SELECT id FROM permissions WHERE module = 'tenants' AND action = 'read' LIMIT 1;",
+    parameters: undefined
+  },
+  original: error: relation "permissions" does not exist
+      at Parser.parseErrorMessage (/usr/src/app/node_modules/pg-protocol/dist/parser.js:285:98)
+      at Parser.handlePacket (/usr/src/app/node_modules/pg-protocol/dist/parser.js:122:29)
+      at Parser.parse (/usr/src/app/node_modules/pg-protocol/dist/parser.js:35:38)
+      at Socket.<anonymous> (/usr/src/app/node_modules/pg-protocol/dist/index.js:11:42)
+      at Socket.emit (node:events:517:28)
+      at addChunk (node:internal/streams/readable:368:12)
+      at readableAddChunk (node:internal/streams/readable:341:9)
+      at Readable.push (node:internal/streams/readable:278:10)
+      at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
+    length: 110,
+    severity: 'ERROR',
+    code: '42P01',
+    detail: undefined,
+    hint: undefined,
+    position: '16',
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: 'parse_relation.c',
+    line: '1381',
+    routine: 'parserOpenTable',
+    sql: "SELECT id FROM permissions WHERE module = 'tenants' AND action = 'read' LIMIT 1;",
+    parameters: undefined
+  },
+  sql: "SELECT id FROM permissions WHERE module = 'tenants' AND action = 'read' LIMIT 1;",
+  parameters: {}
+}
+
+ERROR: relation "permissions" does not exist
+
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.12.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.12.0
+npm notice To update run: npm install -g npm@11.12.0
+npm notice
+$

@@ -1,5 +1,5 @@
 "use strict";
-const { now } = require("../utils/dateUtils");
+const { now, convertToTimeZone } = require("../utils/dateUtils");
 const crypto = require("crypto");
 const asyncHandler = require("express-async-handler");
 const { Pesquisa } = require("../../models");
@@ -69,12 +69,12 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
   );
   if (latestCupom) {
     const currentTime = now();
-    const lastSpinTime = new Date(latestCupom.dataGeracao);
+    const lastSpinTime = convertToTimeZone(latestCupom.dataGeracao);
     const timeDiff = currentTime.getTime() - lastSpinTime.getTime();
     const hoursDiff = timeDiff / (1000 * 3600);
 
-    if (hoursDiff < 15) {
-      throw new ApiError(429, "Você já girou a roleta recentemente. Aguarde 15 horas para girar novamente.");
+    if (hoursDiff < 1) {
+      throw new ApiError(429, "Você já girou a roleta recentemente. Aguarde 1 hora para girar novamente.");
     }
   }
 
@@ -303,10 +303,10 @@ exports.getRoletaConfig = asyncHandler(async (req, res) => {
   let hasSpunRecently = false;
   if (latestCupom) {
     const currentTime = now();
-    const lastSpinTime = new Date(latestCupom.dataGeracao);
+    const lastSpinTime = convertToTimeZone(latestCupom.dataGeracao);
     const timeDiff = currentTime.getTime() - lastSpinTime.getTime();
     const hoursDiff = timeDiff / (1000 * 3600);
-    if (hoursDiff < 15) {
+    if (hoursDiff < 1) {
       hasSpunRecently = true;
     }
   }

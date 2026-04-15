@@ -3,7 +3,7 @@ import {
     Container, Typography, Box, CircularProgress, Paper, Alert, Table, TableBody, TableCell,
     TableContainer, TableHead, TableRow, TextField, InputAdornment, Grid, Chip, Button
 } from '@mui/material';
-import { Search, Refresh, TrendingUp, TrendingDown } from '@mui/icons-material';
+import { Search as SearchIcon, Refresh as RefreshIcon, TrendingUp, TrendingDown, Person, Campaign } from '@mui/icons-material';
 import reportService from '../services/reportService';
 
 const TenantReportsPage = () => {
@@ -57,7 +57,7 @@ const TenantReportsPage = () => {
         return (
             <Container>
                 <Alert severity="error" sx={{ mt: 3 }}>{error}</Alert>
-                <Button startIcon={<Refresh />} onClick={fetchTenantReports} sx={{ mt: 2 }}>
+                <Button startIcon={<RefreshIcon />} onClick={fetchTenantReports} sx={{ mt: 2 }}>
                     Tentar novamente
                 </Button>
             </Container>
@@ -84,7 +84,7 @@ const TenantReportsPage = () => {
                         )}
                         <Button 
                             variant="outlined" 
-                            startIcon={<Refresh />}
+                            startIcon={<RefreshIcon />}
                             onClick={fetchTenantReports}
                         >
                             Atualizar
@@ -140,13 +140,13 @@ const TenantReportsPage = () => {
                                             </TableCell>
                                             <TableCell align="right">
                                                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1 }}>
-                                                    <PeopleIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
+                                                    <Person sx={{ fontSize: 16, color: 'text.secondary' }} />
                                                     {report.activeClients}
                                                 </Box>
                                             </TableCell>
                                             <TableCell align="right">
                                                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1 }}>
-                                                    <CampaignIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
+                                                    <Campaign sx={{ fontSize: 16, color: 'text.secondary' }} />
                                                     {report.activeCampaigns}
                                                 </Box>
                                             </TableCell>
@@ -179,21 +179,5 @@ const TenantReportsPage = () => {
         </Container>
     );
 };
-
-const PeopleIcon = (props) => (
-    <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', ...props.sx }}>
-        <svg {...props} viewBox="0 0 24 24" width={props.fontSize || 24} height={props.fontSize || 24}>
-            <path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-        </svg>
-    </Box>
-);
-
-const CampaignIcon = (props) => (
-    <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', ...props.sx }}>
-        <svg {...props} viewBox="0 0 24 24" width={props.fontSize || 24} height={props.fontSize || 24}>
-            <path fill="currentColor" d="M18 11v2h4v-2h-4zm-2 6.61c.96.71 2.21 1.65 3.2 2.39.4-.53.8-1.07 1.2-1.6-.99-.74-2.24-1.68-3.2-2.4-.4.54-.8 1.08-1.2 1.61zM20.4 5.6c-.4-.53-.8-1.07-1.2-1.6-.99.74-2.24 1.68-3.2 2.4.4.53.8 1.07 1.2 1.6.96-.72 2.21-1.65 3.2-2.4zM4 9c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h1v4h2v-4h1l5 3V6L8 9H4zm11.5 3c0-1.33-.58-2.53-1.5-3.35v6.69c.92-.81 1.5-2.01 1.5-3.34z"/>
-        </svg>
-    </Box>
-);
 
 export default TenantReportsPage;

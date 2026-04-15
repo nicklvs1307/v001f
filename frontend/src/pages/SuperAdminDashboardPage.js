@@ -3,7 +3,7 @@ import {
   Container, Typography, Box, Paper, Grid, CircularProgress, Alert, useTheme, Chip
 } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
-import { People, Store, Assessment, Storefront as StorefrontIcon, TrendingUp, TrendingDown, Email, WhatsApp } from '@mui/icons-material';
+import { People, Store, Assessment, Storefront as StorefrontIcon, TrendingUp, TrendingDown, Email, WhatsApp, Person as PeopleIcon } from '@mui/icons-material';
 import StatCard from '../components/StatCard';
 import reportService from '../services/reportService';
 

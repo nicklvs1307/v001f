@@ -125,10 +125,10 @@ router
       check("description", "Descrição deve ser uma string")
         .optional()
         .isString(),
-      check("dueDate", "Data de vencimento inválida")
-        .optional()
-        .isISO8601()
-        .toDate(),
+check("dueDate", "Data de vencimento inválida")
+      .optional({ nullable: true, checkFalsy: true })
+      .isISO8601()
+      .toDate(),
       check("status", "Status inválido")
         .optional()
         .isIn(["active", "inactive", "draft", "pending"]),

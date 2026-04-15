@@ -92,6 +92,8 @@ const FranchisorTenantFormPage = React.lazy(() => import('../pages/FranchisorTen
 const FranchisorReportsPage = React.lazy(() => import('../pages/FranchisorReportsPage'));
 const PlansPage = React.lazy(() => import('../pages/PlansPage')); 
 const SuperAdminRolesPage = React.lazy(() => import('../pages/SuperAdminRolesPage')); 
+const SuperAdminProfilePage = React.lazy(() => import('../pages/SuperAdminProfilePage'));
+const SuperAdminUsersPage = React.lazy(() => import('../pages/SuperAdminUsersPage')); 
 
 const RespostasPainelPage = React.lazy(() => import('../pages/Respostas/PainelPage'));
 const RespostasGestaoPage = React.lazy(() => import('../pages/Respostas/GestaoPage'));
@@ -135,13 +137,16 @@ const AppRoutes = () => {
               <Route path="tenants" element={<TenantsPage />} />
               <Route path="tenants/new" element={<TenantFormPage />} />
               <Route path="tenants/edit/:id" element={<TenantFormPage />} />
-                        <Route path="franchisors" element={<FranchisorsPage />} />
-                        <Route path="franchisors/new" element={<FranchisorFormPage />} />
-                        <Route path="franchisors/:id" element={<FranchisorDashboardPage />} /> 
-                        <Route path="franchisors/edit/:id" element={<FranchisorFormPage />} />
-                        <Route path="plans" element={<PlansPage />} /> 
-                        <Route path="roles" element={<SuperAdminRolesPage />} /> 
-                        <Route path="whatsapp-config" element={<WhatsappConfigPage />} />              <Route path="sender-pool" element={<SenderPoolPage />} />
+              <Route path="franchisors" element={<FranchisorsPage />} />
+              <Route path="franchisors/new" element={<FranchisorFormPage />} />
+              <Route path="franchisors/:id" element={<FranchisorDashboardPage />} /> 
+              <Route path="franchisors/edit/:id" element={<FranchisorFormPage />} />
+              <Route path="plans" element={<PlansPage />} /> 
+              <Route path="roles" element={<SuperAdminRolesPage />} /> 
+              <Route path="users" element={<SuperAdminUsersPage />} /> 
+              <Route path="profile" element={<SuperAdminProfilePage />} /> 
+              <Route path="whatsapp-config" element={<WhatsappConfigPage />} />              
+              <Route path="sender-pool" element={<SenderPoolPage />} />
               <Route path="senders/:id/connect" element={<SenderConnectPage />} />
               <Route path="reports/system-overview" element={<SystemReportsPage />} />
               <Route path="reports/tenant-reports" element={<TenantReportsPage />} />

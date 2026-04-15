@@ -125,9 +125,14 @@ exports.updateTenant = asyncHandler(async (req, res) => {
     deliveryMuchClientSecret,
     deliveryMuchUsername,
     deliveryMuchPassword,
+    website,
+    segment,
+    planId,
+    active,
+    newAdminPassword,
   } = req.body;
 
-  const updatedTenant = await tenantRepository.updateTenant(id, {
+  const updateData = {
     name,
     address,
     phone,
@@ -144,10 +149,27 @@ exports.updateTenant = asyncHandler(async (req, res) => {
     deliveryMuchClientSecret,
     deliveryMuchUsername,
     deliveryMuchPassword,
-  });
+    website,
+    segment,
+    planId,
+    active,
+  };
+
+  const updatedTenant = await tenantRepository.updateTenant(id, updateData);
 
   if (!updatedTenant) {
     throw new ApiError(404, "Tenant não encontrado para atualização.");
+  }
+
+  if (newAdminPassword) {
+    const bcrypt = require("bcryptjs");
+    const userRepository = require("../repositories/userRepository");
+    const adminUser = await userRepository.findByTenantAdmin(id);
+    if (adminUser) {
+      const salt = await bcrypt.genSalt(10);
+      const passwordHash = await bcrypt.hash(newAdminPassword, salt);
+      await userRepository.updateUserPassword(adminUser.id, passwordHash);
+    }
   }
 
   res.status(200).json({

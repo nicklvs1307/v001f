@@ -147,6 +147,21 @@ const getUserProfilePictureUrlById = async (id) => {
   return user ? user.profilePictureUrl : null;
 };
 
+const findByTenantAdmin = async (tenantId) => {
+  const adminRole = await Role.findOne({ where: { name: "Admin" } });
+  if (!adminRole) return null;
+  
+  return Usuario.findOne({
+    where: { tenantId, roleId: adminRole.id },
+  });
+};
+
+const updateUserPassword = async (userId, passwordHash) => {
+  const user = await Usuario.findByPk(userId);
+  if (!user) return null;
+  return user.update({ passwordHash });
+};
+
 module.exports = {
   findByEmail,
   findRoleById,
@@ -157,4 +172,6 @@ module.exports = {
   updateUser,
   deleteUser,
   getUserProfilePictureUrlById,
+  findByTenantAdmin,
+  updateUserPassword,
 };

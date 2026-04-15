@@ -1,14 +1,16 @@
 import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import apiAuthenticated, { setupAuthObserver } from '../services/apiAuthenticated'; // Para configurar o observer
+import apiAuthenticated, { setupAuthObserver } from '../services/apiAuthenticated';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
+import superadminService from '../services/superadminService';
 import { ROLES } from '../constants/roles';
 
 const AuthContext = createContext({
   user: null,
   login: () => {},
   logout: () => {},
+  loginAsTenant: () => {},
   loading: true,
   refreshUser: () => {},
 });
@@ -17,6 +19,24 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+
+    const loginAsTenant = useCallback(async (tenantId) => {
+        try {
+            const response = await superadminService.loginAsTenant(tenantId);
+            const { token, user: tenantUser } = response.data;
+            
+            localStorage.setItem('superadmin_token', localStorage.getItem('userToken'));
+            localStorage.setItem('userToken', token);
+            apiAuthenticated.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            
+            setUser(tenantUser);
+            navigate('/dashboard');
+            return tenantUser;
+        } catch (error) {
+            console.error('Error logging in as tenant:', error);
+            throw error;
+        }
+    }, [navigate]);
 
     const logout = useCallback(() => {
         try {
@@ -93,7 +113,7 @@ export const AuthProvider = ({ children }) => {
     }, [logout]);
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading, refreshUser }}>
+        <AuthContext.Provider value={{ user, login, logout, loginAsTenant, loading, refreshUser }}>
             {children}
         </AuthContext.Provider>
     );

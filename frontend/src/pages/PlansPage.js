@@ -1,28 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Box,
-    Typography,
-    Grid,
-    Card,
-    CardContent,
-    CardActions,
-    Button,
-    TextField,
-    Switch,
-    FormControlLabel,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Chip,
-    Divider,
-    IconButton,
-    InputAdornment
+    Box, Typography, Grid, Card, CardContent, CardActions, Button, TextField, Switch,
+    FormControlLabel, Dialog, DialogTitle, DialogContent, DialogActions, Chip, Divider,
+    IconButton, InputAdornment
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { Edit as EditIcon, Add as AddIcon, Delete as DeleteIcon, CheckCircle as CheckCircleIcon, Star, AttachMoney } from '@mui/icons-material';
 import planService from '../services/planService';
 import toast from 'react-hot-toast';
 
@@ -52,7 +34,7 @@ const PlansPage = () => {
     const fetchPlans = async () => {
         try {
             const response = await planService.getAllPlans();
-            setPlans(response.data);
+            setPlans(response.data || []);
         } catch (error) {
             console.error('Failed to fetch plans', error);
             toast.error('Erro ao carregar planos.');
@@ -148,10 +130,20 @@ const PlansPage = () => {
         }
     };
 
+    const sortedPlans = [...plans].sort((a, b) => {
+        if (a.active !== b.active) return a.active ? -1 : 1;
+        return parseFloat(a.price) - parseFloat(b.price);
+    });
+
     return (
         <Box sx={{ p: 3 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-                <Typography variant="h4" fontWeight="bold">Planos e Assinaturas</Typography>
+                <Box>
+                    <Typography variant="h4" fontWeight="bold">Planos e Assinaturas</Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                        Gerencie os planos disponíveis para os restaurantes
+                    </Typography>
+                </Box>
                 <Button 
                     variant="contained" 
                     startIcon={<AddIcon />}
@@ -162,54 +154,103 @@ const PlansPage = () => {
             </Box>
 
             <Grid container spacing={3}>
-                {plans.map((plan) => (
+                {sortedPlans.map((plan) => (
                     <Grid item xs={12} md={4} key={plan.id}>
-                        <Card elevation={3} sx={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+                        <Card 
+                            elevation={plan.active ? 4 : 1} 
+                            sx={{ 
+                                height: '100%', 
+                                display: 'flex', 
+                                flexDirection: 'column', 
+                                position: 'relative',
+                                border: plan.active ? '2px solid' : '1px solid',
+                                borderColor: plan.active ? 'primary.main' : 'divider',
+                                opacity: plan.active ? 1 : 0.7,
+                                transition: 'all 0.3s ease',
+                                '&:hover': {
+                                    transform: 'translateY(-4px)',
+                                    boxShadow: 6
+                                }
+                            }}
+                        >
                             {!plan.active && (
-                                <Box sx={{ position: 'absolute', top: 10, right: 10 }}>
+                                <Box sx={{ 
+                                    position: 'absolute', 
+                                    top: 10, 
+                                    right: 10,
+                                    zIndex: 1
+                                }}>
                                     <Chip label="Inativo" color="error" size="small" />
                                 </Box>
                             )}
-                            <CardContent sx={{ flexGrow: 1 }}>
-                                <Typography variant="h5" component="div" fontWeight="bold" gutterBottom>
+                            
+                            <Box sx={{ 
+                                bgcolor: plan.active ? 'primary.main' : 'grey.400',
+                                p: 2,
+                                borderRadius: '12px 12px 0 0'
+                            }}>
+                                <Typography variant="h5" sx={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}>
                                     {plan.name}
                                 </Typography>
-                                <Typography variant="h4" color="primary.main" fontWeight="bold" sx={{ mb: 2 }}>
-                                    R$ {plan.price}
-                                    <Typography variant="caption" color="text.secondary">/mês</Typography>
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary" paragraph>
+                            </Box>
+                            
+                            <CardContent sx={{ flexGrow: 1 }}>
+                                <Box sx={{ textAlign: 'center', mb: 2 }}>
+                                    <Typography variant="h3" color="primary.main" fontWeight="bold">
+                                        R$ {plan.price}
+                                        <Typography variant="caption" color="text.secondary" component="span">/mês</Typography>
+                                    </Typography>
+                                </Box>
+                                
+                                <Typography variant="body2" color="text.secondary" paragraph sx={{ textAlign: 'center', minHeight: 40 }}>
                                     {plan.description}
                                 </Typography>
+                                
                                 <Divider sx={{ my: 2 }} />
+                                
+                                <Box sx={{ mb: 2 }}>
+                                    <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600 }}>
+                                        Limites:
+                                    </Typography>
+                                    <Typography variant="body2">• {plan.features?.maxUsers || 0} Usuários</Typography>
+                                    <Typography variant="body2">• {plan.features?.maxCampaignsPerMonth || 0} Campanhas/mês</Typography>
+                                </Box>
+                                
                                 <Box>
-                                    <Typography variant="subtitle2" gutterBottom>Limites:</Typography>
-                                    <Typography variant="body2">• {plan.features.maxUsers} Usuários</Typography>
-                                    <Typography variant="body2">• {plan.features.maxCampaignsPerMonth} Campanhas/mês</Typography>
-                                    
-                                    <Typography variant="subtitle2" sx={{ mt: 2 }} gutterBottom>Funcionalidades:</Typography>
-                                    {plan.features.canUseRoulette && (
-                                        <Box display="flex" alignItems="center" gap={1}>
-                                            <CheckCircleIcon color="success" fontSize="small" /> <Typography variant="body2">Roleta de Prêmios</Typography>
+                                    <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600 }}>
+                                        Funcionalidades:
+                                    </Typography>
+                                    {plan.features?.canUseRoulette && (
+                                        <Box display="flex" alignItems="center" gap={1} mb={0.5}>
+                                            <CheckCircleIcon color="success" fontSize="small" /> 
+                                            <Typography variant="body2">Roleta de Prêmios</Typography>
                                         </Box>
                                     )}
-                                    {plan.features.canUseWhatsappAutomation && (
-                                        <Box display="flex" alignItems="center" gap={1}>
-                                            <CheckCircleIcon color="success" fontSize="small" /> <Typography variant="body2">Automação WhatsApp</Typography>
+                                    {plan.features?.canUseWhatsappAutomation && (
+                                        <Box display="flex" alignItems="center" gap={1} mb={0.5}>
+                                            <CheckCircleIcon color="success" fontSize="small" /> 
+                                            <Typography variant="body2">Automação WhatsApp</Typography>
                                         </Box>
                                     )}
-                                    {plan.features.canUseFranchisor && (
-                                        <Box display="flex" alignItems="center" gap={1}>
-                                            <CheckCircleIcon color="success" fontSize="small" /> <Typography variant="body2">Multi-lojas (Franquia)</Typography>
+                                    {plan.features?.canUseFranchisor && (
+                                        <Box display="flex" alignItems="center" gap={1} mb={0.5}>
+                                            <CheckCircleIcon color="success" fontSize="small" /> 
+                                            <Typography variant="body2">Módulo Franquia</Typography>
+                                        </Box>
+                                    )}
+                                    {plan.features?.canRemoveBranding && (
+                                        <Box display="flex" alignItems="center" gap={1} mb={0.5}>
+                                            <CheckCircleIcon color="success" fontSize="small" /> 
+                                            <Typography variant="body2">Remover Marca</Typography>
                                         </Box>
                                     )}
                                 </Box>
                             </CardContent>
-                            <CardActions sx={{ justifyContent: 'flex-end', p: 2 }}>
-                                <IconButton onClick={() => handleOpenDialog(plan)} color="primary">
+                            <CardActions sx={{ justifyContent: 'center', p: 2, borderTop: '1px solid', borderColor: 'divider' }}>
+                                <IconButton onClick={() => handleOpenDialog(plan)} color="primary" title="Editar">
                                     <EditIcon />
                                 </IconButton>
-                                <IconButton onClick={() => handleDelete(plan.id)} color="error">
+                                <IconButton onClick={() => handleDelete(plan.id)} color="error" title="Deletar">
                                     <DeleteIcon />
                                 </IconButton>
                             </CardActions>
@@ -218,9 +259,10 @@ const PlansPage = () => {
                 ))}
             </Grid>
 
-            {/* Dialog de Edição/Criação */}
             <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-                <DialogTitle>{currentPlan ? 'Editar Plano' : 'Novo Plano'}</DialogTitle>
+                <DialogTitle sx={{ fontWeight: 'bold' }}>
+                    {currentPlan ? 'Editar Plano' : 'Novo Plano'}
+                </DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -297,11 +339,13 @@ const PlansPage = () => {
                         label="Módulo Franquia"
                     />
                     <FormControlLabel
-                        control={<Switch checked={formData.features.canRemoveBranding} onChange={() => handleFeatureChange('canRemoveBranding')} />}
+                        control={<Switch checked={formData.features.canRemoveBranding} onChange={() => handleFeatureChange('canRemoveBranding')} />} />
                         label="Remover Marca Feedeliza"
                     />
-                     <Divider sx={{ my: 2 }} />
-                     <FormControlLabel
+                    
+                    <Divider sx={{ my: 2 }} />
+                    
+                    <FormControlLabel
                         control={<Switch checked={formData.active} onChange={(e) => setFormData(prev => ({...prev, active: e.target.checked}))} />}
                         label="Plano Ativo (Visível)"
                     />

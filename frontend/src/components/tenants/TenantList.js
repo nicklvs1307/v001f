@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import tenantService from 'services/tenantService';
 import superadminService from 'services/superadminService';
-import AuthContext from 'context/AuthContext';
+import { useAuth } from 'context/AuthContext';
 import { useNotification } from 'context/NotificationContext';
 import { formatDateForDisplay } from 'utils/dateUtils';
 import { 
@@ -30,7 +30,7 @@ const TenantList = () => {
     const [selectedTenant, setSelectedTenant] = useState(null); 
     const { showNotification } = useNotification();
     const navigate = useNavigate();
-    const { setToken } = useContext(AuthContext);
+    const { loginAsTenant } = useAuth();
 
     const handleOpenDeleteConfirm = (tenant) => {
         setSelectedTenant(tenant);
@@ -72,19 +72,9 @@ const TenantList = () => {
 
     const handleLoginAsTenant = async (tenantId) => {
         try {
-            const response = await superadminService.loginAsTenant(tenantId);
-            const { token, user } = response.data;
-
-            // Save the original superadmin token
-            localStorage.setItem('superadmin_token', localStorage.getItem('token'));
-
-            // Set the new tenant admin token
-            setToken(token);
-
-            // Redirect to the tenant's dashboard
-            navigate('/dashboard');
+            await loginAsTenant(tenantId);
         } catch (err) {
-            showNotification(err.message || 'Falha ao fazer login como tenant.', 'error');
+            showNotification(err.response?.data?.message || 'Falha ao fazer login como tenant.', 'error');
         }
     };
 

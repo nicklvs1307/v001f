@@ -1,18 +1,16 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import AuthContext from '../../context/AuthContext';
 
 const ReturnToSuperadminBanner = () => {
     const navigate = useNavigate();
-    const { setToken } = useContext(AuthContext);
 
     const handleReturn = () => {
         const superadminToken = localStorage.getItem('superadmin_token');
         if (superadminToken) {
-            setToken(superadminToken);
+            localStorage.setItem('userToken', superadminToken);
             localStorage.removeItem('superadmin_token');
-            navigate('/superadmin');
+            window.location.reload();
         }
     };
 

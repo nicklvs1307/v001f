@@ -515,4 +515,5 @@ module.exports = {
   findTenantIdBySession,
   linkResponsesToClient,
   getPublicTenantById,
+  countResponsesByClient,
 };

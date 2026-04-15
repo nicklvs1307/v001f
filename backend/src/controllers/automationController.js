@@ -230,11 +230,13 @@ exports.testRoletaPrize = asyncHandler(async (req, res) => {
   const clientName = "Cliente de Teste";
   const prizeName = "Prêmio de Teste da Roleta";
   const cupomCode = "ROLETA123";
+  const regrasTexto = "🔸 Regra de teste 1\n🔸 Regra de teste 2";
 
   let message = whatsappConfig.prizeMessageTemplate;
   message = message.replace(/{{cliente}}/g, clientName);
   message = message.replace(/{{premio}}/g, prizeName);
   message = message.replace(/{{cupom}}/g, cupomCode);
+  message = message.replace(/{{regras}}/g, regrasTexto);
 
   message += "\n\n--- MENSAGEM DE TESTE ---";
 

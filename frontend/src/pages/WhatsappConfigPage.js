@@ -158,7 +158,7 @@ const EditConfigDialog = ({ open, onClose, config, onSave, saving }) => {
             multiline
             rows={3}
             disabled={!formData.sendPrizeMessage}
-            helperText="Use {{cliente}}, {{premio}}, e {{cupom}} como variáveis."
+            helperText="Use {{cliente}}, {{premio}}, {{cupom}} e {{regras}} como variáveis."
           />
         </FormGroup>
         <FormGroup sx={{ mt: 2 }}>

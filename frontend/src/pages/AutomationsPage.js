@@ -358,7 +358,7 @@ const AutomationsPage = () => {
                 fullWidth
                 multiline
                 rows={4}
-                helperText="Variáveis: {{cliente}}, {{premio}}, {{cupom}}"
+                helperText="Variáveis: {{cliente}}, {{premio}}, {{cupom}}, {{regras}}"
                 margin="normal"
                 disabled={!automations.prizeRoulette.enabled}
               />

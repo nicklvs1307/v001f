@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
-import { Star, StarBorder, CheckCircle, CheckBox, CheckBoxOutlineBlank } from '@mui/icons-material';
+import { Star, StarBorder, CheckCircle, CheckBox } from '@mui/icons-material';
 import publicSurveyService from '../services/publicSurveyService';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import getDynamicTheme from '../getDynamicTheme';
@@ -176,8 +176,6 @@ const CheckboxSurvey = React.memo(({ question, answer, onChange, theme }) => {
 
 const YesNoSurvey = React.memo(({ question, answer, onChange, theme }) => {
     const primaryMain = theme.palette.primary.main;
-    const positiveLabel = question.options?.find(o => o.isPositive)?.text || 'Sim';
-    const negativeLabel = question.options?.find(o => !o.isPositive)?.text || 'Não';
     
     return (
         <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }} role="radiogroup" aria-label={question.text}>

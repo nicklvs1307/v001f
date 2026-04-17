@@ -73,7 +73,7 @@ const useSurveyForm = (initialData = {}) => {
     const handleAddQuestion = useCallback(() => {
         setSurvey((prevSurvey) => ({
             ...prevSurvey,
-            questions: [...(prevSurvey.questions || []), { text: '', type: 'text', options: [] }],
+            questions: [...(prevSurvey.questions || []), { text: '', type: 'free_text', options: [], allowComments: false }],
         }));
     }, []);
 

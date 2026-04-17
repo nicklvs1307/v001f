@@ -428,7 +428,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
 
                             {renderQuestionInput(question)}
 
-                            {(question.type.startsWith('rating') || question.type === 'yes_no' || question.allowComments) && (
+                            {(question.type.startsWith('rating') || question.type === 'yes_no' || question.type === 'multiple_choice' || question.type === 'checkbox' || question.allowComments) && (
                                 <div style={{ marginTop: '16px' }}>
                                     <label htmlFor={`comment-${question.id}`} style={{ display: 'block', fontSize: '12px', color: '#666', marginBottom: '4px' }}>Comentário (opcional)</label>
                                     <textarea

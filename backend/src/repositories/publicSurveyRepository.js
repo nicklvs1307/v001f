@@ -47,7 +47,7 @@ const getPublicSurveyById = async (idOrToken) => {
       {
         model: models.Pergunta,
         as: "perguntas", // Certifique-se de que 'as' corresponde à associação definida no modelo Pesquisa
-        attributes: ["id", "type", "text", "options", "order", "required"], // Adicionar 'required'
+        attributes: ["id", "type", "text", "options", "order", "required", "allowComments"], // Adicionar 'required'
         order: [["order", "ASC"]],
       },
       {

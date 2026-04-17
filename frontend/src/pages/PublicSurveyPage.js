@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
-import { Star, StarBorder, CheckCircle, CheckBox } from '@mui/icons-material';
+import { Star, StarBorder, CheckCircle, CheckBox, ThumbUp, ThumbDown } from '@mui/icons-material';
 import publicSurveyService from '../services/publicSurveyService';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import getDynamicTheme from '../getDynamicTheme';
@@ -188,7 +188,7 @@ const YesNoSurvey = React.memo(({ question, answer, onChange, theme }) => {
                         onClick={() => onChange(question.id, option)}
                         aria-pressed={isSelected}
                         style={{
-                            flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
                             padding: '16px', borderRadius: '12px', minHeight: '56px',
                             border: `2px solid ${isSelected ? (isPositive ? primaryMain : '#d32f2f') : '#eee'}`,
                             backgroundColor: isSelected ? (isPositive ? `${primaryMain}15` : '#fdecea') : 'white',
@@ -197,6 +197,11 @@ const YesNoSurvey = React.memo(({ question, answer, onChange, theme }) => {
                             color: isSelected ? (isPositive ? primaryMain : '#d32f2f') : '#333'
                         }}
                     >
+                        {isPositive ? (
+                            <ThumbUp style={{ fontSize: '24px', color: isSelected ? primaryMain : '#999' }} />
+                        ) : (
+                            <ThumbDown style={{ fontSize: '24px', color: isSelected ? '#d32f2f' : '#999' }} />
+                        )}
                         {option}
                     </button>
                 );
@@ -423,7 +428,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
 
                             {renderQuestionInput(question)}
 
-                            {(question.type.startsWith('rating') || question.allowComments) && (
+                            {(question.type.startsWith('rating') || question.type === 'yes_no' || question.allowComments) && (
                                 <div style={{ marginTop: '16px' }}>
                                     <label htmlFor={`comment-${question.id}`} style={{ display: 'block', fontSize: '12px', color: '#666', marginBottom: '4px' }}>Comentário (opcional)</label>
                                     <textarea

@@ -21,7 +21,7 @@ const getOverallResults = async function (
   const whereClause = buildWhereClause({ tenantId, surveyId, dateRange });
 
   const allResponses = await models.Resposta.findAll({
-    where: { ...whereClause, ratingValue: { [Op.ne]: null } },
+    where: { [Op.or]: [{ ratingValue: { [Op.ne]: null } }, { valor: { [Op.ne]: null } }] },
     include: [
       {
         model: models.Pergunta,
@@ -48,16 +48,20 @@ const getOverallResults = async function (
     ],
   });
 
-  // 1. Calcular Scores Gerais (NPS e CSAT)
+  // 1. Calcular Scores Gerais (NPS, CSAT e YesNo)
   const npsResponses = allResponses.filter(
     (r) => r.pergunta && r.pergunta.type === "rating_0_10",
   );
   const csatResponses = allResponses.filter(
     (r) => r.pergunta && r.pergunta.type === "rating_1_5",
   );
+  const yesNoResponses = allResponses.filter(
+    (r) => r.pergunta && r.pergunta.type === "yes_no",
+  );
 
   const overallNpsResult = ratingService.calculateNPS(npsResponses);
   const overallCsatResult = ratingService.calculateCSAT(csatResponses);
+  const overallYesNoResult = ratingService.calculateYesNoRate(yesNoResponses);
 
   // 2. Calcular Scores por Critério (reutilizando a lógica de getCriteriaScores)
   const responsesByCriteria = allResponses.reduce((acc, response) => {
@@ -192,6 +196,7 @@ const getOverallResults = async function (
   return {
     overallNPS: overallNpsResult,
     overallCSAT: overallCsatResult,
+    overallYesNo: overallYesNoResult,
     scoresByCriteria,
     radarChartData,
     demographics,

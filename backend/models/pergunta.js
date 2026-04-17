@@ -32,11 +32,16 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(50),
       allowNull: false,
       validate: {
-        isIn: [['rating_1_5', 'rating_0_10', 'free_text', 'multiple_choice', 'checkbox']]
+        isIn: [['rating_1_5', 'rating_0_10', 'free_text', 'multiple_choice', 'checkbox', 'yes_no']]
       }
     },
     options: {
       type: DataTypes.JSONB
+    },
+    allowComments: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false
     },
     order: {
       type: DataTypes.INTEGER,

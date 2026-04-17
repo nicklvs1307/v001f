@@ -56,20 +56,45 @@ class ResultService {
             ? parseFloat((sum / ratings.length).toFixed(2))
             : 0;
         result.allRatings = ratings;
-      } else if (question.type === "multiple_choice") {
+      } else if (question.type === "multiple_choice" || question.type === "checkbox") {
         const optionsCount = {};
         if (question.options && Array.isArray(question.options)) {
           question.options.forEach((opt) => (optionsCount[opt] = 0));
         }
         questionResponses.forEach((r) => {
-          if (
-            r.selectedOption &&
-            optionsCount.hasOwnProperty(r.selectedOption)
-          ) {
-            optionsCount[r.selectedOption]++;
+          if (r.selectedOption) {
+            try {
+              const selectedOptions = JSON.parse(r.selectedOption);
+              if (Array.isArray(selectedOptions)) {
+                selectedOptions.forEach((opt) => {
+                  if (optionsCount.hasOwnProperty(opt)) {
+                    optionsCount[opt]++;
+                  }
+                });
+              } else if (optionsCount.hasOwnProperty(r.selectedOption)) {
+                optionsCount[r.selectedOption]++;
+              }
+            } catch (e) {
+              if (optionsCount.hasOwnProperty(r.selectedOption)) {
+                optionsCount[r.selectedOption]++;
+              }
+            }
           }
         });
         result.optionsCount = optionsCount;
+      } else if (question.type === "yes_no") {
+        const yesNoCount = { Sim: 0, Não: 0 };
+        questionResponses.forEach((r) => {
+          if (r.selectedOption) {
+            const normalizedValue = String(r.selectedOption).toLowerCase().trim();
+            if (normalizedValue === "sim" || normalizedValue === "yes") {
+              yesNoCount.Sim++;
+            } else if (normalizedValue === "não" || normalizedValue === "nao" || normalizedValue === "no") {
+              yesNoCount.Não++;
+            }
+          }
+        });
+        result.yesNoCount = yesNoCount;
       }
       aggregatedResults.questionsResults.push(result);
     }

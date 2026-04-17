@@ -167,6 +167,53 @@ const ratingService = {
       satisfactionRate: parseFloat(satisfactionRate.toFixed(1)),
     };
   },
+
+  /**
+   * Calcula a taxa de respostas positivas (Sim) para perguntas Sim/Não.
+   * @param {Array<Object>} responses - Uma lista de objetos de resposta { valor: string, pergunta: { type: string } }.
+   * @returns {Object} - Um objeto contendo a taxa de positivas e contagens.
+   */
+  calculateYesNoRate(responses) {
+    let positives = 0;
+    let negatives = 0;
+    let total = 0;
+
+    responses.forEach((response) => {
+      const valor = response.valor;
+      const questionType = response.pergunta ? response.pergunta.type : null;
+
+      if (questionType !== "yes_no") {
+        return;
+      }
+
+      const normalizedValue = String(valor).toLowerCase().trim();
+      if (normalizedValue === "sim" || normalizedValue === "yes") {
+        positives++;
+        total++;
+      } else if (normalizedValue === "não" || normalizedValue === "nao" || normalizedValue === "no") {
+        negatives++;
+        total++;
+      }
+    });
+
+    if (total === 0) {
+      return {
+        positiveRate: 0,
+        positives: 0,
+        negatives: 0,
+        total: 0,
+      };
+    }
+
+    const positiveRate = (positives / total) * 100;
+
+    return {
+      positiveRate: parseFloat(positiveRate.toFixed(1)),
+      positives,
+      negatives,
+      total,
+    };
+  },
 };
 
 module.exports = ratingService;

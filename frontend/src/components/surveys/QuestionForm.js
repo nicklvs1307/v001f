@@ -8,6 +8,8 @@ import {
   InputLabel,
   Select,
   FormHelperText,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { QUESTION_TYPES } from '../../constants/questionTypes';
@@ -79,12 +81,27 @@ const QuestionForm = ({
           <MenuItem value="free_text">Texto</MenuItem>
           <MenuItem value="multiple_choice">Múltipla Escolha</MenuItem>
           <MenuItem value="checkbox">Caixa de Seleção</MenuItem>
+          <MenuItem value="yes_no">Sim ou Não</MenuItem>
           <MenuItem value="rating_1_5">Avaliação (1-5)</MenuItem>
           <MenuItem value="rating_0_10">Avaliação (0-10)</MenuItem>
         </Select>
       </FormControl>
 
-      {(question.type === 'multiple_choice' || question.type === 'checkbox') && (
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={question.allowComments || false}
+            onChange={(e) => {
+              const event = { target: { value: e.target.checked, name: 'allowComments' } };
+              handleQuestionChange(qIndex, event);
+            }}
+          />
+        }
+        label="Permitir comentário"
+        sx={{ mt: 1 }}
+      </FormControlLabel>
+
+      {(question.type === 'multiple_choice' || question.type === 'checkbox' || question.type === 'yes_no') && (
         <QuestionOptions 
           qIndex={qIndex}
           options={question.options}

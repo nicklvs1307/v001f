@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
-import { Star, StarBorder, CheckCircle } from '@mui/icons-material';
+import { Star, StarBorder, CheckCircle, CheckBox, CheckBoxOutlineBlank } from '@mui/icons-material';
 import publicSurveyService from '../services/publicSurveyService';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import getDynamicTheme from '../getDynamicTheme';
@@ -122,6 +122,84 @@ const MultipleChoice = React.memo(({ question, answer, onChange, theme }) => {
                         }}>
                             {isSelected && <CheckCircle style={{ color: 'white', fontSize: '16px' }} />}
                         </div>
+                    </button>
+                );
+            })}
+        </div>
+    );
+});
+
+const CheckboxSurvey = React.memo(({ question, answer, onChange, theme }) => {
+    const primaryMain = theme.palette.primary.main;
+    const selectedValues = Array.isArray(answer?.valor) ? answer.valor : [];
+    
+    const handleToggle = (optionText) => {
+        const newValues = selectedValues.includes(optionText)
+            ? selectedValues.filter(v => v !== optionText)
+            : [...selectedValues, optionText];
+        onChange(question.id, newValues);
+    };
+    
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '20px' }} role="group" aria-label={question.text}>
+            {(question.options || []).map((opcao) => {
+                const isSelected = selectedValues.includes(opcao.text);
+                return (
+                    <button
+                        key={opcao.id || opcao.text}
+                        onClick={() => handleToggle(opcao.text)}
+                        aria-pressed={isSelected}
+                        style={{
+                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                            padding: '14px 18px', borderRadius: '12px', minHeight: '48px',
+                            border: `2px solid ${isSelected ? primaryMain : '#eee'}`,
+                            backgroundColor: isSelected ? `${primaryMain}15` : 'white',
+                            cursor: 'pointer', transition: 'all 0.15s ease',
+                            fontFamily: 'inherit', fontSize: '1rem', textAlign: 'left', width: '100%'
+                        }}
+                    >
+                        <span style={{ fontWeight: isSelected ? 600 : 400 }}>{opcao.text}</span>
+                        <div style={{
+                            width: '22px', height: '22px', borderRadius: '4px', flexShrink: 0,
+                            border: `2px solid ${isSelected ? primaryMain : '#ccc'}`,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            backgroundColor: isSelected ? primaryMain : 'transparent'
+                        }}>
+                            {isSelected && <CheckBox style={{ color: 'white', fontSize: '18px' }} />}
+                        </div>
+                    </button>
+                );
+            })}
+        </div>
+    );
+});
+
+const YesNoSurvey = React.memo(({ question, answer, onChange, theme }) => {
+    const primaryMain = theme.palette.primary.main;
+    const positiveLabel = question.options?.find(o => o.isPositive)?.text || 'Sim';
+    const negativeLabel = question.options?.find(o => !o.isPositive)?.text || 'Não';
+    
+    return (
+        <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }} role="radiogroup" aria-label={question.text}>
+            {['Sim', 'Não'].map((option) => {
+                const isSelected = String(answer?.valor) === option;
+                const isPositive = option === 'Sim';
+                return (
+                    <button
+                        key={option}
+                        onClick={() => onChange(question.id, option)}
+                        aria-pressed={isSelected}
+                        style={{
+                            flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            padding: '16px', borderRadius: '12px', minHeight: '56px',
+                            border: `2px solid ${isSelected ? (isPositive ? primaryMain : '#d32f2f') : '#eee'}`,
+                            backgroundColor: isSelected ? (isPositive ? `${primaryMain}15` : '#fdecea') : 'white',
+                            cursor: 'pointer', transition: 'all 0.15s ease',
+                            fontFamily: 'inherit', fontSize: '1.1rem', fontWeight: 600,
+                            color: isSelected ? (isPositive ? primaryMain : '#d32f2f') : '#333'
+                        }}
+                    >
+                        {option}
                     </button>
                 );
             })}
@@ -293,6 +371,8 @@ const SurveyComponent = ({ survey, tenantId }) => {
             case 'rating_1_5': return <Rating1to5 question={question} answer={answer} onChange={handleAnswerChange} />;
             case 'rating_0_10': return <Rating0to10 question={question} answer={answer} onChange={handleAnswerChange} theme={theme} />;
             case 'multiple_choice': return <MultipleChoice question={question} answer={answer} onChange={handleAnswerChange} theme={theme} />;
+            case 'checkbox': return <CheckboxSurvey question={question} answer={answer} onChange={handleAnswerChange} theme={theme} />;
+            case 'yes_no': return <YesNoSurvey question={question} answer={answer} onChange={handleAnswerChange} theme={theme} />;
             case 'free_text': return (
                 <textarea
                     aria-label={question.text}
@@ -345,7 +425,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
 
                             {renderQuestionInput(question)}
 
-                            {question.type.startsWith('rating') && (
+                            {(question.type.startsWith('rating') || question.allowComments) && (
                                 <div style={{ marginTop: '16px' }}>
                                     <label htmlFor={`comment-${question.id}`} style={{ display: 'block', fontSize: '12px', color: '#666', marginBottom: '4px' }}>Comentário (opcional)</label>
                                     <textarea

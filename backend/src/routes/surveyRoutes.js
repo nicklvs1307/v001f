@@ -30,11 +30,16 @@ const surveyQuestionsValidation = [
     "free_text",
     "multiple_choice",
     "checkbox",
+    "yes_no",
   ]),
   check("questions.*.options")
     .optional()
     .isArray()
     .withMessage("Opções da pergunta devem ser um array."),
+  check("questions.*.allowComments")
+    .optional()
+    .isBoolean()
+    .withMessage("allowComments deve ser um boolean."),
   check("questions.*.criterioId")
     .optional({ nullable: true, checkFalsy: true })
     .isUUID()

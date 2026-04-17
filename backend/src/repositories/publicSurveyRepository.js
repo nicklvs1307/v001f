@@ -227,6 +227,9 @@ const submitSurveyResponses = async (
             responseData.selectedOption = null;
           }
           break;
+        case "yes_no":
+          responseData.selectedOption = res.valor;
+          break;
         default:
           continue;
       }

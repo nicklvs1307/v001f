@@ -1,4 +1,4 @@
-import api from "./api"; // Assuming 'api' is for public routes
+import { api } from './api';
 
 const publicRoletaService = {
   getRoletaConfig: (pesquisaId, clientId) => api.get(`/roleta/config/${pesquisaId}/${clientId}`),

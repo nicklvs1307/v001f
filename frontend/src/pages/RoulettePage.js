@@ -76,9 +76,11 @@ const RoulettePage = ({ spinData }) => {
 
         const configData = await publicRoletaService.getRoletaConfig(pesquisaId, clientId);
         if (controller.signal.aborted) return;
+        
+        const roletaData = configData?.data || configData;
         setRoletaConfig({
-          items: configData.data.items.map(item => ({ ...item, isNoPrizeOption: item.isNoPrizeOption || false })),
-          hasSpun: configData.data.hasSpun
+          items: (roletaData?.items || []).map(item => ({ ...item, isNoPrizeOption: item.isNoPrizeOption || false })),
+          hasSpun: roletaData?.hasSpun || false
         });
       }
     } catch (err) {
@@ -108,10 +110,10 @@ const RoulettePage = ({ spinData }) => {
         result = await publicRoletaService.spinRoleta(pesquisaId, clientId);
       }
 
-      const spinDataResult = result.data;
+      const spinDataResult = result?.data || result;
       setSpinResult(spinDataResult);
 
-      const winnerIndex = roletaConfig.items.findIndex(item => item.id === spinDataResult.premio.id);
+      const winnerIndex = roletaConfig.items.findIndex(item => item.id === spinDataResult?.premio?.id);
       setWinningIndex(winnerIndex);
       setRoletaConfig(prev => ({ ...prev, hasSpun: true }));
     } catch (err) {

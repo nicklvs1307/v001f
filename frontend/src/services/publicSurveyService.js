@@ -1,16 +1,4 @@
-import axios from 'axios';
-
-// Axios instance para endpoints públicos (sem token de autenticação)
-const publicApi = axios.create({
-  baseURL: `${process.env.REACT_APP_API_URL || ''}/api/public`,
-  timeout: 15000, // Timeout de 15 segundos
-});
-
-// Outra instância sem /public para endpoints abertos fora do escopo /public (ex: cadastro)
-const unauthenticatedApi = axios.create({
-  baseURL: `${process.env.REACT_APP_API_URL || ''}/api`,
-  timeout: 15000,
-});
+import { publicApi, unauthenticatedApi } from './api';
 
 const getPublicSurveyById = async (id, signal) => {
     try {

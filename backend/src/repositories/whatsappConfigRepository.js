@@ -67,6 +67,17 @@ class WhatsappConfigRepository {
     return await WhatsappConfig.destroy({ where: { tenantId } });
   }
 
+  async resetInstance(tenantId) {
+    return await WhatsappConfig.update(
+      {
+        instanceName: null,
+        instanceApiKey: null,
+        instanceStatus: "not_created",
+      },
+      { where: { tenantId } },
+    );
+  }
+
   async updateReportSentAt(configId, type) {
     const field =
       type === "daily"

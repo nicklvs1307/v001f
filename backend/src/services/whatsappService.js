@@ -764,18 +764,13 @@ const deleteInstance = async (tenantId) => {
       `${config.url}/instance/delete/${config.instanceName}`,
       getAxiosConfig(config),
     );
-    await whatsappConfigRepository.deleteByTenantId(tenantId);
-    return { message: "Instância deletada com sucesso." };
   } catch (error) {
-    if (error.response && error.response.status === 404) {
-      await whatsappConfigRepository.deleteByTenantId(tenantId);
-      return {
-        message:
-          "Instância não encontrada na API do WhatsApp, removida do sistema.",
-      };
+    if (error.response && error.response.status !== 404) {
+      throw error;
     }
-    throw error;
   }
+  await whatsappConfigRepository.resetInstance(tenantId);
+  return { message: "Instância removida do WhatsApp. Configurações preservadas." };
 };
 
 // --- NEW METHODS FOR SENDER POOL INSTANCE MANAGEMENT ---

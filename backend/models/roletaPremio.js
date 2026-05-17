@@ -68,6 +68,21 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: false,
       allowNull: false,
     },
+    estoqueMaximo: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: null,
+    },
+    estoqueResetTipo: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'nunca',
+    },
+    cooldownGiros: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
   }, {
     sequelize,
     modelName: 'RoletaPremio',

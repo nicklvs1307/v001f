@@ -1,6 +1,7 @@
 "use strict";
 const asyncHandler = require("express-async-handler");
 const roletaPremioRepository = require("../repositories/roletaPremioRepository");
+const roletaSpinLogRepository = require("../repositories/roletaSpinLogRepository");
 const ApiError = require("../errors/ApiError");
 
 // @desc    Criar um novo prêmio para a roleta
@@ -90,4 +91,50 @@ exports.deletePremio = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Prêmio da roleta não encontrado para deleção.");
   }
   res.status(204).send();
+});
+
+// @desc    Obter informações de estoque de um prêmio
+// @route   GET /api/roleta-premios/:id/estoque
+// @access  Private (Admin)
+exports.getPremioEstoque = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const tenantId = req.user.tenantId;
+
+  const premio = await roletaPremioRepository.findById(id, tenantId);
+  if (!premio) {
+    throw new ApiError(404, "Prêmio da roleta não encontrado.");
+  }
+
+  const estoqueInfo = await roletaSpinLogRepository.getPremioStockInfo(
+    tenantId,
+    id,
+    premio.estoqueResetTipo,
+  );
+
+  if (!estoqueInfo) {
+    throw new ApiError(404, "Informações de estoque não disponíveis.");
+  }
+
+  res.status(200).json(estoqueInfo);
+});
+
+// @desc    Reset manual do estoque de um prêmio
+// @route   POST /api/roleta-premios/:id/reset-estoque
+// @access  Private (Admin)
+exports.resetEstoque = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const tenantId = req.user.tenantId;
+
+  const premio = await roletaPremioRepository.findById(id, tenantId);
+  if (!premio) {
+    throw new ApiError(404, "Prêmio da roleta não encontrado.");
+  }
+
+  if (premio.estoqueMaximo === null || premio.estoqueMaximo === undefined) {
+    throw new ApiError(400, "Este prêmio não possui estoque configurado.");
+  }
+
+  const result = await roletaSpinLogRepository.resetStock(tenantId, id);
+
+  res.status(200).json(result);
 });

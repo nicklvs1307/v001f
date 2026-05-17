@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const asyncHandler = require("express-async-handler");
 const { Pesquisa } = require("../../models");
 const roletaPremioRepository = require("../repositories/roletaPremioRepository");
+const roletaSpinLogRepository = require("../repositories/roletaSpinLogRepository");
 const cupomRepository = require("../repositories/cupomRepository");
 const clientRepository = require("../repositories/clientRepository");
 const ApiError = require("../errors/ApiError");
@@ -92,8 +93,33 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
     );
   }
 
-  // Validar probabilidades individuais
-  for (const premio of premios) {
+  const premiosDisponiveis = premios.filter((premio) => {
+    if (premio.isNoPrizeOption) return true;
+    if (!premio.cooldownGiros || premio.cooldownGiros === 0) return true;
+    const girosDesdeUltimo = roletaSpinLogRepository.countSpinsSinceLastAward(
+      tenantId,
+      pesquisa.roletaId,
+      premio.id,
+    );
+    return girosDesdeUltimo >= premio.cooldownGiros;
+  });
+
+  const premiosParaSorteio = premiosDisponiveis.length > 0
+    ? premiosDisponiveis
+    : premios.filter((p) => p.isNoPrizeOption);
+
+  if (!premiosParaSorteio || premiosParaSorteio.length === 0) {
+    throw new ApiError(
+      404,
+      "Nenhum prêmio disponível no momento. Tente novamente mais tarde.",
+    );
+  }
+
+  const premiosUsados = premiosParaSorteio.length < premios.length
+    ? premiosParaSorteio
+    : premios;
+
+  for (const premio of premiosUsados) {
     if (typeof premio.porcentagem !== "number" || premio.porcentagem < 0) {
       throw new ApiError(
         500,
@@ -102,7 +128,7 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
     }
   }
 
-  const totalProbabilidade = premios.reduce(
+  const totalProbabilidade = premiosUsados.reduce(
     (sum, premio) => sum + premio.porcentagem,
     0,
   );
@@ -113,16 +139,15 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
     );
   }
 
-  // Usar crypto para um número aleatório mais seguro
-  const randomBytes = crypto.randomBytes(4); // 4 bytes para um inteiro de 32 bits
-  const randomNumber = randomBytes.readUInt32BE(0) / 0xffffffff; // Gera um float entre 0 e 1
+  const randomBytes = crypto.randomBytes(4);
+  const randomNumber = randomBytes.readUInt32BE(0) / 0xffffffff;
 
   const target = randomNumber * totalProbabilidade;
 
   let cumulativeProbability = 0;
   let premioGanhador = null;
 
-  for (const premio of premios) {
+  for (const premio of premiosUsados) {
     cumulativeProbability += premio.porcentagem;
     if (target < cumulativeProbability) {
       premioGanhador = premio;
@@ -130,10 +155,16 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
     }
   }
 
-  // Fallback de segurança (teoricamente não deve ser alcançado)
   if (!premioGanhador) {
-    premioGanhador = premios[premios.length - 1];
+    premioGanhador = premiosUsados[premiosUsados.length - 1];
   }
+
+  await roletaSpinLogRepository.logSpin({
+    tenantId,
+    roletaId: pesquisa.roletaId,
+    premioId: premioGanhador.id,
+    clienteId: clientId,
+  });
 
   // --- MODIFICAÇÃO: Lidar com a opção "Não foi dessa vez" ---
   if (premioGanhador.isNoPrizeOption) {

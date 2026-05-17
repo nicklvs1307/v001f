@@ -27,6 +27,16 @@ const roletaPremioService = {
     const response = await apiAuthenticated.delete(`${API_URL}/${id}`);
     return response.data;
   },
+
+  getPremioEstoque: async (id) => {
+    const response = await apiAuthenticated.get(`${API_URL}/${id}/estoque`);
+    return response.data;
+  },
+
+  resetEstoque: async (id) => {
+    const response = await apiAuthenticated.post(`${API_URL}/${id}/reset-estoque`);
+    return response.data;
+  },
 };
 
 export default roletaPremioService;

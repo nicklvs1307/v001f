@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const { now } = require("../utils/dateUtils");
 const cupomRepository = require("../repositories/cupomRepository");
 const recompensaRepository = require("../repositories/recompensaRepository");
+const roletaSpinLogRepository = require("../repositories/roletaSpinLogRepository");
 const ApiError = require("../errors/ApiError");
 const { v4: uuidv4 } = require("uuid");
 const { CampanhaLog } = require("../../models");
@@ -157,9 +158,36 @@ const cupomController = {
     // });
     // --- END NOTIFICATION ---
 
+    let estoqueInfo = null;
+    if (cupom.pesquisaId) {
+      const { Pesquisa, RoletaPremio } = require("../../models");
+      const pesquisa = await Pesquisa.findByPk(cupom.pesquisaId);
+      if (pesquisa && pesquisa.roletaId) {
+        const premio = await RoletaPremio.findOne({
+          where: { roletaId: pesquisa.roletaId, recompensaId: cupom.recompensaId },
+        });
+        if (premio && premio.estoqueMaximo !== null) {
+          const stockInfo = await roletaSpinLogRepository.getPremioStockInfo(
+            cupom.tenantId,
+            premio.id,
+            premio.estoqueResetTipo,
+          );
+          if (stockInfo) {
+            estoqueInfo = {
+              estoqueMaximo: stockInfo.estoqueMaximo,
+              estoqueUsado: stockInfo.estoqueUsado,
+              estoqueDisponivel: stockInfo.estoqueDisponivel,
+              resetTipo: stockInfo.resetTipo,
+              ilimitado: stockInfo.ilimitado,
+            };
+          }
+        }
+      }
+    }
+
     res
       .status(200)
-      .json({ message: "Cupom validado com sucesso!", cupom: updatedCupom });
+      .json({ message: "Cupom validado com sucesso!", cupom: updatedCupom, estoque: estoqueInfo });
   }),
 
   getCuponsSummary: asyncHandler(async (req, res) => {

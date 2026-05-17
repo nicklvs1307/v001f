@@ -65,4 +65,18 @@ router
     roletaPremioController.deletePremio,
   );
 
+router.get(
+  "/:id/estoque",
+  [check("id", "ID do prêmio inválido").isUUID().not().isEmpty()],
+  validate,
+  roletaPremioController.getPremioEstoque,
+);
+
+router.post(
+  "/:id/reset-estoque",
+  [check("id", "ID do prêmio inválido").isUUID().not().isEmpty()],
+  validate,
+  roletaPremioController.resetEstoque,
+);
+
 module.exports = router;

@@ -14,14 +14,20 @@ import {
   CircularProgress,
   Alert,
   Tooltip,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Divider,
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import { Wheel } from 'react-custom-roulette';
 import { SketchPicker } from 'react-color';
 import roletaService from '../services/roletaService';
-import recompensaService from '../services/recompensaService'; // Para buscar recompensas
+import recompensaService from '../services/recompensaService';
 import Autocomplete from '@mui/material/Autocomplete';
 
 
@@ -77,7 +83,10 @@ const RoletaFormPage = () => {
             recompensaId: p.recompensaId,
             porcentagem: p.porcentagem,
             style: { backgroundColor: p.cor, textColor: getContrastColor(p.cor) },
-            isNoPrizeOption: p.isNoPrizeOption || false, // Adicionar esta linha
+            isNoPrizeOption: p.isNoPrizeOption || false,
+            estoqueMaximo: p.estoqueMaximo || '',
+            estoqueResetTipo: p.estoqueResetTipo || 'nunca',
+            cooldownGiros: p.cooldownGiros || 0,
           })));
         })
         .catch(err => setError('Erro ao buscar dados da roleta.'))
@@ -133,7 +142,10 @@ const RoletaFormPage = () => {
       recompensaId: null,
       porcentagem: 0,
       style: { backgroundColor: newColor, textColor: getContrastColor(newColor) },
-      isNoPrizeOption: false, // Adicionar esta linha
+      isNoPrizeOption: false,
+      estoqueMaximo: '',
+      estoqueResetTipo: 'nunca',
+      cooldownGiros: 0,
     }]);
   };
 
@@ -167,7 +179,10 @@ const RoletaFormPage = () => {
         recompensaId: p.recompensaId,
         porcentagem: Number(p.porcentagem),
         cor: p.style.backgroundColor,
-        isNoPrizeOption: p.isNoPrizeOption, // Adicionar esta linha
+        isNoPrizeOption: p.isNoPrizeOption,
+        estoqueMaximo: p.estoqueMaximo === '' ? null : Number(p.estoqueMaximo),
+        estoqueResetTipo: p.estoqueResetTipo || 'nunca',
+        cooldownGiros: Number(p.cooldownGiros) || 0,
       })),
     };
 
@@ -288,7 +303,7 @@ const RoletaFormPage = () => {
                                 {option.name}
                             </Box>
                         )}
-                        disabled={premio.isNoPrizeOption} // Desabilitar se for "Não é prêmio"
+                        disabled={premio.isNoPrizeOption}
                       />
                     </Grid>
                     <Grid item xs={6} sm={3}>
@@ -329,6 +344,56 @@ const RoletaFormPage = () => {
                       <IconButton onClick={() => removePremio(index)} color="error">
                         <DeleteIcon />
                       </IconButton>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <Divider sx={{ my: 1 }} />
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                        <InventoryIcon fontSize="small" color="action" />
+                        <Typography variant="subtitle2" color="text.secondary">
+                          Controle de Distribuição
+                        </Typography>
+                      </Box>
+                    </Grid>
+
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        label="Estoque máximo"
+                        type="number"
+                        value={premio.estoqueMaximo}
+                        onChange={(e) => handlePremioChange(index, 'estoqueMaximo', e.target.value)}
+                        fullWidth
+                        inputProps={{ min: 0, step: "1" }}
+                        helperText="Vazio = ilimitado"
+                        size="small"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <FormControl fullWidth size="small">
+                        <InputLabel>Reset do estoque</InputLabel>
+                        <Select
+                          value={premio.estoqueResetTipo || 'nunca'}
+                          label="Reset do estoque"
+                          onChange={(e) => handlePremioChange(index, 'estoqueResetTipo', e.target.value)}
+                        >
+                          <MenuItem value="nunca">Nunca (manual)</MenuItem>
+                          <MenuItem value="diario">Diário</MenuItem>
+                          <MenuItem value="semanal">Semanal</MenuItem>
+                          <MenuItem value="mensal">Mensal</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        label="Cooldown (giros)"
+                        type="number"
+                        value={premio.cooldownGiros}
+                        onChange={(e) => handlePremioChange(index, 'cooldownGiros', e.target.value)}
+                        fullWidth
+                        inputProps={{ min: 0, step: "1" }}
+                        helperText="0 = desativado"
+                        size="small"
+                      />
                     </Grid>
                   </Grid>
                 </Paper>

@@ -398,7 +398,7 @@ const AutomationsPage = () => {
                 fullWidth
                 multiline
                 rows={4}
-                helperText="Variáveis: {{cliente}}, {{recompensa}}, {{cupom}}, {{data_validade}}"
+                helperText="Variáveis: {{cliente}}, {{recompensa}}, {{cupom}}, {{data_validade}}, {{regras}}"
                 margin="normal"
                 disabled={!automations.couponReminder.enabled}
               />

@@ -84,6 +84,14 @@ const task = cron.schedule(
         for (const coupon of couponsToRemind) {
           const client = coupon.client;
           if (client && client.phone) {
+            const regrasTexto = coupon.recompensa?.conditionDescription
+              ? coupon.recompensa.conditionDescription
+                  .split('\n')
+                  .filter(linha => linha.trim() !== '')
+                  .map(linha => `🔸 ${linha.trim()}`)
+                  .join('\n')
+              : "🔸 Sem regras específicas.";
+
             const personalizedMessage = message
               .replace(/{{nome_cliente}}/g, client.name)
               .replace(/{{codigo_cupom}}/g, coupon.codigo)
@@ -94,7 +102,8 @@ const task = cron.schedule(
               .replace(
                 /{{recompensa}}/g,
                 coupon.recompensa ? coupon.recompensa.name : "",
-              );
+              )
+              .replace(/{{\s*regras\s*}}/gi, regrasTexto);
 
             try {
               await whatsappService.sendTenantMessage(

@@ -193,12 +193,14 @@ exports.testCouponReminder = asyncHandler(async (req, res) => {
     addDays(now(), couponReminderTemplate.daysBefore || 3),
     "dd/MM/yyyy",
   );
+  const regrasTexto = "🔸 Regra de teste 1\n🔸 Regra de teste 2";
 
   let message = couponReminderTemplate.message;
   message = message.replace(/{{cliente}}/g, clientName);
   message = message.replace(/{{cupom}}/g, cupomCode);
   message = message.replace(/{{recompensa}}/g, rewardName);
   message = message.replace(/{{data_validade}}/g, expirationDate);
+  message = message.replace(/{{regras}}/g, regrasTexto);
 
   message += "\n\n--- MENSAGEM DE TESTE ---";
 

@@ -68,7 +68,7 @@ const SurveyCreatePage = () => {
       }
       setSuccess(true);
       showNotification(`Pesquisa ${id ? 'atualizada' : 'criada'} com sucesso!`, 'success'); // Add success notification
-      setTimeout(() => navigate('/pesquisas'), 2000);
+      setTimeout(() => navigate(`/dashboard/pesquisas/edit/${id}`), 2000);
     } catch (err) {
       showNotification(err.message || `Erro ao ${id ? 'atualizar' : 'criar'} pesquisa.`, 'error'); // Use showNotification
     } finally {

@@ -461,7 +461,7 @@ const SurveyComponent = ({ survey, tenantId }) => {
                                     fontSize: '1rem', backgroundColor: '#fff', cursor: 'pointer'
                                 }}
                             >
-                                <option value="">Não me lembro / Outro</option>
+                                <option value="">Selecione o atendente</option>
                                 {atendentes.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
                             </select>
                             {atendenteError && <p style={{ color: '#d32f2f', fontSize: '12px', marginTop: '4px' }}>{atendenteError}</p>}

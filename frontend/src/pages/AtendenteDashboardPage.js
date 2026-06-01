@@ -71,6 +71,8 @@ const AtendenteDashboardPage = () => {
   const [selectedAttendant, setSelectedAttendant] = useState('all');
   const [timeSeriesData, setTimeSeriesData] = useState({ chartData: [], attendantNames: [] });
   const [timeSeriesLoading, setTimeSeriesLoading] = useState(true);
+  const [chartStartDate, setChartStartDate] = useState(null);
+  const [chartEndDate, setChartEndDate] = useState(null);
 
   // Estados para o Modal de Auditoria
   const [auditModalOpen, setAuditModalOpen] = useState(false);
@@ -197,6 +199,12 @@ const AtendenteDashboardPage = () => {
         if (selectedAttendant !== 'all') {
           params.atendenteId = selectedAttendant;
         }
+        if (chartStartDate) {
+          params.startDate = chartStartDate.toISOString();
+        }
+        if (chartEndDate) {
+          params.endDate = chartEndDate.toISOString();
+        }
         const data = await dashboardService.getAttendantResponsesTimeseries(params);
         setTimeSeriesData(data || { chartData: [], attendantNames: [] });
       } catch (err) {
@@ -206,7 +214,7 @@ const AtendenteDashboardPage = () => {
       }
     };
     fetchTimeSeriesData();
-  }, [timeSeriesPeriod, selectedAttendant]);
+  }, [timeSeriesPeriod, selectedAttendant, chartStartDate, chartEndDate]);
 
   const ProgressBarWithLabel = ({ value, label, goal, color = 'primary' }) => (
     <Box sx={{ mb: 1 }}>
@@ -305,7 +313,22 @@ const AtendenteDashboardPage = () => {
           <Paper elevation={3} sx={{ p: 3, borderRadius: '15px' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
               <Typography variant="h6" fontWeight="bold">Evolução Diária de Atendimento</Typography>
-              <Box sx={{ display: 'flex', gap: 2 }}>
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                  <CalendarMonthIcon color="action" fontSize="small" />
+                  <DatePicker
+                    label="Início"
+                    value={chartStartDate}
+                    onChange={(val) => setChartStartDate(val)}
+                    slotProps={{ textField: { size: 'small', sx: { minWidth: 130 } } }}
+                  />
+                  <DatePicker
+                    label="Fim"
+                    value={chartEndDate}
+                    onChange={(val) => setChartEndDate(val)}
+                    slotProps={{ textField: { size: 'small', sx: { minWidth: 130 } } }}
+                  />
+                </Box>
                 <FormControl size="small" sx={{ minWidth: 150 }}>
                   <InputLabel>Filtrar Atendente</InputLabel>
                   <Select

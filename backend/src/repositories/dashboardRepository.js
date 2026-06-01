@@ -13,8 +13,7 @@ const {
   Tratativa,
 } = require("../../models");
 const { Sequelize, Op } = require("sequelize");
-const { now, formatInTimeZone, TIMEZONE } = require("../utils/dateUtils");
-const { startOfMonth } = require("date-fns");
+const { now, formatInTimeZone, TIMEZONE, startOfMonth } = require("../utils/dateUtils");
 const ratingService = require("../services/ratingService");
 
 const { fn, col, literal } = Sequelize;
@@ -2342,8 +2341,12 @@ const getAttendantResponsesTimeseries = async (
   // Se não houver data, padrão para o mês atual
   if (startDate && endDate) {
     whereClause.createdAt = { [Op.between]: [startDate, endDate] };
+  } else if (startDate) {
+    whereClause.createdAt = { [Op.gte]: startDate };
+  } else if (endDate) {
+    whereClause.createdAt = { [Op.lte]: endDate };
   } else {
-    whereClause.createdAt = { [Op.gte]: startOfMonth(new Date()) };
+    whereClause.createdAt = { [Op.gte]: startOfMonth(now()) };
   }
 
   if (atendenteId) {

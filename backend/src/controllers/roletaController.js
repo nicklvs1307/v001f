@@ -93,16 +93,21 @@ exports.spinRoleta = asyncHandler(async (req, res) => {
     );
   }
 
-  const premiosDisponiveis = premios.filter((premio) => {
-    if (premio.isNoPrizeOption) return true;
-    if (!premio.cooldownGiros || premio.cooldownGiros === 0) return true;
-    const girosDesdeUltimo = roletaSpinLogRepository.countSpinsSinceLastAward(
+  const premiosDisponiveis = [];
+  for (const premio of premios) {
+    if (premio.isNoPrizeOption || !premio.cooldownGiros || premio.cooldownGiros === 0) {
+      premiosDisponiveis.push(premio);
+      continue;
+    }
+    const girosDesdeUltimo = await roletaSpinLogRepository.countSpinsSinceLastAward(
       tenantId,
       pesquisa.roletaId,
       premio.id,
     );
-    return girosDesdeUltimo >= premio.cooldownGiros;
-  });
+    if (girosDesdeUltimo >= premio.cooldownGiros) {
+      premiosDisponiveis.push(premio);
+    }
+  }
 
   const premiosParaSorteio = premiosDisponiveis.length > 0
     ? premiosDisponiveis

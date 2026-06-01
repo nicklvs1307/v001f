@@ -71,8 +71,17 @@ const AtendenteDashboardPage = () => {
   const [selectedAttendant, setSelectedAttendant] = useState('all');
   const [timeSeriesData, setTimeSeriesData] = useState({ chartData: [], attendantNames: [] });
   const [timeSeriesLoading, setTimeSeriesLoading] = useState(true);
-  const [chartStartDate, setChartStartDate] = useState(null);
-  const [chartEndDate, setChartEndDate] = useState(null);
+  const [chartStartDate, setChartStartDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 7);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  });
+  const [chartEndDate, setChartEndDate] = useState(() => {
+    const d = new Date();
+    d.setHours(23, 59, 59, 999);
+    return d;
+  });
 
   // Estados para o Modal de Auditoria
   const [auditModalOpen, setAuditModalOpen] = useState(false);

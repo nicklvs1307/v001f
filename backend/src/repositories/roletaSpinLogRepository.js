@@ -1,5 +1,6 @@
 'use strict';
-const { RoletaSpinLog, Cupom, Op, fn, col, literal } = require('../../models');
+const { RoletaSpinLog, Cupom } = require('../../models');
+const { Op, fn, col, literal } = require('sequelize');
 
 class RoletaSpinLogRepository {
   async logSpin({ tenantId, roletaId, premioId, clienteId }) {
